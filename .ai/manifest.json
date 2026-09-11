@@ -1,0 +1,82 @@
+{
+    "version": 1,
+    "generatedAt": "2026-09-11T19:26:49.186Z",
+    "source": {
+        "type": "github",
+        "repository": "CaoMeiYouRen/cmyr-skills-agents",
+        "commit": "f97cd2c4203684682e4d8f07880b144f04f7d186"
+    },
+    "l0Selection": {
+        "files": [
+            "global/AGENTS.template.md",
+            "global/AGENTS.md"
+        ],
+        "skills": [
+            "code-reviewer",
+            "context-analyzer",
+            "conventional-committer",
+            "git-flow-manager",
+            "quality-guardian",
+            "requirement-analyst",
+            "security-guardian",
+            "technical-architect"
+        ],
+        "agents": [
+            "full-stack-master"
+        ]
+    },
+    "links": [
+        {
+            "linkRelPath": ".claude/skills",
+            "targetRelPath": ".github/skills",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": ".claude/agents",
+            "targetRelPath": ".github/agents",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": ".opencode/skills",
+            "targetRelPath": ".github/skills",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": ".opencode/agents",
+            "targetRelPath": ".github/agents",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": ".agents/skills",
+            "targetRelPath": ".github/skills",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": ".agents/agents",
+            "targetRelPath": ".github/agents",
+            "method": "symlink"
+        },
+        {
+            "linkRelPath": "CLAUDE.md",
+            "targetRelPath": "AGENTS.md",
+            "method": "symlink"
+        }
+    ],
+    "hashes": {
+        ".github/skills/code-reviewer/SKILL.md": "b54270c0d1cedb8486b6ce53cf4614b0fd42ac1153ef84b06bf43ab7556426a4",
+        ".github/skills/code-reviewer/agents/agent.yaml": "671c4df6e1421874ce364a87398738b0be0575d9565d0b9620c882b5bf0dc1b0",
+        ".github/skills/code-reviewer/references/code-quality-checklist.md": "ab2345ac67e6cf03ae3d591423a7ebc1e4c092f57551a7ee692f00b16ea5a6bc",
+        ".github/skills/code-reviewer/references/evidence-template.md": "e3ba01a76345da0286eba3708d12b6ed23c702e565eea00eb694d327e7c5b90f",
+        ".github/skills/code-reviewer/references/removal-plan.md": "c95015c5173a75b0258b5389c051e119176f00aaa1db35a2ce592ed8bf2c1baa",
+        ".github/skills/code-reviewer/references/security-checklist.md": "a0e9d64011b7472b2c160e13edbccdb2ccda5acc1dda24836e390d7499c9c168",
+        ".github/skills/code-reviewer/references/solid-checklist.md": "6694927efce212bc36dc5bb9f3532404db9030784ce26d1972df671211d8db6d",
+        ".github/skills/context-analyzer/SKILL.md": "6b9ed00d1e3b5eb7b61f9bb69cac3bfde1f401b963dd8c8b1728d70d07b0badf",
+        ".github/skills/conventional-committer/SKILL.md": "c731ce21eb6131cdc16147a6bdb5032a281b1a82fb78b4009391b6d38ecf1330",
+        ".github/skills/git-flow-manager/SKILL.md": "c80a356a2447647edc5bde2044be9c5debb082161b780a7798f19f830d676f60",
+        ".github/skills/quality-guardian/SKILL.md": "fd7d4b05f0b64e975a6dc16c65918d4cc61147fd4f981f62fcf25e04574a73b9",
+        ".github/skills/requirement-analyst/SKILL.md": "2664d5c360f058e195c0cfde36fe223e14c68c6b3ba8f5aa161585e07b243b9e",
+        ".github/skills/security-guardian/SKILL.md": "c2a36afc9baaa53e32e66a978640c4610db96f583b5957c01a31c1f01d769960",
+        ".github/skills/technical-architect/SKILL.md": "c28c940d24820bf44411a67c144fd6e65f08710af6ea8cda13535ed73682f4ab",
+        ".github/agents/full-stack-master.agent.md": "8f473364cbc7f4715936d4f1f59494632490f14ee2e3cc9564017b78b4794dff"
+    }
+}

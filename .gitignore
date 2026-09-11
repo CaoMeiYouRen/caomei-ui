@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Test / coverage
+coverage
+test-results
+playwright-report
+
+# VitePress
+docs/.vitepress/cache
+docs/.vitepress/dist
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

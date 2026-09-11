@@ -1,0 +1,35 @@
+[
+    {
+        "id": "vue",
+        "displayName": "vue",
+        "sourceType": "user-profile-skill",
+        "sourcePath": "%USERPROFILE%/.copilot/skills/vue/SKILL.md",
+        "syncAddress": "%USERPROFILE%/.copilot/skills/vue/",
+        "updateCadence": "每月一次，或 Vue 3 组合式 API 最佳实践发生明显变化后复核",
+        "failurePolicy": "若与项目 `<script setup lang=\"ts\">` 与组件库约定冲突，以项目规范和官方文档为准，不直接吸收入库。",
+        "internalizationThreshold": "当需要补充本项目组件 API、主题 token 等项目特化内容时，并入 vue-component-expert。",
+        "adoptedFor": "Vue 3 组件、组合式 API、宏语法、响应式模型"
+    },
+    {
+        "id": "vue-best-practices",
+        "displayName": "vue-best-practices",
+        "sourceType": "user-profile-skill",
+        "sourcePath": "%USERPROFILE%/.copilot/skills/vue-best-practices/SKILL.md",
+        "syncAddress": "%USERPROFILE%/.copilot/skills/vue-best-practices/",
+        "updateCadence": "每两个月一次，或 Volar / vue-tsc 推荐范式变化后复核",
+        "failurePolicy": "若与项目既有组件库约定重复或冲突，仅保留参考，不直接复制到仓库镜像。",
+        "internalizationThreshold": "当外部实践需要稳定沉淀为本项目组件准则时，并入 vue-component-expert。",
+        "adoptedFor": "Vue 代码风格审校、组合式 API 约束、TypeScript 建议"
+    },
+    {
+        "id": "vitest",
+        "displayName": "vitest",
+        "sourceType": "user-profile-skill",
+        "sourcePath": "%USERPROFILE%/.copilot/skills/vitest/SKILL.md",
+        "syncAddress": "%USERPROFILE%/.copilot/skills/vitest/",
+        "updateCadence": "每月一次，或 Vitest 主版本变化后复核",
+        "failurePolicy": "若与项目测试规范冲突，以 docs/standards/testing.md 为准。",
+        "internalizationThreshold": "当需要补充组件测试模板与断言约定时，并入 test-engineer。",
+        "adoptedFor": "Vitest 配置、mock、组件测试与覆盖率"
+    }
+]

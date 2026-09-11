@@ -1,20 +1,26 @@
 {
   "name": "caomei-ui",
-  "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@11.17.0",
   "scripts": {
-    "lint:css": "stylelint src/**/*.{html,css,scss,sass,vue} --fix",
-    "release": "semantic-release",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "cross-env NODE_ENV=production eslint . --fix",
-    "commit": "cz",
-    "prepare": "husky",
+    "lint:css": "stylelint src/**/*.{html,css,scss,sass,vue} --fix",
+    "lint:md": "lint-md \"*.md\" \"docs/**/*.md\" --fix",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "setup:ai": "node scripts/setup/setup-ai.mjs",
+    "commit": "cz",
+    "prepare": "husky",
+    "release": "semantic-release"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
@@ -23,6 +29,8 @@
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@lint-md/cli": "^2.3.1",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^26.5.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "commitizen": "^4.3.2",
@@ -45,6 +53,7 @@
     "typescript": "^5.9.3",
     "vite": "^8.2.2",
     "vite-tsconfig-paths": "^6.1.1",
+    "vitepress": "^1.6.4",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.3.11"
   },
@@ -60,6 +69,9 @@
     "vite"
   ],
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=20"
   },

@@ -1,0 +1,61 @@
+# 测试规范
+
+本文档定义 caomei-ui 的测试分层、覆盖要求与验证矩阵。
+
+## 1. 测试分层
+
+| 层级 | 工具 | 目标 |
+|------|------|------|
+| 单元测试 | Vitest + @vue/test-utils | 组件 props / emits / slots 行为、composables 逻辑、纯函数 |
+| 组件交互 | Vitest（必要时 browser mode） | Dialog / Select 等真实 DOM 交互 |
+| 可访问性 | axe-core（可选） | 关键组件 a11y 断言 |
+| E2E | Playwright | `examples/` 示例应用中的关键路径与主题切换 |
+| 类型 | vue-tsc | 构建产物与公共 API 类型正确性 |
+
+## 2. 覆盖范围要求
+
+- 每个对外组件至少覆盖：
+  - 默认渲染；
+  - 主要 `variant` / `size` 分支；
+  - 关键 props 与事件（至少一个正向 + 一个边界）；
+  - 受控组件（`v-model`）的双向绑定；
+  - 禁用态、加载态（如适用）。
+- composables 必须有独立单元测试。
+- 修复 bug 时，必须补充能复现该 bug 的回归测试。
+
+## 3. 覆盖率
+
+- 目标覆盖率：**≥ 80%**（Statements / Branches / Functions / Lines）。
+- 不牺牲断言有效性换取数字增长；禁止无断言的占位测试。
+
+## 4. 测试文件组织
+
+- 测试文件与被测源码同目录或集中在 `test/`，命名 `*.test.ts` / `*.spec.ts`。
+- 组件测试命名：`<component>.test.ts`。
+- E2E 集中在 `test/e2e/`，命名 `*.e2e.ts`。
+
+## 5. 验证矩阵
+
+| 改动类型 | 最低验证 |
+|----------|----------|
+| 纯文档 | `pnpm lint:md` |
+| 纯类型/工具函数 | `pnpm typecheck` + 定向 `pnpm test` |
+| 组件逻辑/样式 | `pnpm lint` + `pnpm typecheck` + 定向测试 + `pnpm build` |
+| 公共 API / 导出 / 构建配置 | 上述全部 + 全量 `pnpm test` + `pnpm build` + 产物冒烟 |
+| UI 交互变更 | 上述 + `@ui-validator` 浏览器验证 |
+
+## 6. 命令
+
+- 全量：`pnpm test`
+- 单文件：`pnpm exec vitest run <path>`
+- 覆盖率：`pnpm test:coverage`
+- E2E：`pnpm test:e2e`
+
+> 命令以 `package.json` 实际脚本为准，不得臆造。
+
+## 7. 反模式
+
+- 只追求覆盖率数字、不做有效断言。
+- 用 `skip` / `only` 长期停留在提交中（临时调试需在提交前移除）。
+- 测试依赖执行顺序或外部网络。
+- 把「命令跑过了」当作「测试通过」的结论。

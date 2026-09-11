@@ -1,10 +1,10 @@
 # AI 协同开发指南
 
-本指南面向使用 AI 代理参与 caomei-ui 开发的开发者。核心规则以 [AGENTS.md](../../AGENTS.md) 为准，本文档只提供导览。
+本指南面向使用 AI 代理参与 caomei-ui 开发的开发者。核心规则以仓库根目录的 `AGENTS.md` 为准，本文档只提供导览。
 
 ## 1. 权威事实源
 
-- [AGENTS.md](../../AGENTS.md)：项目级 AI 行为准则、PDTFC+ 工作流、智能体矩阵、安全红线。
+- `AGENTS.md`（仓库根目录）：项目级 AI 行为准则、PDTFC+ 工作流、智能体矩阵、安全红线。
 - [docs/standards/ai-collaboration.md](../standards/ai-collaboration.md)：PDTFC+ 与搜索优先细则。
 - [docs/standards/ai-governance.md](../standards/ai-governance.md)：agents / skills 库存与治理。
 

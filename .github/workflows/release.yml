@@ -24,16 +24,16 @@ jobs:
           persist-credentials: false
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: "latest"
       - name: Setup Node.js environment
         uses: actions/setup-node@v5
         with:
           node-version: "lts/*"
           cache: "pnpm"
-      - run: pnpm i --frozen-lockfile
-      - run: pnpm run lint
-      - run: pnpm run build
+      - run: pnpm install --frozen-lockfile
+      - name: Verify quality gates
+        run: pnpm verify
+      # 发布前需配置 npm 凭据（NPM_TOKEN secret 或 npm Trusted Publisher / OIDC）；配置后再启用：
       # - env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: pnpm run release
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: pnpm release

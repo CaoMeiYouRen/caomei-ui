@@ -1,24 +1,62 @@
 name: Test
+
 on:
   push:
   pull_request:
   workflow_dispatch:
+
+# 仅取消针对当前工作流正在进行的作业或运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  test:
-    name: Test
+  quality:
+    name: Quality
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: "latest"
-      - name: Setup Node.js@lts environment
+      - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: "lts/*"
           cache: "pnpm"
-      - run: pnpm i --frozen-lockfile
-      - run: pnpm run lint
-      - run: pnpm run build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Setup AI mirrors
+        run: pnpm setup:ai
+      - name: Lint (ESLint)
+        run: pnpm lint:check
+      - name: Lint (Stylelint)
+        run: pnpm lint:css:check
+      - name: Lint (Markdown)
+        run: pnpm lint:md:check
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Governance checks
+        run: pnpm governance:check
+
+  test-build:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Test with coverage
+        run: pnpm test:coverage
+      - name: Build library
+        run: pnpm build
+      - name: Build docs
+        run: pnpm docs:build

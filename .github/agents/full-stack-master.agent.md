@@ -20,6 +20,7 @@ description: 负责端到端编排的全局 agent，适用于需要统筹需求�
 ## 核心原子技能
 
 - [Full Stack Master](../skills/full-stack-master/SKILL.md)
+- [Todo Manager](../skills/todo-manager/SKILL.md)
 - [Context Analyzer](../skills/context-analyzer/SKILL.md)
 - [Requirement Analyst](../skills/requirement-analyst/SKILL.md)
 - [Technical Architect](../skills/technical-architect/SKILL.md)
@@ -54,6 +55,11 @@ description: 负责端到端编排的全局 agent，适用于需要统筹需求�
 - 跟踪当前阶段、还缺什么验证、下一步交给谁。
 - 保证质量门、审查与文档同步不被跳过。
 - 改动超任务粒度约束（默认 10 文件或 800 行新增）时，先拆分为多个原子条目再推进。
+
+## Session 感知
+
+- Session 开局/收尾遵守 [todo-manager](../skills/todo-manager/SKILL.md) 协议：读取并更新 `.session/` 三文件。
+- 失败切换规则见 [AI 协作规范 §5](../../docs/standards/ai-collaboration.md)；`.session/` 为 git-ignored 任务态，不作为提交门禁依据。
 
 ## 协作工作流
 

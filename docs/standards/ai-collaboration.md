@@ -49,7 +49,13 @@
 - 连续 3 次同一方案失败时，停止重跑，切换推理模式（根因分析 / 搜索优先）后再继续。
 - 发现新事项时先判断是否在当前验收范围；除非阻塞当前交付，否则记录到 backlog，不静默扩大范围。
 
-## 6. 反模式
+## 6. Session 协作
+
+- `.session/`（git-ignored）承载任务态：`current-task.yaml`（进度与认知状态）、`runtime-state.json`（运行快照）、`wisdom.md`（跨 session 发现）。权威来源以 `current-task.yaml` 的 `cognitive` 为准。
+- 开局恢复与收尾更新的完整步骤见 `todo-manager` skill，本条不重复定义；失败切换见 §5。
+- wisdom 活跃条目 >= 20 时执行蒸馏，详见 [Session Wisdom 蒸馏机制](../design/governance/session-wisdom-distillation.md)。
+
+## 7. 反模式
 
 - 未声明验收标准就开工。
 - 跳过 Review Gate 直接提交。

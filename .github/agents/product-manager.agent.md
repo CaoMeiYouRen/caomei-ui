@@ -12,6 +12,7 @@ description: 负责需求澄清、范围判定、验收标准定义与规划文�
 - [AGENTS.md](../../AGENTS.md)
 - [规划规范](../../docs/standards/planning.md)
 - [路线图](../../docs/plan/roadmap.md) | [待办事项](../../docs/plan/todo.md) | [Backlog](../../docs/plan/backlog.md)
+- Session 任务态：`.session/current-task.yaml`（git-ignored，存在时优先读取以恢复上次规划进度）
 
 ## 核心职责
 
@@ -30,6 +31,7 @@ description: 负责需求澄清、范围判定、验收标准定义与规划文�
 ### 3. 规划维护
 
 - 维护 `roadmap.md` / `todo.md` / `backlog.md` 的状态与条目。
+- Session 开局先读取 `.session/current-task.yaml` 恢复上次规划进度，收尾时更新其 `progress` / `next_steps`。
 - 阶段完成后协调 `@documentation-specialist` 归档到 `todo-archive.md`。
 
 ## 输出

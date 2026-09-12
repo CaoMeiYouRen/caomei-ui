@@ -50,4 +50,5 @@
 
 - 开发前：对齐 `roadmap.md` 与 `todo.md`。
 - 开发后：同步更新 `todo.md` 状态与验收结果，阶段完成后迁入 `todo-archive.md`。
+- 阶段归档时检查 `.session/wisdom.md` 活跃条目：达到阈值（>= 20）则执行蒸馏（`pnpm distill:wisdom --check`，详见 [Session Wisdom 蒸馏机制](../design/governance/session-wisdom-distillation.md)）。
 - 禁止「代码完成但规划未同步」。

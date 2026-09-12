@@ -1,26 +1,90 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiSwitch, useTheme } from '@/index'
-import { Settings } from '@lucide/vue'
+import { Check, Settings } from '@lucide/vue'
 
 const open = ref(false)
 const checked = ref(true)
+const loading = ref(false)
 const { mode, isDark, setMode } = useTheme('light')
+
+watchEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark.value)
+})
+
+async function triggerLoading(): Promise<void> {
+    loading.value = true
+    await new Promise((resolve) => setTimeout(resolve, 1200))
+    loading.value = false
+}
 </script>
 
 <template>
     <main class="playground">
         <h1>caomei-ui playground</h1>
 
-        <section class="playground__row">
-            <CaomeiButton @click="open = true">
-                打开对话框
+        <section class="playground__section">
+            <h2>变体</h2>
+            <div class="playground__row">
+                <CaomeiButton variant="primary">
+                    Primary
+                </CaomeiButton>
+                <CaomeiButton variant="secondary">
+                    Secondary
+                </CaomeiButton>
+                <CaomeiButton variant="ghost">
+                    Ghost
+                </CaomeiButton>
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>尺寸</h2>
+            <div class="playground__row">
+                <CaomeiButton size="sm">
+                    Small
+                </CaomeiButton>
+                <CaomeiButton size="md">
+                    Medium
+                </CaomeiButton>
+                <CaomeiButton size="lg">
+                    Large
+                </CaomeiButton>
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>状态</h2>
+            <div class="playground__row">
+                <CaomeiButton disabled>
+                    Disabled
+                </CaomeiButton>
+                <CaomeiButton :loading="loading" @click="triggerLoading">
+                    {{ loading ? '加载中' : '点击加载' }}
+                </CaomeiButton>
+                <CaomeiButton variant="secondary" @click="setMode(isDark ? 'light' : 'dark')">
+                    <template #icon>
+                        <CaomeiIcon :icon="Settings" />
+                    </template>
+                    {{ mode }}
+                </CaomeiButton>
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>其他</h2>
+            <div class="playground__row">
+                <CaomeiButton variant="secondary" @click="open = true">
+                    <template #icon>
+                        <CaomeiIcon :icon="Check" />
+                    </template>
+                    打开对话框
+                </CaomeiButton>
+                <CaomeiSwitch v-model="checked" />
+            </div>
+            <CaomeiButton block>
+                Block Button
             </CaomeiButton>
-            <CaomeiButton variant="secondary" @click="setMode(isDark ? 'light' : 'dark')">
-                <CaomeiIcon :icon="Settings" />
-                {{ mode }}
-            </CaomeiButton>
-            <CaomeiSwitch v-model="checked" />
         </section>
 
         <CaomeiDialog
@@ -38,11 +102,27 @@ const { mode, isDark, setMode } = useTheme('light')
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-4);
+    min-height: 100vh;
     padding: var(--caomei-space-4);
+    background: var(--caomei-color-bg);
+    color: var(--caomei-color-text);
+}
+
+.playground__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-2);
+}
+
+.playground__section h2 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .playground__row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--caomei-space-3);
 }

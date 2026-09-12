@@ -14,6 +14,12 @@
     --caomei-space-2: 8px;
     --caomei-space-3: 12px;
     --caomei-space-4: 16px;
+    --caomei-control-height-sm: 28px;
+    --caomei-control-height-md: 36px;
+    --caomei-control-height-lg: 44px;
+    --caomei-font-size-sm: 12px;
+    --caomei-font-size-md: 14px;
+    --caomei-font-size-lg: 16px;
 }
 
 .dark {

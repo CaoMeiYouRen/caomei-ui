@@ -12,6 +12,8 @@
 
 > 用户决策：本阶段实现 7 个 Tier 1 组件（Switch 已先行落地并归档）；Nuxt 模块延后（见 [Backlog](./backlog.md)）。
 > 验收沿用 Tier 0 基线；覆盖率 ≥80% 作为目标，现阶段不强制（门禁启用见 [Backlog](./backlog.md)）。
+>
+> 主线 A–D 均已完成，7 个组件齐备；阶段收口归档与下一阶段启动待用户决策。
 
 #### 主线 A：展示与导航组件
 
@@ -46,5 +48,5 @@
 - 非目标：不做密码强度校验（业务层职责）；MultiSelect 不做分组与远程搜索
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证，并通过 Review Gate
 
-- [ ] **Password**：Input 衍生，含可见性切换与 `autocomplete` 语义。
-- [ ] **MultiSelect**：封装 Reka UI `Combobox`，支持多选、`v-model` 数组与已选项标签。
+- [x] **Password**：Input 衍生，含可见性切换与 `autocomplete` 语义；已通过 Review Gate。
+- [x] **MultiSelect**：封装 Reka UI `Combobox`，支持多选、`v-model` 数组与已选项标签；已通过 Review Gate。

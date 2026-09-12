@@ -63,6 +63,8 @@
 
 `--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，保证暗色下白字对比度。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
 
+> 以上 token 片段为节选，完整清单以 `src/styles/theme.css` 为准。
+
 ## 3. 主题切换
 
 - 支持方式：
@@ -100,6 +102,8 @@
 ```
 
 文本类控件（`Input` / `Textarea`）默认不设上限，如需限制宽度，在使用层通过容器或 `max-width` 控制即可。
+
+> 该默认 `max-width` 会改变既有页面中数值输入框与选择器的宽度；如需保持全宽，请将对应 token 覆盖为 `none`。
 
 ## 5. 响应式
 

@@ -24,6 +24,10 @@ export interface CaomeiLocaleMessages {
         last: string
         page: string
     }
+    password: {
+        show: string
+        hide: string
+    }
     progress: {
         loading: string
     }

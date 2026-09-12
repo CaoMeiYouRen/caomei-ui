@@ -26,6 +26,10 @@ const enUS: CaomeiLocaleMessages = {
         last: 'Last page',
         page: 'Page {page}',
     },
+    password: {
+        show: 'Show password',
+        hide: 'Hide password',
+    },
     progress: {
         loading: 'Loading',
     },

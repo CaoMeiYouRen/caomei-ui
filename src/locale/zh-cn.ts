@@ -26,6 +26,10 @@ const zhCN: CaomeiLocaleMessages = {
         last: '末页',
         page: '第 {page} 页',
     },
+    password: {
+        show: '显示密码',
+        hide: '隐藏密码',
+    },
     progress: {
         loading: '加载中',
     },

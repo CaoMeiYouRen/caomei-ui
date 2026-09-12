@@ -150,7 +150,7 @@ function resolvePageLabel(value: number): string {
     transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
-.caomei-paginator__control:hover:not(:disabled):not([data-selected='true']) {
+.caomei-paginator__control:hover:not(:disabled, [data-selected='true']) {
     border-color: var(--caomei-color-primary);
     color: var(--caomei-color-primary);
 }

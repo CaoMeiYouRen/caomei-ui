@@ -13,7 +13,7 @@
 - [x] **Button**：原生 `button` + 变体/尺寸，含 `loading` / `block` / `icon` 插槽与首个单元测试；已通过 Review Gate。
 - [ ] **DataTable + Column**：基于 `@tanstack/vue-table`，含列定义与空态。
 - [x] **Input**：自建单行输入，支持 `v-model`、尺寸、`disabled` / `readonly` / `invalid`、`clearable`、前后缀插槽与 `type=password`。
-- [ ] **Textarea**：多行文本输入（Input 家族）。
+- [x] **Textarea**：多行文本输入（Input 家族）；已通过 Review Gate。
 - [ ] **InputNumber**：数值输入，含 `min` / `max` / `step`（Input 家族）。
 - [ ] **Tag / Badge**：`span` + 变体。
 - [ ] **Select**：基于 Reka UI `Select`。

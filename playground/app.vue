@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiInput, CaomeiSwitch, useTheme } from '@/index'
+import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiInput, CaomeiSwitch, CaomeiTextarea, useTheme } from '@/index'
 import { Check, Settings } from '@lucide/vue'
 
 const open = ref(false)
 const checked = ref(true)
 const loading = ref(false)
 const keyword = ref('')
+const remark = ref('')
 const invalidValue = ref('')
 const { mode, isDark, setMode } = useTheme('light')
 
@@ -94,6 +95,24 @@ async function triggerLoading(): Promise<void> {
                 />
                 <CaomeiInput
                     v-model="invalidValue"
+                    invalid
+                    placeholder="校验失败"
+                />
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>多行输入</h2>
+            <div class="playground__column">
+                <CaomeiTextarea
+                    v-model="remark"
+                    :rows="3"
+                    placeholder="请输入备注"
+                />
+                <CaomeiTextarea
+                    v-model="remark"
+                    :rows="2"
+                    size="sm"
                     invalid
                     placeholder="校验失败"
                 />

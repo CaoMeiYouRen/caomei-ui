@@ -54,6 +54,7 @@ export default defineConfig({
                     items: [
                         { text: 'Button 按钮', link: '/components/button' },
                         { text: 'Input 输入框', link: '/components/input' },
+                        { text: 'Textarea 多行输入', link: '/components/textarea' },
                     ],
                 },
             ],

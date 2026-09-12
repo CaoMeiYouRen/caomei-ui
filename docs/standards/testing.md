@@ -23,6 +23,10 @@
 - composables 必须有独立单元测试。
 - 修复 bug 时，必须补充能复现该 bug 的回归测试。
 
+### 2.1 纯样式修复的回归验证
+
+涉及 CSS 级联 / 特异性的修复（如 `:focus-within` 覆盖状态边框色），jsdom / happy-dom 不计算 scoped CSS，无法在单元测试中复现。此类修复以 `@ui-validator` 浏览器验证作为回归证据，必须记录关键 computed style 的实测值（如 `border-top-color`）；证据须可追溯（落盘到仓库内可提交的位置，或在提交信息中内联实测值），不得仅指向会被清理或被忽略的临时目录。
+
 ## 3. 覆盖率
 
 - 目标覆盖率：**≥ 80%**（Statements / Branches / Functions / Lines）。

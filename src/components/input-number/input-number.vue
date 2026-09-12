@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Minus, Plus } from '@lucide/vue'
-import { computed, ref, watch } from 'vue'
+import {
+    NumberFieldDecrement,
+    NumberFieldIncrement,
+    NumberFieldInput,
+    NumberFieldRoot,
+} from 'reka-ui'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocaleMessages } from '../../locale'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -31,21 +37,23 @@ const model = defineModel<number | null>({ default: null })
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const inputRef = ref<HTMLInputElement | null>(null)
-const isFocused = ref(false)
 
-function formatValue(value: number | null): string {
-    if (value === null || Number.isNaN(value)) {
-        return ''
-    }
-    return String(value)
+/**
+ * 只在包装层关闭分组并放宽最大小数位（20）；precision 的取整仍由本组件的 `normalize`
+ * 负责，以保留「先按 precision 取整、再钳制到 min/max」的既有语义，避免 Reka 先钳制
+ * 再格式化时越过 max（如 max=1.005、precision=2）。
+ */
+const formatOptions: Intl.NumberFormatOptions = {
+    maximumFractionDigits: 20,
+    useGrouping: false,
 }
 
-const text = ref(formatValue(model.value))
-
-watch(model, (value) => {
-    if (!isFocused.value) {
-        text.value = formatValue(value)
+const inputAttrs = computed<Record<string, unknown>>(() => {
+    const merged = { ...controlAttrs.value }
+    if (props.autocomplete) {
+        merged.autocomplete = props.autocomplete
     }
+    return merged
 })
 
 const rootClass = computed(() => [
@@ -57,24 +65,23 @@ const rootClass = computed(() => [
     },
 ])
 
-const resolvedStep = computed(() => (props.step > 0 ? props.step : 1))
-
-const canDecrease = computed(
-    () =>
-        !props.disabled
-        && !props.readonly
-        && !(props.min !== undefined && model.value !== null && model.value <= props.min),
+const resolvedStep = computed(() =>
+    typeof props.step === 'number' && props.step > 0 ? props.step : 1,
 )
 
-const canIncrease = computed(
-    () =>
-        !props.disabled
-        && !props.readonly
-        && !(props.max !== undefined && model.value !== null && model.value >= props.max),
-)
-
-function clamp(value: number): number {
+/** 先按 precision 取整，再钳制到 min/max，保证结果既不越界也符合精度 */
+function normalize(value: number): number {
     let next = value
+    const { precision } = props
+    if (
+        precision !== undefined
+        && Number.isInteger(precision)
+        && precision >= 0
+        && precision <= 100
+    ) {
+        const factor = 10 ** precision
+        next = Math.round(next * factor) / factor
+    }
     if (props.min !== undefined) {
         next = Math.max(props.min, next)
     }
@@ -84,55 +91,61 @@ function clamp(value: number): number {
     return next
 }
 
-function round(value: number): number {
-    const { precision } = props
-    if (precision === undefined || !Number.isInteger(precision) || precision < 0) {
-        return value
-    }
-    const factor = 10 ** precision
-    return Math.round(value * factor) / factor
-}
-
-function normalize(value: number): number {
-    return clamp(round(value))
-}
-
-function onInput(event: Event): void {
-    const raw = (event.target as HTMLInputElement).value
-    text.value = raw
-    if (raw === '') {
+function onModelUpdate(value: number | null | undefined): void {
+    if (value === undefined || value === null || Number.isNaN(value)) {
         model.value = null
         return
     }
-    const parsed = Number(raw)
-    if (!Number.isNaN(parsed)) {
-        model.value = parsed
-    }
+    model.value = normalize(value)
 }
 
+let stepActive = false
+
+function markStepStart(): void {
+    if (props.disabled || props.readonly) {
+        return
+    }
+    stepActive = true
+}
+
+function flushStepChange(): void {
+    if (!stepActive) {
+        return
+    }
+    stepActive = false
+    emit('change', model.value)
+}
+
+function onWindowPointerEnd(): void {
+    flushStepChange()
+}
+
+onMounted(() => {
+    window.addEventListener('pointerup', onWindowPointerEnd)
+    window.addEventListener('pointercancel', onWindowPointerEnd)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('pointerup', onWindowPointerEnd)
+    window.removeEventListener('pointercancel', onWindowPointerEnd)
+})
+
 function onFocus(event: FocusEvent): void {
-    isFocused.value = true
     emit('focus', event)
 }
 
 function onBlur(event: FocusEvent): void {
-    isFocused.value = false
-    const value = model.value === null ? null : normalize(model.value)
-    model.value = value
-    text.value = formatValue(value)
     emit('blur', event)
-    emit('change', value)
+    emit('change', model.value)
 }
 
-function stepBy(direction: 1 | -1): void {
-    if (props.disabled || props.readonly) {
-        return
-    }
-    const base = model.value ?? 0
-    const value = normalize(base + direction * resolvedStep.value)
-    model.value = value
-    text.value = formatValue(value)
-    emit('change', value)
+function onEnter(): void {
+    emit('change', model.value)
+}
+
+function setInputRef(el: unknown): void {
+    const element = (el as { $el?: unknown } | null)?.$el ?? el
+    inputRef.value = (element as HTMLInputElement | null) ?? null
 }
 
 function focus(): void {
@@ -147,56 +160,54 @@ defineExpose({ focus, blur, inputRef })
 </script>
 
 <template>
-    <div
+    <NumberFieldRoot
         v-bind="rootAttrs"
+        :id="id"
+        :model-value="model"
+        :min="min"
+        :max="max"
+        :step="resolvedStep"
+        :step-snapping="false"
+        :format-options="formatOptions"
+        :disabled="disabled"
+        :readonly="readonly"
+        :name="name"
         class="caomei-input-number"
         :class="rootClass"
+        @update:model-value="onModelUpdate"
     >
-        <button
+        <NumberFieldDecrement
             v-if="controls"
-            type="button"
             class="caomei-input-number__button"
-            :disabled="!canDecrease"
             :aria-label="decreaseLabel"
-            @mousedown.prevent
-            @click="stepBy(-1)"
+            @pointerdown="markStepStart"
+            @pointerup="flushStepChange"
+            @pointercancel="flushStepChange"
         >
             <CaomeiIcon :icon="Minus" />
-        </button>
-        <input
-            :id="id"
-            ref="inputRef"
-            v-bind="controlAttrs"
+        </NumberFieldDecrement>
+        <NumberFieldInput
+            :ref="setInputRef"
+            v-bind="inputAttrs"
             class="caomei-input-number__control"
-            :value="text"
-            type="number"
-            inputmode="decimal"
-            :min="min"
-            :max="max"
-            :step="resolvedStep"
-            :disabled="disabled"
-            :readonly="readonly"
             :placeholder="placeholder"
-            :name="name"
-            :autocomplete="autocomplete"
             :aria-invalid="invalid || undefined"
             :aria-label="label"
-            @input="onInput"
             @focus="onFocus"
             @blur="onBlur"
-        >
-        <button
+            @keydown.enter="onEnter"
+        />
+        <NumberFieldIncrement
             v-if="controls"
-            type="button"
             class="caomei-input-number__button"
-            :disabled="!canIncrease"
             :aria-label="increaseLabel"
-            @mousedown.prevent
-            @click="stepBy(1)"
+            @pointerdown="markStepStart"
+            @pointerup="flushStepChange"
+            @pointercancel="flushStepChange"
         >
             <CaomeiIcon :icon="Plus" />
-        </button>
-    </div>
+        </NumberFieldIncrement>
+    </NumberFieldRoot>
 </template>
 
 <style scoped>
@@ -278,13 +289,6 @@ defineExpose({ focus, blur, inputRef })
     color: inherit;
     font: inherit;
     text-align: center;
-    appearance: textfield;
-}
-
-.caomei-input-number__control::-webkit-outer-spin-button,
-.caomei-input-number__control::-webkit-inner-spin-button {
-    margin: 0;
-    appearance: none;
 }
 
 .caomei-input-number__control:disabled {

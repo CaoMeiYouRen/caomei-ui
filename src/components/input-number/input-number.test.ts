@@ -1,15 +1,30 @@
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
+import type { InputNumberProps } from './types'
 import { CaomeiInputNumber } from './index'
 
+async function mountReady(
+    props: InputNumberProps & { modelValue?: number | null },
+): Promise<ReturnType<typeof mount>> {
+    const wrapper = mount(CaomeiInputNumber, { props })
+    await flushPromises()
+    return wrapper
+}
+
+async function press(button: DOMWrapper<Element>): Promise<void> {
+    await button.trigger('pointerdown')
+    await button.trigger('pointerup')
+}
+
 describe('CaomeiInputNumber', () => {
-    it('渲染原生 number input、默认尺寸与增减按钮', () => {
+    it('渲染 spinbutton、默认尺寸与增减按钮', () => {
         const wrapper = mount(CaomeiInputNumber, {
             props: { placeholder: '请输入' },
         })
 
         const input = wrapper.get('input')
-        expect(input.attributes('type')).toBe('number')
+        expect(input.attributes('type')).toBe('text')
+        expect(input.attributes('role')).toBe('spinbutton')
         expect(input.attributes('placeholder')).toBe('请输入')
         expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-input-number--md')
 
@@ -29,61 +44,59 @@ describe('CaomeiInputNumber', () => {
         expect(wrapper.get('.caomei-input-number').classes()).toContain(`caomei-input-number--${size}`)
     })
 
-    it('输入数字时抛出 update:modelValue 事件', async () => {
+    it('输入后失焦提交数值', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: null } })
         await wrapper.get('input').setValue('5')
+        await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([5])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([5])
     })
 
-    it('清空输入时抛出 null', async () => {
+    it('清空后失焦提交 null', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 5 } })
         await wrapper.get('input').setValue('')
+        await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([null])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([null])
     })
 
     it('失焦时按 max 钳制并抛出 change', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 15, max: 10 } })
         await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([10])
-        expect(wrapper.emitted('change')?.[0]).toEqual([10])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([10])
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([10])
     })
 
     it('失焦时按 min 钳制', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: -5, min: 0 } })
         await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
     })
 
     it('失焦时按 precision 取整', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1.234, precision: 2 } })
         await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1.23])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.23])
     })
 
     it('点击增加按钮按 step 步进并应用 precision', async () => {
-        const wrapper = mount(CaomeiInputNumber, {
-            props: { modelValue: 1, step: 0.1, precision: 1 },
-        })
+        const wrapper = await mountReady({ modelValue: 1, step: 0.1, precision: 1 })
 
-        await wrapper.findAll('.caomei-input-number__button')[1].trigger('click')
+        await press(wrapper.findAll('.caomei-input-number__button')[1])
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1.1])
-        expect(wrapper.emitted('change')?.[0]).toEqual([1.1])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.1])
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([1.1])
     })
 
     it('点击减少按钮按 step 步进并钳制', async () => {
-        const wrapper = mount(CaomeiInputNumber, {
-            props: { modelValue: 0.2, step: 0.5, min: 0 },
-        })
+        const wrapper = await mountReady({ modelValue: 0.2, step: 0.5, min: 0 })
 
-        await wrapper.findAll('.caomei-input-number__button')[0].trigger('click')
+        await press(wrapper.findAll('.caomei-input-number__button')[0])
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
     })
 
     it('到达 min 时禁用减少按钮', () => {
@@ -152,26 +165,70 @@ describe('CaomeiInputNumber', () => {
     })
 
     it('step 非正时回退为 1', async () => {
-        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1, step: 0 } })
-        await wrapper.findAll('.caomei-input-number__button')[1].trigger('click')
+        const wrapper = await mountReady({ modelValue: 1, step: 0 })
 
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
+        await press(wrapper.findAll('.caomei-input-number__button')[1])
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
     })
 
     it('precision 为负时忽略取整', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1.234, precision: -1 } })
         await wrapper.get('input').trigger('blur')
 
-        expect(wrapper.emitted('change')?.[0]).toEqual([1.234])
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([1.234])
     })
 
     it('取整后不越过 max', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 100, max: 1.005, precision: 2 } })
         await wrapper.get('input').trigger('blur')
 
-        const [value] = wrapper.emitted('change')?.[0] as [number]
+        const [value] = wrapper.emitted('change')?.at(-1) as [number]
         expect(value).toBeLessThanOrEqual(1.005)
-        expect(value).toBe(1.005)
+        expect(value).toBe(1)
+    })
+
+    it('步进按 step 累加且不被吸附到 step 整数倍', async () => {
+        const wrapper = await mountReady({ modelValue: 0.5, step: 1 })
+
+        await press(wrapper.findAll('.caomei-input-number__button')[1])
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.5])
+    })
+
+    it('按 Enter 提交并触发 change', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: null } })
+        await wrapper.get('input').setValue('7')
+        await wrapper.get('input').trigger('keydown', { key: 'Enter' })
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([7])
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([7])
+    })
+
+    it('外部 v-model 变更即时回填输入框', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1 } })
+        await wrapper.setProps({ modelValue: 2 })
+
+        expect((wrapper.get('input').element as HTMLInputElement).value).toBe('2')
+    })
+
+    it('在按钮外松开指针仍触发 change', async () => {
+        const wrapper = await mountReady({ modelValue: 1 })
+        const button = wrapper.findAll('.caomei-input-number__button')[1]
+
+        await button.trigger('pointerdown')
+        window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
+        await flushPromises()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
+    })
+
+    it('precision 超出范围时不取整且不报错', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1.234, precision: 101 } })
+        await wrapper.get('input').trigger('blur')
+
+        expect(wrapper.emitted('change')?.at(-1)).toEqual([1.234])
     })
 
     it('暴露 focus / blur 方法', () => {

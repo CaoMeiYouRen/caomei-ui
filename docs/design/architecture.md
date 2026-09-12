@@ -10,17 +10,19 @@
 
 ## 2. 技术选型
 
-| 层 | 选型 | 版本（核实于 2026-09-11） |
+| 层 | 选型 | 版本（核实于 2026-09-11，图标行复核于 2026-09-12） |
 |----|------|---------------------------|
 | 语言 | TypeScript（严格） | — |
 | 框架 | Vue 3 | 3.5.42 |
 | primitives | Reka UI | 2.10.4（peer `vue >= 3.4.0`） |
 | 构建 | tsdown | 0.23.0 |
 | 表格 | @tanstack/vue-table | 9.2.4 |
-| 图标 | lucide-vue-next / @iconify/vue | 1.0.0 / 5.0.1 |
+| 图标 | @lucide/vue | 1.45.0 |
 | 测试 | Vitest / Playwright | 5.0.0 / 1.63.0 |
 | 文档 | VitePress | 1.6.4 |
 | 发布 | semantic-release | 25.0.9 |
+
+> `@iconify/vue` 作为字符串图标名的可选扩展，暂不接入（见 [Backlog](../plan/backlog.md)）。
 
 ### 2.1 明确不选
 
@@ -75,10 +77,34 @@
 
 补充结论：
 
-- `pnpm build` 已切换为 tsdown 库构建；旧 Vite 应用构建保留为 `pnpm build:app`，输出到独立 `dist-app/`，与发布目录 `dist/` 隔离。
+- Vite 仅用于 `playground/` 本地开发/演示（`pnpm dev`）与文档站构建，不产出应用发布物。
 - 包体为单 ESM bundle + 命名导出，配合 `sideEffects` 支持 tree-shaking；按组件独立 chunk 暂缓。
 - 样式始终由消费方显式导入（`import 'caomei-ui/styles.css'`）或经 resolver 注入，未启用 `css.inject`。
 - Reka UI 依赖链中的 `vue-demi` 在 `pnpm-workspace.yaml` 的 `allowBuilds` 中显式设为 `false`（Vue 3 下其 postinstall 为空操作，无需执行）。
+
+### 4.2 构建工具选型（Vite vs tsdown）
+
+Vite 与 tsdown 均可构建组件库。本项目采用「**Vite 负责开发 / 演示，tsdown 负责库产物**」的分工。
+
+| 维度 | Vite Library Mode | tsdown |
+|------|-------------------|--------|
+| 定位 | 通用构建工具的库模式（simple & opinionated） | 专用库打包器 |
+| 内核 | Rolldown（Vite 8 起） | Rolldown + Oxc |
+| 类型声明 | 需额外插件（`vite-plugin-dts`） | 内置 `dts`（Vue 配 `vue-tsc`） |
+| 多入口 / 子路径 | 支持，多需手工配置 | 内置，可自动生成 `exports` |
+| 依赖 external | 手工 `rollupOptions.external` | 自动 external `dependencies` / `peerDependencies` |
+| 发布校验 | 无内置 | 内置 `publint` / `attw` |
+| 插件生态 | Vite / Rollup 完整 | Rolldown / Rollup / unplugin，部分 Vite 插件 |
+| 开发体验 | dev server + HMR（强项） | 仅 watch 模式 |
+
+选型理由：
+
+- 组件库需要 `dts`、多入口子路径、external 与发布校验，tsdown 开箱即用、配置集中。
+- Vite 官方文档明确：非浏览器库或需要高级构建流程时，可直接使用 tsdown 或 Rolldown。
+- tsdown 是 Rolldown 官方项目（VoidZero 生态），官方定位为 Rolldown Vite 未来 Library Mode 的基础，长期方向一致。
+- Vite 保留承担 dev server / 演示与文档站构建，二者互补而非替代。
+
+参考：Vite `guide/build` §Library Mode；tsdown Introduction / How It Works / Vue Support；[rolldown/tsdown 讨论 #465](https://github.com/rolldown/tsdown/discussions/465)。
 
 ## 5. Nuxt 模块
 

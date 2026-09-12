@@ -14,7 +14,7 @@
 - [x] **P0-2 tsdown POC**：已验证（tsdown 0.23.0 + unplugin-vue 7.2.0 + @tsdown/css 0.23.0），结论见 [架构设计 §4.1](../design/architecture.md)；产物为 `.js` / `.d.ts`，`pnpm build` 已切换为库构建。
 - [ ] **P0-3 设计 token 草案**：产出 `--caomei-*` CSS variables 与暗色模式方案。
 - [ ] **P0-4 仓库与基建就绪**：AI 基建（agents / skills / 镜像）与文档基建（standards / plan / design / 文档站）落地。
-- [ ] **P0-5 组件目录骨架**：建立 `src/components/`、`src/composables/`、`src/styles/` 等目录与构建配置。
+- [x] **P0-5 组件目录骨架**：已建立 `src/components/`、`composables/`、`styles/`、`locale/`、`icons/`、`resolver/`、`nuxt/`、`types.ts`、`index.ts`，并将开发环境收敛为 `playground/`，移除旧 Vite 应用脚手架。
 
 ## 说明
 

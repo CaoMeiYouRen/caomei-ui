@@ -95,9 +95,8 @@ export default defineNuxtConfig({
 
 ```sh
 pnpm install        # 安装依赖
-pnpm dev            # 启动开发/演示环境
+pnpm dev            # 启动 playground 开发环境
 pnpm build          # 构建库产物（tsdown）
-pnpm build:app      # 构建演示应用（临时）
 pnpm typecheck      # vue-tsc --noEmit
 pnpm test           # 单元测试（Vitest）
 pnpm test:e2e       # E2E（Playwright）
@@ -118,12 +117,12 @@ pnpm verify         # 运行全部质量门
 | 样式 | CSS variables + 原生 CSS/SCSS（不引入 Tailwind / UnoCSS） |
 | 构建 | tsdown |
 | 表格 | @tanstack/vue-table |
-| 图标 | lucide-vue-next / @iconify/vue |
+| 图标 | @lucide/vue |
 | 测试 | Vitest + Playwright |
 | 文档 | VitePress |
 | 发布 | semantic-release |
 
-> 上表为目标技术栈。Reka UI、tsdown、`@tanstack/vue-table`、`lucide-vue-next` 等依赖将在 Phase 0 POC 后引入；当前仓库仍是 Vite + Vue 脚手架。
+> Reka UI、tsdown、`@lucide/vue` 等已在 Phase 0 接入；`@iconify/vue` 作为字符串图标名的可选扩展后续按需引入。
 
 ## 📁 目录结构（目标形态）
 
@@ -133,10 +132,12 @@ src/
 ├─ composables/   # useToast / useConfirm / useDialog / useTheme
 ├─ locale/        # 组件内建文案（zh-CN / en-US）
 ├─ styles/        # tokens 与基础样式
-├─ icons/         # 图标封装
+├─ icons/         # 图标封装（@lucide/vue）
 ├─ resolver/      # unplugin-vue-components resolver
 ├─ nuxt/          # Nuxt 模块
+├─ types.ts       # 共享类型
 └─ index.ts       # 公共 API 导出
+playground/       # 本地开发/演示环境（不发布）
 docs/             # VitePress 文档站
 examples/         # 集成示例（不发布）
 test/             # 单元与 E2E 测试

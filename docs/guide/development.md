@@ -15,9 +15,8 @@ pnpm install
 
 | 命令 | 说明 |
 |------|------|
-| `pnpm dev` | 启动 Vite 开发/演示环境 |
+| `pnpm dev` | 启动 playground 开发/演示环境 |
 | `pnpm build` | 构建库产物（tsdown） |
-| `pnpm build:app` | 构建演示应用（临时，待脚手架移除） |
 | `pnpm build:watch` | tsdown watch 模式 |
 | `pnpm lint` | ESLint 检查与修复 |
 | `pnpm lint:css` | Stylelint 检查与修复 |
@@ -40,7 +39,9 @@ src/
 ├─ icons/         # 图标封装
 ├─ resolver/      # unplugin resolver
 ├─ nuxt/          # Nuxt 模块
+├─ types.ts       # 共享类型
 └─ index.ts       # 公共 API 导出
+playground/       # 本地开发/演示环境（不发布）
 docs/             # VitePress 文档站
 examples/         # 集成示例
 test/             # 测试

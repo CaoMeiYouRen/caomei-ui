@@ -19,6 +19,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 国际文字内置文案补全 | 组件内建文案完整覆盖 zh-CN / en-US | 中 |
+| @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |

@@ -26,7 +26,7 @@
 - **测试**: Vitest（单元）+ Playwright（E2E）
 - **文档站**: VitePress
 - **发布**: semantic-release
-- **图标**: lucide-vue-next 默认 + @iconify/vue 可选
+- **图标**: @lucide/vue（`@iconify/vue` 后续可选接入）
 - **组件前缀**: `Caomei`（如 `<CaomeiButton>`）
 
 ### 3.1 常用命令

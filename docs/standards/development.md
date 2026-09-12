@@ -12,7 +12,7 @@
 | 样式 | CSS variables + 原生 CSS/SCSS | **禁止 Tailwind / UnoCSS** |
 | 构建 | tsdown | 库产物（ESM + 类型声明 + CSS） |
 | 表格 | @tanstack/vue-table | headless |
-| 图标 | lucide-vue-next / @iconify/vue | 不造图标 |
+| 图标 | @lucide/vue | 不造图标 |
 | 测试 | Vitest + Playwright | 见 [测试规范](./testing.md) |
 | 发布 | semantic-release | 见 [发布指南](../guide/release.md) |
 
@@ -29,6 +29,7 @@ src/
 ├─ nuxt/                  # Nuxt 模块（子路径导出）
 ├─ types.ts
 └─ index.ts
+playground/               # 本地开发/演示环境（不发布）
 docs/                     # VitePress 文档站
 examples/                 # 集成示例（不发布）
 test/                     # 单元与 E2E 测试

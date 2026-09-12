@@ -19,7 +19,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 国际文字内置文案补全 | 组件内建文案已提供 zh-CN / en-US，但组件固定消费默认 zh-CN，缺语言选择 / 注入机制 | 中 |
-| 组件覆盖率门禁 | 待 Tier 0 组件基本实现后，在 `vitest` 配置中启用 `coverage.thresholds` ≥ 80% | 中 |
+| 组件覆盖率门禁 | 待启用 `coverage.thresholds` 门禁；阈值与启用时机待定 | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |
 | docs 纳入 typecheck | `docs/.vitepress/**` 尚未纳入 `vue-tsc`，需补 docs 专用 tsconfig 与 `docs:gen` 前置 | 中 |
@@ -29,6 +29,7 @@
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式，并对浮层断言页面稳定性（遮罩完整、`in-flow` 不位移；fixed 元素按滚动条宽容差） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
+| Nuxt 模块真实集成 | 用户决策延后（Phase 2 范围外）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | 中 |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 流程编号标记项重述 planning §4；`code-quality-checklist.md` 对 `documentation.md §4` / `security.md §8` 为失效引用 | 低 |
 
 ### 下游协同候选

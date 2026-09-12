@@ -64,6 +64,7 @@ test/                     # 单元与 E2E 测试
 - 插槽（slots）用于内容定制，props 用于行为控制，CSS variables 用于视觉定制。
 - 不在渲染函数中做重计算；大列表/表格使用虚拟滚动（`@tanstack/vue-virtual`）。
 - 包装型表单组件（根为 wrapper）使用 `inheritAttrs: false` + `useAttrs()`：`class` / `style` 留在根元素，其余原生属性透传到内层表单控件（统一复用 `_shared/use-attr-forwarding`），避免 `maxlength` / `required` / `aria-describedby` 落在 wrapper 上导致语义失效。
+- 派生组件（根为另一组件）同样使用 `inheritAttrs: false` + `useAttrs()`，并显式剔除由内部状态管理的保留属性（如 Password 的 `type`），避免外部透传覆盖内部语义。
 - 布尔假值不输出到 ARIA：对非 special-boolean 属性使用 `value || undefined`，避免 `:aria-required="false"` 被渲染为 `aria-required="false"`。
 - 受控数值输入：聚焦期间不因外部 model 变化回填文本，失焦与步进统一 `clamp(round(value))` 规范化；`step` 非正回退为 1，`precision` 仅非负整数生效。
 - 封装 Reka NumberField：显式 `:step-snapping="false"` 以保留「加 step」语义；`precision` 不映射 `formatOptions.maximumFractionDigits`（会先钳制再取整而越界），取整放在包装层；`autocomplete` 需条件绑定（primitive 内建 `off`，显式 `undefined` 会覆盖）。

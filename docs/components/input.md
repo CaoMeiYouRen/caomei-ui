@@ -40,7 +40,7 @@
 
 ## 前后缀与密码
 
-通过 `prefix` / `suffix` 插槽在输入框两侧放置图标或文本；`type="password"` 即为密码框。
+通过 `prefix` / `suffix` 插槽在输入框两侧放置图标或文本；`type="password"` 即为密码框，带可见性切换的增强封装见 [Password](./password.md)。
 
 <demo
     vue="../examples/input/slots.vue"

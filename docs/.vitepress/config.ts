@@ -172,6 +172,7 @@ export default defineConfig({
                         { text: 'Input 输入框', link: '/components/input' },
                         { text: 'Textarea 多行输入', link: '/components/textarea' },
                         { text: 'InputNumber 数字输入框', link: '/components/input-number' },
+                        { text: 'Password 密码输入框', link: '/components/password' },
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },

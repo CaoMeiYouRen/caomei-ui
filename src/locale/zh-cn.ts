@@ -7,6 +7,10 @@ const zhCN: CaomeiLocaleMessages = {
     input: {
         clear: '清除',
     },
+    inputNumber: {
+        increase: '增加',
+        decrease: '减少',
+    },
 }
 
 export default zhCN

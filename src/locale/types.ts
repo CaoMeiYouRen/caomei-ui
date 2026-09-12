@@ -5,4 +5,8 @@ export interface CaomeiLocaleMessages {
     input: {
         clear: string
     }
+    inputNumber: {
+        increase: string
+        decrease: string
+    }
 }

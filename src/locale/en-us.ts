@@ -7,6 +7,10 @@ const enUS: CaomeiLocaleMessages = {
     input: {
         clear: 'Clear',
     },
+    inputNumber: {
+        increase: 'Increase',
+        decrease: 'Decrease',
+    },
 }
 
 export default enUS

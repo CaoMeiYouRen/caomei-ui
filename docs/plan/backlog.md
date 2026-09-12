@@ -21,6 +21,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 国际文字内置文案补全 | 组件内建文案完整覆盖 zh-CN / en-US | 中 |
+| 组件 `label` 语义统一 | 现有 8 个组件的 `label` 表示不可见可访问名（映射 `aria-label`），而 Checkbox 的 `label` 为可见标签文本，跨组件语义分叉；需在开发规范 §6 明确唯一定义并整体对齐（pre-1.0 可承受破坏性调整） | 中 |
 | 组件覆盖率门禁 | 待 Tier 0 组件基本实现后，在 `vitest` 配置中启用 `coverage.thresholds` ≥ 80% | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |

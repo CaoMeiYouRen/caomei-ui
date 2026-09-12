@@ -20,7 +20,7 @@
 - [x] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR；已通过 Review Gate。
 - [x] **Toast**：基于 Reka UI `Toast` + `useToast` 服务封装；已通过 Review Gate。
 - [x] **Card**：布局容器 + 变体；已通过 Review Gate。
-- [ ] **Checkbox**：基于 Reka UI `Checkbox`。
+- [x] **Checkbox**：基于 Reka UI `Checkbox`；已通过 Review Gate。
 
 - [ ] **文档站样板（Button）**（用户授权提前实施）：沉淀文档站设计并验证 demo 渲染 + API 自动生成链路。
 

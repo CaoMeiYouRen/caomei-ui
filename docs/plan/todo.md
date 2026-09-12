@@ -22,7 +22,7 @@
 - [x] **Card**：布局容器 + 变体；已通过 Review Gate。
 - [x] **Checkbox**：基于 Reka UI `Checkbox`；已通过 Review Gate。
 
-- [ ] **文档站样板（Button）**（用户授权提前实施）：沉淀文档站设计并验证 demo 渲染 + API 自动生成链路。
+- [x] **文档站样板（Button）**（用户授权提前实施）：已沉淀 [文档与演示站](../design/documentation-site.md)，并验证 demo 渲染 + API 自动生成链路（Button 样板页 + 全组件复用）。
 
 ### 后续阶段预登记（用户授权）
 

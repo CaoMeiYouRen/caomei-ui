@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiInput, CaomeiSwitch, CaomeiTextarea, useTheme } from '@/index'
+import {
+    CaomeiButton,
+    CaomeiDialog,
+    CaomeiIcon,
+    CaomeiInput,
+    CaomeiInputNumber,
+    CaomeiSwitch,
+    CaomeiTextarea,
+    useTheme,
+} from '@/index'
 import { Check, Settings } from '@lucide/vue'
 
 const open = ref(false)
@@ -8,6 +17,7 @@ const checked = ref(true)
 const loading = ref(false)
 const keyword = ref('')
 const remark = ref('')
+const quantity = ref<number | null>(2)
 const invalidValue = ref('')
 const { mode, isDark, setMode } = useTheme('light')
 
@@ -115,6 +125,24 @@ async function triggerLoading(): Promise<void> {
                     size="sm"
                     invalid
                     placeholder="校验失败"
+                />
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>数字输入</h2>
+            <div class="playground__column">
+                <CaomeiInputNumber
+                    v-model="quantity"
+                    :min="0"
+                    :max="10"
+                />
+                <CaomeiInputNumber
+                    v-model="quantity"
+                    size="sm"
+                    :step="0.1"
+                    :precision="1"
+                    invalid
                 />
             </div>
         </section>

@@ -1,14 +1,128 @@
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin/markdown'
+import { normalizePath, type Plugin, type ViteDevServer } from 'vite'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcDir = path.resolve(dirname, '../../src')
+const componentsDir = path.resolve(srcDir, 'components')
 
 // GitHub Pages 项目站点部署在 /<repo>/ 子路径下，需要设置 base；
 // 本地开发与自定义域名部署保持默认 '/'。由 VITEPRESS_BASE 环境变量控制。
 const base = process.env.VITEPRESS_BASE ?? '/'
+
+const COMPONENT_FILE_RE = /\.(vue|ts)$/
+const META_DEBOUNCE_MS = 200
+const META_MAX_RETRY = 3
+
+/**
+ * 开发期热更新组件 API 元数据。
+ *
+ * 监听 `src/components` 变更，复用 checker 通过 `updateFile` 增量刷新
+ * `component-meta.json`；仅在元数据实际变化时失效组件模块并整页刷新，
+ * 其余变更（模板 / 样式）交由 Vite HMR 处理。
+ */
+async function setupComponentMetaWatch(server: ViteDevServer): Promise<void> {
+    const {
+        collectComponentEntries,
+        createComponentMetaCollector,
+        getComponentMetaFile,
+        projectRoot,
+        writeComponentMetaFile,
+    } = await import('../../scripts/docs/gen-component-meta.mjs')
+
+    const collector = createComponentMetaCollector()
+    // VitePress 的 Vite root 为 docs/，组件目录在仓库内，需显式纳入监听
+    server.watcher.add(componentsDir)
+
+    const pending = new Set<string>()
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let attempts = 0
+
+    const flush = () => {
+        timer = undefined
+        if (pending.size === 0) {
+            return
+        }
+        const files = [...pending]
+
+        try {
+            for (const file of files) {
+                if (existsSync(file)) {
+                    collector.updateFile(file, readFileSync(file, 'utf8'))
+                } else {
+                    collector.reset()
+                }
+            }
+
+            const metaFile = getComponentMetaFile(projectRoot)
+            const before = existsSync(metaFile) ? readFileSync(metaFile, 'utf8') : ''
+            const meta = collector.collect()
+            const after = `${JSON.stringify(meta, null, 2)}\n`
+
+            pending.clear()
+            attempts = 0
+
+            if (before === after) {
+                return
+            }
+
+            writeComponentMetaFile(meta, projectRoot)
+
+            const targets = [metaFile, ...collectComponentEntries().map((entry) => entry.file)]
+            for (const target of targets) {
+                // moduleGraph 以 POSIX 路径为 key，Windows 下需归一化
+                for (const mod of server.moduleGraph.getModulesByFile(normalizePath(target)) ?? []) {
+                    if (mod) {
+                        server.moduleGraph.invalidateModule(mod)
+                    }
+                }
+            }
+            server.ws.send({ type: 'full-reload' })
+        } catch (error) {
+            server.config.logger.error(`[component-meta-watch] ${String(error)}`)
+            for (const file of files) {
+                pending.add(file)
+            }
+            attempts += 1
+            if (attempts <= META_MAX_RETRY) {
+                timer = setTimeout(flush, 1000)
+            } else {
+                attempts = 0
+                pending.clear()
+                server.config.logger.error('[component-meta-watch] 重试超限，跳过本批变更')
+            }
+        }
+    }
+
+    const schedule = (file: string) => {
+        const relative = path.relative(componentsDir, file)
+        if (relative.startsWith('..') || path.isAbsolute(relative) || !COMPONENT_FILE_RE.test(file)) {
+            return
+        }
+        pending.add(file)
+        clearTimeout(timer)
+        timer = setTimeout(flush, META_DEBOUNCE_MS)
+    }
+
+    server.watcher.on('change', schedule)
+    server.watcher.on('add', schedule)
+    server.watcher.on('unlink', schedule)
+}
+
+function componentMetaWatch(): Plugin {
+    return {
+        name: 'caomei-ui:component-meta-watch',
+        apply: 'serve',
+        configureServer(server) {
+            setupComponentMetaWatch(server).catch((error) => {
+                server.config.logger.error(`[component-meta-watch] 初始化失败：${String(error)}`)
+            })
+        },
+    }
+}
 
 export default defineConfig({
     title: 'caomei-ui',
@@ -22,6 +136,7 @@ export default defineConfig({
         },
     },
     vite: {
+        plugins: [componentMetaWatch()],
         resolve: {
             alias: {
                 '@': srcDir,

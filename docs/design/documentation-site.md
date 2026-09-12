@@ -65,7 +65,8 @@ docs/
 - 抽取字段：`props`（含 `type` / `default` / `required` / `description`）、`events`、`slots`、`exposed`。
 - 过滤 Vue 内置全局 props（`global: true`）。
 - 描述来源为类型定义中的 **JSDoc 注释**，因此组件 `types.ts` 的注释即文档。
-- 变更组件类型后必须运行 `pnpm docs:gen` 刷新生成物；`docs:dev` / `docs:build` 已前置该步骤（直接运行 `vitepress dev docs` 需先手动执行 `pnpm docs:gen`）。
+- `docs:build` 前会执行 `pnpm docs:gen` 刷新生成物；直接运行 `vitepress build docs` 需先手动执行该命令。
+- 开发期热更新：`pnpm docs:dev` 由 Vite 插件监听 `src/components/**`，复用 checker 增量刷新生成物；仅在元数据变化时失效组件模块并整页刷新，其余变更交由 Vite HMR。首次刷新需构建 TS program（约数秒），之后约数百毫秒。
 
 ## 7. 与 playground 的关系
 

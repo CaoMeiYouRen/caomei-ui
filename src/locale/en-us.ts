@@ -11,6 +11,14 @@ const enUS: CaomeiLocaleMessages = {
         increase: 'Increase',
         decrease: 'Decrease',
     },
+    pagination: {
+        label: 'Pagination',
+        first: 'First page',
+        previous: 'Previous page',
+        next: 'Next page',
+        last: 'Last page',
+        page: 'Page {page}',
+    },
     tag: {
         close: 'Remove',
     },

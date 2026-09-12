@@ -9,6 +9,14 @@ export interface CaomeiLocaleMessages {
         increase: string
         decrease: string
     }
+    pagination: {
+        label: string
+        first: string
+        previous: string
+        next: string
+        last: string
+        page: string
+    }
     tag: {
         close: string
     }

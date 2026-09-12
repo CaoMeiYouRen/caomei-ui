@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 import {
+    CaomeiBadge,
     CaomeiButton,
     CaomeiDialog,
     CaomeiIcon,
@@ -149,7 +150,7 @@ async function triggerLoading(): Promise<void> {
         </section>
 
         <section class="playground__section">
-            <h2>标签</h2>
+            <h2>标签与徽标</h2>
             <div class="playground__row">
                 <CaomeiTag tone="primary">
                     Vue
@@ -160,6 +161,17 @@ async function triggerLoading(): Promise<void> {
                 <CaomeiTag tone="danger" variant="outline">
                     警告
                 </CaomeiTag>
+                <CaomeiBadge :value="5" />
+                <CaomeiBadge
+                    :value="100"
+                    :max="99"
+                    tone="primary"
+                />
+                <CaomeiBadge
+                    dot
+                    label="在线"
+                    tone="success"
+                />
             </div>
         </section>
 

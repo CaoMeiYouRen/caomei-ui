@@ -17,7 +17,7 @@
 - [x] **InputNumber**：数值输入，含 `min` / `max` / `step` / `precision`（Input 家族）；已通过 Review Gate。
 - [x] **Tag / Badge**：`span` + 变体；已通过 Review Gate。
 - [x] **Select**：基于 Reka UI `Select`；已通过 Review Gate。
-- [ ] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR。
+- [x] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR；已通过 Review Gate。
 - [ ] **Toast**：基于 Reka UI `Toast` + `useToast` 服务封装。
 - [ ] **Card**：布局容器 + 变体。
 - [ ] **Checkbox**：基于 Reka UI `Checkbox`。

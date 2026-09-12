@@ -11,9 +11,10 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | Tier 2 组件补齐 | 组件使用面统计 | Tabs / Accordion / Menu / Image / SelectButton / FileUpload | 中 |
-| Tag/Badge 增强 | 组件实现评估 | Tag 可选中筛选标签 / 可编辑；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退） | 低 |
+| Tag/Badge 增强 | 组件实现评估 | Tag 可选中筛选标签 / 可编辑（可编辑标签可由 Reka UI TagsInput 封装）；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退） | 低 |
+| InputNumber 迁移到 Reka NumberField | 决策复核 | 现有 InputNumber 为自建，而 Reka UI 已有 NumberField；按「优先封装 Reka」原则改为封装，保留 size / invalid / controls / min-max-step 等对外 API。迁移前需验证 `precision` 语义（formatOptions 仅影响显示与可输入字符，不保证对 model 取整）与 `number \| null` 空值映射兼容性 | 中 |
 | Select 增强 | 组件实现评估 | 分组（SelectGroup）、自定义选项渲染、搜索过滤；多选由 Tier 1 MultiSelect 承接 | 低 |
-| momei 专属组件 | momei 使用面 | Skeleton / DatePicker / RadioButton / ProgressBar / Stepper / Popover / Slider / Drawer / InputGroup | 低（可下游自留） |
+| momei 专属组件 | momei 使用面 | Skeleton / InputGroup 需自建；DatePicker / RadioGroup / ProgressBar / Stepper / Popover / Slider / Drawer 均可由 Reka UI 封装（Drawer 与日期类为 Alpha） | 低（可下游自留） |
 | 富文本与图表封装 | momei 使用面 | Editor / Chart 建议外购（Tiptap / ECharts），不自研 | 低 |
 
 ### 基建与治理候选

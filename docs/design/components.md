@@ -47,7 +47,7 @@
 | ConfirmDialog | 封装 AlertDialog + 服务 | AlertDialog |
 | Avatar | 封装 Avatar | Avatar |
 | Paginator | 封装 Pagination | Pagination |
-| Switch（统一 ToggleSwitch / InputSwitch） | 封装 Switch（已随 POC 落地，待补齐文档 / 测试） | Switch |
+| Switch（统一 ToggleSwitch / InputSwitch） | 封装 Switch（文档 / 测试已补齐） | Switch |
 
 ## 4. Tier 2：按需（6 个）
 

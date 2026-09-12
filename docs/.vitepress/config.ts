@@ -61,6 +61,7 @@ export default defineConfig({
                         { text: 'Toast 轻提示', link: '/components/toast' },
                         { text: 'Card 卡片', link: '/components/card' },
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
+                        { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },

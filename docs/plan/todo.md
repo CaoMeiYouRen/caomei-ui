@@ -26,7 +26,7 @@
 
 ### 后续阶段预登记（用户授权）
 
-- [ ] **Switch**（归属 Phase 2；POC 已实现，封装核验正确，用户要求先行登记）：补齐 `defineOptions` 与表单属性（`name` / `id` / `required`）、组件文档与单元测试。
+- [x] **Switch**（归属 Phase 2；用户要求先行落地）：封装核验与补齐完成——`defineOptions`、表单属性（`name` / `id` / `required` / `value`）、可访问名 `label`、CSS 变量覆盖钩子与焦点态；文档、示例与单元测试已补齐；浏览器验证 59/59 通过。
 
 ## 说明
 

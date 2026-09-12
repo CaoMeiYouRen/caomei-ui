@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<SelectProps>(), {
     size: 'md',
     disabled: false,
     invalid: false,
+    bodyLock: false,
 })
 
 const model = defineModel<string>()
@@ -68,6 +69,7 @@ const rootClass = computed(() => [
                 class="caomei-select__content"
                 position="popper"
                 :side-offset="4"
+                :body-lock="bodyLock"
             >
                 <SelectViewport class="caomei-select__viewport">
                     <SelectItem

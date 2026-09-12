@@ -26,4 +26,6 @@ export interface SelectProps {
     id?: string
     /** 无可见标签时的可访问名，映射 aria-label */
     label?: string
+    /** 展开时是否锁定页面滚动；默认 false，避免滚动条消失引起布局跳动 */
+    bodyLock?: boolean
 }

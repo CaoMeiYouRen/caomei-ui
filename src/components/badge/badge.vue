@@ -1,0 +1,175 @@
+<script setup lang="ts">
+import { computed, useSlots } from 'vue'
+import type { BadgeProps } from './types'
+
+defineOptions({ name: 'CaomeiBadge' })
+
+const props = withDefaults(defineProps<BadgeProps>(), {
+    tone: 'danger',
+    variant: 'solid',
+    size: 'md',
+    dot: false,
+})
+
+defineSlots<{
+    default?: () => unknown
+}>()
+
+const slots = useSlots()
+const overlay = computed(() => Boolean(slots.default))
+
+const displayValue = computed(() => {
+    if (props.dot) {
+        return ''
+    }
+    const { value, max } = props
+    if (value === undefined || value === null || value === '') {
+        return ''
+    }
+    if (typeof value === 'number' && Number.isNaN(value)) {
+        return ''
+    }
+    if (typeof value === 'number' && max !== undefined && value > max) {
+        return `${max}+`
+    }
+    return String(value)
+})
+
+const visible = computed(() => props.dot || displayValue.value !== '')
+
+const rootClass = computed(() => [
+    `caomei-badge--${props.tone}`,
+    `caomei-badge--${props.variant}`,
+    `caomei-badge--${props.size}`,
+    { 'caomei-badge--dot': props.dot },
+])
+
+const ariaHidden = computed(() => (props.dot && !props.label ? 'true' : undefined))
+
+const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
+</script>
+
+<template>
+    <span v-if="overlay" class="caomei-badge-wrapper">
+        <slot />
+        <span
+            v-if="visible"
+            class="caomei-badge"
+            :class="rootClass"
+            :aria-label="label"
+            :aria-hidden="ariaHidden"
+            :role="ariaRole"
+        >
+            {{ displayValue }}
+        </span>
+    </span>
+    <span
+        v-else-if="visible"
+        class="caomei-badge"
+        :class="rootClass"
+        :aria-label="label"
+        :aria-hidden="ariaHidden"
+        :role="ariaRole"
+    >
+        {{ displayValue }}
+    </span>
+</template>
+
+<style scoped>
+.caomei-badge-wrapper {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.caomei-badge {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1em;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-family: var(--caomei-font-sans);
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.caomei-badge-wrapper > .caomei-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+}
+
+.caomei-badge--primary {
+    --caomei-badge-tone: var(--caomei-color-primary);
+    --caomei-badge-solid: var(--caomei-color-primary-solid);
+}
+
+.caomei-badge--success {
+    --caomei-badge-tone: var(--caomei-color-success);
+    --caomei-badge-solid: var(--caomei-color-success-solid);
+}
+
+.caomei-badge--warning {
+    --caomei-badge-tone: var(--caomei-color-warning);
+    --caomei-badge-solid: var(--caomei-color-warning-solid);
+}
+
+.caomei-badge--danger {
+    --caomei-badge-tone: var(--caomei-color-danger);
+    --caomei-badge-solid: var(--caomei-color-danger-solid);
+}
+
+.caomei-badge--neutral {
+    --caomei-badge-tone: var(--caomei-color-text-muted);
+    --caomei-badge-solid: var(--caomei-color-neutral-solid);
+}
+
+.caomei-badge--soft {
+    background: color-mix(in srgb, var(--caomei-badge-tone) 12%, transparent);
+    color: var(--caomei-badge-tone);
+}
+
+.caomei-badge--solid {
+    background: var(--caomei-badge-solid);
+    color: var(--caomei-color-primary-foreground);
+}
+
+.caomei-badge--outline {
+    border-color: var(--caomei-badge-tone);
+    color: var(--caomei-badge-tone);
+}
+
+.caomei-badge--sm {
+    height: 16px;
+    padding: 0 var(--caomei-space-1);
+    font-size: var(--caomei-font-size-sm);
+}
+
+.caomei-badge--md {
+    height: 20px;
+    padding: 0 var(--caomei-space-1);
+    font-size: var(--caomei-font-size-sm);
+}
+
+.caomei-badge--lg {
+    height: var(--caomei-control-height-sm);
+    padding: 0 var(--caomei-space-2);
+    font-size: var(--caomei-font-size-md);
+}
+
+.caomei-badge--dot {
+    width: 8px;
+    height: 8px;
+    min-width: 0;
+    padding: 0;
+}
+
+.caomei-badge--dot.caomei-badge--lg {
+    width: 10px;
+    height: 10px;
+}
+</style>

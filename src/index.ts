@@ -20,6 +20,14 @@ export * from './components/toast'
 export * from './icons'
 export * from './locale'
 export * from './types'
+export { useConfirm } from './composables/use-confirm'
+export type {
+    ConfirmApi,
+    ConfirmContent,
+    ConfirmOptions,
+    ConfirmRequest,
+    ConfirmTone,
+} from './composables/use-confirm'
 export { useTheme } from './composables/use-theme'
 export type { ThemeMode, UseThemeReturn } from './composables/use-theme'
 export { useToast } from './composables/use-toast'

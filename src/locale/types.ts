@@ -9,4 +9,7 @@ export interface CaomeiLocaleMessages {
         increase: string
         decrease: string
     }
+    tag: {
+        close: string
+    }
 }

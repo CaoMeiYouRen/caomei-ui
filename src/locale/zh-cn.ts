@@ -11,6 +11,9 @@ const zhCN: CaomeiLocaleMessages = {
         increase: '增加',
         decrease: '减少',
     },
+    tag: {
+        close: '删除',
+    },
 }
 
 export default zhCN

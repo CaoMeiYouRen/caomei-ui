@@ -11,6 +11,9 @@ const enUS: CaomeiLocaleMessages = {
         increase: 'Increase',
         decrease: 'Decrease',
     },
+    tag: {
+        close: 'Remove',
+    },
 }
 
 export default enUS

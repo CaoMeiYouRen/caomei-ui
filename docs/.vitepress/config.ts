@@ -60,6 +60,7 @@ export default defineConfig({
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Toast 轻提示', link: '/components/toast' },
                         { text: 'Card 卡片', link: '/components/card' },
+                        { text: 'Checkbox 复选框', link: '/components/checkbox' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

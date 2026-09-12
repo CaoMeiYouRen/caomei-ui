@@ -1,0 +1,81 @@
+# Checkbox 复选框
+
+复选框用于在多个选项中选择若干项，或表示单个布尔开关，基于 Reka UI Checkbox 封装。
+
+## 基础用法
+
+通过 `v-model` 双向绑定选中状态（`boolean`），`label` 提供可见标签，也可用默认插槽自定义标签内容。
+
+<demo
+    vue="../examples/checkbox/basic.vue"
+    ssg="true"
+/>
+
+## 状态
+
+- `modelValue` 为 `'indeterminate'` 时表示半选，映射 `aria-checked="mixed"`；点击后变为选中。
+- `disabled` 禁用、`invalid` 标记校验失败（映射 `aria-invalid`）。
+
+<demo
+    vue="../examples/checkbox/states.vue"
+    ssg="true"
+/>
+
+## 尺寸
+
+通过 `size` 切换尺寸，支持 `sm` / `md` / `lg`。
+
+<demo
+    vue="../examples/checkbox/sizes.vue"
+    ssg="true"
+/>
+
+## 多选组合
+
+同一组选项可通过数组模型自行管理，将每项绑定为「是否包含在该数组中」：
+
+<demo
+    vue="../examples/checkbox/group.vue"
+    ssg="true"
+/>
+
+## 表单集成
+
+提供 `name` 后，位于 `<form>` 内时会随原生表单提交；`value` 为提交值（默认 `'on'`），`required` 参与原生校验。
+
+```vue
+<form>
+  <CaomeiCheckbox v-model="agree" name="agree" value="yes" required label="同意条款" />
+  <button type="submit">提交</button>
+</form>
+```
+
+> 目前仅面向单值表单提交，未包装分组容器；值为对象的多选分组场景暂不支持。
+
+## 无障碍
+
+- 控件基于 Reka UI 渲染为 `role="checkbox"` 的按钮，支持键盘聚焦与空格切换。
+- `aria-checked` 输出 `true` / `false` / `mixed`；`required` 映射 `aria-required`。
+- `label` 属性或默认插槽渲染为 `<label for>`，与控件自动关联；无可见标签时可通过 `aria-label` 等属性透传提供可访问名。
+
+## 样式定制
+
+样式基于 CSS variables，保持低特异性便于覆盖：
+
+| 变量 | 默认 | 说明 |
+|------|------|------|
+| `--caomei-checkbox-size` | 由 `size` 档位决定 | 复选框边长（sm 16 / md 18 / lg 20） |
+| `--caomei-checkbox-radius` | `--caomei-radius-sm` | 圆角 |
+| `--caomei-checkbox-bg` | `--caomei-color-bg` | 未选中背景色 |
+| `--caomei-checkbox-border` | `--caomei-color-border` | 未选中描边色 |
+| `--caomei-checkbox-active-bg` | `--caomei-color-primary` | 选中 / 半选背景与描边色 |
+| `--caomei-checkbox-foreground` | `--caomei-color-primary-foreground` | 指示图标颜色 |
+
+```css
+.caomei-checkbox {
+    --caomei-checkbox-active-bg: #16a34a;
+    --caomei-checkbox-radius: 999px;
+}
+```
+
+<ComponentApi name="checkbox" />

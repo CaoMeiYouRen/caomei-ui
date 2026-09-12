@@ -11,6 +11,9 @@ const enUS: CaomeiLocaleMessages = {
         increase: 'Increase',
         decrease: 'Decrease',
     },
+    message: {
+        close: 'Close',
+    },
     pagination: {
         label: 'Pagination',
         first: 'First page',
@@ -18,6 +21,9 @@ const enUS: CaomeiLocaleMessages = {
         next: 'Next page',
         last: 'Last page',
         page: 'Page {page}',
+    },
+    progress: {
+        loading: 'Loading',
     },
     tag: {
         close: 'Remove',

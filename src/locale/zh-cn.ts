@@ -11,6 +11,9 @@ const zhCN: CaomeiLocaleMessages = {
         increase: '增加',
         decrease: '减少',
     },
+    message: {
+        close: '关闭',
+    },
     pagination: {
         label: '分页',
         first: '首页',
@@ -18,6 +21,9 @@ const zhCN: CaomeiLocaleMessages = {
         next: '下一页',
         last: '末页',
         page: '第 {page} 页',
+    },
+    progress: {
+        loading: '加载中',
     },
     tag: {
         close: '删除',

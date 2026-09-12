@@ -9,6 +9,9 @@ export interface CaomeiLocaleMessages {
         increase: string
         decrease: string
     }
+    message: {
+        close: string
+    }
     pagination: {
         label: string
         first: string
@@ -16,6 +19,9 @@ export interface CaomeiLocaleMessages {
         next: string
         last: string
         page: string
+    }
+    progress: {
+        loading: string
     }
     tag: {
         close: string

@@ -38,6 +38,7 @@ export const EXCLUDED_DIRS = new Set([
     'playwright-report',
     'test-results',
     '.vscode',
+    '.session',
 ])
 
 export const IGNORED_FILES = new Set(['CHANGELOG.md'])

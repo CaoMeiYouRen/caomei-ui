@@ -48,6 +48,7 @@
     "docs:check": "pnpm docs:check:links && pnpm docs:check:line-count",
     "check:standards-redundant": "node scripts/governance/check-standards-redundant.mjs",
     "check:standards-redundant:strict": "node scripts/governance/check-standards-redundant.mjs --strict",
+    "distill:wisdom": "node scripts/governance/distill-wisdom.mjs",
     "ai:check": "node scripts/ai/check-governance.mjs",
     "governance:check": "pnpm check:standards-redundant:strict && pnpm ai:check && pnpm docs:check",
     "verify": "pnpm lint:check && pnpm lint:css:check && pnpm lint:md:check && pnpm typecheck && pnpm test && pnpm build && pnpm docs:build && pnpm governance:check",

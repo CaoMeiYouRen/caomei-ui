@@ -17,4 +17,4 @@
 
 ## 当前条目
 
-> 暂无。组件库处于立项阶段，尚未产生治理决策记录。
+- [session-wisdom-distillation.md](./session-wisdom-distillation.md)：Session Wisdom 蒸馏机制（`.session/` 任务态与知识沉淀）。

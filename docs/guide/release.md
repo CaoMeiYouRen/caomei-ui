@@ -6,7 +6,7 @@
 
 > 不使用 changesets（本项目为单包，semantic-release 是标准场景）。
 
-> **当前状态（Phase 0）**：`release.yml` 已就位，但发布步骤尚未启用；待配置 npm 凭据（`NPM_TOKEN` 或 npm Trusted Publisher / OIDC）后再放开。
+> **当前状态**：`release.yml` 已就位，但发布步骤尚未启用；待配置 npm 凭据（`NPM_TOKEN` 或 npm Trusted Publisher / OIDC）后再放开。
 
 ## 版本推断
 

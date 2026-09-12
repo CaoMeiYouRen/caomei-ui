@@ -28,3 +28,32 @@
 - 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / test / build / docs:build / governance）
 - 审计：`@code-reviewer` Review Gate 对 `87703e5` / `6b64969` / `4cc921a` 均已执行并放行（本仓库未保留独立审查工件文件）
 - 遗留与后续候选：`@iconify/vue` 字符串图标名接入（Backlog）；按组件独立 chunk 暂缓
+
+---
+
+## Phase 1：Tier 0 组件
+
+- 时间：2026-09-12
+- 交付：
+  - Tier 0 组件：Button、Input 家族（Input / Textarea / InputNumber）、Tag / Badge、Select、Dialog、Toast、Card、Checkbox、DataTable（含列定义类型 `DataTableColumn`，非独立组件）
+  - InputNumber 迁移为封装 Reka UI `NumberField`；Select 修正为非模态（不锁页面滚动）
+  - `label` 语义统一为可访问名（映射 `aria-label`），Checkbox 可见文本改用 `text`
+  - 文档站样板（Button）：demo 渲染 + API 自动生成链路打通，其余组件页按同一模板推广
+  - 确立「优先封装 Reka UI」的组件实现方式决策（InputNumber 迁移为其落地）
+- 提交：组件实现与文档 `8b7c1d1` ~ `7077853`；文档站样板收口 `65f7bba`（Switch 见下）
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / test / build / docs:build / governance）
+- 审计：`@code-reviewer` Review Gate 对各组件条目均已执行并放行（本仓库未保留独立审查工件文件）
+- 遗留与后续候选：`@iconify/vue` 字符串图标名、`docs/**` 纳入 typecheck、a11y 自动化回归、视觉回归基线等见 [Backlog](./backlog.md)
+
+---
+
+## 跨阶段预落地条目
+
+### Switch（Phase 2 预落地，用户授权）
+
+- 时间：2026-09-12
+- 交付：封装 Reka UI `Switch`，补 `defineOptions` 与表单属性 `name` / `id` / `required` / `value`、可访问名 `label`、CSS 变量覆盖钩子与焦点态；文档、示例与单元测试同步
+- 提交：`8a23d1e`
+- 质量门：`pnpm verify` 通过；单元测试 16 例
+- 审计：`@code-reviewer` Review Gate Pass（RG-SW-01 ~ 06）；浏览器验证 59/59 通过
+- 遗留：真实 `<form>` 提交链路与 SSR 水合未纳入浏览器验证覆盖

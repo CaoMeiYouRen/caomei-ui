@@ -4,29 +4,24 @@
 
 ## 当前阶段
 
-> Phase 0 已完成并归档，进入 Phase 1（Tier 0 组件实现）。
+> Phase 0 与 Phase 1 已完成并归档（见 [待办归档](./todo-archive.md)）；Phase 2（Tier 1 组件 + Nuxt 模块）待用户确认后启动。
 
-### Phase 1：Tier 0 组件
+### Phase 2：Tier 1 组件 + Nuxt 模块（待启动）
 
-状态：**进行中**
+状态：**待启动**
 
-- [x] **Button**：原生 `button` + 变体/尺寸，含 `loading` / `block` / `icon` 插槽与首个单元测试；已通过 Review Gate。
-- [x] **DataTable + Column**：基于 `@tanstack/vue-table`，含列定义与空态；已通过 Review Gate。
-- [x] **Input**：自建单行输入，支持 `v-model`、尺寸、`disabled` / `readonly` / `invalid`、`clearable`、前后缀插槽与 `type=password`。
-- [x] **Textarea**：多行文本输入（Input 家族）；已通过 Review Gate。
-- [x] **InputNumber**：数值输入（Input 家族）；已迁移为封装 Reka UI `NumberField`，保留 `min` / `max` / `step` / `precision` 与 `number | null` 语义；已通过 Review Gate。
-- [x] **Tag / Badge**：`span` + 变体；已通过 Review Gate。
-- [x] **Select**：基于 Reka UI `Select`；已通过 Review Gate。
-- [x] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR；已通过 Review Gate。
-- [x] **Toast**：基于 Reka UI `Toast` + `useToast` 服务封装；已通过 Review Gate。
-- [x] **Card**：布局容器 + 变体；已通过 Review Gate。
-- [x] **Checkbox**：基于 Reka UI `Checkbox`；已通过 Review Gate。
+> Switch 已由用户授权先行落地并归档（见 [待办归档](./todo-archive.md) 的「跨阶段预落地条目」）；以下为剩余范围。
 
-- [x] **文档站样板（Button）**（用户授权提前实施）：已沉淀 [文档与演示站](../design/documentation-site.md)，并验证 demo 渲染 + API 自动生成链路（Button 样板页 + 全组件复用）。
+- [ ] **Message / Alert**：自建业务语义包装。
+- [ ] **Password**：Input 派生，含可见性切换等增强。
+- [ ] **ProgressSpinner**：封装 Reka UI `Progress` 派生。
+- [ ] **MultiSelect**：封装 Reka UI `Combobox`。
+- [ ] **ConfirmDialog**：封装 Reka UI `AlertDialog` + 服务封装。
+- [ ] **Avatar**：封装 Reka UI `Avatar`。
+- [ ] **Paginator**：封装 Reka UI `Pagination`。
+- [ ] **`caomei-ui/nuxt`**：Nuxt 模块（替换 `src/nuxt/module.ts` 占位实现）。
 
-### 后续阶段预登记（用户授权）
-
-- [x] **Switch**（归属 Phase 2；用户要求先行落地）：封装核验与补齐完成——`defineOptions`、表单属性（`name` / `id` / `required` / `value`）、可访问名 `label`、CSS 变量覆盖钩子与焦点态；文档、示例与单元测试已补齐；浏览器验证 59/59 通过。
+> 以上为 [路线图](./roadmap.md) Phase 2 的规划范围，未经用户确认不启动；启动时再拆解为可独立验收的原子条目。
 
 ## 说明
 

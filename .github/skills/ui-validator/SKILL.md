@@ -18,9 +18,9 @@ metadata:
   - [ ] 2.1 确认无样式错位、无控制台报错。
   - [ ] 2.2 检查关键交互（弹窗、下拉、切换）。
 - [ ] Step 2.5: 宿主页面稳定性 ⚠️ REQUIRED（浮层 / portal 组件必测）
-  - [ ] 2.5.1 记录打开 / 关闭浮层前后的 `documentElement.clientWidth`、滚动条是否占位（真实滚动条：Playwright 关闭 `--hide-scrollbars`）、`html` / `body` 与 fixed / `100%` 视口元素的几何；
-  - [ ] 2.5.2 断言无**非预期**布局变化（CLS ≈ 0；fixed / nav / content 的 x、width 位移为 0）；
-  - [ ] 2.5.3 重点排查锁定滚动 / 滚动条消失引起的位移；机制与方案权衡见 `docs/design/theming.md §5.1`，要求见 `docs/standards/testing.md §5.1`。
+  - [ ] 2.5.1 记录打开 / 关闭浮层前后的 `documentElement.clientWidth`、滚动条是否占位（真实滚动条：Playwright 关闭 `--hide-scrollbars`）、`html` / `body` 与 fixed / `100%` 视口元素的几何，以及遮罩完整 bounding rect（判据 `left <= 0 && top <= 0 && right >= innerWidth && bottom >= innerHeight`）；
+  - [ ] 2.5.2 断言：遮罩完整覆盖、`in-flow` 不位移；fixed / 视口元素因滚动条消失产生的宽度变化在「实测滚动条宽」以内（打开前 `innerWidth - clientWidth`），属已知预期，记录但不判缺陷；
+  - [ ] 2.5.3 重点排查超出容差的位移、遮罩留缝与 CLS 归因（仅已知 fixed 几何变化计入基线；`in-flow` / 内容重排的 CLS 判为问题）；机制与决策见 `docs/design/theming.md §5.1`，判定基线见 `docs/standards/testing.md §5.1`。
 - [ ] Step 3: 响应式 ⚠️ REQUIRED
   - [ ] 3.1 桌面 / 平板 / 移动视口。
   - [ ] 3.2 窄屏降级行为（卡片化、全屏化）。

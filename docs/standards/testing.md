@@ -54,9 +54,17 @@
 
 - `documentElement.clientWidth` 与滚动条是否占位。Playwright 需 `ignoreDefaultArgs: ['--hide-scrollbars']` 暴露真实滚动条；headless 下可能仍不渲染，此时以 `documentElement.clientWidth < window.innerWidth` 判定占位，或改用非 headless；
 - `html` / `body` 及 fixed / `100%` 视口元素的几何（`x`、`width`）；
+- 遮罩的完整 bounding rect（`left` / `top` / `right` / `bottom`），判据：`left <= 0 && top <= 0 && right >= window.innerWidth && bottom >= window.innerHeight`；
 - Layout Instability（CLS）是否出现非预期位移。
 
-判定：`in-flow` 内容与 fixed / 视口元素均不应发生非预期位移。**测量集必须包含 fixed / 视口元素**，只测组件自身与 `in-flow` 容器会漏检。机制与方案权衡见[主题与样式设计 §5.1](../design/theming.md#_5-1-浮层滚动锁与布局稳定性)。
+判定：
+
+- `in-flow` 内容不得位移；遮罩必须完整覆盖可视区域。
+- 模态锁滚动导致滚动条消失、fixed / `100%` 视口元素随视口宽度变化属**已知预期**（见[主题与样式设计 §5.1](../design/theming.md#_5-1-浮层滚动锁与布局稳定性)），须记录但不计为缺陷。容差：`in-flow` 为 0；fixed / 视口元素为实测滚动条宽（打开前 `window.innerWidth - documentElement.clientWidth`，应与 `body.paddingRight` 一致）以内。
+- CLS 归因：仅由上述已知预期 fixed 几何变化贡献的部分计入基线；`in-flow` 位移或内容重排产生的 CLS 判为问题。
+- 超出容差的位移、遮罩留缝（未满足覆盖判据）均判为问题。
+
+**测量集必须包含 fixed / 视口元素与遮罩**，只测组件自身与 `in-flow` 容器会漏检。
 
 ## 6. 命令
 

@@ -11,6 +11,7 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | Tier 2 组件补齐 | 组件使用面统计 | Tabs / Accordion / Menu / Image / SelectButton / FileUpload | 中 |
+| Tag/Badge 增强 | 组件实现评估 | Tag 可选中筛选标签 / 可编辑；Badge 叠加位置与偏移自定义（placement / offset） | 低 |
 | momei 专属组件 | momei 使用面 | Skeleton / DatePicker / RadioButton / ProgressBar / Stepper / Popover / Slider / Drawer / InputGroup | 低（可下游自留） |
 | 富文本与图表封装 | momei 使用面 | Editor / Chart 建议外购（Tiptap / ECharts），不自研 | 低 |
 

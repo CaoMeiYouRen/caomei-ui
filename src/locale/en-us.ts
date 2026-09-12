@@ -18,6 +18,11 @@ const enUS: CaomeiLocaleMessages = {
     message: {
         close: 'Close',
     },
+    multiSelect: {
+        open: 'Show options',
+        remove: 'Remove',
+        empty: 'No matching options',
+    },
     pagination: {
         label: 'Pagination',
         first: 'First page',

@@ -16,6 +16,11 @@ export interface CaomeiLocaleMessages {
     message: {
         close: string
     }
+    multiSelect: {
+        open: string
+        remove: string
+        empty: string
+    }
     pagination: {
         label: string
         first: string

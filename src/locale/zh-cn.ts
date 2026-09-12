@@ -18,6 +18,11 @@ const zhCN: CaomeiLocaleMessages = {
     message: {
         close: '关闭',
     },
+    multiSelect: {
+        open: '展开选项',
+        remove: '移除',
+        empty: '无匹配选项',
+    },
     pagination: {
         label: '分页',
         first: '首页',

@@ -7,6 +7,7 @@ import {
     CaomeiInput,
     CaomeiInputNumber,
     CaomeiSwitch,
+    CaomeiTag,
     CaomeiTextarea,
     useTheme,
 } from '@/index'
@@ -144,6 +145,21 @@ async function triggerLoading(): Promise<void> {
                     :precision="1"
                     invalid
                 />
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>标签</h2>
+            <div class="playground__row">
+                <CaomeiTag tone="primary">
+                    Vue
+                </CaomeiTag>
+                <CaomeiTag tone="success" variant="solid">
+                    完成
+                </CaomeiTag>
+                <CaomeiTag tone="danger" variant="outline">
+                    警告
+                </CaomeiTag>
             </div>
         </section>
 

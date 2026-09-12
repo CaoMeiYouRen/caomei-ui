@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { X } from '@lucide/vue'
-import { computed, ref, useAttrs, type ClassValue, type StyleValue } from 'vue'
+import { computed, ref } from 'vue'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocaleMessages } from '../../locale'
+import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { InputProps } from './types'
 
 defineOptions({ name: 'CaomeiInput', inheritAttrs: false })
@@ -33,8 +34,9 @@ defineSlots<{
 
 const model = defineModel<string>({ default: '' })
 
-const attrs = useAttrs()
 const inputRef = ref<HTMLInputElement | null>(null)
+
+const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const showClear = computed(
     () => props.clearable && Boolean(model.value) && !props.disabled && !props.readonly,
@@ -48,21 +50,6 @@ const rootClass = computed(() => [
         'caomei-input--readonly': props.readonly,
     },
 ])
-
-const rootAttrs = computed<{ class?: ClassValue, style?: StyleValue }>(() => ({
-    class: attrs.class as ClassValue,
-    style: attrs.style as StyleValue,
-}))
-
-const inputAttrs = computed<Record<string, unknown>>(() => {
-    const forwarded: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(attrs)) {
-        if (key !== 'class' && key !== 'style') {
-            forwarded[key] = value
-        }
-    }
-    return forwarded
-})
 
 function onClear(): void {
     model.value = ''
@@ -98,7 +85,7 @@ defineExpose({ focus, blur, inputRef })
             :id="id"
             ref="inputRef"
             v-model="model"
-            v-bind="inputAttrs"
+            v-bind="controlAttrs"
             class="caomei-input__control"
             :type="type"
             :disabled="disabled"

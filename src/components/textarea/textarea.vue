@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs, type ClassValue, type StyleValue } from 'vue'
+import { computed, ref, type StyleValue } from 'vue'
+import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { TextareaProps } from './types'
 
 defineOptions({ name: 'CaomeiTextarea', inheritAttrs: false })
@@ -21,8 +22,9 @@ const emit = defineEmits<{
 
 const model = defineModel<string>({ default: '' })
 
-const attrs = useAttrs()
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
+
+const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const rootClass = computed(() => [
     `caomei-textarea--${props.size}`,
@@ -33,24 +35,9 @@ const rootClass = computed(() => [
     },
 ])
 
-const rootAttrs = computed<{ class?: ClassValue, style?: StyleValue }>(() => ({
-    class: attrs.class as ClassValue,
-    style: attrs.style as StyleValue,
-}))
-
 const controlStyle = computed<StyleValue>(() => ({
     resize: props.resize,
 }))
-
-const inputAttrs = computed<Record<string, unknown>>(() => {
-    const forwarded: Record<string, unknown> = {}
-    for (const [key, value] of Object.entries(attrs)) {
-        if (key !== 'class' && key !== 'style') {
-            forwarded[key] = value
-        }
-    }
-    return forwarded
-})
 
 function focus(): void {
     textareaRef.value?.focus()
@@ -73,7 +60,7 @@ defineExpose({ focus, blur, textareaRef })
             :id="id"
             ref="textareaRef"
             v-model="model"
-            v-bind="inputAttrs"
+            v-bind="controlAttrs"
             class="caomei-textarea__control"
             :style="controlStyle"
             :disabled="disabled"

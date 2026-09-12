@@ -24,7 +24,7 @@
 | 文档站组件页推广 | 用户授权提前实施；已沉淀 [文档与演示站](../design/documentation-site.md) 并完成 Button 样板页，其余组件页按 Phase 3 推广 | 高 |
 | docs 纳入 typecheck | `docs/.vitepress/**` 尚未纳入 `vue-tsc`，需补 docs 专用 tsconfig 与 `docs:gen` 前置 | 中 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
-| Input 家族共享层抽取 | Input / Textarea / InputNumber 存在 attrs 透传与 input-shell 样式重复，在 InputNumber 落地前评估抽取 composable 与共享样式 | 中 |
+| Input 家族样式层共享 | attrs 透传已抽取 `useAttrForwarding`；容器/状态 scoped 样式仍按组件重复，出现第 4 个文本输入类组件或样式分叉时再评估共享样式层 | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |

@@ -29,7 +29,7 @@
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | Input 家族样式层共享 | attrs 透传已抽取 `useAttrForwarding`；容器/状态 scoped 样式仍按组件重复，出现第 4 个文本输入类组件或样式分叉时再评估共享样式层 | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
-| 视觉回归基线 | Playwright 截图比对主题/暗色/响应式 | 低 |
+| 视觉回归基线 | Playwright 截图比对主题/暗色/响应式，并对浮层断言宿主页面稳定性（滚动条 / 视口宽度 / fixed 元素位移 / CLS） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
 

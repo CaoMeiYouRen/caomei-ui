@@ -1,6 +1,6 @@
 ---
 name: ui-validator
-description: 任何可见 UI 改动、组件渲染、交互、样式、响应式、暗色模式与浏览器侧回归验证都应使用。它负责在真实页面中验证实际渲染效果，而不是只看代码。用户提到 UI validate、screenshot、browser check、responsive、dark mode、视觉回归时都应触发。
+description: 任何可见 UI 改动、组件渲染、交互、样式、响应式、暗色模式与浏览器侧回归验证都应使用。它负责在真实页面中验证实际渲染效果，而不是只看代码。用户提到 UI validate、screenshot、browser check、responsive、dark mode、视觉回归、滚动锁、滚动条消失、页面布局跳动、CLS、宿主页面稳定性时都应触发。
 metadata:
   internal: false
 ---
@@ -17,6 +17,10 @@ metadata:
 - [ ] Step 2: 渲染验证 ⚠️ REQUIRED
   - [ ] 2.1 确认无样式错位、无控制台报错。
   - [ ] 2.2 检查关键交互（弹窗、下拉、切换）。
+- [ ] Step 2.5: 宿主页面稳定性 ⚠️ REQUIRED（浮层 / portal 组件必测）
+  - [ ] 2.5.1 记录打开 / 关闭浮层前后的 `documentElement.clientWidth`、滚动条是否占位（真实滚动条：Playwright 关闭 `--hide-scrollbars`）、`html` / `body` 与 fixed / `100%` 视口元素的几何；
+  - [ ] 2.5.2 断言无**非预期**布局变化（CLS ≈ 0；fixed / nav / content 的 x、width 位移为 0）；
+  - [ ] 2.5.3 重点排查锁定滚动 / 滚动条消失引起的位移；机制与方案权衡见 `docs/design/theming.md §5.1`，要求见 `docs/standards/testing.md §5.1`。
 - [ ] Step 3: 响应式 ⚠️ REQUIRED
   - [ ] 3.1 桌面 / 平板 / 移动视口。
   - [ ] 3.2 窄屏降级行为（卡片化、全屏化）。
@@ -34,9 +38,11 @@ metadata:
 - 只看代码不实际渲染。
 - 只测一种视口或只测亮色。
 - 无证据地宣称「看起来没问题」。
+- 只验证组件自身边界，忽略宿主页面是否位移（滚动条消失、fixed 元素变宽、内容重排）。
 
 ## 交付前检查
 
 - [ ] 已覆盖桌面/移动与亮/暗。
 - [ ] 已记录截图与结论。
+- [ ] 已断言宿主页面无非预期布局变化（含滚动条 / 视口宽度 / fixed 元素 / CLS）。
 - [ ] 问题清单含复现步骤。

@@ -48,6 +48,16 @@
 | 公共 API / 导出 / 构建配置 | 上述全部 + 全量 `pnpm test` + `pnpm build` + 产物冒烟 |
 | UI 交互变更 | 上述 + `@ui-validator` 浏览器验证 |
 
+### 5.1 浮层组件的页面稳定性（必测）
+
+适用于涉及 portal / 模态 / 滚动锁的组件（Dialog、Select、Toast、Drawer 等）。打开与关闭前后必须记录：
+
+- `documentElement.clientWidth` 与滚动条是否占位。Playwright 需 `ignoreDefaultArgs: ['--hide-scrollbars']` 暴露真实滚动条；headless 下可能仍不渲染，此时以 `documentElement.clientWidth < window.innerWidth` 判定占位，或改用非 headless；
+- `html` / `body` 及 fixed / `100%` 视口元素的几何（`x`、`width`）；
+- Layout Instability（CLS）是否出现非预期位移。
+
+判定：`in-flow` 内容与 fixed / 视口元素均不应发生非预期位移。**测量集必须包含 fixed / 视口元素**，只测组件自身与 `in-flow` 容器会漏检。机制与方案权衡见[主题与样式设计 §5.1](../design/theming.md#_5-1-浮层滚动锁与布局稳定性)。
+
 ## 6. 命令
 
 - 全量：`pnpm test`

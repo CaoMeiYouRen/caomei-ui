@@ -28,8 +28,8 @@
 - 非目标：不做全局消息队列服务（由 Toast 承担）；ProgressSpinner 不做确定性进度条
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证，并通过 Review Gate
 
-- [ ] **Message / Alert**：`tone` / dismissible / 图标与操作插槽的轻量提示条。
-- [ ] **ProgressSpinner**：加载指示器，支持尺寸与 `aria` 语义（封装 Reka UI `Progress`）。
+- [x] **Message / Alert**：自建提示条，支持 `tone` / `variant` / `closable` 与图标、操作插槽；已通过 Review Gate。
+- [x] **ProgressSpinner**：封装 Reka UI `Progress` 的不确定进度指示器，支持尺寸与可访问名；已通过 Review Gate。
 
 #### 主线 C：确认对话框
 

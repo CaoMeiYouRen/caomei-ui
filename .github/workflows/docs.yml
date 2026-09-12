@@ -6,6 +6,11 @@ on:
       - master
     paths:
       - "docs/**"
+      - "src/**"
+      - "scripts/docs/**"
+      - "tsconfig.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
       - ".github/workflows/docs.yml"
   # 允许从 Actions 选项卡手动运行
   workflow_dispatch:
@@ -46,6 +51,9 @@ jobs:
         run: pnpm docs:check:links
       - name: Build with VitePress
         run: pnpm docs:build
+        env:
+          # 采用自定义域名部署，为根目录
+          VITEPRESS_BASE: /
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:

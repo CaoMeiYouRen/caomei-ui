@@ -20,6 +20,7 @@ playwright-report
 # VitePress
 docs/.vitepress/cache
 docs/.vitepress/dist
+docs/.vitepress/data
 
 # Editor directories and files
 .vscode/*

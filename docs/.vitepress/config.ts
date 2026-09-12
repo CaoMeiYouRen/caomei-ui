@@ -1,4 +1,10 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
+import { vitepressDemoPlugin } from 'vitepress-demo-plugin/markdown'
+
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+const srcDir = path.resolve(dirname, '../../src')
 
 // GitHub Pages 项目站点部署在 /<repo>/ 子路径下，需要设置 base；
 // 本地开发与自定义域名部署保持默认 '/'。由 VITEPRESS_BASE 环境变量控制。
@@ -10,10 +16,22 @@ export default defineConfig({
     lang: 'zh-CN',
     base,
     cleanUrls: true,
+    markdown: {
+        config(md) {
+            md.use(vitepressDemoPlugin)
+        },
+    },
+    vite: {
+        resolve: {
+            alias: {
+                '@': srcDir,
+            },
+        },
+    },
     themeConfig: {
         nav: [
             { text: '指南', link: '/guide/getting-started' },
-            { text: '组件', link: '/design/components' },
+            { text: '组件', link: '/components/button' },
             { text: '设计', link: '/design/architecture' },
             { text: '规范', link: '/standards/index' },
             { text: '规划', link: '/plan/roadmap' },
@@ -30,6 +48,14 @@ export default defineConfig({
                     ],
                 },
             ],
+            '/components/': [
+                {
+                    text: '基础组件',
+                    items: [
+                        { text: 'Button 按钮', link: '/components/button' },
+                    ],
+                },
+            ],
             '/design/': [
                 {
                     text: '设计',
@@ -38,6 +64,7 @@ export default defineConfig({
                         { text: '架构设计', link: '/design/architecture' },
                         { text: '主题与样式', link: '/design/theming' },
                         { text: '组件设计', link: '/design/components' },
+                        { text: '文档与演示站', link: '/design/documentation-site' },
                     ],
                 },
             ],

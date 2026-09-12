@@ -39,8 +39,9 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:gen": "node scripts/docs/gen-component-meta.mjs",
+    "docs:dev": "pnpm docs:gen && vitepress dev docs",
+    "docs:build": "pnpm docs:gen && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:check:links": "node scripts/docs/check-links.mjs",
     "docs:check:line-count": "node scripts/docs/check-line-count.mjs",
@@ -90,8 +91,10 @@
     "unplugin-vue": "^7.2.0",
     "vite": "^8.2.2",
     "vitepress": "^1.6.4",
+    "vitepress-demo-plugin": "^1.8.0",
     "vitest": "^3.2.4",
     "vue": "^3.5.42",
+    "vue-component-meta": "^3.3.11",
     "vue-tsc": "^3.3.11"
   },
   "peerDependencies": {

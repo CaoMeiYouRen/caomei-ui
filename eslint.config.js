@@ -4,7 +4,9 @@ import cmyr from 'eslint-config-cmyr/vue'
 export default defineConfig([
     {
         ignores: [
-            'docs/.vitepress/**',
+            'docs/.vitepress/dist/**',
+            'docs/.vitepress/cache/**',
+            'docs/.vitepress/data/**',
             '**/dist/**',
             'coverage/**',
             'playwright-report/**',

@@ -20,3 +20,5 @@ strictPeerDependencies: false
 minimumReleaseAgeExclude:
   # @lucide/vue 1.45.0 属新发布，pnpm 安装时自动加入豁免；待其超过供应链冷却期后移除
   - '@lucide/vue@1.45.0'
+  # happy-dom 20.14.5 属新发布，同上；待冷却期后移除
+  - happy-dom@20.14.5

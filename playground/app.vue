@@ -7,6 +7,7 @@ import {
     CaomeiIcon,
     CaomeiInput,
     CaomeiInputNumber,
+    CaomeiSelect,
     CaomeiSwitch,
     CaomeiTag,
     CaomeiTextarea,
@@ -21,6 +22,12 @@ const keyword = ref('')
 const remark = ref('')
 const quantity = ref<number | null>(2)
 const invalidValue = ref('')
+const fruit = ref<string>('apple')
+const fruitOptions = [
+    { label: '苹果', value: 'apple' },
+    { label: '香蕉', value: 'banana' },
+    { label: '樱桃', value: 'cherry' },
+]
 const { mode, isDark, setMode } = useTheme('light')
 
 watchEffect(() => {
@@ -145,6 +152,24 @@ async function triggerLoading(): Promise<void> {
                     :step="0.1"
                     :precision="1"
                     invalid
+                />
+            </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>选择器</h2>
+            <div class="playground__column">
+                <CaomeiSelect
+                    v-model="fruit"
+                    :options="fruitOptions"
+                    placeholder="请选择水果"
+                />
+                <CaomeiSelect
+                    v-model="fruit"
+                    :options="fruitOptions"
+                    size="sm"
+                    invalid
+                    placeholder="校验失败"
                 />
             </div>
         </section>

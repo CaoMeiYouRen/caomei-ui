@@ -1,0 +1,44 @@
+# Select 选择器
+
+选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
+
+## 基础用法
+
+通过 `v-model` 双向绑定选中值，`options` 传入选项列表。
+
+<demo
+    vue="../examples/select/basic.vue"
+    ssg="true"
+/>
+
+## 尺寸
+
+通过 `size` 切换尺寸，支持 `sm` / `md` / `lg`。
+
+<demo
+    vue="../examples/select/sizes.vue"
+    ssg="true"
+/>
+
+## 状态
+
+`disabled` 禁用、`invalid` 标记校验失败；选项级 `disabled` 可禁用单个选项。
+
+<demo
+    vue="../examples/select/states.vue"
+    ssg="true"
+/>
+
+## 无障碍
+
+- 基于 Reka UI 的原生 ARIA 语义，支持键盘导航（方向键 / Enter / Esc / 首字母跳转）。
+- `label` 用于无可见标签时提供可访问名，映射为 `aria-label`。
+- `invalid` 时输出 `aria-invalid="true"`。
+
+## 事件与暴露
+
+除 `update:modelValue` 外无额外事件；选项列表通过 `options` 受控传入。
+
+> 受控行为：当 `modelValue` 不在 `options` 中时，触发器回退显示 `placeholder`，但模型值仍保持受控、不会被自动清空；如需同步清理，请在使用方监听 `options` 变化后重置。
+
+<ComponentApi name="select" />

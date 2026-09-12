@@ -222,6 +222,11 @@ async function triggerLoading(): Promise<void> {
             description="用于验证 Portal 与 Teleport 行为。"
         >
             对话框内容
+            <template #footer>
+                <CaomeiButton variant="secondary" @click="open = false">
+                    关闭
+                </CaomeiButton>
+            </template>
         </CaomeiDialog>
     </main>
 </template>

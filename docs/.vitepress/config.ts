@@ -57,6 +57,7 @@ export default defineConfig({
                         { text: 'Textarea 多行输入', link: '/components/textarea' },
                         { text: 'InputNumber 数字输入框', link: '/components/input-number' },
                         { text: 'Select 选择器', link: '/components/select' },
+                        { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

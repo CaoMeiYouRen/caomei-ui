@@ -174,6 +174,7 @@ export default defineConfig({
                         { text: 'InputNumber 数字输入框', link: '/components/input-number' },
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
+                        { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },
                         { text: 'Toast 轻提示', link: '/components/toast' },
                         { text: 'Message 提示条', link: '/components/message' },
                         { text: 'Card 卡片', link: '/components/card' },

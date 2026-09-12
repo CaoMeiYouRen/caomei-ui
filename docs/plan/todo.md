@@ -37,8 +37,8 @@
 - 非目标：不替换既有 Dialog；不做多级确认链与自定义 Portal 容器
 - 最小验收：服务与组件均具备单元测试、组件文档与示例、浏览器验证（含焦点与滚动锁），并通过 Review Gate
 
-- [ ] **useConfirm**：确认对话框服务（open / confirm / cancel 与 Promise 语义）。
-- [ ] **ConfirmDialog**：基于 `AlertDialog` 的确认对话框，接入 `useConfirm`。
+- [x] **useConfirm**：确认对话框服务（open / confirm / cancel 与 Promise 语义）；已通过 Review Gate。
+- [x] **ConfirmDialog**：基于 `AlertDialog` 的确认对话框，接入 `useConfirm`；已通过 Review Gate。
 
 #### 主线 D：表单增强组件
 

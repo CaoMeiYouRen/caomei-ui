@@ -2,11 +2,16 @@
 
 轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
 
-> 使用前需引入组件库样式（`import 'caomei-ui/styles.css'`），否则提示与视口缺少基础样式。
-
 ## 基础用法
 
-在应用根部放置一次 `<CaomeiToastProvider>`，其**后代组件**再通过 `useToast()` 获取服务。`show()` 接收字符串或配置对象，返回该提示的 `id`。
+在应用根部放置一次 `<CaomeiToastProvider>`，其**后代组件**再通过 `useToast()` 获取服务。
+
+<demo
+    vue="../examples/toast/basic.vue"
+    ssg="true"
+/>
+
+`show()` 接收字符串或配置对象，返回该提示的 `id`。
 
 ```vue
 <!-- App.vue：根部挂载 Provider -->
@@ -39,11 +44,8 @@ function save(): void {
 </template>
 ```
 
-<demo
-    vue="../examples/toast/basic.vue"
-    ssg="true"
-/>
-
+> 使用前需引入组件库样式（`import 'caomei-ui/styles.css'`），否则提示与视口缺少基础样式。
+>
 > `useToast()` 必须在 `CaomeiToastProvider` 的后代组件中调用。Provider 与调用方同层时会抛出明确错误；文档站示例由布局根部的 Provider 提供上下文。
 
 ## 语气

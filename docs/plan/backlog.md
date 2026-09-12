@@ -21,11 +21,13 @@
 | 国际文字内置文案补全 | 组件内建文案完整覆盖 zh-CN / en-US | 中 |
 | 组件覆盖率门禁 | 待 Tier 0 组件基本实现后，在 `vitest` 配置中启用 `coverage.thresholds` ≥ 80% | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
+| 文档站组件页推广 | 用户授权提前实施；已沉淀 [文档与演示站](../design/documentation-site.md) 并完成 Button 样板页，其余组件页按 Phase 3 推广 | 高 |
+| docs 纳入 typecheck | `docs/.vitepress/**` 尚未纳入 `vue-tsc`，需补 docs 专用 tsconfig 与 `docs:gen` 前置 | 中 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
-| Storybook 组件工坊 | 作为开发时工坊（VitePress 仍为对外文档主站） | 低 |
+| Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
 
 ### 下游协同候选
 

@@ -1,0 +1,85 @@
+# 文档与演示站设计
+
+本文档定义 caomei-ui 的文档站与组件演示方案：技术选型、目录约定、组件页模板与 API 自动生成。
+
+## 1. 目标
+
+- 对外统一承载「指南 / 组件 / 设计 / 规范 / 规划」内容。
+- **每个组件一页**：概述 + 可运行 demo + 源码 + 自动生成的 API 表。
+- 解决当前 `playground/` 只能查看、无法按组件了解 API 与用法的问题。
+
+## 2. 选型结论
+
+| 能力 | 选型 | 理由 |
+|------|------|------|
+| 文档站 | **VitePress** | 全局规范首选；Markdown 即 Vue SFC，支持自定义组件 |
+| Demo 渲染 | **`vitepress-demo-plugin`** | `<demo vue="..." />` 渲染组件并展示可展开源码，支持 SSG 与 StackBlitz |
+| API 表 | **`vue-component-meta`** | Vue 官方 language-tools，静态抽取 props / events / slots / exposed |
+| 组件工坊 | 暂不引入 Storybook / Histoire | Histoire 停滞；Storybook 偏重。文档站内 demo 已覆盖对外需求 |
+
+补充说明：
+
+- 插件默认将 demo 包裹在 `<ClientOnly>` 中（服务端只输出 loading 占位）。对 SSR 安全的组件应显式声明 `ssg="true"`，以获得首屏静态渲染。
+- 插件会引入 shiki 的完整语法集，导致文档站产物明显增大并可能触发 `chunk > 500 kB` 警告；当前接受该体积代价（脚本语言多为惰性加载），后续按需收敛。
+
+> 调研参考：Element Plus `:::demo` + 独立 demo 文件；Nuxt UI MDC `::component-code` + `nuxt-component-meta` 自动 API；Vuetify Inline API；Storybook 使用 `vue-component-meta` 作为 docgen。
+
+## 3. 目录结构
+
+```
+docs/
+├─ .vitepress/
+│  ├─ config.ts                     # nav / sidebar / markdown 插件 / alias
+│  ├─ data/component-meta.json      # 由 docs:gen 生成（.gitignore）
+│  └─ theme/
+│     ├─ index.ts                   # 注册全局组件、引入库样式
+│     └─ components/component-api.vue
+├─ components/<component>.md        # 组件页
+└─ examples/<component>/*.vue       # 每个 demo 一个文件
+```
+
+## 4. 组件页模板
+
+统一顺序：
+
+1. 一句话概述；
+2. 基础用法；
+3. 变体 / 尺寸 / 状态等典型场景；
+4. 无障碍说明；
+5. API（由 `<ComponentApi>` 自动呈现 props / events / slots / exposed）；
+6. FAQ（按需）。
+
+## 5. Demo 约定
+
+- 每个用例一个 `.vue` 文件，放在 `docs/examples/<component>/`。
+- 正文通过 `<demo vue="../examples/<component>/<name>.vue" ssg="true" />` 引用。
+- `ssg="true"` 仅用于 SSR 安全（不访问 `window`/`document`）的组件；交互 demo 同样适用，因为事件处理只在客户端触发。
+- demo 从 `@/components/...` 引入库源码，保证与实现同源。
+- 库样式由文档站主题统一引入；demo 只写自身布局样式。
+
+## 6. API 自动生成
+
+- 脚本：`scripts/docs/gen-component-meta.mjs`，基于 `tsconfig.json` 创建 checker。
+- 输入：`src/components/<name>/<name>.vue`。命名约定：**目录名与 SFC 文件名同名**；若无同名文件则回退到目录内唯一的 `.vue`。
+- 输出：`docs/.vitepress/data/component-meta.json`（生成物，已加入 `.gitignore`，不提交）。
+- 抽取字段：`props`（含 `type` / `default` / `required` / `description`）、`events`、`slots`、`exposed`。
+- 过滤 Vue 内置全局 props（`global: true`）。
+- 描述来源为类型定义中的 **JSDoc 注释**，因此组件 `types.ts` 的注释即文档。
+- 变更组件类型后必须运行 `pnpm docs:gen` 刷新生成物；`docs:dev` / `docs:build` 已前置该步骤（直接运行 `vitepress dev docs` 需先手动执行 `pnpm docs:gen`）。
+
+## 7. 与 playground 的关系
+
+- **文档站**：对外，按组件承载用法与 API。
+- **`playground/`**：仅本地快速调试沙盒，不再承担「了解组件与 API」职责；后续可精简或移除。
+
+## 8. 落地顺序
+
+1. 先用 **Button** 做样板页，验证「demo 渲染 + 源码展示 + API 自动生成 + 侧边栏」链路；
+2. 通过后按 Tier 0 组件逐步补齐组件页；
+3. 其余增强（搜索、i18n、版本化、Playground 链接）按需迭代。
+
+## 9. 已知取舍
+
+- 文档站代码（`docs/.vitepress/**`）已纳入 ESLint 覆盖；`docs/**` 暂未纳入 `vue-tsc` typecheck，作为后续增强项（见 [Backlog](../plan/backlog.md)）。
+- 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
+- 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。

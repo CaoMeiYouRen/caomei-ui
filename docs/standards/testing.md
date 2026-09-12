@@ -53,7 +53,24 @@
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。
 
-## 7. 反模式
+## 7. 容器/受限环境下的浏览器验证
+
+部分容器会把 `/tmp` 设为不可写（如 `dr-xr-xr-x`）。Chromium 会在临时目录下创建 profile 与共享内存，此时渲染进程会直接崩溃（Playwright 报 `Target crashed`，日志含 `platform_shared_memory_region_posix.cc ... Permission denied`）。
+
+处理方式：把 `TMPDIR` 指向可写目录，并配合 `--no-sandbox`：
+
+```sh
+TMPDIR="$HOME/.cache/chrome-tmp" pnpm exec playwright ...
+```
+
+```ts
+chromium.launch({
+    args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    env: { ...process.env, TMPDIR: process.env.HOME + '/.cache/chrome-tmp' },
+})
+```
+
+## 8. 反模式
 
 - 只追求覆盖率数字、不做有效断言。
 - 用 `skip` / `only` 长期停留在提交中（临时调试需在提交前移除）。

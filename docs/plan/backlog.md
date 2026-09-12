@@ -29,6 +29,7 @@
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式，并对浮层断言页面稳定性（遮罩完整、`in-flow` 不位移；fixed 元素按滚动条宽容差） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
+| 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 流程编号标记项重述 planning §4；`code-quality-checklist.md` 对 `documentation.md §4` / `security.md §8` 为失效引用 | 低 |
 
 ### 下游协同候选
 

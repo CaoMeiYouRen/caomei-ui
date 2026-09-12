@@ -14,6 +14,11 @@ const zhCN: CaomeiLocaleMessages = {
     tag: {
         close: '删除',
     },
+    toast: {
+        label: '通知',
+        viewport: '通知 ({hotkey})',
+        close: '关闭',
+    },
 }
 
 export default zhCN

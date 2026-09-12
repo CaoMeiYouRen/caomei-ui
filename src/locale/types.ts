@@ -12,4 +12,9 @@ export interface CaomeiLocaleMessages {
     tag: {
         close: string
     }
+    toast: {
+        label: string
+        viewport: string
+        close: string
+    }
 }

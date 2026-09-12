@@ -14,7 +14,7 @@
 - [x] **DataTable + Column**：基于 `@tanstack/vue-table`，含列定义与空态；已通过 Review Gate。
 - [x] **Input**：自建单行输入，支持 `v-model`、尺寸、`disabled` / `readonly` / `invalid`、`clearable`、前后缀插槽与 `type=password`。
 - [x] **Textarea**：多行文本输入（Input 家族）；已通过 Review Gate。
-- [x] **InputNumber**：数值输入，含 `min` / `max` / `step` / `precision`（Input 家族）；已通过 Review Gate。
+- [x] **InputNumber**：数值输入（Input 家族）；已迁移为封装 Reka UI `NumberField`，保留 `min` / `max` / `step` / `precision` 与 `number | null` 语义；已通过 Review Gate。
 - [x] **Tag / Badge**：`span` + 变体；已通过 Review Gate。
 - [x] **Select**：基于 Reka UI `Select`；已通过 Review Gate。
 - [x] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR；已通过 Review Gate。
@@ -23,6 +23,10 @@
 - [x] **Checkbox**：基于 Reka UI `Checkbox`；已通过 Review Gate。
 
 - [ ] **文档站样板（Button）**（用户授权提前实施）：沉淀文档站设计并验证 demo 渲染 + API 自动生成链路。
+
+### 后续阶段预登记（用户授权）
+
+- [ ] **Switch**（归属 Phase 2；POC 已实现，封装核验正确，用户要求先行登记）：补齐 `defineOptions` 与表单属性（`name` / `id` / `required`）、组件文档与单元测试。
 
 ## 说明
 

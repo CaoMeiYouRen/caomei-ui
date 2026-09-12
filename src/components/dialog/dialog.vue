@@ -197,7 +197,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     outline-offset: 1px;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .caomei-dialog__content {
         width: calc(100vw - 2 * var(--caomei-space-4));
     }

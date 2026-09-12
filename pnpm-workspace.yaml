@@ -13,6 +13,6 @@ overrides:
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
+  vue-demi: false
 
 strictPeerDependencies: false
-

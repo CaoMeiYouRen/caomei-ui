@@ -1,0 +1,7 @@
+@import './theme.css';
+
+.caomei-root {
+    font-family: var(--caomei-font-sans);
+    color: var(--caomei-color-text);
+    background: var(--caomei-color-bg);
+}

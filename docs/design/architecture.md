@@ -34,43 +34,58 @@
 ```jsonc
 {
   "exports": {
-    ".": { "types": "./dist/index.d.mts", "import": "./dist/index.mjs" },
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
     "./styles.css": "./dist/styles.css",
-    "./theme.css": "./dist/theme.css",
-    "./resolver": { "types": "./dist/resolver.d.mts", "import": "./dist/resolver.mjs" },
-    "./nuxt": { "types": "./dist/nuxt.d.mts", "import": "./dist/nuxt.mjs" },
+    "./resolver": { "types": "./dist/resolver.d.ts", "import": "./dist/resolver.js" },
+    "./nuxt": { "types": "./dist/nuxt.d.ts", "import": "./dist/nuxt.js" },
     "./package.json": "./package.json"
   }
 }
 ```
 
+> 本项目为 `"type": "module"`，tsdown 默认产出 `.js` / `.d.ts`（等价 ESM 与声明文件），不再使用 `.mjs` / `.d.mts`。
+
 | 入口 | 用途 |
 |------|------|
 | `caomei-ui` | 组件 + composables + 类型 |
 | `caomei-ui/styles.css` | 全量样式（tokens + 组件样式） |
-| `caomei-ui/theme.css` | 仅主题变量 |
 | `caomei-ui/resolver` | unplugin-vue-components resolver |
 | `caomei-ui/nuxt` | Nuxt 模块 |
 
+> 主题变量（tokens）当前并入 `styles.css`；独立的 `caomei-ui/theme.css` 入口按需再评估。
+
 ## 4. 构建方案（tsdown）
 
-- 产物：ESM 聚合 + 类型声明 + CSS 抽取 + 按组件 chunk。
+- 产物：单 ESM bundle + 类型声明 + CSS 抽取（按组件独立 chunk 暂缓）。
 - `vue`、`reka-ui` 必须 external。
 - `sideEffects` 声明支持 tree-shaking。
 
-### 4.1 待验证（Phase 0 POC）
+### 4.1 POC 验证结论（2026-09-12）
 
-1. tsdown 处理 `.vue` SFC（`<script setup lang="ts">` + `<style>`）。
-2. `reka-ui` external 处理正确。
-3. SFC 内 `<style>` 合并到 `styles.css`。
-4. `vue-tsc` 正确产出组件 props/slots/emits 类型。
-5. SSR 下 `ClientOnly` / `Teleport` 兼容。
-6. 子路径导出（`./resolver`、`./nuxt`、`./styles.css`）多入口配置可行。
+以 tsdown 0.23.0 + unplugin-vue 7.2.0 + @tsdown/css 0.23.0 完成最小 POC（Button / Dialog / Switch + `index`/`resolver`/`nuxt` 三入口）：
+
+| # | 验证点 | 结论 |
+|---|--------|------|
+| 1 | Vue SFC（`<script setup lang="ts">` + `<style scoped>`） | ✅ 编译通过 |
+| 2 | `vue` / `reka-ui` external | ✅ 产物以 `import ... from "vue"` / `"reka-ui"` 引用，未打包 |
+| 3 | SFC `<style>` + CSS 抽取 | ✅ 合并进 `dist/styles.css`（含 tokens） |
+| 4 | 类型声明（props / slots / emits / model） | ✅ `dts.vue` 产出 `dist/*.d.ts` |
+| 5 | SSR / Teleport | ✅ 非 Portal 组件正常 SSR；Portal 组件（Dialog）在 SSR 下内容进入 `ssrContext.teleports`，需 `ClientOnly` 或 `forceMount` |
+| 6 | 子路径导出多入口 | ✅ `index` / `resolver` / `nuxt` 均产出 `.js` + `.d.ts`，包自引用解析通过 |
+
+补充结论：
+
+- `pnpm build` 已切换为 tsdown 库构建；旧 Vite 应用构建保留为 `pnpm build:app`，输出到独立 `dist-app/`，与发布目录 `dist/` 隔离。
+- 包体为单 ESM bundle + 命名导出，配合 `sideEffects` 支持 tree-shaking；按组件独立 chunk 暂缓。
+- 样式始终由消费方显式导入（`import 'caomei-ui/styles.css'`）或经 resolver 注入，未启用 `css.inject`。
+- Reka UI 依赖链中的 `vue-demi` 在 `pnpm-workspace.yaml` 的 `allowBuilds` 中显式设为 `false`（Vue 3 下其 postinstall 为空操作，无需执行）。
 
 ## 5. Nuxt 模块
 
 - 以 `@nuxt/kit` 编写，作为 `caomei-ui/nuxt` 子路径导出随主包发布。
 - 职责：组件自动导入、composables 自动导入、样式注入、SSR 安全处理、主题配置。
+
+> 当前 `src/nuxt/module.ts` 为**占位实现**（尚未接入 `@nuxt/kit`），真实模块在后续阶段落地；下述示例为目标形态。
 
 ```ts
 // nuxt.config.ts

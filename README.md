@@ -96,7 +96,8 @@ export default defineNuxtConfig({
 ```sh
 pnpm install        # 安装依赖
 pnpm dev            # 启动开发/演示环境
-pnpm build          # 构建产物
+pnpm build          # 构建库产物（tsdown）
+pnpm build:app      # 构建演示应用（临时）
 pnpm typecheck      # vue-tsc --noEmit
 pnpm test           # 单元测试（Vitest）
 pnpm test:e2e       # E2E（Playwright）

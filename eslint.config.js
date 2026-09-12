@@ -6,6 +6,7 @@ export default defineConfig([
         ignores: [
             'docs/.vitepress/**',
             '**/dist/**',
+            'dist-app/**',
             'coverage/**',
             'playwright-report/**',
             'test-results/**',

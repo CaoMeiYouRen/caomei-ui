@@ -78,10 +78,10 @@ test/                     # 单元与 E2E 测试
 
 ## 8. 构建与产物
 
-- 使用 tsdown 构建：ESM 聚合、类型声明、CSS 抽取、按组件 chunk。
+- 使用 tsdown 构建：单 ESM bundle + 类型声明 + CSS 抽取（按组件独立 chunk 暂缓，见 [架构设计 §4.1](../design/architecture.md)）。
 - `vue` 与 `reka-ui` 必须 external，不打包进产物。
-- `package.json` 声明 `sideEffects` 以支持 tree-shaking。
-- 子路径导出：`caomei-ui`、`caomei-ui/styles.css`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`。
+- `package.json` 声明 `sideEffects`（`**/*.css`）以支持 tree-shaking。
+- 子路径导出：`caomei-ui`、`caomei-ui/styles.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`（tokens 并入 `styles.css`，暂不单列 `theme.css`）。
 
 ## 9. 代码生成准则
 

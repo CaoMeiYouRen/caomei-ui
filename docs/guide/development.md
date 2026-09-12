@@ -16,7 +16,9 @@ pnpm install
 | 命令 | 说明 |
 |------|------|
 | `pnpm dev` | 启动 Vite 开发/演示环境 |
-| `pnpm build` | 构建库产物 |
+| `pnpm build` | 构建库产物（tsdown） |
+| `pnpm build:app` | 构建演示应用（临时，待脚手架移除） |
+| `pnpm build:watch` | tsdown watch 模式 |
 | `pnpm lint` | ESLint 检查与修复 |
 | `pnpm lint:css` | Stylelint 检查与修复 |
 | `pnpm lint:md` | Markdown 检查 |

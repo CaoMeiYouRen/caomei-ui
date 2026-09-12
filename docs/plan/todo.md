@@ -20,7 +20,7 @@
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证，并通过 Review Gate
 
 - [x] **Avatar**：封装 Reka UI `Avatar`，支持 `src` / `alt` / `fallback` / 尺寸与形状，含加载失败回退；已通过 Review Gate。
-- [ ] **Paginator**：封装 Reka UI `Pagination`，支持页码 `v-model`、总页数与首尾 / 省略展示。
+- [x] **Paginator**：封装 Reka UI `Pagination`，支持 `v-model:page`、`total` / `itemsPerPage`、首尾与省略展示；已通过 Review Gate。
 
 #### 主线 B：反馈与浮层组件
 

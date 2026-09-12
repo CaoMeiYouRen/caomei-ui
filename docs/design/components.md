@@ -17,6 +17,7 @@
 - 自建前须核对 [Reka UI 官方文档](https://reka-ui.com/docs/overview/introduction) 的 Components 导航与本地 `reka-ui` 导出，确认确无可用 primitive。
 - 封装层只承担样式、变体、尺寸、语义 token 与服务封装，不重复实现 primitive 已提供的交互与无障碍。
 - 组件清单以「Reka UI 对应」列为准维护：新增组件时先判定能否封装，再决定是否自建。
+- Reka UI 文档站无 `/docs/components` 索引页（404）；组件清单以任一组件页的侧栏导航或本地 `reka-ui` 导出为准，外链统一指向 [官方简介](https://reka-ui.com/docs/overview/introduction)。
 
 ## 2. Tier 0：必选（9 个）
 
@@ -77,6 +78,8 @@
 | `useConfirm` | 确认对话框，基于 AlertDialog |
 | `useDialog` | 通用对话框服务 |
 | `useTheme` | 主题/暗色模式管理 |
+
+> 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。
 
 ## 7. 组件开发顺序
 

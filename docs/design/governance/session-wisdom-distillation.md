@@ -37,8 +37,11 @@
 | `[bug]` | `docs/design/governance/` | 已稳定修复的陷阱 |
 | `[pattern]` | `docs/standards/` 或 `docs/design/` | 可复用的实现/测试模式 |
 | `[decision]` | `docs/design/` | 影响后续方向的选型 |
+| `[tradeoff]` | `docs/design/` | 取舍与已知预期基线 |
 | `[env]` | `docs/guide/` 或 `docs/standards/` | 环境/工具链配置 |
 | `[test]` | `docs/standards/testing.md` | 可复用测试写法 |
+| `[process]` | `docs/standards/ai-collaboration.md`、`docs/standards/testing.md` 或 `docs/design/` | 协作/评审/验证流程 |
+| `[dependency]` | `docs/standards/development.md` 或 `docs/design/architecture.md` | 依赖的 API/用法变更 |
 
 每条获得结论之一：`migrate`（迁移并保留摘要+链接）/ `keep`（保留）/ `remove`（删除）/ `compress`（压缩为一行）。
 

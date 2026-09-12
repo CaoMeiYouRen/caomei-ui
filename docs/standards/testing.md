@@ -92,7 +92,13 @@ chromium.launch({
 })
 ```
 
-## 8. 反模式
+## 8. 组件测试写法
+
+- VTU 无法从 props 推断泛型 SFC 的类型参数 `T`（会退化为 `object`）；测试内需 `Component as unknown as DefineComponent<Props<Row>>` 具体化，模板使用不受影响。
+- Reka 增减按钮使用 `pointerdown` / `pointerup`：测试用 `trigger('pointerdown')` 而非 `trigger('click')`；拖出按钮后的 `pointerup` 监听在 `window`。
+- `trigger('keydown.enter')` 派发的 `event.key` 为小写 `'enter'`，与 Reka 比较的 `'Enter'` 不符；应使用 `trigger('keydown', { key: 'Enter' })`。
+
+## 9. 反模式
 
 - 只追求覆盖率数字、不做有效断言。
 - 用 `skip` / `only` 长期停留在提交中（临时调试需在提交前移除）。

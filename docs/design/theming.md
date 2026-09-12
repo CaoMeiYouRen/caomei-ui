@@ -120,6 +120,7 @@
 - `body` 的 `padding-right` 补偿只能稳定文档流（`in-flow`）内容；固定定位或 `100%` 视口元素（如顶部导航）仍会随视口宽度变化，产生布局位移。
 - 两类方案互斥：① 保留 `body` padding 补偿——`in-flow` 稳定且遮罩完整，但 fixed 元素随视口宽度变化；② 为基础滚动容器预留 `scrollbar-gutter: stable`——视口宽度稳定，但标准 `position: fixed; inset: 0` 遮罩无法覆盖预留区，出现未遮罩竖条。
 - **决策：采用方案 ①**（保留 `body` padding 补偿，不设置 `scrollbar-gutter`）。理由：遮罩保持完整覆盖；「滚动条消失 + fixed / `100%` 视口元素随视口宽度变化」属预期的模态行为（参考同类组件库如 PrimeVue 的模态表现）。该位移须被验证记录，但作为已知预期，不作为缺陷。
+- 非模态浮层不得锁 body 滚动：Reka `SelectContent.bodyLock` 默认为 `true`（移除滚动条并补偿 `padding-right`，引发布局跳动）；非模态下拉须显式设为 `false`，需要锁定时再开放。
 - 验证要求见[测试规范 §5.1](../standards/testing.md#_5-1-浮层组件的页面稳定性-必测)。
 
 ## 6. 无障碍

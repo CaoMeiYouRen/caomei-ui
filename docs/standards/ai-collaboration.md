@@ -39,6 +39,9 @@
 - 交接必须携带：任务目标、验收标准、受影响文件清单、已完成阶段、已验证证据、未覆盖边界。
 - 审计 prompt 必须声明 `audit-depth`（`quick` / `standard` / `deep`），未声明时按 `deep` 执行。
 - 复审只审修复点 diff，不重复全量审查。
+- 提交必须晚于 Review Gate Pass：先提交后补审判 blocker；已发生的补救只能用新提交（不改写历史、不推送）。
+- 审计证据必须与最终 revision 对齐：源码（含 V 阶段后的 CSS 修复）变更后须重跑 `pnpm build` 与浏览器验证并更新证据，陈旧证据判 blocker。
+- UI 类改动可在 D 阶段预先用 `@ui-validator` 采集浏览器证据并随审计提交，以满足 Review Gate 对 UI 证据的要求；正式 V / T / F 阶段仍须在 A Pass 后进入。
 
 ## 4. 验证矩阵
 

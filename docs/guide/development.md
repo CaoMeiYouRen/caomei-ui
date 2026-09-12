@@ -64,3 +64,4 @@ test/             # 测试
 - **禁止引入 Tailwind / UnoCSS**。
 - 组件前缀统一 `Caomei`；组件目录与文件命名统一 kebab-case。
 - 公共 API 变更须考虑向后兼容。
+- 修改被 `defineProps<ImportedType>()` 引用的 `types.ts` 后，dev server 可能给出半陈旧 HMR 产物（模板已引用新 prop 而 `defineProps` 未更新）；行为异常时先重启 dev server 再排查源码。

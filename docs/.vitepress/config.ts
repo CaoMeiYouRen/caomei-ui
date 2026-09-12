@@ -64,6 +64,7 @@ export default defineConfig({
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
                         { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
+                        { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

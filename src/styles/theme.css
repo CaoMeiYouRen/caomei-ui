@@ -25,6 +25,8 @@
     --caomei-control-height-sm: 28px;
     --caomei-control-height-md: 36px;
     --caomei-control-height-lg: 44px;
+    --caomei-input-number-max-width: 12rem;
+    --caomei-select-max-width: 20rem;
     --caomei-font-size-sm: 12px;
     --caomei-font-size-md: 14px;
     --caomei-font-size-lg: 16px;

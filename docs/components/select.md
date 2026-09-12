@@ -41,6 +41,8 @@
 
 > 受控行为：当 `modelValue` 不在 `options` 中时，触发器回退显示 `placeholder`，但模型值仍保持受控、不会被自动清空；如需同步清理，请在使用方监听 `options` 变化后重置。
 
+> 宽度：默认 `width: 100%` 且 `max-width: var(--caomei-select-max-width)`（默认 `20rem`）；撑满所在列可覆盖该变量为 `none` 或对实例设置 `max-width: none`。
+>
 > 滚动：展开时默认不锁定页面滚动（`bodyLock` 默认 `false`），避免滚动条消失引起的布局跳动；如需锁定可传入 `body-lock`。
 
 <ComponentApi name="select" />

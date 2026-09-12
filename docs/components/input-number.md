@@ -52,4 +52,6 @@
 
 除 `update:modelValue` 外，还提供 `focus`、`blur`、`change`（载荷为规范化后的 `number | null`，失焦与步进时触发）；并通过 `defineExpose` 暴露 `focus()` / `blur()` 与内部 `inputRef`。
 
+> 宽度：默认 `width: 100%` 且 `max-width: var(--caomei-input-number-max-width)`（默认 `12rem`）；撑满所在列可覆盖该变量为 `none` 或对实例设置 `max-width: none`。
+
 <ComponentApi name="input-number" />

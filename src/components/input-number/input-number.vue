@@ -205,6 +205,7 @@ defineExpose({ focus, blur, inputRef })
     display: inline-flex;
     align-items: center;
     width: 100%;
+    max-width: var(--caomei-input-number-max-width);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);

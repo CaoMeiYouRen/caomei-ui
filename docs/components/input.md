@@ -58,4 +58,6 @@
 
 除 `update:modelValue` 外，还提供 `focus`、`blur`、`change`、`enter`、`clear`；并通过 `defineExpose` 暴露 `focus()` / `blur()`。
 
+> 宽度：默认 `width: 100%` 以适配表单栅格；如需限制宽度，在使用层通过容器或 `max-width` 控制。
+
 <ComponentApi name="input" />

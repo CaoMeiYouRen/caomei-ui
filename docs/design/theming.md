@@ -41,6 +41,9 @@
   --caomei-space-3: 12px;
   --caomei-space-4: 16px;
 
+  --caomei-input-number-max-width: 12rem;
+  --caomei-select-max-width: 20rem;
+
   --caomei-breakpoint-sm: 640px;
   --caomei-breakpoint-md: 768px;
   --caomei-breakpoint-lg: 1024px;
@@ -80,6 +83,23 @@
 不提供 Tailwind preset 作为内置依赖；如需为 Tailwind 用户提供 token 映射，另作可选文档。
 
 > `solid` 变体的实底色由 `--caomei-color-<tone>-solid` 控制，该组 token 跨主题稳定（不随明暗切换），以保证白字对比度；替换品牌强调色时需同时覆盖对应 `-solid`。
+
+### 4.1 表单控件宽度
+
+表单控件默认 `width: 100%` 以适配表单栅格；其中数值输入框与选择器另设可覆盖的默认 `max-width`，避免在宽容器中过度拉伸：
+
+- `--caomei-input-number-max-width`（默认 `12rem`）
+- `--caomei-select-max-width`（默认 `20rem`）
+
+需要撑满所在列时，将该 token 覆盖为 `none`，或对实例覆盖 `max-width`：
+
+```css
+.caomei-select {
+  --caomei-select-max-width: none;
+}
+```
+
+文本类控件（`Input` / `Textarea`）默认不设上限，如需限制宽度，在使用层通过容器或 `max-width` 控制即可。
 
 ## 5. 响应式
 

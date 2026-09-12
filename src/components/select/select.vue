@@ -98,6 +98,7 @@ const rootClass = computed(() => [
     justify-content: space-between;
     gap: var(--caomei-space-1);
     width: 100%;
+    max-width: var(--caomei-select-max-width);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);

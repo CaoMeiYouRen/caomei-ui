@@ -1,81 +1,168 @@
-<h1 align="center">caomei-ui </h1>
+<h1 align="center">caomei-ui</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/github/package-json/v/CaoMeiYouRen/caomei-ui.svg" />
-  <a href="https://github.com/CaoMeiYouRen/caomei-ui/actions?query=workflow%3ARelease" target="_blank">
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/CaoMeiYouRen/caomei-ui/release.yml?branch=master">
+  <a href="https://github.com/CaoMeiYouRen/caomei-ui/actions?query=workflow%3ATest" target="_blank">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/CaoMeiYouRen/caomei-ui/test.yml?branch=master">
   </a>
   <img src="https://img.shields.io/badge/node-%3E%3D20-blue.svg" />
-  <a href="https://github.com/CaoMeiYouRen/caomei-ui#readme" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="https://github.com/CaoMeiYouRen/caomei-ui/graphs/commit-activity" target="_blank">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
-  </a>
   <a href="https://github.com/CaoMeiYouRen/caomei-ui/blob/master/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/github/license/CaoMeiYouRen/caomei-ui?color=yellow" />
   </a>
 </p>
 
+> 一个基于 Vue 3 与 [Reka UI](https://reka-ui.com/) 的自建组件库。组件与样式解耦，默认提供极简可用的样式并支持 100% 覆盖；主题切换与暗色模式开箱即用，同一套组件适配桌面端与移动端。
 
-> 一个基于 Vue 3 和 Reka UI 的自建组件库，强调组件与样式解耦，默认提供极简可用的样式并支持 100% 自定义覆盖。开箱即用主题切换与暗色模式，组件设计适配桌面端与移动端。
+## 📌 项目状态
 
-## 🏠 主页
+当前处于 **Phase 0（立项与 POC）**，组件库尚未发布首个版本。仓库正由脚手架向 tsdown 组件库形态迁移，API 与目录结构在 1.0 前可能调整。
 
-[https://github.com/CaoMeiYouRen/caomei-ui#readme](https://github.com/CaoMeiYouRen/caomei-ui#readme)
+- 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
+- 目标组件集：Tier 0（9 个核心）+ Tier 1（8 个）+ Tier 2（按需）。
+- 规划与进展见 [路线图](./docs/plan/roadmap.md) 与 [待办事项](./docs/plan/todo.md)。
 
+## ✨ 特性（目标形态）
+
+- **组件与样式解耦**：默认极简样式，可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
+- **主题与暗色模式**：CSS variables + 语义化 token，支持 `.dark`、`[data-theme="dark"]` 与跟随系统。
+- **桌面与移动适配**：单包响应式，不拆分移动端包。
+- **单仓库单包**：组件、样式、resolver、Nuxt 模块通过子路径导出，消费者只需安装一个包。
+- **无障碍**：基于 Reka UI 的 ARIA、键盘导航与焦点管理。
 
 ## 📦 依赖要求
 
-
-- node >=20
+- Node.js >= 20
+- pnpm（版本以根 `package.json` 的 `packageManager` 为准）
 
 ## 🚀 安装
 
 ```sh
-npm install
+pnpm add caomei-ui
 ```
+
+> 尚未发布首个版本，以上为接入目标形态。
+
+## 📖 使用（目标形态）
+
+### 按需引入（推荐）
+
+```ts
+import Components from 'unplugin-vue-components/vite'
+import { CaomeiUiResolver } from 'caomei-ui/resolver'
+
+export default defineConfig({
+  plugins: [Components({ resolvers: [CaomeiUiResolver()] })],
+})
+```
+
+### 全量引入
+
+```ts
+import { CaomeiButton } from 'caomei-ui'
+import 'caomei-ui/styles.css'
+```
+
+```vue
+<template>
+  <CaomeiButton variant="primary">按钮</CaomeiButton>
+</template>
+```
+
+### Nuxt 项目
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['caomei-ui/nuxt'],
+  caomeiUI: {
+    prefix: 'Caomei',
+    darkMode: 'class',
+  },
+})
+```
+
+### 主题定制
+
+```css
+:root {
+  --caomei-color-primary: #e63946;
+  --caomei-radius-md: 6px;
+}
+```
+
+完整用法见 [快速上手](./docs/guide/getting-started.md)。
 
 ## 🛠️ 开发
 
 ```sh
-npm run dev
+pnpm install        # 安装依赖
+pnpm dev            # 启动开发/演示环境
+pnpm build          # 构建产物
+pnpm typecheck      # vue-tsc --noEmit
+pnpm test           # 单元测试（Vitest）
+pnpm test:e2e       # E2E（Playwright）
+pnpm lint           # ESLint
+pnpm lint:css       # Stylelint
+pnpm lint:md        # Markdown（lint-md）
+pnpm docs:dev       # 文档站开发
+pnpm verify         # 运行全部质量门
 ```
 
-## 🔧 编译
+## 🧱 技术栈（目标形态）
 
-```sh
-npm run build
+| 类别 | 选型 |
+|------|------|
+| 语言 | TypeScript（严格模式） |
+| 框架 | Vue 3.5.x + Composition API + `<script setup>` |
+| 底层 primitives | Reka UI |
+| 样式 | CSS variables + 原生 CSS/SCSS（不引入 Tailwind / UnoCSS） |
+| 构建 | tsdown |
+| 表格 | @tanstack/vue-table |
+| 图标 | lucide-vue-next / @iconify/vue |
+| 测试 | Vitest + Playwright |
+| 文档 | VitePress |
+| 发布 | semantic-release |
+
+> 上表为目标技术栈。Reka UI、tsdown、`@tanstack/vue-table`、`lucide-vue-next` 等依赖将在 Phase 0 POC 后引入；当前仓库仍是 Vite + Vue 脚手架。
+
+## 📁 目录结构（目标形态）
+
+```
+src/
+├─ components/    # 组件（kebab-case 目录 + kebab-case.vue）
+├─ composables/   # useToast / useConfirm / useDialog / useTheme
+├─ locale/        # 组件内建文案（zh-CN / en-US）
+├─ styles/        # tokens 与基础样式
+├─ icons/         # 图标封装
+├─ resolver/      # unplugin-vue-components resolver
+├─ nuxt/          # Nuxt 模块
+└─ index.ts       # 公共 API 导出
+docs/             # VitePress 文档站
+examples/         # 集成示例（不发布）
+test/             # 单元与 E2E 测试
 ```
 
-## 🔍 Lint
+> 组件目录与组件文件采用 kebab-case；组件对外名称使用 `Caomei` + PascalCase（如 `CaomeiButton`）。
 
-```sh
-npm run lint
-```
+## 📚 文档
 
-
-## 👤 作者
-
-
-**CaoMeiYouRen**
-
-* Website: [https://blog.cmyr.ltd/](https://blog.cmyr.ltd/)
-
-* GitHub: [@CaoMeiYouRen](https://github.com/CaoMeiYouRen)
-
+- [快速上手](./docs/guide/getting-started.md)
+- [开发指南](./docs/guide/development.md)
+- [发布指南](./docs/guide/release.md)
+- [架构设计](./docs/design/architecture.md)
+- [组件设计](./docs/design/components.md)
+- [项目规范](./docs/standards/index.md)
 
 ## 🤝 贡献
 
-欢迎 贡献、提问或提出新功能！<br />如有问题请查看 [issues page](https://github.com/CaoMeiYouRen/caomei-ui/issues). <br/>贡献或提出新功能可以查看[contributing guide](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/CONTRIBUTING.md).
+欢迎贡献、提问或提出新功能！如有问题请查看 [issues](https://github.com/CaoMeiYouRen/caomei-ui/issues)。提交前请阅读 [贡献指南](./CONTRIBUTING.md) 与 [开发规范](./docs/standards/development.md)。
 
 ## 💰 支持
 
-如果觉得这个项目有用的话请给一颗⭐️，非常感谢
+如果觉得这个项目有用的话请给一颗 ⭐️，非常感谢。
 
 <a href="https://afdian.com/@CaoMeiYouRen">
   <img src="https://oss.cmyr.dev/images/202306192324870.png" width="312px" height="78px" alt="在爱发电支持我">
 </a>
-
 
 ## 🌟 Star History
 
@@ -85,6 +172,3 @@ npm run lint
 
 Copyright © 2026 [CaoMeiYouRen](https://github.com/CaoMeiYouRen).<br />
 This project is [MIT](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/LICENSE) licensed.
-
-***
-_This README was generated with ❤️ by [cmyr-template-cli](https://github.com/CaoMeiYouRen/cmyr-template-cli)_

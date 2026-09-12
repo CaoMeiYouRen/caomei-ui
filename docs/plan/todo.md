@@ -4,13 +4,13 @@
 
 ## 当前阶段
 
-> 尚未进入正式开发阶段。以下为 Phase 0 的启动准备项，需用户确认后开始。
+> Phase 0 已启动：P0-1 已完成，其余条目按序推进。
 
 ### Phase 0：立项与 POC
 
-状态：**待启动**
+状态：**进行中**
 
-- [ ] **P0-1 确定组件前缀**：`Caomei` 或短别名 `Cao`，冻结组件命名前缀。
+- [x] **P0-1 确定组件前缀**：已冻结为 `Caomei`；组件目录与文件采用 kebab-case，对外名称使用 `Caomei` + PascalCase（如 `CaomeiButton`）。
 - [ ] **P0-2 tsdown POC**：验证 tsdown 构建 Vue SFC + Reka UI，确认 external、CSS 抽取、类型声明、子路径导出可行。
 - [ ] **P0-3 设计 token 草案**：产出 `--caomei-*` CSS variables 与暗色模式方案。
 - [ ] **P0-4 仓库与基建就绪**：AI 基建（agents / skills / 镜像）与文档基建（standards / plan / design / 文档站）落地。

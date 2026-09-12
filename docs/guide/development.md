@@ -31,7 +31,7 @@ pnpm install
 
 ```
 src/
-├─ components/    # 组件（kebab-case 目录 + PascalCase.vue）
+├─ components/    # 组件（kebab-case 目录 + kebab-case.vue）
 ├─ composables/   # useToast / useConfirm / useDialog / useTheme
 ├─ locale/        # 组件内建文案
 ├─ styles/        # tokens 与基础样式
@@ -47,7 +47,7 @@ test/             # 测试
 ## 新增组件流程
 
 1. 在 `docs/design/components.md` 确认组件是否在组件集内；不在则先走 [Backlog](/plan/backlog)。
-2. 创建 `src/components/<name>/`：`<Name>.vue` + `types.ts` + `index.ts`。
+2. 创建 `src/components/<name>/`：`<name>.vue` + `types.ts` + `index.ts`（目录与文件均 kebab-case）。
 3. 在 `src/index.ts` 导出组件与类型。
 4. 补充单元测试与组件文档。
 5. 通过质量门与 `@code-reviewer` Review Gate。
@@ -59,5 +59,5 @@ test/             # 测试
 ## 注意事项
 
 - **禁止引入 Tailwind / UnoCSS**。
-- 组件前缀统一 `Caomei`。
+- 组件前缀统一 `Caomei`；组件目录与文件命名统一 kebab-case。
 - 公共 API 变更须考虑向后兼容。

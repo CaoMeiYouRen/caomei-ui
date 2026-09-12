@@ -20,7 +20,7 @@
 
 ```
 src/
-├─ components/<name>/     # 单个组件（PascalCase.vue + types.ts + index.ts）
+├─ components/<name>/     # 单个组件（kebab-case 目录 + kebab-case.vue + types.ts + index.ts）
 ├─ composables/           # useToast / useConfirm / useDialog / useTheme
 ├─ locale/                # 组件内建文案（zh-CN / en-US）
 ├─ styles/                # tokens 与基础样式
@@ -36,8 +36,8 @@ test/                     # 单元与 E2E 测试
 
 ## 3. 命名约定
 
-- 文件：`kebab-case.ts` / `kebab-case.vue`（组件目录用 `kebab-case`）。
-- 组件：`PascalCase.vue`，对外名称带 `Caomei` 前缀（如 `CaomeiButton`）。
+- 目录与文件：统一 `kebab-case`；组件目录与组件文件均为 kebab-case（如 `components/data-table/data-table.vue`）。
+- 组件对外名称：`Caomei` + `PascalCase`（如 `CaomeiButton`、`CaomeiDataTable`）；模板中亦可写作 kebab-case（如 `<caomei-button>`）。
 - 常量：`UPPER_SNAKE_CASE`。
 - 类型/接口：`PascalCase`，优先 `interface`（联合类型用 `type`）。
 - 工具函数：`camelCase`。

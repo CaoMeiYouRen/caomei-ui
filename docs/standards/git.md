@@ -30,7 +30,7 @@
 
 ## 5. 分支策略
 
-- 默认在主分支（`main` / `master`）之外按任务开分支。
+- 仓库主分支为 `master`；默认在 `master` 之外按任务开分支。
 - 分支命名：`feat/<scope>`、`fix/<scope>`、`docs/<scope>`、`chore/<scope>`。
 - 合并前确保 CI 通过且质量门通过。
 

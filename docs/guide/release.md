@@ -6,6 +6,8 @@
 
 > 不使用 changesets（本项目为单包，semantic-release 是标准场景）。
 
+> **当前状态（Phase 0）**：`release.yml` 已就位，但发布步骤尚未启用；待配置 npm 凭据（`NPM_TOKEN` 或 npm Trusted Publisher / OIDC）后再放开。
+
 ## 版本推断
 
 | 提交类型 | 版本变化 |
@@ -18,8 +20,8 @@
 ## 发布流程
 
 1. 提交遵循 Conventional Commits（经 `conventional-committer` skill）。
-2. push 到主分支后 CI 触发 semantic-release。
-3. 自动执行：
+2. push 到 `master` 后触发 `release.yml` 的 semantic-release（发布步骤当前未启用）。
+3. 启用后自动执行：
    - 推断版本号；
    - 生成/更新 `CHANGELOG.md`；
    - 发布 npm 包 `caomei-ui`；

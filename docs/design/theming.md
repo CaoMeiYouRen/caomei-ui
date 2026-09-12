@@ -47,6 +47,7 @@
   --caomei-color-text: #f5f5f5;
   --caomei-color-text-muted: #a1a1aa;
   --caomei-color-border: #2a2a2e;
+  --caomei-color-danger: #f87171;
 }
 ```
 

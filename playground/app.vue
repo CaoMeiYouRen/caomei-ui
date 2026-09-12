@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiSwitch, useTheme } from '@/index'
+import { CaomeiButton, CaomeiDialog, CaomeiIcon, CaomeiInput, CaomeiSwitch, useTheme } from '@/index'
 import { Check, Settings } from '@lucide/vue'
 
 const open = ref(false)
 const checked = ref(true)
 const loading = ref(false)
+const keyword = ref('')
+const invalidValue = ref('')
 const { mode, isDark, setMode } = useTheme('light')
 
 watchEffect(() => {
@@ -72,6 +74,33 @@ async function triggerLoading(): Promise<void> {
         </section>
 
         <section class="playground__section">
+            <h2>输入框</h2>
+            <div class="playground__column">
+                <CaomeiInput
+                    v-model="keyword"
+                    clearable
+                    placeholder="请输入内容"
+                />
+                <CaomeiInput
+                    v-model="keyword"
+                    size="sm"
+                    placeholder="小尺寸"
+                />
+                <CaomeiInput
+                    v-model="keyword"
+                    size="lg"
+                    disabled
+                    placeholder="禁用"
+                />
+                <CaomeiInput
+                    v-model="invalidValue"
+                    invalid
+                    placeholder="校验失败"
+                />
+            </div>
+        </section>
+
+        <section class="playground__section">
             <h2>其他</h2>
             <div class="playground__row">
                 <CaomeiButton variant="secondary" @click="open = true">
@@ -125,5 +154,12 @@ async function triggerLoading(): Promise<void> {
     flex-wrap: wrap;
     align-items: center;
     gap: var(--caomei-space-3);
+}
+
+.playground__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-2);
+    max-width: 320px;
 }
 </style>

@@ -28,9 +28,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsdown",
-    "build:app": "vite build --outDir dist-app --emptyOutDir",
     "build:watch": "tsdown --watch",
-    "preview": "vite preview --outDir dist-app",
     "lint": "cross-env NODE_ENV=production eslint . --fix",
     "lint:check": "cross-env NODE_ENV=production eslint . --max-warnings 10",
     "lint:css": "stylelint src/**/*.{html,css,scss,sass,vue} --fix",
@@ -58,10 +56,8 @@
     "release": "semantic-release"
   },
   "dependencies": {
-    "normalize.css": "^8.0.1",
-    "pinia": "^4.0.3",
-    "reka-ui": "^2.10.4",
-    "vue-router": "^5.3.1"
+    "@lucide/vue": "^1.45.0",
+    "reka-ui": "^2.10.4"
   },
   "devDependencies": {
     "@lint-md/cli": "^2.3.1",
@@ -91,7 +87,6 @@
     "typescript": "^5.9.3",
     "unplugin-vue": "^7.2.0",
     "vite": "^8.2.2",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitepress": "^1.6.4",
     "vitest": "^3.2.4",
     "vue": "^3.5.42",

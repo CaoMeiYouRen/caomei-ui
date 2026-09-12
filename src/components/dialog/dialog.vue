@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { X } from '@lucide/vue'
 import {
     DialogClose,
     DialogContent,
@@ -9,11 +10,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from 'reka-ui'
+import { CaomeiIcon } from '../../icons'
+import { defaultLocaleMessages } from '../../locale'
 import type { DialogProps } from './types'
 
 withDefaults(defineProps<DialogProps>(), {
     description: '',
-    closeLabel: '关闭',
+    closeLabel: defaultLocaleMessages.dialog.close,
 })
 
 const open = defineModel<boolean>('open', { default: false })
@@ -35,7 +38,7 @@ const open = defineModel<boolean>('open', { default: false })
                 </DialogDescription>
                 <slot />
                 <DialogClose class="caomei-dialog__close" :aria-label="closeLabel">
-                    ×
+                    <CaomeiIcon :icon="X" />
                 </DialogClose>
             </DialogContent>
         </DialogPortal>

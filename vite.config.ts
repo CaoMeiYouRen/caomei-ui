@@ -1,29 +1,21 @@
-import path from 'path'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
-// https://vitejs.dev/config/
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+// 开发/演示环境：仅用于本地调试组件，库产物由 tsdown 构建。
 export default defineConfig({
-    plugins: [
-        vue(),
-        tsconfigPaths(),
-    ],
+    root: 'playground',
+    plugins: [vue()],
     server: {
         port: 4400,
         open: true,
-        proxy: {},
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'src'),
+            '@': path.resolve(dirname, 'src'),
         },
-    },
-    build: {
-        chunkSizeWarningLimit: 1024,
-        minify: 'esbuild',
-    },
-    define: {
-        'process.env': {},
     },
 })

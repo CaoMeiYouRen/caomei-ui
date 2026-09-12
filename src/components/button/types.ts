@@ -1,8 +1,10 @@
+import type { ComponentSize, ComponentVariant } from '../../types'
+
 export interface ButtonProps {
     /** 视觉变体 */
-    variant?: 'primary' | 'secondary' | 'ghost'
+    variant?: ComponentVariant
     /** 尺寸 */
-    size?: 'sm' | 'md' | 'lg'
+    size?: ComponentSize
     /** 是否禁用 */
     disabled?: boolean
     /** 原生 button type */

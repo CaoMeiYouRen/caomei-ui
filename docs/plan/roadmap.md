@@ -40,4 +40,4 @@
 
 ## 5. 归档索引
 
-已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)。当前尚无已归档阶段。
+已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)。Phase 0（立项与 POC）已归档。

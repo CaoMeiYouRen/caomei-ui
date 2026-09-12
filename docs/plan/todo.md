@@ -4,17 +4,21 @@
 
 ## 当前阶段
 
-> Phase 0 已启动：P0-1 已完成，其余条目按序推进。
+> Phase 0 已完成并归档，进入 Phase 1（Tier 0 组件实现）。
 
-### Phase 0：立项与 POC
+### Phase 1：Tier 0 组件
 
 状态：**进行中**
 
-- [x] **P0-1 确定组件前缀**：已冻结为 `Caomei`；组件目录与文件采用 kebab-case，对外名称使用 `Caomei` + PascalCase（如 `CaomeiButton`）。
-- [x] **P0-2 tsdown POC**：已验证（tsdown 0.23.0 + unplugin-vue 7.2.0 + @tsdown/css 0.23.0），结论见 [架构设计 §4.1](../design/architecture.md)；产物为 `.js` / `.d.ts`，`pnpm build` 已切换为库构建。
-- [ ] **P0-3 设计 token 草案**：产出 `--caomei-*` CSS variables 与暗色模式方案。
-- [ ] **P0-4 仓库与基建就绪**：AI 基建（agents / skills / 镜像）与文档基建（standards / plan / design / 文档站）落地。
-- [x] **P0-5 组件目录骨架**：已建立 `src/components/`、`composables/`、`styles/`、`locale/`、`icons/`、`resolver/`、`nuxt/`、`types.ts`、`index.ts`，并将开发环境收敛为 `playground/`，移除旧 Vite 应用脚手架。
+- [x] **Button**：原生 `button` + 变体/尺寸，含 `loading` / `block` / `icon` 插槽与首个单元测试；已通过 Review Gate。
+- [ ] **DataTable + Column**：基于 `@tanstack/vue-table`，含列定义与空态。
+- [ ] **Input**：统一 `InputText` / `Password` / `Textarea` / `InputNumber`。
+- [ ] **Tag / Badge**：`span` + 变体。
+- [ ] **Select**：基于 Reka UI `Select`。
+- [ ] **Dialog**：基于 Reka UI `Dialog`，处理 Portal / SSR。
+- [ ] **Toast**：基于 Reka UI `Toast` + `useToast` 服务封装。
+- [ ] **Card**：布局容器 + 变体。
+- [ ] **Checkbox**：基于 Reka UI `Checkbox`。
 
 ## 说明
 

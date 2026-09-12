@@ -19,6 +19,8 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 国际文字内置文案补全 | 组件内建文案完整覆盖 zh-CN / en-US | 中 |
+| 组件覆盖率门禁 | 待 Tier 0 组件基本实现后，在 `vitest` 配置中启用 `coverage.thresholds` ≥ 80% | 中 |
+| Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式 | 低 |

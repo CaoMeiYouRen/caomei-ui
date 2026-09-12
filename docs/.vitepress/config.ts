@@ -59,6 +59,7 @@ export default defineConfig({
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Toast 轻提示', link: '/components/toast' },
+                        { text: 'Card 卡片', link: '/components/card' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

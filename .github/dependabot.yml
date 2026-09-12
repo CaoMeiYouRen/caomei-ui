@@ -6,11 +6,11 @@ updates:
     schedule:
       interval: monthly
       timezone: Asia/Shanghai
-      time: 04:00
+      time: "04:00"
   - package-ecosystem: github-actions
     directory: /
     open-pull-requests-limit: 20
     schedule:
       interval: monthly
-      time: 04:00
+      time: "04:00"
       timezone: Asia/Shanghai

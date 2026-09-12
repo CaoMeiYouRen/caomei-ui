@@ -87,13 +87,14 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 1em;
     border: 1px solid transparent;
     border-radius: 999px;
     font-family: var(--caomei-font-sans);
+    font-variant-numeric: tabular-nums;
     line-height: 1;
     white-space: nowrap;
     vertical-align: middle;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .caomei-badge-wrapper > .caomei-badge {
@@ -144,18 +145,21 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
 }
 
 .caomei-badge--sm {
+    min-width: 16px;
     height: 16px;
-    padding: 0 var(--caomei-space-1);
+    padding: 0 2px;
     font-size: var(--caomei-font-size-sm);
 }
 
 .caomei-badge--md {
+    min-width: 20px;
     height: 20px;
     padding: 0 var(--caomei-space-1);
     font-size: var(--caomei-font-size-sm);
 }
 
 .caomei-badge--lg {
+    min-width: var(--caomei-control-height-sm);
     height: var(--caomei-control-height-sm);
     padding: 0 var(--caomei-space-2);
     font-size: var(--caomei-font-size-md);
@@ -171,5 +175,11 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
 .caomei-badge--dot.caomei-badge--lg {
     width: 10px;
     height: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .caomei-badge {
+        transition: none;
+    }
 }
 </style>

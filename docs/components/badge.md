@@ -4,7 +4,7 @@
 
 ## 基础用法
 
-通过 `value` 展示数字或文本。
+通过 `value` 展示数字或文本；单个数字或窄字符渲染为正圆，多字符自动撑为胶囊。
 
 <demo
     vue="../examples/badge/basic.vue"

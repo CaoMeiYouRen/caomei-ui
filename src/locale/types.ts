@@ -1,4 +1,8 @@
 export interface CaomeiLocaleMessages {
+    confirm: {
+        confirm: string
+        cancel: string
+    }
     dialog: {
         close: string
     }

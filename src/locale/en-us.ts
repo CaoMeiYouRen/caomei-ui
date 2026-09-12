@@ -1,6 +1,10 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const enUS: CaomeiLocaleMessages = {
+    confirm: {
+        confirm: 'Confirm',
+        cancel: 'Cancel',
+    },
     dialog: {
         close: 'Close',
     },

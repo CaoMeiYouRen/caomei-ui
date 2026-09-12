@@ -1,6 +1,10 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhCN: CaomeiLocaleMessages = {
+    confirm: {
+        confirm: '确定',
+        cancel: '取消',
+    },
     dialog: {
         close: '关闭',
     },

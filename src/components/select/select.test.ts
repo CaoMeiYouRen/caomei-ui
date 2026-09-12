@@ -1,7 +1,14 @@
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import { CaomeiSelect } from './index'
+
+afterEach(() => {
+    document.body.style.overflow = ''
+    document.body.style.pointerEvents = ''
+    document.body.style.paddingRight = ''
+    document.body.style.marginRight = ''
+})
 
 const options = [
     { label: '苹果', value: 'apple' },
@@ -103,6 +110,36 @@ describe('CaomeiSelect', () => {
         expect(rendered).toHaveLength(3)
         expect(rendered[0].textContent).toContain('苹果')
         expect(rendered[2].hasAttribute('data-disabled')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('展开时默认不锁定页面滚动', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+
+        expect(document.body.style.overflow).not.toBe('hidden')
+
+        wrapper.unmount()
+    })
+
+    it('bodyLock 开启时锁定页面滚动', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options, bodyLock: true },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+
+        expect(document.body.style.overflow).toBe('hidden')
 
         wrapper.unmount()
     })

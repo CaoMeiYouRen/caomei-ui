@@ -21,9 +21,14 @@
   --caomei-color-text: #1a1a1a;
   --caomei-color-text-muted: #6b7280;
   --caomei-color-border: #e5e7eb;
-  --caomei-color-success: #16a34a;
-  --caomei-color-warning: #d97706;
+  --caomei-color-success: #15803d;
+  --caomei-color-warning: #b45309;
   --caomei-color-danger: #dc2626;
+  --caomei-color-primary-solid: #e63946;
+  --caomei-color-success-solid: #15803d;
+  --caomei-color-warning-solid: #b45309;
+  --caomei-color-danger-solid: #dc2626;
+  --caomei-color-neutral-solid: #52525b;
 
   --caomei-radius-sm: 4px;
   --caomei-radius-md: 8px;
@@ -48,8 +53,12 @@
   --caomei-color-text-muted: #a1a1aa;
   --caomei-color-border: #2a2a2e;
   --caomei-color-danger: #f87171;
+  --caomei-color-success: #4ade80;
+  --caomei-color-warning: #fbbf24;
 }
 ```
+
+`--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，保证暗色下白字对比度。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
 
 ## 3. 主题切换
 
@@ -69,6 +78,8 @@
 3. 通过组件 `class` / 样式透传做局部覆盖。
 
 不提供 Tailwind preset 作为内置依赖；如需为 Tailwind 用户提供 token 映射，另作可选文档。
+
+> `solid` 变体的实底色由 `--caomei-color-<tone>-solid` 控制，该组 token 跨主题稳定（不随明暗切换），以保证白字对比度；替换品牌强调色时需同时覆盖对应 `-solid`。
 
 ## 5. 响应式
 

@@ -2,6 +2,13 @@
     --caomei-color-primary: #e63946;
     --caomei-color-primary-foreground: #fff;
     --caomei-color-danger: #dc2626;
+    --caomei-color-success: #15803d;
+    --caomei-color-warning: #b45309;
+    --caomei-color-primary-solid: #e63946;
+    --caomei-color-danger-solid: #dc2626;
+    --caomei-color-success-solid: #15803d;
+    --caomei-color-warning-solid: #b45309;
+    --caomei-color-neutral-solid: #52525b;
     --caomei-color-bg: #fff;
     --caomei-color-bg-elevated: #f7f7f8;
     --caomei-color-text: #1a1a1a;
@@ -30,4 +37,6 @@
     --caomei-color-text-muted: #a1a1aa;
     --caomei-color-border: #2a2a2e;
     --caomei-color-danger: #f87171;
+    --caomei-color-success: #4ade80;
+    --caomei-color-warning: #fbbf24;
 }

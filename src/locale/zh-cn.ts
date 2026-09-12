@@ -14,6 +14,9 @@ const zhCN: CaomeiLocaleMessages = {
     tag: {
         close: '删除',
     },
+    table: {
+        empty: '暂无数据',
+    },
     toast: {
         label: '通知',
         viewport: '通知 ({hotkey})',

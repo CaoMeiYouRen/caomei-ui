@@ -12,6 +12,9 @@ export interface CaomeiLocaleMessages {
     tag: {
         close: string
     }
+    table: {
+        empty: string
+    }
     toast: {
         label: string
         viewport: string

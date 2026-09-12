@@ -14,6 +14,9 @@ const enUS: CaomeiLocaleMessages = {
     tag: {
         close: 'Remove',
     },
+    table: {
+        empty: 'No data',
+    },
     toast: {
         label: 'Notification',
         viewport: 'Notifications ({hotkey})',

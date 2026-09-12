@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
     disabled: false,
     invalid: false,
     required: false,
+    text: '',
     label: '',
 })
 
@@ -25,9 +26,18 @@ const model = defineModel<CheckboxState>()
 const slots = useSlots()
 const generatedId = useId()
 const checkboxId = computed(() => props.id ?? `caomei-checkbox-${generatedId}`)
-const hasLabel = computed(() => Boolean(props.label || slots.default))
+const hasText = computed(() => Boolean(props.text || slots.default))
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
+
+/** label 属性优先于透传的 aria-label，二者都缺省时交由 Reka 从可见标签推导 */
+const forwardedAttrs = computed<Record<string, unknown>>(() => {
+    const merged = { ...controlAttrs.value }
+    if (props.label) {
+        merged['aria-label'] = props.label
+    }
+    return merged
+})
 
 const rootClass = computed(() => [
     `caomei-checkbox--${props.size}`,
@@ -45,7 +55,7 @@ const rootClass = computed(() => [
         :class="rootClass"
     >
         <CheckboxRoot
-            v-bind="controlAttrs"
+            v-bind="forwardedAttrs"
             :id="checkboxId"
             v-model="model"
             class="caomei-checkbox__control"
@@ -71,11 +81,11 @@ const rootClass = computed(() => [
             </template>
         </CheckboxRoot>
         <label
-            v-if="hasLabel"
+            v-if="hasText"
             class="caomei-checkbox__label"
             :for="checkboxId"
         >
-            <slot>{{ label }}</slot>
+            <slot>{{ text }}</slot>
         </label>
     </div>
 </template>

@@ -7,23 +7,23 @@ const indeterminate = ref<boolean | 'indeterminate'>('indeterminate')
 
 <template>
     <div class="demo-col">
-        <CaomeiCheckbox :model-value="true" label="选中" />
-        <CaomeiCheckbox :model-value="false" label="未选中" />
-        <CaomeiCheckbox v-model="indeterminate" label="半选（indeterminate，点击后选中）" />
+        <CaomeiCheckbox :model-value="true" text="选中" />
+        <CaomeiCheckbox :model-value="false" text="未选中" />
+        <CaomeiCheckbox v-model="indeterminate" text="半选（indeterminate，点击后选中）" />
         <CaomeiCheckbox
             :model-value="true"
             disabled
-            label="禁用 · 选中"
+            text="禁用 · 选中"
         />
         <CaomeiCheckbox
             :model-value="false"
             disabled
-            label="禁用 · 未选中"
+            text="禁用 · 未选中"
         />
         <CaomeiCheckbox
             :model-value="false"
             invalid
-            label="校验失败"
+            text="校验失败"
         />
     </div>
 </template>

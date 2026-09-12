@@ -11,7 +11,7 @@ const sizes = ['sm', 'md', 'lg'] as const
             :key="size"
             :size="size"
             :model-value="true"
-            :label="`size: ${size}`"
+            :text="`size: ${size}`"
         />
     </div>
 </template>

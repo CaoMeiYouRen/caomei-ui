@@ -30,7 +30,7 @@ function toggle(value: string, state: CheckboxState): void {
             v-for="item in fruits"
             :key="item.value"
             :model-value="isSelected(item.value)"
-            :label="item.label"
+            :text="item.label"
             @update:model-value="(state) => toggle(item.value, state)"
         />
         <p class="demo-state">

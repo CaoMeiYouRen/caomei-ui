@@ -4,7 +4,7 @@
 
 ## 基础用法
 
-通过 `v-model` 双向绑定选中状态（`boolean`），`label` 提供可见标签，也可用默认插槽自定义标签内容。
+通过 `v-model` 双向绑定选中状态（`boolean`），`text` 提供可见标签，也可用默认插槽自定义标签内容。
 
 <demo
     vue="../examples/checkbox/basic.vue"
@@ -45,7 +45,7 @@
 
 ```vue
 <form>
-  <CaomeiCheckbox v-model="agree" name="agree" value="yes" required label="同意条款" />
+  <CaomeiCheckbox v-model="agree" name="agree" value="yes" required text="同意条款" />
   <button type="submit">提交</button>
 </form>
 ```
@@ -56,7 +56,9 @@
 
 - 控件基于 Reka UI 渲染为 `role="checkbox"` 的按钮，支持键盘聚焦与空格切换。
 - `aria-checked` 输出 `true` / `false` / `mixed`；`required` 映射 `aria-required`。
-- `label` 属性或默认插槽渲染为 `<label for>`，与控件自动关联；无可见标签时可通过 `aria-label` 等属性透传提供可访问名。
+- `text` 属性或默认插槽渲染为 `<label for>`，与控件自动关联。
+- 无可见标签（如需保持布局紧凑）时用 `label` 提供可访问名，映射控件 `aria-label`。
+- 同时提供可见文本与 `label` 时，`label` 应包含或等于可见文本，避免可访问名与可见文案分叉（WCAG 2.5.3）。
 
 ## 样式定制
 

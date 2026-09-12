@@ -23,5 +23,7 @@ export interface CheckboxProps {
     /** 关联 label 的 id，缺省自动生成 */
     id?: string
     /** 可见标签文本（也可用默认插槽自定义） */
+    text?: string
+    /** 无可见标签时的可访问名，映射 aria-label */
     label?: string
 }

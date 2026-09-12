@@ -89,14 +89,36 @@ describe('CaomeiCheckbox', () => {
         expect(getControl(wrapper).attributes('aria-required')).toBeUndefined()
     })
 
-    it('label 属性渲染可见标签并关联到控件', () => {
-        const wrapper = mount(CaomeiCheckbox, { props: { label: '同意条款' } })
+    it('text 属性渲染可见标签并关联到控件', () => {
+        const wrapper = mount(CaomeiCheckbox, { props: { text: '同意条款' } })
 
         const controlId = getControl(wrapper).attributes('id')
         const label = wrapper.get('.caomei-checkbox__label')
         expect(controlId).toBeTruthy()
         expect(label.attributes('for')).toBe(controlId)
         expect(label.text()).toBe('同意条款')
+    })
+
+    it('label 属性映射控件 aria-label', () => {
+        const wrapper = mount(CaomeiCheckbox, { props: { label: '订阅通知' } })
+
+        expect(getControl(wrapper).attributes('aria-label')).toBe('订阅通知')
+    })
+
+    it('label 属性优先于透传的 aria-label', () => {
+        const wrapper = mount(CaomeiCheckbox, {
+            props: { label: '属性名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+
+        expect(getControl(wrapper).attributes('aria-label')).toBe('属性名')
+    })
+
+    it('仅 label 时不渲染可见标签元素', () => {
+        const wrapper = mount(CaomeiCheckbox, { props: { label: '仅可访问名' } })
+
+        expect(wrapper.find('.caomei-checkbox__label').exists()).toBe(false)
+        expect(getControl(wrapper).attributes('aria-label')).toBe('仅可访问名')
     })
 
     it('默认插槽自定义标签内容', () => {
@@ -114,7 +136,7 @@ describe('CaomeiCheckbox', () => {
     })
 
     it('自定义 id 同时用于控件与 label', () => {
-        const wrapper = mount(CaomeiCheckbox, { props: { id: 'agree', label: '同意' } })
+        const wrapper = mount(CaomeiCheckbox, { props: { id: 'agree', text: '同意' } })
 
         expect(getControl(wrapper).attributes('id')).toBe('agree')
         expect(wrapper.get('.caomei-checkbox__label').attributes('for')).toBe('agree')

@@ -3,6 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import ComponentApi from './components/component-api.vue'
 import Layout from './layout.vue'
 import '../../../src/styles/index.css'
+import './motion.css'
 
 export default {
     extends: DefaultTheme,

@@ -31,7 +31,7 @@
 
 - 根节点为 `role="progressbar"`；不确定进度下不输出 `aria-valuenow`。
 - 可访问名默认取当前语言的「加载中」，可用 `label` 覆盖；相邻可见文本建议与 `label` 保持一致。
-- 遵循 `prefers-reduced-motion`：减弱动画时降低旋转速度（保留运动以表达进行中）。使用方全局的 reduced-motion 规则可能完全停用动画。
+- 遵循 `prefers-reduced-motion`：减弱动画时放慢旋转而非停止（保留运动以表达进行中）。使用方全局的 reduced-motion 规则（如 VitePress 默认主题的 `* { animation-duration: 1ms !important }`）可能完全停用动画；文档站已就地恢复该减速旋转以保证演示可见。
 
 ## 样式定制
 

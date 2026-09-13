@@ -215,6 +215,7 @@ export default defineConfig({
                                 { text: 'InputNumber', link: '/en-US/components/input-number' },
                                 { text: 'Password', link: '/en-US/components/password' },
                                 { text: 'Select', link: '/en-US/components/select' },
+                                { text: 'MultiSelect', link: '/en-US/components/multi-select' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
                                 { text: 'Card', link: '/en-US/components/card' },

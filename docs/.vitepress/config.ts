@@ -240,6 +240,7 @@ export default defineConfig({
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
                                 { text: 'Popover', link: '/en-US/components/popover' },
                                 { text: 'Tag', link: '/en-US/components/tag' },
+                                { text: 'Badge', link: '/en-US/components/badge' },
                             ],
                         },
                     ],

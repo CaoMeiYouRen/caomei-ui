@@ -38,6 +38,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [DropdownMenu](/en-US/components/dropdown-menu)
 - [Popover](/en-US/components/popover)
 - [Tag](/en-US/components/tag)
+- [Badge](/en-US/components/badge)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -77,3 +78,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [DropdownMenu 下拉菜单](/components/dropdown-menu)
 - [Popover 浮层](/components/popover)
 - [Tag 标签](/components/tag)
+- [Badge 徽标](/components/badge)

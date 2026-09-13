@@ -57,3 +57,41 @@ export interface DropdownMenuContentProps {
     /** 强制挂载（供外部控制动画） */
     forceMount?: boolean
 }
+
+export interface DropdownMenuItemProps {
+    /**
+     * 是否禁用
+     * @default false
+     */
+    disabled?: boolean
+    /** 复杂内容时用于 typeahead 的文本 */
+    textValue?: string
+    /** 右侧快捷键提示文本 */
+    shortcut?: string
+}
+
+export interface DropdownMenuCheckboxItemProps {
+    /**
+     * 是否禁用
+     * @default false
+     */
+    disabled?: boolean
+    /** 复杂内容时用于 typeahead 的文本 */
+    textValue?: string
+    /** 右侧快捷键提示文本 */
+    shortcut?: string
+}
+
+export interface DropdownMenuRadioItemProps {
+    /** 选项值，需在同一个 RadioGroup 内唯一 */
+    value: string | number
+    /**
+     * 是否禁用
+     * @default false
+     */
+    disabled?: boolean
+    /** 复杂内容时用于 typeahead 的文本 */
+    textValue?: string
+    /** 右侧快捷键提示文本 */
+    shortcut?: string
+}

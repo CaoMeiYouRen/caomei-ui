@@ -214,6 +214,8 @@ export default defineConfig({
                                 { text: 'Checkbox', link: '/en-US/components/checkbox' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
+                                { text: 'Toast', link: '/en-US/components/toast' },
+                                { text: 'Card', link: '/en-US/components/card' },
                             ],
                         },
                     ],

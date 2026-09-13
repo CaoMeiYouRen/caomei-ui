@@ -12,12 +12,14 @@ Component pages are translated incrementally, in order. Pages available in Engli
 - [Checkbox](/en-US/components/checkbox)
 - [Dialog](/en-US/components/dialog)
 - [DataTable](/en-US/components/data-table)
+- [Toast](/en-US/components/toast)
+- [Card](/en-US/components/card)
 
 Until a page is translated, refer to the Chinese documentation.
 
 ## Chinese documentation
 
-The complete component documentation is currently available in Chinese:
+Components that are not translated yet are available in Chinese only. The Chinese pages for the components above are:
 
 - [Button 按钮](/components/button)
 - [Input 输入框](/components/input)
@@ -25,3 +27,5 @@ The complete component documentation is currently available in Chinese:
 - [Checkbox 复选框](/components/checkbox)
 - [Dialog 对话框](/components/dialog)
 - [DataTable 表格](/components/data-table)
+- [Toast 轻提示](/components/toast)
+- [Card 卡片](/components/card)

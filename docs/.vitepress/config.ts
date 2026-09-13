@@ -222,6 +222,7 @@ export default defineConfig({
                                 { text: 'RadioGroup', link: '/en-US/components/radio-group' },
                                 { text: 'Slider', link: '/en-US/components/slider' },
                                 { text: 'ToggleButton', link: '/en-US/components/toggle-button' },
+                                { text: 'Toolbar', link: '/en-US/components/toolbar' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                             ],
                         },

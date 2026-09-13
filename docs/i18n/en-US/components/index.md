@@ -20,6 +20,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [RadioGroup](/en-US/components/radio-group)
 - [Slider](/en-US/components/slider)
 - [ToggleButton](/en-US/components/toggle-button)
+- [Toolbar](/en-US/components/toolbar)
 - [DataTable](/en-US/components/data-table)
 
 Until a page is translated, refer to the Chinese documentation.
@@ -42,4 +43,5 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [RadioGroup 单选组](/components/radio-group)
 - [Slider 滑块](/components/slider)
 - [ToggleButton 开关按钮](/components/toggle-button)
+- [Toolbar 工具条](/components/toolbar)
 - [DataTable 表格](/components/data-table)

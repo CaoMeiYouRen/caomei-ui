@@ -197,6 +197,7 @@ export default defineConfig({
                         { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Accordion 折叠面板', link: '/components/accordion' },
                         { text: 'DropdownMenu 下拉菜单', link: '/components/dropdown-menu' },
+                        { text: 'Popover 浮层', link: '/components/popover' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

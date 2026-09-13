@@ -185,6 +185,7 @@ export default defineConfig({
                         { text: 'Card 卡片', link: '/components/card' },
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
                         { text: 'Switch 开关', link: '/components/switch' },
+                        { text: 'RadioGroup 单选组', link: '/components/radio-group' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },

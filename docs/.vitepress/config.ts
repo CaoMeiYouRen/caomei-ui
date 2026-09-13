@@ -192,6 +192,7 @@ export default defineConfig({
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },
+                        { text: 'Skeleton 骨架屏', link: '/components/skeleton' },
                         { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Accordion 折叠面板', link: '/components/accordion' },
                         { text: 'DropdownMenu 下拉菜单', link: '/components/dropdown-menu' },

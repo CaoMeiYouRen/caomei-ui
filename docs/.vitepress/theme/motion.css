@@ -2,16 +2,22 @@
   VitePress 默认主题在 prefers-reduced-motion: reduce 下注入
   `* { animation-duration: 1ms !important; animation-iteration-count: 1 !important }`，
   会把加载指示器压成静止、失去「进行中」语义。
-  这里恢复组件自身在 reduced-motion 下的减速旋转（1.6s），使文档站演示仍可见；
+  这里恢复组件自身在 reduced-motion 下的减速动画，使文档站演示仍可见；
   仅作用于文档站，组件库本身保持低特异性。
 
-  仅覆盖 ProgressSpinner：其旋转是「进行中」的唯一语义来源；Button 内 spinner 为装饰性
-  （aria-hidden，加载态由 aria-busy 与禁用态承载），且其 keyframes 名被 scoped 重写、
-  无法在文档层引用，故不在此恢复。
+  仅覆盖承载「加载进行中」视觉语义的动画：ProgressSpinner 的旋转、Skeleton 的占位脉冲/扫光。
+  Button 内 spinner 虽同属加载态，但其加载语义由按钮 aria-busy 与禁用态承载，属纯装饰，
+  且其 keyframes 名被 scoped 重写、无法在文档层引用，故不在此恢复。
 */
 @media (prefers-reduced-motion: reduce) {
     .caomei-progress-spinner__indicator {
         animation-duration: 1.6s !important;
+        animation-iteration-count: infinite !important;
+    }
+
+    .caomei-skeleton--pulse .caomei-skeleton__line,
+    .caomei-skeleton--wave .caomei-skeleton__line::after {
+        animation-duration: 2.4s !important;
         animation-iteration-count: infinite !important;
     }
 }

@@ -4,14 +4,14 @@
 
 ## 当前阶段
 
-> Phase 0 / Phase 1 / Phase 2 已完成并归档（见 [待办归档](./todo-archive.md)）。Phase 3（Tier 2 组件）已由用户决策启动。
+> Phase 0 / Phase 1 / Phase 2 已完成并归档（见 [待办归档](./todo-archive.md)）。Phase 3（Tier 2 组件）四条主线已完成，待归档（Phase 4 启动待用户决策）。
 >
 > 用户决策：优先推进 Tier 2 组件实现（清单见 [组件设计 §4](../design/components.md)）；文档站增强、首版发布与下游接入顺延至 Phase 4+。
 > 验收沿用前阶段基线；覆盖率 ≥80% 作为目标，现阶段不强制（门禁启用见 [Backlog](./backlog.md)）。
 
 ### Phase 3：Tier 2 组件
 
-状态：**进行中**
+状态：**已完成（待归档）**
 
 > 实现粒度：单条目若超过 10 文件 / 800 行，按子件拆分（如 TabList / TabTrigger / TabContent、菜单条目类型）为多次提交。
 
@@ -46,5 +46,5 @@
 - 非目标：Image 不做 `srcset` 与跨域处理；FileUpload 不做上传传输（分片 / 断点续传由业务层负责，组件只负责选择与列表管理）
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证，并通过 Review Gate
 
-- [ ] **Image**：自建懒加载图片，支持 `src` / `alt` / `ratio`、加载中与失败占位。
-- [ ] **FileUpload**：自建文件选择 / 拖拽，支持 `v-model` 文件列表、`accept` / `multiple` / 禁用与列表移除。
+- [x] **Image**：自建懒加载图片，支持 `src` / `alt` / `ratio`、加载中与失败占位。
+- [x] **FileUpload**：自建文件选择 / 拖拽，支持 `v-model` 文件列表、`accept` / `multiple` / 禁用与列表移除。

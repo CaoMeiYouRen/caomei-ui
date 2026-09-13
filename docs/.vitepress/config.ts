@@ -234,6 +234,7 @@ export default defineConfig({
                                 { text: 'Paginator', link: '/en-US/components/paginator' },
                                 { text: 'ProgressSpinner', link: '/en-US/components/progress-spinner' },
                                 { text: 'ProgressBar', link: '/en-US/components/progress-bar' },
+                                { text: 'Skeleton', link: '/en-US/components/skeleton' },
                             ],
                         },
                     ],

@@ -32,6 +32,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Paginator](/en-US/components/paginator)
 - [ProgressSpinner](/en-US/components/progress-spinner)
 - [ProgressBar](/en-US/components/progress-bar)
+- [Skeleton](/en-US/components/skeleton)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -65,3 +66,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [Paginator 分页](/components/paginator)
 - [ProgressSpinner 加载指示](/components/progress-spinner)
 - [ProgressBar 进度条](/components/progress-bar)
+- [Skeleton 骨架屏](/components/skeleton)

@@ -233,6 +233,7 @@ export default defineConfig({
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                                 { text: 'Paginator', link: '/en-US/components/paginator' },
                                 { text: 'ProgressSpinner', link: '/en-US/components/progress-spinner' },
+                                { text: 'ProgressBar', link: '/en-US/components/progress-bar' },
                             ],
                         },
                     ],

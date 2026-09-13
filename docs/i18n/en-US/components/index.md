@@ -31,6 +31,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [DataTable](/en-US/components/data-table)
 - [Paginator](/en-US/components/paginator)
 - [ProgressSpinner](/en-US/components/progress-spinner)
+- [ProgressBar](/en-US/components/progress-bar)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -63,3 +64,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [DataTable 表格](/components/data-table)
 - [Paginator 分页](/components/paginator)
 - [ProgressSpinner 加载指示](/components/progress-spinner)
+- [ProgressBar 进度条](/components/progress-bar)

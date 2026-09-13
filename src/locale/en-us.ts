@@ -37,6 +37,7 @@ const enUS: CaomeiLocaleMessages = {
     },
     progress: {
         loading: 'Loading',
+        bar: 'Progress',
     },
     slider: {
         thumb: 'Slider',

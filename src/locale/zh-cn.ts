@@ -37,6 +37,7 @@ const zhCN: CaomeiLocaleMessages = {
     },
     progress: {
         loading: '加载中',
+        bar: '进度',
     },
     slider: {
         thumb: '滑块',

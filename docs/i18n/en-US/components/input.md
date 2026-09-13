@@ -40,7 +40,7 @@ With `clearable`, a clear button appears when there is a value; clicking it clea
 
 ## Prefix / suffix and password
 
-Use the `prefix` / `suffix` slots to place icons or text on either side; `type="password"` renders a password field — see [Password](/components/password) (Chinese) for an enhanced wrapper with a visibility toggle.
+Use the `prefix` / `suffix` slots to place icons or text on either side; `type="password"` renders a password field — see [Password](/en-US/components/password) for an enhanced wrapper with a visibility toggle.
 
 <demo
     vue="../examples/input/slots.vue"

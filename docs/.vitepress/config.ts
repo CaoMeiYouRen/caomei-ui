@@ -239,6 +239,7 @@ export default defineConfig({
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
                                 { text: 'Popover', link: '/en-US/components/popover' },
+                                { text: 'Tag', link: '/en-US/components/tag' },
                             ],
                         },
                     ],

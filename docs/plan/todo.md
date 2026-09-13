@@ -39,8 +39,8 @@
 - 非目标：Skeleton 不做布局引擎；ProgressBar 不替换既有 ProgressSpinner
 - 最小验收：实现、单元测试、组件文档与示例、浏览器验证（reduced-motion、暗色 / token 覆盖、确定与不确定进度），并通过 Review Gate
 
-- [ ] **Skeleton**：自建占位骨架，支持 `variant`（text / circular / rectangular）、尺寸与多行。
-- [ ] **ProgressBar**：封装 Reka UI `Progress`，支持确定 / 不确定进度与 `max` / `value`。
+- [x] **Skeleton**：自建占位骨架，支持 `variant`（text / circular / rectangular）、尺寸与多行。
+- [x] **ProgressBar**：封装 Reka UI `Progress`，支持确定 / 不确定进度与 `max` / `value`。
 
 #### 主线 D：浮层（Popover）
 

@@ -30,7 +30,7 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 国际文字内置文案补全 | 组件内建文案已提供 zh-CN / en-US，但组件固定消费默认 zh-CN，缺语言选择 / 注入机制；文档站多语言已纳入 Phase 5，本项指组件运行时注入，仍留 Backlog | 中 |
+| 国际文字内置文案补全 | 组件内建文案已提供 zh-CN / en-US，但组件固定消费默认 zh-CN，缺语言选择 / 注入机制（文档站多语言不覆盖组件内建文案）；英文文档页因此仍有组件内部中文（如 DataTable 空态「暂无数据」、Dialog 关闭按钮 `aria-label="关闭"`），**用户决策：当前接受现状**，待本项落地后统一本地化 | 中 |
 | 组件覆盖率门禁 | 待启用 `coverage.thresholds` 门禁；阈值与启用时机待定 | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |

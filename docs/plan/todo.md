@@ -30,7 +30,7 @@
 - 非目标：不做 Menubar / ContextMenu；多级子菜单暂不封装
 - 最小验收：实现、单元测试、组件文档与示例、浏览器验证（焦点圈定、键盘导航、层级与滚动锁），并通过 Review Gate
 
-- [ ] **DropdownMenu**：封装 Reka UI `DropdownMenu`，提供 trigger / item / checkbox-item / radio-item / separator / label 等组合。
+- [x] **DropdownMenu**：封装 Reka UI `DropdownMenu`，提供 trigger / item / checkbox-item / radio-item / separator / label 等组合。
 
 #### 主线 C：分段选择（SelectButton / SegmentedControl）
 

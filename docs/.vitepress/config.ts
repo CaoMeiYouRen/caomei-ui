@@ -176,6 +176,8 @@ export default defineConfig({
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'MultiSelect 多选选择器', link: '/components/multi-select' },
                         { text: 'SelectButton 分段选择', link: '/components/select-button' },
+                        { text: 'Image 图片', link: '/components/image' },
+                        { text: 'FileUpload 文件上传', link: '/components/file-upload' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },
                         { text: 'Toast 轻提示', link: '/components/toast' },

@@ -58,8 +58,14 @@
 |------|------|------|
 | `--caomei-toggle-button-gap` | `--caomei-space-1` | 图标与文本间距 |
 | `--caomei-toggle-button-radius` | `--caomei-radius-md` | 圆角 |
+| `--caomei-toggle-button-height` | 由 `size` 档位决定 | 高度（sm 28 / md 36 / lg 44） |
+| `--caomei-toggle-button-padding-x` | 由 `size` 档位决定 | 水平内边距（sm 8 / md 12 / lg 16） |
+| `--caomei-toggle-button-padding-y` | `0` | 垂直内边距 |
+| `--caomei-toggle-button-font-size` | 由 `size` 档位决定 | 字号（sm 12 / md 14 / lg 16） |
 | `--caomei-toggle-button-active-bg` | `--caomei-color-primary` | 按下态背景与描边色 |
 | `--caomei-toggle-button-active-color` | `--caomei-color-primary-foreground` | 按下态文字色 |
+
+> 档位派生变量（`height` / `padding-x` / `font-size`）由组件在自身元素上声明，需在 `.caomei-toggle-button` 元素本身上覆盖，写在 `:root` 等祖先层不会生效。
 
 ```css
 .caomei-toggle-button {

@@ -37,7 +37,9 @@ const forwardedAttrs = computed<Record<string, unknown>>(() => ({
 <style scoped>
 /*
   `--caomei-toggle-button-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
-  尺寸档位选择器用 :where() 归零特异性，保证使用方单类覆盖生效。
+  尺寸档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+  注意：根元素是原生 <button>，宿主全局的 `button { padding: 0 }` 等元素级规则特异性高于
+  :where()，若在档位块内直接声明 padding 会被其覆盖，故所有尺寸相关属性都经变量在基类消费。
 */
 .caomei-toggle-button {
     box-sizing: border-box;
@@ -46,11 +48,14 @@ const forwardedAttrs = computed<Record<string, unknown>>(() => ({
     align-items: center;
     justify-content: center;
     gap: var(--caomei-toggle-button-gap, var(--caomei-space-1));
+    height: var(--caomei-toggle-button-height, var(--caomei-control-height-md));
+    padding: var(--caomei-toggle-button-padding-y, 0) var(--caomei-toggle-button-padding-x, var(--caomei-space-3));
     border: 1px solid transparent;
     border-radius: var(--caomei-toggle-button-radius, var(--caomei-radius-md));
     background: transparent;
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-toggle-button-font-size, var(--caomei-font-size-md));
     white-space: nowrap;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -77,21 +82,21 @@ const forwardedAttrs = computed<Record<string, unknown>>(() => ({
 }
 
 :where(.caomei-toggle-button--sm) {
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+    --caomei-toggle-button-height: var(--caomei-control-height-sm);
+    --caomei-toggle-button-padding-x: var(--caomei-space-2);
+    --caomei-toggle-button-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-toggle-button--md) {
-    height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+    --caomei-toggle-button-height: var(--caomei-control-height-md);
+    --caomei-toggle-button-padding-x: var(--caomei-space-3);
+    --caomei-toggle-button-font-size: var(--caomei-font-size-md);
 }
 
 :where(.caomei-toggle-button--lg) {
-    height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+    --caomei-toggle-button-height: var(--caomei-control-height-lg);
+    --caomei-toggle-button-padding-x: var(--caomei-space-4);
+    --caomei-toggle-button-font-size: var(--caomei-font-size-lg);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -16,6 +16,27 @@ type MetaWatchServer = Parameters<Extract<NonNullable<Plugin['configureServer']>
 // 本地开发与自定义域名部署保持默认 '/'。由 VITEPRESS_BASE 环境变量控制。
 const base = process.env.VITEPRESS_BASE ?? '/'
 
+/**
+ * 站内搜索分词：用 `Intl.Segmenter` 补齐 minisearch 默认分词对中文的不足。
+ *
+ * VitePress 会把 themeConfig 中的函数序列化后在客户端用 `new Function` 重建，
+ * 因此本函数必须自包含，不得引用模块级变量或其他函数。
+ */
+function tokenizeLocalSearch(text: string): string[] {
+    const normalized = text.toLowerCase()
+    if (typeof Intl.Segmenter !== 'function') {
+        return normalized.split(/[\s\p{P}]+/u).filter(Boolean)
+    }
+    const tokens: string[] = []
+    const segmenter = new Intl.Segmenter('zh', { granularity: 'word' })
+    for (const segment of segmenter.segment(normalized)) {
+        if (segment.isWordLike) {
+            tokens.push(segment.segment)
+        }
+    }
+    return tokens
+}
+
 const COMPONENT_FILE_RE = /\.(vue|ts)$/
 const META_DEBOUNCE_MS = 200
 const META_MAX_RETRY = 3
@@ -147,6 +168,41 @@ export default defineConfig({
         },
     },
     themeConfig: {
+        search: {
+            provider: 'local',
+            options: {
+                locales: {
+                    root: {
+                        translations: {
+                            button: {
+                                buttonText: '搜索',
+                                buttonAriaLabel: '搜索',
+                            },
+                            modal: {
+                                displayDetails: '显示详细列表',
+                                resetButtonTitle: '重置搜索',
+                                backButtonTitle: '关闭搜索',
+                                noResultsText: '没有结果',
+                                footer: {
+                                    selectText: '选择',
+                                    selectKeyAriaLabel: '回车',
+                                    navigateText: '导航',
+                                    navigateUpKeyAriaLabel: '上箭头',
+                                    navigateDownKeyAriaLabel: '下箭头',
+                                    closeText: '关闭',
+                                    closeKeyAriaLabel: 'esc',
+                                },
+                            },
+                        },
+                    },
+                },
+                miniSearch: {
+                    options: {
+                        tokenize: tokenizeLocalSearch,
+                    },
+                },
+            },
+        },
         nav: [
             { text: '指南', link: '/guide/getting-started' },
             { text: '组件', link: '/components/button' },

@@ -43,10 +43,6 @@
 
   --caomei-input-number-max-width: 12rem;
   --caomei-select-max-width: 20rem;
-
-  --caomei-breakpoint-sm: 640px;
-  --caomei-breakpoint-md: 768px;
-  --caomei-breakpoint-lg: 1024px;
 }
 
 .dark {
@@ -63,15 +59,14 @@
 
 `--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，保证暗色下白字对比度。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
 
-> 以上 token 片段为节选，完整清单以 `src/styles/theme.css` 为准。
+> 以上 token 片段为节选，完整清单以 `src/styles/theme.css` 为准。断点约定为 sm 640px / md 768px / lg 1024px；`@media` 不支持 CSS 自定义属性，故未定义 `--caomei-breakpoint-*`（详见 [设计规范 §2.3](./design-spec.md)）。
 
 ## 3. 主题切换
 
 - 支持方式：
-  - `.dark` class（默认，便于 SSR 与手动切换）；
-  - `[data-theme="dark"]` 属性；
-  - `prefers-color-scheme`（跟随系统）。
-- Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`。
+  - `.dark` class（**已实现**，默认，便于 SSR 与手动切换）；
+  - `[data-theme="dark"]` 属性与 `prefers-color-scheme`（跟随系统）为**规划**，随主题预设一并实现（见 [设计规范](./design-spec.md)）。
+- Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`（模块为占位实现，真实 `@nuxt/kit` 集成待后续阶段）。
 - 提供 `useTheme()` composable 管理当前主题与切换。
 
 ## 4. 消费者定制

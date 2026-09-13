@@ -95,9 +95,9 @@ test/                     # 单元与 E2E 测试
 ## 7. 样式规范
 
 - 使用 CSS variables 承载设计 token，语义化命名，禁止硬编码品牌色到组件内部。
-- 暗色模式通过 `.dark` class 或 `[data-theme="dark"]` 切换。
+- 暗色模式通过 `.dark` class 切换（`[data-theme="dark"]` / `prefers-color-scheme` 为规划，见 [设计规范](../design/design-spec.md)）。
 - 组件样式与使用方 SCSS(BEM) 共存时，保持低特异性，便于覆盖。
-- 响应式由组件内部媒体查询处理，断点使用 `--caomei-breakpoint-*` token。
+- 响应式由组件内部媒体查询处理，断点约定为 640 / 768 / 1024px（`@media` 不支持 CSS 变量，不使用 token）。
 - 禁止引入 Tailwind / UnoCSS；如需 Tailwind 用户适配，另提供可选 preset 文档（不内置依赖）。
 - CSS 变量默认值不声明在 scoped 根选择器（`.comp[data-v]` 特异性高于消费方 `.comp`）：基类不预声明默认值、消费处 `var(--x, fallback)`，档位类用 `:where()` 归零特异性；自建布局容器同样遵守。
 - 区块间距压缩须覆盖全部合法邻接组合（`header+body` / `body+footer` / `header+footer`）；条件渲染会产生直邻组合，避免仅依赖 `+` 选择器漏判而出现双倍间距。

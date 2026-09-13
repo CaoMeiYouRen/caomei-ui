@@ -1,0 +1,54 @@
+/**
+ * momei 主题预设（源：momei）。
+ *
+ * 用法：在根元素设置 `data-preset="momei"`；暗色沿用 `.dark` / `[data-theme="dark"]`，系统跟随需 `data-scheme="auto"`。
+ * 取值依据见 docs/design/design-spec.md §5.2。
+ */
+[data-preset='momei'] {
+    --caomei-color-primary: #64748b;
+    --caomei-color-primary-foreground: #fff;
+    --caomei-color-primary-solid: #64748b;
+    --caomei-color-success: #22c55e;
+    --caomei-color-success-solid: #15803d;
+    --caomei-color-warning: #f97316;
+    --caomei-color-warning-solid: #c2410c;
+    --caomei-color-danger: #ef4444;
+    --caomei-color-danger-solid: #b91c1c;
+    --caomei-color-neutral-solid: #52525b;
+    --caomei-color-bg: #fff;
+    --caomei-color-bg-elevated: #f8fafc;
+    --caomei-color-text: #0f172a;
+    --caomei-color-text-muted: #64748b;
+    --caomei-color-border: #e2e8f0;
+    --caomei-radius-sm: 4px;
+    --caomei-radius-md: 6px;
+    --caomei-radius-lg: 12px;
+}
+
+:is([data-preset='momei'].dark, [data-preset='momei'][data-theme='dark']) {
+    --caomei-color-primary: #94a3b8;
+    --caomei-color-primary-foreground: #000;
+    --caomei-color-bg: #020617;
+    --caomei-color-bg-elevated: #0f172a;
+    --caomei-color-text: #f1f5f9;
+    --caomei-color-text-muted: #64748b;
+    --caomei-color-border: #334155;
+    --caomei-color-success: #4ade80;
+    --caomei-color-warning: #fb923c;
+    --caomei-color-danger: #f87171;
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-preset='momei'][data-scheme='auto']:not(.light, [data-theme='light']) {
+        --caomei-color-primary: #94a3b8;
+        --caomei-color-primary-foreground: #000;
+        --caomei-color-bg: #020617;
+        --caomei-color-bg-elevated: #0f172a;
+        --caomei-color-text: #f1f5f9;
+        --caomei-color-text-muted: #64748b;
+        --caomei-color-border: #334155;
+        --caomei-color-success: #4ade80;
+        --caomei-color-warning: #fb923c;
+        --caomei-color-danger: #f87171;
+    }
+}

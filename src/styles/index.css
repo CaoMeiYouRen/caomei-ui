@@ -1,4 +1,6 @@
 @import './theme.css';
+@import './presets/caomei.css';
+@import './presets/momei.css';
 
 .caomei-root {
     font-family: var(--caomei-font-sans);

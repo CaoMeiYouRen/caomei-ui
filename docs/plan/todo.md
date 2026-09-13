@@ -36,21 +36,28 @@
   - [ ] 预设承载形式（CSS 入口 / `data-theme` / Nuxt 配置）与文档站演示切换
   - [ ] 新组件规范模板 / 自检清单
 
-### 主线 M3：组件补全（需求 1）
+### 主线 M3：组件补全与关键增强（需求 1）
 
-- 执行范围：补齐 momei 迁移缺口组件。清单以 M1 复核结论为准，下列为已识别候选；每个组件独立走 D→A→V→T→F。
-- 非目标：实现无下游使用证据的长尾组件；Select 增强 / Tag / Badge 增强（视 M1 结论另行评估，不默认纳入）。
+- 执行范围：按 [M1 复核台账](../design/governance/2026-09-14-momei-usage-audit.md) 补齐缺口组件与关键增强。**核心路径优先：Button 形态增强、DataTable + Column 能力增强**；其余按序推进。
+- 非目标：实现无下游使用证据的长尾组件；富文本 / 图表（维持外购结论）。
 - 最小验收标准：组件具备 API 文档、单元测试与英文文档页；符合 M2 设计规范；`pnpm verify` 通过。
 - 条目：
-  - [ ] Divider
-  - [ ] IconField / InputIcon（Input 家族扩展；M1 复核建议降级为 Input `prefix` / `suffix` 插槽，待决策）
-  - [ ] InputGroup / FloatLabel
-  - [ ] Panel（先评估能否由 Accordion 承接）
-  - [ ] DatePicker / Calendar（Reka Alpha，锁版本 + 回归）
-  - [ ] Drawer（Reka Alpha，或由 Dialog 派生）
-  - [ ] SplitButton
-  - [ ] ColorPicker（Reka Alpha）
-  - [ ] Stepper
+  - 核心路径（优先）：
+    - [ ] Button 形态增强（`severity` / `tone` 语义档、`text` / `outlined`、`rounded`、`badge`、`icon` 位置）
+    - [ ] DataTable + Column 能力增强（排序 / Lazy 分页 / 行选择 / 列插槽 / 冻结列等）
+  - 缺口组件：
+    - [ ] Divider
+    - [ ] InputGroup / FloatLabel
+    - [ ] AutoComplete（Reka Combobox）
+    - [ ] ButtonGroup
+    - [ ] DataView
+    - [ ] Panel（先评估能否由 Accordion 承接）
+    - [ ] DatePicker / Calendar（Reka Alpha，锁版本 + 回归）
+    - [ ] Drawer（Reka Alpha，或由 Dialog 派生）
+    - [ ] SplitButton
+    - [ ] ColorPicker（Reka Alpha）
+    - [ ] Stepper
+- 已决策（不新建组件）：`IconField` / `InputIcon` 采用 `Input` 的 `prefix` / `suffix` 插槽降级方案；映射规范归口 M2 设计规范。
 
 ### 主线 M4：依赖许可合规（需求 3）
 

@@ -14,14 +14,12 @@
 
 ### 1.1 组件增强候选
 
-> 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。
+> 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已由用户决策纳入 §2.4 核心路径，本表不再重复。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | Tag/Badge 增强 | 组件实现评估 + M1 复核 | Tag 可选中筛选标签 / 可编辑（可编辑标签可由 Reka UI TagsInput 封装）；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退）。M1 补充：`severity` → `tone` 映射规范化（含 `error` 别名、`secondary` / `contrast` 归属）、Tag `rounded` / `outlined`、`icon` 字符串改 `#icon` 插槽（momei Tag 127 次） | 中 |
 | Select 增强 | 组件实现评估 + M1 复核 | 分组（SelectGroup）、自定义选项渲染、搜索过滤；多选已由 Tier 1 MultiSelect 承接（Phase 2 交付）。M1 补充：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`filter`、`#option` 插槽（momei Select 73 / Dropdown 5 / MultiSelect 8 / SelectButton 9） | 中 |
-| Button 形态增强 | M1 复核 | 补语义档（`severity` / `tone`）、`text` / `outlined` 形态、`rounded`、`badge` 角标、`icon` 位置；图标改 `#icon` 插槽。momei 用量：`severity`×185、`text`×163、`rounded`×102、`outlined`×32，属迁移关键路径 | 中 |
-| DataTable 与列能力增强 | M1 复核 | 启用排序 / Lazy 分页 / 行选择 / `data-key` / loading；列补 `#body` / `#header`、`body-class` / `header-class` / `header-style`、`frozen` / `align-frozen`、点号嵌套字段；列声明模型差异需迁移方案。momei 用量：DataTable 22 + Column 153，属迁移关键路径 | 中 |
 | 表单输入增强 | M1 复核 | InputNumber `use-grouping` / `min-max-fraction-digits`；Textarea `auto-resize`；Password `feedback`；Checkbox 分组值数组；Switch `change` 事件；FileUpload `mode` / `max-file-size` / `auto` / `choose-label`；ToggleButton `on-label` / `off-label` | 中 |
 | Message 语义与形态增强 | M1 复核 | `variant` 补 `simple` / `text`、补 `size`（momei 各 14 处）；`severity` 的 `error` / `secondary` / `contrast` 需映射规范 | 中 |
 | 展示类组件增强 | M1 复核 | Image `preview` 点击放大 + `#indicatoricon`；ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸；Toolbar `#start` / `#center` / `#end` 分区插槽 | 低 |
@@ -34,14 +32,11 @@
 >
 > 原列的 Alpha primitive、自建复杂件与优先级「低」的 Stepper 等条目（Stepper / Drawer / DatePicker / ColorPicker / InputGroup / FloatLabel / SplitButton）均由 momei 使用面驱动；在「以 momei 迁移为优先」的策略下，该批条目已移入 §2.4 组件补全，本表仅保留当前无下游使用证据的长尾。
 >
-> 2026-09-14 Phase 6 M1 复核新识别 3 个 momei 使用面组件（AutoComplete / ButtonGroup / DataView），登记于此待决策。
+> 2026-09-14 Phase 6 M1 复核新识别的 3 个 momei 使用面组件（AutoComplete / ButtonGroup / DataView）已由用户决策纳入 §2.4，本表不再登记。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|
 | Sidebar | momei 使用面（标签级统计未命中，待复核） | 低 |
-| AutoComplete | momei 使用面（M1 复核，2 处） | 低 |
-| ButtonGroup | momei 使用面（M1 复核，1 处） | 低 |
-| DataView | momei 使用面（M1 复核，1 处） | 低 |
 
 ### 1.3 不纳入自研的能力（外购建议）
 
@@ -144,23 +139,31 @@
 >
 > **使用面证据**：2026-09-14 对本地 momei 仓库标签级统计（`<Button>` 356、`<InputText>` 178、`<Column>` 153、`<Tag>` 127、`<Select>` 73、`<Message>` 51、`<ToggleSwitch>` 47、`<InputNumber>` 39、`<Divider>` 37、`<Dialog>` 37、`<Card>` 33、`<Password>` 32、`<Textarea>` 31、`<Skeleton>` 26、`<TabPanel>` 23、`<DataTable>` 22、`<Checkbox>` 20 等；已排除 TS 泛型假阳性），其余细节与判定见 [M1 复核台账](../design/governance/2026-09-14-momei-usage-audit.md)。
 >
-> 本组由原 §1.2「Tier 3 长尾候选」移入条目（Stepper / Drawer / DatePicker / ColorPicker / InputGroup / FloatLabel / SplitButton）与本次新识别条目（Divider / IconField / InputIcon / Panel）及「momei 迁移试点闭环」合并而成。
+> 本组由原 §1.2「Tier 3 长尾候选」移入条目（Stepper / Drawer / DatePicker / ColorPicker / InputGroup / FloatLabel / SplitButton）与本次新识别条目（Divider / Panel）及「momei 迁移试点闭环」合并而成。
 >
-> **M1 复核结论（2026-09-14）**：详见 [momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)。23 项「需增强」已登记 §1.1；新识别 `AutoComplete` / `ButtonGroup` / `DataView` 已登记 §1.2；`IconField` / `InputIcon` 经复核可由 `Input` 的 `prefix` / `suffix` 插槽承载，建议降级为可选便利封装。**M3 最终范围以用户决策为准。**
+> **M1 复核结论（2026-09-14）**：详见 [momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)。
+>
+> **用户决策（2026-09-14）**：包含三项调整——① `Button` 形态增强与 `DataTable + Column` 能力增强列为**核心路径优先实现**（自 §1.1 移入）；② 新识别 `AutoComplete` / `ButtonGroup` / `DataView` 纳入（自 §1.2 移入）；③ `IconField` / `InputIcon` 采用 `Input` 的 `prefix` / `suffix` 插槽降级方案，**不新建组件**。
 
-| 条目 | 来源 | 说明 | 原优先级 |
-|------|------|------|:-:|
-| momei 迁移试点闭环 | 用户需求（2026-09-14） | 在 momei 中实际执行 PrimeVue → caomei-ui 替换，记录阻塞点与缺口；其闭环是其他下游迁移的前提（属 [Phase 7](./roadmap.md)） | 中 |
-| Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator` | 中 |
-| IconField / InputIcon | momei 使用面（各约 10） | 输入框前后置图标容器，与 Input 家族配套；建议作为 Input 家族扩展而非独立组件（M1 复核：可由 `Input` 的 `prefix` / `suffix` 插槽承载，建议降级为可选便利封装） | 中 |
-| Panel | momei 使用面（3） | 可折叠面板容器；与 Accordion 能力重叠，先评估能否由 Accordion 承接，再决定是否独立编排 | 低 |
-| InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 原低优先候选，因 momei 迁移提升；建议与 IconField 合并规划 | 中 |
-| DatePicker / Calendar | momei 使用面（6） | 原低优先候选；Reka Alpha，需锁版本并补回归 | 中 |
-| Drawer | momei 使用面（3） | 原低优先候选；Reka Alpha，或由 Dialog 派生 | 中 |
-| SplitButton | momei 使用面（2） | 原低优先候选；Button + DropdownMenu 组合 | 低 |
-| ColorPicker | momei 使用面（2） | 原低优先候选；Reka Alpha color 系列组合 | 低 |
-| Stepper | momei 使用面（1） | 原低优先候选 | 低 |
+| 条目 | 来源 | 说明 | 类别 |
+|------|------|------|------|
+| Button 形态增强 | M1 复核 | 补语义档（`severity` / `tone`）、`text` / `outlined` 形态、`rounded`、`badge` 角标、`icon` 位置；图标改 `#icon` 插槽。momei 用量：`severity`×185、`text`×163、`rounded`×102、`outlined`×32 | 核心路径（优先） |
+| DataTable + Column 能力增强 | M1 复核 | 启用排序 / Lazy 分页 / 行选择 / `data-key` / loading；列补 `#body` / `#header`、`body-class` / `header-class` / `header-style`、`frozen` / `align-frozen`、点号嵌套字段；列声明模型差异需迁移方案。momei 用量：DataTable 22 + Column 153 | 核心路径（优先） |
+| Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator` | 缺口组件 |
+| InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件 | 缺口组件 |
+| AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载 | 缺口组件 |
+| ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局 | 缺口组件 |
+| DataView | M1 复核（1 处） | grid / list 布局 + 插槽；用量最低，可最后评估 | 缺口组件 |
+| Panel | momei 使用面（3） | 带标题栏的静态分区容器；先评估能否由 Accordion / Card 承接 | 缺口组件 |
+| DatePicker / Calendar | momei 使用面（6） | Reka Alpha，需锁版本并补回归 | 缺口组件 |
+| Drawer | momei 使用面（3） | Reka Alpha，或由 Dialog 派生 | 缺口组件 |
+| SplitButton | momei 使用面（2） | Button + DropdownMenu 组合 | 缺口组件 |
+| ColorPicker | momei 使用面（2） | Reka Alpha color 系列组合 | 缺口组件 |
+| Stepper | momei 使用面（1） | 步骤导航 | 缺口组件 |
+| momei 迁移试点闭环 | 用户需求（2026-09-14） | 在 momei 中实际执行 PrimeVue → caomei-ui 替换，记录阻塞点与缺口；其闭环是其他下游迁移的前提 | 属 [Phase 7](./roadmap.md) |
 
+> **已决策（不新建组件）**：`IconField` / `InputIcon` 采用 `Input` 的 `prefix` / `suffix` 插槽降级方案；映射规范（`severity→tone` 等）归口 M2 设计规范。
+>
 > Select 增强（分组 / 搜索）与富文本 Editor / Chart 的既有结论见 §1.1 与 §1.3，不在此重复。
 
 ### 2.5 依赖许可合规（需求 3 → Phase 6 M4）

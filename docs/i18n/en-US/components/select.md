@@ -7,7 +7,7 @@ A select chooses a single value from a list of options; it wraps Reka UI Select.
 Two-way bind the selected value with `v-model` and pass the options via `options`.
 
 <demo
-    vue="../../../examples/select/basic.vue"
+    vue="../examples/select/basic.vue"
     ssg="true"
 />
 
@@ -16,7 +16,7 @@ Two-way bind the selected value with `v-model` and pass the options via `options
 Switch the size with `size`; supports `sm` / `md` / `lg`.
 
 <demo
-    vue="../../../examples/select/sizes.vue"
+    vue="../examples/select/sizes.vue"
     ssg="true"
 />
 
@@ -25,7 +25,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 `disabled` disables, `invalid` marks a validation failure; a per-option `disabled` disables a single option.
 
 <demo
-    vue="../../../examples/select/states.vue"
+    vue="../examples/select/states.vue"
     ssg="true"
 />
 

@@ -218,6 +218,7 @@ export default defineConfig({
                                 { text: 'MultiSelect', link: '/en-US/components/multi-select' },
                                 { text: 'SelectButton', link: '/en-US/components/select-button' },
                                 { text: 'Image', link: '/en-US/components/image' },
+                                { text: 'FileUpload', link: '/en-US/components/file-upload' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
                                 { text: 'Card', link: '/en-US/components/card' },

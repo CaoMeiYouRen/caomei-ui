@@ -84,6 +84,24 @@
 
 ---
 
+## Phase 4：Tier 3 稳定批组件
+
+- 时间：2026-09-13
+- 交付：
+  - 主线 A 表单控件：RadioGroup（复合 `CaomeiRadioGroup` / `CaomeiRadioButton`，封装 `RadioGroup`，`v-model` / `disabled` / `required` / `name`）、Slider（封装 `Slider`，单值与范围、`min` / `max` / `step` / 垂直方向 / `change`）
+  - 主线 B 开关与工具：ToggleButton（封装 `Toggle`，布尔按下态与尺寸档位）、Toolbar（复合 Toolbar / Button / Link / Separator / ToggleGroup / ToggleItem，roving focus 与分隔线）
+  - 主线 C 反馈与占位：Skeleton（自建纯样式，`text` / `circular` / `rectangular`、多行末行收窄、`pulse` / `wave` / `none`）、ProgressBar（封装 `Progress`，确定 / 不确定进度与 `max` / `value`）
+  - 主线 D 浮层：Popover（复合 Popover / Trigger / Content / Arrow / Close，Portal 挂载、默认非模态、碰撞检测开关）
+  - 文档：7 个组件页与示例全部落地并纳入侧边栏；文档站 `motion.css` 统一恢复加载类动画（ProgressSpinner / ProgressBar / Skeleton）
+- 关键提交：规划登记 `ca43c0e`；主线 A `ce25973` / `b6e0b21` / `e22f817` / `ba5c31f`；主线 B `c006414` / `157433b` / `81e6ccc` / `7d8a7d4`；主线 C `fbd9a97` / `caca1bb` / `f44b938` / `781be6c`；主线 D `efad9e6` / `206046c`；样式档位修复 `31d626f` / `f260d32`；backlog 登记 `e96eae8`；规划勾选 `14c78d6` / `b74619f` / `7f2dc27` / `f3a43c0`
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / test / build / docs:build / governance）；全量单元测试 621 例通过
+- 浏览器验证：各组件均经 Playwright 实机验证（RadioGroup 键盘与表单语义；Slider 键盘与点击轨道；ToggleButton 点击 / 空格 / 回车；Toolbar 方向键漫游与 Tab 停靠点；Skeleton 形状 / 多行 / reduced-motion；ProgressBar 比例 / 不确定进度；Popover 四方向、Portal、Escape / 外部关闭与焦点回位）；另修复共享样式档位问题（ToggleButton 内边距、Checkbox / RadioGroup 字号）
+- 审计：各条目均经 `@code-reviewer` Review Gate 放行；Toolbar（独立 ToggleButton 未纳入 roving）、Skeleton（`circular` 默认尺寸被覆盖）、Popover（根容器 attrs 无落点）经历「首轮 Reject → 修复 → 复审 Pass」；ToggleButton / Checkbox / RadioGroup 的样式档位修复亦经 Review Gate
+- 阶段归档蒸馏：`.session/wisdom.md` 活跃条目为 0（低于阈值 20），无需蒸馏
+- 遗留与后续候选：见 [Backlog](./backlog.md)；文档站增强、首版发布与下游接入顺延 Phase 5
+
+---
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

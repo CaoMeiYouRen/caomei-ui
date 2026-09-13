@@ -63,7 +63,7 @@
 
 ## 5. Tier 3：长尾（按需）
 
-> 依据 2026-09-11 调研文档《自建组件库（基于 Reka UI）— 最小组件集评估》于 2026-09-13 重新评估：除少数纯样式 / 布局组件外，Tier 3 大多有 Reka UI 对应 primitive，**优先封装**；Reka 标注为 **Alpha** 的组件（Drawer、日期类、Color 系列）存在 API 变动风险，落地时需锁定 Reka 版本并补回归。优先级为「中」的 7 个候选已作为 Phase 4 启动（6 个封装 Reka 稳定 primitive + Skeleton 自建纯样式）；Alpha 组件、自建复杂件与优先级「低」的 Stepper 按需后置、不阻塞首版发布，候选与优先级见 [Backlog](../plan/backlog.md)。
+> 依据 2026-09-11 调研文档《自建组件库（基于 Reka UI）— 最小组件集评估》于 2026-09-13 重新评估：除少数纯样式 / 布局组件外，Tier 3 大多有 Reka UI 对应 primitive，**优先封装**；Reka 标注为 **Alpha** 的组件（Drawer、日期类、Color 系列）存在 API 变动风险，落地时需锁定 Reka 版本并补回归。优先级为「中」的 7 个候选已于 Phase 4 完成（6 个封装 Reka 稳定 primitive + Skeleton 自建纯样式，见 [待办归档](../plan/todo-archive.md)）；Alpha 组件、自建复杂件与优先级「低」的 Stepper 按需后置、不阻塞首版发布，候选与优先级见 [Backlog](../plan/backlog.md)。
 
 | 组件 | 实现方式 | Reka UI 对应 | Reka 成熟度 | 说明 |
 |------|----------|--------------|:-:|------|

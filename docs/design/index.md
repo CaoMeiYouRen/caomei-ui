@@ -6,7 +6,7 @@
 |------|------|
 | [architecture.md](./architecture.md) | 仓库形态、构建方案、包导出、Nuxt 模块、依赖选型 |
 | [theming.md](./theming.md) | 设计 token、主题切换、暗色模式、响应式 |
-| [components.md](./components.md) | 组件分层与最小组件集（Tier 0/1/2 已落地，Tier 3 稳定批进行中） |
+| [components.md](./components.md) | 组件分层与最小组件集（Tier 0/1/2 已落地，Tier 3 稳定批已完成） |
 | [documentation-site.md](./documentation-site.md) | 文档站与组件演示方案（demo 渲染、API 自动生成） |
 | [governance/](./governance/) | 治理决策与经验归档（按需创建） |
 

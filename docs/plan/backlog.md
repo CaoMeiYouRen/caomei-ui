@@ -14,7 +14,7 @@
 
 #### Tier 3 组件候选（长尾，按需）
 
-> 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已升级至 [Phase 4](./todo.md)；以下为 Alpha primitive、自建复杂件与优先级「低」的 Stepper，多为 momei 单项目使用，可按需纳入或由下游自留。
+> 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已于 Phase 4 交付并归档（见 [待办归档](./todo-archive.md)）；以下为 Alpha primitive、自建复杂件与优先级「低」的 Stepper，多为 momei 单项目使用，可按需纳入或由下游自留。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|

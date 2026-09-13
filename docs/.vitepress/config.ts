@@ -222,6 +222,7 @@ export default defineConfig({
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'ConfirmDialog', link: '/en-US/components/confirm-dialog' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
+                                { text: 'Message', link: '/en-US/components/message' },
                                 { text: 'Card', link: '/en-US/components/card' },
                                 { text: 'Checkbox', link: '/en-US/components/checkbox' },
                                 { text: 'Switch', link: '/en-US/components/switch' },

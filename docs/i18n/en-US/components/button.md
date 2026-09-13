@@ -18,6 +18,24 @@ Switch the visual variant with `variant`.
     ssg="true"
 />
 
+## Tones
+
+Use `tone` to give the button a semantic color; when unset, the variant's default colors apply. When migrating from PrimeVue, `text` / `outlined` map to `variant="ghost"` / `variant="secondary"`.
+
+<demo
+    vue="../../../examples/button/tones.vue"
+    ssg="true"
+/>
+
+## Rounded and icon position
+
+`rounded` renders a pill shape; `iconPosition` controls where the icon sits relative to the label (default `start`).
+
+<demo
+    vue="../../../examples/button/rounded-icon.vue"
+    ssg="true"
+/>
+
 ## Sizes
 
 Switch the size with `size`.

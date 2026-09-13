@@ -10,6 +10,8 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     disabled: false,
     loading: false,
     block: false,
+    rounded: false,
+    iconPosition: 'start',
     type: 'button',
 })
 
@@ -28,7 +30,9 @@ const rootClass = computed(() => [
     `caomei-button--${props.variant}`,
     `caomei-button--${props.size}`,
     {
+        [`caomei-button--tone-${props.tone}`]: Boolean(props.tone),
         'caomei-button--block': props.block,
+        'caomei-button--rounded': props.rounded,
         'caomei-button--loading': props.loading,
     },
 ])
@@ -53,17 +57,32 @@ function onClick(event: MouseEvent): void {
             class="caomei-button__spinner"
             aria-hidden="true"
         />
-        <span v-else-if="$slots.icon" class="caomei-button__icon">
+        <span
+            v-if="!loading && $slots.icon && iconPosition === 'start'"
+            class="caomei-button__icon"
+        >
             <slot name="icon" />
         </span>
         <span class="caomei-button__content">
             <slot />
+        </span>
+        <span
+            v-if="!loading && $slots.icon && iconPosition === 'end'"
+            class="caomei-button__icon"
+        >
+            <slot name="icon" />
         </span>
     </button>
 </template>
 
 <style scoped>
 .caomei-button {
+    --caomei-button-bg: var(--caomei-color-primary);
+    --caomei-button-fg: var(--caomei-color-primary-foreground);
+    --caomei-button-border: var(--caomei-color-border);
+    --caomei-button-text: var(--caomei-color-text);
+    --caomei-button-focus: var(--caomei-color-primary);
+
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -84,7 +103,7 @@ function onClick(event: MouseEvent): void {
 }
 
 .caomei-button:focus-visible {
-    outline: 2px solid var(--caomei-color-primary);
+    outline: 2px solid var(--caomei-button-focus);
     outline-offset: 2px;
 }
 
@@ -92,20 +111,64 @@ function onClick(event: MouseEvent): void {
     width: 100%;
 }
 
+.caomei-button--rounded {
+    border-radius: var(--caomei-radius-full);
+}
+
 .caomei-button--primary {
-    background: var(--caomei-color-primary);
-    color: var(--caomei-color-primary-foreground);
+    background: var(--caomei-button-bg);
+    color: var(--caomei-button-fg);
 }
 
 .caomei-button--secondary {
     background: var(--caomei-color-bg);
-    border-color: var(--caomei-color-border);
-    color: var(--caomei-color-text);
+    border-color: var(--caomei-button-border);
+    color: var(--caomei-button-text);
 }
 
 .caomei-button--ghost {
     background: transparent;
-    color: var(--caomei-color-text);
+    color: var(--caomei-button-text);
+}
+
+.caomei-button--tone-neutral {
+    --caomei-button-bg: var(--caomei-color-neutral-solid);
+    --caomei-button-fg: var(--caomei-color-on-solid);
+    --caomei-button-border: var(--caomei-color-border);
+    --caomei-button-text: var(--caomei-color-text);
+    --caomei-button-focus: var(--caomei-color-text);
+}
+
+.caomei-button--tone-primary {
+    --caomei-button-bg: var(--caomei-color-primary-solid);
+    --caomei-button-fg: var(--caomei-color-on-solid);
+    --caomei-button-border: var(--caomei-color-primary);
+    --caomei-button-text: var(--caomei-color-primary);
+    --caomei-button-focus: var(--caomei-color-primary);
+}
+
+.caomei-button--tone-success {
+    --caomei-button-bg: var(--caomei-color-success-solid);
+    --caomei-button-fg: var(--caomei-color-on-solid);
+    --caomei-button-border: var(--caomei-color-success);
+    --caomei-button-text: var(--caomei-color-success);
+    --caomei-button-focus: var(--caomei-color-success);
+}
+
+.caomei-button--tone-warning {
+    --caomei-button-bg: var(--caomei-color-warning-solid);
+    --caomei-button-fg: var(--caomei-color-on-solid);
+    --caomei-button-border: var(--caomei-color-warning);
+    --caomei-button-text: var(--caomei-color-warning);
+    --caomei-button-focus: var(--caomei-color-warning);
+}
+
+.caomei-button--tone-danger {
+    --caomei-button-bg: var(--caomei-color-danger-solid);
+    --caomei-button-fg: var(--caomei-color-on-solid);
+    --caomei-button-border: var(--caomei-color-danger);
+    --caomei-button-text: var(--caomei-color-danger);
+    --caomei-button-focus: var(--caomei-color-danger);
 }
 
 .caomei-button--sm {

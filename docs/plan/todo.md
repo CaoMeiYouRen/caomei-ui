@@ -47,7 +47,8 @@
 - 最小验收标准：组件具备 API 文档、单元测试与英文文档页；符合 M2 设计规范；`pnpm verify` 通过。
 - 条目：
   - 核心路径（优先）：
-    - [ ] Button 形态增强（`severity` / `tone` 语义档、`text` / `outlined`、`rounded`、`badge`、`icon` 位置）
+    - [x] Button 形态增强：`tone` 语义色、`text` / `outlined` 映射（`ghost` / `secondary`）、`rounded`、`iconPosition`
+    - [ ] Button 角标（`:badge`）增强（M1 台账标记待评估，未纳入本批）
     - [ ] DataTable + Column 能力增强（排序 / Lazy 分页 / 行选择 / 列插槽 / 冻结列等）
   - 缺口组件：
     - [ ] Divider

@@ -18,6 +18,24 @@
     ssg="true"
 />
 
+## 语义色调
+
+通过 `tone` 为按钮指定语义色；不设置时沿用变体默认配色。PrimeVue 迁移时的 `text` / `outlined` 形态分别对应 `variant="ghost"` / `variant="secondary"`。
+
+<demo
+    vue="../examples/button/tones.vue"
+    ssg="true"
+/>
+
+## 圆角与图标位置
+
+`rounded` 输出胶囊圆角；`iconPosition` 控制图标相对文本的位置（默认 `start`）。
+
+<demo
+    vue="../examples/button/rounded-icon.vue"
+    ssg="true"
+/>
+
 ## 尺寸
 
 通过 `size` 切换尺寸。

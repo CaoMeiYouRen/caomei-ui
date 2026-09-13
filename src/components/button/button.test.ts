@@ -96,4 +96,55 @@ describe('CaomeiButton', () => {
         expect(button.classes()).toContain('custom-button')
         expect(button.attributes('data-test')).toBe('button')
     })
+
+    it('未设置 tone 时不输出 tone class', () => {
+        const wrapper = mount(CaomeiButton)
+        expect(wrapper.get('button').classes().some((name) => name.startsWith('caomei-button--tone-'))).toBe(false)
+    })
+
+    it.each(['neutral', 'primary', 'success', 'warning', 'danger'] as const)('应用语义色调 %s', (tone) => {
+        const wrapper = mount(CaomeiButton, { props: { tone } })
+        expect(wrapper.get('button').classes()).toContain(`caomei-button--tone-${tone}`)
+    })
+
+    it('rounded 输出胶囊圆角 class', () => {
+        const wrapper = mount(CaomeiButton, { props: { rounded: true } })
+        expect(wrapper.get('button').classes()).toContain('caomei-button--rounded')
+    })
+
+    it('iconPosition 控制图标相对文本的位置', () => {
+        const start = mount(CaomeiButton, {
+            props: { iconPosition: 'start' },
+            slots: { default: '确定', icon: '<svg data-test="icon" />' },
+        })
+        const end = mount(CaomeiButton, {
+            props: { iconPosition: 'end' },
+            slots: { default: '确定', icon: '<svg data-test="icon" />' },
+        })
+
+        const children = (wrapper: typeof start) =>
+            wrapper.get('button').element.children[0]?.classList.contains('caomei-button__icon')
+        expect(children(start)).toBe(true)
+        expect(children(end)).toBe(false)
+        expect(end.get('button').element.children[1]?.classList.contains('caomei-button__icon')).toBe(true)
+    })
+
+    it('loading 时即使提供 icon 插槽也不渲染图标', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { loading: true },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        expect(wrapper.find('.caomei-button__icon').exists()).toBe(false)
+        expect(wrapper.find('.caomei-button__spinner').exists()).toBe(true)
+    })
+
+    it('tone 与 secondary 组合同时输出两类 class', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { tone: 'danger', variant: 'secondary' },
+        })
+
+        expect(wrapper.get('button').classes()).toContain('caomei-button--tone-danger')
+        expect(wrapper.get('button').classes()).toContain('caomei-button--secondary')
+    })
 })

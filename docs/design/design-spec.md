@@ -33,6 +33,7 @@
 | `--caomei-color-danger` | 危险强调色 | `#dc2626` | `#f87171` |
 | `--caomei-color-danger-solid` | 危险实底 | `#dc2626` | `#dc2626` |
 | `--caomei-color-neutral-solid` | 中性实底（无强调色） | `#52525b` | `#52525b` |
+| `--caomei-color-on-solid` | 实底上的稳定前景色 | `#fff` | `#fff` |
 | `--caomei-color-bg` | 页面背景 | `#ffffff` | `#0b0b0d` |
 | `--caomei-color-bg-elevated` | 抬升面（卡片 / 浮层） | `#f7f7f8` | `#17171a` |
 | `--caomei-color-text` | 主文字 | `#1a1a1a` | `#f5f5f5` |
@@ -50,10 +51,10 @@
 | 控件高度 | `--caomei-control-height-sm` / `-md` / `-lg` | 28 / 36 / 44 px | 按钮、输入类、Select 等 |
 | 间距 | `--caomei-space-1` ~ `-4` | 4 / 8 / 12 / 16 px | 组件内边距与间隙 |
 | 字号 | `--caomei-font-size-sm` / `-md` / `-lg` | 12 / 14 / 16 px | 控件文本与标题 |
-| 圆角 | `--caomei-radius-sm` / `-md` / `-lg` | 4 / 8 / 12 px | 控件 / 容器 / 浮层 |
+| 圆角 | `--caomei-radius-sm` / `-md` / `-lg` / `-full` | 4 / 8 / 12 / 999 px | 控件 / 容器 / 浮层 / 胶囊 |
 | 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限 |
 
-消费统计（`src/` 内引用次数）：radius sm 22 / md 20 / lg 3；control-height sm 11 / md 14 / lg 9；font-size sm 18 / md 39 / lg 15；space-1 ~ 4 分别 41 / 46 / 24 / 23。
+消费统计（`src/` 内引用次数）：radius sm 22 / md 20 / lg 3 / full 1；control-height sm 11 / md 14 / lg 9；font-size sm 18 / md 39 / lg 15；space-1 ~ 4 分别 41 / 46 / 24 / 23。
 
 > 断点约定为 sm 640px / md 768px / lg 1024px；`@media` 不支持 CSS 自定义属性，故断点以文档约定 + 组件内媒体查询字面量维护，未定义 `--caomei-breakpoint-*` 变量。
 
@@ -72,7 +73,6 @@
 | 阴影 | `--caomei-shadow-sm` / `-md` / `-lg` | 替代组件内 `box-shadow` 字面量 |
 | 层级 | `--caomei-z-dropdown` / `-sticky` / `-overlay` / `-modal` / `-toast` / `-tooltip` | 替代 `z-index` 字面量 |
 | 图标 | `--caomei-icon-size-sm` / `-md` / `-lg` | 统一 `@lucide/vue` 图标尺寸 |
-| 圆角 | `--caomei-radius-full` | 胶囊 / 圆形 |
 | 交互 | `--caomei-color-focus-ring`、`--caomei-color-mask` | 焦点环与浮层遮罩 |
 | 字体 | `--caomei-font-mono` | 代码 / 密钥等场景 |
 | 排版 | `--caomei-line-height-tight` / `-normal` / `-relaxed` | 标题与正文行高 |
@@ -82,14 +82,15 @@
 ### 3.1 语义色与状态色
 
 - 语义档位固定为 `tone`：`neutral` / `primary` / `success` / `warning` / `danger`。不新增 `info` / `contrast` 等档位，其语义由映射规范承接（见 §7）。
-- `variant`（形态）与 `tone`（语义）正交：`soft` / `solid` / `outline`（以及 Button 的 `text` / `ghost`）。
+- `variant` 控制呈现形态（`primary` 实底 / `secondary` 描边 / `ghost` 无底色），`tone` 控制语义色（`neutral` / `primary` / `success` / `warning` / `danger`），二者正交。
 - 组件不得自造色值；所有颜色必须来自 token。
 
 ### 3.2 对比度要求
 
 - 正文与背景对比度 ≥ 4.5:1；大号文本与图形 ≥ 3:1（WCAG AA）。
-- `-solid` 实底与 `-foreground` 前景必须满足 AA；暗色下不得仅靠调亮强调色导致白字对比不足。
-- 焦点态必须可见（规划 `--caomei-color-focus-ring`），不得仅用颜色细微变化表示状态。
+- `-solid` 实底与 `--caomei-color-on-solid` 前景必须满足 AA（其余 tone 实底均 ≥ 4.5:1）。
+  - **已知例外**：品牌主色 `#e63946`（caomei 预设 `primary-solid`）配白字约 4.17:1，略低于阈值；作为既有品牌色暂予接受，跟踪见 [Backlog](../plan/backlog.md)。
+- 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
 
 ## 4. 主题与暗色
 
@@ -127,7 +128,7 @@
 
 > 待确认：caomei-auth 暗色存在 PrimeVue zinc（`#18181b`）与应用 SCSS（`#121212`）双轨，本预设取 PrimeVue 轨（与组件语义 token 同源）。
 >
-> `-solid` 系列（`success` / `warning` / `danger` / `neutral`）未在表中单列，预设实现时按同 tone 深阶覆盖并保证 `-foreground` 对比度；未列出的 token 继承 `theme.css` 默认值。
+> `-solid` 系列（`success` / `warning` / `danger` / `neutral`）未在表中单列，预设实现时按同 tone 深阶覆盖并保证实底前景（`on-solid`）对比度；未列出的 token 继承 `theme.css` 默认值。
 >
 > 圆角为 caomei-ui 归一化档位（控件 6px / 卡片与浮层 12px），非来源原值；相比当前 `radius-md: 8px` 会改变既有外观。
 
@@ -152,7 +153,7 @@
 
 > 规划新增 `--caomei-color-accent`（momei 点缀色 rose `#f43f5e` / `#fb7185`）作为可选品牌强调色；是否纳入需评估（当前组件集无 accent 语义）。
 >
-> `-solid` 系列（`success` / `warning` / `danger` / `neutral`）未在表中单列，预设实现时按同 tone 深阶覆盖并保证 `-foreground` 对比度；未列出的 token 继承 `theme.css` 默认值。
+> `-solid` 系列（`success` / `warning` / `danger` / `neutral`）未在表中单列，预设实现时按同 tone 深阶覆盖并保证实底前景（`on-solid`）对比度；未列出的 token 继承 `theme.css` 默认值。
 >
 > momei 的代码高亮 / 阅读器皮肤（Primer 色系、sepia 等）**不属于主题预设**，不纳入。
 
@@ -160,7 +161,7 @@
 
 | 组件 | 约定 |
 | --- | --- |
-| Button | 高度取 `control-height-*`；圆角 `radius-md`；变体 `primary` / `secondary` / `ghost` + `solid` / `soft` / `outline`；图标经 `#icon` 插槽 |
+| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`；`tone` 语义；字号 `font-size-sm` |
@@ -180,6 +181,8 @@
 | 浮层标题 | `header` | `title` |
 | 校验态 | `class="p-invalid"` | `:invalid` |
 | 全宽 | `fluid` | 默认全宽（迁移时删除） |
+
+> Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` 待评估。
 
 ## 8. 规范落实与可验证脚本（已实现）
 

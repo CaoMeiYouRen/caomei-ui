@@ -25,6 +25,8 @@
 | 展示类组件增强 | M1 复核 | Image `preview` 点击放大 + `#indicatoricon`；ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸；Toolbar `#start` / `#center` / `#end` 分区插槽 | 低 |
 | 浮层与导航增强 | M1 复核 | Dialog `show-header` / `breakpoints` / `@hide`；Popover 命令式 `toggle(event)` 锚点；DropdownMenu `:model` + `:popup`；Paginator 偏移 → 页码模型与每页条数选择；ConfirmDialog `icon` | 低 |
 | 映射与迁移规范 | M1 复核 | `severity→tone`、`small/large→sm/lg`、`icon→#icon`、`v-model:visible→open`、`p-invalid→:invalid`、`fluid` 删除；详见台账 §4.3，归口 M2 设计规范 | 中 |
+| 实底前景 token 统一 | M3 复核 | Button 的 `tone` 实底已改用 `--caomei-color-on-solid`；Tag / Badge / Message / SelectButton 等实底仍用 `-foreground`，评估统一（含 momei 暗色 `#000` 前景的对比问题） | 中 |
+| 品牌主色对比度 | M3 复核 | 品牌主色 `#e63946` 配白字约 4.17:1，低于 AA 4.5:1；评估加深 `primary-solid` 或调整品牌色（影响 caomei 预设与 Button 默认真底色） | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 

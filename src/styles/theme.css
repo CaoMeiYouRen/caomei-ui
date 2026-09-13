@@ -20,6 +20,7 @@
     --caomei-color-success-solid: #15803d;
     --caomei-color-warning-solid: #b45309;
     --caomei-color-neutral-solid: #52525b;
+    --caomei-color-on-solid: #fff;
     --caomei-color-bg: #fff;
     --caomei-color-bg-elevated: #f7f7f8;
     --caomei-color-text: #1a1a1a;
@@ -28,6 +29,7 @@
     --caomei-radius-sm: 4px;
     --caomei-radius-md: 8px;
     --caomei-radius-lg: 12px;
+    --caomei-radius-full: 999px;
     --caomei-font-sans: system-ui, -apple-system, sans-serif;
     --caomei-space-1: 4px;
     --caomei-space-2: 8px;

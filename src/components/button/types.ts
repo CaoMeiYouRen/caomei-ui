@@ -1,11 +1,18 @@
-import type { ComponentSize, ComponentVariant } from '../../types'
+import type { ComponentSize, ComponentTone, ComponentVariant } from '../../types'
+
+export type ButtonIconPosition = 'start' | 'end'
 
 export interface ButtonProps {
     /**
-     * 视觉变体
-     * @en Visual variant
+     * 视觉变体：`primary` 实底、`secondary` 描边、`ghost` 无底色
+     * @en Visual variant: `primary` solid, `secondary` outlined, `ghost` plain
      */
     variant?: ComponentVariant
+    /**
+     * 语义色调；不设置时沿用变体默认配色
+     * @en Semantic tone; falls back to the variant's default colors when unset
+     */
+    tone?: ComponentTone
     /**
      * 尺寸
      * @en Size
@@ -27,8 +34,18 @@ export interface ButtonProps {
      */
     block?: boolean
     /**
+     * 是否为胶囊圆角
+     * @en Whether the button uses pill radius
+     */
+    rounded?: boolean
+    /**
+     * 图标相对文本的位置
+     * @en Icon position relative to the label
+     */
+    iconPosition?: ButtonIconPosition
+    /**
      * 无可见文本时的可访问名（映射 aria-label）
-     * @en Accessible name when there is no visible text (maps to aria-label)
+     * @en Accessible name when there is no visible text (maps aria-label)
      */
     label?: string
     /**

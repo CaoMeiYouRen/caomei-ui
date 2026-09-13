@@ -97,6 +97,10 @@ chromium.launch({
 - VTU 无法从 props 推断泛型 SFC 的类型参数 `T`（会退化为 `object`）；测试内需 `Component as unknown as DefineComponent<Props<Row>>` 具体化，模板使用不受影响。
 - Reka 增减按钮使用 `pointerdown` / `pointerup`：测试用 `trigger('pointerdown')` 而非 `trigger('click')`；拖出按钮后的 `pointerup` 监听在 `window`。
 - `trigger('keydown.enter')` 派发的 `event.key` 为小写 `'enter'`，与 Reka 比较的 `'Enter'` 不符；应使用 `trigger('keydown', { key: 'Enter' })`。
+- VTU 测试受控组件需同时传 `modelValue` 与 `onUpdate:modelValue` 监听：Vue `useModel` 的 `hasVModel` 要求 prop 与 listener 同时存在，仅传 prop 会回落非受控并本地更新。
+- Reka 触发方式差异：`TabsTrigger` 激活在 `mousedown`（RovingFocus 体系），`AccordionTrigger` / `DropdownMenuTrigger` 在 `click`；单测派发的事件类型须分别匹配。
+- Reka `DismissableLayer` 的 `onKeyStroke('Escape')` 挂在 window；happy-dom 下 document 级派发不稳定，应在浮层内容元素上派发 `bubbles: true` 的 keydown。
+- happy-dom 的文件输入 `value` 恒为 `''`，无法验证「选择后复位 value」；需在实例上定义 `value` setter 记录赋值行为。
 
 ## 9. 反模式
 

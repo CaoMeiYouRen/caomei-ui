@@ -122,6 +122,7 @@
 - **决策：采用方案 ①**（保留 `body` padding 补偿，不设置 `scrollbar-gutter`）。理由：遮罩保持完整覆盖；「滚动条消失 + fixed / `100%` 视口元素随视口宽度变化」属预期的模态行为（参考同类组件库如 PrimeVue 的模态表现）。该位移须被验证记录，但作为已知预期，不作为缺陷。
 - 非模态浮层不得锁 body 滚动：Reka `SelectContent.bodyLock` 默认为 `true`（移除滚动条并补偿 `padding-right`，引发布局跳动）；非模态下拉须显式设为 `false`，需要锁定时再开放。
 - 验证要求见[测试规范 §5.1](../standards/testing.md#_5-1-浮层组件的页面稳定性-必测)。
+- Reka `DropdownMenu` 以 `modal` prop 控制模态（默认 `true`，会锁定 `body` 并屏蔽外部指针）；非模态下拉应关闭该 prop。
 
 ## 6. 无障碍
 

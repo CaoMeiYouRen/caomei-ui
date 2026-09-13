@@ -22,6 +22,7 @@
 2. 确认质量门通过（`lint` / `typecheck` / 必要测试 / 涉及构建时 `build`）。
 3. 通过 `conventional-committer` skill 生成提交消息并提交，**禁止**裸 `git commit -m "..."`。
 4. 提交必须通过 husky 钩子（commitlint / lint-staged），禁止 `--no-verify`。
+5. lint-staged 仅运行 ESLint（`*.{js,ts,vue}`）；含样式改动时先手动执行 `pnpm lint:css:check`，避免 Stylelint 问题在提交后才由 `pnpm verify` 暴露。
 
 ## 4. 推送纪律
 

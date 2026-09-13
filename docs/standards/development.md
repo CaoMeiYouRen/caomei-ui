@@ -63,12 +63,24 @@ test/                     # 单元与 E2E 测试
 - 状态最小化：组件内优先 `ref` / `computed`，不在组件库引入全局 store。
 - 插槽（slots）用于内容定制，props 用于行为控制，CSS variables 用于视觉定制。
 - 不在渲染函数中做重计算；大列表/表格使用虚拟滚动（`@tanstack/vue-virtual`）。
-- 包装型表单组件（根为 wrapper）使用 `inheritAttrs: false` + `useAttrs()`：`class` / `style` 留在根元素，其余原生属性透传到内层表单控件（统一复用 `_shared/use-attr-forwarding`），避免 `maxlength` / `required` / `aria-describedby` 落在 wrapper 上导致语义失效。
+- 包装型表单组件（根为 wrapper）使用 `inheritAttrs: false` + `useAttrs()`：`class` / `style` 留在根元素；`name` / `form` / `required` 透传到内层表单控件，`id` / `aria-*` 透传到可聚焦控件（统一复用 `_shared/use-attr-forwarding`），避免语义落到不可聚焦 wrapper 而失效。
 - 派生组件（根为另一组件）同样使用 `inheritAttrs: false` + `useAttrs()`，并显式剔除由内部状态管理的保留属性（如 Password 的 `type`），避免外部透传覆盖内部语义。
 - 布尔假值不输出到 ARIA：对非 special-boolean 属性使用 `value || undefined`，避免 `:aria-required="false"` 被渲染为 `aria-required="false"`。
 - 受控数值输入：聚焦期间不因外部 model 变化回填文本，失焦与步进统一 `clamp(round(value))` 规范化；`step` 非正回退为 1，`precision` 仅非负整数生效。
 - 封装 Reka NumberField：显式 `:step-snapping="false"` 以保留「加 step」语义；`precision` 不映射 `formatOptions.maximumFractionDigits`（会先钳制再取整而越界），取整放在包装层；`autocomplete` 需条件绑定（primitive 内建 `off`，显式 `undefined` 会覆盖）。
 - Vue 模板同一元素只允许一个无参 `v-bind`；多个需在脚本内合并为单一对象（如 `{ ...rootAttrs, ...controlAttrs }`）再绑定。
+- Reka 组件 provide 的状态在子组件卸载时不复位（如 Avatar 图片加载状态）；需要随 `src` 复位时用 `:key` 重挂 Root。
+- Reka 内建英文可访问文案（Pagination 翻页按钮、`ComboboxTrigger` 的 `Show popup`）不可本地化；包装层透传 `aria-label` 可经 fallthrough 覆盖，文案统一走 locale。
+- Reka `ProgressRoot` 传 `modelValue=null` 时输出 `data-state="indeterminate"` 且不输出 `aria-valuenow`；行内指示器用 `as="span"`。
+- live region（`role="status"` / `"alert"`）只包住文本内容，交互控件留在其外，避免控件名并入播报。
+- `defineModel()` 与 `defineProps<接口>()` 不得同时声明 `modelValue`：重复声明会让该 prop 失效（`defaultValue` 静默不生效）；对外 props 接口不含 `modelValue`。
+- 封装 Reka Combobox 多选时，`required` 必须交 `ComboboxRoot`（空数组时渲染 required 隐藏控件触发原生校验）；`name` 仅在 `<form>` 内生成隐藏控件，数组值命名 `name[index]`。
+- Reka `Accordion` / `Collapsible` 在 `unmountOnHide=false` 时以 `hidden="until-found"` 保留收起内容（支持页内查找）；Tabs 收起内容用普通 `hidden`。
+- Reka `ToggleGroup` 的 `VisuallyHiddenInput` 会把对象型 `modelValue` 展开为 `name[key]`、数组型为 `name[i]`；以占位对象维持受控时须仅在有效选中时传 `name`，否则占位值进入表单提交。
+- Reka `ToggleGroup` 单选点击已选项会返回 `undefined`（允许取消）；实现「必有一选中项」需让 primitive 始终受控并在包装层忽略 `undefined`。
+- SSR 直出的 `<img>` 若在水合前已完成加载，`load` 事件不会重放；水合组件需在 `onMounted` 以 `img.complete`（配合 `naturalWidth`）兜底状态。
+- Reka `AlertDialogContent` 不屏蔽 `escapeKeyDown`（2.10.4），Esc 仍关闭；`AlertDialogAction` / `Cancel` 的 DialogClose onClick 先于包裹组件自身 click 触发，结算应做顺序无关的意图捕获 + `nextTick` + 请求 id。
+- 容器型控件的可访问名须遵守 WCAG 2.5.3：无条件设置 `aria-label` 会覆盖可见文案，应仅在自定义（可能无可见文本）内容时生效。
 
 ## 6. 组件 API 设计约定
 
@@ -89,8 +101,11 @@ test/                     # 单元与 E2E 测试
 - CSS 变量默认值不声明在 scoped 根选择器（`.comp[data-v]` 特异性高于消费方 `.comp`）：基类不预声明默认值、消费处 `var(--x, fallback)`，档位类用 `:where()` 归零特异性；自建布局容器同样遵守。
 - 区块间距压缩须覆盖全部合法邻接组合（`header+body` / `body+footer` / `header+footer`）；条件渲染会产生直邻组合，避免仅依赖 `+` 选择器漏判而出现双倍间距。
 - 同特异性规则由源码顺序决定胜负：`striped` 与 `hover` 同时命中时，`hover` 必须声明在 `striped` 之后。
-- portal / popper 挂载的子组件 scoped `data-v` 落在包裹层，`.comp__content[data-v-x]` 不命中；改用命名空间化的非 scoped 规则。Reka 嵌套子组件（如 `CheckboxIndicator`）不回传父级 scoped `data-v`，可在父级默认插槽内自绘（代价：丢失 `Presence` / `forceMount` 动画）。
+- portal / popper 挂载的子组件 scoped `data-v` 落在包裹层，`.comp__content[data-v-x]` 不命中；改用命名空间化的非 scoped 规则。Reka 嵌套子组件（如 `CheckboxIndicator`）不回传父级 scoped `data-v`，可在父级默认插槽内自绘（代价：丢失 `Presence` / `forceMount` 动画）。浮层子部件的共享样式宜集中到 Content 的非 scoped 命名空间块。
 - 列表语义容器（如 Toast 视口 `<ol>`）的几何重置用叠加类（`.x.x`）提升特异性，定位 / 布局仍保持单类低特异性；`position: fixed` 元素宽度用 `100%` 而非 `100vw`，避免含滚动条导致左右留边不对称。
+- Vue scoped `<style>` 会把 `@keyframes` 名重写为 `name-<hash>`；消费层无法引用被重写的 keyframes，动画开关须由组件暴露 `animation-name` / `animation-duration` / `animation-iteration-count`。
+- Stylelint `selector-not-notation: complex` 要求 `:not(a, b)` 而非 `:not(a):not(b)`。
+- 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
 
 ## 8. 构建与产物
 

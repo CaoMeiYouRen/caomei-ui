@@ -65,3 +65,5 @@ test/             # 测试
 - 组件前缀统一 `Caomei`；组件目录与文件命名统一 kebab-case。
 - 公共 API 变更须考虑向后兼容。
 - 修改被 `defineProps<ImportedType>()` 引用的 `types.ts` 后，dev server 可能给出半陈旧 HMR 产物（模板已引用新 prop 而 `defineProps` 未更新）；行为异常时先重启 dev server 再排查源码。
+- Vite / VitePress 以 `codeSplitting: false` 打包 config，相对路径的动态 import 会被内联（config 加载即引入该依赖），无法借此延迟加载。
+- `docs:preview` 服务的是旧构建产物；`pkill -f "vitepress preview"` 不匹配真实进程名（`vitepress.js preview`），浏览器验证应改用 dev server 或按端口重启 preview。

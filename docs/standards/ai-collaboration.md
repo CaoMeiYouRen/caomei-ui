@@ -42,6 +42,8 @@
 - 提交必须晚于 Review Gate Pass：先提交后补审判 blocker；已发生的补救只能用新提交（不改写历史、不推送）。
 - 审计证据必须与最终 revision 对齐：源码（含 V 阶段后的 CSS 修复）变更后须重跑 `pnpm build` 与浏览器验证并更新证据，陈旧证据判 blocker。
 - UI 类改动可在 D 阶段预先用 `@ui-validator` 采集浏览器证据并随审计提交，以满足 Review Gate 对 UI 证据的要求；正式 V / T / F 阶段仍须在 A Pass 后进入。
+- 批次粒度阈值见 [规划规范 §5](./planning.md#5-任务粒度约束)；含 barrel `index.ts` / 类型 / 测试的组件需为该批保留「仅本批导出」的中间版本（或按提交分步添加导出），保证每步可构建。
+- `docs/**` 未纳入 `vue-tsc`（见 [文档与演示站设计 §9](../design/documentation-site.md)）；文档示例访问插槽未声明字段等类型问题只能在 Review 实测暴露。
 
 ## 4. 验证矩阵
 

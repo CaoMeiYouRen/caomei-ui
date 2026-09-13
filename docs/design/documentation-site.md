@@ -67,6 +67,8 @@ docs/
 - 描述来源为类型定义中的 **JSDoc 注释**，因此组件 `types.ts` 的注释即文档。
 - `docs:build` 前会执行 `pnpm docs:gen` 刷新生成物；直接运行 `vitepress build docs` 需先手动执行该命令。
 - 开发期热更新：`pnpm docs:dev` 由 Vite 插件监听 `src/components/**`，复用 checker 增量刷新生成物；仅在元数据变化时失效组件模块并整页刷新，其余变更交由 Vite HMR。首次刷新需构建 TS program（约数秒），之后约数百毫秒。
+- MetaChecker 复用：`updateFile(file, text)` 可增量刷新（热态数百毫秒）；`clearCache()` 反而更慢且可能拿到陈旧结果；首次建 TS program 约数秒。
+- VitePress（root=docs）监听仓库内 `src/` 需显式 `server.watcher.add(dir)`；`moduleGraph` 以 POSIX 路径为 key，失效模块前需 `normalizePath`。
 
 ## 7. 与 playground 的关系
 
@@ -84,3 +86,4 @@ docs/
 - 文档站代码（`docs/.vitepress/**`）已纳入 ESLint 覆盖；`docs/**` 暂未纳入 `vue-tsc` typecheck，作为后续增强项（见 [Backlog](../plan/backlog.md)）。
 - 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
 - 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。
+- VitePress `base.css` 在 `prefers-reduced-motion: reduce` 下有 `* { animation-duration: 1ms !important; ... }`，会把加载指示器压成静止；修复落在文档层 `docs/.vitepress/theme/motion.css`（同属性 `!important`），组件库保持低特异性、零 `!important`。

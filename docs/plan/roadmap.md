@@ -19,7 +19,7 @@
 | **Phase 0** | — | 立项与 POC | 名称冻结（caomei-ui）；tsdown + Vue SFC + Reka UI + 子路径导出 POC；tokens 草案；仓库与基建 |
 | **Phase 1** | — | Tier 0 组件 | Button / Input / Select / Dialog / Toast / Card / Checkbox / Tag / DataTable（9 个） |
 | **Phase 2** | — | Tier 1 组件（Nuxt 模块延后，见 [Backlog](./backlog.md)） | Message / Password / ProgressSpinner / MultiSelect / ConfirmDialog / Avatar / Paginator（7 个；Switch 已先行落地） |
-| **Phase 3** | — | Tier 2 组件 | Tabs（含 TabList/TabPanel）/ Accordion / DropdownMenu / Image / SelectButton（SegmentedControl）/ FileUpload（6 个） |
+| **Phase 3** | — | Tier 2 组件 | Tabs（含 TabList/TabContent）/ Accordion / DropdownMenu / Image / SelectButton（SegmentedControl）/ FileUpload（6 个） |
 | **Phase 4** | — | 文档站 + 首个下游接入 | 组件文档（见 [文档与演示站](../design/documentation-site.md)；组件页已随 Phase 1 / Phase 2 落地，Phase 4 聚焦搜索 / i18n / 版本化等增强）、semantic-release 发布、dependfix/platform 接入验证 |
 | **Phase 5** | — | 其余下游迁移 | caomei-auth / rss-impact-next / momei / afdian-linker |
 | **Phase 6** | — | 下游兼容性回归机制（稳定后启用） | 已接入下游清单 + 跨仓库 CI 触发；仅在稳定使用且组件库改动时启用 |

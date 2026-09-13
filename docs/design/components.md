@@ -54,7 +54,7 @@
 
 | 组件 | 实现方式 | Reka UI 对应 |
 |------|----------|--------------|
-| Tabs（含 TabList/TabPanel） | 封装 Tabs | Tabs |
+| Tabs（含 TabList/TabContent） | 封装 Tabs | Tabs |
 | Accordion | 封装 Accordion | Accordion |
 | Menu / DropdownMenu | 封装 DropdownMenu | DropdownMenu |
 | Image | 自建（img + 懒加载） | 无（可选 AspectRatio 比例容器） |

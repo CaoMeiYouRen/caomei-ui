@@ -13,11 +13,11 @@
 
 状态：**进行中**
 
-> 实现粒度：单条目若超过 10 文件 / 800 行，按子件拆分（如 TabList / TabTrigger / TabPanel、菜单条目类型）为多次提交。
+> 实现粒度：单条目若超过 10 文件 / 800 行，按子件拆分（如 TabList / TabTrigger / TabContent、菜单条目类型）为多次提交。
 
 #### 主线 A：内容切换（Tabs / Accordion）
 
-- 执行范围：Tabs（含 TabList / TabPanel，封装 Reka UI `Tabs`）、Accordion（封装 Reka UI `Accordion`）
+- 执行范围：Tabs（含 TabList / TabContent，封装 Reka UI `Tabs`）、Accordion（封装 Reka UI `Accordion`）
 - 非目标：Tabs 不做路由联动；Accordion 不提供跨项动画编排 API
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证（含键盘导航与 a11y），并通过 Review Gate
 

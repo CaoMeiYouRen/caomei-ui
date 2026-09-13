@@ -185,6 +185,7 @@ export default defineConfig({
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },
+                        { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Tag 标签', link: '/components/tag' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                     ],

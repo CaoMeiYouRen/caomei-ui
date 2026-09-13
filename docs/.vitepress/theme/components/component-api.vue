@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useData } from 'vitepress'
 import metaData from '../../data/component-meta.json'
 
 interface ApiProperty {
@@ -31,6 +32,33 @@ interface ComponentMeta {
 
 const props = defineProps<{ name: string }>()
 
+const { localeIndex } = useData()
+
+const LABELS: Record<string, Record<string, string>> = {
+    root: {
+        name: '名称',
+        description: '说明',
+        type: '类型',
+        default: '默认值',
+        params: '参数',
+        required: '必填',
+        legend: '带 * 的为必填项。',
+        missing: '未找到组件元数据：',
+    },
+    'en-US': {
+        name: 'Name',
+        description: 'Description',
+        type: 'Type',
+        default: 'Default',
+        params: 'Parameters',
+        required: 'Required',
+        legend: 'Fields marked with * are required.',
+        missing: 'No component metadata found: ',
+    },
+}
+
+const labels = computed(() => LABELS[localeIndex.value] ?? LABELS.root)
+
 const meta = computed<ComponentMeta | undefined>(
     () => (metaData as Record<string, ComponentMeta>)[props.name],
 )
@@ -46,16 +74,16 @@ const meta = computed<ComponentMeta | undefined>(
                 <thead>
                     <tr>
                         <th scope="col">
-                            名称
+                            {{ labels.name }}
                         </th>
                         <th scope="col">
-                            说明
+                            {{ labels.description }}
                         </th>
                         <th scope="col">
-                            类型
+                            {{ labels.type }}
                         </th>
                         <th scope="col">
-                            默认值
+                            {{ labels.default }}
                         </th>
                     </tr>
                 </thead>
@@ -66,7 +94,7 @@ const meta = computed<ComponentMeta | undefined>(
                             <span
                                 v-if="item.required"
                                 class="component-api__required"
-                                title="必填"
+                                :title="labels.required"
                             >
                                 *
                             </span>
@@ -82,7 +110,7 @@ const meta = computed<ComponentMeta | undefined>(
                 </tbody>
             </table>
             <p class="component-api__legend">
-                带 * 的为必填项。
+                {{ labels.legend }}
             </p>
         </template>
 
@@ -92,13 +120,13 @@ const meta = computed<ComponentMeta | undefined>(
                 <thead>
                     <tr>
                         <th scope="col">
-                            名称
+                            {{ labels.name }}
                         </th>
                         <th scope="col">
-                            说明
+                            {{ labels.description }}
                         </th>
                         <th scope="col">
-                            参数
+                            {{ labels.params }}
                         </th>
                     </tr>
                 </thead>
@@ -122,10 +150,10 @@ const meta = computed<ComponentMeta | undefined>(
                 <thead>
                     <tr>
                         <th scope="col">
-                            名称
+                            {{ labels.name }}
                         </th>
                         <th scope="col">
-                            说明
+                            {{ labels.description }}
                         </th>
                     </tr>
                 </thead>
@@ -146,10 +174,10 @@ const meta = computed<ComponentMeta | undefined>(
                 <thead>
                     <tr>
                         <th scope="col">
-                            名称
+                            {{ labels.name }}
                         </th>
                         <th scope="col">
-                            类型
+                            {{ labels.type }}
                         </th>
                     </tr>
                 </thead>
@@ -168,7 +196,7 @@ const meta = computed<ComponentMeta | undefined>(
     </section>
 
     <p v-else class="component-api__missing">
-        未找到组件元数据：<code>{{ name }}</code>
+        {{ labels.missing }}<code>{{ name }}</code>
     </p>
 </template>
 

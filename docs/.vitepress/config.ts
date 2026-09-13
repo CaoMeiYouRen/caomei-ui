@@ -208,6 +208,9 @@ export default defineConfig({
                             text: 'Components',
                             items: [
                                 { text: 'Overview', link: '/en-US/components/' },
+                                { text: 'Button', link: '/en-US/components/button' },
+                                { text: 'Input', link: '/en-US/components/input' },
+                                { text: 'Select', link: '/en-US/components/select' },
                             ],
                         },
                     ],

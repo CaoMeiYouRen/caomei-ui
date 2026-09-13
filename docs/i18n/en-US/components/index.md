@@ -4,7 +4,13 @@ caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](ht
 
 ## Translated component pages
 
-Component pages are translated incrementally. Pages available in English are listed here; until a page is translated, refer to the Chinese documentation.
+Component pages are translated incrementally, in order. Pages available in English so far:
+
+- [Button](/en-US/components/button)
+- [Input](/en-US/components/input)
+- [Select](/en-US/components/select)
+
+Until a page is translated, refer to the Chinese documentation.
 
 ## Chinese documentation
 

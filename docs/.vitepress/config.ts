@@ -186,6 +186,7 @@ export default defineConfig({
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
                         { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'RadioGroup 单选组', link: '/components/radio-group' },
+                        { text: 'Slider 滑块', link: '/components/slider' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },

@@ -1,5 +1,6 @@
 import './styles/index.css'
 
+export * from './components/accordion'
 export * from './components/avatar'
 export * from './components/badge'
 export * from './components/button'

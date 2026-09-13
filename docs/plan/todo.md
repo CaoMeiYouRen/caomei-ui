@@ -38,7 +38,7 @@
 - 非目标：不做复杂富内容条目（仅支持文本 / 图标插槽）
 - 最小验收：实现、单元测试、组件文档与示例、浏览器验证（选中态、键盘导航、禁用），并通过 Review Gate
 
-- [ ] **SelectButton / SegmentedControl**：封装 Reka UI `ToggleGroup`；以 `SelectButton` 命名（对齐 PrimeVue 迁移），`SegmentedControl` 作为等价语义说明。
+- [x] **SelectButton / SegmentedControl**：封装 Reka UI `ToggleGroup`；以 `SelectButton` 命名（对齐 PrimeVue 迁移），`SegmentedControl` 作为等价语义说明。
 
 #### 主线 D：媒体与文件（Image / FileUpload）
 

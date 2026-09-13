@@ -21,8 +21,8 @@
 - 非目标：不改动现有 Checkbox / Switch 契约；不引入表单校验框架
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证（键盘方向键、禁用与表单语义），并通过 Review Gate
 
-- [ ] **RadioGroup / RadioButton**：封装 Reka UI `RadioGroup`，支持 `v-model`、`disabled`、`required`、`name` 表单语义与可访问名 `label`。
-- [ ] **Slider**：封装 Reka UI `Slider`，支持 `v-model`、`min` / `max` / `step`、禁用与键盘方向键调节。
+- [x] **RadioGroup / RadioButton**：封装 Reka UI `RadioGroup`，支持 `v-model`、`disabled`、`required`、`name` 表单语义与可访问名 `label`。
+- [x] **Slider**：封装 Reka UI `Slider`，支持 `v-model`、`min` / `max` / `step`、禁用与键盘方向键调节。
 
 #### 主线 B：开关与工具（ToggleButton / Toolbar）
 

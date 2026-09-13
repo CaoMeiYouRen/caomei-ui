@@ -200,6 +200,7 @@ export default defineConfig({
                             text: 'Guide',
                             items: [
                                 { text: 'Getting Started', link: '/en-US/guide/getting-started' },
+                                { text: 'Development', link: '/en-US/guide/development' },
                             ],
                         },
                     ],

@@ -68,6 +68,6 @@ See [Theming and styles](/design/theming) (Chinese) for details.
 
 ## Next steps
 
-- [Development guide](/guide/development) (Chinese)
+- [Development guide](/en-US/guide/development)
 - [Component design](/design/components) (Chinese)
 - [Standards](/standards/index) (Chinese)

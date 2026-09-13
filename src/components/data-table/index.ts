@@ -4,4 +4,7 @@ export type {
     DataTableCellContext,
     DataTableColumn,
     DataTableProps,
+    DataTableSortEvent,
+    DataTableSortFn,
+    DataTableSortOrder,
 } from './types'

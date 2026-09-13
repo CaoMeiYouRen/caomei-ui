@@ -19,15 +19,32 @@ Common `DataTableColumn` fields:
 |------|------|------|
 | `key` | `string` | Unique column id, also the default value field |
 | `header` | `string` | Header text; falls back to `key` |
-| `accessor` | `string \| (row) => unknown` | Value field name or function |
+| `accessor` | `string \| (row) => unknown` | Value field name (dot-path nesting supported) or function |
 | `cell` | `(context) => VNodeChild` | Custom cell content; `context` contains `row` / `value` / `index` |
 | `width` | `string` | Column width, e.g. `120px` / `20%` |
 | `align` | `'left' \| 'center' \| 'right'` | Horizontal alignment, defaults to `left` |
+| `sortable` | `boolean` | Whether the column is sortable (header renders a sort button) |
+| `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | Sort function, defaults to `alphanumeric` |
+| `headerClass` / `bodyClass` | `string` | Custom class for header / body cells |
+| `headerStyle` / `bodyStyle` | `CSSProperties` | Custom style for header / body cells |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
     ssg="true"
 />
+
+## Sorting
+
+Click the header of a `sortable` column to sort (ascending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Otherwise sorting state is kept internally. The controlled flag is determined at mount: adding or removing `sortField` later does not switch the mode.
+
+<demo
+    vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+## Loading state
+
+When `loading` is true a loading row is rendered and `aria-busy` is set; the text defaults to the current locale's "Loading" and can be overridden with `loadingText`.
 
 ## Empty state
 
@@ -53,7 +70,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently only column definitions and empty-state rendering are provided; sorting / pagination / row selection / grouping are not supported yet.
+- Currently column definitions, sorting and loading state are supported; row selection / pagination / frozen columns land in later stages.
 
 ## Accessibility
 

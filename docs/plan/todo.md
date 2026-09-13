@@ -49,7 +49,10 @@
   - 核心路径（优先）：
     - [x] Button 形态增强：`tone` 语义色、`text` / `outlined` 映射（`ghost` / `secondary`）、`rounded`、`iconPosition`
     - [ ] Button 角标（`:badge`）增强（M1 台账标记待评估，未纳入本批）
-    - [ ] DataTable + Column 能力增强（排序 / Lazy 分页 / 行选择 / 列插槽 / 冻结列等）
+    - [x] DataTable 列能力 + 排序 + 加载态（嵌套字段 `accessor`、可排序列、列 `class` / `style`、受控与非受控排序、`loading`）
+    - [ ] DataTable 行选择（`selectionMode` / 全选）
+    - [ ] DataTable Lazy 分页与分页集成
+    - [ ] DataTable 冻结列
   - 缺口组件：
     - [ ] Divider
     - [ ] InputGroup / FloatLabel

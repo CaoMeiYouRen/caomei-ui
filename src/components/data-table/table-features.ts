@@ -1,9 +1,24 @@
-import { tableFeatures } from '@tanstack/vue-table'
+import {
+    createSortedRowModel,
+    rowSortingFeature,
+    sortFn_alphanumeric,
+    sortFn_basic,
+    sortFn_text,
+    tableFeatures,
+} from '@tanstack/vue-table'
 
 /**
  * DataTable 使用的无头表格特性集。
  *
- * 当前仅需核心行列模型；排序、分页、行选择等能力按 Tier 0 范围暂不启用，
- * 后续扩展时在此集中开启，避免每个组件实例重复构造。
+ * 已启用：核心行列模型 + 排序（含受控 / 非受控）。
+ * 行选择、分页、列冻结等能力后续在此集中开启（见 docs/plan/todo.md）。
  */
-export const dataTableFeatures = tableFeatures({})
+export const dataTableFeatures = tableFeatures({
+    rowSortingFeature,
+    sortedRowModel: createSortedRowModel(),
+    sortFns: {
+        alphanumeric: sortFn_alphanumeric,
+        text: sortFn_text,
+        basic: sortFn_basic,
+    },
+})

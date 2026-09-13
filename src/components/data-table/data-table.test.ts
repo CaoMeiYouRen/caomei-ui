@@ -192,4 +192,135 @@ describe('CaomeiDataTable', () => {
         )
         expect(firstRowCells[1].classes()).toContain('caomei-data-table__cell--right')
     })
+
+    it('accessor 支持点号嵌套路径', () => {
+        interface NestedRow {
+            user: { name: string }
+        }
+        const Nested = CaomeiDataTable as unknown as DefineComponent<DataTableProps<NestedRow>>
+        const wrapper = mount(Nested, {
+            props: {
+                data: [{ user: { name: 'Ada' } }],
+                columns: [{ key: 'name', header: '姓名', accessor: 'user.name' }],
+            },
+        })
+
+        expect(wrapper.get('.caomei-data-table__td').text()).toBe('Ada')
+    })
+
+    it('sortable 列渲染排序按钮并在点击时切换顺序（非受控）', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: [
+                    { key: 'name', header: '姓名' },
+                    { key: 'age', header: '年龄', sortable: true },
+                ],
+            },
+        })
+
+        const sortButton = wrapper.findAll('.caomei-data-table__sort')[0]
+        expect(sortButton.text()).toContain('年龄')
+        expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('none')
+
+        await sortButton.trigger('click')
+        expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('ascending')
+        expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('24')
+
+        await sortButton.trigger('click')
+        expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('descending')
+        expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('36')
+    })
+
+    it('提供 sortField 时进入受控排序并抛出 sort 事件', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: [
+                    { key: 'name', header: '姓名' },
+                    { key: 'age', header: '年龄', sortable: true },
+                ],
+                sortField: 'age',
+                sortOrder: 'asc',
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('24')
+
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+
+        expect(wrapper.emitted('sort')?.[0]?.[0]).toEqual({ sortField: 'age', sortOrder: 'desc' })
+    })
+
+    it('受控 desc 态下点击抛出清空事件（父组件不回写）', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: [
+                    { key: 'name', header: '姓名' },
+                    { key: 'age', header: '年龄', sortable: true },
+                ],
+                sortField: 'age',
+                sortOrder: 'desc',
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+
+        expect(wrapper.emitted('sort')?.[0]?.[0]).toEqual({ sortField: '', sortOrder: '' })
+    })
+
+    it('columns 支持自定义 sortFn', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [{ name: '10', age: 0 }, { name: '9', age: 0 }],
+                columns: [{ key: 'name', header: '值', sortable: true, sortFn: 'text' }],
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+        expect(wrapper.emitted('sort')).toBeUndefined()
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toBe('10')
+    })
+
+    it('headerClass / bodyClass 与自定义样式应用到列', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: [
+                    {
+                        key: 'name',
+                        header: '姓名',
+                        headerClass: 'head-name',
+                        bodyClass: 'body-name',
+                        headerStyle: { color: 'red' },
+                        bodyStyle: { fontWeight: 'bold' },
+                    },
+                ],
+            },
+        })
+
+        expect(wrapper.get('.caomei-data-table__th').classes()).toContain('head-name')
+        expect(wrapper.get('.caomei-data-table__th').attributes('style')).toContain('color: red')
+        expect(wrapper.get('.caomei-data-table__td').classes()).toContain('body-name')
+        expect(wrapper.get('.caomei-data-table__td').attributes('style')).toContain('font-weight: bold')
+    })
+
+    it('loading 渲染加载行并标注 aria-busy', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns, loading: true },
+        })
+
+        expect(wrapper.get('.caomei-data-table').attributes('aria-busy')).toBe('true')
+        expect(wrapper.get('.caomei-data-table__loading').text()).toBe('加载中')
+        expect(wrapper.find('.caomei-data-table__row').exists()).toBe(false)
+    })
+
+    it('loading 时可自定义文案', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns, loading: true, loadingText: '加载记录中' },
+        })
+
+        expect(wrapper.get('.caomei-data-table__loading').text()).toBe('加载记录中')
+    })
 })

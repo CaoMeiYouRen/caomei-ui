@@ -166,6 +166,7 @@
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`；`tone` 语义；字号 `font-size-sm` |
 | Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；阴影用规划 `shadow-lg` |
+| DataTable | 表头/单元格底部边框取 `border`；排序按钮图标取 `text-muted`；排序态经 `aria-sort` 表达；列样式优先 `headerClass` / `bodyClass` |
 | 所有组件 | 焦点态可见；禁用态不改变布局尺寸 |
 
 ## 7. 迁移映射规范（PrimeVue → caomei-ui）
@@ -183,6 +184,8 @@
 | 全宽 | `fluid` | 默认全宽（迁移时删除） |
 
 > Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` 待评估。
+>
+> DataTable 排序：首次点击为**升序**（内部固定 `sortDescFirst: false`，对齐 PrimeVue 语义）；受控模式由挂载时是否提供 `sortField` 决定。
 
 ## 8. 规范落实与可验证脚本（已实现）
 

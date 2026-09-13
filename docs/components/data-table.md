@@ -19,15 +19,32 @@
 |------|------|------|
 | `key` | `string` | 列唯一标识，同时作为默认取值字段 |
 | `header` | `string` | 表头文本，缺省显示 `key` |
-| `accessor` | `string \| (row) => unknown` | 取值字段名或函数 |
+| `accessor` | `string \| (row) => unknown` | 取值字段名（支持 `a.b` 点号嵌套）或函数 |
 | `cell` | `(context) => VNodeChild` | 自定义单元格内容，`context` 含 `row` / `value` / `index` |
 | `width` | `string` | 列宽，如 `120px` / `20%` |
 | `align` | `'left' \| 'center' \| 'right'` | 水平对齐，默认 `left` |
+| `sortable` | `boolean` | 该列是否可排序（表头渲染为排序按钮） |
+| `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | 排序函数，默认 `alphanumeric` |
+| `headerClass` / `bodyClass` | `string` | 表头 / 数据单元格自定义 class |
+| `headerStyle` / `bodyStyle` | `CSSProperties` | 表头 / 数据单元格自定义样式 |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
     ssg="true"
 />
+
+## 排序
+
+`sortable` 列点击表头即可排序（首次升序）。传入 `sortField` + `sortOrder` 进入**受控排序**并在变化时抛出 `sort` 事件；不传时由组件内部维护排序状态。受控标志在挂载时确定：运行期增删 `sortField` 不会切换模式；受控时需在 `sort` 事件中回写 `sortField` / `sortOrder`。
+
+<demo
+    vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+## 加载态
+
+`loading` 为真时渲染加载行并标注 `aria-busy`；文案默认取当前语言的「加载中」，可用 `loadingText` 覆盖。
 
 ## 空态
 
@@ -53,7 +70,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前仅提供列定义与空态渲染，暂不支持排序 / 分页 / 行选择 / 分组。
+- 当前已支持列定义、排序与加载态；行选择 / 分页 / 冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
 
 ## 无障碍
 

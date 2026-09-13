@@ -1,6 +1,12 @@
-import type { VNodeChild } from 'vue'
+import type { CSSProperties, VNodeChild } from 'vue'
 
 export type DataTableAlign = 'left' | 'center' | 'right'
+
+/** 排序方向；`undefined` 表示未排序 */
+export type DataTableSortOrder = 'asc' | 'desc'
+
+/** 内置排序函数名（与 `table-features.ts` 的 `sortFns` 注册表保持一致） */
+export type DataTableSortFn = 'alphanumeric' | 'text' | 'basic'
 
 export interface DataTableCellContext<T> {
     /** 当前行数据 */
@@ -11,12 +17,22 @@ export interface DataTableCellContext<T> {
     index: number
 }
 
+export interface DataTableSortEvent {
+    /** 排序列的 key（无排序时为空字符串） */
+    sortField: string
+    /** 排序方向（无排序时为空字符串） */
+    sortOrder: DataTableSortOrder | ''
+}
+
 export interface DataTableColumn<T> {
     /** 列唯一标识，同时作为默认取值字段 */
     key: string
     /** 表头文本，缺省显示 key */
     header?: string
-    /** 取值字段名或函数；缺省用 key 作为字段名 */
+    /**
+     * 取值字段名（支持 `a.b` 点号嵌套路径）或函数；缺省用 key 作为字段名
+     * @en Field name (dot-path nested access supported) or accessor function; falls back to `key`
+     */
     accessor?: string | ((row: T) => unknown)
     /** 自定义单元格内容；优先于 accessor 与默认取值 */
     cell?: (context: DataTableCellContext<T>) => VNodeChild
@@ -24,6 +40,18 @@ export interface DataTableColumn<T> {
     width?: string
     /** 水平对齐，默认 left */
     align?: DataTableAlign
+    /** 该列是否可排序 */
+    sortable?: boolean
+    /** 排序函数名，默认 `alphanumeric` */
+    sortFn?: DataTableSortFn
+    /** 表头单元格自定义 class */
+    headerClass?: string
+    /** 数据单元格自定义 class */
+    bodyClass?: string
+    /** 表头单元格自定义样式 */
+    headerStyle?: CSSProperties
+    /** 数据单元格自定义样式 */
+    bodyStyle?: CSSProperties
 }
 
 export interface DataTableProps<T> {
@@ -59,7 +87,27 @@ export interface DataTableProps<T> {
     hoverable?: boolean
     /**
      * 斑马纹行，默认 false
-     * @en Striped rows, defaults to false
+     * @en Striped rows, default false
      */
     striped?: boolean
+    /**
+     * 受控排序列 key；提供时进入受控排序，配合 `sortOrder` 与 `@sort`
+     * @en Controlled sort field key; providing it enables controlled sorting with `sortOrder` and `@sort`
+     */
+    sortField?: string
+    /**
+     * 受控排序方向
+     * @en Controlled sort order
+     */
+    sortOrder?: DataTableSortOrder
+    /**
+     * 加载态；显示加载行并标注 aria-busy
+     * @en Loading state; shows a loading row and sets aria-busy
+     */
+    loading?: boolean
+    /**
+     * 加载态文案，默认取当前语言的「加载中」
+     * @en Loading text; defaults to the current locale's "Loading" text
+     */
+    loadingText?: string
 }

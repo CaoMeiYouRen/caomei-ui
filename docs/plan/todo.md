@@ -48,4 +48,4 @@
 - 非目标：不替代 Dialog / DropdownMenu；滚动锁行为沿用既有浮层约定
 - 最小验收：实现、单元测试、组件文档与示例、浏览器验证（焦点管理、Escape / 外部关闭、Portal 层级与 SSR 安全），并通过 Review Gate
 
-- [ ] **Popover**：封装 Reka UI `Popover`，支持触发方式、对齐与受控开合。
+- [x] **Popover**：封装 Reka UI `Popover`，支持触发方式、对齐与受控开合。

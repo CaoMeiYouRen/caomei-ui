@@ -220,6 +220,7 @@ export default defineConfig({
                                 { text: 'Image', link: '/en-US/components/image' },
                                 { text: 'FileUpload', link: '/en-US/components/file-upload' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
+                                { text: 'ConfirmDialog', link: '/en-US/components/confirm-dialog' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
                                 { text: 'Card', link: '/en-US/components/card' },
                                 { text: 'Checkbox', link: '/en-US/components/checkbox' },

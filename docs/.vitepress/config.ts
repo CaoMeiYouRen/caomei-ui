@@ -381,6 +381,7 @@ export default defineConfig({
                         { text: '主题与样式', link: '/design/theming' },
                         { text: '组件设计', link: '/design/components' },
                         { text: '文档与演示站', link: '/design/documentation-site' },
+                        { text: 'momei 使用复核台账', link: '/design/governance/2026-09-14-momei-usage-audit' },
                         { text: 'Session Wisdom 蒸馏', link: '/design/governance/session-wisdom-distillation' },
                     ],
                 },

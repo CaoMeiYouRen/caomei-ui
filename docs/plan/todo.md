@@ -16,8 +16,11 @@
 - 非目标：直接改造组件（缺口交由 M3 承载）。
 - 最小验收标准：台账覆盖 momei 拟替换的全部 PrimeVue 组件；每条给出「满足 / 需增强 / 需新组件」结论并回写 [Backlog](./backlog.md)。
 - 条目：
-  - [ ] 建立 momei 组件使用台账（使用点、用法、缺口）
-  - [ ] 产出复核报告与缺口清单并回写 Backlog
+  - [x] 建立 momei 组件使用台账（使用点、用法、缺口）
+  - [x] 产出复核报告与缺口清单并回写 Backlog
+- 交付物：[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)（59 个 PrimeVue 组件 / 1515 次用法；满足 21 / 需增强 23 / 需新组件 15）。
+- 复核结论：23 项「需增强」回写 [Backlog §1.1](./backlog.md)；新识别 `AutoComplete` / `ButtonGroup` / `DataView` 回写 §1.2；`IconField` / `InputIcon` 可由 `Input` 插槽承载（建议降级）；`DataTable + Column` 与 `Button` 为迁移关键路径。
+- 待用户决策：M3 组件清单与「需增强」项是否按台账调整（原 9 项候选成立，另建议纳入 Button / DataTable 增强）。
 
 ### 主线 M2：设计规范与主题预设（需求 7 + 需求 4）
 
@@ -40,7 +43,7 @@
 - 最小验收标准：组件具备 API 文档、单元测试与英文文档页；符合 M2 设计规范；`pnpm verify` 通过。
 - 条目：
   - [ ] Divider
-  - [ ] IconField / InputIcon（Input 家族扩展）
+  - [ ] IconField / InputIcon（Input 家族扩展；M1 复核建议降级为 Input `prefix` / `suffix` 插槽，待决策）
   - [ ] InputGroup / FloatLabel
   - [ ] Panel（先评估能否由 Accordion 承接）
   - [ ] DatePicker / Calendar（Reka Alpha，锁版本 + 回归）

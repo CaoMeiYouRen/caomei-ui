@@ -17,4 +17,5 @@
 
 ## 当前条目
 
+- [2026-09-14-momei-usage-audit.md](./2026-09-14-momei-usage-audit.md)：momei 组件使用复核台账（Phase 6 M1 交付物，需求 2 输入）。
 - [session-wisdom-distillation.md](./session-wisdom-distillation.md)：Session Wisdom 蒸馏机制（`.session/` 任务态与知识沉淀）。

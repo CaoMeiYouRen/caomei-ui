@@ -221,6 +221,7 @@ export default defineConfig({
                                 { text: 'Switch', link: '/en-US/components/switch' },
                                 { text: 'RadioGroup', link: '/en-US/components/radio-group' },
                                 { text: 'Slider', link: '/en-US/components/slider' },
+                                { text: 'ToggleButton', link: '/en-US/components/toggle-button' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                             ],
                         },

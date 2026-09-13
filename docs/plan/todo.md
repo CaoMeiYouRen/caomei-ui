@@ -22,7 +22,7 @@
 - 非目标：不重构文档站目录结构；不改组件实现；不为凑覆盖修改示例语义
 - 最小验收：docs 纳入类型检查后零 error；`pnpm verify` 通过；现有文档构建无回归
 
-- [ ] **docs 纳入 typecheck**：`docs/.vitepress/**` 纳入 `vue-tsc`，配套 docs 专用 tsconfig 与 `docs:gen` 前置，接入质量门与 CI。
+- [x] **docs 纳入 typecheck**：`docs/.vitepress/**` 纳入 `vue-tsc`，配套 docs 专用 tsconfig 与 `docs:gen` 前置，接入质量门与 CI。
 
 #### 主线 B：文档站站内搜索
 

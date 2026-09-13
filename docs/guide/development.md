@@ -22,6 +22,7 @@ pnpm install
 | `pnpm lint:css` | Stylelint 检查与修复 |
 | `pnpm lint:md` | Markdown 检查 |
 | `pnpm typecheck` | `vue-tsc --noEmit` |
+| `pnpm typecheck:docs` | 文档站类型检查（先执行 `docs:gen`） |
 | `pnpm test` | 单元测试 |
 | `pnpm test:coverage` | 覆盖率 |
 | `pnpm test:e2e` | Playwright E2E |

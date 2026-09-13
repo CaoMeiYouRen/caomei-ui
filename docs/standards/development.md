@@ -130,5 +130,6 @@ test/                     # 单元与 E2E 测试
 - `pnpm lint:css`（Stylelint，涉及样式时）
 - `pnpm lint:md`（文档改动时）
 - `pnpm typecheck`（`vue-tsc --noEmit` 零 error）
+- `pnpm typecheck:docs`（文档站类型检查，`vue-tsc -p docs/tsconfig.json` 零 error）
 - `pnpm test`（全部通过）
 - `pnpm build`（无报错，发布前对产物冒烟）

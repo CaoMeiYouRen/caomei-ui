@@ -79,11 +79,11 @@ docs/
 
 1. 先用 **Button** 做样板页，验证「demo 渲染 + 源码展示 + API 自动生成 + 侧边栏」链路；
 2. 通过后按 Tier 0 组件逐步补齐组件页；
-3. 其余增强（搜索、i18n、版本化、Playground 链接）按需迭代。
+3. 其余增强中，搜索与 i18n 已由 [Phase 5](../plan/todo.md) 承接；版本化见 [Backlog](../plan/backlog.md)，Playground 链接按需评估。
 
 ## 9. 已知取舍
 
-- 文档站代码（`docs/.vitepress/**`）已纳入 ESLint 覆盖；`docs/**` 暂未纳入 `vue-tsc` typecheck，作为后续增强项（见 [Backlog](../plan/backlog.md)）。
+- 文档站代码（`docs/.vitepress/**` 与 `docs/examples/**`）已纳入 ESLint 与 `vue-tsc` 覆盖，由 `pnpm typecheck:docs` 执行（`docs:gen` 为前置）；`config.ts` 的 Vite 类型从 VitePress 重导出的 `Plugin` 复用，避免仓库根 Vite 与 VitePress 内置 Vite 的版本类型冲突。
 - 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
 - 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。
 - VitePress `base.css` 在 `prefers-reduced-motion: reduce` 下有 `* { animation-duration: 1ms !important; ... }`，会把加载指示器压成静止；修复落在文档层 `docs/.vitepress/theme/motion.css`（同属性 `!important`），组件库保持低特异性、零 `!important`。

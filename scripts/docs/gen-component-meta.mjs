@@ -52,6 +52,12 @@ export function collectComponentEntries(root = projectRoot) {
     return entries
 }
 
+/** 从 JSDoc tags 中取 `@en` 英文描述（约定：`@en <English>`）。 */
+export function pickEnDescription(tags) {
+    const text = tags?.find((tag) => tag.name === 'en')?.text
+    return typeof text === 'string' && text.length > 0 ? text : undefined
+}
+
 /** 将 vue-component-meta 的原始结果归一化为文档站数据结构。 */
 export function normalizeComponentMeta(meta) {
     return {
@@ -63,16 +69,19 @@ export function normalizeComponentMeta(meta) {
                 default: prop.default,
                 required: prop.required,
                 description: prop.description,
+                descriptionEn: pickEnDescription(prop.tags),
             })),
         events: meta.events.map((event) => ({
             name: event.name,
             type: event.type,
             description: event.description,
+            descriptionEn: pickEnDescription(event.tags),
         })),
         slots: meta.slots.map((slot) => ({
             name: slot.name,
             type: slot.type,
             description: slot.description,
+            descriptionEn: pickEnDescription(slot.tags),
         })),
         exposed: meta.exposed.map((item) => ({
             name: item.name,

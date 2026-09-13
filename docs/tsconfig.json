@@ -9,7 +9,9 @@
         "./.vitepress/**/*.ts",
         "./.vitepress/**/*.vue",
         "./examples/**/*.ts",
-        "./examples/**/*.vue"
+        "./examples/**/*.vue",
+        "./i18n/**/*.ts",
+        "./i18n/**/*.vue"
     ],
     "exclude": [
         "./.vitepress/cache",

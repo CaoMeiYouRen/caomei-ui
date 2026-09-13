@@ -9,18 +9,21 @@ interface ApiProperty {
     default?: string
     required?: boolean
     description?: string
+    descriptionEn?: string
 }
 
 interface ApiEvent {
     name: string
     type: string
     description?: string
+    descriptionEn?: string
 }
 
 interface ApiSlot {
     name: string
     type: string
     description?: string
+    descriptionEn?: string
 }
 
 interface ComponentMeta {
@@ -58,6 +61,10 @@ const LABELS: Record<string, Record<string, string>> = {
 }
 
 const labels = computed(() => LABELS[localeIndex.value] ?? LABELS.root)
+
+// 英文页优先使用 JSDoc `@en` 描述，缺失时回退中文原文（当前仅识别 en-US）
+const describe = (item: { description?: string, descriptionEn?: string }): string | undefined =>
+    localeIndex.value === 'en-US' && item.descriptionEn ? item.descriptionEn : item.description
 
 const meta = computed<ComponentMeta | undefined>(
     () => (metaData as Record<string, ComponentMeta>)[props.name],
@@ -99,7 +106,7 @@ const meta = computed<ComponentMeta | undefined>(
                                 *
                             </span>
                         </td>
-                        <td>{{ item.description }}</td>
+                        <td>{{ describe(item) }}</td>
                         <td>
                             <code>{{ item.type }}</code>
                         </td>
@@ -135,7 +142,7 @@ const meta = computed<ComponentMeta | undefined>(
                         <td>
                             <code>{{ item.name }}</code>
                         </td>
-                        <td>{{ item.description || '—' }}</td>
+                        <td>{{ describe(item) || '—' }}</td>
                         <td>
                             <code>{{ item.type }}</code>
                         </td>
@@ -162,7 +169,7 @@ const meta = computed<ComponentMeta | undefined>(
                         <td>
                             <code>{{ item.name }}</code>
                         </td>
-                        <td>{{ item.description || '—' }}</td>
+                        <td>{{ describe(item) || '—' }}</td>
                     </tr>
                 </tbody>
             </table>

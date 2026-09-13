@@ -9,6 +9,7 @@ import {
     findComponentEntry,
     getComponentMetaFile,
     normalizeComponentMeta,
+    pickEnDescription,
     projectRoot,
     writeComponentMetaFile,
 } from './gen-component-meta.mjs'
@@ -90,6 +91,28 @@ describe('collectComponentEntries', () => {
     })
 })
 
+describe('pickEnDescription', () => {
+    it('取 @en tag 的文本', () => {
+        expect(pickEnDescription([{ name: 'en', text: 'Visual variant' }])).toBe('Visual variant')
+    })
+
+    it('无 @en tag 时返回 undefined', () => {
+        expect(pickEnDescription([{ name: 'deprecated', text: 'x' }])).toBeUndefined()
+    })
+
+    it('tags 为 undefined 时返回 undefined', () => {
+        expect(pickEnDescription(undefined)).toBeUndefined()
+    })
+
+    it('@en 无文本时返回 undefined', () => {
+        expect(pickEnDescription([{ name: 'en' }])).toBeUndefined()
+    })
+
+    it('@en 文本为空串时返回 undefined', () => {
+        expect(pickEnDescription([{ name: 'en', text: '' }])).toBeUndefined()
+    })
+})
+
 describe('normalizeComponentMeta', () => {
     it('过滤全局 props 并保留各字段', () => {
         const meta = normalizeComponentMeta({
@@ -100,6 +123,7 @@ describe('normalizeComponentMeta', () => {
                     default: 'md',
                     required: false,
                     description: '尺寸',
+                    tags: [{ name: 'en', text: 'Size' }],
                     global: false,
                 },
                 {
@@ -118,9 +142,12 @@ describe('normalizeComponentMeta', () => {
 
         expect(meta.props.map((prop) => prop.name)).toEqual(['size'])
         expect(meta.props[0].description).toBe('尺寸')
+        expect(meta.props[0].descriptionEn).toBe('Size')
         expect(meta.events[0].name).toBe('change')
+        expect(meta.events[0].descriptionEn).toBeUndefined()
         expect(meta.slots[0].name).toBe('default')
         expect(meta.exposed[0].name).toBe('focus')
+        expect(meta.exposed[0].descriptionEn).toBeUndefined()
     })
 })
 

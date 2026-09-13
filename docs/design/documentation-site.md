@@ -98,3 +98,4 @@ docs/
 - **Locale**：当前提供 `root`（简体中文，`/`）与 `en-US`（English，`/en-US/`）；root 使用顶层 `themeConfig` 的 `nav` / `sidebar` 作为默认，`en-US` 在自己的 locale `themeConfig` 中覆盖；公共项（search / socialLinks / footer）放在顶层（VitePress 对 locale `themeConfig` 做浅合并）。
 - **部分翻译的 fallback**：未翻译页只保留在中文区，英文导航 / 侧边栏只列已有英文页；`themeConfig.i18nRouting: false` 让语言切换跳目标 locale 首页（`/en-US/`），避免从中文页切到英文时落到尚不存在的 `/en-US/...` 而 404。覆盖度提升后可改回默认的对应路由。
 - **链接检查**：`scripts/docs/check-links.mjs` 对站点根链接额外解析 `docs/i18n/<path>`，以兼容该物理路径约定。
+- **同步范围**：英文版最终与中文版保持同步的范围**仅限「指南」与「组件介绍」**（按批次推进）；设计、规范、规划等保持骨架 / 中文源（source-only），不承诺持续翻译。

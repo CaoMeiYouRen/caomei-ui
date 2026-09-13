@@ -35,8 +35,9 @@
 #### 主线 C：文档站多语言（站点 i18n）
 
 - 执行范围：配置 VitePress `locales`（zh-CN 默认 + en-US）与语言切换，nav / sidebar 本地化，首批高频页面英文版
-- 非目标：不做组件运行时内建文案的 locale 注入（属库能力，另见 Backlog）；首期不要求翻译全部组件页
+- 非目标：不做组件运行时内建文案的 locale 注入（属库能力，另见 Backlog）；设计 / 规范 / 规划保持中文源；英文最终同步范围为指南与组件介绍，按批次推进
 - 最小验收：`pnpm docs:build` 通过；中英切换可用、nav / sidebar 双语可达；未翻译页有明确 fallback 且不报错；`lang` 与元信息按 locale 输出
 
 - [x] **站点 i18n 基建**：配置 `locales`、语言切换与 nav / sidebar 双语骨架。
-- [ ] **首批页面英文版**：按覆盖范围补充首批高频页面英文，其余走 fallback。
+- [x] **首批页面英文版**：首批高频组件页英文落地（Button / Input / Select），未翻译页走 fallback。
+- [ ] **英文指南与组件页后续同步**：按顺序补齐其余组件介绍与指南英文，未翻译页保持 fallback。

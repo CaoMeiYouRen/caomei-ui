@@ -16,13 +16,16 @@ Component pages are translated incrementally and listed in the same order as the
 - [Toast](/en-US/components/toast)
 - [Card](/en-US/components/card)
 - [Checkbox](/en-US/components/checkbox)
+- [Switch](/en-US/components/switch)
+- [RadioGroup](/en-US/components/radio-group)
+- [Slider](/en-US/components/slider)
 - [DataTable](/en-US/components/data-table)
 
 Until a page is translated, refer to the Chinese documentation.
 
 ## Chinese documentation
 
-Components that are not translated yet are available in Chinese only. The Chinese pages for the components above are:
+Chinese pages are the primary reference. The Chinese pages for the components above are:
 
 - [Button 按钮](/components/button)
 - [Input 输入框](/components/input)
@@ -34,4 +37,7 @@ Components that are not translated yet are available in Chinese only. The Chines
 - [Toast 轻提示](/components/toast)
 - [Card 卡片](/components/card)
 - [Checkbox 复选框](/components/checkbox)
+- [Switch 开关](/components/switch)
+- [RadioGroup 单选组](/components/radio-group)
+- [Slider 滑块](/components/slider)
 - [DataTable 表格](/components/data-table)

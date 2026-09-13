@@ -102,6 +102,26 @@
 
 ---
 
+## Phase 5 第一阶段：文档站增强
+
+- 时间：2026-09-13 ~ 2026-09-14
+- 交付：
+  - 主线 A：文档站纳入 `vue-tsc` 类型检查（docs 专用 tsconfig + `docs:gen` 前置，接入 `verify` 与 CI）
+  - 主线 B：启用 VitePress 内置站内搜索（local provider），以 `Intl.Segmenter` 补中文分词并记录内置分词局限
+  - 主线 C：站点 i18n 与英文内容
+    - 基建：`docs/i18n/en-US/` 物理路径 + `rewrites` + locale 分栏 nav / sidebar；`@en` JSDoc → `descriptionEn` 的 API 描述双语
+    - 组件英文页 33/33 全覆盖（英文 demo、API 英文描述、按中文 sidebar 顺序登记；语言中性 demo 复用中文源）
+    - 指南英文 4/4（getting-started / development / release / ai-development）
+    - 定序规则：英文导航 / 概览按中文 sidebar 组件顺序，写入 [文档与演示站 §10](../design/documentation-site.md)
+- 关键提交：`41dc46d`（登记）；主线 A `26ab586` / `5d53583`；主线 B `5db5e2c` / `31d0145`；主线 C 基建 `4a293fc` / `c3bf6be` / `2673a68`；组件页与指南英文按批次提交 `d48742e` ~ `70a84ad`；锚点修正 `188d41d`
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / docs:build / governance）；最终全量单元测试 626 例通过；docs 链接校验 135 md 全有效
+- 浏览器验证：各批次英文页经 `@ui-validator` 实机验证（渲染、交互、sidebar 定序、明暗与桌面 / 移动、API 英文、console error 均为 0）
+- 审计：各批次经 `@code-reviewer` Review Gate 放行；组件页第 4 批经历「首轮 Pass → 排序漂移修复 → 复审关闭」，收尾 17 个组件逐组件审计，指南英文逐页审计
+- 阶段归档蒸馏：`.session/wisdom.md` 活跃 8 条（< 阈值 20），无需蒸馏
+- 遗留与后续候选：组件内建文案 locale 注入、文档站版本化、覆盖率门禁、a11y / 视觉回归等见 [Backlog](./backlog.md)；Phase 5 第二阶段（首版发布 / 首个下游接入）依赖外部前置
+
+---
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

@@ -81,7 +81,7 @@ docs/
 
 1. 先用 **Button** 做样板页，验证「demo 渲染 + 源码展示 + API 自动生成 + 侧边栏」链路；
 2. 通过后按 Tier 0 组件逐步补齐组件页；
-3. 其余增强中，搜索与 i18n 已由 [Phase 5](../plan/todo.md) 承接；版本化见 [Backlog](../plan/backlog.md)，Playground 链接按需评估。
+3. 其余增强中，搜索与 i18n 已完成并归档（见 [待办归档](../plan/todo-archive.md) 的 Phase 5 第一阶段）；版本化见 [Backlog](../plan/backlog.md)，Playground 链接按需评估。
 
 ## 9. 已知取舍
 

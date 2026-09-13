@@ -209,6 +209,7 @@ export default defineConfig({
                             items: [
                                 { text: 'Overview', link: '/en-US/components/' },
                                 { text: 'Button', link: '/en-US/components/button' },
+                                { text: 'Avatar', link: '/en-US/components/avatar' },
                                 { text: 'Input', link: '/en-US/components/input' },
                                 { text: 'Textarea', link: '/en-US/components/textarea' },
                                 { text: 'InputNumber', link: '/en-US/components/input-number' },

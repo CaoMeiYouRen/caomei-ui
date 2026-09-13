@@ -7,6 +7,7 @@ caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](ht
 Component pages are translated incrementally and listed in the same order as the Chinese sidebar. Pages available in English so far:
 
 - [Button](/en-US/components/button)
+- [Avatar](/en-US/components/avatar)
 - [Input](/en-US/components/input)
 - [Textarea](/en-US/components/textarea)
 - [InputNumber](/en-US/components/input-number)
@@ -30,6 +31,7 @@ Until a page is translated, refer to the Chinese documentation.
 Chinese pages are the primary reference. The Chinese pages for the components above are:
 
 - [Button 按钮](/components/button)
+- [Avatar 头像](/components/avatar)
 - [Input 输入框](/components/input)
 - [Textarea 多行输入](/components/textarea)
 - [InputNumber 数字输入框](/components/input-number)

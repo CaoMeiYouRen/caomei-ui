@@ -67,14 +67,14 @@ const rootClass = computed(() => [
 <style scoped>
 /*
   `--caomei-radio-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
-  尺寸档位选择器用 :where() 归零特异性，保证使用方单类覆盖生效。
+  尺寸档位选择器用 :where() 归零特异性，只声明 CSS 变量，避免被基类属性覆盖。
 */
 .caomei-radio-group {
     display: flex;
     gap: var(--caomei-radio-group-gap, var(--caomei-space-2));
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-font-size-md);
+    font-size: var(--caomei-radio-font-size, var(--caomei-font-size-md));
 }
 
 .caomei-radio-group--horizontal {
@@ -89,18 +89,17 @@ const rootClass = computed(() => [
 
 :where(.caomei-radio-group--sm) {
     --caomei-radio-size: 16px;
-
-    font-size: var(--caomei-font-size-sm);
+    --caomei-radio-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-radio-group--md) {
     --caomei-radio-size: 18px;
+    --caomei-radio-font-size: var(--caomei-font-size-md);
 }
 
 :where(.caomei-radio-group--lg) {
     --caomei-radio-size: 20px;
-
-    font-size: var(--caomei-font-size-lg);
+    --caomei-radio-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-radio-group--invalid {

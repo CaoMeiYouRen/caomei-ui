@@ -69,6 +69,7 @@
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `--caomei-radio-group-gap` | `--caomei-space-2` | 组内条目间距 |
+| `--caomei-radio-font-size` | 由 `size` 档位决定 | 文本字号（sm 12 / md 14 / lg 16） |
 | `--caomei-radio-size` | 由 `size` 档位决定 | 指示器直径（sm 16 / md 18 / lg 20） |
 | `--caomei-radio-gap` | `--caomei-space-2` | 指示器与标签间距 |
 | `--caomei-radio-bg` | `--caomei-color-bg` | 未选中指示器背景色 |

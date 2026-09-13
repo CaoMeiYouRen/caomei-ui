@@ -67,6 +67,7 @@
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `--caomei-checkbox-size` | 由 `size` 档位决定 | 复选框边长（sm 16 / md 18 / lg 20） |
+| `--caomei-checkbox-font-size` | 由 `size` 档位决定 | 标签字号（sm 12 / md 14 / lg 16） |
 | `--caomei-checkbox-radius` | `--caomei-radius-sm` | 圆角 |
 | `--caomei-checkbox-bg` | `--caomei-color-bg` | 未选中背景色 |
 | `--caomei-checkbox-border` | `--caomei-color-border` | 未选中描边色 |

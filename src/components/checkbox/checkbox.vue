@@ -93,7 +93,7 @@ const rootClass = computed(() => [
 <style scoped>
 /*
   `--caomei-checkbox-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
-  尺寸档位选择器用 :where() 归零特异性，保证使用方单类覆盖生效。
+  尺寸档位选择器用 :where() 归零特异性，只声明 CSS 变量，避免被基类属性覆盖。
 */
 .caomei-checkbox {
     display: inline-flex;
@@ -101,24 +101,23 @@ const rootClass = computed(() => [
     gap: var(--caomei-space-2);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-font-size-md);
+    font-size: var(--caomei-checkbox-font-size, var(--caomei-font-size-md));
     cursor: pointer;
 }
 
 :where(.caomei-checkbox--sm) {
     --caomei-checkbox-size: 16px;
-
-    font-size: var(--caomei-font-size-sm);
+    --caomei-checkbox-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-checkbox--md) {
     --caomei-checkbox-size: 18px;
+    --caomei-checkbox-font-size: var(--caomei-font-size-md);
 }
 
 :where(.caomei-checkbox--lg) {
     --caomei-checkbox-size: 20px;
-
-    font-size: var(--caomei-font-size-lg);
+    --caomei-checkbox-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-checkbox--disabled {

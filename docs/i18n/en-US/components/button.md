@@ -5,7 +5,7 @@ A button triggers an action.
 ## Basic usage
 
 <demo
-    vue="../../../examples/button/basic.vue"
+    vue="../examples/button/basic.vue"
     ssg="true"
 />
 
@@ -32,7 +32,7 @@ Switch the size with `size`.
 While `loading`, the button is disabled and shows a loading indicator; `block` makes it fill the parent width.
 
 <demo
-    vue="../../../examples/button/states.vue"
+    vue="../examples/button/states.vue"
     title="Disabled, loading and block"
     description="Click the loading button to see the loading state."
     ssg="true"

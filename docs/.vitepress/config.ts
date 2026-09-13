@@ -1,13 +1,16 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitepress'
+import { defineConfig, type Plugin } from 'vitepress'
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin/markdown'
-import { normalizePath, type Plugin, type ViteDevServer } from 'vite'
+import { normalizePath } from 'vite'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcDir = path.resolve(dirname, '../../src')
 const componentsDir = path.resolve(srcDir, 'components')
+
+// 复用 VitePress 内置 Vite 版本的开发服务器类型，避免与仓库根 Vite 类型冲突
+type MetaWatchServer = Parameters<Extract<NonNullable<Plugin['configureServer']>, (server: never) => unknown>>[0]
 
 // GitHub Pages 项目站点部署在 /<repo>/ 子路径下，需要设置 base；
 // 本地开发与自定义域名部署保持默认 '/'。由 VITEPRESS_BASE 环境变量控制。
@@ -24,7 +27,7 @@ const META_MAX_RETRY = 3
  * `component-meta.json`；仅在元数据实际变化时失效组件模块并整页刷新，
  * 其余变更（模板 / 样式）交由 Vite HMR 处理。
  */
-async function setupComponentMetaWatch(server: ViteDevServer): Promise<void> {
+async function setupComponentMetaWatch(server: MetaWatchServer): Promise<void> {
     const {
         collectComponentEntries,
         createComponentMetaCollector,

@@ -1,0 +1,18 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "moduleResolution": "Bundler",
+        "allowJs": true,
+        "checkJs": false
+    },
+    "include": [
+        "./.vitepress/**/*.ts",
+        "./.vitepress/**/*.vue",
+        "./examples/**/*.ts",
+        "./examples/**/*.vue"
+    ],
+    "exclude": [
+        "./.vitepress/cache",
+        "./.vitepress/dist"
+    ]
+}

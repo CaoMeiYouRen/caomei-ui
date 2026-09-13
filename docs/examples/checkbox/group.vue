@@ -15,7 +15,7 @@ function isSelected(value: string): boolean {
     return selected.value.includes(value)
 }
 
-function toggle(value: string, state: CheckboxState): void {
+function toggle(value: string, state: CheckboxState | undefined): void {
     if (state === true) {
         selected.value = [...selected.value, value]
     } else {

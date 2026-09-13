@@ -7,7 +7,7 @@ An input receives a single line of text from the user.
 Two-way bind the value with `v-model`.
 
 <demo
-    vue="../../../examples/input/basic.vue"
+    vue="../examples/input/basic.vue"
     ssg="true"
 />
 
@@ -16,7 +16,7 @@ Two-way bind the value with `v-model`.
 Switch the size with `size`; supports `sm` / `md` / `lg`.
 
 <demo
-    vue="../../../examples/input/sizes.vue"
+    vue="../examples/input/sizes.vue"
     ssg="true"
 />
 
@@ -25,7 +25,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 `disabled` disables, `readonly` makes it read-only, and `invalid` marks a validation failure (maps to `aria-invalid`).
 
 <demo
-    vue="../../../examples/input/states.vue"
+    vue="../examples/input/states.vue"
     ssg="true"
 />
 
@@ -34,7 +34,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 With `clearable`, a clear button appears when there is a value; clicking it clears the value and emits `clear`.
 
 <demo
-    vue="../../../examples/input/clearable.vue"
+    vue="../examples/input/clearable.vue"
     ssg="true"
 />
 
@@ -43,7 +43,7 @@ With `clearable`, a clear button appears when there is a value; clicking it clea
 Use the `prefix` / `suffix` slots to place icons or text on either side; `type="password"` renders a password field — see [Password](/components/password) (Chinese) for an enhanced wrapper with a visibility toggle.
 
 <demo
-    vue="../../../examples/input/slots.vue"
+    vue="../examples/input/slots.vue"
     ssg="true"
 />
 

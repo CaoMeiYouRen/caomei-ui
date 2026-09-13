@@ -6,11 +6,11 @@
 
 ## 1. 现状与背景
 
-- Phase 0（立项与 POC）与 Phase 1（Tier 0 组件）已完成并归档；首版尚未发布，Phase 2（Tier 1 组件）已启动。
+- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）与 Phase 2（Tier 1 组件）已完成并归档；首版尚未发布，后续阶段启动待用户决策。
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 已落地组件：Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable（含 `DataTableColumn` 列定义类型），以及 Phase 2 预落地的 Switch。
+- 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）与 Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect），以及预落地的 Switch。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
-- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（8 个）+ Tier 2（按需）。
+- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（按需）。
 
 ## 2. 阶段规划
 
@@ -24,6 +24,8 @@
 | **Phase 5** | — | 下游兼容性回归机制（稳定后启用） | 已接入下游清单 + 跨仓库 CI 触发；仅在稳定使用且组件库改动时启用 |
 
 > Phase 5 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
+
+> 状态：Phase 0 ~ Phase 2 已完成并归档（见 [待办归档](./todo-archive.md)）；后续阶段启动需经需求评估与用户明确决策。
 
 ## 3. 设计依据
 
@@ -42,4 +44,4 @@
 
 ## 5. 归档索引
 
-已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）与 Phase 1（Tier 0 组件）已归档，Switch 作为 Phase 2 预落地条目一并归档。
+已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）、Phase 1（Tier 0 组件）与 Phase 2（Tier 1 组件）已归档，Switch 作为 Phase 2 预落地条目一并归档。

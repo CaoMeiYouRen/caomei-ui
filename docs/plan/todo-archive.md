@@ -47,9 +47,28 @@
 
 ---
 
+## Phase 2：Tier 1 组件
+
+- 时间：2026-09-13（Switch 预落地为 2026-09-12，见下）
+- 交付：
+  - 主线 A 展示与导航：Avatar（封装 `Avatar`）、Paginator（封装 `Pagination`）
+  - 主线 B 反馈与浮层：Message / Alert（单一组件 `CaomeiMessage`，`role` 支持 status / alert）、ProgressSpinner（封装 `Progress` 派生）
+  - 主线 C 确认对话框：`useConfirm` 服务（Promise 语义 + provide/inject store）与 ConfirmDialog（封装 `AlertDialog`，含焦点落位与滚动锁）
+  - 主线 D 表单增强：Password（Input 衍生，可见性切换 + `autocomplete` 语义）、MultiSelect（封装 `Combobox`，多选 + 已选项标签 + 本地过滤）
+  - 文档：7 个组件页与示例全部落地并纳入侧边栏；组件 API 元数据开发期热更新（复用 checker + `updateFile` 增量刷新）
+  - 规范：派生组件 attrs 契约（`inheritAttrs: false` + 剔除内部受控属性）写入 [开发规范 §5](../standards/development.md)
+  - 多语言：locale 扩展 `pagination` / `progress` / `confirm` / `password` / `multiSelect`
+- 关键提交：`7857ace`（阶段启动）；主线 A `9480c54` / `803390f`（含修正 `98d16bc`）、主线 B `adb6d76` / `4121ee4`、主线 C `bcbd326` ~ `26bcee8`、主线 D `07a6de8` ~ `68adacf`；文档站工具 `d4da879`（`9ec3b41` 为 Phase 2 收尾期的文档站 reduced-motion 修复）
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / test / build / docs:build / governance）；全量单元测试 422 例通过
+- 浏览器验证：各组件均经 `@ui-validator` 实机验证，证据报告落盘 `test-results/<component>/`（该目录 gitignored）；本阶段复核：ConfirmDialog 18/18（焦点与滚动锁）、Password 15/15、MultiSelect 21/21（含 `bodyLock` 滚动锁）
+- 审计：各条目均经 `@code-reviewer` Review Gate 放行；ConfirmDialog（批次拆分）、Password（`type` 透传覆盖）、MultiSelect（`required` 表单语义）经历「首轮发现 → 修复 → 二轮 Pass」；未保留独立审查工件文件
+- 遗留与后续候选：Nuxt 模块真实集成、覆盖率门禁启用、`docs/**` 纳入 typecheck、a11y 自动化回归、视觉回归基线、浮层交互 E2E 规格、Review Gate 证据留存、层级 / 阴影 token、国际化文案注入机制、执行层失效引用收敛等，见 [Backlog](./backlog.md)
+
+---
+
 ## 跨阶段预落地条目
 
-### Switch（Phase 2 预落地，用户授权）
+### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）
 
 - 时间：2026-09-12
 - 交付：封装 Reka UI `Switch`，补 `defineOptions` 与表单属性 `name` / `id` / `required` / `value`、可访问名 `label`、CSS 变量覆盖钩子与焦点态；文档、示例与单元测试同步

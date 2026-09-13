@@ -57,5 +57,5 @@
 ## 相关文档
 
 - [Git 规范](/standards/git)
-- [架构设计 - 发布链路](/design/architecture#7-发布链路)
+- [架构设计 - 发布链路](/design/architecture#_7-发布链路)
 - [路线图](/plan/roadmap)

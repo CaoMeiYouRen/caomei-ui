@@ -58,7 +58,7 @@ test/             # 测试
 
 ## 质量门
 
-参见 [开发规范 - 质量门](/standards/development#10-质量门) 与 [测试规范 - 验证矩阵](/standards/testing#5-验证矩阵)。
+参见 [开发规范 - 质量门](/standards/development#_10-质量门) 与 [测试规范 - 验证矩阵](/standards/testing#_5-验证矩阵)。
 
 ## 注意事项
 

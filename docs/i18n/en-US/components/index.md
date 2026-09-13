@@ -35,6 +35,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Skeleton](/en-US/components/skeleton)
 - [Tabs](/en-US/components/tabs)
 - [Accordion](/en-US/components/accordion)
+- [DropdownMenu](/en-US/components/dropdown-menu)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -71,3 +72,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [Skeleton 骨架屏](/components/skeleton)
 - [Tabs 选项卡](/components/tabs)
 - [Accordion 折叠面板](/components/accordion)
+- [DropdownMenu 下拉菜单](/components/dropdown-menu)

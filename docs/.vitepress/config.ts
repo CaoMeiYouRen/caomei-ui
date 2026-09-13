@@ -237,6 +237,7 @@ export default defineConfig({
                                 { text: 'Skeleton', link: '/en-US/components/skeleton' },
                                 { text: 'Tabs', link: '/en-US/components/tabs' },
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
+                                { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
                             ],
                         },
                     ],

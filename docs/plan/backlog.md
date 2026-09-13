@@ -40,7 +40,6 @@
 | i18n 对应路由回切 | 实现决策：当前 `i18nRouting: false`（切换跳 locale 首页）；待 `en-US` 覆盖全部一级 nav 页后改回默认对应路由 | 低 |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | 英文文档同步治理 | 用户方向：英文版最终与中文版同步（仅指南与组件介绍）；需补 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
-| 英文 demo 与 API 描述本地化 | 英文组件页复用中文 `docs/examples/**`（demo 文案为中文）、API 表描述来自中文 JSDoc、`vitepress-demo-plugin` 工具条文案为中文；英文化需派生 en demo / 补 JSDoc 翻译 / 评估插件 locale 方案 | 中 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | Input 家族样式层共享 | attrs 透传已抽取 `useAttrForwarding`；Password 已由 Input 派生并复用其样式（未分叉），其余文本输入类组件仍各自维护 scoped 样式，出现样式分叉时再评估共享样式层 | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |

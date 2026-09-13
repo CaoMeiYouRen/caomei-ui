@@ -154,6 +154,11 @@ export default defineConfig({
     lang: 'zh-CN',
     base,
     cleanUrls: true,
+    rewrites(id) {
+        // 文档翻译物理路径约定：docs/i18n/<locale>/ → 站点路径 /<locale>/（对齐 momei）
+        // 当前仅 en-US，新增 locale 时需同步扩展此处正则
+        return id.replace(/^i18n\/(en-US)\//, '$1/')
+    },
     markdown: {
         config(md) {
             md.use(vitepressDemoPlugin)
@@ -164,6 +169,73 @@ export default defineConfig({
         resolve: {
             alias: {
                 '@': srcDir,
+            },
+        },
+    },
+    locales: {
+        root: {
+            label: '简体中文',
+            lang: 'zh-CN',
+            themeConfig: {
+                // 顶层为共享项；语言切换按钮标签仅中文 locale 需要，英文走默认 Change language
+                langMenuLabel: '切换语言',
+            },
+        },
+        'en-US': {
+            label: 'English',
+            lang: 'en-US',
+            link: '/en-US/',
+            description: 'A Vue 3 component library built on Reka UI',
+            themeConfig: {
+                nav: [
+                    { text: 'Guide', link: '/en-US/guide/getting-started' },
+                    { text: 'Components', link: '/en-US/components/' },
+                    { text: 'Design', link: '/en-US/design/' },
+                    { text: 'Standards', link: '/en-US/standards/' },
+                    { text: 'Plan', link: '/en-US/plan/' },
+                ],
+                sidebar: {
+                    '/en-US/guide/': [
+                        {
+                            text: 'Guide',
+                            items: [
+                                { text: 'Getting Started', link: '/en-US/guide/getting-started' },
+                            ],
+                        },
+                    ],
+                    '/en-US/components/': [
+                        {
+                            text: 'Components',
+                            items: [
+                                { text: 'Overview', link: '/en-US/components/' },
+                            ],
+                        },
+                    ],
+                    '/en-US/design/': [
+                        {
+                            text: 'Design',
+                            items: [
+                                { text: 'Design Index', link: '/en-US/design/' },
+                            ],
+                        },
+                    ],
+                    '/en-US/standards/': [
+                        {
+                            text: 'Standards',
+                            items: [
+                                { text: 'Standards Index', link: '/en-US/standards/' },
+                            ],
+                        },
+                    ],
+                    '/en-US/plan/': [
+                        {
+                            text: 'Plan',
+                            items: [
+                                { text: 'Overview', link: '/en-US/plan/' },
+                            ],
+                        },
+                    ],
+                },
             },
         },
     },
@@ -203,6 +275,8 @@ export default defineConfig({
                 },
             },
         },
+        // 部分翻译站点：切换语言跳目标 locale 首页，避免未翻译页 404（覆盖度提升后可改回默认对应路由）
+        i18nRouting: false,
         nav: [
             { text: '指南', link: '/guide/getting-started' },
             { text: '组件', link: '/components/button' },

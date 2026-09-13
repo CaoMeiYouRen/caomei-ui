@@ -5,6 +5,7 @@
  *
  * 校验内容：
  * 1. 相对路径链接的目标文件必须存在（兼容 VitePress 省略 .md 的裸路径）；
+ *    站点根路径链接（`/xxx`）除 `docs/` 外，还兼容文档翻译的 `docs/i18n/<locale>/` 物理路径约定；
  * 2. 锚点（#xxx）必须能在目标文件（或当前文件）中找到对应标题——使用宽松规范化，
  *    兼容 GitHub / VS Code / VitePress 的 slug 差异；
  * 3. 拒绝本地绝对路径链接（POSIX `/xxx`、Windows `C:/xxx`）；
@@ -156,8 +157,12 @@ export function checkFile(file, root = projectRoot) {
                     join(docsRoot, sitePath),
                     join(docsRoot, `${sitePath}.md`),
                     join(docsRoot, sitePath, 'index.md'),
+                    // 文档翻译物理路径约定：docs/i18n/<locale>/ 映射为站点路径 /<locale>/
+                    join(docsRoot, 'i18n', sitePath),
+                    join(docsRoot, 'i18n', `${sitePath}.md`),
+                    join(docsRoot, 'i18n', sitePath, 'index.md'),
                 ]
-                const siteTarget = candidates.find((c) => existsSync(c))
+                const siteTarget = candidates.find((c) => existsSync(c) && statSync(c).isFile())
                 if (!siteTarget) {
                     errors.push(`${rel}:${idx + 1} 站点链接目标不存在: ${pathPart}`)
                     continue

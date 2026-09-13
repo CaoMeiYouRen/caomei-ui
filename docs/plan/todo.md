@@ -38,5 +38,5 @@
 - 非目标：不做组件运行时内建文案的 locale 注入（属库能力，另见 Backlog）；首期不要求翻译全部组件页
 - 最小验收：`pnpm docs:build` 通过；中英切换可用、nav / sidebar 双语可达；未翻译页有明确 fallback 且不报错；`lang` 与元信息按 locale 输出
 
-- [ ] **站点 i18n 基建**：配置 `locales`、语言切换与 nav / sidebar 双语骨架。
+- [x] **站点 i18n 基建**：配置 `locales`、语言切换与 nav / sidebar 双语骨架。
 - [ ] **首批页面英文版**：按覆盖范围补充首批高频页面英文，其余走 fallback。

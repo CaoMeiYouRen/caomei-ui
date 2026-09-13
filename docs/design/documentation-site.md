@@ -36,6 +36,7 @@ docs/
 │     ├─ index.ts                   # 注册全局组件、引入库样式
 │     └─ components/component-api.vue
 ├─ components/<component>.md        # 组件页
+├─ i18n/<locale>/<page>.md          # 翻译页（物理路径；站点 URL 为 /<locale>/...）
 └─ examples/<component>/*.vue       # 每个 demo 一个文件
 ```
 
@@ -90,3 +91,10 @@ docs/
 - 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
 - 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。
 - VitePress `base.css` 在 `prefers-reduced-motion: reduce` 下有 `* { animation-duration: 1ms !important; ... }`，会把加载指示器压成静止；修复落在文档层 `docs/.vitepress/theme/motion.css`（同属性 `!important`），组件库保持低特异性、零 `!important`。
+
+## 10. 国际化（i18n）与翻译路径
+
+- **物理路径**：文档翻译统一放在 `docs/i18n/<locale>/`，站点 URL 仍为 `/<locale>/...`，由 `config.ts` 的 `rewrites` 映射（`i18n/en-US/**` → `en-US/**`）。该约定对齐 momei 项目；**不保留 `docs/<locale>/` 目录**。
+- **Locale**：当前提供 `root`（简体中文，`/`）与 `en-US`（English，`/en-US/`）；root 使用顶层 `themeConfig` 的 `nav` / `sidebar` 作为默认，`en-US` 在自己的 locale `themeConfig` 中覆盖；公共项（search / socialLinks / footer）放在顶层（VitePress 对 locale `themeConfig` 做浅合并）。
+- **部分翻译的 fallback**：未翻译页只保留在中文区，英文导航 / 侧边栏只列已有英文页；`themeConfig.i18nRouting: false` 让语言切换跳目标 locale 首页（`/en-US/`），避免从中文页切到英文时落到尚不存在的 `/en-US/...` 而 404。覆盖度提升后可改回默认的对应路由。
+- **链接检查**：`scripts/docs/check-links.mjs` 对站点根链接额外解析 `docs/i18n/<path>`，以兼容该物理路径约定。

@@ -45,7 +45,7 @@
   --caomei-select-max-width: 20rem;
 }
 
-.dark {
+:is(.dark, [data-theme='dark']) {
   --caomei-color-bg: #0b0b0d;
   --caomei-color-bg-elevated: #17171a;
   --caomei-color-text: #f5f5f5;
@@ -63,9 +63,11 @@
 
 ## 3. 主题切换
 
-- 支持方式：
-  - `.dark` class（**已实现**，默认，便于 SSR 与手动切换）；
-  - `[data-theme="dark"]` 属性与 `prefers-color-scheme`（跟随系统）为**规划**，随主题预设一并实现（见 [设计规范](./design-spec.md)）。
+- 支持方式（**默认亮色**；显式 `.light` / `[data-theme="light"]` 可在开启系统跟随后临时锁定亮色）：
+  - `.dark` class（默认，便于 SSR 与手动切换）；
+  - `[data-theme="dark"]` 属性；
+  - 系统跟随（`prefers-color-scheme: dark`）：需在根元素显式加 `data-scheme="auto"`。
+- 品牌预设：根元素 `data-preset="caomei"` / `"momei"`（基础预设缺省），见 [设计规范 §5](./design-spec.md)。
 - Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`（模块为占位实现，真实 `@nuxt/kit` 集成待后续阶段）。
 - 提供 `useTheme()` composable 管理当前主题与切换。
 
@@ -74,8 +76,9 @@
 优先级由低到高：
 
 1. 引入 `caomei-ui/styles.css` 获得默认样式；
-2. 覆盖 `--caomei-*` CSS variables 调整视觉；
-3. 通过组件 `class` / 样式透传做局部覆盖。
+2. 选择品牌预设（根元素 `data-preset="caomei"` / `"momei"`）；
+3. 覆盖 `--caomei-*` CSS variables 调整视觉；
+4. 通过组件 `class` / 样式透传做局部覆盖。
 
 不提供 Tailwind preset 作为内置依赖；如需为 Tailwind 用户提供 token 映射，另作可选文档。
 

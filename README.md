@@ -23,7 +23,7 @@ Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0
 ## ✨ 特性（目标形态）
 
 - **组件与样式解耦**：默认极简样式，可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
-- **主题与暗色模式**：CSS variables + 语义化 token，支持 `.dark`、`[data-theme="dark"]` 与跟随系统。
+- **主题与暗色模式**：CSS variables + 语义化 token；支持 `.dark` / `[data-theme="dark"]` 与两套品牌预设（`data-preset`）；系统跟随需显式开启（`data-scheme="auto"`）。
 - **桌面与移动适配**：单包响应式，不拆分移动端包。
 - **单仓库单包**：组件、样式、resolver、Nuxt 模块通过子路径导出，消费者只需安装一个包。
 - **无障碍**：基于 Reka UI 的 ARIA、键盘导航与焦点管理。

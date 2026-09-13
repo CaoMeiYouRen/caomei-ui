@@ -30,12 +30,15 @@
 - 条目：
   - [x] 设计规范文档（尺寸档位 / 语义色 / 对比度 / 圆角 / 阴影 / 图标尺寸 / 排版）
   - [x] 从 caomei-auth 与 momei 提取语义 token 映射表
-  - [ ] 规范可验证脚本（硬编码颜色与尺寸 / 档位一致性 / variant 与 size 命名）
-  - [ ] `caomei` 主题预设（亮 / 暗）
-  - [ ] `momei` 主题预设（亮 / 暗）
-  - [ ] 预设承载形式（CSS 入口 / `data-theme` / Nuxt 配置）与文档站演示切换
-  - [ ] 新组件规范模板 / 自检清单
-- 交付物：[设计规范](../design/design-spec.md)（含 token 体系、尺寸 / 颜色 / 主题 / 风格规范、迁移映射与校验规划；两套预设 token 映射表已产出，实现待续）。
+  - [x] 规范可验证脚本（硬编码颜色 / 档位常量一致性 / 旧尺寸命名；rgb 字面量按预算约束）
+  - [x] `caomei` 主题预设（亮 / 暗）
+  - [x] `momei` 主题预设（亮 / 暗）
+  - [x] 预设承载形式（随 `styles.css` 分发 + 根元素 `data-preset`）与文档站演示切换
+  - [x] 新组件规范模板 / 自检清单
+- 交付物：
+  - [设计规范](../design/design-spec.md)（token 体系、尺寸 / 颜色 / 主题 / 风格规范、迁移映射、校验脚本与新组件自检清单）。
+  - 主题预设：`src/styles/theme.css`（基础 + `.dark` / `[data-theme]` / `prefers-color-scheme`）与 `src/styles/presets/caomei.css`、`presets/momei.css`；文档站顶栏提供预设演示切换。
+  - 校验脚本：`scripts/governance/check-design.mjs`（`pnpm check:design`，已纳入 `pnpm verify`）+ 单测 `check-design.test.mjs`。
 
 ### 主线 M3：组件补全与关键增强（需求 1）
 

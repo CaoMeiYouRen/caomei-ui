@@ -130,8 +130,10 @@
 |------|------|:-:|
 | 双默认主题预设 | 当前默认主色 `--caomei-color-primary: #e63946`（红）来自 caomei-auth；拟提供两套预设：`caomei`（源于 caomei-auth 设计）与 `momei`（源于 momei 设计），各自含亮 / 暗两套 token | 中 |
 | 预设设计源提取 | 从 caomei-auth 与 momei 现有主题（PrimeVue preset / SCSS 变量）提取语义 token 映射表，作为预设实现依据 | 中 |
-| 暗色模式配套 | 预设须支持暗色切换；沿用现有 `.dark` 实现，`[data-theme]` 与 `prefers-color-scheme` 需随本项补齐（现仅 `.dark` 落地）；同时补齐品牌强调色在暗色下的对比度（含跨主题稳定的 `-solid`） | 中 |
+| 暗色模式配套 | 预设须支持暗色切换：`.dark` / `[data-theme="dark"]`，以及系统跟随（根元素 `data-scheme="auto"`）；补齐品牌强调色在暗色下的对比度（含跨主题稳定的 `-solid`） | 中 |
 | 预设选择与按需引入 | 确定预设承载形式（独立 CSS 入口 / `data-theme` 属性 / Nuxt 模块配置）与文档站演示切换；不引入 Tailwind | 中 |
+
+> 状态（2026-09-14）：M2 已完成上述条目。实现见 `src/styles/theme.css`（含 `[data-theme]` 与 `data-scheme="auto"` 系统跟随）与 `src/styles/presets/caomei.css`、`presets/momei.css`；承载形式定为「随 `styles.css` 分发 + 根元素 `data-preset`」，文档站顶栏提供演示切换；规范见 [设计规范](../design/design-spec.md)。
 
 ### 2.4 组件补全（需求 1 → Phase 6 M3；迁移试点 → Phase 7）
 

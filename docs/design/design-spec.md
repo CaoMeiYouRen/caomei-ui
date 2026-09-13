@@ -93,11 +93,16 @@
 
 ## 4. 主题与暗色
 
-- 亮色为默认；暗色支持 `.dark` class（已实现）。
-- 规划补齐 `[data-theme="dark"]` 属性与 `prefers-color-scheme: dark`（跟随系统），与 `.dark` 等价；`useTheme()` 负责管理（见 [主题与样式设计 §3](./theming.md)）。
-- 主题预设通过 `[data-theme="<preset>"]` 切换；预设与明暗正交组合。
+- **默认亮色**；暗色支持：
+  - `.dark` class；
+  - `[data-theme="dark"]` 属性；
+  - 系统跟随为**显式开启**：根元素加 `data-scheme="auto"`，再以 `.light` / `[data-theme="light"]` 可临时锁定亮色。
+- 品牌预设通过根元素 `data-preset` 切换：`[data-preset="caomei"]` / `[data-preset="momei"]`（缺省为基础预设）；预设与明暗正交组合，且需挂在**同一元素**上（通常为 `<html>`）。
+- `useTheme()` 读取模式与暗色状态（`auto` 时读取系统偏好），见 [主题与样式设计 §3](./theming.md)。
 
-## 5. 主题预设（规划，待实现）
+## 5. 主题预设（已实现）
+
+实现位置：`src/styles/theme.css`（基础）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随 `caomei-ui/styles.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
 
 ### 5.1 caomei 预设（源：caomei-auth）
 
@@ -114,7 +119,7 @@
 | `--caomei-color-warning` | `#f97316` | `#fb923c` | Lara button warn |
 | `--caomei-color-danger` | `#ef4444` | `#f87171` | Lara button error |
 | `--caomei-color-bg` | `#ffffff` | `#18181b` | Lara content.background |
-| `--caomei-color-bg-elevated` | `#f8fafc`（亮 surface-50） | `#18181b`（暗内容背景 / surface-900） | Lara content.background |
+| `--caomei-color-bg-elevated` | `#f8fafc`（亮 surface-50） | `#27272a`（暗抬升面，zinc-800） | Lara content.background + 抬升面取 zinc-800 与底 `#18181b` 区分 |
 | `--caomei-color-text` | `#475569` | `#ffffff` | Lara text |
 | `--caomei-color-text-muted` | `#718096` | `#a1a1aa` | Lara text.muted |
 | `--caomei-color-border` | `#e2e8f0` | `#3f3f46` | Lara content.border |
@@ -176,17 +181,25 @@
 | 校验态 | `class="p-invalid"` | `:invalid` |
 | 全宽 | `fluid` | 默认全宽（迁移时删除） |
 
-## 8. 规范落实与可验证脚本（规划，待实现）
+## 8. 规范落实与可验证脚本（已实现）
 
-- **规范可验证脚本**：对 `src/` 与组件文档执行检查，纳入 `pnpm verify` 或独立 `pnpm check:design`：
-  1. 组件内禁止原始色值（`#hex` / `rgb()`）与魔法尺寸，必须消费 token；
-  2. 尺寸档位一致性（同语义档位值一致，不出现 `small` / `sm` 混用）；
-  3. `variant` / `size` / `tone` 命名与取值白名单；
-  4. token 引用存在性（不消费未定义的 `--caomei-*`）。
-- **新组件规范模板 / 自检清单**：新增组件时按模板生成骨架，并在 PR 自检清单中逐项核对本规范。
+- **规范可验证脚本**：`scripts/governance/check-design.mjs`，经 `pnpm check:design` 运行，已纳入 `pnpm governance:check` 与 `pnpm verify`：
+  1. token 引用存在性（`var(--caomei-*)` 未定义且无 fallback 为错误）；
+  2. 组件原始色值（`#hex` 为错误；`rgb()` / `hsl()` 为警告，已知 13 处待 token 化）；
+  3. 档位常量一致性（`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone`）；
+  4. 旧命名泄漏（组件类型中的 `'small'` / `'large'`）。
+- **单测**：`scripts/governance/check-design.test.mjs` 将上述不变量固化为断言。
+- **新组件自检清单**：新增组件按下列顺序核对，全部满足方可进入 Review Gate。
+  1. 命名与结构：`Caomei` + `PascalCase`；目录 `src/components/<kebab>/`，含同名 `.vue`、`types.ts`、`index.ts` 与 `.test.ts`；在 `src/index.ts` 导出。
+  2. 档位：props 复用全局 `ComponentSize` / `ComponentVariant` / `ComponentTone`，不自定义档位命名。
+  3. 样式：只消费 `--caomei-*` token，不写原始色值；档位类用 `:where()`，默认值经 `var(--x, fallback)` 消费。
+  4. 图标：经 `#icon` 插槽 + `@lucide/vue`，不使用字符串图标名。
+  5. 无障碍：键盘可达、焦点可见、必要的 ARIA 与文案本地化键。
+  6. 文档与测试：API 文档页（中 / 英）与行为测试（含失败路径）。
+  7. 收尾：`pnpm check:design` 与 `pnpm verify` 通过。
 
 ## 9. 未决项
 
-- caomei-auth 暗色双轨（PrimeVue zinc vs SCSS `#121212`）取哪个，需在预设实现前定稿（本规范暂取 PrimeVue 轨）。
+- caomei-auth 暗色双轨（PrimeVue zinc vs SCSS `#121212`）：预设已取 PrimeVue 轨（见 §5.1）；如后续需要 SCSS 轨可另设变体。
 - 是否新增 `--caomei-color-accent` 与 `info` tone，需评估组件使用面。
-- `prefers-color-scheme`、`[data-theme]` 暗色支持与预设切换的承载形式（独立 CSS 入口 / 属性 / Nuxt 配置）待实现时定稿。
+- 预设承载形式已定稿为「随 `styles.css` 分发 + 根元素 `data-preset` 属性」；是否额外提供独立 CSS 入口或 Nuxt 配置项，待下游接入反馈后评估。

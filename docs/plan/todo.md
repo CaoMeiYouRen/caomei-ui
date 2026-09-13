@@ -30,8 +30,8 @@
 - 非目标：ToggleButton 不与既有 SelectButton（ToggleGroup）合并；Toolbar 不承载富文本编辑等业务逻辑
 - 最小验收：实现、单元测试、组件文档与示例、浏览器验证（选中态 / 受控、键盘漫游、`aria-pressed`），并通过 Review Gate
 
-- [ ] **ToggleButton**：封装 Reka UI `Toggle`，支持 `v-model` 按下态、`disabled` 与图标 / 文本插槽。
-- [ ] **Toolbar**：封装 Reka UI `ToolbarRoot`，提供分组、分隔线与键盘漫游。
+- [x] **ToggleButton**：封装 Reka UI `Toggle`，支持 `v-model` 按下态、`disabled` 与图标 / 文本插槽。
+- [x] **Toolbar**：封装 Reka UI `ToolbarRoot`，提供分组、分隔线与键盘漫游。
 
 #### 主线 C：反馈与占位（Skeleton / ProgressBar）
 

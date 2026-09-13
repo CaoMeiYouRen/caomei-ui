@@ -34,6 +34,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [ProgressBar](/en-US/components/progress-bar)
 - [Skeleton](/en-US/components/skeleton)
 - [Tabs](/en-US/components/tabs)
+- [Accordion](/en-US/components/accordion)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -69,3 +70,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [ProgressBar 进度条](/components/progress-bar)
 - [Skeleton 骨架屏](/components/skeleton)
 - [Tabs 选项卡](/components/tabs)
+- [Accordion 折叠面板](/components/accordion)

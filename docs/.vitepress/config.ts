@@ -236,6 +236,7 @@ export default defineConfig({
                                 { text: 'ProgressBar', link: '/en-US/components/progress-bar' },
                                 { text: 'Skeleton', link: '/en-US/components/skeleton' },
                                 { text: 'Tabs', link: '/en-US/components/tabs' },
+                                { text: 'Accordion', link: '/en-US/components/accordion' },
                             ],
                         },
                     ],

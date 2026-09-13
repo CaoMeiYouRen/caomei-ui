@@ -21,8 +21,8 @@
 - 非目标：Tabs 不做路由联动；Accordion 不提供跨项动画编排 API
 - 最小验收：两组件均具备实现、单元测试、组件文档与示例、浏览器验证（含键盘导航与 a11y），并通过 Review Gate
 
-- [ ] **Tabs**：封装 Reka UI `Tabs`，支持 `v-model` 当前项、TabList / TabTrigger / TabContent 组合、禁用项与键盘导航。
-- [ ] **Accordion**：封装 Reka UI `Accordion`，支持 single / multiple、`collapsible`、默认展开项与禁用项。
+- [x] **Tabs**：封装 Reka UI `Tabs`，支持 `v-model` 当前项、TabList / TabTrigger / TabContent 组合、禁用项与键盘导航。
+- [x] **Accordion**：封装 Reka UI `Accordion`，支持 single / multiple、`collapsible`、默认展开项与禁用项。
 
 #### 主线 B：浮层菜单（DropdownMenu）
 

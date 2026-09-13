@@ -238,6 +238,7 @@ export default defineConfig({
                                 { text: 'Tabs', link: '/en-US/components/tabs' },
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
+                                { text: 'Popover', link: '/en-US/components/popover' },
                             ],
                         },
                     ],

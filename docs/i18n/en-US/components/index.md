@@ -36,6 +36,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Tabs](/en-US/components/tabs)
 - [Accordion](/en-US/components/accordion)
 - [DropdownMenu](/en-US/components/dropdown-menu)
+- [Popover](/en-US/components/popover)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -73,3 +74,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [Tabs 选项卡](/components/tabs)
 - [Accordion 折叠面板](/components/accordion)
 - [DropdownMenu 下拉菜单](/components/dropdown-menu)
+- [Popover 浮层](/components/popover)

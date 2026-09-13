@@ -202,6 +202,7 @@ export default defineConfig({
                                 { text: 'Getting Started', link: '/en-US/guide/getting-started' },
                                 { text: 'Development', link: '/en-US/guide/development' },
                                 { text: 'Release', link: '/en-US/guide/release' },
+                                { text: 'AI Development', link: '/en-US/guide/ai-development' },
                             ],
                         },
                     ],

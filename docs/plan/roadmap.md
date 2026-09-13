@@ -6,11 +6,11 @@
 
 ## 1. 现状与背景
 
-- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件）与 Phase 3（Tier 2 组件）已完成并归档；Phase 4 待规划决策启动；首版尚未发布。
+- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件）与 Phase 3（Tier 2 组件）已完成并归档；Phase 4（Tier 3 稳定批组件）已由用户决策启动；首版尚未发布。
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
 - 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）、Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect，以及预落地的 Switch）与 Tier 2（Tabs、Accordion、DropdownMenu、SelectButton、Image、FileUpload）。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
-- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，已完成）。
+- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，Phase 4 进行中）。
 
 ## 2. 阶段规划
 
@@ -20,13 +20,14 @@
 | **Phase 1** | — | Tier 0 组件 | Button / Input / Select / Dialog / Toast / Card / Checkbox / Tag / DataTable（9 个） |
 | **Phase 2** | — | Tier 1 组件（Nuxt 模块延后，见 [Backlog](./backlog.md)） | Message / Password / ProgressSpinner / MultiSelect / ConfirmDialog / Avatar / Paginator（7 个；Switch 已先行落地） |
 | **Phase 3** | — | Tier 2 组件 | Tabs（含 TabList/TabContent）/ Accordion / DropdownMenu / Image / SelectButton（SegmentedControl）/ FileUpload（6 个） |
-| **Phase 4** | — | 文档站 + 首个下游接入 | 组件文档（见 [文档与演示站](../design/documentation-site.md)；组件页已随 Phase 1 / Phase 2 落地，Phase 4 聚焦搜索 / i18n / 版本化等增强）、semantic-release 发布、dependfix/platform 接入验证 |
-| **Phase 5** | — | 其余下游迁移 | caomei-auth / rss-impact-next / momei / afdian-linker |
-| **Phase 6** | — | 下游兼容性回归机制（稳定后启用） | 已接入下游清单 + 跨仓库 CI 触发；仅在稳定使用且组件库改动时启用 |
+| **Phase 4** | — | Tier 3 稳定批组件 | RadioGroup / RadioButton、Slider、ToggleButton、Toolbar、Skeleton、ProgressBar、Popover（7 个；Alpha、其余自建件与低优先候选按需后置，见 [Backlog](./backlog.md)） |
+| **Phase 5** | — | 文档站 + 首个下游接入 | 组件文档（见 [文档与演示站](../design/documentation-site.md)；组件页已随 Phase 1 / Phase 2 落地，Phase 5 聚焦搜索 / i18n / 版本化等增强）、semantic-release 发布、dependfix/platform 接入验证 |
+| **Phase 6** | — | 其余下游迁移 | caomei-auth / rss-impact-next / momei / afdian-linker |
+| **Phase 7** | — | 下游兼容性回归机制（稳定后启用） | 已接入下游清单 + 跨仓库 CI 触发；仅在稳定使用且组件库改动时启用 |
 
-> Phase 6 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
+> Phase 7 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
 
-> 状态：Phase 0 ~ Phase 3 已完成并归档（见 [待办归档](./todo-archive.md)）；Phase 4 待规划决策启动，见 [待办事项](./todo.md)。
+> 状态：Phase 0 ~ Phase 3 已完成并归档（见 [待办归档](./todo-archive.md)）；Phase 4（Tier 3 稳定批组件）已由用户决策启动，见 [待办事项](./todo.md)。
 
 ## 3. 设计依据
 

@@ -188,6 +188,7 @@ export default defineConfig({
                         { text: 'RadioGroup 单选组', link: '/components/radio-group' },
                         { text: 'Slider 滑块', link: '/components/slider' },
                         { text: 'ToggleButton 开关按钮', link: '/components/toggle-button' },
+                        { text: 'Toolbar 工具条', link: '/components/toolbar' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },

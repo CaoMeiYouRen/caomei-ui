@@ -232,6 +232,7 @@ export default defineConfig({
                                 { text: 'Toolbar', link: '/en-US/components/toolbar' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                                 { text: 'Paginator', link: '/en-US/components/paginator' },
+                                { text: 'ProgressSpinner', link: '/en-US/components/progress-spinner' },
                             ],
                         },
                     ],

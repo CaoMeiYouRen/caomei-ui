@@ -231,6 +231,7 @@ export default defineConfig({
                                 { text: 'ToggleButton', link: '/en-US/components/toggle-button' },
                                 { text: 'Toolbar', link: '/en-US/components/toolbar' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
+                                { text: 'Paginator', link: '/en-US/components/paginator' },
                             ],
                         },
                     ],

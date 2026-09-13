@@ -29,6 +29,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [ToggleButton](/en-US/components/toggle-button)
 - [Toolbar](/en-US/components/toolbar)
 - [DataTable](/en-US/components/data-table)
+- [Paginator](/en-US/components/paginator)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -59,3 +60,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [ToggleButton 开关按钮](/components/toggle-button)
 - [Toolbar 工具条](/components/toolbar)
 - [DataTable 表格](/components/data-table)
+- [Paginator 分页](/components/paginator)

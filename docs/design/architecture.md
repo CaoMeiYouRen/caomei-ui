@@ -140,6 +140,6 @@ export default defineConfig({
 ## 7. 发布链路
 
 - Conventional Commits → semantic-release 推断版本 → 生成 CHANGELOG → 发布 npm → GitHub Release。
-- 下游兼容性回归机制（Phase 5，延迟启用）：组件库改动时同步触发已接入下游项目的 CI，验证类型与构建兼容性。
+- 下游兼容性回归机制（Phase 6，延迟启用）：组件库改动时同步触发已接入下游项目的 CI，验证类型与构建兼容性。
 
 详见 [发布指南](../guide/release.md)。

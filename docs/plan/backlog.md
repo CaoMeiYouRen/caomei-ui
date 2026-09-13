@@ -8,7 +8,6 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| Tier 2 组件补齐 | 组件使用面统计 | Tabs / Accordion / Menu / Image / SelectButton / FileUpload | 中 |
 | Tag/Badge 增强 | 组件实现评估 | Tag 可选中筛选标签 / 可编辑（可编辑标签可由 Reka UI TagsInput 封装）；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退） | 低 |
 | Select 增强 | 组件实现评估 | 分组（SelectGroup）、自定义选项渲染、搜索过滤；多选已由 Tier 1 MultiSelect 承接（Phase 2 交付） | 低 |
 | momei 专属组件 | momei 使用面 | Skeleton / InputGroup 需自建；DatePicker / RadioGroup / ProgressBar / Stepper / Popover / Slider / Drawer 均可由 Reka UI 封装（Drawer 与日期类为 Alpha） | 低（可下游自留） |
@@ -37,7 +36,7 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 下游兼容性回归机制 | 见 [路线图 Phase 5](./roadmap.md)，稳定使用后启用 | 延迟 |
+| 下游兼容性回归机制 | 见 [路线图 Phase 6](./roadmap.md)，稳定使用后启用 | 延迟 |
 
 ## 2. 维护约定
 

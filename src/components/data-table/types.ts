@@ -27,18 +27,39 @@ export interface DataTableColumn<T> {
 }
 
 export interface DataTableProps<T> {
-    /** 行数据 */
+    /**
+     * 行数据
+     * @en Row data
+     */
     data: T[]
-    /** 列定义 */
+    /**
+     * 列定义
+     * @en Column definitions
+     */
     columns: DataTableColumn<T>[]
-    /** 行 key 字段名或函数，缺省使用行索引 */
+    /**
+     * 行 key 字段名或函数，缺省使用行索引
+     * @en Row key field name or function; defaults to the row index
+     */
     rowKey?: string | ((row: T, index: number) => string | number)
-    /** 空态文案，默认取当前语言的「暂无数据」 */
+    /**
+     * 空态文案，默认取当前语言的「暂无数据」
+     * @en Empty-state text; defaults to the current locale's "No data" text
+     */
     emptyText?: string
-    /** 表格标题，渲染为 caption 供无障碍 */
+    /**
+     * 表格标题，渲染为 caption 供无障碍
+     * @en Table caption, rendered as a caption for accessibility
+     */
     caption?: string
-    /** 行悬浮高亮，默认 true */
+    /**
+     * 行悬浮高亮，默认 true
+     * @en Row hover highlight, defaults to true
+     */
     hoverable?: boolean
-    /** 斑马纹行，默认 false */
+    /**
+     * 斑马纹行，默认 false
+     * @en Striped rows, defaults to false
+     */
     striped?: boolean
 }

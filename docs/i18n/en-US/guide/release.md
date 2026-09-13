@@ -52,7 +52,7 @@ When a component library change may affect downstream projects, run the CI of th
 - Trigger through a cross-repo mechanism (`repository_dispatch` or a reusable workflow).
 - Any typecheck / build failure is a compatibility blocker and must not be released directly; decide by semantic versioning whether to fix the library or adapt the downstream.
 
-> This mechanism does not block project setup and early migration; it lands as an independent stage (roadmap Phase 7) after stabilization.
+> This mechanism does not block project setup and early migration; it lands as an independent stage (roadmap Phase 8) after stabilization.
 
 ## Related docs
 

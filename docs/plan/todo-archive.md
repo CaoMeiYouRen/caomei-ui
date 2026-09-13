@@ -66,6 +66,24 @@
 
 ---
 
+## Phase 3：Tier 2 组件
+
+- 时间：2026-09-13
+- 交付：
+  - 主线 A 内容切换：Tabs（复合 `CaomeiTabs` / `CaomeiTabList` / `CaomeiTabTrigger` / `CaomeiTabContent`，封装 `Tabs`）、Accordion（`CaomeiAccordion` + `CaomeiAccordionItem`，封装 `Accordion`）
+  - 主线 B 浮层菜单：DropdownMenu 复合 10 件（Root / Trigger / Content + Item / CheckboxItem / RadioGroup / RadioItem / Group / Label / Separator，封装 `DropdownMenu`），默认非模态、面板层级 1050
+  - 主线 C 分段选择：SelectButton（选项驱动，封装 `ToggleGroup`），单选必有一值、支持 `#option` 图标插槽与表单 `name`
+  - 主线 D 媒体与文件：Image（自建 `img` + `IntersectionObserver` 懒加载 + `ratio` 比例占位 + 加载 / 失败占位 + SSR 水合兜底）、FileUpload（自建点击 / 拖拽选择、`v-model` 列表、`accept` / `multiple` / 去重 / 移除）
+  - 文档：6 个组件页与示例全部落地并纳入侧边栏
+- 关键提交：主线 A `a7d24e4` / `a60b11c` / `d2f28bf` / `c0c1c65`；主线 B `9317f81` / `26199b3` / `e9039be`；主线 C `5ef3cac` / `dd1d913`；主线 D `ab706d4` / `305082f` / `9d3b176`；规划勾选 `3c55210` / `e28244d` / `7885136` / `77bbaaa`
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / test / build / docs:build / governance）；全量单元测试 506 例通过
+- 浏览器验证：各组件均经 `@ui-validator` 实机验证（Tabs / Accordion 键盘与方向；DropdownMenu 焦点、层级与非模态 / `modal` 滚动锁；SelectButton 选中态 / 键盘 / 禁用；Image 比例 / 懒加载 / 失败占位与 SSG 水合；FileUpload 选择 / 拖拽 / `accept` / 移除）；SSG 构建产物水合实测通过
+- 审计：各条目均经 `@code-reviewer` Review Gate 放行；DropdownMenu（骨架缺浏览器证据、滚动锁前提）、SelectButton（表单字段泄漏）、Image / FileUpload（attrs 透传、SSR 水合）经历「首轮 Reject → 修复 → 复审 Pass」
+- 阶段归档蒸馏：`.session/wisdom.md` 活跃条目达 35 条（≥ 阈值 20），已执行蒸馏并迁入 `docs/standards/*`、`docs/design/*`、`docs/guide/*`
+- 遗留与后续候选：见 [Backlog](./backlog.md)；文档站增强、首版发布与下游接入顺延 Phase 4
+
+---
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

@@ -6,11 +6,11 @@
 
 ## 1. 现状与背景
 
-- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）与 Phase 2（Tier 1 组件）已完成并归档；Phase 3（Tier 2 组件）已由用户决策启动；首版尚未发布。
+- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件）与 Phase 3（Tier 2 组件）已完成并归档；Phase 4 待规划决策启动；首版尚未发布。
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）与 Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect），以及预落地的 Switch。
+- 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）、Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect，以及预落地的 Switch）与 Tier 2（Tabs、Accordion、DropdownMenu、SelectButton、Image、FileUpload）。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
-- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，Phase 3 进行中）。
+- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，已完成）。
 
 ## 2. 阶段规划
 
@@ -26,7 +26,7 @@
 
 > Phase 6 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
 
-> 状态：Phase 0 ~ Phase 2 已完成并归档（见 [待办归档](./todo-archive.md)）；Phase 3（Tier 2 组件）已由用户决策启动，见 [待办事项](./todo.md)。
+> 状态：Phase 0 ~ Phase 3 已完成并归档（见 [待办归档](./todo-archive.md)）；Phase 4 待规划决策启动，见 [待办事项](./todo.md)。
 
 ## 3. 设计依据
 
@@ -45,4 +45,4 @@
 
 ## 5. 归档索引
 
-已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）、Phase 1（Tier 0 组件）与 Phase 2（Tier 1 组件）已归档，Switch 作为 Phase 2 预落地条目一并归档。
+已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件，含预落地的 Switch）与 Phase 3（Tier 2 组件）均已归档。

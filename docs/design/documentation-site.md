@@ -16,6 +16,7 @@
 | Demo 渲染 | **`vitepress-demo-plugin`** | `<demo vue="..." />` 渲染组件并展示可展开源码，支持 SSG 与 StackBlitz |
 | API 表 | **`vue-component-meta`** | Vue 官方 language-tools，静态抽取 props / events / slots / exposed |
 | 组件工坊 | 暂不引入 Storybook / Histoire | Histoire 停滞；Storybook 偏重。文档站内 demo 已覆盖对外需求 |
+| 站内搜索 | **VitePress 内置 local search**（minisearch）+ `Intl.Segmenter` 自定义分词 | 零外部依赖、离线可用；默认分词对中文不友好，用 `Intl.Segmenter` 补齐中文分词 |
 
 补充说明：
 
@@ -84,6 +85,8 @@ docs/
 ## 9. 已知取舍
 
 - 文档站代码（`docs/.vitepress/**` 与 `docs/examples/**`）已纳入 ESLint 与 `vue-tsc` 覆盖，由 `pnpm typecheck:docs` 执行（`docs:gen` 为前置）；`config.ts` 的 Vite 类型从 VitePress 重导出的 `Plugin` 复用，避免仓库根 Vite 与 VitePress 内置 Vite 的版本类型冲突。
+- 站内搜索采用 VitePress 内置 local search（minisearch）；默认分词对中文不友好，改用 `Intl.Segmenter('zh', { granularity: 'word' })` 自定义 `tokenize`（见 `config.ts` 的 `tokenizeLocalSearch`）。实测同一索引：默认分词对「输入框 / 分页 / 进度条 / 暗色模式」零命中，自定义分词后 Top 结果分别为 `Input 输入框` / `Paginator 分页` / `ProgressBar 进度条` / `主题与样式设计`；查询组合保持默认 OR，与 AND 的关键词 Top 结果一致，且保留「怎么用按钮」等自然语言问句的召回（AND 会零结果）。
+- `themeConfig` 中的分词函数会被 VitePress 以 `_vp-fn_` 前缀序列化到客户端并用 `new Function` 重建，因此必须是自包含函数（不得引用模块级变量）；无 `Intl.Segmenter` 时回退为按空白 / 标点切分（CJK 不再细分），当前目标运行时（Node 20+ / 现代浏览器）均提供该 API。
 - 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
 - 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。
 - VitePress `base.css` 在 `prefers-reduced-motion: reduce` 下有 `* { animation-duration: 1ms !important; ... }`，会把加载指示器压成静止；修复落在文档层 `docs/.vitepress/theme/motion.css`（同属性 `!important`），组件库保持低特异性、零 `!important`。

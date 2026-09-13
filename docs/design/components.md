@@ -61,7 +61,30 @@
 | SelectButton / SegmentedControl | 封装 ToggleGroup | ToggleGroup |
 | FileUpload | 自建 | 无 |
 
-## 5. 不自研
+## 5. Tier 3：长尾（按需）
+
+> 依据 2026-09-11 调研文档《自建组件库（基于 Reka UI）— 最小组件集评估》于 2026-09-13 重新评估：除少数纯样式 / 布局组件外，Tier 3 大多有 Reka UI 对应 primitive，**优先封装**；Reka 标注为 **Alpha** 的组件（Drawer、日期类、Color 系列）存在 API 变动风险，落地时需锁定 Reka 版本并补回归。Tier 3 不阻塞 Phase 3（Tier 2）与首版发布，候选与优先级见 [Backlog](../plan/backlog.md)。
+
+| 组件 | 实现方式 | Reka UI 对应 | Reka 成熟度 | 说明 |
+|------|----------|--------------|:-:|------|
+| Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低 |
+| RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件 |
+| ProgressBar | 封装 | Progress | 稳定 | 确定进度，与 ProgressSpinner 同源 |
+| Popover | 封装 | Popover | 稳定 | 通用浮层 |
+| Slider | 封装 | Slider | 稳定 | |
+| Stepper | 封装 | Stepper | 稳定 | 步骤导航 |
+| Toolbar | 封装 | Toolbar | 稳定 | |
+| ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态 |
+| Drawer | 封装（优先） | Drawer | Alpha | 亦可由 Dialog 派生；Alpha 需锁版本 |
+| DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha |
+| ColorPicker | 封装（组合 ColorArea / ColorField / ColorSlider / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive |
+| InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；复合布局 + variants |
+| SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用 |
+| Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
+
+Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator、PinInput、TagsInput、Editable、Tree（Tree 为 Alpha）。
+
+## 6. 不自研
 
 | 能力 | 建议 |
 |------|------|
@@ -70,7 +93,7 @@
 | Galleria / Carousel | 引入 embla-carousel-vue（headless）+ 自建样式 |
 | Knob / MeterGroup / OrganizationChart / TreeTable 等长尾 | 下游按需引入 Element Plus 或自留 |
 
-## 6. composables
+## 7. composables
 
 | composable | 职责 |
 |------------|------|
@@ -81,7 +104,7 @@
 
 > 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。
 
-## 7. 组件开发顺序
+## 8. 组件开发顺序
 
 1. Button（验证 tsdown + SFC + 样式抽取 + 子路径导出）
 2. Input（验证 v-model）

@@ -10,8 +10,28 @@
 |------|------|------|--------|
 | Tag/Badge 增强 | 组件实现评估 | Tag 可选中筛选标签 / 可编辑（可编辑标签可由 Reka UI TagsInput 封装）；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退） | 低 |
 | Select 增强 | 组件实现评估 | 分组（SelectGroup）、自定义选项渲染、搜索过滤；多选已由 Tier 1 MultiSelect 承接（Phase 2 交付） | 低 |
-| momei 专属组件 | momei 使用面 | Skeleton / InputGroup 需自建；DatePicker / RadioGroup / ProgressBar / Stepper / Popover / Slider / Drawer 均可由 Reka UI 封装（Drawer 与日期类为 Alpha） | 低（可下游自留） |
 | 富文本与图表封装 | momei 使用面 | Editor / Chart 建议外购（Tiptap / ECharts），不自研 | 低 |
+
+#### Tier 3 组件候选（长尾，按需）
+
+> 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级依据：稳定可封装的通用控件优先，Alpha primitive 与需自建的组件靠后。以下多为 momei 单项目使用，可按需纳入或由下游自留。
+
+| 候选 | 来源 | 优先级 |
+|------|------|:-:|
+| RadioGroup / RadioButton | momei 使用面 | 中 |
+| ProgressBar | momei 使用面 | 中 |
+| Popover | momei 使用面 | 中 |
+| Slider | momei 使用面 | 中 |
+| Skeleton | momei 使用面 | 中 |
+| Toolbar | momei 使用面 | 中 |
+| ToggleButton | momei 使用面 | 中 |
+| Stepper | momei 使用面 | 低 |
+| Drawer | momei 使用面 | 低 |
+| DatePicker / Calendar | momei 使用面 | 低 |
+| ColorPicker | momei 使用面 | 低 |
+| InputGroup / FloatLabel | momei 使用面 | 低 |
+| SplitButton | momei 使用面 | 低 |
+| Sidebar | momei 使用面 | 低 |
 
 ### 基建与治理候选
 

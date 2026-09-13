@@ -36,6 +36,11 @@ export interface CaomeiLocaleMessages {
     progress: {
         loading: string
     }
+    slider: {
+        thumb: string
+        minimum: string
+        maximum: string
+    }
     tag: {
         close: string
     }

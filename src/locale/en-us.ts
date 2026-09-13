@@ -38,6 +38,11 @@ const enUS: CaomeiLocaleMessages = {
     progress: {
         loading: 'Loading',
     },
+    slider: {
+        thumb: 'Slider',
+        minimum: 'Minimum',
+        maximum: 'Maximum',
+    },
     tag: {
         close: 'Remove',
     },

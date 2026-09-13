@@ -38,6 +38,11 @@ const zhCN: CaomeiLocaleMessages = {
     progress: {
         loading: '加载中',
     },
+    slider: {
+        thumb: '滑块',
+        minimum: '最小值',
+        maximum: '最大值',
+    },
     tag: {
         close: '删除',
     },

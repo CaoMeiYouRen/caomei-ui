@@ -9,6 +9,9 @@ Component pages are translated incrementally, in order. Pages available in Engli
 - [Button](/en-US/components/button)
 - [Input](/en-US/components/input)
 - [Select](/en-US/components/select)
+- [Checkbox](/en-US/components/checkbox)
+- [Dialog](/en-US/components/dialog)
+- [DataTable](/en-US/components/data-table)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -19,5 +22,6 @@ The complete component documentation is currently available in Chinese:
 - [Button 按钮](/components/button)
 - [Input 输入框](/components/input)
 - [Select 选择器](/components/select)
+- [Checkbox 复选框](/components/checkbox)
 - [Dialog 对话框](/components/dialog)
 - [DataTable 表格](/components/data-table)

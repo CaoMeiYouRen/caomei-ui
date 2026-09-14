@@ -1,6 +1,12 @@
 import type { ComponentSize } from '../../types'
+import type { OptionFieldAccessor, OptionValue } from '../_shared/option'
 
-export interface MultiSelectOption {
+/**
+ * 默认选项对象形态；`options` 也可传入任意对象并通过 `optionLabel` / `optionValue` 映射字段。
+ * @en Default option object shape; `options` may also be arbitrary objects whose fields are mapped via
+ * `optionLabel` / `optionValue`.
+ */
+export interface MultiSelectOption<V extends OptionValue = string> {
     /**
      * 选项显示文本
      * @en Option display text
@@ -10,7 +16,7 @@ export interface MultiSelectOption {
      * 选项值，需在单个 MultiSelect 内唯一
      * @en Option value; must be unique within a single MultiSelect
      */
-    value: string
+    value: V
     /**
      * 是否禁用该选项
      * @en Whether the option is disabled
@@ -18,12 +24,23 @@ export interface MultiSelectOption {
     disabled?: boolean
 }
 
-export interface MultiSelectProps {
+export interface MultiSelectProps<T extends object = MultiSelectOption> {
     /**
-     * 选项列表
-     * @en Option list
+     * 选项列表；元素可为任意对象，字段由 `optionLabel` / `optionValue` 映射
+     * @en Option list; items may be arbitrary objects whose fields are mapped via `optionLabel` / `optionValue`
      */
-    options?: MultiSelectOption[]
+    options?: T[]
+    /**
+     * 选项显示文本字段：字段名或取值函数；默认 `label`
+     * @en Field for the option display text: a field name or an accessor function; defaults to `label`
+     */
+    optionLabel?: OptionFieldAccessor<T, string>
+    /**
+     * 选项值字段：字段名或取值函数；默认 `value`。解析结果支持字符串与数字，为 `undefined` 的选项不渲染
+     * @en Field for the option value: a field name or an accessor function; defaults to `value`. Resolved values
+     * may be strings or numbers; options resolving to `undefined` are not rendered
+     */
+    optionValue?: OptionFieldAccessor<T, OptionValue>
     /**
      * 未选择任何项时的占位文本
      * @en Placeholder text when nothing is selected

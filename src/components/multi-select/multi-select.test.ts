@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
-import { computed, defineComponent, h, nextTick } from 'vue'
+import { computed, defineComponent, h, nextTick, type Component, type DefineComponent } from 'vue'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import type { MultiSelectProps } from './types'
@@ -28,9 +28,11 @@ async function open(wrapper: ReturnType<typeof mount>): Promise<void> {
 
 /** 将组件挂载在真实 <form> 内，用于验证隐藏表单控件与原生校验 */
 async function mountInForm(props: MultiSelectProps & Record<string, unknown> = {}) {
+    /** 泛型组件在 `h()` 中无法推导 props，此处退化为通用组件类型 */
+    const MultiSelect = CaomeiMultiSelect as unknown as Component
     const wrapper = mount(
         defineComponent({
-            setup: () => () => h('form', { 'data-test': 'form' }, [h(CaomeiMultiSelect, props)]),
+            setup: () => () => h('form', { 'data-test': 'form' }, [h(MultiSelect, props)]),
         }),
         { attachTo: document.body },
     )
@@ -354,6 +356,119 @@ describe('CaomeiMultiSelect', () => {
         expect(document.querySelector('.caomei-multi-select__empty')?.textContent?.trim()).toBe(
             'No matching options',
         )
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiMultiSelect 对象选项映射', () => {
+    interface MappedOption {
+        name: string
+        id?: number | null
+        disabled?: boolean
+    }
+
+    /** VTU 无法从 props 推断泛型组件参数，测试内具体化选项类型 */
+    const MappedMultiSelect = CaomeiMultiSelect as unknown as DefineComponent<MultiSelectProps<MappedOption>>
+
+    const objectOptions: MappedOption[] = [
+        { name: '分类一', id: 1 },
+        { name: '分类二', id: 2 },
+        { name: '分类三', id: 3, disabled: true },
+    ]
+
+    it('通过 optionLabel / optionValue 映射字段并以数字值渲染标签', () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: [2, 1],
+                placeholder: '请选择',
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-multi-select__tag-label').map((tag) => tag.text())).toEqual([
+            '分类二',
+            '分类一',
+        ])
+    })
+
+    it('移除标签时按映射的值更新模型', async () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: [1, 2],
+            },
+        })
+
+        await wrapper.get('.caomei-multi-select__tag-remove').trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[2]])
+    })
+
+    it('optionLabel 传函数时按函数结果渲染', () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: (option) => `#${option.id ?? '?'}`,
+                optionValue: 'id',
+                modelValue: [3],
+            },
+        })
+
+        expect(wrapper.get('.caomei-multi-select__tag-label').text()).toBe('#3')
+    })
+
+    it('optionValue 传函数时按函数结果匹配已选项', () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: (option) => option.id ?? 0,
+                modelValue: [2],
+            },
+        })
+
+        expect(wrapper.get('.caomei-multi-select__tag-label').text()).toBe('分类二')
+    })
+
+    it('面板点击映射选项后按数字值追加选中', async () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+            },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+        ;(document.querySelectorAll('[role="option"]')[1] as HTMLElement).click()
+        await flushPromises()
+
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([[2]])
+
+        wrapper.unmount()
+    })
+
+    it('解析不到 optionValue 的选项不渲染且在面板中标记禁用项', async () => {
+        const wrapper = mount(MappedMultiSelect, {
+            props: {
+                options: [{ name: '无值选项' }, { name: '全部', id: null }, ...objectOptions],
+                optionLabel: 'name',
+                optionValue: 'id',
+            },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered).toHaveLength(3)
+        expect(rendered[2].hasAttribute('data-disabled')).toBe(true)
 
         wrapper.unmount()
     })

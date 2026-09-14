@@ -4,12 +4,23 @@
 
 ## 基础用法
 
-通过 `v-model` 绑定字符串数组；已选项以标签展示，标签上的移除按钮按值过滤。
+通过 `v-model` 绑定值数组（字符串或数字）；已选项以标签展示，标签上的移除按钮按值过滤。
 
 <demo
     vue="../examples/multi-select/basic.vue"
     ssg="true"
 />
+
+## 对象选项
+
+`options` 可传入任意对象，通过 `optionLabel` / `optionValue` 指定显示文本与值的字段名（也可传入取值函数）；值支持字符串与数字。
+
+<demo
+    vue="../examples/multi-select/object-options.vue"
+    ssg="true"
+/>
+
+> 字段解析：`optionLabel` / `optionValue` 字符串形态支持 `a.b` 点号嵌套路径；`optionValue` 解析结果不是字符串 / 数字（如 `null`、布尔、字段缺省）时该选项**不渲染**，`optionLabel` 解析不到文本时该项文本为空。
 
 ## 状态与尺寸
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends object">
 import { Check, ChevronDown, X } from '@lucide/vue'
 import {
     ComboboxAnchor,
@@ -16,12 +16,20 @@ import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
-import type { MultiSelectOption, MultiSelectProps } from './types'
+import {
+    resolveOptionDisabled,
+    resolveOptionField,
+    resolveOptionValue,
+    type OptionValue,
+} from '../_shared/option'
+import type { MultiSelectProps } from './types'
 
 defineOptions({ name: 'CaomeiMultiSelect', inheritAttrs: false })
 
-const props = withDefaults(defineProps<MultiSelectProps>(), {
+const props = withDefaults(defineProps<MultiSelectProps<T>>(), {
     options: () => [],
+    optionLabel: 'label',
+    optionValue: 'value',
     placeholder: '',
     size: 'md',
     disabled: false,
@@ -30,7 +38,7 @@ const props = withDefaults(defineProps<MultiSelectProps>(), {
     bodyLock: false,
 })
 
-const model = defineModel<string[]>({ default: () => [] })
+const model = defineModel<OptionValue[]>({ default: () => [] })
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
@@ -47,15 +55,40 @@ const rootClass = computed(() => [
     },
 ])
 
-const selectedOptions = computed<MultiSelectOption[]>(() => {
-    const seen = new Set<string>()
-    const result: MultiSelectOption[] = []
+interface NormalizedOption {
+    /** 解析后的选项值（字符串或数字） */
+    value: OptionValue
+    /** 解析后的显示文本；字段缺省时为 undefined */
+    label: string | undefined
+    disabled: boolean
+}
+
+/** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
+const normalizedOptions = computed<NormalizedOption[]>(() => {
+    const result: NormalizedOption[] = []
+    for (const option of props.options) {
+        const value = resolveOptionValue(option, props.optionValue, 'value')
+        if (value === undefined) {
+            continue
+        }
+        result.push({
+            value,
+            label: resolveOptionField(option, props.optionLabel, 'label'),
+            disabled: resolveOptionDisabled(option),
+        })
+    }
+    return result
+})
+
+const selectedOptions = computed<NormalizedOption[]>(() => {
+    const seen = new Set<OptionValue>()
+    const result: NormalizedOption[] = []
     for (const value of model.value) {
         if (seen.has(value)) {
             continue
         }
         seen.add(value)
-        const option = props.options.find((item) => item.value === value)
+        const option = normalizedOptions.value.find((item) => item.value === value)
         if (option) {
             result.push(option)
         }
@@ -63,7 +96,7 @@ const selectedOptions = computed<MultiSelectOption[]>(() => {
     return result
 })
 
-function removeValue(value: string): void {
+function removeValue(value: OptionValue): void {
     model.value = model.value.filter((item) => item !== value)
 }
 
@@ -138,7 +171,7 @@ function onAnchorClick(event: MouseEvent): void {
                         {{ emptyLabel }}
                     </ComboboxEmpty>
                     <ComboboxItem
-                        v-for="option in options"
+                        v-for="option in normalizedOptions"
                         :key="option.value"
                         class="caomei-multi-select__item"
                         :value="option.value"

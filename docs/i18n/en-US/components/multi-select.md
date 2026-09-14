@@ -4,12 +4,23 @@ The multi-select wraps Reka UI `Combobox` and supports multiple selection, an ar
 
 ## Basic usage
 
-Two-way bind a string array with `v-model`; selected values are shown as tags, and the remove button on a tag filters by value.
+Two-way bind an array of values (strings or numbers) with `v-model`; selected values are shown as tags, and the remove button on a tag filters by value.
 
 <demo
     vue="../examples/multi-select/basic.vue"
     ssg="true"
 />
+
+## Object options
+
+`options` accepts arbitrary objects; `optionLabel` / `optionValue` set the fields (or accessor functions) for the display text and the value. Values may be strings or numbers.
+
+<demo
+    vue="../examples/multi-select/object-options.vue"
+    ssg="true"
+/>
+
+> Field resolution: the string form of `optionLabel` / `optionValue` supports `a.b` dot-paths. When `optionValue` does not resolve to a string or number (`null`, a boolean, a missing field), that option is **not rendered**; when `optionLabel` resolves to no text, the option's text is empty.
 
 ## States and sizes
 

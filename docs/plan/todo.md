@@ -56,16 +56,13 @@
   - 缺口组件：
     - [x] Divider
     - [x] InputGroup / FloatLabel
-    - [ ] AutoComplete（Reka Combobox）
+    - [x] AutoComplete（Reka Combobox）
     - [x] ButtonGroup
-    - [ ] DataView
-    - [ ] Panel（先评估能否由 Accordion 承接）
-    - [ ] DatePicker / Calendar（Reka Alpha，锁版本 + 回归）
-    - [ ] Drawer（Reka Alpha，或由 Dialog 派生）
-    - [ ] SplitButton
-    - [ ] ColorPicker（Reka Alpha）
-    - [ ] Stepper
-- 已决策（不新建组件）：`IconField` / `InputIcon` 采用 `Input` 的 `prefix` / `suffix` 插槽降级方案；映射规范归口 M2 设计规范。
+    - [x] Stepper（封装 Reka Stepper，稳定 primitive）
+  - 已决策（不新建组件 / 移出本阶段）：
+    - `Panel`：**不新建组件**，由 `CaomeiCard` 的 `title` / `header` / `footer` 插槽承载，迁移映射见 [设计规范 §7](../design/design-spec.md)。
+    - `IconField` / `InputIcon`：采用 `Input` 的 `prefix` / `suffix` 插槽降级方案；映射规范归口 M2 设计规范。
+    - `SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`：经用户决策**延后至 [Phase 7](./roadmap.md)**；其中 Reka Alpha 组件（`DatePicker / Calendar`、`Drawer`、`ColorPicker`）在 Phase 7 实现时需**锁定 `reka-ui` 精确版本并补充 API 回归测试**。
 
 ### 主线 M4：依赖许可合规（需求 3）
 

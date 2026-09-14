@@ -48,7 +48,7 @@
 
 ### 1.4 国际化候选（需求 5，延后）
 
-> 承接原「国际文字内置文案补全」候选并按用户需求（2026-09-14）扩展为完整机制。现状：组件内建文案已备 zh-CN / en-US（`src/locale`），但组件固定消费 `defaultLocaleMessages`（zh-CN），缺语言选择 / 注入机制；英文文档页因此仍有组件内部中文（如 DataTable 空态「暂无数据」、Dialog 关闭按钮 `aria-label="关闭"`）。2026-09-14 复核：组件页 33/33 与指南 4/4 英文已覆盖，剩余缺口即为本项内建文案本身。**用户决策（2026-09-13）：当前接受现状**，待注入机制落地后统一本地化。
+> 承接原「国际文字内置文案补全」候选并按用户需求（2026-09-14）扩展为完整机制。现状：组件内建文案已备 zh-CN / en-US（`src/locale`），但组件固定消费 `defaultLocaleMessages`（zh-CN），缺语言选择 / 注入机制；英文文档页因此仍有组件内部中文（如 DataTable 空态「暂无数据」、Dialog 关闭按钮 `aria-label="关闭"`、AutoComplete 的「无匹配建议 / 展开建议」、Stepper 的默认 `aria-label="步骤"`）。2026-09-14 复核：组件页 33/33 与指南 4/4 英文已覆盖，剩余缺口即为本项内建文案本身。**用户决策（2026-09-13）：当前接受现状**，待注入机制落地后统一本地化。
 >
 > **2026-09-14 用户决策：本组含短期 zh-CN / en-US 一并延后**，不纳入 Phase 6；下表按原分层计划保留。
 
@@ -156,15 +156,15 @@
 | DataTable + Column 能力增强 | M1 复核 | 启用排序 / Lazy 分页 / 行选择 / `data-key` / loading；列补 `#body` / `#header`、`body-class` / `header-class` / `header-style`、`frozen` / `align-frozen`、点号嵌套字段；列声明模型差异需迁移方案。momei 用量：DataTable 22 + Column 153 | 核心路径（优先） |
 | Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator`（**已实现：`CaomeiDivider`，支持水平 / 垂直 / 内容 / 线型**） | 缺口组件 |
 | InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件（**已实现：`CaomeiInputGroup` 水平 / 垂直拼接；`CaomeiFloatLabel` 提供 `over` / `in` 两态**） | 缺口组件 |
-| AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载 | 缺口组件 |
+| AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载（**已实现**） | 缺口组件 |
 | ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局（**已实现：`CaomeiButtonGroup`，水平 / 垂直**） | 缺口组件 |
-| DataView | M1 复核（1 处） | grid / list 布局 + 插槽；用量最低，可最后评估 | 缺口组件 |
-| Panel | momei 使用面（3） | 带标题栏的静态分区容器；先评估能否由 Accordion / Card 承接 | 缺口组件 |
-| DatePicker / Calendar | momei 使用面（6） | Reka Alpha，需锁版本并补回归 | 缺口组件 |
-| Drawer | momei 使用面（3） | Reka Alpha，或由 Dialog 派生 | 缺口组件 |
-| SplitButton | momei 使用面（2） | Button + DropdownMenu 组合 | 缺口组件 |
-| ColorPicker | momei 使用面（2） | Reka Alpha color 系列组合 | 缺口组件 |
-| Stepper | momei 使用面（1） | 步骤导航 | 缺口组件 |
+| DataView | M1 复核（1 处） | grid / list 布局 + 插槽；用量最低，**经用户决策延后至 [Phase 7](./roadmap.md)** | 延后 Phase 7 |
+| Panel | momei 使用面（3） | **不新建组件**：由 `CaomeiCard` 的 `title` / `header` / `footer` 承载；可折叠场景用 `Accordion`（映射见 [设计规范 §7](../design/design-spec.md)） | 已决策不新建 |
+| DatePicker / Calendar | momei 使用面（6） | Reka Alpha；**延后至 [Phase 7](./roadmap.md)**，实现时锁定 `reka-ui` 精确版本并补 API 回归测试 | 延后 Phase 7 |
+| Drawer | momei 使用面（3） | Reka Alpha 或由 Dialog 派生；**延后至 [Phase 7](./roadmap.md)**，同样需锁版本 + 回归 | 延后 Phase 7 |
+| SplitButton | momei 使用面（2） | Button + DropdownMenu 组合；**延后至 [Phase 7](./roadmap.md)** | 延后 Phase 7 |
+| ColorPicker | momei 使用面（2） | Reka Alpha color 系列组合；**延后至 [Phase 7](./roadmap.md)**，同样需锁版本 + 回归 | 延后 Phase 7 |
+| Stepper | momei 使用面（1） | 步骤导航；封装 Reka `Stepper`（稳定 primitive）（**已实现**） | 缺口组件 |
 | momei 迁移试点闭环 | 用户需求（2026-09-14） | 在 momei 中实际执行 PrimeVue → caomei-ui 替换，记录阻塞点与缺口；其闭环是其他下游迁移的前提 | 属 [Phase 7](./roadmap.md) |
 
 > **已决策（不新建组件）**：`IconField` / `InputIcon` 采用 `Input` 的 `prefix` / `suffix` 插槽降级方案；映射规范（`severity→tone` 等）归口 M2 设计规范。

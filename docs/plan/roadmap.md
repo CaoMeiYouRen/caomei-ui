@@ -30,6 +30,8 @@
 
 > **Phase 7 为 momei 优先**（2026-09-14 用户授权调整）：momei 是最复杂下游，先在其闭环迁移，作为其他下游可行性的验证。
 
+> **Phase 7 承接的组件补全项**（2026-09-14 用户决策，自 Phase 6 M3 延后）：`SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`。其中 `DatePicker / Calendar`、`Drawer`、`ColorPicker` 依赖 Reka UI **Alpha** primitive：实现时将 `reka-ui` 锁定为精确版本（当前 `2.10.4`），并为这些 primitive 的 API 契约补充回归测试，避免 Alpha API 变动导致静默破坏。
+
 > Phase 8 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
 
 > 状态：Phase 0 ~ Phase 4 与 Phase 5 第一阶段已完成并归档（见 [待办归档](./todo-archive.md)）；**Phase 6（组件库补全与规范化）已授权启动**，条目见 [待办事项](./todo.md)；Phase 5 第二阶段（首版发布 / 首个下游接入）待用户外部前置就绪后决策；Phase 7、Phase 8 未启动。

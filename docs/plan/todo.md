@@ -51,7 +51,7 @@
     - [ ] Button 角标（`:badge`）增强（M1 台账标记待评估，未纳入本批）
     - [x] DataTable 列能力 + 排序 + 加载态（嵌套字段 `accessor`、可排序列、列 `class` / `style`、受控与非受控排序、`loading`）
     - [x] DataTable 行选择（`selectionMode` / 全选 / `v-model:selection`）
-    - [ ] DataTable Lazy 分页与分页集成
+    - [x] DataTable Lazy 分页与分页集成
     - [ ] DataTable 冻结列
   - 缺口组件：
     - [ ] Divider

@@ -27,6 +27,17 @@ export interface DataTableSortEvent {
     sortOrder: DataTableSortOrder | ''
 }
 
+export interface DataTablePageEvent {
+    /** 当前页码（从 1 开始） */
+    page: number
+    /** 每页条数 */
+    rows: number
+    /** 当前页首行偏移（0 基，对齐 PrimeVue `@page`） */
+    first: number
+    /** 总页数 */
+    pageCount: number
+}
+
 export interface DataTableColumn<T> {
     /** 列唯一标识，同时作为默认取值字段 */
     key: string
@@ -133,4 +144,29 @@ export interface DataTableProps<T> {
      * @en Controlled selection: an array for `multiple`, a single row or `null` for `single`; providing it enables controlled selection
      */
     selection?: T[] | T | null
+    /**
+     * 是否显示分页器
+     * @en Whether to show the paginator
+     */
+    paginator?: boolean
+    /**
+     * 每页条数，默认 10
+     * @en Rows per page, defaults to 10
+     */
+    rows?: number
+    /**
+     * 总条数；`lazy` 时由服务端提供，缺省用 `data.length`
+     * @en Total records; provided by the server when `lazy`, defaults to `data.length`
+     */
+    totalRecords?: number
+    /**
+     * Lazy 模式（服务端分页）：不切片 `data`，仅渲染分页器并抛出 `page`
+     * @en Lazy mode (server-side pagination): does not slice `data`, only renders the paginator and emits `page`
+     */
+    lazy?: boolean
+    /**
+     * 当前页码（从 1 开始）；提供时进入受控分页
+     * @en Current page (1-based); providing it enables controlled pagination
+     */
+    page?: number
 }

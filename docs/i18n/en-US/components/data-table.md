@@ -51,6 +51,15 @@ When `selectionMode` is `multiple` or `single`, a selection column is rendered f
     ssg="true"
 />
 
+## Pagination
+
+`paginator` shows the paginator and `rows` sets rows per page; bind the current page with `v-model:page` (controlled). Without `paginator` no slicing happens and all rows are rendered. With `lazy`, pagination is server-side: the provided `data` is not sliced further (it should already be the current page) and the page count comes from `totalRecords` (defaulting to `data.length`, which yields a single page — pass it for server-side pagination). Page changes emit `page` (`{ page, rows, first, pageCount }`). `lazy` must be set at mount.
+
+<demo
+    vue="../examples/data-table/pagination.vue"
+    ssg="true"
+/>
+
 ## Loading state
 
 When `loading` is true a loading row is rendered and `aria-busy` is set; the text defaults to the current locale's "Loading" and can be overridden with `loadingText`.
@@ -79,7 +88,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions, sorting, row selection and loading state are supported; pagination / frozen columns land in later stages.
+- Currently column definitions, sorting, row selection, pagination and loading state are supported; frozen columns land in later stages.
 
 ## Accessibility
 

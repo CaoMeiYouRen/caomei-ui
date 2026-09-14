@@ -51,6 +51,15 @@
     ssg="true"
 />
 
+## 分页
+
+`paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。
+
+<demo
+    vue="../examples/data-table/pagination.vue"
+    ssg="true"
+/>
+
 ## 加载态
 
 `loading` 为真时渲染加载行并标注 `aria-busy`；文案默认取当前语言的「加载中」，可用 `loadingText` 覆盖。
@@ -79,7 +88,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义、排序、行选择与加载态；分页 / 冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
+- 当前已支持列定义、排序、行选择、分页与加载态；冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
 
 ## 无障碍
 

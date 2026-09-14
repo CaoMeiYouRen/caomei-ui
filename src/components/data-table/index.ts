@@ -3,6 +3,7 @@ export type {
     DataTableAlign,
     DataTableCellContext,
     DataTableColumn,
+    DataTablePageEvent,
     DataTableProps,
     DataTableSelectionMode,
     DataTableSortEvent,

@@ -1,11 +1,12 @@
 <script setup lang="ts" generic="T extends object">
-import { FlexRender, useTable, type ColumnDef, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
+import { FlexRender, useTable, type ColumnDef, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, watch, type CSSProperties } from 'vue'
 import { defaultLocaleMessages } from '../../locale'
 import { CaomeiCheckbox } from '../checkbox'
+import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTableProps, DataTableSortEvent } from './types'
+import type { DataTablePageEvent, DataTableProps, DataTableSortEvent } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -23,11 +24,18 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     selection: undefined,
     selectAllLabel: defaultLocaleMessages.table.selectAll,
     selectRowLabel: defaultLocaleMessages.table.selectRow,
+    paginator: false,
+    rows: 10,
+    totalRecords: undefined,
+    lazy: false,
+    page: undefined,
 })
 
 const emit = defineEmits<{
     sort: [event: DataTableSortEvent]
     'update:selection': [selection: T[] | T | null]
+    'update:page': [page: number]
+    page: [event: DataTablePageEvent]
 }>()
 
 defineSlots<{
@@ -126,6 +134,23 @@ const rowSelectionState = computed<RowSelectionState>(() => {
 const internalSorting = ref<SortingState>(sortingState.value)
 const internalSelection = ref<RowSelectionState>(rowSelectionState.value)
 
+const isPageControlled = computed(() => props.page !== undefined)
+
+/*
+ * 仅在展示分页器或 lazy 模式时才真正切片；否则给一个足够大的 pageSize，
+ * 避免未启用分页的表格被默认 10 行静默截断。
+ */
+const effectivePageSize = computed(() =>
+    props.paginator || props.lazy ? props.rows : Number.MAX_SAFE_INTEGER,
+)
+
+const paginationState = computed<PaginationState>(() => ({
+    pageIndex: Math.max((props.page ?? 1) - 1, 0),
+    pageSize: effectivePageSize.value,
+}))
+
+const internalPagination = ref<PaginationState>({ pageIndex: 0, pageSize: effectivePageSize.value })
+
 watch(sortingState, (next) => {
     if (isSortControlled.value) {
         internalSorting.value = next
@@ -138,12 +163,25 @@ watch(rowSelectionState, (next) => {
     }
 })
 
+watch(paginationState, (next) => {
+    if (isPageControlled.value) {
+        internalPagination.value = next
+    }
+})
+
 const currentSorting = computed(() => (isSortControlled.value ? sortingState.value : internalSorting.value))
 const currentSelection = computed(() =>
     isSelectionControlled.value ? rowSelectionState.value : internalSelection.value,
 )
+const currentPagination = computed(() =>
+    isPageControlled.value ? paginationState.value : internalPagination.value,
+)
 
-const state = computed(() => ({ sorting: currentSorting.value, rowSelection: currentSelection.value }))
+const state = computed(() => ({
+    sorting: currentSorting.value,
+    rowSelection: currentSelection.value,
+    pagination: currentPagination.value,
+}))
 
 function onSortingChange(updater: Updater<SortingState>): void {
     const next = typeof updater === 'function' ? updater(currentSorting.value) : updater
@@ -166,6 +204,14 @@ function onRowSelectionChange(updater: Updater<RowSelectionState>): void {
     emit('update:selection', props.selectionMode === 'single' ? (selected[0] ?? null) : selected)
 }
 
+function onPaginationChange(updater: Updater<PaginationState>): void {
+    const next = typeof updater === 'function' ? updater(currentPagination.value) : updater
+    if (!isPageControlled.value) {
+        internalPagination.value = next
+    }
+    emitPage(next)
+}
+
 const table = useTable({
     features: dataTableFeatures,
     columns: tableColumns,
@@ -174,13 +220,15 @@ const table = useTable({
     sortDescFirst: false,
     enableRowSelection: Boolean(props.selectionMode),
     enableMultiRowSelection: props.selectionMode === 'multiple',
+    manualPagination: computed(() => props.lazy),
     state,
     onSortingChange,
     onRowSelectionChange,
+    onPaginationChange,
 })
 
 const headerGroups = computed(() => table.getHeaderGroups())
-const rows = computed(() => table.getRowModel().rows)
+const tableRows = computed(() => table.getRowModel().rows)
 const isEmpty = computed(() => props.data.length === 0)
 
 const rootClass = computed(() => ({
@@ -260,6 +308,49 @@ function toggleAllRows(): void {
 
 function toggleRow(row: { toggleSelected: () => void }): void {
     row.toggleSelected()
+}
+
+const totalRows = computed(() => props.totalRecords ?? props.data.length)
+
+const pageCount = computed(() => {
+    if (!props.paginator && !props.lazy) {
+        return 1
+    }
+    return Math.max(1, Math.ceil(totalRows.value / Math.max(props.rows, 1)))
+})
+
+function emitPage(next: PaginationState): void {
+    const page = next.pageIndex + 1
+    emit('update:page', page)
+    emit('page', {
+        page,
+        rows: next.pageSize,
+        first: next.pageIndex * next.pageSize,
+        pageCount: pageCount.value,
+    } satisfies DataTablePageEvent)
+}
+
+watch(effectivePageSize, (size) => {
+    if (!isPageControlled.value) {
+        internalPagination.value = { ...internalPagination.value, pageSize: size }
+    }
+})
+
+watch([() => props.rows, () => props.totalRecords], () => {
+    if ((!props.paginator && !props.lazy) || isPageControlled.value) {
+        return
+    }
+    const size = effectivePageSize.value
+    const maxIndex = Math.max(0, Math.ceil(totalRows.value / Math.max(size, 1)) - 1)
+    internalPagination.value = {
+        pageIndex: Math.min(internalPagination.value.pageIndex, maxIndex),
+        pageSize: size,
+    }
+    emitPage(internalPagination.value)
+})
+
+function goToPage(page: number): void {
+    table.setPageIndex(Math.max(page - 1, 0))
 }
 </script>
 
@@ -345,7 +436,7 @@ function toggleRow(row: { toggleSelected: () => void }): void {
                 </tr>
                 <template v-else>
                     <tr
-                        v-for="row in rows"
+                        v-for="row in tableRows"
                         :key="row.id"
                         class="caomei-data-table__row"
                         :class="row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
@@ -373,6 +464,14 @@ function toggleRow(row: { toggleSelected: () => void }): void {
                 </template>
             </tbody>
         </table>
+        <div v-if="paginator" class="caomei-data-table__pagination">
+            <CaomeiPaginator
+                :page="currentPagination.pageIndex + 1"
+                :items-per-page="currentPagination.pageSize"
+                :total="totalRows"
+                @update:page="goToPage"
+            />
+        </div>
     </div>
 </template>
 
@@ -480,6 +579,12 @@ function toggleRow(row: { toggleSelected: () => void }): void {
     padding: calc(var(--caomei-space-4) + var(--caomei-space-2)) var(--caomei-space-3);
     color: var(--caomei-color-text-muted);
     text-align: center;
+}
+
+.caomei-data-table__pagination {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--caomei-space-3);
 }
 
 .caomei-data-table__loading {

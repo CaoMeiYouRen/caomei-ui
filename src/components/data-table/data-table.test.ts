@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { h, nextTick, reactive, type DefineComponent } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { CaomeiPaginator } from '../paginator'
 import type { DataTableColumn, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
 
@@ -15,6 +16,14 @@ const DataTable = CaomeiDataTable as unknown as DefineComponent<DataTableProps<R
 const baseData: Row[] = [
     { name: 'Ada', age: 36 },
     { name: 'Bob', age: 24 },
+]
+
+const manyData: Row[] = [
+    { name: 'A', age: 1 },
+    { name: 'B', age: 2 },
+    { name: 'C', age: 3 },
+    { name: 'D', age: 4 },
+    { name: 'E', age: 5 },
 ]
 
 const baseColumns: DataTableColumn<Row>[] = [
@@ -487,5 +496,129 @@ describe('CaomeiDataTable', () => {
         const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
         expect(boxes[0].attributes('aria-label')).toBe('全部选择')
         expect(boxes[1].attributes('aria-label')).toMatch(/^选择 /)
+    })
+
+    it('客户端分页按 rows 切片并抛出 update:page / page', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2 },
+        })
+
+        expect(wrapper.find('.caomei-paginator').exists()).toBe(true)
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('A')
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 2)
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+        expect(wrapper.emitted('update:page')?.[0]?.[0]).toBe(2)
+        expect(wrapper.emitted('page')?.[0]?.[0]).toEqual({ page: 2, rows: 2, first: 2, pageCount: 3 })
+    })
+
+    it('受控 page 决定当前页', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2, page: 2 },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 3)
+        await nextTick()
+
+        expect(wrapper.emitted('update:page')?.[0]?.[0]).toBe(3)
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+    })
+
+    it('lazy 模式不切片并按 totalRecords 渲染分页器', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                lazy: true,
+                totalRecords: 5,
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+        expect(wrapper.find('.caomei-paginator').exists()).toBe(true)
+    })
+
+    it('未启用 paginator 时渲染全部行（默认不下发切片）', () => {
+        const big = Array.from({ length: 25 }, (_, index) => ({ name: `R${index + 1}`, age: index }))
+        const wrapper = mount(DataTable, {
+            props: { data: big, columns: baseColumns },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(25)
+    })
+
+    it('rows 变更时夹取页码并抛出分页事件', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2 },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 3)
+        await nextTick()
+        const emitted = wrapper.emitted('update:page')
+        expect(emitted?.[emitted.length - 1]?.[0]).toBe(3)
+
+        await wrapper.setProps({ rows: 10 })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+        const after = wrapper.emitted('update:page')
+        expect(after?.[after.length - 1]?.[0]).toBe(1)
+    })
+
+    it('分页与排序组合：先排序后分页', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: [
+                    { key: 'name', header: '名称', sortable: true },
+                    { key: 'age', header: '年龄', align: 'right' },
+                ],
+                paginator: true,
+                rows: 2,
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('E')
+    })
+
+    it('运行期切换 paginator 会同步切片行为', async () => {
+        const big = Array.from({ length: 15 }, (_, index) => ({ name: `R${index + 1}`, age: index }))
+        const wrapper = mount(DataTable, {
+            props: { data: big, columns: baseColumns },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(15)
+
+        await wrapper.setProps({ paginator: true, rows: 5 })
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+
+        await wrapper.setProps({ paginator: false })
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(15)
+    })
+
+    it('未启用分页时 rows 变更不抛分页事件', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, rows: 2 },
+        })
+
+        await wrapper.setProps({ rows: 3 })
+        await nextTick()
+
+        expect(wrapper.emitted('update:page')).toBeUndefined()
+        expect(wrapper.emitted('page')).toBeUndefined()
     })
 })

@@ -87,7 +87,7 @@
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
 | 文档翻译旧目录守卫 | 治理发现：设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
-| i18n 对应路由回切 | 实现决策：当前 `i18nRouting: false`（切换跳 locale 首页）；2026-09-14 复核：一级 nav 页已有 en-US 版本，但 `standards` / `design` / `plan` 子页仍为中文，直接回切会在子页 404，故暂不切换 | 低 |
+| ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；2026-09-14 已完成组件页 39/39 与指南 4/4 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |

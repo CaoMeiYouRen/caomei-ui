@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vitepress'
@@ -8,6 +8,58 @@ import { normalizePath } from 'vite'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcDir = path.resolve(dirname, '../../src')
 const componentsDir = path.resolve(srcDir, 'components')
+
+/**
+ * VitePress 1.6 的 `themeConfig.i18nRouting` 仅支持布尔值（函数形态自 2.0 起），
+ * 因此用别名替换默认主题内部的 `composables/langs`，由站内实现按「该页是否已翻译」
+ * 生成语言菜单链接；三个菜单消费者（桌面 / 平板 / 移动端）共用该实现，
+ * 详见 theme/composables/langs.ts。
+ */
+const langsComposablePath = path.resolve(dirname, 'theme/composables/langs.ts')
+
+// 漂移守卫：VitePress 若重命名 / 搬迁该内部模块，别名会静默失效（退回「切换回首页」），
+// 这里让构建期显式失败，提示同步检查别名与实现。
+const vitepressLangsPath = path.resolve(
+    dirname,
+    '../../node_modules/vitepress/dist/client/theme-default/composables/langs.js',
+)
+if (!existsSync(vitepressLangsPath)) {
+    throw new Error(
+        '[docs] 未找到 VitePress 内部模块 dist/client/theme-default/composables/langs.js，'
+        + '语言菜单覆盖（config.ts 的 ../composables/langs 别名）可能已失效，请检查 VitePress 版本与内部结构。',
+    )
+}
+
+/**
+ * 收集某目录下所有 markdown 的路由路径（`index.md` → 目录路径），
+ * 归一化方式与 VitePress `normalizeLink` 保持一致，供语言菜单判断目标页是否存在。
+ */
+function collectDocRoutes(rootDir: string): string[] {
+    const routes: string[] = []
+    const walk = (dir: string): void => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            const full = path.join(dir, entry.name)
+            if (entry.isDirectory()) {
+                walk(full)
+            } else if (entry.name.endsWith('.md')) {
+                const relative = path.relative(rootDir, full).split(path.sep).join('/')
+                const normalized = relative
+                    .replace(/(^|\/)index\.md$/, '$1')
+                    .replace(/\.md$/, '')
+                routes.push(normalized.startsWith('/') ? normalized : `/${normalized}`)
+            }
+        }
+    }
+    if (existsSync(rootDir)) {
+        walk(rootDir)
+    }
+    return routes
+}
+
+/** 已翻译页面的路由表：语言标识 → 该语言存在的路由路径（源语言中文全量，无需列出） */
+const routingPages: Record<string, string[]> = {
+    'en-US': collectDocRoutes(path.resolve(dirname, '../i18n/en-US')),
+}
 
 // 复用 VitePress 内置 Vite 版本的开发服务器类型，避免与仓库根 Vite 类型冲突
 type MetaWatchServer = Parameters<Extract<NonNullable<Plugin['configureServer']>, (server: never) => unknown>>[0]
@@ -169,6 +221,9 @@ export default defineConfig({
         resolve: {
             alias: {
                 '@': srcDir,
+                // 覆盖默认主题的语言菜单（桌面 / 平板 / 移动端共用 composable），
+                // 改为「已翻译页回切对应路由，未翻译页回退 locale 首页」
+                '../composables/langs': langsComposablePath,
             },
         },
     },
@@ -326,8 +381,10 @@ export default defineConfig({
                 },
             },
         },
-        // 部分翻译站点：切换语言跳目标 locale 首页，避免未翻译页 404（覆盖度提升后可改回默认对应路由）
+        // 兜底：若别名覆盖未生效，语言切换仍保持「回首页」而非落到未翻译路由
         i18nRouting: false,
+        // 已翻译路由表，供 theme/composables/langs.ts（语言菜单）判断目标页是否存在
+        routingPages,
         nav: [
             { text: '指南', link: '/guide/getting-started' },
             { text: '组件', link: '/components/button' },

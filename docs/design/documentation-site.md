@@ -97,7 +97,10 @@ docs/
 
 - **物理路径**：文档翻译统一放在 `docs/i18n/<locale>/`，站点 URL 仍为 `/<locale>/...`，由 `config.ts` 的 `rewrites` 映射（`i18n/en-US/**` → `en-US/**`）。该约定对齐 momei 项目；**不保留 `docs/<locale>/` 目录**。
 - **Locale**：当前提供 `root`（简体中文，`/`）与 `en-US`（English，`/en-US/`）；root 使用顶层 `themeConfig` 的 `nav` / `sidebar` 作为默认，`en-US` 在自己的 locale `themeConfig` 中覆盖；公共项（search / socialLinks / footer）放在顶层（VitePress 对 locale `themeConfig` 做浅合并）。
-- **部分翻译的 fallback**：未翻译页只保留在中文区，英文导航 / 侧边栏只列已有英文页；`themeConfig.i18nRouting: false` 让语言切换跳目标 locale 首页（`/en-US/`），避免从中文页切到英文时落到尚不存在的 `/en-US/...` 而 404。覆盖度提升后可改回默认的对应路由。
+- **部分翻译的 fallback**：未翻译页只保留在中文区，英文导航 / 侧边栏只列已有英文页。语言切换采用「覆盖感知回切」：
+    - `config.ts` 的 `routingPages` 由扫描 `docs/i18n/<locale>/` 生成，语言菜单据此判断目标页是否存在——已翻译页回切对应路由，未翻译页（含未登记的 locale）回退目标 locale 首页（如 `/en-US/`），避免落到不存在的 `/en-US/...` 而 404。
+    - VitePress 1.6 的 `i18nRouting` 仅支持布尔值（函数形态自 2.0 起），因此通过 Vite alias 替换默认主题内部的 `composables/langs`，桌面 / 平板 / 移动端三处菜单共用 `theme/composables/langs.ts`；`config.ts` 在构建期校验该内部模块存在（漂移守卫）。
+    - 产物级守卫见 `pnpm docs:check:i18n-routing`（已接入 `verify` 与 CI）；`i18nRouting: false` 作为别名未生效时的兜底（退回回首页而非 404）。覆盖度提升后可改回默认对应路由。
 - **链接检查**：`scripts/docs/check-links.mjs` 对站点根链接额外解析 `docs/i18n/<path>`，以兼容该物理路径约定。
 - **同步范围**：英文版最终与中文版保持同步的范围**仅限「指南」与「组件介绍」**（按批次推进）；设计、规范、规划等保持骨架 / 中文源（source-only），不承诺持续翻译。
 - **列表顺序**：英文导航 / 侧边栏与组件概览中的已翻译页，按中文 sidebar 的组件顺序排列（非翻译时间顺序），保证翻译覆盖完成后两侧顺序一致。

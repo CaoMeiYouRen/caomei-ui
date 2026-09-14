@@ -70,6 +70,8 @@ jobs:
         run: pnpm check:nuxt
       - name: Build docs
         run: pnpm docs:build
+      - name: Check docs i18n routing
+        run: pnpm docs:check:i18n-routing
       - name: Test with coverage
         run: pnpm test:coverage
       - name: Upload coverage reports to Codecov

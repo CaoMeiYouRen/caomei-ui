@@ -63,7 +63,7 @@ function onClick(event: MouseEvent): void {
         >
             <slot name="icon" />
         </span>
-        <span class="caomei-button__content">
+        <span v-if="$slots.default" class="caomei-button__content">
             <slot />
         </span>
         <span

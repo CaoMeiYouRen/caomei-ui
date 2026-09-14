@@ -147,4 +147,14 @@ describe('CaomeiButton', () => {
         expect(wrapper.get('button').classes()).toContain('caomei-button--tone-danger')
         expect(wrapper.get('button').classes()).toContain('caomei-button--secondary')
     })
+
+    it('无默认插槽时不渲染空的内容容器', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { label: '加粗' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        expect(wrapper.find('.caomei-button__content').exists()).toBe(false)
+        expect(wrapper.find('.caomei-button__icon').exists()).toBe(true)
+    })
 })

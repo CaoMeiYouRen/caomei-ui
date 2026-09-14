@@ -36,13 +36,14 @@ export default defineNuxtConfig({
   modules: ['caomei-ui/nuxt'],
   caomeiUI: {
     prefix: 'Caomei',
-    theme: { primary: '#e63946' },
     darkMode: 'class',
+    injectStyles: true,
+    theme: { primary: '#e63946' },
   },
 })
 ```
 
-组件与 composables 将自动导入。
+组件与 composables（`useTheme` / `useToast` / `useConfirm`）自动导入，样式默认自动注入；选项与暗色策略见 [架构设计 §5](/design/architecture)。
 
 ## 非 Nuxt 项目按需引入
 

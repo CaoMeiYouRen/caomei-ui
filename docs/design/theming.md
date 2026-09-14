@@ -68,7 +68,7 @@
   - `[data-theme="dark"]` 属性；
   - 系统跟随（`prefers-color-scheme: dark`）：需在根元素显式加 `data-scheme="auto"`。
 - 品牌预设：根元素 `data-preset="caomei"` / `"momei"`（基础预设缺省），见 [设计规范 §5](./design-spec.md)。
-- Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`（模块为占位实现，真实 `@nuxt/kit` 集成待后续阶段）。
+- Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`（`media` 时模块写入 `data-scheme="auto"` 跟随系统），并可用 `theme` 覆盖 token，详见[架构设计 §5](./architecture.md)。
 - 提供 `useTheme()` composable 管理当前主题与切换。
 
 ## 4. 消费者定制

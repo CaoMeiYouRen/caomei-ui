@@ -144,6 +144,8 @@ M5 P1 增强 → 第二阶段（由迁移实际暴露驱动）
 | 最小 Nuxt 消费冒烟 | 最小 Nuxt 4 应用验证 preset、暗色、SSR hydrate 无报错 | 上一条 | 2–4 文件 / ~150 行 |
 
 > 注：M1「本地 link 调试通道」实施量超出上表预估，按[规划规范 §5](../../standards/planning.md) 拆为「构建产物冒烟校验」（`scripts/release` + CI 步骤）与「本地联调指引」（中英指南 + 导航）两条自洽提交。
+>
+> 注：`caomei-ui/nuxt` 真实集成的端到端 SSR 冒烟已在下游 Nuxt 4 应用临时验证（组件与 composables 免 import、`data-scheme="auto"`、`--caomei-color-primary` 覆盖注入生效）；可复跑的 fixture 冒烟由「最小 Nuxt 消费冒烟」条目落地。
 
 ### 主线 M2：组件 i18n 注入机制
 

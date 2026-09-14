@@ -20,7 +20,7 @@
 - 条目：
   - [x] 本地 link 调试通道（先行：`link:` / `file:` 指引 + 构建产物联调）
   - [ ] 首版发布链路协调（归属 [Phase 5 第二阶段](./roadmap.md)，待 npm 凭据；作为 M1 并行依赖，不在本阶段重复承载）
-  - [ ] `caomei-ui/nuxt` 真实集成（`@nuxt/kit` 自动导入 + 样式 + 主题 + SSR）
+  - [x] `caomei-ui/nuxt` 真实集成（`@nuxt/kit` 自动导入 + 样式 + 主题 + SSR）
   - [ ] 最小 Nuxt 消费冒烟（preset / 暗色 / SSR hydrate）
 
 ### 主线 M2：组件 i18n 注入机制

@@ -36,13 +36,14 @@ export default defineNuxtConfig({
   modules: ['caomei-ui/nuxt'],
   caomeiUI: {
     prefix: 'Caomei',
-    theme: { primary: '#e63946' },
     darkMode: 'class',
+    injectStyles: true,
+    theme: { primary: '#e63946' },
   },
 })
 ```
 
-Components and composables are auto-imported.
+Components and composables (`useTheme` / `useToast` / `useConfirm`) are auto-imported, and styles are injected by default; see [Architecture §5](/design/architecture) (Chinese) for options and dark mode.
 
 ## Non-Nuxt projects
 

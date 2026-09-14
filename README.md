@@ -78,9 +78,13 @@ export default defineNuxtConfig({
   caomeiUI: {
     prefix: 'Caomei',
     darkMode: 'class',
+    injectStyles: true,
+    theme: { primary: '#e63946' },
   },
 })
 ```
+
+组件、composables 与样式自动接入；选项见[架构设计 §5](./docs/design/architecture.md)。
 
 ### 主题定制
 

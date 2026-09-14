@@ -108,10 +108,11 @@ Vite 与 tsdown 均可构建组件库。本项目采用「**Vite 负责开发 / 
 
 ## 5. Nuxt 模块
 
-- 以 `@nuxt/kit` 编写，作为 `caomei-ui/nuxt` 子路径导出随主包发布。
-- 职责：组件自动导入、composables 自动导入、样式注入、SSR 安全处理、主题配置。
+`caomei-ui/nuxt` 是基于 `@nuxt/kit` 的 Nuxt 模块，随主包发布，通过 `modules` 配置接入。
 
-> 当前 `src/nuxt/module.ts` 为**占位实现**（尚未接入 `@nuxt/kit`），真实模块在后续阶段落地；下述示例为目标形态。
+- 职责：组件自动导入、composables 自动导入、样式注入、主题 token 覆盖、暗色策略。
+- `@nuxt/kit` 声明为**可选 peer 依赖**：非 Nuxt 消费者不会安装它，Nuxt 应用可直接复用其同名依赖。
+- 组件与样式均来自包内 `caomei-ui` 与 `caomei-ui/styles.css`，模块不复制运行时文件。
 
 ```ts
 // nuxt.config.ts
@@ -119,12 +120,23 @@ export default defineNuxtConfig({
   modules: ['caomei-ui/nuxt'],
   caomeiUI: {
     prefix: 'Caomei',
-    theme: { primary: '#e63946', radius: '0.5rem' },
     darkMode: 'class',
     injectStyles: true,
+    theme: { primary: '#e63946', radius: '0.5rem' },
   },
 })
 ```
+
+| 选项 | 类型 | 默认 | 说明 |
+|------|------|------|------|
+| `prefix` | `string` | `'Caomei'` | 组件自动导入前缀；仅影响导入名，导出名不变 |
+| `darkMode` | `'class' \| 'media' \| false` | `'class'` | `class` 由应用切换 `.dark`；`media` 注入 `data-scheme="auto"` 跟随系统；`false` 不处理 |
+| `injectStyles` | `boolean` | `true` | 是否注入 `caomei-ui/styles.css` |
+| `theme` | `Record<string, string>` | `{}` | 覆盖主题 token：语义别名（`primary` / `radius` 等）或 `--caomei-*` 变量名 |
+
+`theme` 会生成 `:root { --caomei-*: … }` 作为样式注入；出现未知别名时在构建期报错。自动导入的 composables 为 `useTheme` / `useToast` / `useConfirm`。
+
+模块要求 Nuxt 4（`compatibility.nuxt: '>=4.0.0'`，`@nuxt/kit` 为可选 peer `^4.0.0`）。`theme` 的值视为构建期可信配置，会原样写入生成的 CSS。
 
 ## 6. 非 Nuxt 项目接入
 

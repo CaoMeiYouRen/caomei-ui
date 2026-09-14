@@ -1,6 +1,7 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick } from 'vue'
+import { defineComponent, h, nextTick, type Component, type DefineComponent } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { SelectButtonProps } from './types'
 import { CaomeiSelectButton, type SelectButtonOption } from './index'
 
 enableAutoUnmount(afterEach)
@@ -10,6 +11,9 @@ const options = [
     { label: '居中', value: 'center' },
     { label: '右对齐', value: 'right' },
 ]
+
+/** 泛型组件在 `h()` 中无法推导 props，此处退化为通用组件类型 */
+const FormSelectButton = CaomeiSelectButton as unknown as Component
 
 function mountSelectButton(
     props: Record<string, unknown> = {},
@@ -159,7 +163,7 @@ describe('CaomeiSelectButton', () => {
             defineComponent({
                 setup() {
                     return () => h('form', [
-                        h(CaomeiSelectButton, { options, name: 'align', modelValue: 'center' }),
+                        h(FormSelectButton, { options, name: 'align', modelValue: 'center' }),
                     ])
                 },
             }),
@@ -175,7 +179,7 @@ describe('CaomeiSelectButton', () => {
             defineComponent({
                 setup() {
                     return () => h('form', [
-                        h(CaomeiSelectButton, { options, name: 'align' }),
+                        h(FormSelectButton, { options, name: 'align' }),
                     ])
                 },
             }),
@@ -190,7 +194,7 @@ describe('CaomeiSelectButton', () => {
             defineComponent({
                 setup() {
                     return () => h('form', [
-                        h(CaomeiSelectButton, {
+                        h(FormSelectButton, {
                             options,
                             name: 'align',
                             multiple: true,
@@ -224,7 +228,10 @@ describe('CaomeiSelectButton', () => {
     })
 
     it('option 插槽可自定义选项内容', () => {
-        const wrapper = mount(CaomeiSelectButton, {
+        const SlotSelectButton = CaomeiSelectButton as unknown as DefineComponent<
+            SelectButtonProps<SelectButtonOption>
+        >
+        const wrapper = mount(SlotSelectButton, {
             props: { options },
             slots: {
                 option: ({ option, selected }: { option: SelectButtonOption, selected: boolean }) =>
@@ -240,5 +247,121 @@ describe('CaomeiSelectButton', () => {
         const wrapper = mountSelectButton({ class: 'custom-select-button' })
 
         expect(wrapper.get('.caomei-select-button').classes()).toContain('custom-select-button')
+    })
+})
+
+describe('CaomeiSelectButton 对象选项映射', () => {
+    interface MappedOption {
+        name: string
+        id?: number | null
+        disabled?: boolean
+    }
+
+    /** VTU 无法从 props 推断泛型组件参数，测试内具体化选项类型 */
+    const MappedSelectButton = CaomeiSelectButton as unknown as DefineComponent<SelectButtonProps<MappedOption>>
+
+    const objectOptions: MappedOption[] = [
+        { name: '分类一', id: 1 },
+        { name: '分类二', id: 2 },
+        { name: '分类三', id: 3, disabled: true },
+    ]
+
+    it('通过 optionLabel / optionValue 映射字段并以数字值标记选中', () => {
+        const wrapper = mount(MappedSelectButton, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+            },
+            attachTo: document.body,
+        })
+
+        const items = wrapper.findAll('.caomei-select-button__item')
+        expect(items.map((item) => item.text())).toEqual(['分类一', '分类二', '分类三'])
+        expect(items[1].attributes('data-state')).toBe('on')
+        expect(items[2].attributes('disabled')).toBeDefined()
+    })
+
+    it('optionLabel 传函数时按函数结果渲染', () => {
+        const wrapper = mount(MappedSelectButton, {
+            props: {
+                options: objectOptions,
+                optionLabel: (option) => `#${option.id ?? '?'}`,
+                optionValue: 'id',
+            },
+            attachTo: document.body,
+        })
+
+        expect(wrapper.get('.caomei-select-button__item').text()).toBe('#1')
+    })
+
+    it('受控单选下点击映射选项回传数字值', async () => {
+        const wrapper = mount(MappedSelectButton, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 1,
+            },
+            attachTo: document.body,
+        })
+        await flush()
+
+        await wrapper.findAll('.caomei-select-button__item')[1].trigger('click')
+        await flush()
+
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
+    })
+
+    it('optionValue 传函数时按函数结果标记选中', async () => {
+        const wrapper = mount(MappedSelectButton, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: (option) => option.id ?? 0,
+                modelValue: 2,
+            },
+            attachTo: document.body,
+        })
+        await flush()
+
+        expect(wrapper.findAll('.caomei-select-button__item')[1].attributes('data-state')).toBe('on')
+    })
+
+    it('解析不到 optionValue 的选项不渲染', () => {
+        const wrapper = mount(MappedSelectButton, {
+            props: {
+                options: [{ name: '无值选项' }, { name: '全部', id: null }, ...objectOptions],
+                optionLabel: 'name',
+                optionValue: 'id',
+            },
+            attachTo: document.body,
+        })
+
+        expect(wrapper.findAll('.caomei-select-button__item')).toHaveLength(3)
+    })
+
+    it('#option 插槽收到原始选项对象', () => {
+        interface SlotOption extends MappedOption {
+            hint: string
+        }
+
+        const SlotSelectButton = CaomeiSelectButton as unknown as DefineComponent<SelectButtonProps<SlotOption>>
+
+        const wrapper = mount(SlotSelectButton, {
+            props: {
+                options: [{ name: '分类一', id: 1, hint: '第一项' }],
+                optionLabel: 'name',
+                optionValue: 'id',
+            },
+            slots: {
+                option: ({ option }: { option: SlotOption }) =>
+                    h('span', { class: 'custom-option' }, option.hint),
+            },
+            attachTo: document.body,
+        })
+
+        expect(wrapper.get('.custom-option').text()).toBe('第一项')
     })
 })

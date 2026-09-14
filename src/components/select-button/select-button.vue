@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends object">
 import { ToggleGroupItem, ToggleGroupRoot } from 'reka-ui'
 import { computed } from 'vue'
+import { resolveOptionDisabled, resolveOptionField, resolveOptionValue } from '../_shared/option'
 import type {
     SelectButtonModelValue,
     SelectButtonProps,
@@ -9,8 +10,10 @@ import type {
 
 defineOptions({ name: 'CaomeiSelectButton', inheritAttrs: false })
 
-const props = withDefaults(defineProps<SelectButtonProps>(), {
+const props = withDefaults(defineProps<SelectButtonProps<T>>(), {
     options: () => [],
+    optionLabel: 'label',
+    optionValue: 'value',
     multiple: false,
     size: 'md',
     disabled: false,
@@ -30,6 +33,34 @@ const EMPTY_SINGLE_VALUE: Readonly<Record<string, unknown>> = Object.freeze({
 })
 
 const rootType = computed(() => (props.multiple ? 'multiple' : 'single'))
+
+interface NormalizedOption {
+    /** 解析后的选项值（字符串或数字） */
+    value: SelectButtonValue
+    /** 解析后的显示文本；字段缺省时为 undefined */
+    label: string | undefined
+    disabled: boolean
+    /** 原始选项对象，供 `#option` 插槽使用 */
+    raw: T
+}
+
+/** 归一化选项列表：映射字段并剔除解析不到值的项 */
+const normalizedOptions = computed<NormalizedOption[]>(() => {
+    const result: NormalizedOption[] = []
+    for (const option of props.options) {
+        const value = resolveOptionValue(option, props.optionValue, 'value')
+        if (value === undefined) {
+            continue
+        }
+        result.push({
+            value,
+            label: resolveOptionField(option, props.optionLabel, 'label'),
+            disabled: resolveOptionDisabled(option),
+            raw: option,
+        })
+    }
+    return result
+})
 
 const selectedValues = computed<SelectButtonValue[]>(() => {
     if (props.multiple) {
@@ -81,7 +112,7 @@ function handleUpdate(value: unknown): void {
         @update:model-value="handleUpdate"
     >
         <ToggleGroupItem
-            v-for="option in options"
+            v-for="option in normalizedOptions"
             :key="option.value"
             :value="option.value"
             :disabled="option.disabled"
@@ -89,7 +120,7 @@ function handleUpdate(value: unknown): void {
         >
             <slot
                 name="option"
-                :option="option"
+                :option="option.raw"
                 :selected="isSelected(option.value)"
             >
                 {{ option.label }}

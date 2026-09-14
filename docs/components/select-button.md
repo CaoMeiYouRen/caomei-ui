@@ -13,6 +13,17 @@
     ssg="true"
 />
 
+## 对象选项
+
+`options` 可传入任意对象，通过 `optionLabel` / `optionValue` 指定显示文本与值的字段名（也可传入取值函数）；值支持字符串与数字。
+
+<demo
+    vue="../examples/select-button/object-options.vue"
+    ssg="true"
+/>
+
+> 字段解析：`optionLabel` / `optionValue` 字符串形态支持 `a.b` 点号嵌套路径；`optionValue` 解析结果不是字符串 / 数字（如 `null`、布尔、字段缺省）时该选项**不渲染**，`optionLabel` 解析不到文本时该项文本为空。`#option` 插槽仍收到原始选项对象。
+
 ## 多选
 
 传入 `multiple` 后 `v-model` 变为值数组，点击可在选中 / 未选中间切换。

@@ -23,7 +23,7 @@ export default defineConfig({
         fileName: 'styles.css',
     },
     deps: {
-        neverBundle: ['vue', 'reka-ui', '@tanstack/vue-table'],
+        neverBundle: ['vue', 'reka-ui', '@tanstack/vue-table', '@nuxt/kit', '@nuxt/schema'],
     },
     plugins: [
         Vue({ isProduction: true }),

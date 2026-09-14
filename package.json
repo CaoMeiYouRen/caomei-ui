@@ -69,6 +69,8 @@
   },
   "devDependencies": {
     "@lint-md/cli": "^2.3.1",
+    "@nuxt/kit": "^4.5.2",
+    "@nuxt/schema": "^4.5.2",
     "@playwright/test": "^1.63.0",
     "@tsdown/css": "^0.23.0",
     "@types/node": "^26.5.0",
@@ -105,7 +107,13 @@
     "vue-tsc": "^3.3.11"
   },
   "peerDependencies": {
+    "@nuxt/kit": "^4.0.0",
     "vue": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@nuxt/kit": {
+      "optional": true
+    }
   },
   "author": "CaoMeiYouRen",
   "description": "一个基于 Vue 3 和 Reka UI 的自建组件库，强调组件与样式解耦，默认提供极简可用的样式并支持 100% 自定义覆盖。开箱即用主题切换与暗色模式，组件设计适配桌面端与移动端。",

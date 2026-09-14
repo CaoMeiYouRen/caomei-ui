@@ -50,7 +50,9 @@ export const caomeiUiNuxtModule: NuxtModule<CaomeiUiNuxtOptions> = defineNuxtMod
         }
 
         addImports([
+            { name: 'provideLocale', from: CAOMEI_UI_PACKAGE_NAME },
             { name: 'useConfirm', from: CAOMEI_UI_PACKAGE_NAME },
+            { name: 'useLocale', from: CAOMEI_UI_PACKAGE_NAME },
             { name: 'useTheme', from: CAOMEI_UI_PACKAGE_NAME },
             { name: 'useToast', from: CAOMEI_UI_PACKAGE_NAME },
         ])

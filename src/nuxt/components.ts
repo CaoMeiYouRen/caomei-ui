@@ -19,6 +19,7 @@ export const caomeiComponents = [
     'CaomeiButtonGroup',
     'CaomeiCard',
     'CaomeiCheckbox',
+    'CaomeiConfigProvider',
     'CaomeiConfirmDialog',
     'CaomeiDataTable',
     'CaomeiDialog',

@@ -73,7 +73,9 @@ describe('caomeiUiNuxtModule setup', () => {
 
         expect(addImports).toHaveBeenCalledTimes(1)
         expect(addImports).toHaveBeenCalledWith([
+            { name: 'provideLocale', from: 'caomei-ui' },
             { name: 'useConfirm', from: 'caomei-ui' },
+            { name: 'useLocale', from: 'caomei-ui' },
             { name: 'useTheme', from: 'caomei-ui' },
             { name: 'useToast', from: 'caomei-ui' },
         ])

@@ -8,6 +8,7 @@ export * from './components/button'
 export * from './components/button-group'
 export * from './components/card'
 export * from './components/checkbox'
+export * from './components/config-provider'
 export * from './components/confirm-dialog'
 export * from './components/data-table'
 export * from './components/dialog'
@@ -50,6 +51,8 @@ export type {
     ConfirmRequest,
     ConfirmTone,
 } from './composables/use-confirm'
+export { caomeiLocaleKey, provideLocale, useLocale } from './composables/use-locale'
+export type { ProvideLocaleOptions } from './composables/use-locale'
 export { useTheme } from './composables/use-theme'
 export type { ThemeMode, UseThemeReturn } from './composables/use-theme'
 export { useToast } from './composables/use-toast'

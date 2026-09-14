@@ -1,3 +1,11 @@
+/**
+ * 文案覆盖：按命名空间浅合并到基准语言之上，未提供的键回退基准文案。
+ * @en Locale message overrides: shallow-merged per namespace onto the base locale; missing keys fall back to the base text.
+ */
+export type CaomeiLocaleMessageOverrides = {
+    [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]>
+}
+
 export interface CaomeiLocaleMessages {
     autoComplete: {
         empty: string

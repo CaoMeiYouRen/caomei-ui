@@ -35,6 +35,14 @@ describe('CaomeiTag', () => {
         expect(wrapper.get('.caomei-tag').classes()).toContain(`caomei-tag--${size}`)
     })
 
+    it('rounded 时应用胶囊形态类，默认不应用', () => {
+        const rounded = mount(CaomeiTag, { props: { rounded: true } })
+        expect(rounded.get('.caomei-tag').classes()).toContain('caomei-tag--rounded')
+
+        const defaultTag = mount(CaomeiTag)
+        expect(defaultTag.get('.caomei-tag').classes()).not.toContain('caomei-tag--rounded')
+    })
+
     it('不可关闭时不渲染关闭按钮', () => {
         const wrapper = mount(CaomeiTag, { slots: { default: '标签' } })
         expect(wrapper.find('.caomei-tag__close').exists()).toBe(false)

@@ -23,6 +23,11 @@ export interface TagProps {
      */
     size?: ComponentSize
     /**
+     * 是否为胶囊形态（圆角取 `--caomei-radius-full`）；默认 false
+     * @en Whether to use the pill shape (`--caomei-radius-full`); defaults to false
+     */
+    rounded?: boolean
+    /**
      * 是否显示关闭按钮
      * @en Whether to show the close button
      */

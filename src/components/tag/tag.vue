@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<TagProps>(), {
     tone: 'neutral',
     variant: 'soft',
     size: 'md',
+    rounded: false,
     closable: false,
     disabled: false,
 })
@@ -31,7 +32,10 @@ const rootClass = computed(() => [
     `caomei-tag--${props.tone}`,
     `caomei-tag--${props.variant}`,
     `caomei-tag--${props.size}`,
-    { 'caomei-tag--disabled': props.disabled },
+    {
+        'caomei-tag--rounded': props.rounded,
+        'caomei-tag--disabled': props.disabled,
+    },
 ])
 
 function onClose(): void {
@@ -138,6 +142,10 @@ function onClose(): void {
 .caomei-tag--disabled {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.caomei-tag--rounded {
+    border-radius: var(--caomei-radius-full);
 }
 
 .caomei-tag__icon,

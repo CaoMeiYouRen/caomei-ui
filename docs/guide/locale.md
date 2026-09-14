@@ -37,7 +37,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 15 个命名空间，对应 16 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 16 个命名空间，对应 17 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -51,6 +51,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` | Paginator |
 | `password` | `show` `hide` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner |
+| `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |

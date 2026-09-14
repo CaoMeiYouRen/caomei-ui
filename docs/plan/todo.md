@@ -43,7 +43,8 @@
 - 最小验收标准：API 文档、单元测试与英文文档页齐备；符合设计规范；`pnpm verify` 通过。
 - 条目：
   - [x] Select 家族对象选项映射（`optionLabel` / `optionValue` + 非 `string` value）
-  - [ ] Select 补充 `showClear` / `filter` / `#option`
+  - [x] Select 补充 `showClear` / `#option`（清空与自定义选项渲染）
+  - [ ] Select 补充 `filter`（待用户决策：迁移到 `AutoComplete`，或按 Reka `Listbox` 重构 Select——Reka Select 面板固定 `role="listbox"`，面板内搜索框违反 `aria-required-children`）
   - [ ] Tag 语义与形态（severity 映射规范化、`rounded` / `outlined`、`#icon`）
   - [ ] Message 形态与尺寸（`variant` `simple` / `text`、`size`、severity 映射）
   - [ ] InputNumber 分组与小数位（`useGrouping` / `minFractionDigits` / `maxFractionDigits`）

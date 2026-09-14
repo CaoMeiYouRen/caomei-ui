@@ -23,7 +23,7 @@
 |------|------|------|--------|
 | Button 角标增强 | 组件实现评估 + M1 复核 | **保留（P2）**：Button 的 `:badge` 角标（M1 台账 momei 2 处）未纳入 Phase 6 M3（标记待评估）；需评估角标内容 / 位置 / 与图标共存。 | 低 |
 | Tag/Badge 增强 | 组件实现评估 + M1 复核 | **部分迁出**：Tag `severity` → `tone` 规范化、`rounded` / `outlined`、`#icon` 插槽（P0）已迁 Phase 7 第一阶段；**保留（P2）** Tag 可选中筛选 / 可编辑（Reka TagsInput）、Badge 叠加位置偏移与宽度过渡动画。 | 中 |
-| Select 增强 | 组件实现评估 + M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`filter`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）；**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
+| Select 增强 | 组件实现评估 + M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）。`option-label` / `option-value` 与 `show-clear` / `#option` 已交付；**`filter` 待用户决策**——Reka Select 把 `role="listbox"` 固定在面板元素上（无法覆盖），面板内放搜索框会使 textbox 成为 listbox 的 owned child（违反 `aria-required-children`），可搜索单选的 primitive 是 Reka `Listbox` / `Combobox`；候选：迁移映射到 `AutoComplete`，或另立条目以 Listbox 重构 Select。**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
 | 表单输入增强 | M1 复核 | **部分迁出**：InputNumber `use-grouping` / `min-max-fraction-digits`、Textarea `auto-resize`、Password `feedback`（P0）已迁 Phase 7 第一阶段；**保留（P2）** Checkbox 分组值数组、Switch `change` 事件、FileUpload 上传能力、ToggleButton 状态文案。 | 中 |
 | Message 语义与形态增强 | M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`variant` 补 `simple` / `text`、补 `size`（momei 各 14 处）、`severity`（`error` / `secondary` / `contrast`）映射。 | 中 |
 | 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
@@ -84,6 +84,7 @@
 | 组件覆盖率门禁 | 待启用 `coverage.thresholds` 门禁；阈值与启用时机待定 | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |
+| scoped 变量声明治理 | `development.md §7` 要求「基类不预声明 CSS 变量默认值、档位类用 `:where()`」，但仍有偏差：`button` 基类直接声明 `--caomei-button-*` 默认值（基类预声明），`message` / `badge` / `tag` / `toast` 的变体类用普通类声明变量（档位类未用 `:where()`）；建议补 `check-design.mjs` 规则（现规则只查引用存在性）并逐组件收敛 | 低 |
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
 | 文档翻译旧目录守卫 | 治理发现：设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |

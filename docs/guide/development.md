@@ -26,6 +26,8 @@ pnpm install
 | `pnpm test` | 单元测试 |
 | `pnpm test:coverage` | 覆盖率 |
 | `pnpm test:e2e` | Playwright E2E |
+| `pnpm check:nuxt` | Nuxt 最小消费冒烟（需先 `pnpm build`） |
+| `pnpm test:nuxt-smoke` | 构建 + Nuxt 最小消费冒烟 |
 | `pnpm docs:dev` | 文档站开发 |
 | `pnpm docs:build` | 文档站构建 |
 
@@ -42,7 +44,7 @@ src/
 ├─ nuxt/          # Nuxt 模块
 ├─ types.ts       # 共享类型
 └─ index.ts       # 公共 API 导出
-playground/       # 本地开发/演示环境（不发布）
+playground/       # 本地开发/演示环境与 Nuxt 冒烟 fixture（不发布）
 docs/             # VitePress 文档站
 examples/         # 集成示例
 test/             # 测试

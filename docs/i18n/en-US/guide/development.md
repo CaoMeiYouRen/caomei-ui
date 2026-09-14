@@ -26,6 +26,8 @@ pnpm install
 | `pnpm test` | Unit tests |
 | `pnpm test:coverage` | Coverage |
 | `pnpm test:e2e` | Playwright E2E |
+| `pnpm check:nuxt` | Minimal Nuxt consumption smoke (requires `pnpm build` first) |
+| `pnpm test:nuxt-smoke` | Build + minimal Nuxt consumption smoke |
 | `pnpm docs:dev` | Docs site development |
 | `pnpm docs:build` | Docs site build |
 
@@ -42,7 +44,7 @@ src/
 ├─ nuxt/          # Nuxt module
 ├─ types.ts       # Shared types
 └─ index.ts       # Public API exports
-playground/       # Local dev/demo environment (not published)
+playground/       # Local dev/demo environment and Nuxt smoke fixture (not published)
 docs/             # VitePress docs site
 examples/         # Integration examples
 test/             # Tests

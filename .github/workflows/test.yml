@@ -68,5 +68,7 @@ jobs:
         run: pnpm build
       - name: Check build artifacts
         run: pnpm check:build
+      - name: Nuxt smoke
+        run: pnpm check:nuxt
       - name: Build docs
         run: pnpm docs:build

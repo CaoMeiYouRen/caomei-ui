@@ -62,8 +62,6 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test with coverage
-        run: pnpm test:coverage
       - name: Build library
         run: pnpm build
       - name: Check build artifacts
@@ -72,3 +70,9 @@ jobs:
         run: pnpm check:nuxt
       - name: Build docs
         run: pnpm docs:build
+      - name: Test with coverage
+        run: pnpm test:coverage
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

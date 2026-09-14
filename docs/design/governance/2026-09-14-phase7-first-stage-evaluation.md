@@ -1,8 +1,8 @@
 # Phase 7 第一阶段评估记录（迁移就绪）
 
-> 状态：评估记录（2026-09-14）。本文件记录 Phase 7 第一阶段的范围评估、缺口调研与原子条目拆分依据；执行状态与验收以 [待办事项](./todo.md) 为准。
+> 状态：评估记录（2026-09-14）。本文件记录 Phase 7 第一阶段的范围评估、缺口调研与原子条目拆分依据；执行状态与验收以 [待办事项](../../plan/todo.md) 为准。
 >
-> 关联：[路线图](./roadmap.md) ｜ [Backlog](./backlog.md) ｜ [momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md) ｜ [设计规范](../design/design-spec.md) ｜ [规划规范](../standards/planning.md)
+> 关联：[路线图](../../plan/roadmap.md) ｜ [Backlog](../../plan/backlog.md) ｜ [momei 使用复核台账](./2026-09-14-momei-usage-audit.md) ｜ [设计规范](../design-spec.md) ｜ [规划规范](../../standards/planning.md)
 
 ## 1. 背景与目标
 
@@ -21,13 +21,13 @@ Phase 6 已使组件库在**组件覆盖、设计规范、主题预设、许可�
 
 | 维度 | 事实 | 来源 |
 | --- | --- | --- |
-| Phase 7 范围 | momei 优先闭环 PrimeVue → caomei-ui 替换；再推其他下游；Nuxt 模块真实集成按需评估 | [roadmap](./roadmap.md) |
-| 承接组件 | `SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`（后三者 Reka Alpha） | [roadmap](./roadmap.md)、`package.json` |
-| momei 迁移规模 | 59 个 PrimeVue 组件、1515 次用法、100+ `.vue`、46 个页面 | [momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md) |
+| Phase 7 范围 | momei 优先闭环 PrimeVue → caomei-ui 替换；再推其他下游；Nuxt 模块真实集成按需评估 | [roadmap](../../plan/roadmap.md) |
+| 承接组件 | `SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`（后三者 Reka Alpha） | [roadmap](../../plan/roadmap.md)、`package.json` |
+| momei 迁移规模 | 59 个 PrimeVue 组件、1515 次用法、100+ `.vue`、46 个页面 | [momei 使用复核台账](./2026-09-14-momei-usage-audit.md) |
 | momei 技术栈 | Nuxt `^4.5.2`、Vue `^3.5.42`、`primevue ^4.5.5` + `@primevue/nuxt-module` 自动导入 + MomeiPreset + 动态 locale 同步插件 | `momei/nuxt.config.ts`、`momei/plugins/primevue-i18n.ts` |
 | momei 语言矩阵 | 5 种：`zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` | `momei/i18n/config/locale-registry.ts` |
 | caomei-ui 接入现状 | `version 0.0.0` 未发布；`caomei-ui/nuxt` 与 `resolver` 均为占位实现 | `package.json`、`src/nuxt/module.ts`、`src/resolver/index.ts` |
-| 发布前置 | Phase 5 第二阶段（semantic-release 发布 / 首个下游接入）**待 npm 凭据与下游授权**（外部） | [roadmap](./roadmap.md) |
+| 发布前置 | Phase 5 第二阶段（semantic-release 发布 / 首个下游接入）**待 npm 凭据与下游授权**（外部） | [roadmap](../../plan/roadmap.md) |
 
 ## 3. 前置条件与阻塞链
 
@@ -77,7 +77,7 @@ momei 真实迁移
 
 1. **P0 是迁移硬缺口**：对象选项映射（88）、Tag（125）、Message（51）、InputNumber（20）均高频，迁移时不补必然逐处改；纳入第一阶段补全。
 2. **P1 有降级空间**：Image / ProgressSpinner / Dialog / DataTable 剩余项。经用户决策**延至第二阶段**，由 momei 迁移实际暴露驱动。
-3. **P2 低频且可临时降级**：保留在 [Backlog §1.1](./backlog.md)，迁移时按实际暴露决定，**不纳入第一阶段**（用户决策 2026-09-14）。
+3. **P2 低频且可临时降级**：保留在 [Backlog §1.1](../../plan/backlog.md)，迁移时按实际暴露决定，**不纳入第一阶段**（用户决策 2026-09-14）。
 
 ## 5. 组件 i18n 注入机制说明
 
@@ -102,7 +102,7 @@ momei 支持 5 种语言且运行时动态切换；不补机制，迁移后这 1
 
 ### 5.4 范围边界
 
-- 本阶段提供**机制**与 `zh-CN` / `en-US` 默认文案；`zh-TW` / `ja-JP` / `ko-KR` 由下游注入或后续补翻译（[Backlog §1.4](./backlog.md) 中期项）。
+- 本阶段提供**机制**与 `zh-CN` / `en-US` 默认文案；`zh-TW` / `ja-JP` / `ko-KR` 由下游注入或后续补翻译（[Backlog §1.4](../../plan/backlog.md) 中期项）。
 - 非目标：RTL、长期语言矩阵、组件内建文案的全语种翻译。
 
 ## 6. 排序（优先级 + 依赖）
@@ -132,7 +132,7 @@ M5 P1 增强 → 第二阶段（由迁移实际暴露驱动）
 
 ## 8. Phase 7 第一阶段条目（粒度）
 
-> 执行范围 / 非目标 / 最小验收标准以 [待办事项](./todo.md) 为**唯一执行源**；本表仅补充「依赖」与「文件数 / 新增行数量级」（用于核对规划规范 ≤ 10 文件 / 800 行的粒度约束），避免逐字重复造成漂移。
+> 执行范围 / 非目标 / 最小验收标准以 [待办事项](../../plan/todo.md) 为**唯一执行源**；本表仅补充「依赖」与「文件数 / 新增行数量级」（用于核对规划规范 ≤ 10 文件 / 800 行的粒度约束），避免逐字重复造成漂移。
 
 ### 主线 M1：消费路径与 Nuxt 接入
 
@@ -189,7 +189,7 @@ M5 P1 增强 → 第二阶段（由迁移实际暴露驱动）
 
 ## 9. 验收标准与非目标
 
-**阶段验收**（沿用 [路线图 §4](./roadmap.md)）：
+**阶段验收**（沿用 [路线图 §4](../../plan/roadmap.md)）：
 
 1. `docs/plan/todo.md` 中第一阶段条目全部标记完成；
 2. 质量门通过（lint / typecheck / test / build）；
@@ -210,13 +210,13 @@ M5 P1 增强 → 第二阶段（由迁移实际暴露驱动）
 | --- | --- |
 | 消费与调试路径 | **M1 先以本地 link 启动**；首版发布链路待外部 npm 凭据到位后补，可与本阶段并行 |
 | P1 定位 | **M5 延至第二阶段**，由 momei 迁移实际暴露驱动，不纳入第一阶段 |
-| P2 处理 | **不纳入第一阶段**，保留 [Backlog §1.1](./backlog.md)，迁移按需 |
+| P2 处理 | **不纳入第一阶段**，保留 [Backlog §1.1](../../plan/backlog.md)，迁移按需 |
 | i18n 范围 | 第一阶段仅提供机制 + `zh-CN` / `en-US`；`zh-TW` / `ja-JP` / `ko-KR` 由下游注入 |
 | 组件顺序 | M4 按 `DatePicker → Drawer → SplitButton → ColorPicker → DataView`（按用量与依赖） |
 
-> 上表为第一阶段范围的最终决策，已登记至 [待办事项](./todo.md) 并由 [路线图](./roadmap.md) 同步。
+> 上表为第一阶段范围的最终决策，已登记至 [待办事项](../../plan/todo.md) 并由 [路线图](../../plan/roadmap.md) 同步。
 
 ## 11. 状态与回归基线
 
 - 本记录为 **2026-09-14** 时点评估，数据基于当日 momei 实仓快照与 Phase 6 M1 属性台账；迁移实施时应以真实替换清单复核用量。
-- 版本变化、momei 结构变化或用户决策调整时，本记录不追溯修改，由 [待办事项](./todo.md) 与 [路线图](./roadmap.md) 承载最新状态。
+- 版本变化、momei 结构变化或用户决策调整时，本记录不追溯修改，由 [待办事项](../../plan/todo.md) 与 [路线图](../../plan/roadmap.md) 承载最新状态。

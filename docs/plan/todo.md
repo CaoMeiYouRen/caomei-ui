@@ -4,11 +4,11 @@
 
 ## 当前阶段
 
-> **Phase 7 第一阶段：迁移就绪（momei 优先）** — 2026-09-14 经用户授权启动；范围来自 [Phase 7 第一阶段评估记录](./phase7-evaluation.md)。
+> **Phase 7 第一阶段：迁移就绪（momei 优先）** — 2026-09-14 经用户授权启动；范围来自 [Phase 7 第一阶段评估记录](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)。
 >
 > **阶段目标**：在 momei 实际迁移之前，打通消费与接入通道，补齐迁移高频硬缺口，并前置组件 i18n 注入机制，使组件库达到「可直接迁移」状态。
 >
-> **阶段非目标（明确不做）**：momei 实际页面替换与其他下游接入（第二阶段）；P1 增强（[Phase 7 第一阶段评估记录 §8](./phase7-evaluation.md) M5，延至第二阶段）；P2 低频增强（保留 [Backlog](./backlog.md)）；RTL 与多语种翻译、移动端 / 响应式（Backlog §1.4 / §1.5）；Phase 8 下游兼容性回归机制。
+> **阶段非目标（明确不做）**：momei 实际页面替换与其他下游接入（第二阶段）；P1 增强（[Phase 7 第一阶段评估记录 §8](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) M5，延至第二阶段）；P2 低频增强（保留 [Backlog](./backlog.md)）；RTL 与多语种翻译、移动端 / 响应式（Backlog §1.4 / §1.5）；Phase 8 下游兼容性回归机制。
 >
 > **排序原则**：先改好再迁移；按「优先级 + 依赖关系」排序。i18n 机制（M2）先于组件改造（M3 / M4）；接入通道（M1）可并行，且**本地 link 先行**（首版发布待外部凭据到位后补）。
 
@@ -62,7 +62,7 @@
   - [ ] ColorPicker（组合 color primitive，Reka Alpha）
   - [ ] DataView（`layout` grid / list + 插槽）
 
-> **M5（P1 增强）已延至第二阶段**（2026-09-14 用户决策）：Image 预览、ProgressSpinner 线宽、Dialog 形态断点、DataTable 剩余迁移项，由 momei 迁移实际暴露驱动；详见 [Phase 7 第一阶段评估记录 §8](./phase7-evaluation.md) 与 [路线图 Phase 7](./roadmap.md)。
+> **M5（P1 增强）已延至第二阶段**（2026-09-14 用户决策）：Image 预览、ProgressSpinner 线宽、Dialog 形态断点、DataTable 剩余迁移项，由 momei 迁移实际暴露驱动；详见 [Phase 7 第一阶段评估记录 §8](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) 与 [路线图 Phase 7](./roadmap.md)。
 
 ## 阶段验收通则
 
@@ -75,4 +75,4 @@
 - 已归档：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6。
 - 进行中：Phase 7 第一阶段（迁移就绪，momei 优先）。
 - 未启动 / 未完成：Phase 5 第二阶段（首版发布 / 首个下游接入，待外部前置）、Phase 7 第二阶段（momei 迁移闭环 + P1 增强）、Phase 8（下游兼容性回归，稳定后启用）；范围见 [路线图](./roadmap.md)。
-- 未纳入本阶段的候选：P1 增强（延至 Phase 7 第二阶段）、Phase 6 遗留 Button 角标（`:badge`）、P2 低频增强、组件国际化多语种翻译与 RTL、移动端与响应式，详见 [Backlog](./backlog.md) 与 [Phase 7 第一阶段评估记录](./phase7-evaluation.md)。
+- 未纳入本阶段的候选：P1 增强（延至 Phase 7 第二阶段）、Phase 6 遗留 Button 角标（`:badge`）、P2 低频增强、组件国际化多语种翻译与 RTL、移动端与响应式，详见 [Backlog](./backlog.md) 与 [Phase 7 第一阶段评估记录](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)。

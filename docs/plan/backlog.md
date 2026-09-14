@@ -17,7 +17,7 @@
 
 > 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已在 Phase 6 交付并归档；迁移映射规范（`severity→tone` 等）已由 M2 [设计规范 §7](../design/design-spec.md) 承接。
 >
-> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](./phase7-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已迁入 Phase 7 第一阶段；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
+> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已迁入 Phase 7 第一阶段；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
@@ -35,7 +35,7 @@
 
 > 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已于 Phase 4 交付并归档（见 [待办归档](./todo-archive.md)）。
 >
-> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已迁入 [Phase 7 第一阶段](./phase7-evaluation.md) M4（实现顺序 DatePicker → Drawer → SplitButton → ColorPicker → DataView；其中 DatePicker / Calendar、Drawer、ColorPicker 为 Reka Alpha primitive，需锁 `reka-ui@2.10.4` + 回归）。本表仅保留当前无下游使用证据的长尾。
+> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已迁入 [Phase 7 第一阶段](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) M4（实现顺序 DatePicker → Drawer → SplitButton → ColorPicker → DataView；其中 DatePicker / Calendar、Drawer、ColorPicker 为 Reka Alpha primitive，需锁 `reka-ui@2.10.4` + 回归）。本表仅保留当前无下游使用证据的长尾。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|
@@ -53,7 +53,7 @@
 >
 > **2026-09-14 用户决策：本组含短期 zh-CN / en-US 一并延后**，不纳入 Phase 6。
 >
-> **2026-09-14 迁移评估更新**：因 momei 支持 5 种语言且动态切换，组件内建文案缺口会在迁移后造成多语言回归（详见 [Phase 7 第一阶段评估记录 §5](./phase7-evaluation.md)）。**「组件 i18n 注入机制」（含短期 zh-CN / en-US）已迁入 Phase 7 第一阶段 M2 作为迁移前置**（机制落地，翻译语种由下游注入）；中期 / 长期语言矩阵、RTL 与 locale 注册治理仍保留在本表待决策。
+> **2026-09-14 迁移评估更新**：因 momei 支持 5 种语言且动态切换，组件内建文案缺口会在迁移后造成多语言回归（详见 [Phase 7 第一阶段评估记录 §5](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)）。**「组件 i18n 注入机制」（含短期 zh-CN / en-US）已迁入 Phase 7 第一阶段 M2 作为迁移前置**（机制落地，翻译语种由下游注入）；中期 / 长期语言矩阵、RTL 与 locale 注册治理仍保留在本表待决策。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
@@ -96,7 +96,7 @@
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
-| ~~Nuxt 模块真实集成~~ | 已迁 [Phase 7 第一阶段](./phase7-evaluation.md) M1（迁移前置）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
+| ~~Nuxt 模块真实集成~~ | 已迁 [Phase 7 第一阶段](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) M1（迁移前置）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |

@@ -206,6 +206,14 @@ export default defineConfig({
                                 { text: 'AI Development', link: '/en-US/guide/ai-development' },
                             ],
                         },
+                        {
+                            text: 'Capabilities',
+                            items: [
+                                { text: 'Composables', link: '/en-US/guide/composables' },
+                                { text: 'Icons', link: '/en-US/guide/icons' },
+                                { text: 'Built-in text and locales', link: '/en-US/guide/locale' },
+                            ],
+                        },
                     ],
                     '/en-US/components/': [
                         {
@@ -337,6 +345,14 @@ export default defineConfig({
                         { text: '开发指南', link: '/guide/development' },
                         { text: '发布指南', link: '/guide/release' },
                         { text: 'AI 协同开发', link: '/guide/ai-development' },
+                    ],
+                },
+                {
+                    text: '能力说明',
+                    items: [
+                        { text: '组合式 API', link: '/guide/composables' },
+                        { text: '图标', link: '/guide/icons' },
+                        { text: '内建文案与语言', link: '/guide/locale' },
                     ],
                 },
             ],

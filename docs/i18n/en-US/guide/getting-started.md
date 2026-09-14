@@ -71,6 +71,9 @@ See [Theming and styles](/design/theming) (Chinese) for details.
 
 ## Next steps
 
+- [Composables](/en-US/guide/composables)
+- [Icons](/en-US/guide/icons)
+- [Built-in text and locales](/en-US/guide/locale)
 - [Development guide](/en-US/guide/development)
 - [Component design](/design/components) (Chinese)
 - [Standards](/standards/index) (Chinese)

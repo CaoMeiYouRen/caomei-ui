@@ -372,12 +372,16 @@ function goToPage(page: number): void {
                         class="caomei-data-table__select-cell caomei-data-table__th"
                         :aria-hidden="selectionMode === 'single' ? 'true' : undefined"
                     >
-                        <CaomeiCheckbox
+                        <div
                             v-if="selectionMode === 'multiple'"
-                            :model-value="headerCheckboxModel()"
-                            :label="selectAllLabel"
-                            @update:model-value="toggleAllRows"
-                        />
+                            class="caomei-data-table__select-cell-inner"
+                        >
+                            <CaomeiCheckbox
+                                :model-value="headerCheckboxModel()"
+                                :label="selectAllLabel"
+                                @update:model-value="toggleAllRows"
+                            />
+                        </div>
                     </th>
                     <th
                         v-for="header in headerGroup.headers"
@@ -445,11 +449,13 @@ function goToPage(page: number): void {
                             v-if="selectionMode"
                             class="caomei-data-table__select-cell caomei-data-table__td"
                         >
-                            <CaomeiCheckbox
-                                :model-value="row.getIsSelected()"
-                                :label="`${selectRowLabel} ${row.id}`"
-                                @update:model-value="toggleRow(row)"
-                            />
+                            <div class="caomei-data-table__select-cell-inner">
+                                <CaomeiCheckbox
+                                    :model-value="row.getIsSelected()"
+                                    :label="`${selectRowLabel} ${row.id}`"
+                                    @update:model-value="toggleRow(row)"
+                                />
+                            </div>
                         </td>
                         <td
                             v-for="cell in row.getAllCells()"
@@ -547,6 +553,16 @@ function goToPage(page: number): void {
     padding-inline: var(--caomei-space-2);
     text-align: center;
     white-space: nowrap;
+}
+
+/*
+  用 flex 包裹复选框：复选框为 inline-flex，直接放在单元格内会受基线对齐影响，
+  选中态指示器出现时行高产生 1px 抖动。
+*/
+.caomei-data-table__select-cell-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .caomei-data-table__cell--right {

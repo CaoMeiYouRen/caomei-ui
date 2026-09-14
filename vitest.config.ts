@@ -9,7 +9,7 @@ export default defineConfig({
         passWithNoTests: true,
         coverage: {
             provider: 'v8',
-            reporter: ['text', 'html'],
+            reporter: ['text', 'html', 'json-summary', 'lcov'],
             include: ['src/**'],
         },
     },

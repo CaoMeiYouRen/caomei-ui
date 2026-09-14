@@ -48,6 +48,9 @@ const enUS: CaomeiLocaleMessages = {
         minimum: 'Minimum',
         maximum: 'Maximum',
     },
+    stepper: {
+        label: 'Steps',
+    },
     tag: {
         close: 'Remove',
     },

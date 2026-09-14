@@ -48,6 +48,9 @@ const zhCN: CaomeiLocaleMessages = {
         minimum: '最小值',
         maximum: '最大值',
     },
+    stepper: {
+        label: '步骤',
+    },
     tag: {
         close: '删除',
     },

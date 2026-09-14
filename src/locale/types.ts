@@ -46,6 +46,9 @@ export interface CaomeiLocaleMessages {
         minimum: string
         maximum: string
     }
+    stepper: {
+        label: string
+    }
     tag: {
         close: string
     }

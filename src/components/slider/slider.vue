@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
-import { defaultLocaleMessages } from '../../locale'
+import { useLocale } from '../../composables/use-locale'
 import type { SliderProps, SliderValue } from './types'
 
 defineOptions({ name: 'CaomeiSlider', inheritAttrs: false })
@@ -60,19 +60,20 @@ const thumbCount = computed(() => {
     return Array.isArray(value) ? Math.max(1, value.length) : 1
 })
 
-const messages = defaultLocaleMessages.slider
+const locale = useLocale()
+const messages = computed(() => locale.value.slider)
 
 function resolveThumbLabel(index: number, count: number): string | undefined {
     if (props.thumbLabels?.[index]) {
         return props.thumbLabels[index]
     }
     if (count === 1) {
-        return props.label || messages.thumb
+        return props.label || messages.value.thumb
     }
     if (count === 2) {
-        return index === 0 ? messages.minimum : messages.maximum
+        return index === 0 ? messages.value.minimum : messages.value.maximum
     }
-    return `${messages.thumb} ${index + 1}`
+    return `${messages.value.thumb} ${index + 1}`
 }
 
 function normalizeOutgoing(values: number[]): SliderValue {

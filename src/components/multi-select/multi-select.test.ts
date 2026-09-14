@@ -1,6 +1,8 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
-import { defineComponent, h, nextTick } from 'vue'
+import { computed, defineComponent, h, nextTick } from 'vue'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { MultiSelectProps } from './types'
 import { CaomeiMultiSelect } from './index'
 
@@ -326,5 +328,33 @@ describe('CaomeiMultiSelect', () => {
 
         await wrapper.setProps({ modelValue: [] })
         expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBeUndefined()
+    })
+
+    it('内建可访问名与空提示使用注入 locale 的文案', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'] },
+            attachTo: document.body,
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-multi-select__icon').attributes('aria-label')).toBe(
+            'Show options',
+        )
+        expect(wrapper.get('.caomei-multi-select__tag-remove').attributes('aria-label')).toBe(
+            'Remove 苹果',
+        )
+
+        await open(wrapper)
+        await wrapper.get('.caomei-multi-select__input').setValue('不存在')
+        await flushPromises()
+        await nextTick()
+
+        expect(document.querySelector('.caomei-multi-select__empty')?.textContent?.trim()).toBe(
+            'No matching options',
+        )
+
+        wrapper.unmount()
     })
 })

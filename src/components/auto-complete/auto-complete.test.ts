@@ -1,6 +1,8 @@
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { nextTick } from 'vue'
+import { computed, nextTick } from 'vue'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiAutoComplete } from './index'
 
 enableAutoUnmount(afterEach)
@@ -405,5 +407,29 @@ describe('CaomeiAutoComplete', () => {
         await nextTick()
 
         expect(optionElements()).toHaveLength(options.length)
+    })
+
+    it('内建可访问名与空提示使用注入 locale 的文案', async () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: { options, dropdown: true, modelValue: 'apple' },
+            attachTo: document.body,
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-auto-complete__trigger').attributes('aria-label')).toBe(
+            'Show suggestions',
+        )
+        expect(wrapper.get('.caomei-auto-complete__clear').attributes('aria-label')).toBe('Clear')
+
+        await open(wrapper)
+        await wrapper.get('input').setValue('不存在')
+        await flushPromises()
+        await nextTick()
+
+        expect(document.querySelector('.caomei-auto-complete__empty')?.textContent?.trim()).toBe(
+            'No matching suggestions',
+        )
     })
 })

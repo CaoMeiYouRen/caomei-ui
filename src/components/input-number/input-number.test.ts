@@ -1,5 +1,8 @@
 import { flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { InputNumberProps } from './types'
 import { CaomeiInputNumber } from './index'
 
@@ -253,5 +256,17 @@ describe('CaomeiInputNumber', () => {
 
         await wrapper.setProps({ modelValue: null })
         expect(wrapper.get('.caomei-input-number').attributes('data-filled')).toBeUndefined()
+    })
+
+    it('增减按钮使用注入 locale 的文案', () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        const buttons = wrapper.findAll('.caomei-input-number__button')
+        expect(buttons[0].attributes('aria-label')).toBe('Decrease')
+        expect(buttons[1].attributes('aria-label')).toBe('Increase')
     })
 })

@@ -7,8 +7,8 @@ import {
     NumberFieldRoot,
 } from 'reka-ui'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { InputNumberProps } from './types'
 
@@ -22,8 +22,6 @@ const props = withDefaults(defineProps<InputNumberProps>(), {
     invalid: false,
     placeholder: '',
     controls: true,
-    increaseLabel: defaultLocaleMessages.inputNumber.increase,
-    decreaseLabel: defaultLocaleMessages.inputNumber.decrease,
 })
 
 const emit = defineEmits<{
@@ -37,6 +35,10 @@ const model = defineModel<number | null>({ default: null })
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const inputRef = ref<HTMLInputElement | null>(null)
+
+const locale = useLocale()
+const increaseLabel = computed(() => props.increaseLabel ?? locale.value.inputNumber.increase)
+const decreaseLabel = computed(() => props.decreaseLabel ?? locale.value.inputNumber.decrease)
 
 /**
  * 只在包装层关闭分组并放宽最大小数位（20）；precision 的取整仍由本组件的 `normalize`

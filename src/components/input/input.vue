@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { X } from '@lucide/vue'
 import { computed, ref } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { InputProps } from './types'
 
@@ -16,7 +16,6 @@ const props = withDefaults(defineProps<InputProps>(), {
     invalid: false,
     placeholder: '',
     clearable: false,
-    clearLabel: defaultLocaleMessages.input.clear,
 })
 
 const emit = defineEmits<{
@@ -37,6 +36,9 @@ const model = defineModel<string>({ default: '' })
 const inputRef = ref<HTMLInputElement | null>(null)
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
+
+const locale = useLocale()
+const clearLabel = computed(() => props.clearLabel ?? locale.value.input.clear)
 
 const showClear = computed(
     () => props.clearable && Boolean(model.value) && !props.disabled && !props.readonly,

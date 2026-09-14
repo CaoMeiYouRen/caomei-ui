@@ -1,5 +1,9 @@
 import { mount } from '@vue/test-utils'
+import { computed, h, nextTick, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
+import { CaomeiConfigProvider } from '../config-provider'
 import { CaomeiInput } from './index'
 
 describe('CaomeiInput', () => {
@@ -196,5 +200,52 @@ describe('CaomeiInput', () => {
 
         await wrapper.setProps({ modelValue: '' })
         expect(wrapper.get('.caomei-input').attributes('data-filled')).toBeUndefined()
+    })
+
+    it('清除按钮使用注入 locale 的文案', () => {
+        const wrapper = mount(CaomeiInput, {
+            props: { clearable: true, modelValue: 'abc' },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-input__clear').attributes('aria-label')).toBe('Clear')
+    })
+
+    it('注入 locale 变化时清除按钮文案响应式更新', async () => {
+        const locale = ref(caomeiLocales['zh-CN'])
+        const wrapper = mount(CaomeiInput, {
+            props: { clearable: true, modelValue: 'abc' },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => locale.value) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-input__clear').attributes('aria-label')).toBe('清除')
+
+        locale.value = caomeiLocales['en-US']
+        await nextTick()
+
+        expect(wrapper.get('.caomei-input__clear').attributes('aria-label')).toBe('Clear')
+    })
+
+    it('经 CaomeiConfigProvider 注入 locale，且显式 props 优先', () => {
+        const wrapper = mount(CaomeiConfigProvider, {
+            props: { locale: 'en-US' },
+            slots: { default: () => h(CaomeiInput, { clearable: true, modelValue: 'abc' }) },
+        })
+
+        expect(wrapper.get('.caomei-input__clear').attributes('aria-label')).toBe('Clear')
+
+        const overridden = mount(CaomeiConfigProvider, {
+            props: { locale: 'en-US' },
+            slots: {
+                default: () =>
+                    h(CaomeiInput, { clearable: true, modelValue: 'abc', clearLabel: '自定义' }),
+            },
+        })
+
+        expect(overridden.get('.caomei-input__clear').attributes('aria-label')).toBe('自定义')
     })
 })

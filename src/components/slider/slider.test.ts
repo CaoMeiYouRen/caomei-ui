@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick } from 'vue'
+import { computed, defineComponent, h, nextTick } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiSlider, type SliderValue } from './index'
 
 function getThumbs(wrapper: ReturnType<typeof mount>) {
@@ -191,5 +193,23 @@ describe('CaomeiSlider', () => {
         const wrapper = mount(CaomeiSlider, { props: { modelValue: 20 }, attrs: { class: 'custom' } })
 
         expect(wrapper.get('.caomei-slider').classes()).toContain('custom')
+    })
+
+    it('滑块可访问名使用注入 locale 的文案', () => {
+        const provide = { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) }
+
+        const single = mount(CaomeiSlider, {
+            props: { modelValue: 20 },
+            global: { provide },
+        })
+        expect(getThumbs(single)[0].attributes('aria-label')).toBe('Slider')
+
+        const range = mount(CaomeiSlider, {
+            props: { modelValue: [20, 80] },
+            global: { provide },
+        })
+        const thumbs = getThumbs(range)
+        expect(thumbs[0].attributes('aria-label')).toBe('Minimum')
+        expect(thumbs[1].attributes('aria-label')).toBe('Maximum')
     })
 })

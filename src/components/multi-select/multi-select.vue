@@ -13,8 +13,8 @@ import {
     ComboboxViewport,
 } from 'reka-ui'
 import { computed } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { MultiSelectOption, MultiSelectProps } from './types'
 
@@ -28,14 +28,16 @@ const props = withDefaults(defineProps<MultiSelectProps>(), {
     invalid: false,
     required: false,
     bodyLock: false,
-    openLabel: defaultLocaleMessages.multiSelect.open,
-    removeLabel: defaultLocaleMessages.multiSelect.remove,
-    emptyLabel: defaultLocaleMessages.multiSelect.empty,
 })
 
 const model = defineModel<string[]>({ default: () => [] })
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
+
+const locale = useLocale()
+const openLabel = computed(() => props.openLabel ?? locale.value.multiSelect.open)
+const removeLabel = computed(() => props.removeLabel ?? locale.value.multiSelect.remove)
+const emptyLabel = computed(() => props.emptyLabel ?? locale.value.multiSelect.empty)
 
 const rootClass = computed(() => [
     `caomei-multi-select--${props.size}`,

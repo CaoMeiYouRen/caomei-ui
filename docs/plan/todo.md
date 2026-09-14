@@ -30,8 +30,8 @@
 - 非目标：RTL；多语种翻译；移动端。
 - 最小验收标准：组件不再硬编码 `defaultLocaleMessages`；下游可注入自定义 locale 且运行时切换生效；中英文档与示例齐备。
 - 条目：
-  - [ ] locale provider 机制（`CaomeiConfigProvider` / `provideLocale` + `useLocale`；合并覆盖与回退）
-  - [ ] 组件接入批次一（表单类：Input / InputNumber / Password / MultiSelect / AutoComplete / Slider）
+  - [x] locale provider 机制（`CaomeiConfigProvider` / `provideLocale` + `useLocale`；合并覆盖与回退）
+  - [x] 组件接入批次一（表单类：Input / InputNumber / Password / MultiSelect / AutoComplete / Slider）
   - [ ] 组件接入批次二（反馈浮层类：Message / Toast / ConfirmDialog / Dialog / ProgressBar / ProgressSpinner）
   - [ ] 组件接入批次三（数据展示类：DataTable / Paginator / Tag / Stepper）
   - [ ] 文档与 momei 注入示例（中英）

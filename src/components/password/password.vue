@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Eye, EyeOff } from '@lucide/vue'
 import { computed, ref, useAttrs } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import { CaomeiInput } from '../input'
 import type { PasswordProps } from './types'
 
@@ -16,11 +16,8 @@ const props = withDefaults(defineProps<PasswordProps>(), {
     invalid: false,
     placeholder: '',
     clearable: false,
-    clearLabel: defaultLocaleMessages.input.clear,
     // 默认按「已有密码」语义提示浏览器自动填充；注册场景可显式传 new-password
     autocomplete: 'current-password',
-    showLabel: defaultLocaleMessages.password.show,
-    hideLabel: defaultLocaleMessages.password.hide,
 })
 
 const emit = defineEmits<{
@@ -43,8 +40,13 @@ const forwardedAttrs = computed(() => {
 const revealed = ref(false)
 const inputRef = ref<InstanceType<typeof CaomeiInput> | null>(null)
 
+const locale = useLocale()
+const clearLabel = computed(() => props.clearLabel ?? locale.value.input.clear)
+const showLabel = computed(() => props.showLabel ?? locale.value.password.show)
+const hideLabel = computed(() => props.hideLabel ?? locale.value.password.hide)
+
 const inputType = computed(() => (revealed.value ? 'text' : 'password'))
-const toggleLabel = computed(() => (revealed.value ? props.hideLabel : props.showLabel))
+const toggleLabel = computed(() => (revealed.value ? hideLabel.value : showLabel.value))
 
 function toggle(): void {
     revealed.value = !revealed.value

@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiPassword } from './index'
 
 describe('CaomeiPassword', () => {
@@ -151,5 +154,21 @@ describe('CaomeiPassword', () => {
         expect(document.activeElement).not.toBe(input)
 
         wrapper.unmount()
+    })
+
+    it('显隐与清除按钮使用注入 locale 的文案', async () => {
+        const wrapper = mount(CaomeiPassword, {
+            props: { modelValue: 'abc', clearable: true },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        const toggle = wrapper.get('.caomei-password__toggle')
+        expect(toggle.attributes('aria-label')).toBe('Show password')
+        expect(wrapper.get('.caomei-input__clear').attributes('aria-label')).toBe('Clear')
+
+        await toggle.trigger('click')
+        expect(toggle.attributes('aria-label')).toBe('Hide password')
     })
 })

@@ -14,8 +14,8 @@ import {
     type AcceptableValue,
 } from 'reka-ui'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type {
     AutoCompleteEmits,
@@ -34,12 +34,9 @@ const props = withDefaults(defineProps<AutoCompleteProps>(), {
     disabled: false,
     invalid: false,
     bodyLock: false,
-    emptyLabel: defaultLocaleMessages.autoComplete.empty,
     loading: false,
     debounce: 300,
     clearable: true,
-    clearLabel: defaultLocaleMessages.input.clear,
-    openLabel: defaultLocaleMessages.autoComplete.open,
     ignoreFilter: false,
 })
 
@@ -107,7 +104,11 @@ const showClear = computed(
     () => props.clearable && !props.multiple && singleValue.value !== '' && !props.disabled,
 )
 
-const loadingLabel = defaultLocaleMessages.progress.loading
+const locale = useLocale()
+const emptyLabel = computed(() => props.emptyLabel ?? locale.value.autoComplete.empty)
+const clearLabel = computed(() => props.clearLabel ?? locale.value.input.clear)
+const openLabel = computed(() => props.openLabel ?? locale.value.autoComplete.open)
+const loadingLabel = computed(() => locale.value.progress.loading)
 
 /** 高亮建议项是否与当前输入匹配；不匹配时回车应提交自由文本 */
 const highlightedMatchesQuery = computed(() => {

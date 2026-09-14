@@ -25,33 +25,33 @@ export interface PaginatorProps {
      */
     disabled?: boolean
     /**
-     * 根节点的可访问名，映射 `aria-label`
-     * @en Accessible name of the root, maps to `aria-label`
+     * 根节点的可访问名，映射 `aria-label`；默认取当前语言的分页文案
+     * @en Accessible name of the root, maps to `aria-label`; defaults to the current locale's pagination label
      */
     label?: string
     /**
-     * 首页按钮可访问名
-     * @en Accessible name of the first-page button
+     * 首页按钮可访问名；默认取当前语言的「首页」文案
+     * @en Accessible name of the first-page button; defaults to the current locale's "First page" text
      */
     firstLabel?: string
     /**
-     * 上一页按钮可访问名
-     * @en Accessible name of the previous-page button
+     * 上一页按钮可访问名；默认取当前语言的「上一页」文案
+     * @en Accessible name of the previous-page button; defaults to the current locale's "Previous page" text
      */
     previousLabel?: string
     /**
-     * 下一页按钮可访问名
-     * @en Accessible name of the next-page button
+     * 下一页按钮可访问名；默认取当前语言的「下一页」文案
+     * @en Accessible name of the next-page button; defaults to the current locale's "Next page" text
      */
     nextLabel?: string
     /**
-     * 末页按钮可访问名
-     * @en Accessible name of the last-page button
+     * 末页按钮可访问名；默认取当前语言的「末页」文案
+     * @en Accessible name of the last-page button; defaults to the current locale's "Last page" text
      */
     lastLabel?: string
     /**
-     * 页码可访问名模板，`{page}` 会替换为页码
-     * @en Accessible name template for a page number; `{page}` is replaced by the page number
+     * 页码可访问名模板，`{page}` 会替换为页码；默认取当前语言的「第 {page} 页」文案
+     * @en Accessible name template for a page number; `{page}` is replaced by the page number; defaults to the current locale's "Page {page}" text
      */
     pageLabel?: string
 }

@@ -52,11 +52,13 @@ async function save(): Promise<void> {
 |------|------|------|------|
 | `title` | `string` | — | 标题，同时作为无障碍名称（必填） |
 | `description` | `string` | — | 描述文本，用于补充说明操作后果 |
-| `confirmLabel` | `string` | 宿主 `confirmLabel`（默认「确定」） | 确认按钮文案 |
-| `cancelLabel` | `string` | 宿主 `cancelLabel`（默认「取消」） | 取消按钮文案 |
+| `confirmLabel` | `string` | 缺省依次回退宿主 `confirmLabel`、当前语言的内建文案 | 确认按钮文案 |
+| `cancelLabel` | `string` | 缺省依次回退宿主 `cancelLabel`、当前语言的内建文案 | 取消按钮文案 |
 | `tone` | `'neutral' \| 'danger'` | `'neutral'` | 语气，决定确认按钮强调色 |
 
 `tone="danger"` 用于删除等破坏性操作，将确认按钮切换为危险强调色。
+
+> 按钮文案的完整优先级为「单次请求 > 宿主 props > 注入 locale」，见[内建文案与语言](/guide/locale)。
 
 <demo
     vue="../examples/confirm-dialog/tone.vue"

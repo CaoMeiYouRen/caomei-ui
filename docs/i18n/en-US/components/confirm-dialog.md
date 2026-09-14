@@ -52,11 +52,13 @@ async function save(): Promise<void> {
 |------|------|------|------|
 | `title` | `string` | — | Title, also the accessible name (required) |
 | `description` | `string` | — | Description text, for explaining the consequences of the action |
-| `confirmLabel` | `string` | host `confirmLabel` (default "Confirm") | Confirm button text |
-| `cancelLabel` | `string` | host `cancelLabel` (default "Cancel") | Cancel button text |
+| `confirmLabel` | `string` | Falls back to the host's `confirmLabel`, then the current locale's built-in text | Confirm button text |
+| `cancelLabel` | `string` | Falls back to the host's `cancelLabel`, then the current locale's built-in text | Cancel button text |
 | `tone` | `'neutral' \| 'danger'` | `'neutral'` | Tone, determines the confirm button accent |
 
 `tone="danger"` is for destructive actions such as deletion and switches the confirm button to the danger accent.
+
+> The full precedence for the button text is "per-request > host props > injected locale"; see [Built-in text and locales](/en-US/guide/locale).
 
 <demo
     vue="../examples/confirm-dialog/tone.vue"

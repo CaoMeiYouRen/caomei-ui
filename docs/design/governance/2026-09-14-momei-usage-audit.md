@@ -18,6 +18,7 @@
 ## 2. 复核方法
 
 - **统计口径**：对 `.vue` 文件的组件**开标签**计数（非行数、非文件数）；排除 `node_modules` / `.nuxt` / `.output` / 测试目录等。踩坑记录：用 `[\s>/]` 作标签尾字符会漏掉「标签独占一行」的用法，须用 `\b` 或行尾断言；同时须以「`<` 前一字符非标识符」守卫，排除 TS 泛型（如 `ref<Tag[]>`、`$fetch<PaginatedData<Tag>>`）被误计为组件标签。
+- **发现缺口的方式**：直接对下游仓库做**标签级统计**（如 `rg -o "<Button\b|<Divider\b|..." -g '*.vue'`）快速得出使用面，比读组件清单更能发现既有组件集的遗漏——本次据此发现 `Divider` / `IconField` / `Panel` 等未覆盖项。
 - **用法抽取**：解析每个开标签的属性名与插槽名（quote-aware），聚合为 `/tmp/opencode/momei-pv-attrs.json`。
 - **caomei-ui API 来源**：`docs/.vitepress/data/component-meta.json`（由 `vue-component-meta` 生成），并回读 `src/components/<name>/types.ts` 与 `.vue` 核对语义。
 - **抽样实证**：对每个组件抽取 2–3 个 momei 实际用法文件逐行核对（见各缺口条目证据路径）。

@@ -107,6 +107,7 @@ test/                     # 单元与 E2E 测试
 - Vue scoped `<style>` 会把 `@keyframes` 名重写为 `name-<hash>`；消费层无法引用被重写的 keyframes，动画开关须由组件暴露 `animation-name` / `animation-duration` / `animation-iteration-count`。
 - Stylelint `selector-not-notation: complex` 要求 `:not(a, b)` 而非 `:not(a):not(b)`。
 - 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
+- 表格单元格内放 inline-flex 组件（如复选框）会因基线对齐产生约 1px 行高抖动，选中态指示器出现时更明显；用 `display: flex` 包裹容器承载可消除，单元格高度取 max 后与文本列一致。
 
 ## 8. 构建与产物
 

@@ -91,6 +91,7 @@ docs/
 - 生成物 `component-meta.json` 为 `.gitignore`，由 `docs:gen` 在 `docs:dev` / `docs:build` 前生成；直接运行 `vitepress dev docs` 需先执行 `pnpm docs:gen`。
 - 文档站采用自定义域名部署，`base` 保持默认 `/`（如需子路径部署，用 `VITEPRESS_BASE` 环境变量覆盖）。
 - VitePress `base.css` 在 `prefers-reduced-motion: reduce` 下有 `* { animation-duration: 1ms !important; ... }`，会把加载指示器压成静止；修复落在文档层 `docs/.vitepress/theme/motion.css`（同属性 `!important`），组件库保持低特异性、零 `!important`。
+- VitePress 默认把 `.vp-doc` 内的 `<table>` 设为 `display: block`（便于页内横向滚动），会脱离表格布局上下文、使组件表格的 `position: sticky` 冻结列失效；文档站需对组件表格还原 `display: table`（见 `docs/.vitepress/theme/caomei-demo.css`）。
 
 ## 10. 国际化（i18n）与翻译路径
 

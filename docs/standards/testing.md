@@ -92,6 +92,10 @@ chromium.launch({
 })
 ```
 
+- 校验主题 / 暗色的计算样式时：文档站（VitePress）存在过渡动画，直接读 `backgroundColor` 会落在过渡中间值；须先注入 `transition: none !important`。静态 HTML 无法复现组件视觉——SFC scoped 样式带 `[data-v-*]`，须在真实文档站验证。容器内 headless Chromium 需 `--single-process` 才不崩。
+- UI 验证证据（脚本、截图）落盘 `test-results/`（已 gitignore），不污染工作区；需长期留存的证据应放可提交位置或内联实测值。
+- Playwright 与 Reka `RadioGroup`（RovingFocus）的键盘选中：选中在 focus 后经 `setTimeout(0)` 结算，`page.keyboard.press()` 在同 tick 内 down+up 会与选中时序竞争、误报「方向键不选中」；须用真实按键节奏（`keyboard.down` → 延时 → `keyboard.up`）。
+
 ## 8. 组件测试写法
 
 - VTU 无法从 props 推断泛型 SFC 的类型参数 `T`（会退化为 `object`）；测试内需 `Component as unknown as DefineComponent<Props<Row>>` 具体化，模板使用不受影响。

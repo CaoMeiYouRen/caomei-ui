@@ -397,6 +397,7 @@ export default defineConfig({
                         { text: 'momei 使用复核台账', link: '/design/governance/2026-09-14-momei-usage-audit' },
                         { text: 'Phase 7 第一阶段评估', link: '/design/governance/2026-09-14-phase7-first-stage-evaluation' },
                         { text: 'Session Wisdom 蒸馏', link: '/design/governance/session-wisdom-distillation' },
+                        { text: 'Session 经验归档', link: '/design/governance/experience-archive' },
                     ],
                 },
             ],

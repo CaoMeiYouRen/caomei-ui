@@ -45,7 +45,7 @@
 
 每条获得结论之一：`migrate`（迁移并保留摘要+链接）/ `keep`（保留）/ `remove`（删除）/ `compress`（压缩为一行）。
 
-**条目格式（权威定义）**：活跃条目为顶层 bullet `- [YYYY-MM-DD] [type] 摘要`；迁移后的摘要行为 `- [YYYY-MM-DD] [type] 摘要 → docs/path`。缩进的子 bullet 视为上一条目的内容，不计入条目数。`scripts/governance/distill-wisdom.mjs` 据此计数，并额外兼容无 bullet 的 `[YYYY-MM-DD] ...` 摘要行。
+**条目格式（权威定义）**：活跃条目为顶层 bullet `- [YYYY-MM-DD] [type] 摘要`；迁移后的摘要行为 `- [YYYY-MM-DD] [type] 摘要 → docs/path`，统一汇集到 [Session 经验归档](./experience-archive.md)（永久、可提交），`wisdom.md` 仅保留指向归档的指针。缩进的子 bullet 视为上一条目的内容，不计入条目数。`scripts/governance/distill-wisdom.mjs` 据此计数，并额外兼容无 bullet 的 `[YYYY-MM-DD] ...` 摘要行。
 
 **计数口径**：活跃段（`## 当前条目 (Active)`）内**任意**顶层 bullet 均视为一条条目（不额外校验标签形态）；无 bullet 的 `[YYYY-MM-DD] ...` 摘要行同样计入；缩进子 bullet 与 `###` 小标题不计入。
 
@@ -53,7 +53,7 @@
 
 1. 读取 `.session/wisdom.md` 中「当前条目 (Active)」段的全部条目，逐条按 §3 判断结论。
 2. 执行 `migrate`（写入对应 `docs/` 目标并做外科式增量）、`remove`、`compress`、`keep`。
-3. 压缩 `wisdom.md`：迁移条目仅保留 `[YYYY-MM-DD] [type] 摘要 → docs/path`；过时条目直接删除，不保留「半过时」条目。
+3. 压缩 `wisdom.md`：迁移条目摘要行写入 [Session 经验归档](./experience-archive.md) 并从活跃段移除；过时条目直接删除，不保留「半过时」条目。
 4. 记录蒸馏日志（迁移 N 条、删除 M 条、更新文档、剩余活跃条目数）。
 
 ## 5. 脚本辅助

@@ -1,16 +1,20 @@
 # Composables
 
-Besides components, caomei-ui exports three composables for theming, toasts and confirm dialogs. They are auto-imported when the Nuxt module is used; other projects import them from the package entry.
+Besides components, caomei-ui exports a set of composables covering theming, toasts, confirm dialogs and built-in text. They are auto-imported when the Nuxt module is used; other projects import them from the package entry.
 
 | Composable | Responsibility | Prerequisite |
 | --- | --- | --- |
 | `useTheme` | Theme and dark mode management | None |
 | `useToast` | Service-style toasts | Call it inside a descendant of `<CaomeiToastProvider>` |
 | `useConfirm` | Service-style confirm dialogs | Call it inside a descendant of `<CaomeiConfirmDialog>` |
+| `useLocale` | Reads the injected built-in text | None (falls back to `zh-CN` when nothing is injected) |
+| `provideLocale` | Provides built-in text (non-component / custom-provider cases) | Must be called in `setup` |
 
 ```ts
-import { useConfirm, useTheme, useToast } from 'caomei-ui'
+import { provideLocale, useConfirm, useLocale, useTheme, useToast } from 'caomei-ui'
 ```
+
+For the full mechanism behind `useLocale` / `provideLocale` (merging, fallback, precedence and runtime switching), see [Built-in text and locales](/en-US/guide/locale).
 
 ## Placing the providers
 
@@ -27,6 +31,8 @@ import { useConfirm, useTheme, useToast } from 'caomei-ui'
 ```
 
 In non-Nuxt projects, replace `<NuxtPage />` with your root content.
+
+Injecting built-in text is a separate layer: place `<CaomeiConfigProvider>` (or call `provideLocale()`) once at the root, alongside the providers above; see [Built-in text and locales](/en-US/guide/locale).
 
 ## useTheme
 
@@ -114,6 +120,38 @@ async function remove(): Promise<void> {
 
 `content` accepts a string (shorthand for `{ title }`) or an options object (`title` / `description` / `confirmLabel` / `cancelLabel` / `tone`); see [ConfirmDialog](/en-US/components/confirm-dialog) for details.
 
+## useLocale and provideLocale
+
+`useLocale()` reads the injected built-in text and falls back to `defaultLocaleMessages` (`zh-CN`) when nothing is injected; `provideLocale(options)` covers non-component / custom-provider cases and must be called in `setup`. For everyday integration, prefer `<CaomeiConfigProvider>`.
+
+```vue
+<script setup lang="ts">
+import { useLocale } from 'caomei-ui'
+
+const locale = useLocale()
+</script>
+
+<template>
+  <span>{{ locale.pagination.label }}</span>
+</template>
+```
+
+```ts
+import { provideLocale } from 'caomei-ui'
+
+// call in setup; locale / messages accept a ref or getter, and runtime changes propagate to consuming components
+provideLocale({ locale: () => currentLocale.value })
+```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `useLocale()` | `() => ComputedRef<CaomeiLocaleMessages>` | Reads the injected text; falls back to the default locale when nothing is injected |
+| `provideLocale(options?)` | `(options?: ProvideLocaleOptions) => ComputedRef<CaomeiLocaleMessages>` | Provides text downwards |
+| `ProvideLocaleOptions.locale` | `MaybeRefOrGetter<CaomeiLocale \| undefined>` | Base locale, defaults to `'zh-CN'` |
+| `ProvideLocaleOptions.messages` | `MaybeRefOrGetter<CaomeiLocaleMessageOverrides \| undefined>` | Per-namespace partial overrides |
+
+For the full semantics (merging, fallback, precedence, runtime switching and the momei example), see [Built-in text and locales](/en-US/guide/locale).
+
 ## SSR and state isolation
 
-Service-style composables keep their state on the provider instance rather than a module-level singleton; calling them at the same level as their provider throws a clear error. See [Component design §7](/design/components) (Chinese) for the SSR isolation rationale.
+Service-style composables keep their state on the provider instance rather than a module-level singleton; calling them at the same level as their provider throws a clear error. `provideLocale` likewise keeps its context on the provider instance, so it does not leak across requests under SSR. See [Component design §7](/design/components) (Chinese) for the SSR isolation rationale.

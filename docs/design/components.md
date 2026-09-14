@@ -9,6 +9,7 @@
 | Primitive 层 | Reka UI 原始件，不直接对外 | Select / Dialog 等组件内部使用的 primitive |
 | 封装 / 自建层 | Reka UI 封装，或原生元素 + 样式 / 变体 | 封装：Select、Dialog、Switch、Toast、Checkbox；自建：Button、Input、Card、Tag / Badge |
 | 复合层 | 多 primitive 组合 | DataTable、ConfirmDialog、MultiSelect |
+| Provider 层 | renderless 上下文组件（仅默认插槽，无 DOM） | ConfigProvider（内建文案注入，消费 `useLocale` / `provideLocale`） |
 | 服务层 | composables | useToast、useConfirm、useTheme |
 
 ### 1.1 实现方式决策原则
@@ -104,8 +105,10 @@ Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选�
 | `useToast` | 轻提示，基于 Reka UI Toast |
 | `useConfirm` | 确认对话框，基于 AlertDialog |
 | `useTheme` | 主题/暗色模式管理 |
+| `useLocale` | 读取当前注入的组件内建文案 |
+| `provideLocale` | 向下提供组件内建文案（非组件 / 自定义 Provider 场景） |
 
-> 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。
+> 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。`provideLocale` 为 Provider 入口（对应 §1 Provider 层），列入本表便于查找；其合并、回退与运行时切换见[内建文案与语言](../guide/locale.md)。
 
 ## 8. 组件开发顺序
 

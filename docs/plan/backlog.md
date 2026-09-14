@@ -96,7 +96,7 @@
 | Nuxt 模块真实集成 | 用户决策延后（Phase 2 范围外）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | 中 |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
-| 测试隔离与偶发失败 | `dropdown-menu.test.ts` 在全量并发下偶发「点击条目触发 select」未回调（隔离运行通过）；建议排查共享 DOM / 计时依赖并消除 flaky | 中 |
+| 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
 
 ### 1.7 下游协同候选
 
@@ -154,7 +154,7 @@
 |------|------|------|------|
 | Button 形态增强 | M1 复核 | 补语义档（`severity` / `tone`）、`text` / `outlined` 形态、`rounded`、`badge` 角标、`icon` 位置；图标改 `#icon` 插槽。momei 用量：`severity`×185、`text`×163、`rounded`×102、`outlined`×32 | 核心路径（优先） |
 | DataTable + Column 能力增强 | M1 复核 | 启用排序 / Lazy 分页 / 行选择 / `data-key` / loading；列补 `#body` / `#header`、`body-class` / `header-class` / `header-style`、`frozen` / `align-frozen`、点号嵌套字段；列声明模型差异需迁移方案。momei 用量：DataTable 22 + Column 153 | 核心路径（优先） |
-| Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator` | 缺口组件 |
+| Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator`（**已实现：`CaomeiDivider`，支持水平 / 垂直 / 内容 / 线型**） | 缺口组件 |
 | InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件 | 缺口组件 |
 | AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载 | 缺口组件 |
 | ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局 | 缺口组件 |

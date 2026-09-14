@@ -54,7 +54,7 @@
     - [x] DataTable Lazy 分页与分页集成
     - [x] DataTable 冻结列
   - 缺口组件：
-    - [ ] Divider
+    - [x] Divider
     - [ ] InputGroup / FloatLabel
     - [ ] AutoComplete（Reka Combobox）
     - [ ] ButtonGroup

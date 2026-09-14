@@ -68,6 +68,7 @@
 | 组件 | 实现方式 | Reka UI 对应 | Reka 成熟度 | 说明 |
 |------|----------|--------------|:-:|------|
 | Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低 |
+| Divider | 自建（布局 + variants） | 无（Reka `Separator` 仅单元素语义，无内容插槽与两段线结构） | — | 水平 / 垂直、带内容与线型（**已实现**） |
 | RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件 |
 | ProgressBar | 封装 | Progress | 稳定 | 确定进度，与 ProgressSpinner 同源 |
 | Popover | 封装 | Popover | 稳定 | 通用浮层 |
@@ -82,7 +83,7 @@
 | SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用 |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator、PinInput、TagsInput、Editable、Tree（Tree 为 Alpha）。
+Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、TagsInput、Editable、Tree（Tree 为 Alpha）。
 
 ## 6. 不自研
 

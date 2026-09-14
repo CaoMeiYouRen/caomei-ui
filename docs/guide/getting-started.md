@@ -8,6 +8,8 @@ pnpm add caomei-ui
 
 > 项目尚未发布首个版本（Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档，规划见 [路线图](../plan/roadmap.md)）。以下为接入目标形态。
 
+首版发布前，下游项目可通过[本地联调](./local-linking.md)消费本地构建产物。
+
 ## 引入样式
 
 ```ts

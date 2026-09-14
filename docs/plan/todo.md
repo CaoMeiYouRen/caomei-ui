@@ -18,7 +18,7 @@
 - 非目标：momei 实际页面替换；其他下游接入。
 - 最小验收标准：本地 link 冒烟通过（后续发布产物可安装）；`caomei-ui/nuxt` 在最小 Nuxt 4 应用中自动导入组件、注入样式、主题与 SSR 无报错。
 - 条目：
-  - [ ] 本地 link 调试通道（先行：`link:` / `file:` 指引 + 构建产物联调）
+  - [x] 本地 link 调试通道（先行：`link:` / `file:` 指引 + 构建产物联调）
   - [ ] 首版发布链路协调（归属 [Phase 5 第二阶段](./roadmap.md)，待 npm 凭据；作为 M1 并行依赖，不在本阶段重复承载）
   - [ ] `caomei-ui/nuxt` 真实集成（`@nuxt/kit` 自动导入 + 样式 + 主题 + SSR）
   - [ ] 最小 Nuxt 消费冒烟（preset / 暗色 / SSR hydrate）

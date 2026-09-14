@@ -200,6 +200,7 @@ export default defineConfig({
                             text: 'Guide',
                             items: [
                                 { text: 'Getting Started', link: '/en-US/guide/getting-started' },
+                                { text: 'Local Linking', link: '/en-US/guide/local-linking' },
                                 { text: 'Development', link: '/en-US/guide/development' },
                                 { text: 'Release', link: '/en-US/guide/release' },
                                 { text: 'AI Development', link: '/en-US/guide/ai-development' },
@@ -332,6 +333,7 @@ export default defineConfig({
                     text: '指南',
                     items: [
                         { text: '快速上手', link: '/guide/getting-started' },
+                        { text: '本地联调', link: '/guide/local-linking' },
                         { text: '开发指南', link: '/guide/development' },
                         { text: '发布指南', link: '/guide/release' },
                         { text: 'AI 协同开发', link: '/guide/ai-development' },

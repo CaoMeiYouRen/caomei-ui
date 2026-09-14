@@ -70,8 +70,13 @@
 - 非目标：变更依赖选型。
 - 最小验收标准：声明文件覆盖 `reka-ui`（MIT）/ `@tanstack/vue-table`（MIT）/ `@lucide/vue`（ISC）/ `vue`（peer，MIT）；随分发保留并进入发布前检查。
 - 条目：
-  - [ ] 第三方许可声明文件（`THIRD-PARTY-LICENSES` / `NOTICE`）
-  - [ ] 纳入发布产物（`files` / semantic-release assets）与发布前检查
+  - [x] 第三方许可声明文件（`THIRD-PARTY-LICENSES` / `NOTICE`）
+  - [x] 纳入发布产物（`files` / semantic-release assets）与发布前检查
+- 交付物：
+  - 声明文件：仓库根 `THIRD-PARTY-LICENSES`（覆盖 `reka-ui` MIT / `@tanstack/vue-table` MIT / `@lucide/vue` ISC / `vue` peer MIT，含许可证全文与 © 声明）。
+  - 校验脚本：`scripts/governance/check-licenses.mjs`（`pnpm check:licenses`，已纳入 `pnpm governance:check` 与 `pnpm verify`）+ 单测 `check-licenses.test.mjs`。
+  - 发布集成：`package.json` 的 `files` 加入声明文件，`prepublishOnly` 在发布前执行同一校验。
+  - 说明：三个运行时依赖均经 tsdown `deps.neverBundle` / 依赖外置，构建产物不内联其源码；声明随包分发以覆盖聚合分发场景。
 
 ## 阶段验收通则
 

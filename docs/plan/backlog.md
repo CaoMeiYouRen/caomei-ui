@@ -175,8 +175,8 @@
 
 | 条目 | 说明 | 原优先级 |
 |------|------|:-:|
-| 第三方许可声明 | 核心依赖许可：`reka-ui`（MIT）、`@tanstack/vue-table`（MIT）、`@lucide/vue`（ISC）、`vue`（peer，MIT）。现状仅项目自身 MIT `LICENSE`，无第三方声明。注意 `@lucide/vue` 未列入 `tsdown.config.ts` 的 `deps.neverBundle`，会被打包进 `dist`，其 ISC 许可随分发需保留声明 | 中 |
-| 许可声明承载形式 | 落地位置选择：`THIRD-PARTY-LICENSES` / `NOTICE` 文件、`package.json` 字段、`dist` 内附带或文档站说明；并纳入发布前检查（`files` / semantic-release assets） | 中 |
+| 第三方许可声明 | 核心依赖许可：`reka-ui`（MIT）、`@tanstack/vue-table`（MIT）、`@lucide/vue`（ISC）、`vue`（peer，MIT）。现状仅项目自身 MIT `LICENSE`，无第三方声明。（**已实现**：仓库根 `THIRD-PARTY-LICENSES` 含许可证全文；校正：三个运行时依赖均被 tsdown 外置为 `import`（含 `@lucide/vue`），构建产物不内联其源码） | 中 |
+| 许可声明承载形式 | 落地位置选择：`THIRD-PARTY-LICENSES` / `NOTICE` 文件、`package.json` 字段、`dist` 内附带或文档站说明；并纳入发布前检查（`files` / semantic-release assets）。（**已实现**：`files` 随包分发 + `prepublishOnly` + `pnpm check:licenses` 纳入 `governance:check`） | 中 |
 
 ## 3. 维护约定
 

@@ -50,13 +50,15 @@
     "check:standards-redundant": "node scripts/governance/check-standards-redundant.mjs",
     "check:standards-redundant:strict": "node scripts/governance/check-standards-redundant.mjs --strict",
     "check:design": "node scripts/governance/check-design.mjs",
+    "check:licenses": "node scripts/governance/check-licenses.mjs",
     "distill:wisdom": "node scripts/governance/distill-wisdom.mjs",
     "ai:check": "node scripts/ai/check-governance.mjs",
-    "governance:check": "pnpm check:standards-redundant:strict && pnpm check:design && pnpm ai:check && pnpm docs:check",
+    "governance:check": "pnpm check:standards-redundant:strict && pnpm check:design && pnpm check:licenses && pnpm ai:check && pnpm docs:check",
     "verify": "pnpm lint:check && pnpm lint:css:check && pnpm lint:md:check && pnpm typecheck && pnpm typecheck:docs && pnpm test && pnpm build && pnpm docs:build && pnpm governance:check",
     "setup:ai": "node scripts/setup/setup-ai.mjs",
     "commit": "cz",
     "prepare": "husky",
+    "prepublishOnly": "node scripts/governance/check-licenses.mjs",
     "release": "semantic-release"
   },
   "dependencies": {
@@ -117,7 +119,8 @@
   ],
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "THIRD-PARTY-LICENSES"
   ],
   "engines": {
     "node": ">=20"

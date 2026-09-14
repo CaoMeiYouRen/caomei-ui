@@ -34,6 +34,13 @@
 - 公共 API 变更确认向后兼容或已规划 major。
 - 文档站构建通过。
 
+### 第三方许可合规
+
+- 运行时依赖（`reka-ui` / `@tanstack/vue-table` / `@lucide/vue`）与 peer 依赖 `vue` 的许可证统一声明在仓库根 `THIRD-PARTY-LICENSES`，并随 npm 包分发（已加入 `package.json` 的 `files`）。
+- 新增或升级运行时依赖后，运行 `pnpm check:licenses` 校验声明覆盖与版本一致；该检查已纳入 `pnpm verify`（`governance:check`）。
+- 同步更新声明：新增依赖时补充 `## <name>@<version>` 条目，升级版本时同步条目标题与许可证全文（可从 `node_modules/<pkg>/LICENSE` 复制）。
+- `prepublishOnly` 会在发布前自动执行同一校验，声明缺失或不一致将中止发布。
+
 ## 下游兼容性回归（延迟启用）
 
 当一个组件库改动可能影响下游项目时，应同步跑一遍已接入下游项目的 CI，验证是否存在兼容性问题。

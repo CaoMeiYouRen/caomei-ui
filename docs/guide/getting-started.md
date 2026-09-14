@@ -43,7 +43,7 @@ export default defineNuxtConfig({
 })
 ```
 
-组件与 composables（`useTheme` / `useToast` / `useConfirm`）自动导入，样式默认自动注入；选项与暗色策略见 [架构设计 §5](/design/architecture)。
+组件与 composables（`useTheme` / `useToast` / `useConfirm` / `useLocale` / `provideLocale`）自动导入，样式默认自动注入；选项与暗色策略见 [架构设计 §5](/design/architecture)。
 
 ## 非 Nuxt 项目按需引入
 

@@ -134,7 +134,7 @@ export default defineNuxtConfig({
 | `injectStyles` | `boolean` | `true` | 是否注入 `caomei-ui/styles.css` |
 | `theme` | `Record<string, string>` | `{}` | 覆盖主题 token：语义别名（`primary` / `radius` 等）或 `--caomei-*` 变量名 |
 
-`theme` 会生成 `:root { --caomei-*: … }` 作为样式注入；出现未知别名时在构建期报错。自动导入的 composables 为 `useTheme` / `useToast` / `useConfirm`。
+`theme` 会生成 `:root { --caomei-*: … }` 作为样式注入；出现未知别名时在构建期报错。自动导入的 composables 为 `useTheme` / `useToast` / `useConfirm` / `useLocale` / `provideLocale`。
 
 模块要求 Nuxt 4（`compatibility.nuxt: '>=4.0.0'`，`@nuxt/kit` 为可选 peer `^4.0.0`）。`theme` 的值视为构建期可信配置，会原样写入生成的 CSS。
 

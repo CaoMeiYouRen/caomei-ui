@@ -36,7 +36,7 @@ pnpm install
 ```
 src/
 ├─ components/    # Components (kebab-case directory + kebab-case.vue)
-├─ composables/   # useToast / useConfirm / useTheme
+├─ composables/   # useToast / useConfirm / useTheme / useLocale / provideLocale
 ├─ locale/        # Component built-in text
 ├─ styles/        # tokens and base styles
 ├─ icons/         # Icon wrappers

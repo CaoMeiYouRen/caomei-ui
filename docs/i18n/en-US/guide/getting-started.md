@@ -43,7 +43,7 @@ export default defineNuxtConfig({
 })
 ```
 
-Components and composables (`useTheme` / `useToast` / `useConfirm`) are auto-imported, and styles are injected by default; see [Architecture §5](/design/architecture) (Chinese) for options and dark mode.
+Components and composables (`useTheme` / `useToast` / `useConfirm` / `useLocale` / `provideLocale`) are auto-imported, and styles are injected by default; see [Architecture §5](/design/architecture) (Chinese) for options and dark mode.
 
 ## Non-Nuxt projects
 

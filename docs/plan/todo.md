@@ -34,7 +34,7 @@
   - [x] 组件接入批次一（表单类：Input / InputNumber / Password / MultiSelect / AutoComplete / Slider）
   - [x] 组件接入批次二（反馈浮层类：Message / Toast / ConfirmDialog / Dialog / ProgressBar / ProgressSpinner）
   - [x] 组件接入批次三（数据展示类：DataTable / Paginator / Tag / Stepper）
-  - [ ] 文档与 momei 注入示例（中英）
+  - [x] 文档与 momei 注入示例（中英）
 
 ### 主线 M3：P0 高频增强（迁移硬缺口）
 

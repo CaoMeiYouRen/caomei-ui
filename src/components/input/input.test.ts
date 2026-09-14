@@ -185,4 +185,16 @@ describe('CaomeiInput', () => {
         expect(fallback.get('.caomei-input__clear').attributes('aria-label')).toBe('清除')
         expect(custom.get('.caomei-input__clear').attributes('aria-label')).toBe('清空输入')
     })
+
+    it('有值时输出 data-filled，清空后移除', async () => {
+        const wrapper = mount(CaomeiInput)
+
+        expect(wrapper.get('.caomei-input').attributes('data-filled')).toBeUndefined()
+
+        await wrapper.setProps({ modelValue: 'abc' })
+        expect(wrapper.get('.caomei-input').attributes('data-filled')).toBe('true')
+
+        await wrapper.setProps({ modelValue: '' })
+        expect(wrapper.get('.caomei-input').attributes('data-filled')).toBeUndefined()
+    })
 })

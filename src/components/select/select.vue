@@ -33,6 +33,11 @@ const selectedLabel = computed(
     () => props.options.find((option) => option.value === model.value)?.label,
 )
 
+/** 有选中值（用于 data-filled；不依赖选项 label，空 label 也视为有值） */
+const hasValue = computed(
+    () => model.value !== undefined && model.value !== null && model.value !== '',
+)
+
 const rootClass = computed(() => [
     `caomei-select--${props.size}`,
     {
@@ -53,6 +58,8 @@ const rootClass = computed(() => [
             :id="id"
             class="caomei-select"
             :class="rootClass"
+            :data-filled="hasValue ? 'true' : undefined"
+            :data-has-placeholder="placeholder ? 'true' : undefined"
             :aria-invalid="invalid || undefined"
             :aria-label="label"
         >

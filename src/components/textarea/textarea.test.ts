@@ -135,4 +135,16 @@ describe('CaomeiTextarea', () => {
 
         wrapper.unmount()
     })
+
+    it('有值时输出 data-filled，清空后移除', async () => {
+        const wrapper = mount(CaomeiTextarea)
+
+        expect(wrapper.get('.caomei-textarea').attributes('data-filled')).toBeUndefined()
+
+        await wrapper.setProps({ modelValue: '多行内容' })
+        expect(wrapper.get('.caomei-textarea').attributes('data-filled')).toBe('true')
+
+        await wrapper.setProps({ modelValue: '' })
+        expect(wrapper.get('.caomei-textarea').attributes('data-filled')).toBeUndefined()
+    })
 })

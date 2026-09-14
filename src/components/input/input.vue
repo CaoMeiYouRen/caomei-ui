@@ -77,6 +77,7 @@ defineExpose({ focus, blur, inputRef })
         v-bind="rootAttrs"
         class="caomei-input"
         :class="rootClass"
+        :data-filled="model ? 'true' : undefined"
     >
         <span v-if="$slots.prefix" class="caomei-input__prefix">
             <slot name="prefix" />

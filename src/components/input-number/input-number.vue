@@ -174,6 +174,7 @@ defineExpose({ focus, blur, inputRef })
         :name="name"
         class="caomei-input-number"
         :class="rootClass"
+        :data-filled="model !== null && model !== undefined ? 'true' : undefined"
         @update:model-value="onModelUpdate"
     >
         <NumberFieldDecrement

@@ -155,7 +155,7 @@
 | Button 形态增强 | M1 复核 | 补语义档（`severity` / `tone`）、`text` / `outlined` 形态、`rounded`、`badge` 角标、`icon` 位置；图标改 `#icon` 插槽。momei 用量：`severity`×185、`text`×163、`rounded`×102、`outlined`×32 | 核心路径（优先） |
 | DataTable + Column 能力增强 | M1 复核 | 启用排序 / Lazy 分页 / 行选择 / `data-key` / loading；列补 `#body` / `#header`、`body-class` / `header-class` / `header-style`、`frozen` / `align-frozen`、点号嵌套字段；列声明模型差异需迁移方案。momei 用量：DataTable 22 + Column 153 | 核心路径（优先） |
 | Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator`（**已实现：`CaomeiDivider`，支持水平 / 垂直 / 内容 / 线型**） | 缺口组件 |
-| InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件 | 缺口组件 |
+| InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件（**已实现：`CaomeiInputGroup` 水平 / 垂直拼接；`CaomeiFloatLabel` 提供 `over` / `in` 两态**） | 缺口组件 |
 | AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载 | 缺口组件 |
 | ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局 | 缺口组件 |
 | DataView | M1 复核（1 处） | grid / list 布局 + 插槽；用量最低，可最后评估 | 缺口组件 |

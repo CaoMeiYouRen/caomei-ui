@@ -315,4 +315,16 @@ describe('CaomeiMultiSelect', () => {
 
         wrapper.unmount()
     })
+
+    it('有选中项时输出 data-filled，清空后移除', async () => {
+        const wrapper = mount(CaomeiMultiSelect, { props: { options, modelValue: [] } })
+
+        expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBeUndefined()
+
+        await wrapper.setProps({ modelValue: ['apple'] })
+        expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBe('true')
+
+        await wrapper.setProps({ modelValue: [] })
+        expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBeUndefined()
+    })
 })

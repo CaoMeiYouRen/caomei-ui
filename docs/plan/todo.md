@@ -55,7 +55,7 @@
     - [x] DataTable 冻结列
   - 缺口组件：
     - [x] Divider
-    - [ ] InputGroup / FloatLabel
+    - [x] InputGroup / FloatLabel
     - [ ] AutoComplete（Reka Combobox）
     - [ ] ButtonGroup
     - [ ] DataView

@@ -152,4 +152,24 @@ describe('CaomeiSelect', () => {
 
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['apple'])
     })
+
+    it('有选中值时输出 data-filled，清空后移除', async () => {
+        const wrapper = mount(CaomeiSelect, { props: { options, modelValue: '' } })
+
+        expect(wrapper.get('.caomei-select').attributes('data-filled')).toBeUndefined()
+
+        await wrapper.setProps({ modelValue: 'apple' })
+        expect(wrapper.get('.caomei-select').attributes('data-filled')).toBe('true')
+
+        await wrapper.setProps({ modelValue: '' })
+        expect(wrapper.get('.caomei-select').attributes('data-filled')).toBeUndefined()
+    })
+
+    it('有 placeholder 时输出 data-has-placeholder，未设置时不输出', () => {
+        const withPlaceholder = mount(CaomeiSelect, { props: { options, placeholder: '请选择' } })
+        expect(withPlaceholder.get('.caomei-select').attributes('data-has-placeholder')).toBe('true')
+
+        const withoutPlaceholder = mount(CaomeiSelect, { props: { options } })
+        expect(withoutPlaceholder.get('.caomei-select').attributes('data-has-placeholder')).toBeUndefined()
+    })
 })

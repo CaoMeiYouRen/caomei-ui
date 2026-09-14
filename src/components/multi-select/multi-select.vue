@@ -88,6 +88,7 @@ function onAnchorClick(event: MouseEvent): void {
             v-bind="rootAttrs"
             class="caomei-multi-select"
             :class="rootClass"
+            :data-filled="model.length > 0 ? 'true' : undefined"
             @click="onAnchorClick"
         >
             <span

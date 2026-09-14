@@ -242,4 +242,16 @@ describe('CaomeiInputNumber', () => {
 
         wrapper.unmount()
     })
+
+    it('有数值时输出 data-filled，清空后移除（含 0）', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: null } })
+
+        expect(wrapper.get('.caomei-input-number').attributes('data-filled')).toBeUndefined()
+
+        await wrapper.setProps({ modelValue: 0 })
+        expect(wrapper.get('.caomei-input-number').attributes('data-filled')).toBe('true')
+
+        await wrapper.setProps({ modelValue: null })
+        expect(wrapper.get('.caomei-input-number').attributes('data-filled')).toBeUndefined()
+    })
 })

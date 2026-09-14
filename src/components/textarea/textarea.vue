@@ -55,6 +55,7 @@ defineExpose({ focus, blur, textareaRef })
         v-bind="rootAttrs"
         class="caomei-textarea"
         :class="rootClass"
+        :data-filled="model ? 'true' : undefined"
     >
         <textarea
             :id="id"

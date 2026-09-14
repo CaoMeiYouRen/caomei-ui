@@ -79,7 +79,7 @@
 | Drawer | 封装（优先） | Drawer | Alpha | 亦可由 Dialog 派生；Alpha 需锁版本 |
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha |
 | ColorPicker | 封装（组合 ColorArea / ColorField / ColorSlider / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive |
-| InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；复合布局 + variants |
+| InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
 | SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用 |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 

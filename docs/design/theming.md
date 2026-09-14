@@ -91,13 +91,15 @@
 - `--caomei-input-number-max-width`（默认 `12rem`）
 - `--caomei-select-max-width`（默认 `20rem`）
 
-需要撑满所在列时，将该 token 覆盖为 `none`，或对实例覆盖 `max-width`：
+需要撑满所在列时，将该 token 覆盖为 `none`（作用于字段外层 `.caomei-select__field` 或其祖先）：
 
 ```css
-.caomei-select {
+.caomei-select__field {
   --caomei-select-max-width: none;
 }
 ```
+
+> 选择器的宽度上限由字段外层 `.caomei-select__field` 承载（其内为触发器与清除按钮两个兄弟节点），该 token 需覆盖在字段外层或其祖先上，直接写在 `.caomei-select`（触发器）上不会生效；字段外层的 scoped 规则直接声明了 `max-width`，用普通类覆盖 `max-width` 属性会因特异性不足而失效，请改用 token。
 
 文本类控件（`Input` / `Textarea`）默认不设上限，如需限制宽度，在使用层通过容器或 `max-width` 控制即可。
 

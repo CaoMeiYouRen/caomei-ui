@@ -101,7 +101,15 @@
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
 
-### 1.7 下游协同候选
+### 1.7 服务层候选（composables）
+
+| 候选 | 来源 | 说明 | 优先级 |
+|------|------|------|--------|
+| 通用对话框服务 `useDialog` | 用户需求（2026-09-14） | **评估结论：暂不实现（2026-09-14）**。5 个下游仓库（momei / caomei-auth / afdian-linker / rss-impact-next / dependfix）检索 `useDialog`、`DynamicDialog`、`DialogService` 零命中；momei 的 37 处 Dialog 全为声明式（`v-model:visible`，必要时 `defineExpose({ open, close })`），PrimeVue `DynamicDialog` 亦未使用；确认场景由 `useConfirm`、轻提示由 `useToast`、自定义内容由 `CaomeiDialog` 覆盖。**触发条件**：出现非组件上下文（store / 路由守卫 / 请求拦截器 / 工具函数）的命令式弹窗用例，或迁移试点确认声明式不可覆盖，或第二个下游提出同一诉求。若实现，范围收敛为基于 `CaomeiDialog` 的 `useDialog()` + 宿主组件，先支持「标题 + 文本 + 确认 / 取消」与「自定义组件 + props」。 | 低 |
+
+> `docs/design/components.md` 曾将该服务列为服务层目标，2026-09-14 已按实现移除（截至移除时无导出、亦无规划登记）。
+
+### 1.8 下游协同候选
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|

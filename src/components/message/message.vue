@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from '@lucide/vue'
 import { computed } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import type { MessageProps } from './types'
 
 defineOptions({ name: 'CaomeiMessage' })
@@ -14,13 +14,15 @@ const props = withDefaults(defineProps<MessageProps>(), {
     description: '',
     icon: true,
     closable: false,
-    closeLabel: defaultLocaleMessages.message.close,
     role: 'status',
 })
 
 const emit = defineEmits<{
     close: []
 }>()
+
+const locale = useLocale()
+const closeLabel = computed(() => props.closeLabel ?? locale.value.message.close)
 
 defineSlots<{
     default?: () => unknown

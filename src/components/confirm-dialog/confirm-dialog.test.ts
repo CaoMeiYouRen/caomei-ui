@@ -1,7 +1,9 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
+import { computed, defineComponent, h, nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
 import { useConfirm, type ConfirmApi } from '../../composables/use-confirm'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { ConfirmDialogProps } from './types'
 import { CaomeiConfirmDialog } from './index'
 
@@ -162,6 +164,46 @@ describe('CaomeiConfirmDialog', () => {
 
         expect(getCancelButton().textContent?.trim()).toBe('算了')
         expect(getConfirmButton().textContent?.trim()).toBe('好的')
+    })
+
+    it('注入 locale 后默认按钮文案本地化', async () => {
+        const wrapper = mount(createHost(), {
+            attachTo: document.body,
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        mounted.push(wrapper)
+        await flushPromises()
+
+        api?.confirm('继续操作？')
+        await flushPromises()
+
+        expect(getCancelButton().textContent?.trim()).toBe('Cancel')
+        expect(getConfirmButton().textContent?.trim()).toBe('Confirm')
+    })
+
+    it('注入 locale 变化时按钮文案响应式更新', async () => {
+        const locale = ref(caomeiLocales['zh-CN'])
+        const wrapper = mount(createHost(), {
+            attachTo: document.body,
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => locale.value) },
+            },
+        })
+        mounted.push(wrapper)
+        await flushPromises()
+
+        const pending = api?.confirm('继续操作？') as Promise<boolean>
+        await flushPromises()
+        expect(getConfirmButton().textContent?.trim()).toBe('确定')
+
+        locale.value = caomeiLocales['en-US']
+        await nextTick()
+        expect(getConfirmButton().textContent?.trim()).toBe('Confirm')
+
+        api?.cancel()
+        await expect(pending).resolves.toBe(false)
     })
 
     it('danger 语气为确认按钮附加危险强调类', async () => {

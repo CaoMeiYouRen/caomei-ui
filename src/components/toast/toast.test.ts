@@ -1,7 +1,9 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick, ref } from 'vue'
+import { computed, defineComponent, h, nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useToast, type ToastApi } from '../../composables/use-toast'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { ToastProviderProps } from './types'
 import { CaomeiToastProvider } from './index'
 
@@ -109,6 +111,39 @@ describe('CaomeiToastProvider', () => {
 
         expect(document.querySelector('.caomei-toast-viewport')?.getAttribute('data-test')).toBe(
             'viewport',
+        )
+    })
+
+    it('视口与关闭按钮默认可访问名取内建文案', async () => {
+        await mountProvider()
+
+        api?.show('可关闭')
+        await flushPromises()
+
+        expect(document.querySelector('[role="region"]')?.getAttribute('aria-label')).toBe('通知 (F8)')
+        expect(document.querySelector('.caomei-toast__close')?.getAttribute('aria-label')).toBe(
+            '关闭',
+        )
+    })
+
+    it('注入 locale 后视口与关闭按钮使用对应语言文案', async () => {
+        const wrapper = mount(createHost(), {
+            attachTo: document.body,
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        mounted.push(wrapper)
+        await flushPromises()
+
+        api?.show('本地化提示')
+        await flushPromises()
+
+        expect(document.querySelector('[role="region"]')?.getAttribute('aria-label')).toBe(
+            'Notifications (F8)',
+        )
+        expect(document.querySelector('.caomei-toast__close')?.getAttribute('aria-label')).toBe(
+            'Close',
         )
     })
 

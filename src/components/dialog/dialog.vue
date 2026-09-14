@@ -11,8 +11,8 @@ import {
     DialogTrigger,
 } from 'reka-ui'
 import { computed } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import type { DialogProps } from './types'
 
 defineOptions({ name: 'CaomeiDialog', inheritAttrs: false })
@@ -21,7 +21,6 @@ const props = withDefaults(defineProps<DialogProps>(), {
     description: '',
     size: 'md',
     closable: true,
-    closeLabel: defaultLocaleMessages.dialog.close,
     closeOnOverlay: true,
     closeOnEsc: true,
     modal: true,
@@ -34,6 +33,9 @@ defineSlots<{
     default?: () => unknown
     footer?: () => unknown
 }>()
+
+const locale = useLocale()
+const closeLabel = computed(() => props.closeLabel ?? locale.value.dialog.close)
 
 const contentClass = computed(() => `caomei-dialog__content--${props.size}`)
 

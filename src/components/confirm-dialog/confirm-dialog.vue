@@ -15,25 +15,28 @@ import {
     provideConfirmStore,
     type ConfirmRequest,
 } from '../../composables/use-confirm'
-import { defaultLocaleMessages } from '../../locale'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiButton } from '../button'
 import type { ConfirmDialogProps } from './types'
 
 defineOptions({ name: 'CaomeiConfirmDialog', inheritAttrs: false })
 
-const props = withDefaults(defineProps<ConfirmDialogProps>(), {
-    confirmLabel: defaultLocaleMessages.confirm.confirm,
-    cancelLabel: defaultLocaleMessages.confirm.cancel,
-})
+const props = defineProps<ConfirmDialogProps>()
 
 const store = createConfirmStore()
 provideConfirmStore(store)
 
+const locale = useLocale()
+
 const open = computed(() => store.request.value !== null)
 const request = computed<ConfirmRequest | null>(() => store.request.value)
 
-const confirmLabel = computed(() => request.value?.confirmLabel ?? props.confirmLabel)
-const cancelLabel = computed(() => request.value?.cancelLabel ?? props.cancelLabel)
+const confirmLabel = computed(
+    () => request.value?.confirmLabel ?? props.confirmLabel ?? locale.value.confirm.confirm,
+)
+const cancelLabel = computed(
+    () => request.value?.cancelLabel ?? props.cancelLabel ?? locale.value.confirm.cancel,
+)
 const confirmClass = computed(() =>
     request.value?.tone === 'danger' ? 'caomei-confirm-dialog__confirm--danger' : undefined,
 )

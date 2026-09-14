@@ -11,8 +11,8 @@ import {
 } from 'reka-ui'
 import { computed, watch, type Component } from 'vue'
 import { createToastStore, provideToastStore, type ToastItem, type ToastTone } from '../../composables/use-toast'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import type { ToastProviderProps } from './types'
 
 defineOptions({ name: 'CaomeiToastProvider', inheritAttrs: false })
@@ -20,8 +20,6 @@ defineOptions({ name: 'CaomeiToastProvider', inheritAttrs: false })
 const props = withDefaults(defineProps<ToastProviderProps>(), {
     position: 'top-right',
     duration: 5000,
-    label: defaultLocaleMessages.toast.label,
-    viewportLabel: defaultLocaleMessages.toast.viewport,
     hotkey: () => ['F8'],
     max: 5,
     disableSwipe: false,
@@ -32,6 +30,11 @@ const props = withDefaults(defineProps<ToastProviderProps>(), {
 const store = createToastStore(props.max)
 const { toasts } = store
 provideToastStore(store)
+
+const locale = useLocale()
+const label = computed(() => props.label ?? locale.value.toast.label)
+const viewportLabel = computed(() => props.viewportLabel ?? locale.value.toast.viewport)
+const closeLabel = computed(() => locale.value.toast.close)
 
 watch(
     () => props.max,
@@ -105,7 +108,7 @@ function onOpenChange(id: string, open: boolean): void {
             <ToastClose
                 v-if="item.closable !== false"
                 class="caomei-toast__close"
-                :aria-label="defaultLocaleMessages.toast.close"
+                :aria-label="closeLabel"
             >
                 <CaomeiIcon :icon="X" />
             </ToastClose>

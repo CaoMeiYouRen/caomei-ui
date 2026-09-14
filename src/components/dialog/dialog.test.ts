@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { nextTick } from 'vue'
+import { computed, nextTick } from 'vue'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiDialog } from './index'
 
 function getDialog(): HTMLElement | null {
@@ -83,6 +85,15 @@ describe('CaomeiDialog', () => {
         )
     })
 
+    it('关闭按钮默认可访问名取内建文案', async () => {
+        mount(CaomeiDialog, { props: { title: '标题', open: true } })
+        await nextTick()
+
+        expect(document.querySelector('.caomei-dialog__close')?.getAttribute('aria-label')).toBe(
+            '关闭',
+        )
+    })
+
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', async (size) => {
         mount(CaomeiDialog, { props: { title: '标题', open: true, size } })
         await nextTick()
@@ -125,6 +136,20 @@ describe('CaomeiDialog', () => {
         await nextTick()
 
         expect(document.querySelector('.caomei-dialog__overlay')).toBeNull()
+    })
+
+    it('关闭按钮使用注入 locale 的文案', async () => {
+        mount(CaomeiDialog, {
+            props: { title: '标题', open: true },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        await nextTick()
+
+        expect(document.querySelector('.caomei-dialog__close')?.getAttribute('aria-label')).toBe(
+            'Close',
+        )
     })
 
     it.each([

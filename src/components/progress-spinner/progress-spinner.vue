@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
 import { computed } from 'vue'
-import { defaultLocaleMessages } from '../../locale'
+import { useLocale } from '../../composables/use-locale'
 import type { ProgressSpinnerProps } from './types'
 
 defineOptions({ name: 'CaomeiProgressSpinner' })
 
 const props = withDefaults(defineProps<ProgressSpinnerProps>(), {
     size: 'md',
-    label: defaultLocaleMessages.progress.loading,
 })
+
+const locale = useLocale()
+const label = computed(() => props.label ?? locale.value.progress.loading)
 
 const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
 </script>

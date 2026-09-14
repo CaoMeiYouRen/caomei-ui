@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiProgressSpinner } from './index'
 
 function getRoot(wrapper: ReturnType<typeof mount>) {
@@ -44,5 +47,15 @@ describe('CaomeiProgressSpinner', () => {
         const root = getRoot(wrapper)
         expect(root.classes()).toContain('custom')
         expect(root.attributes('data-test')).toBe('spinner')
+    })
+
+    it('可访问名使用注入 locale 的文案', () => {
+        const wrapper = mount(CaomeiProgressSpinner, {
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('Loading')
     })
 })

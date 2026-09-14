@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiMessage } from './index'
 
 function getRoot(wrapper: ReturnType<typeof mount>) {
@@ -140,5 +143,25 @@ describe('CaomeiMessage', () => {
         const root = getRoot(wrapper)
         expect(root.classes()).toContain('custom')
         expect(root.attributes('data-test')).toBe('message')
+    })
+
+    it('关闭按钮使用注入 locale 的文案，且 props 优先', () => {
+        const wrapper = mount(CaomeiMessage, {
+            props: { closable: true },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-message__close').attributes('aria-label')).toBe('Close')
+
+        const overridden = mount(CaomeiMessage, {
+            props: { closable: true, closeLabel: 'Dismiss' },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(overridden.get('.caomei-message__close').attributes('aria-label')).toBe('Dismiss')
     })
 })

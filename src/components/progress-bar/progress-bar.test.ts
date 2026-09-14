@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiProgressBar } from './index'
 
 function getRoot(wrapper: ReturnType<typeof mount>) {
@@ -103,5 +106,16 @@ describe('CaomeiProgressBar', () => {
         const wrapper = mount(CaomeiProgressBar, { props: { value: 30 }, attrs: { class: 'custom' } })
 
         expect(getRoot(wrapper).classes()).toContain('custom')
+    })
+
+    it('可访问名使用注入 locale 的文案', () => {
+        const wrapper = mount(CaomeiProgressBar, {
+            props: { value: 30 },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('Progress')
     })
 })

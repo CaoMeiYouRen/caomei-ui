@@ -49,6 +49,9 @@ export interface CaomeiLocaleMessages {
         loading: string
         bar: string
     }
+    select: {
+        clear: string
+    }
     slider: {
         thumb: string
         minimum: string

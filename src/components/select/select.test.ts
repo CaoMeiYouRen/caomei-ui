@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
-import { nextTick, type DefineComponent } from 'vue'
+import { createSSRApp, h, nextTick, type DefineComponent } from 'vue'
+import { renderToString } from 'vue/server-renderer'
 import type { SelectProps } from './types'
 import { CaomeiSelect } from './index'
 
@@ -340,6 +341,151 @@ describe('CaomeiSelect 对象选项映射', () => {
         await nextTick()
 
         expect(document.querySelectorAll('[role="option"]')).toHaveLength(2)
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiSelect 清除与自定义选项', () => {
+    it('showClear 且有选中值时渲染清除按钮，无值时隐藏', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options, modelValue: 'apple', showClear: true },
+        })
+
+        expect(wrapper.find('.caomei-select__clear').exists()).toBe(true)
+        expect(wrapper.get('.caomei-select').classes()).toContain('caomei-select--clearable')
+
+        await wrapper.setProps({ modelValue: '' })
+        expect(wrapper.find('.caomei-select__clear').exists()).toBe(false)
+        expect(wrapper.get('.caomei-select').classes()).not.toContain('caomei-select--clearable')
+    })
+
+    it('未开启 showClear 时不渲染清除按钮', () => {
+        const wrapper = mount(CaomeiSelect, { props: { options, modelValue: 'apple' } })
+        expect(wrapper.find('.caomei-select__clear').exists()).toBe(false)
+    })
+
+    it('点击清除按钮把模型置为 null 并把焦点交回触发器', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options, modelValue: 'apple', showClear: true },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select__clear').trigger('click')
+        await nextTick()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([null])
+        expect(document.activeElement).toBe(wrapper.get('.caomei-select').element)
+
+        wrapper.unmount()
+    })
+
+    it('清除按钮可访问名默认取当前语言，可被 clearLabel 覆盖', () => {
+        const byLocale = mount(CaomeiSelect, {
+            props: { options, modelValue: 'apple', showClear: true },
+        })
+        expect(byLocale.get('.caomei-select__clear').attributes('aria-label')).toBe('清除')
+
+        const byProp = mount(CaomeiSelect, {
+            props: { options, modelValue: 'apple', showClear: true, clearLabel: '重置' },
+        })
+        expect(byProp.get('.caomei-select__clear').attributes('aria-label')).toBe('重置')
+    })
+
+    it('disabled 时不渲染清除按钮', () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options, modelValue: 'apple', showClear: true, disabled: true },
+        })
+
+        expect(wrapper.find('.caomei-select__clear').exists()).toBe(false)
+    })
+
+    it('SSR 输出中触发器为 button，清除按钮与其为兄弟节点且不嵌套 button', async () => {
+        const app = createSSRApp({
+            render: () =>
+                h(CaomeiSelect, {
+                    options,
+                    modelValue: 'apple',
+                    showClear: true,
+                    placeholder: '请选择',
+                }),
+        })
+
+        const html = await renderToString(app)
+        const container = document.createElement('div')
+        container.innerHTML = html
+
+        const trigger = container.querySelector('.caomei-select')
+        const clear = container.querySelector('.caomei-select__clear')
+
+        expect(trigger?.tagName).toBe('BUTTON')
+        expect(trigger?.getAttribute('role')).toBe('combobox')
+        expect(clear).not.toBeNull()
+        expect(clear?.parentElement).toBe(trigger?.parentElement)
+        expect(trigger?.querySelector('button')).toBeNull()
+        // closest 会命中自身，故检查其祖先链中是否存在 button
+        expect(clear?.parentElement?.closest('button')).toBeNull()
+    })
+
+    it('option 插槽收到原始选项对象与选中状态', async () => {
+        interface SlotOption {
+            name: string
+            id: number
+            hint: string
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [
+                    { name: '一', id: 1, hint: '第一项' },
+                    { name: '二', id: 2, hint: '第二项' },
+                ],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                attachTo: document.body,
+            },
+            slots: {
+                option: ({ option, selected }: { option: SlotOption, selected: boolean }) =>
+                    h('span', { class: 'custom-option' }, `${option.hint}${selected ? '*' : ''}`),
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        const rendered = document.querySelectorAll('.custom-option')
+        expect(rendered).toHaveLength(2)
+        expect(rendered[0].textContent).toBe('第一项')
+        expect(rendered[1].textContent).toBe('第二项*')
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiSelect 插槽与文本来源', () => {
+    it('#option 插槽仅渲染图标时，触发器仍显示 optionLabel 文本', () => {
+        interface SlotOption {
+            name: string
+            id: number
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [{ name: '已发布', id: 2 }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                attachTo: document.body,
+            },
+            slots: { option: () => h('span', { class: 'icon-only' }) },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('已发布')
 
         wrapper.unmount()
     })

@@ -81,4 +81,14 @@ export interface SelectProps<T extends object = SelectOption> {
      * @en Whether to lock page scroll when expanded (mapped from Reka SelectContent's `bodyLock`); defaults to false to avoid layout shift from the disappearing scrollbar
      */
     bodyLock?: boolean
+    /**
+     * 是否有选中值时显示清除按钮（`disabled` 时不渲染）；默认 false。点击后模型置为 `null` 并把焦点交回触发器
+     * @en Whether to show a clear button when a value is selected (not rendered when `disabled`); defaults to false. Clicking it sets the model to `null` and returns focus to the trigger
+     */
+    showClear?: boolean
+    /**
+     * 清除按钮可访问名；默认取当前语言的「清除」
+     * @en Accessible name of the clear button; defaults to the current locale's "Clear" text
+     */
+    clearLabel?: string
 }

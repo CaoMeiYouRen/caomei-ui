@@ -43,6 +43,9 @@ const zhCN: CaomeiLocaleMessages = {
         loading: '加载中',
         bar: '进度',
     },
+    select: {
+        clear: '清除',
+    },
     slider: {
         thumb: '滑块',
         minimum: '最小值',

@@ -43,6 +43,9 @@ const enUS: CaomeiLocaleMessages = {
         loading: 'Loading',
         bar: 'Progress',
     },
+    select: {
+        clear: 'Clear',
+    },
     slider: {
         thumb: 'Slider',
         minimum: 'Minimum',

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends object">
-import { Check, ChevronDown } from '@lucide/vue'
+import { Check, ChevronDown, X } from '@lucide/vue'
 import {
     SelectContent,
     SelectIcon,
@@ -12,7 +12,8 @@ import {
     SelectValue,
     SelectViewport,
 } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, nextTick, ref } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
 import type { SelectProps } from './types'
@@ -28,16 +29,32 @@ const props = withDefaults(defineProps<SelectProps<T>>(), {
     disabled: false,
     invalid: false,
     bodyLock: false,
+    showClear: false,
 })
+
+defineSlots<{
+    /**
+     * 自定义选项内容；`option` 为原始选项对象，`selected` 表示是否为当前选中项
+     * @en Custom option content; `option` is the raw option object and `selected` marks the selected one
+     */
+    option?: (props: { option: T, selected: boolean }) => unknown
+}>()
 
 const model = defineModel<OptionValue | null>()
 
+const locale = useLocale()
+const clearLabel = computed(() => props.clearLabel ?? locale.value.select.clear)
+
 interface NormalizedOption {
+    /** 原始选项对象，供 `#option` 插槽使用 */
+    raw: T
     /** 解析后的选项值（字符串或数字） */
     value: OptionValue
     /** 解析后的显示文本；字段缺省时为 undefined */
     label: string | undefined
     disabled: boolean
+    /** 是否为当前选中项 */
+    selected: boolean
 }
 
 /** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
@@ -49,9 +66,11 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
             continue
         }
         result.push({
+            raw: option,
             value,
             label: resolveOptionField(option, props.optionLabel, 'label'),
             disabled: resolveOptionDisabled(option),
+            selected: value === model.value,
         })
     }
     return result
@@ -61,6 +80,8 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
 const hasValue = computed(
     () => model.value !== undefined && model.value !== null && model.value !== '',
 )
+
+const clearable = computed(() => props.showClear && hasValue.value && !props.disabled)
 
 const selectedLabel = computed(() => {
     if (!hasValue.value) {
@@ -74,8 +95,26 @@ const rootClass = computed(() => [
     {
         'caomei-select--invalid': props.invalid,
         'caomei-select--disabled': props.disabled,
+        'caomei-select--clearable': clearable.value,
     },
 ])
+
+const triggerRef = ref<{ $el?: unknown } | null>(null)
+
+/** 清空模型，并把焦点交回触发器：清除后按钮自身被移除，否则焦点会掉到 body */
+function clearValue(): void {
+    model.value = null
+    void nextTick(() => {
+        // 受控用法下外层可能拒绝更新：此时按钮仍在，不应把它自身的焦点抢走
+        if (clearable.value) {
+            return
+        }
+        const element = triggerRef.value?.$el
+        if (element instanceof HTMLElement) {
+            element.focus()
+        }
+    })
+}
 </script>
 
 <template>
@@ -84,24 +123,39 @@ const rootClass = computed(() => [
         :disabled="disabled"
         :name="name"
     >
-        <SelectTrigger
-            v-bind="$attrs"
-            :id="id"
-            class="caomei-select"
-            :class="rootClass"
-            :data-filled="hasValue ? 'true' : undefined"
-            :data-has-placeholder="placeholder ? 'true' : undefined"
-            :aria-invalid="invalid || undefined"
-            :aria-label="label"
+        <div
+            class="caomei-select__field"
+            :class="`caomei-select__field--${size}`"
         >
-            <SelectValue class="caomei-select__value">
-                <span v-if="selectedLabel">{{ selectedLabel }}</span>
-                <span v-else class="caomei-select__placeholder">{{ placeholder }}</span>
-            </SelectValue>
-            <SelectIcon class="caomei-select__icon">
-                <CaomeiIcon :icon="ChevronDown" />
-            </SelectIcon>
-        </SelectTrigger>
+            <SelectTrigger
+                v-bind="$attrs"
+                :id="id"
+                ref="triggerRef"
+                class="caomei-select"
+                :class="rootClass"
+                :data-filled="hasValue ? 'true' : undefined"
+                :data-has-placeholder="placeholder ? 'true' : undefined"
+                :aria-invalid="invalid || undefined"
+                :aria-label="label"
+            >
+                <SelectValue class="caomei-select__value">
+                    <span v-if="selectedLabel">{{ selectedLabel }}</span>
+                    <span v-else class="caomei-select__placeholder">{{ placeholder }}</span>
+                </SelectValue>
+                <SelectIcon class="caomei-select__icon">
+                    <CaomeiIcon :icon="ChevronDown" />
+                </SelectIcon>
+            </SelectTrigger>
+            <button
+                v-if="clearable"
+                type="button"
+                class="caomei-select__clear"
+                :aria-label="clearLabel"
+                @click="clearValue"
+            >
+                <CaomeiIcon :icon="X" />
+            </button>
+        </div>
         <SelectPortal>
             <SelectContent
                 class="caomei-select__content"
@@ -117,7 +171,15 @@ const rootClass = computed(() => [
                         :value="option.value"
                         :disabled="option.disabled"
                     >
-                        <SelectItemText>{{ option.label }}</SelectItemText>
+                        <SelectItemText>
+                            <slot
+                                name="option"
+                                :option="option.raw"
+                                :selected="option.selected"
+                            >
+                                {{ option.label }}
+                            </slot>
+                        </SelectItemText>
                         <SelectItemIndicator class="caomei-select__indicator">
                             <CaomeiIcon :icon="Check" />
                         </SelectItemIndicator>
@@ -136,7 +198,7 @@ const rootClass = computed(() => [
     justify-content: space-between;
     gap: var(--caomei-space-1);
     width: 100%;
-    max-width: var(--caomei-select-max-width);
+    padding: 0 var(--caomei-select-padding-end, var(--caomei-space-3));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
@@ -144,6 +206,14 @@ const rootClass = computed(() => [
     font-family: var(--caomei-font-sans);
     cursor: pointer;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/*
+  清除按钮与触发器是兄弟节点（触发器为 <button>，嵌套按钮会破坏 SSR 输出结构），
+  因此以绝对定位覆盖在字段右侧 [图标 + 间隙] 之前，输入区右端留出按钮宽度，避免文本压到按钮下方。
+*/
+.caomei-select--clearable .caomei-select__value {
+    margin-inline-end: calc(var(--caomei-select-clear-width, 1.25rem) + var(--caomei-space-1));
 }
 
 .caomei-select:focus-visible {
@@ -169,21 +239,81 @@ const rootClass = computed(() => [
     opacity: 0.6;
 }
 
+/*
+  字段外层仅承担「宽度上限 + 定位上下文 + 尺寸变量分发」：
+  触发器保留 `.caomei-select` 类与全部交互属性，清除按钮是其兄弟节点（避免嵌套 <button>）。
+  宽度上限因此只在此处声明一次；覆盖 `--caomei-select-max-width` 需作用于本元素或其祖先。
+  可覆盖 token（如 `--caomei-select-clear-width`）不在本规则内预声明默认值，改由消费处 fallback 提供。
+*/
+.caomei-select__field {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    max-width: var(--caomei-select-max-width);
+}
+
+/* 尺寸档位把右内边距 / 字号 / 图标尺寸暴露为变量，供触发器与兄弟节点清除按钮共同消费 */
+:where(.caomei-select__field--sm) {
+    --caomei-select-padding-end: var(--caomei-space-2);
+    --caomei-select-icon-size: var(--caomei-font-size-sm);
+
+    font-size: var(--caomei-font-size-sm);
+}
+
+:where(.caomei-select__field--md) {
+    --caomei-select-padding-end: var(--caomei-space-3);
+    --caomei-select-icon-size: var(--caomei-font-size-md);
+
+    font-size: var(--caomei-font-size-md);
+}
+
+:where(.caomei-select__field--lg) {
+    --caomei-select-padding-end: var(--caomei-space-4);
+    --caomei-select-icon-size: var(--caomei-font-size-lg);
+
+    font-size: var(--caomei-font-size-lg);
+}
+
+.caomei-select__clear {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: calc(var(--caomei-select-padding-end, var(--caomei-space-3)) + var(--caomei-select-icon-size, 1rem) + var(--caomei-space-1));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--caomei-select-clear-width, 1.25rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--caomei-radius-sm);
+    background: transparent;
+    color: var(--caomei-color-text-muted);
+
+    /* 按钮默认不继承字体：显式继承以保持图标与字段文本同源 */
+    font: inherit;
+    cursor: pointer;
+}
+
+.caomei-select__clear:hover {
+    color: var(--caomei-color-text);
+}
+
+.caomei-select__clear:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
+}
+
 .caomei-select--sm {
     height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
     font-size: var(--caomei-font-size-sm);
 }
 
 .caomei-select--md {
     height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
     font-size: var(--caomei-font-size-md);
 }
 
 .caomei-select--lg {
     height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
     font-size: var(--caomei-font-size-lg);
 }
 
@@ -204,6 +334,12 @@ const rootClass = computed(() => [
     display: inline-flex;
     flex-shrink: 0;
     color: var(--caomei-color-text-muted);
+}
+
+/* 图标尺寸走 token（与档位字号同源），使清除按钮的定位不依赖 `em` 解析上下文 */
+.caomei-select__icon svg {
+    width: var(--caomei-select-icon-size, 1rem);
+    height: var(--caomei-select-icon-size, 1rem);
 }
 </style>
 

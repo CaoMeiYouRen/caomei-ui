@@ -423,6 +423,7 @@ export default defineConfig({
                         { text: '待办事项', link: '/plan/todo' },
                         { text: 'Backlog', link: '/plan/backlog' },
                         { text: '待办归档', link: '/plan/todo-archive' },
+                        { text: 'Phase 7 第一阶段评估', link: '/plan/phase7-evaluation' },
                     ],
                 },
             ],

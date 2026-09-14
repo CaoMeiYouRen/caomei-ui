@@ -76,14 +76,14 @@
 | Stepper | 封装 | Stepper | 稳定 | 步骤导航（**已实现**） |
 | Toolbar | 封装 | Toolbar | 稳定 | |
 | ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态 |
-| Drawer | 封装（优先） | Drawer | Alpha | 亦可由 Dialog 派生；Alpha 需锁版本（**延后至 Phase 7**） |
-| DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**延后至 Phase 7**） |
-| ColorPicker | 封装（组合 ColorArea / ColorField / ColorSlider / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive（**延后至 Phase 7**） |
+| Drawer | 封装（优先） | Drawer | Alpha | 亦可由 Dialog 派生；Alpha 需锁版本（**Phase 7 第一阶段 M4**） |
+| DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**Phase 7 第一阶段 M4**） |
+| ColorPicker | 封装（组合 ColorArea / ColorField / ColorSlider / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive（**Phase 7 第一阶段 M4**） |
 | InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |
 | Panel | 不新建 | — | — | 由 `Card` 的 `title` / `header` / `footer` 承载；可折叠场景用 `Accordion` |
-| SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用（**延后至 Phase 7**） |
+| SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用（**Phase 7 第一阶段 M4**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 
 Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、TagsInput、Editable、Tree（Tree 为 Alpha）。

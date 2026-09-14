@@ -15,17 +15,19 @@
 
 ### 1.1 组件增强候选
 
-> 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已在 Phase 6 交付并归档；迁移映射规范（`severity→tone` 等）已由 M2 [设计规范 §7](../design/design-spec.md) 承接。本表保留仍待决策的增强候选。
+> 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已在 Phase 6 交付并归档；迁移映射规范（`severity→tone` 等）已由 M2 [设计规范 §7](../design/design-spec.md) 承接。
+>
+> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](./phase7-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已迁入 Phase 7 第一阶段；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| Button 角标增强 | 组件实现评估 + M1 复核 | Button 的 `:badge` 角标（M1 台账 momei 2 处）未纳入 Phase 6 M3（标记待评估）；需评估角标内容 / 位置 / 与图标共存。 | 低 |
-| Tag/Badge 增强 | 组件实现评估 + M1 复核 | Tag 可选中筛选标签 / 可编辑（可编辑标签可由 Reka UI TagsInput 封装）；Badge 叠加位置与偏移自定义（placement / offset）、数值变化时的宽度过渡动画（`interpolate-size` 目前主要 Chromium 支持，跨浏览器需 JS 回退）。M1 补充：`severity` → `tone` 映射规范化（含 `error` 别名、`secondary` / `contrast` 归属）、Tag `rounded` / `outlined`、`icon` 字符串改 `#icon` 插槽（momei Tag 127 次） | 中 |
-| Select 增强 | 组件实现评估 + M1 复核 | 分组（SelectGroup）、自定义选项渲染、搜索过滤；多选已由 Tier 1 MultiSelect 承接（Phase 2 交付）。M1 补充：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`filter`、`#option` 插槽（momei Select 73 / Dropdown 5 / MultiSelect 8 / SelectButton 9） | 中 |
-| 表单输入增强 | M1 复核 | InputNumber `use-grouping` / `min-max-fraction-digits`；Textarea `auto-resize`；Password `feedback`；Checkbox 分组值数组；Switch `change` 事件；FileUpload `mode` / `max-file-size` / `auto` / `choose-label`；ToggleButton `on-label` / `off-label` | 中 |
-| Message 语义与形态增强 | M1 复核 | `variant` 补 `simple` / `text`、补 `size`（momei 各 14 处）；`severity` 的 `error` / `secondary` / `contrast` 需映射规范 | 中 |
-| 展示类组件增强 | M1 复核 | Image `preview` 点击放大 + `#indicatoricon`；ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸；Toolbar `#start` / `#center` / `#end` 分区插槽 | 低 |
-| 浮层与导航增强 | M1 复核 | Dialog `show-header` / `breakpoints` / `@hide`；Popover 命令式 `toggle(event)` 锚点；DropdownMenu `:model` + `:popup`；Paginator 偏移 → 页码模型与每页条数选择；ConfirmDialog `icon` | 低 |
+| Button 角标增强 | 组件实现评估 + M1 复核 | **保留（P2）**：Button 的 `:badge` 角标（M1 台账 momei 2 处）未纳入 Phase 6 M3（标记待评估）；需评估角标内容 / 位置 / 与图标共存。 | 低 |
+| Tag/Badge 增强 | 组件实现评估 + M1 复核 | **部分迁出**：Tag `severity` → `tone` 规范化、`rounded` / `outlined`、`#icon` 插槽（P0）已迁 Phase 7 第一阶段；**保留（P2）** Tag 可选中筛选 / 可编辑（Reka TagsInput）、Badge 叠加位置偏移与宽度过渡动画。 | 中 |
+| Select 增强 | 组件实现评估 + M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`filter`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）；**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
+| 表单输入增强 | M1 复核 | **部分迁出**：InputNumber `use-grouping` / `min-max-fraction-digits`、Textarea `auto-resize`、Password `feedback`（P0）已迁 Phase 7 第一阶段；**保留（P2）** Checkbox 分组值数组、Switch `change` 事件、FileUpload 上传能力、ToggleButton 状态文案。 | 中 |
+| Message 语义与形态增强 | M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`variant` 补 `simple` / `text`、补 `size`（momei 各 14 处）、`severity`（`error` / `secondary` / `contrast`）映射。 | 中 |
+| 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
+| 浮层与导航增强 | M1 复核 | **部分迁出**：Dialog `show-header` / `breakpoints` / `@hide`（P1）已移入 Phase 7 第二阶段；**保留（P2）** Popover 命令式 `toggle(event)` 锚点、DropdownMenu `:model` + `:popup`、Paginator 每页条数选择、ConfirmDialog `icon`。 | 低 |
 | 实底前景 token 统一 | M3 复核 | Button 的 `tone` 实底已改用 `--caomei-color-on-solid`；Tag / Badge / Message / SelectButton 等实底仍用 `-foreground`，评估统一（含 momei 暗色 `#000` 前景的对比问题） | 中 |
 | 品牌主色对比度 | M3 复核 | 品牌主色 `#e63946` 配白字约 4.17:1，低于 AA 4.5:1；评估加深 `primary-solid` 或调整品牌色（影响 caomei 预设与 Button 默认真底色） | 中 |
 
@@ -33,7 +35,7 @@
 
 > 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已于 Phase 4 交付并归档（见 [待办归档](./todo-archive.md)）。
 >
-> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 经用户决策延后至 [Phase 7](./roadmap.md)（其中 DatePicker / Calendar、Drawer、ColorPicker 为 Reka Alpha primitive，实现时需锁版本 + 回归）。本表仅保留当前无下游使用证据的长尾。
+> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已迁入 [Phase 7 第一阶段](./phase7-evaluation.md) M4（实现顺序 DatePicker → Drawer → SplitButton → ColorPicker → DataView；其中 DatePicker / Calendar、Drawer、ColorPicker 为 Reka Alpha primitive，需锁 `reka-ui@2.10.4` + 回归）。本表仅保留当前无下游使用证据的长尾。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|
@@ -49,12 +51,14 @@
 
 > 承接原「国际文字内置文案补全」候选并按用户需求（2026-09-14）扩展为完整机制。现状：组件内建文案已备 zh-CN / en-US（`src/locale`），但组件固定消费 `defaultLocaleMessages`（zh-CN），缺语言选择 / 注入机制；英文文档页因此仍有组件内部中文（如 DataTable 空态「暂无数据」、Dialog 关闭按钮 `aria-label="关闭"`、AutoComplete 的「无匹配建议 / 展开建议」、Stepper 的默认 `aria-label="步骤"`）。2026-09-14 复核：组件页 39/39 与指南 4/4 英文已覆盖，剩余缺口即为本项内建文案本身。**用户决策（2026-09-13）：当前接受现状**，待注入机制落地后统一本地化。
 >
-> **2026-09-14 用户决策：本组含短期 zh-CN / en-US 一并延后**，不纳入 Phase 6；下表按原分层计划保留。
+> **2026-09-14 用户决策：本组含短期 zh-CN / en-US 一并延后**，不纳入 Phase 6。
+>
+> **2026-09-14 迁移评估更新**：因 momei 支持 5 种语言且动态切换，组件内建文案缺口会在迁移后造成多语言回归（详见 [Phase 7 第一阶段评估记录 §5](./phase7-evaluation.md)）。**「组件 i18n 注入机制」（含短期 zh-CN / en-US）已迁入 Phase 7 第一阶段 M2 作为迁移前置**（机制落地，翻译语种由下游注入）；中期 / 长期语言矩阵、RTL 与 locale 注册治理仍保留在本表待决策。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 组件 i18n 注入机制 | 用户需求（2026-09-14） | 提供 locale provider（如 `CaomeiConfigProvider` / `provideLocale` + `useLocale`）与逐组件覆盖；文档站切换语言后组件内建文案随之切换 | 中 |
-| 语言矩阵 - 短期 | 用户需求（2026-09-14） | 简体中文（zh-CN）、英语（en-US），承载现有两份文案 | 中 |
+| ~~组件 i18n 注入机制~~ | 用户需求（2026-09-14） | 已迁 Phase 7 第一阶段 M2：locale provider（`CaomeiConfigProvider` / `provideLocale` + `useLocale`）与逐组件覆盖，支持下游注入 | — |
+| ~~语言矩阵 - 短期~~ | 用户需求（2026-09-14） | 已迁 Phase 7 第一阶段 M2：zh-CN / en-US 承载现有两份文案；zh-TW / ja-JP / ko-KR 由下游注入 | — |
 | 语言矩阵 - 中期 | 用户需求（2026-09-14） | 追加繁体中文（zh-TW）、日语（ja-JP）、韩语（ko-KR） | 低 |
 | 语言矩阵 - 长期 | 用户需求（2026-09-14） | 追加俄语、法语、德语、西班牙语、葡萄牙语；视情况追加希腊语、意大利语、印地语、孟加拉语、印度尼西亚语等 | 低 |
 | RTL（阿拉伯语）支持 | 用户需求（2026-09-14） | 从右往左排版涉及逻辑属性、图标镜像、浮层定位与滑动手势镜像，风险高，单独立项谨慎评估，不与其他语言捆绑 | 低 |
@@ -92,7 +96,7 @@
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
-| Nuxt 模块真实集成 | 用户决策延后（Phase 2 范围外）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | 中 |
+| ~~Nuxt 模块真实集成~~ | 已迁 [Phase 7 第一阶段](./phase7-evaluation.md) M1（迁移前置）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |

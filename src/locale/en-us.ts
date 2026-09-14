@@ -1,6 +1,10 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const enUS: CaomeiLocaleMessages = {
+    autoComplete: {
+        empty: 'No matching suggestions',
+        open: 'Show suggestions',
+    },
     confirm: {
         confirm: 'Confirm',
         cancel: 'Cancel',

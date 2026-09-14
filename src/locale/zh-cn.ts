@@ -1,6 +1,10 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhCN: CaomeiLocaleMessages = {
+    autoComplete: {
+        empty: '无匹配建议',
+        open: '展开建议',
+    },
     confirm: {
         confirm: '确定',
         cancel: '取消',

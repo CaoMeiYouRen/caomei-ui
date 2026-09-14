@@ -1,4 +1,8 @@
 export interface CaomeiLocaleMessages {
+    autoComplete: {
+        empty: string
+        open: string
+    }
     confirm: {
         confirm: string
         cancel: string

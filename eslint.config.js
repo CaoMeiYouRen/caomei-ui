@@ -8,6 +8,8 @@ export default defineConfig([
             'docs/.vitepress/cache/**',
             'docs/.vitepress/data/**',
             '**/dist/**',
+            '**/.nuxt/**',
+            '**/.output/**',
             'coverage/**',
             'playwright-report/**',
             'test-results/**',

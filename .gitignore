@@ -22,6 +22,10 @@ docs/.vitepress/cache
 docs/.vitepress/dist
 docs/.vitepress/data
 
+# Nuxt（playground/nuxt 冒烟 fixture 的构建产物）
+.nuxt
+.output
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

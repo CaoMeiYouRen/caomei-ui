@@ -30,6 +30,9 @@
         "playground/**/*.ts",
         "playground/**/*.vue"
     ],
+    "exclude": [
+        "playground/nuxt/**"
+    ],
     "references": [
         {
             "path": "./tsconfig.node.json"

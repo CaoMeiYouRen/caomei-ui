@@ -1,0 +1,6 @@
+{
+  "name": "caomei-ui-nuxt-playground",
+  "private": true,
+  "type": "module",
+  "description": "caomei-ui/nuxt 最小消费冒烟 fixture（由 scripts/release/check-nuxt.mjs 驱动）"
+}

@@ -3,6 +3,7 @@ import { CaomeiTag } from '@/components/tag'
 
 const variants = ['soft', 'solid', 'outline'] as const
 const sizes = ['sm', 'md', 'lg'] as const
+const tones = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
 </script>
 
 <template>
@@ -25,6 +26,16 @@ const sizes = ['sm', 'md', 'lg'] as const
                 :size="size"
             >
                 {{ size }}
+            </CaomeiTag>
+        </div>
+        <div class="demo-row">
+            <CaomeiTag
+                v-for="tone in tones"
+                :key="tone"
+                :tone="tone"
+                rounded
+            >
+                {{ tone }}
             </CaomeiTag>
         </div>
     </div>

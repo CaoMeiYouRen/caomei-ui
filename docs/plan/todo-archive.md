@@ -122,6 +122,31 @@
 
 ---
 
+## Phase 6：组件库补全与规范化（momei 迁移就绪）
+
+- 时间：2026-09-14
+- 交付：
+  - 主线 M1 下游使用复核：产出 [momei 组件使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)（59 个 PrimeVue 组件 / 1515 次用法；满足 21 / 需增强 23 / 需新组件 15），缺口逐条回写 Backlog。
+  - 主线 M2 设计规范与主题预设：[设计规范](../design/design-spec.md)（token 体系、尺寸 / 颜色 / 主题 / 风格规范、迁移映射、新组件自检清单）；`src/styles/theme.css` 暗色机制（`.dark` / `[data-theme]` / `data-scheme="auto"`）与 `src/styles/presets/caomei.css`、`presets/momei.css`（根元素 `data-preset`，文档站顶栏演示切换）；`scripts/governance/check-design.mjs` + 单测，纳入 `pnpm verify`。
+  - 主线 M3 组件补全与关键增强：
+    - Button 形态增强：`tone` 语义色、`rounded`、`iconPosition`，以及 `severity→tone`、`text→ghost`、`outlined→secondary` 映射。
+    - DataTable：列能力 + 排序 + 加载态、行选择、Lazy 分页与分页集成、冻结列。
+    - 新增组件：Divider、InputGroup、FloatLabel、ButtonGroup、AutoComplete、Stepper（含中英双语文档与示例）。
+    - 变更：Input / Textarea / Select / MultiSelect / InputNumber 增加 `data-filled`（Select 另加 `data-has-placeholder`）作为浮动态契约。
+    - 已决策不新建：`Panel` 由 `CaomeiCard` 的 `title` / `header` / `footer` 承载（映射见设计规范 §7）；`IconField` / `InputIcon` 由 `Input` 的 `prefix` / `suffix` 插槽降级承接。
+  - 主线 M4 依赖许可合规：仓库根 `THIRD-PARTY-LICENSES`（reka-ui MIT / @tanstack/vue-table MIT / @lucide/vue ISC / vue peer MIT，含许可证全文）；`scripts/governance/check-licenses.mjs` + 单测；`files` 随包分发 + `prepublishOnly` 发布前校验；`reka-ui` 由 `^2.10.4` 收紧为精确 `2.10.4`。
+- 关键提交：规划登记 `24fb92b` / `47b70eb`；M1 `6f8f2dd`；M2 `ba10f97` / `59fcee5` / `f547ada` / `cf50ae9`；M3 Button `5f01b79`、DataTable `5c9d2ed` / `a520c5a` / `644a7a5` / `46e20b5` / `b4bcf65`、Divider `8496d4a`、InputGroup / FloatLabel `4b4f91c`、Button 修复与 ButtonGroup `329a342` / `440e152`、AutoComplete / Stepper / 决策登记 `b71c1d5` / `3be1edf` / `61a2d80`；M4 依赖锁定与许可合规 `0f253af` / `b1743fd`
+- 质量门：`pnpm verify` 通过（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / docs:build / governance）；最终全量单元测试 764 例通过；docs 链接校验 149 md 全有效
+- 浏览器验证：各可见改动均经 `@ui-validator` 实机验证（Button 形态、DataTable 各子项、Divider、InputGroup / FloatLabel（三轮）、ButtonGroup（两轮）、AutoComplete / Stepper（两轮））；证据报告落盘 `test-results/`（该目录 gitignored）
+- 审计：各条目均经 `@code-reviewer` Review Gate 放行；Button 形态、DataTable 子项（排序 / 行选择 / 分页 / 冻结列）、Divider、InputGroup / FloatLabel（三轮，含 `over` 标签压值与占位重叠、MultiSelect Reka 包裹层、Reka `data-placeholder` 同名冲突）、ButtonGroup（两轮，含纯图标居中修复）、AutoComplete / Stepper（两轮，含单选失焦覆盖已选值 blocker、多选显示）、M4 均经历「首轮 Reject / 补证 → 修复 → 复审 Pass」
+- 阶段归档蒸馏：`.session/wisdom.md` 活跃 15 条（< 阈值 20），无需蒸馏；归档时修正 1 条关于 `@lucide/vue` 打包的错误发现
+- 遗留与后续候选：
+  - 未完成：Button 角标（`:badge`）增强未纳入本批，回写 [Backlog §1.1](./backlog.md)。
+  - 延后至 Phase 7：`SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`（其中 Reka Alpha 组件需锁定 `reka-ui` 精确版本并补 API 回归测试）；`momei` 迁移试点闭环。
+  - 其余候选见 [Backlog](./backlog.md)。
+
+---
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

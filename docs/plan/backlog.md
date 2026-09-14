@@ -157,7 +157,7 @@
 | Divider | momei 使用面（37） | 分隔线，当前组件集与 Backlog 均缺失；低复杂度，可自建或封装 Reka `Separator`（**已实现：`CaomeiDivider`，支持水平 / 垂直 / 内容 / 线型**） | 缺口组件 |
 | InputGroup / FloatLabel | momei 使用面（InputGroup 6） | 组合容器；并排 Input + Button 的边框拼接语义需专用组件（**已实现：`CaomeiInputGroup` 水平 / 垂直拼接；`CaomeiFloatLabel` 提供 `over` / `in` 两态**） | 缺口组件 |
 | AutoComplete | M1 复核（2 处） | 异步建议 + 自由输入；Reka Combobox 可承载 | 缺口组件 |
-| ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局 | 缺口组件 |
+| ButtonGroup | M1 复核（1 处） | 相邻按钮圆角 / 边框合并布局（**已实现：`CaomeiButtonGroup`，水平 / 垂直**） | 缺口组件 |
 | DataView | M1 复核（1 处） | grid / list 布局 + 插槽；用量最低，可最后评估 | 缺口组件 |
 | Panel | momei 使用面（3） | 带标题栏的静态分区容器；先评估能否由 Accordion / Card 承接 | 缺口组件 |
 | DatePicker / Calendar | momei 使用面（6） | Reka Alpha，需锁版本并补回归 | 缺口组件 |

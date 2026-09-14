@@ -212,6 +212,7 @@ export default defineConfig({
                             items: [
                                 { text: 'Overview', link: '/en-US/components/' },
                                 { text: 'Button', link: '/en-US/components/button' },
+                                { text: 'ButtonGroup', link: '/en-US/components/button-group' },
                                 { text: 'Avatar', link: '/en-US/components/avatar' },
                                 { text: 'Input', link: '/en-US/components/input' },
                                 { text: 'Textarea', link: '/en-US/components/textarea' },
@@ -340,6 +341,7 @@ export default defineConfig({
                     text: '基础组件',
                     items: [
                         { text: 'Button 按钮', link: '/components/button' },
+                        { text: 'ButtonGroup 按钮组', link: '/components/button-group' },
                         { text: 'Avatar 头像', link: '/components/avatar' },
                         { text: 'Input 输入框', link: '/components/input' },
                         { text: 'Textarea 多行输入', link: '/components/textarea' },

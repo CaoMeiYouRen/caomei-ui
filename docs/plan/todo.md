@@ -57,7 +57,7 @@
     - [x] Divider
     - [x] InputGroup / FloatLabel
     - [ ] AutoComplete（Reka Combobox）
-    - [ ] ButtonGroup
+    - [x] ButtonGroup
     - [ ] DataView
     - [ ] Panel（先评估能否由 Accordion 承接）
     - [ ] DatePicker / Calendar（Reka Alpha，锁版本 + 回归）

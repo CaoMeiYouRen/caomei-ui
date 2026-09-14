@@ -74,6 +74,7 @@ test/                     # 单元与 E2E 测试
 - Reka `ProgressRoot` 传 `modelValue=null` 时输出 `data-state="indeterminate"` 且不输出 `aria-valuenow`；行内指示器用 `as="span"`。
 - live region（`role="status"` / `"alert"`）只包住文本内容，交互控件留在其外，避免控件名并入播报。
 - `defineModel()` 与 `defineProps<接口>()` 不得同时声明 `modelValue`：重复声明会让该 prop 失效（`defaultValue` 静默不生效）；对外 props 接口不含 `modelValue`。
+- 泛型组件（`<script setup generic="T extends object">`）的 `v-model` 不做写回方向的类型校验：`defineModel<T>()` 放宽取值类型后，消费方以更窄类型的 `ref` 绑定不会报错，也不再受类型保护；泛型组件的取值契约须用运行时收窄（如 `_shared/option` 的 `resolveOptionValue`）与测试兜底，不依赖类型系统。
 - 封装 Reka Combobox 多选时，`required` 必须交 `ComboboxRoot`（空数组时渲染 required 隐藏控件触发原生校验）；`name` 仅在 `<form>` 内生成隐藏控件，数组值命名 `name[index]`。
 - Reka `Accordion` / `Collapsible` 在 `unmountOnHide=false` 时以 `hidden="until-found"` 保留收起内容（支持页内查找）；Tabs 收起内容用普通 `hidden`。
 - Reka `ToggleGroup` 的 `VisuallyHiddenInput` 会把对象型 `modelValue` 展开为 `name[key]`、数组型为 `name[i]`；以占位对象维持受控时须仅在有效选中时传 `name`，否则占位值进入表单提交。

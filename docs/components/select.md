@@ -11,6 +11,17 @@
     ssg="true"
 />
 
+## 对象选项
+
+`options` 可传入任意对象，通过 `optionLabel` / `optionValue` 指定显示文本与值的字段名（也可传入取值函数）；值支持字符串与数字。
+
+<demo
+    vue="../examples/select/object-options.vue"
+    ssg="true"
+/>
+
+> 字段解析：`optionLabel` / `optionValue` 字符串形态支持 `a.b` 点号嵌套路径；`optionValue` 解析结果不是字符串 / 数字（如 `null`、布尔、字段缺省）时该选项**不渲染**，`optionLabel` 解析不到文本时该项文本为空、触发器回退显示 `placeholder`。
+
 ## 尺寸
 
 通过 `size` 切换尺寸，支持 `sm` / `md` / `lg`。

@@ -42,7 +42,7 @@
 - 非目标：P1 / P2 项；破坏现有 API 的改动。
 - 最小验收标准：API 文档、单元测试与英文文档页齐备；符合设计规范；`pnpm verify` 通过。
 - 条目：
-  - [ ] Select 家族对象选项映射（`optionLabel` / `optionValue` + 非 `string` value）
+  - [x] Select 家族对象选项映射（`optionLabel` / `optionValue` + 非 `string` value）
   - [ ] Select 补充 `showClear` / `filter` / `#option`
   - [ ] Tag 语义与形态（severity 映射规范化、`rounded` / `outlined`、`#icon`）
   - [ ] Message 形态与尺寸（`variant` `simple` / `text`、`size`、severity 映射）

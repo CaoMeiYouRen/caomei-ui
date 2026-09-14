@@ -1,7 +1,13 @@
 name: Test
 
 on:
+  # 仅 master 的 push 触发，避免 PR 分支同时被 push 与 pull_request 触发、
+  # 同一 job 产生两条同名 check（会让 Mergify check-success 的「任一成功即满足」语义放大误判风险）。
+  # 取舍：非 master 分支的纯 push 与 tag push 不再触发 Test，分支校验由 PR（pull_request）承接；
+  # 需要手动重跑时用 workflow_dispatch。
   push:
+    branches:
+      - master
   pull_request:
   workflow_dispatch:
 

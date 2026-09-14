@@ -1,10 +1,19 @@
 <h1 align="center">caomei-ui</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/github/package-json/v/CaoMeiYouRen/caomei-ui.svg" />
+  <a href="https://app.codecov.io/gh/CaoMeiYouRen/caomei-ui" target="_blank">
+    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/CaoMeiYouRen/caomei-ui">
+  </a>
   <a href="https://github.com/CaoMeiYouRen/caomei-ui/actions?query=workflow%3ATest" target="_blank">
     <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/CaoMeiYouRen/caomei-ui/test.yml?branch=master">
   </a>
+  <a href="http://ui.cmyr.dev/" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
   <img src="https://img.shields.io/badge/node-%3E%3D20-blue.svg" />
+  <a href="https://github.com/CaoMeiYouRen/caomei-ui/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
   <a href="https://github.com/CaoMeiYouRen/caomei-ui/blob/master/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/github/license/CaoMeiYouRen/caomei-ui?color=yellow" />
   </a>
@@ -14,7 +23,7 @@
 
 ## 📌 项目状态
 
-Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）与组件库补全与规范化（Phase 6，面向 momei 迁移就绪）亦已完成并归档；首版发布与下游迁移（Phase 5 第二阶段、Phase 7）待外部前置与阶段推进后决策。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
+Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）与组件库补全与规范化（Phase 6，面向 caomei-ui 迁移就绪）亦已完成并归档；首版发布与下游迁移（Phase 5 第二阶段、Phase 7）待外部前置与阶段推进后决策。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
 - 目标组件集：Tier 0（9 个，已完成）+ Tier 1（8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（6 个，已完成）。

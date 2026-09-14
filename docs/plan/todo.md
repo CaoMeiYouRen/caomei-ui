@@ -22,6 +22,7 @@
   - [ ] 首版发布链路协调（归属 [Phase 5 第二阶段](./roadmap.md)，待 npm 凭据；作为 M1 并行依赖，不在本阶段重复承载）
   - [x] `caomei-ui/nuxt` 真实集成（`@nuxt/kit` 自动导入 + 样式 + 主题 + SSR）
   - [x] 最小 Nuxt 消费冒烟（preset / 暗色 / SSR hydrate）
+  - [x] 消费使用文档补全（组合式 API / 图标 / 内建文案，中英），并校正既有文档中的 composables 描述
 
 ### 主线 M2：组件 i18n 注入机制
 

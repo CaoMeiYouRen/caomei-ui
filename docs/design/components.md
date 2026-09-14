@@ -9,7 +9,7 @@
 | Primitive 层 | Reka UI 原始件，不直接对外 | Select / Dialog 等组件内部使用的 primitive |
 | 封装 / 自建层 | Reka UI 封装，或原生元素 + 样式 / 变体 | 封装：Select、Dialog、Switch、Toast、Checkbox；自建：Button、Input、Card、Tag / Badge |
 | 复合层 | 多 primitive 组合 | DataTable、ConfirmDialog、MultiSelect |
-| 服务层 | composables | useToast、useConfirm、useDialog、useTheme |
+| 服务层 | composables | useToast、useConfirm、useTheme |
 
 ### 1.1 实现方式决策原则
 
@@ -103,7 +103,6 @@ Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选�
 |------------|------|
 | `useToast` | 轻提示，基于 Reka UI Toast |
 | `useConfirm` | 确认对话框，基于 AlertDialog |
-| `useDialog` | 通用对话框服务 |
 | `useTheme` | 主题/暗色模式管理 |
 
 > 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。

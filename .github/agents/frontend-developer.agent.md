@@ -19,7 +19,7 @@ description: 负责 caomei-ui 组件实现、样式、交互与 composables 专�
 1. **组件实现**：基于 Reka UI 实现组件（primitive / 派生 / 复合层），保持组件与样式解耦。
 2. **类型与 API**：对外 props / emits / slots 显式类型化，公共 API 变更考虑向后兼容。
 3. **样式**：使用 `--caomei-*` CSS variables 与原生 CSS/SCSS，禁止 Tailwind / UnoCSS。
-4. **composables**：实现 `useToast` / `useConfirm` / `useDialog` / `useTheme`。
+4. **composables**：实现 `useToast` / `useConfirm` / `useTheme`。
 5. **自检**：`lint` + `typecheck` + 定向测试通过后交接。
 
 ## 输出

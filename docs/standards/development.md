@@ -23,7 +23,7 @@
 ```
 src/
 ├─ components/<name>/     # 单个组件（kebab-case 目录 + kebab-case.vue + types.ts + index.ts）
-├─ composables/           # useToast / useConfirm / useDialog / useTheme
+├─ composables/           # useToast / useConfirm / useTheme
 ├─ locale/                # 组件内建文案（zh-CN / en-US）
 ├─ styles/                # tokens 与基础样式
 ├─ icons/                 # 图标封装

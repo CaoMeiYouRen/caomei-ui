@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { StepperRoot } from 'reka-ui'
 import { computed, useAttrs, useTemplateRef } from 'vue'
-import { defaultLocaleMessages } from '../../locale'
+import { useLocale } from '../../composables/use-locale'
 import type { StepperExposed, StepperProps } from './types'
 
 defineOptions({ name: 'CaomeiStepper', inheritAttrs: false })
@@ -9,15 +9,17 @@ defineOptions({ name: 'CaomeiStepper', inheritAttrs: false })
 const props = withDefaults(defineProps<StepperProps>(), {
     orientation: 'horizontal',
     linear: true,
-    label: defaultLocaleMessages.stepper.label,
 })
 
 const model = defineModel<number>()
 
 const attrs = useAttrs()
+const locale = useLocale()
 
-/** 使用方透传的 aria-label 优先于本地化默认值 */
-const ariaLabel = computed(() => (attrs['aria-label'] as string | undefined) ?? props.label)
+/** 使用方透传的 aria-label 优先于 props，再回退到当前语言的内建文案 */
+const ariaLabel = computed(
+    () => (attrs['aria-label'] as string | undefined) ?? props.label ?? locale.value.stepper.label,
+)
 
 const stepperRef = useTemplateRef<StepperExposed>('stepperRef')
 

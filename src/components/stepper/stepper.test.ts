@@ -1,6 +1,8 @@
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
-import { h, nextTick } from 'vue'
+import { computed, h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { StepperExposed } from './types'
 import {
     CaomeiStepper,
@@ -231,6 +233,25 @@ describe('CaomeiStepper', () => {
             slots: createSlots(),
         })
         expect(custom.get('.caomei-stepper').attributes('aria-label')).toBe('安装进度')
+    })
+
+    it('aria-label 使用注入 locale 的文案，透传 aria-label 仍优先', () => {
+        const translated = mount(CaomeiStepper, {
+            slots: createSlots(),
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        expect(translated.get('.caomei-stepper').attributes('aria-label')).toBe('Steps')
+
+        const custom = mount(CaomeiStepper, {
+            attrs: { 'aria-label': '结账流程' },
+            slots: createSlots(),
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        expect(custom.get('.caomei-stepper').attributes('aria-label')).toBe('结账流程')
     })
 
     it('flushPromises 后结构保持稳定（回归）', async () => {

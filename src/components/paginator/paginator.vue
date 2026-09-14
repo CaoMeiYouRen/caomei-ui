@@ -10,8 +10,9 @@ import {
     PaginationPrev,
     PaginationRoot,
 } from 'reka-ui'
+import { computed } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import type { PaginatorProps } from './types'
 
 defineOptions({ name: 'CaomeiPaginator' })
@@ -21,18 +22,20 @@ const props = withDefaults(defineProps<PaginatorProps>(), {
     siblingCount: 2,
     showEdges: false,
     disabled: false,
-    label: defaultLocaleMessages.pagination.label,
-    firstLabel: defaultLocaleMessages.pagination.first,
-    previousLabel: defaultLocaleMessages.pagination.previous,
-    nextLabel: defaultLocaleMessages.pagination.next,
-    lastLabel: defaultLocaleMessages.pagination.last,
-    pageLabel: defaultLocaleMessages.pagination.page,
 })
 
 const page = defineModel<number>('page', { default: 1 })
 
+const locale = useLocale()
+const label = computed(() => props.label ?? locale.value.pagination.label)
+const firstLabel = computed(() => props.firstLabel ?? locale.value.pagination.first)
+const previousLabel = computed(() => props.previousLabel ?? locale.value.pagination.previous)
+const nextLabel = computed(() => props.nextLabel ?? locale.value.pagination.next)
+const lastLabel = computed(() => props.lastLabel ?? locale.value.pagination.last)
+const pageLabel = computed(() => props.pageLabel ?? locale.value.pagination.page)
+
 function resolvePageLabel(value: number): string {
-    return props.pageLabel.replaceAll('{page}', String(value))
+    return pageLabel.value.replaceAll('{page}', String(value))
 }
 </script>
 

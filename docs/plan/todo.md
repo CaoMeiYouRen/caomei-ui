@@ -33,7 +33,7 @@
   - [x] locale provider 机制（`CaomeiConfigProvider` / `provideLocale` + `useLocale`；合并覆盖与回退）
   - [x] 组件接入批次一（表单类：Input / InputNumber / Password / MultiSelect / AutoComplete / Slider）
   - [x] 组件接入批次二（反馈浮层类：Message / Toast / ConfirmDialog / Dialog / ProgressBar / ProgressSpinner）
-  - [ ] 组件接入批次三（数据展示类：DataTable / Paginator / Tag / Stepper）
+  - [x] 组件接入批次三（数据展示类：DataTable / Paginator / Tag / Stepper）
   - [ ] 文档与 momei 注入示例（中英）
 
 ### 主线 M3：P0 高频增强（迁移硬缺口）

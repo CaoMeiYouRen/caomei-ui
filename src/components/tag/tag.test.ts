@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiTag } from './index'
 
 describe('CaomeiTag', () => {
@@ -91,5 +94,21 @@ describe('CaomeiTag', () => {
         const root = wrapper.get('.caomei-tag')
         expect(root.classes()).toContain('custom-tag')
         expect(root.attributes('data-test')).toBe('tag')
+    })
+
+    it('关闭按钮使用注入 locale 的文案，且 props 优先', () => {
+        const provide = { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) }
+
+        const wrapper = mount(CaomeiTag, {
+            props: { closable: true },
+            global: { provide },
+        })
+        expect(wrapper.get('.caomei-tag__close').attributes('aria-label')).toBe('Remove')
+
+        const custom = mount(CaomeiTag, {
+            props: { closable: true, closeLabel: '移除标签' },
+            global: { provide },
+        })
+        expect(custom.get('.caomei-tag__close').attributes('aria-label')).toBe('移除标签')
     })
 })

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { X } from '@lucide/vue'
 import { computed } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { defaultLocaleMessages } from '../../locale'
 import type { TagProps } from './types'
 
 defineOptions({ name: 'CaomeiTag' })
@@ -13,7 +13,6 @@ const props = withDefaults(defineProps<TagProps>(), {
     size: 'md',
     closable: false,
     disabled: false,
-    closeLabel: defaultLocaleMessages.tag.close,
 })
 
 const emit = defineEmits<{
@@ -24,6 +23,9 @@ defineSlots<{
     default?: () => unknown
     icon?: () => unknown
 }>()
+
+const locale = useLocale()
+const closeLabel = computed(() => props.closeLabel ?? locale.value.tag.close)
 
 const rootClass = computed(() => [
     `caomei-tag--${props.tone}`,

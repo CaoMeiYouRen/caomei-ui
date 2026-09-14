@@ -2,7 +2,7 @@
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, watch, type CSSProperties } from 'vue'
-import { defaultLocaleMessages } from '../../locale'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
@@ -12,18 +12,14 @@ defineOptions({ name: 'CaomeiDataTable' })
 
 const props = withDefaults(defineProps<DataTableProps<T>>(), {
     rowKey: undefined,
-    emptyText: defaultLocaleMessages.table.empty,
     caption: '',
     hoverable: true,
     striped: false,
     sortField: undefined,
     sortOrder: 'asc',
     loading: false,
-    loadingText: defaultLocaleMessages.progress.loading,
     selectionMode: undefined,
     selection: undefined,
-    selectAllLabel: defaultLocaleMessages.table.selectAll,
-    selectRowLabel: defaultLocaleMessages.table.selectRow,
     paginator: false,
     rows: 10,
     totalRecords: undefined,
@@ -41,6 +37,12 @@ const emit = defineEmits<{
 defineSlots<{
     empty?: () => unknown
 }>()
+
+const locale = useLocale()
+const emptyText = computed(() => props.emptyText ?? locale.value.table.empty)
+const loadingText = computed(() => props.loadingText ?? locale.value.progress.loading)
+const selectAllLabel = computed(() => props.selectAllLabel ?? locale.value.table.selectAll)
+const selectRowLabel = computed(() => props.selectRowLabel ?? locale.value.table.selectRow)
 
 const columnMap = computed(() => new Map(props.columns.map((column) => [column.key, column])))
 

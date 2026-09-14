@@ -1,5 +1,8 @@
 import { mount } from '@vue/test-utils'
+import { computed, nextTick, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiPaginator } from './index'
 
 function getRoot(wrapper: ReturnType<typeof mount>) {
@@ -182,5 +185,40 @@ describe('CaomeiPaginator', () => {
         const root = getRoot(wrapper)
         expect(root.classes()).toContain('custom')
         expect(root.attributes('data-test')).toBe('paginator')
+    })
+
+    it('内建可访问名使用注入 locale 的文案', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50, showEdges: true },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('Pagination')
+        expect(wrapper.find('[aria-label="First page"]').exists()).toBe(true)
+        expect(wrapper.find('[aria-label="Previous page"]').exists()).toBe(true)
+        expect(wrapper.find('[aria-label="Next page"]').exists()).toBe(true)
+        expect(wrapper.find('[aria-label="Last page"]').exists()).toBe(true)
+        expect(pageButtons(wrapper)[0].attributes('aria-label')).toBe('Page 1')
+    })
+
+    it('注入 locale 变化时可访问名响应式更新', async () => {
+        const locale = ref(caomeiLocales['zh-CN'])
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50 },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => locale.value) },
+            },
+        })
+
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('分页')
+
+        locale.value = caomeiLocales['en-US']
+        await nextTick()
+
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('Pagination')
+        expect(wrapper.find('[aria-label="Previous page"]').exists()).toBe(true)
+        expect(pageButtons(wrapper)[0].attributes('aria-label')).toBe('Page 1')
     })
 })

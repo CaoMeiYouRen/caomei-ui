@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils'
-import { h, nextTick, type DefineComponent } from 'vue'
+import { computed, h, nextTick, type DefineComponent } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import type { DataTableColumn, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
 
@@ -322,5 +324,55 @@ describe('CaomeiDataTable', () => {
         })
 
         expect(wrapper.get('.caomei-data-table__loading').text()).toBe('加载记录中')
+    })
+
+    it('空态与加载文案使用注入 locale', () => {
+        const provide = { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) }
+
+        const empty = mount(DataTable, {
+            props: { data: [], columns: baseColumns },
+            global: { provide },
+        })
+        expect(empty.get('.caomei-data-table__empty').text()).toBe('No data')
+
+        const loading = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns, loading: true },
+            global: { provide },
+        })
+        expect(loading.get('.caomei-data-table__loading').text()).toBe('Loading')
+    })
+
+    it('选择列可访问名使用注入 locale', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns, selectionMode: 'multiple' },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        const controls = wrapper.findAll('.caomei-checkbox__control')
+        expect(controls[0].attributes('aria-label')).toBe('Select all')
+        expect(controls[1].attributes('aria-label')).toBe('Select row 0')
+    })
+
+    it('空态与选择列文案可显式覆盖', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                selectAllLabel: '全选自定义',
+                selectRowLabel: '选择自定义',
+            },
+        })
+
+        const controls = wrapper.findAll('.caomei-checkbox__control')
+        expect(controls[0].attributes('aria-label')).toBe('全选自定义')
+        expect(controls[1].attributes('aria-label')).toBe('选择自定义 0')
+
+        const empty = mount(DataTable, {
+            props: { data: [], columns: baseColumns, emptyText: '自定义空态' },
+        })
+        expect(empty.get('.caomei-data-table__empty').text()).toBe('自定义空态')
     })
 })

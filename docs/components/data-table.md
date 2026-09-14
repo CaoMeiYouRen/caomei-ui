@@ -27,6 +27,7 @@
 | `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | 排序函数，默认 `alphanumeric` |
 | `headerClass` / `bodyClass` | `string` | 表头 / 数据单元格自定义 class |
 | `headerStyle` / `bodyStyle` | `CSSProperties` | 表头 / 数据单元格自定义样式 |
+| `frozen` | `'left' \| 'right'` | 冻结列（横向滚动时吸边） |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
@@ -60,6 +61,17 @@
     ssg="true"
 />
 
+## 冻结列
+
+`frozen` 支持 `'left'` / `'right'`，使列在横向滚动时吸边。吸边偏移按冻结列声明的 px `width` 累计（非 px 或未声明按 150px 估算），请为冻结列显式设置 px `width`，并建议每侧不超过一列。存在冻结列时表格会按 px 宽度之和设置 `min-width` 以保证可横向滚动；同侧多列时按末端累计偏移。
+
+> 冻结列需要不透明背景：行背景默认值由 `transparent` 调整为 `--caomei-color-bg`，悬浮 / 选中态以该色为底混合；如需透明行背景，请覆盖 `--caomei-data-table-row-bg` 并自行确保吸边单元格不透视。
+
+<demo
+    vue="../examples/data-table/frozen.vue"
+    ssg="true"
+/>
+
 ## 加载态
 
 `loading` 为真时渲染加载行并标注 `aria-busy`；文案默认取当前语言的「加载中」，可用 `loadingText` 覆盖。
@@ -88,7 +100,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义、排序、行选择、分页与加载态；冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
+- 当前已支持列定义、排序、行选择、分页、冻结列与加载态。
 
 ## 无障碍
 
@@ -103,7 +115,7 @@
 |------|------|------|
 | `--caomei-data-table-border` | `--caomei-color-border` | 单元格分隔线颜色 |
 | `--caomei-data-table-head-bg` | `--caomei-color-bg-elevated` | 表头背景色 |
-| `--caomei-data-table-row-bg` | `transparent` | 行背景色 |
+| `--caomei-data-table-row-bg` | `--caomei-color-bg` | 行背景色 |
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | 斑马纹背景色 |
 | `--caomei-data-table-row-hover-bg` | 文字色 4% 混合 | 行悬浮背景色 |
 | `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |

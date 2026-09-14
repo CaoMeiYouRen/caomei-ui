@@ -27,6 +27,7 @@ Common `DataTableColumn` fields:
 | `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | Sort function, defaults to `alphanumeric` |
 | `headerClass` / `bodyClass` | `string` | Custom class for header / body cells |
 | `headerStyle` / `bodyStyle` | `CSSProperties` | Custom style for header / body cells |
+| `frozen` | `'left' \| 'right'` | Frozen column (sticks to the edge when scrolling horizontally) |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
@@ -60,6 +61,17 @@ When `selectionMode` is `multiple` or `single`, a selection column is rendered f
     ssg="true"
 />
 
+## Frozen columns
+
+`frozen` accepts `'left'` / `'right'` to stick a column to the edge while scrolling horizontally. Offsets accumulate from the declared px `width` of frozen columns (non-px or missing widths fall back to 150px), so set an explicit px `width`; one frozen column per side is recommended. When frozen columns exist the table gets a `min-width` equal to the sum of px widths so it can scroll; multiple columns on the same side accumulate from the far end.
+
+> Frozen columns need an opaque background: the row background default changed from `transparent` to `--caomei-color-bg`, and hover / selected states mix on top of it; override `--caomei-data-table-row-bg` if you need transparency, and make sure pinned cells stay opaque.
+
+<demo
+    vue="../examples/data-table/frozen.vue"
+    ssg="true"
+/>
+
 ## Loading state
 
 When `loading` is true a loading row is rendered and `aria-busy` is set; the text defaults to the current locale's "Loading" and can be overridden with `loadingText`.
@@ -88,7 +100,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions, sorting, row selection, pagination and loading state are supported; frozen columns land in later stages.
+- Currently column definitions, sorting, row selection, pagination, frozen columns and loading state are all supported.
 
 ## Accessibility
 
@@ -103,7 +115,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 |------|------|------|
 | `--caomei-data-table-border` | `--caomei-color-border` | Cell divider color |
 | `--caomei-data-table-head-bg` | `--caomei-color-bg-elevated` | Header background color |
-| `--caomei-data-table-row-bg` | `transparent` | Row background color |
+| `--caomei-data-table-row-bg` | `--caomei-color-bg` | Row background color |
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | Striped row background color |
 | `--caomei-data-table-row-hover-bg` | 4% text color mix | Row hover background color |
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |

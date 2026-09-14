@@ -1,0 +1,10 @@
+/*
+  文档站专属修正。
+
+  VitePress 默认把 `.vp-doc` 内的 `<table>` 设为 `display: block`（便于页面内表格横向滚动），
+  这会脱离表格布局上下文，使组件表格的 `position: sticky` 冻结列失效。
+  仅对组件库表格还原 `display: table`；组件自带 `.caomei-data-table` 滚动容器负责横向滚动。
+*/
+.vp-doc .caomei-data-table__table {
+    display: table;
+}

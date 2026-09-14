@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends object">
-import { FlexRender, useTable, type ColumnDef, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
+import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, watch, type CSSProperties } from 'vue'
 import { defaultLocaleMessages } from '../../locale'
@@ -43,6 +43,12 @@ defineSlots<{
 }>()
 
 const columnMap = computed(() => new Map(props.columns.map((column) => [column.key, column])))
+
+/** 由列定义的 `frozen` 推导冻结列状态（v9 以逻辑位 `start` / `end` 表示）。 */
+const columnPinningState = computed<ColumnPinningState>(() => ({
+    start: props.columns.filter((column) => column.frozen === 'left').map((column) => column.key),
+    end: props.columns.filter((column) => column.frozen === 'right').map((column) => column.key),
+}))
 
 function resolveRowKey(row: T, index: number): string {
     const key = props.rowKey
@@ -181,6 +187,7 @@ const state = computed(() => ({
     sorting: currentSorting.value,
     rowSelection: currentSelection.value,
     pagination: currentPagination.value,
+    columnPinning: columnPinningState.value,
 }))
 
 function onSortingChange(updater: Updater<SortingState>): void {
@@ -241,16 +248,65 @@ function alignClass(key: string): string {
     return `caomei-data-table__cell--${columnMap.value.get(key)?.align ?? 'left'}`
 }
 
-function columnStyle(key: string): CSSProperties | undefined {
-    const def = columnMap.value.get(key)
-    if (!def) {
+function pinnedSide(key: string): 'start' | 'end' | false {
+    const column = table.getColumn(key)
+    return column ? column.getIsPinned() : false
+}
+
+function pinnedClass(key: string): string | undefined {
+    const side = pinnedSide(key)
+    return side ? `caomei-data-table__cell--pinned-${side}` : undefined
+}
+
+/** 未声明 px 宽度的冻结列按此估算吸边偏移。 */
+const DEFAULT_PINNED_WIDTH = 150
+
+function columnWidth(key: string): number {
+    const width = columnMap.value.get(key)?.width
+    if (!width?.endsWith('px')) {
+        return DEFAULT_PINNED_WIDTH
+    }
+    const parsed = Number.parseFloat(width)
+    return Number.isFinite(parsed) ? parsed : DEFAULT_PINNED_WIDTH
+}
+
+function pinnedStyle(key: string): CSSProperties | undefined {
+    const side = pinnedSide(key)
+    if (!side) {
         return undefined
     }
-    return { ...def.headerStyle, width: def.width }
+    const keys = side === 'start' ? columnPinningState.value.start : columnPinningState.value.end
+    const index = keys.indexOf(key)
+    let offset = 0
+    if (side === 'start') {
+        for (let i = 0; i < index; i++) {
+            offset += columnWidth(keys[i])
+        }
+        return { left: `${offset}px` }
+    }
+    // `end` 侧视觉顺序与 DOM 相反：从末端累计，保证末尾列贴最右
+    for (let i = keys.length - 1; i > index; i--) {
+        offset += columnWidth(keys[i])
+    }
+    return { right: `${offset}px` }
+}
+
+function columnStyle(key: string): CSSProperties | undefined {
+    const def = columnMap.value.get(key)
+    const pinned = pinnedStyle(key)
+    if (!def && !pinned) {
+        return undefined
+    }
+    return { ...def?.headerStyle, width: def?.width, ...pinned }
 }
 
 function cellStyle(key: string): CSSProperties | undefined {
-    return columnMap.value.get(key)?.bodyStyle
+    const bodyStyle = columnMap.value.get(key)?.bodyStyle
+    const pinned = pinnedStyle(key)
+    if (!bodyStyle && !pinned) {
+        return undefined
+    }
+    return { ...bodyStyle, ...pinned }
 }
 
 function isSortable(key: string): boolean {
@@ -312,6 +368,29 @@ function toggleRow(row: { toggleSelected: () => void }): void {
 
 const totalRows = computed(() => props.totalRecords ?? props.data.length)
 
+/*
+ * 存在冻结列时才按 px 宽度之和给出 `min-width`：`table-layout: auto` 会压缩列宽，
+ * 导致声明宽度失效、冻结列无法横向滚动；未使用冻结列时保持既有行为。
+ */
+const hasFrozenColumn = computed(() => props.columns.some((column) => Boolean(column.frozen)))
+
+const tableMinWidth = computed(() => {
+    if (!hasFrozenColumn.value) {
+        return undefined
+    }
+    let total = 0
+    for (const column of props.columns) {
+        if (!column.width?.endsWith('px')) {
+            continue
+        }
+        const parsed = Number.parseFloat(column.width)
+        if (Number.isFinite(parsed)) {
+            total += parsed
+        }
+    }
+    return total > 0 ? `${total}px` : undefined
+})
+
 const pageCount = computed(() => {
     if (!props.paginator && !props.lazy) {
         return 1
@@ -360,7 +439,10 @@ function goToPage(page: number): void {
         :class="rootClass"
         :aria-busy="loading || undefined"
     >
-        <table class="caomei-data-table__table">
+        <table
+            class="caomei-data-table__table"
+            :style="tableMinWidth ? {minWidth: tableMinWidth} : undefined"
+        >
             <caption v-if="caption" class="caomei-data-table__caption">
                 {{ caption }}
             </caption>
@@ -388,7 +470,7 @@ function goToPage(page: number): void {
                         :key="header.id"
                         scope="col"
                         class="caomei-data-table__th"
-                        :class="[alignClass(header.column.id), columnMap.get(header.column.id)?.headerClass]"
+                        :class="[alignClass(header.column.id), columnMap.get(header.column.id)?.headerClass, pinnedClass(header.column.id)]"
                         :style="columnStyle(header.column.id)"
                         :aria-sort="ariaSort(header.column.id)"
                     >
@@ -461,7 +543,7 @@ function goToPage(page: number): void {
                             v-for="cell in row.getAllCells()"
                             :key="cell.id"
                             class="caomei-data-table__td"
-                            :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass]"
+                            :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
                             :style="cellStyle(cell.column.id)"
                         >
                             <FlexRender :cell="cell" />
@@ -574,7 +656,7 @@ function goToPage(page: number): void {
   使 `.caomei-data-table__row--selected` 能稳定压过基础 / 斑马纹 / 悬浮态。
 */
 :where(.caomei-data-table__row) {
-    background: var(--caomei-data-table-row-bg, transparent);
+    background: var(--caomei-data-table-row-bg, var(--caomei-color-bg));
 }
 
 :where(.caomei-data-table--striped) :where(.caomei-data-table__row:nth-child(even)) {
@@ -582,12 +664,12 @@ function goToPage(page: number): void {
 }
 
 :where(.caomei-data-table--hoverable) :where(.caomei-data-table__row:hover) {
-    background: var(--caomei-data-table-row-hover-bg, color-mix(in srgb, var(--caomei-color-text) 4%, transparent));
+    background: var(--caomei-data-table-row-hover-bg, color-mix(in srgb, var(--caomei-color-text) 4%, var(--caomei-color-bg)));
 }
 
 .caomei-data-table__row--selected,
 :where(.caomei-data-table--hoverable) .caomei-data-table__row--selected:hover {
-    background: var(--caomei-data-table-selected-bg, color-mix(in srgb, var(--caomei-color-primary) 8%, transparent));
+    background: var(--caomei-data-table-selected-bg, color-mix(in srgb, var(--caomei-color-primary) 8%, var(--caomei-color-bg)));
 }
 
 .caomei-data-table__empty,
@@ -601,6 +683,20 @@ function goToPage(page: number): void {
     display: flex;
     justify-content: flex-end;
     padding-top: var(--caomei-space-3);
+}
+
+/* 冻结列：横向滚动时吸边；表头层级高于数据单元格 */
+.caomei-data-table__th.caomei-data-table__cell--pinned-start,
+.caomei-data-table__th.caomei-data-table__cell--pinned-end {
+    position: sticky;
+    z-index: 3;
+}
+
+.caomei-data-table__td.caomei-data-table__cell--pinned-start,
+.caomei-data-table__td.caomei-data-table__cell--pinned-end {
+    position: sticky;
+    z-index: 2;
+    background: inherit;
 }
 
 .caomei-data-table__loading {

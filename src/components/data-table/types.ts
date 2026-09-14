@@ -58,6 +58,11 @@ export interface DataTableColumn<T> {
     sortable?: boolean
     /** 排序函数名，默认 `alphanumeric` */
     sortFn?: DataTableSortFn
+    /**
+     * 冻结列位置（横向滚动时吸边）
+     * @en Frozen column side (sticks to the edge when scrolling horizontally)
+     */
+    frozen?: 'left' | 'right'
     /** 表头单元格自定义 class */
     headerClass?: string
     /** 数据单元格自定义 class */

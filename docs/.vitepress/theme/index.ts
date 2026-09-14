@@ -4,6 +4,7 @@ import ComponentApi from './components/component-api.vue'
 import Layout from './layout.vue'
 import '../../../src/styles/index.css'
 import './motion.css'
+import './caomei-demo.css'
 
 export default {
     extends: DefaultTheme,

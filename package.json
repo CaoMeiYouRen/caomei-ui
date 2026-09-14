@@ -62,7 +62,7 @@
   "dependencies": {
     "@lucide/vue": "^1.45.0",
     "@tanstack/vue-table": "9.2.4",
-    "reka-ui": "^2.10.4"
+    "reka-ui": "2.10.4"
   },
   "devDependencies": {
     "@lint-md/cli": "^2.3.1",

@@ -24,7 +24,7 @@ importers:
         specifier: 9.2.4
         version: 9.2.4(vue@3.5.42(typescript@5.9.3))
       reka-ui:
-        specifier: ^2.10.4
+        specifier: 2.10.4
         version: 2.10.4(vue@3.5.42(typescript@5.9.3))
     devDependencies:
       '@lint-md/cli':

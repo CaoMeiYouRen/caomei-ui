@@ -66,5 +66,7 @@ jobs:
         run: pnpm test:coverage
       - name: Build library
         run: pnpm build
+      - name: Check build artifacts
+        run: pnpm check:build
       - name: Build docs
         run: pnpm docs:build

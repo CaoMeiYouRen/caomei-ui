@@ -40,6 +40,9 @@ export * from './components/textarea'
 export * from './components/toast'
 export * from './components/toggle-button'
 export * from './components/toolbar'
+
+export type { OptionFieldAccessor, OptionValue } from './components/_shared/option'
+
 export * from './icons'
 export * from './locale'
 export * from './types'

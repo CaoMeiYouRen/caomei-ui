@@ -1,9 +1,11 @@
 import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it } from 'vitest'
-import { nextTick } from 'vue'
+import { nextTick, type DefineComponent } from 'vue'
+import type { SelectProps } from './types'
 import { CaomeiSelect } from './index'
 
 afterEach(() => {
+    document.body.innerHTML = ''
     document.body.style.overflow = ''
     document.body.style.pointerEvents = ''
     document.body.style.paddingRight = ''
@@ -171,5 +173,174 @@ describe('CaomeiSelect', () => {
 
         const withoutPlaceholder = mount(CaomeiSelect, { props: { options } })
         expect(withoutPlaceholder.get('.caomei-select').attributes('data-has-placeholder')).toBeUndefined()
+    })
+})
+
+describe('CaomeiSelect 对象选项映射', () => {
+    interface MappedOption {
+        name: string
+        id?: number | null
+        disabled?: boolean
+    }
+
+    /** VTU 无法从 props 推断泛型组件参数，测试内具体化选项类型 */
+    const MappedSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<MappedOption>>
+
+    const objectOptions: MappedOption[] = [
+        { name: '分类一', id: 1 },
+        { name: '分类二', id: 2 },
+    ]
+
+    it('通过 optionLabel / optionValue 映射字段并支持数字值', () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                placeholder: '请选择',
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('分类二')
+    })
+
+    it('映射后的选项面板按 label 渲染', async () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered).toHaveLength(2)
+        expect(rendered[0].textContent).toContain('分类一')
+
+        wrapper.unmount()
+    })
+
+    it('optionLabel 传函数时按函数结果渲染', () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: (option) => `#${option.id ?? '?'}`,
+                optionValue: 'id',
+                modelValue: 1,
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('#1')
+    })
+
+    it('解析不到 optionValue 的选项不渲染', async () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{ name: '无值选项' }, ...objectOptions],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(2)
+
+        wrapper.unmount()
+    })
+
+    it('映射的 label 字段缺省时回退占位文本', () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'missing',
+                optionValue: 'id',
+                modelValue: 1,
+                placeholder: '请选择',
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('请选择')
+    })
+
+    it('映射的选项禁用字段生效', async () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{ name: '分类一', id: 1 }, { name: '分类二', id: 2, disabled: true }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered[1].hasAttribute('data-disabled')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('选中映射后的选项后回传数字值', async () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        // Reka SelectItem 以 pointerup 提交选中（见 SelectItem 的 onPointerup）
+        const option = document.querySelectorAll<HTMLElement>('[role="option"]')[1]
+        option.dispatchEvent(new Event('pointerup', { bubbles: true }))
+        await nextTick()
+        await nextTick()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+
+        wrapper.unmount()
+    })
+
+    it('optionValue 传函数时按函数结果取值', () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: objectOptions,
+                optionLabel: 'name',
+                optionValue: (option) => option.id ?? 0,
+                modelValue: 2,
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('分类二')
+    })
+
+    it('optionValue 解析出契约外取值（如 null）的选项不渲染', async () => {
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{ name: '全部', id: null }, ...objectOptions],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(2)
+
+        wrapper.unmount()
     })
 })

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends object">
 import { Check, ChevronDown } from '@lucide/vue'
 import {
     SelectContent,
@@ -14,12 +14,15 @@ import {
 } from 'reka-ui'
 import { computed } from 'vue'
 import { CaomeiIcon } from '../../icons'
+import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
 import type { SelectProps } from './types'
 
 defineOptions({ name: 'CaomeiSelect', inheritAttrs: false })
 
-const props = withDefaults(defineProps<SelectProps>(), {
+const props = withDefaults(defineProps<SelectProps<T>>(), {
     options: () => [],
+    optionLabel: 'label',
+    optionValue: 'value',
     placeholder: '',
     size: 'md',
     disabled: false,
@@ -27,16 +30,44 @@ const props = withDefaults(defineProps<SelectProps>(), {
     bodyLock: false,
 })
 
-const model = defineModel<string>()
+const model = defineModel<OptionValue | null>()
 
-const selectedLabel = computed(
-    () => props.options.find((option) => option.value === model.value)?.label,
-)
+interface NormalizedOption {
+    /** 解析后的选项值（字符串或数字） */
+    value: OptionValue
+    /** 解析后的显示文本；字段缺省时为 undefined */
+    label: string | undefined
+    disabled: boolean
+}
+
+/** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
+const normalizedOptions = computed<NormalizedOption[]>(() => {
+    const result: NormalizedOption[] = []
+    for (const option of props.options) {
+        const value = resolveOptionValue(option, props.optionValue, 'value')
+        if (value === undefined) {
+            continue
+        }
+        result.push({
+            value,
+            label: resolveOptionField(option, props.optionLabel, 'label'),
+            disabled: resolveOptionDisabled(option),
+        })
+    }
+    return result
+})
 
 /** 有选中值（用于 data-filled；不依赖选项 label，空 label 也视为有值） */
 const hasValue = computed(
     () => model.value !== undefined && model.value !== null && model.value !== '',
 )
+
+const selectedLabel = computed(() => {
+    if (!hasValue.value) {
+        return undefined
+    }
+    return normalizedOptions.value.find((option) => option.value === model.value)?.label
+})
 
 const rootClass = computed(() => [
     `caomei-select--${props.size}`,
@@ -80,7 +111,7 @@ const rootClass = computed(() => [
             >
                 <SelectViewport class="caomei-select__viewport">
                     <SelectItem
-                        v-for="option in options"
+                        v-for="option in normalizedOptions"
                         :key="option.value"
                         class="caomei-select__item"
                         :value="option.value"

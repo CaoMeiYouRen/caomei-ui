@@ -35,10 +35,19 @@ Common `DataTableColumn` fields:
 
 ## Sorting
 
-Click the header of a `sortable` column to sort (ascending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Otherwise sorting state is kept internally. The controlled flag is determined at mount: adding or removing `sortField` later does not switch the mode.
+Click the header of a `sortable` column to sort (ascending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Adding or removing `sortField` at runtime switches between controlled and component-managed modes; when uncontrolled the `sort` event is still emitted for observation.
 
 <demo
     vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+## Row selection
+
+When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header. Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled.
+
+<demo
+    vue="../examples/data-table/selection.vue"
     ssg="true"
 />
 
@@ -70,7 +79,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions, sorting and loading state are supported; row selection / pagination / frozen columns land in later stages.
+- Currently column definitions, sorting, row selection and loading state are supported; pagination / frozen columns land in later stages.
 
 ## Accessibility
 
@@ -88,5 +97,6 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-row-bg` | `transparent` | Row background color |
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | Striped row background color |
 | `--caomei-data-table-row-hover-bg` | 4% text color mix | Row hover background color |
+| `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
 
 <ComponentApi name="data-table" />

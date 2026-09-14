@@ -1,5 +1,6 @@
 import {
     createSortedRowModel,
+    rowSelectionFeature,
     rowSortingFeature,
     sortFn_alphanumeric,
     sortFn_basic,
@@ -10,11 +11,12 @@ import {
 /**
  * DataTable 使用的无头表格特性集。
  *
- * 已启用：核心行列模型 + 排序（含受控 / 非受控）。
- * 行选择、分页、列冻结等能力后续在此集中开启（见 docs/plan/todo.md）。
+ * 已启用：核心行列模型 + 排序（含受控 / 非受控）+ 行选择。
+ * 分页、列冻结等能力后续在此集中开启（见 docs/plan/todo.md）。
  */
 export const dataTableFeatures = tableFeatures({
     rowSortingFeature,
+    rowSelectionFeature,
     sortedRowModel: createSortedRowModel(),
     sortFns: {
         alphanumeric: sortFn_alphanumeric,

@@ -49,6 +49,8 @@ const zhCN: CaomeiLocaleMessages = {
     },
     table: {
         empty: '暂无数据',
+        selectAll: '全选',
+        selectRow: '选择该行',
     },
     toast: {
         label: '通知',

@@ -4,6 +4,7 @@ export type {
     DataTableCellContext,
     DataTableColumn,
     DataTableProps,
+    DataTableSelectionMode,
     DataTableSortEvent,
     DataTableSortFn,
     DataTableSortOrder,

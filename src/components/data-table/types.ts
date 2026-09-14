@@ -8,6 +8,9 @@ export type DataTableSortOrder = 'asc' | 'desc'
 /** 内置排序函数名（与 `table-features.ts` 的 `sortFns` 注册表保持一致） */
 export type DataTableSortFn = 'alphanumeric' | 'text' | 'basic'
 
+/** 行选择模式 */
+export type DataTableSelectionMode = 'single' | 'multiple'
+
 export interface DataTableCellContext<T> {
     /** 当前行数据 */
     row: T
@@ -110,4 +113,24 @@ export interface DataTableProps<T> {
      * @en Loading text; defaults to the current locale's "Loading" text
      */
     loadingText?: string
+    /**
+     * 行选择模式；提供时首列渲染选择框
+     * @en Row selection mode; when provided a selection column is rendered first
+     */
+    selectionMode?: DataTableSelectionMode
+    /**
+     * 全选框可访问名，默认取当前语言的「全选」
+     * @en Accessible name of the select-all checkbox; defaults to the current locale's "Select all"
+     */
+    selectAllLabel?: string
+    /**
+     * 行选择框可访问名前缀，默认取当前语言的「选择该行」
+     * @en Accessible name prefix of the row checkbox; defaults to the current locale's "Select row"
+     */
+    selectRowLabel?: string
+    /**
+     * 受控选中行：`multiple` 用数组，`single` 用单行或 `null`；提供时进入受控选择
+     * @en Controlled selection: an array for `multiple`, a single row or `null` for `single`; providing it enables controlled selection
+     */
+    selection?: T[] | T | null
 }

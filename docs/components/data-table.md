@@ -35,10 +35,19 @@
 
 ## 排序
 
-`sortable` 列点击表头即可排序（首次升序）。传入 `sortField` + `sortOrder` 进入**受控排序**并在变化时抛出 `sort` 事件；不传时由组件内部维护排序状态。受控标志在挂载时确定：运行期增删 `sortField` 不会切换模式；受控时需在 `sort` 事件中回写 `sortField` / `sortOrder`。
+`sortable` 列点击表头即可排序（首次升序）。传入 `sortField` + `sortOrder` 进入**受控排序**并在变化时抛出 `sort` 事件；运行时传入或移除 `sortField` 会在受控与自持之间切换，受控时需在 `sort` 事件中回写 `sortField` / `sortOrder`。非受控时同样抛出 `sort`（供观察，排序状态由组件自持）。
 
 <demo
     vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+## 行选择
+
+`selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框；运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 需在挂载时确定。非受控时同样抛出 `update:selection`（供观察）。
+
+<demo
+    vue="../examples/data-table/selection.vue"
     ssg="true"
 />
 
@@ -70,7 +79,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义、排序与加载态；行选择 / 分页 / 冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
+- 当前已支持列定义、排序、行选择与加载态；分页 / 冻结列按后续阶段推进（见 [待办事项](../plan/todo.md)）。
 
 ## 无障碍
 
@@ -88,5 +97,6 @@
 | `--caomei-data-table-row-bg` | `transparent` | 行背景色 |
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | 斑马纹背景色 |
 | `--caomei-data-table-row-hover-bg` | 文字色 4% 混合 | 行悬浮背景色 |
+| `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |
 
 <ComponentApi name="data-table" />

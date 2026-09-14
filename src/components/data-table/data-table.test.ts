@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { h, nextTick, type DefineComponent } from 'vue'
+import { h, nextTick, reactive, type DefineComponent } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 import type { DataTableColumn, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
@@ -279,7 +279,7 @@ describe('CaomeiDataTable', () => {
         })
 
         await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
-        expect(wrapper.emitted('sort')).toBeUndefined()
+        expect(wrapper.emitted('sort')?.[0]?.[0]).toEqual({ sortField: 'name', sortOrder: 'asc' })
         expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toBe('10')
     })
 
@@ -322,5 +322,170 @@ describe('CaomeiDataTable', () => {
         })
 
         expect(wrapper.get('.caomei-data-table__loading').text()).toBe('加载记录中')
+    })
+
+    it('selectionMode=multiple 渲染选择列并抛出 update:selection', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...baseData], columns: baseColumns, selectionMode: 'multiple' },
+        })
+
+        const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
+        expect(boxes).toHaveLength(3)
+
+        await boxes[1].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual([baseData[0]])
+    })
+
+    it('selectionMode=multiple 表头可全选', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...baseData], columns: baseColumns, selectionMode: 'multiple' },
+        })
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(baseData)
+    })
+
+    it('selectionMode=single 仅保留单行且无表头全选框', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...baseData], columns: baseColumns, selectionMode: 'single' },
+        })
+
+        const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
+        expect(boxes).toHaveLength(2)
+
+        await boxes[1].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(baseData[1])
+    })
+
+    it('受控 selection 标记选中行（响应式数组亦生效）', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                selection: reactive([baseData[0]]),
+            },
+        })
+
+        const rows = wrapper.findAll('.caomei-data-table__row')
+        expect(rows[0].classes()).toContain('caomei-data-table__row--selected')
+        expect(rows[1].classes()).not.toContain('caomei-data-table__row--selected')
+    })
+
+    it('空态 colspan 计入选择列', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [], columns: baseColumns, selectionMode: 'multiple' },
+        })
+
+        expect(wrapper.get('.caomei-data-table__empty').attributes('colspan')).toBe('3')
+    })
+
+    it('受控 selection 初始为空、后续回填时标记选中行', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                selection: [],
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(0)
+
+        await wrapper.setProps({ selection: [baseData[0]] })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(1)
+    })
+
+    it('selectionMode=single 取消选择抛出 null', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'single',
+                selection: baseData[0],
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toBeNull()
+    })
+
+    it('selectionMode=single 选择第二行时抛出该行', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'single',
+                selection: baseData[0],
+            },
+        })
+
+        const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
+        await boxes[1].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(baseData[1])
+    })
+
+    it('rowKey 为函数时选择与回填可用', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                rowKey: (row: Row) => `k-${row.name}`,
+                selection: reactive([baseData[1]]),
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(1)
+
+        const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
+        expect(boxes[1].attributes('aria-checked')).toBe('false')
+        expect(boxes[2].attributes('aria-checked')).toBe('true')
+    })
+
+    it('multiple 部分选中时表头为 indeterminate', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                selection: reactive([baseData[0]]),
+            },
+        })
+
+        expect(
+            wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].attributes('aria-checked'),
+        ).toBe('mixed')
+    })
+
+    it('loading colspan 计入选择列', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns, selectionMode: 'multiple', loading: true },
+        })
+
+        expect(wrapper.get('.caomei-data-table__loading').attributes('colspan')).toBe('3')
+    })
+
+    it('可覆盖选择框可访问名', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                selectAllLabel: '全部选择',
+                selectRowLabel: '选择',
+            },
+        })
+
+        const boxes = wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')
+        expect(boxes[0].attributes('aria-label')).toBe('全部选择')
+        expect(boxes[1].attributes('aria-label')).toMatch(/^选择 /)
     })
 })

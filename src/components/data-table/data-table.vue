@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="T extends object">
-import { FlexRender, useTable, type ColumnDef, type SortingState, type Updater } from '@tanstack/vue-table'
+import { FlexRender, useTable, type ColumnDef, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
-import { computed, type CSSProperties } from 'vue'
+import { computed, ref, toRaw, watch, type CSSProperties } from 'vue'
 import { defaultLocaleMessages } from '../../locale'
+import { CaomeiCheckbox } from '../checkbox'
 import { dataTableFeatures } from './table-features'
 import type { DataTableProps, DataTableSortEvent } from './types'
 
@@ -18,10 +19,15 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     sortOrder: 'asc',
     loading: false,
     loadingText: defaultLocaleMessages.progress.loading,
+    selectionMode: undefined,
+    selection: undefined,
+    selectAllLabel: defaultLocaleMessages.table.selectAll,
+    selectRowLabel: defaultLocaleMessages.table.selectRow,
 })
 
 const emit = defineEmits<{
     sort: [event: DataTableSortEvent]
+    'update:selection': [selection: T[] | T | null]
 }>()
 
 defineSlots<{
@@ -86,25 +92,91 @@ const sortingState = computed<SortingState>(() => {
 
 const isSortControlled = computed(() => props.sortField !== undefined)
 
+const isSelectionControlled = computed(() => props.selection !== undefined)
+
+function selectionRows(): T[] {
+    const current = props.selection
+    if (current === undefined || current === null) {
+        return []
+    }
+    return Array.isArray(current) ? (current as T[]) : [current as T]
+}
+
+/** 受控 `selection` 可能被父级 ref 包装为响应式代理，需按原始对象比对。 */
+function indexOfRow(row: T): number {
+    const target = toRaw(row)
+    return props.data.findIndex((item) => toRaw(item) === target)
+}
+
+const rowSelectionState = computed<RowSelectionState>(() => {
+    const record: RowSelectionState = {}
+    for (const row of selectionRows()) {
+        const index = indexOfRow(row)
+        if (index >= 0) {
+            record[resolveRowKey(row, index)] = true
+        }
+    }
+    return record
+})
+
+/*
+ * 组件自持状态：即使外部未传受控 props，也由内部 ref 托管，
+ * 这样非受控模式下同样会抛出 `sort` / `update:selection` 事件。
+ */
+const internalSorting = ref<SortingState>(sortingState.value)
+const internalSelection = ref<RowSelectionState>(rowSelectionState.value)
+
+watch(sortingState, (next) => {
+    if (isSortControlled.value) {
+        internalSorting.value = next
+    }
+})
+
+watch(rowSelectionState, (next) => {
+    if (isSelectionControlled.value) {
+        internalSelection.value = next
+    }
+})
+
+const currentSorting = computed(() => (isSortControlled.value ? sortingState.value : internalSorting.value))
+const currentSelection = computed(() =>
+    isSelectionControlled.value ? rowSelectionState.value : internalSelection.value,
+)
+
+const state = computed(() => ({ sorting: currentSorting.value, rowSelection: currentSelection.value }))
+
+function onSortingChange(updater: Updater<SortingState>): void {
+    const next = typeof updater === 'function' ? updater(currentSorting.value) : updater
+    if (!isSortControlled.value) {
+        internalSorting.value = next
+    }
+    const first = next[0]
+    emit('sort', {
+        sortField: first?.id ?? '',
+        sortOrder: first ? (first.desc ? 'desc' : 'asc') : '',
+    } satisfies DataTableSortEvent)
+}
+
+function onRowSelectionChange(updater: Updater<RowSelectionState>): void {
+    const next = typeof updater === 'function' ? updater(currentSelection.value) : updater
+    if (!isSelectionControlled.value) {
+        internalSelection.value = next
+    }
+    const selected = props.data.filter((row, index) => next[resolveRowKey(row, index)])
+    emit('update:selection', props.selectionMode === 'single' ? (selected[0] ?? null) : selected)
+}
+
 const table = useTable({
     features: dataTableFeatures,
     columns: tableColumns,
     data: computed(() => props.data),
     getRowId: (row: T, index: number) => resolveRowKey(row, index),
     sortDescFirst: false,
-    ...(isSortControlled.value
-        ? {
-                state: computed(() => ({ sorting: sortingState.value })),
-                onSortingChange: (updater: Updater<SortingState>) => {
-                    const next = typeof updater === 'function' ? updater(sortingState.value) : updater
-                    const first = next[0]
-                    emit('sort', {
-                        sortField: first?.id ?? '',
-                        sortOrder: first ? (first.desc ? 'desc' : 'asc') : '',
-                    } satisfies DataTableSortEvent)
-                },
-            }
-        : {}),
+    enableRowSelection: Boolean(props.selectionMode),
+    enableMultiRowSelection: props.selectionMode === 'multiple',
+    state,
+    onSortingChange,
+    onRowSelectionChange,
 })
 
 const headerGroups = computed(() => table.getHeaderGroups())
@@ -169,6 +241,26 @@ function toggleSort(key: string): void {
 function headerTitle(key: string): string {
     return columnMap.value.get(key)?.header ?? key
 }
+
+const bodyColspan = computed(() => Math.max(props.columns.length + (props.selectionMode ? 1 : 0), 1))
+
+const allRowsSelected = computed(() => table.getIsAllRowsSelected())
+const someRowsSelected = computed(() => table.getIsSomeRowsSelected())
+
+function headerCheckboxModel(): boolean | 'indeterminate' {
+    if (allRowsSelected.value) {
+        return true
+    }
+    return someRowsSelected.value ? 'indeterminate' : false
+}
+
+function toggleAllRows(): void {
+    table.toggleAllRowsSelected(!allRowsSelected.value)
+}
+
+function toggleRow(row: { toggleSelected: () => void }): void {
+    row.toggleSelected()
+}
 </script>
 
 <template>
@@ -183,6 +275,19 @@ function headerTitle(key: string): string {
             </caption>
             <thead>
                 <tr v-for="headerGroup in headerGroups" :key="headerGroup.id">
+                    <th
+                        v-if="selectionMode"
+                        scope="col"
+                        class="caomei-data-table__select-cell caomei-data-table__th"
+                        :aria-hidden="selectionMode === 'single' ? 'true' : undefined"
+                    >
+                        <CaomeiCheckbox
+                            v-if="selectionMode === 'multiple'"
+                            :model-value="headerCheckboxModel()"
+                            :label="selectAllLabel"
+                            @update:model-value="toggleAllRows"
+                        />
+                    </th>
                     <th
                         v-for="header in headerGroup.headers"
                         :key="header.id"
@@ -223,7 +328,7 @@ function headerTitle(key: string): string {
                 <tr v-if="loading" class="caomei-data-table__loading-row">
                     <td
                         class="caomei-data-table__loading"
-                        :colspan="Math.max(columns.length, 1)"
+                        :colspan="bodyColspan"
                     >
                         {{ loadingText }}
                     </td>
@@ -231,7 +336,7 @@ function headerTitle(key: string): string {
                 <tr v-else-if="isEmpty" class="caomei-data-table__empty-row">
                     <td
                         class="caomei-data-table__empty"
-                        :colspan="Math.max(columns.length, 1)"
+                        :colspan="bodyColspan"
                     >
                         <slot name="empty">
                             {{ emptyText }}
@@ -243,7 +348,18 @@ function headerTitle(key: string): string {
                         v-for="row in rows"
                         :key="row.id"
                         class="caomei-data-table__row"
+                        :class="row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
                     >
+                        <td
+                            v-if="selectionMode"
+                            class="caomei-data-table__select-cell caomei-data-table__td"
+                        >
+                            <CaomeiCheckbox
+                                :model-value="row.getIsSelected()"
+                                :label="`${selectRowLabel} ${row.id}`"
+                                @update:model-value="toggleRow(row)"
+                            />
+                        </td>
                         <td
                             v-for="cell in row.getAllCells()"
                             :key="cell.id"
@@ -327,20 +443,36 @@ function headerTitle(key: string): string {
     text-align: center;
 }
 
+.caomei-data-table__select-cell {
+    width: 1%;
+    padding-inline: var(--caomei-space-2);
+    text-align: center;
+    white-space: nowrap;
+}
+
 .caomei-data-table__cell--right {
     text-align: right;
 }
 
-.caomei-data-table__row {
+/*
+  行背景档位用 :where() 归零特异性（只提供默认值，便于消费方覆盖），
+  使 `.caomei-data-table__row--selected` 能稳定压过基础 / 斑马纹 / 悬浮态。
+*/
+:where(.caomei-data-table__row) {
     background: var(--caomei-data-table-row-bg, transparent);
 }
 
-.caomei-data-table--striped .caomei-data-table__row:nth-child(even) {
+:where(.caomei-data-table--striped) :where(.caomei-data-table__row:nth-child(even)) {
     background: var(--caomei-data-table-striped-bg, var(--caomei-color-bg-elevated));
 }
 
-.caomei-data-table--hoverable .caomei-data-table__row:hover {
+:where(.caomei-data-table--hoverable) :where(.caomei-data-table__row:hover) {
     background: var(--caomei-data-table-row-hover-bg, color-mix(in srgb, var(--caomei-color-text) 4%, transparent));
+}
+
+.caomei-data-table__row--selected,
+:where(.caomei-data-table--hoverable) .caomei-data-table__row--selected:hover {
+    background: var(--caomei-data-table-selected-bg, color-mix(in srgb, var(--caomei-color-primary) 8%, transparent));
 }
 
 .caomei-data-table__empty,

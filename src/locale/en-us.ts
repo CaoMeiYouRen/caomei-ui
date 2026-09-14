@@ -49,6 +49,8 @@ const enUS: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'No data',
+        selectAll: 'Select all',
+        selectRow: 'Select row',
     },
     toast: {
         label: 'Notification',

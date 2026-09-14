@@ -47,6 +47,8 @@ export interface CaomeiLocaleMessages {
     }
     table: {
         empty: string
+        selectAll: string
+        selectRow: string
     }
     toast: {
         label: string

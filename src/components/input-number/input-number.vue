@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<InputNumberProps>(), {
     invalid: false,
     placeholder: '',
     controls: true,
+    useGrouping: true,
 })
 
 const emit = defineEmits<{
@@ -40,15 +41,43 @@ const locale = useLocale()
 const increaseLabel = computed(() => props.increaseLabel ?? locale.value.inputNumber.increase)
 const decreaseLabel = computed(() => props.decreaseLabel ?? locale.value.inputNumber.decrease)
 
-/**
- * 只在包装层关闭分组并放宽最大小数位（20）；precision 的取整仍由本组件的 `normalize`
- * 负责，以保留「先按 precision 取整、再钳制到 min/max」的既有语义，避免 Reka 先钳制
- * 再格式化时越过 max（如 max=1.005、precision=2）。
- */
-const formatOptions: Intl.NumberFormatOptions = {
-    maximumFractionDigits: 20,
-    useGrouping: false,
+/** 归一化小数位参数：仅接受 0–20 的整数，非法值按未提供处理 */
+function resolveFractionDigits(value: number | undefined): number | undefined {
+    if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > 20) {
+        return undefined
+    }
+    return value
 }
+
+/** 归一化 precision：仅接受 0–100 的整数，非法值按未提供处理 */
+function resolvePrecision(value: number | undefined): number | undefined {
+    if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > 100) {
+        return undefined
+    }
+    return value
+}
+
+/**
+ * 展示格式：未显式设置 `maxFractionDigits` 时上限放宽到 20（避免 Reka 按更小上限格式化、
+ * 失焦回读时把模型截断），分组默认开启。
+ *
+ * 展示上限取 `max(maxFractionDigits ?? 20, precision ?? 0)`：公开契约声明 `precision` 优先，
+ * 若展示上限低于 `precision`，Reka 会先按上限格式化再由失焦回读覆盖模型，使 `precision` 失效。
+ *
+ * `minimumFractionDigits` 大于 `maximumFractionDigits` 会让 Intl 抛 RangeError，故冲突时丢弃最小值。
+ */
+const formatOptions = computed<Intl.NumberFormatOptions>(() => {
+    const minimum = resolveFractionDigits(props.minFractionDigits)
+    const maximum = resolveFractionDigits(props.maxFractionDigits)
+    const precision = resolvePrecision(props.precision)
+    const conflict = minimum !== undefined && maximum !== undefined && minimum > maximum
+
+    return {
+        minimumFractionDigits: conflict ? undefined : minimum,
+        maximumFractionDigits: Math.max(maximum ?? 20, precision ?? 0),
+        useGrouping: props.useGrouping,
+    }
+})
 
 const inputAttrs = computed<Record<string, unknown>>(() => {
     const merged = { ...controlAttrs.value }
@@ -71,17 +100,13 @@ const resolvedStep = computed(() =>
     typeof props.step === 'number' && props.step > 0 ? props.step : 1,
 )
 
-/** 先按 precision 取整，再钳制到 min/max，保证结果既不越界也符合精度 */
+/** 先按精度取整（`precision` 优先于 `maxFractionDigits`），再钳制到 min/max */
 function normalize(value: number): number {
     let next = value
-    const { precision } = props
-    if (
-        precision !== undefined
-        && Number.isInteger(precision)
-        && precision >= 0
-        && precision <= 100
-    ) {
-        const factor = 10 ** precision
+    const roundingDigits = resolvePrecision(props.precision) ?? resolveFractionDigits(props.maxFractionDigits)
+
+    if (roundingDigits !== undefined) {
+        const factor = 10 ** roundingDigits
         next = Math.round(next * factor) / factor
     }
     if (props.min !== undefined) {

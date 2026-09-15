@@ -22,8 +22,10 @@ export interface InputNumberProps {
      */
     step?: number
     /**
-     * 小数位数；设置后失焦与步进结果按该精度取整
-     * @en Number of decimal places; when set, results are rounded to this precision on blur and step
+     * 小数位数（0–100 的整数）；设置后失焦与步进结果按该精度取整，且展示上限不低于该精度。
+     * 超过 20 的取值依赖 `Intl.NumberFormat` v3（Node ≥ 20 与现代浏览器）
+     * @en Number of decimal places (an integer from 0 to 100); when set, results are rounded to this precision on blur and step, and the display limit is never lower than it.
+     * Values above 20 rely on `Intl.NumberFormat` v3 (Node >= 20 and modern browsers)
      */
     precision?: number
     /**
@@ -61,6 +63,21 @@ export interface InputNumberProps {
      * @en Browser autocomplete hint
      */
     autocomplete?: string
+    /**
+     * 是否使用千分位等分组分隔符；默认 true（对齐 PrimeVue）
+     * @en Whether to use grouping separators such as thousands separators; defaults to true (matching PrimeVue)
+     */
+    useGrouping?: boolean
+    /**
+     * 显示的最少小数位（0–20 的整数）；仅补零展示，不改变模型值
+     * @en Minimum fraction digits to display (an integer from 0 to 20); pads the display only and does not change the model
+     */
+    minFractionDigits?: number
+    /**
+     * 允许的最大小数位（0–20 的整数）；设置后模型也按该位数取整（`precision` 优先）
+     * @en Maximum fraction digits allowed (an integer from 0 to 20); when set, the model is rounded to this precision too (`precision` takes precedence)
+     */
+    maxFractionDigits?: number
     /**
      * 是否显示增减按钮
      * @en Whether to show the increment/decrement steppers

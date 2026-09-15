@@ -47,6 +47,94 @@ describe('CaomeiInputNumber', () => {
         expect(wrapper.get('.caomei-input-number').classes()).toContain(`caomei-input-number--${size}`)
     })
 
+    it('默认使用分组分隔符', () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1234567 } })
+        expect(wrapper.get('input').element.value).toBe('1,234,567')
+    })
+
+    it('useGrouping 为 false 时不使用分组分隔符', () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1234567, useGrouping: false },
+        })
+        expect(wrapper.get('input').element.value).toBe('1234567')
+    })
+
+    it('minFractionDigits 补足小数位展示', () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 10, minFractionDigits: 2 } })
+        expect(wrapper.get('input').element.value).toBe('10.00')
+    })
+
+    it('maxFractionDigits 取整模型并限制展示小数位', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.239, maxFractionDigits: 2 },
+        })
+        expect(wrapper.get('input').element.value).toBe('1.24')
+
+        await wrapper.get('input').trigger('blur')
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.24])
+    })
+
+    it('precision 优先于 maxFractionDigits 取整', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.239, precision: 1, maxFractionDigits: 3 },
+        })
+        await wrapper.get('input').trigger('blur')
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.2])
+    })
+
+    it('precision 大于 maxFractionDigits 时模型与展示都遵循 precision', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.2, precision: 3, maxFractionDigits: 1 },
+        })
+        expect(wrapper.get('input').element.value).toBe('1.2')
+
+        await wrapper.get('input').setValue('1.2342')
+        await wrapper.get('input').trigger('blur')
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.234])
+        expect(wrapper.get('input').element.value).toBe('1.234')
+    })
+
+    it('外部模型比 maxFractionDigits 更精确时展示按位数取整，模型不被改写', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.005, max: 1.005, maxFractionDigits: 2 },
+        })
+
+        expect(wrapper.get('input').element.value).toBe('1.01')
+
+        await wrapper.get('input').trigger('blur')
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('分组输入可被解析回数值', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: null } })
+        await wrapper.get('input').setValue('1,234.5')
+        await wrapper.get('input').trigger('blur')
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1234.5])
+    })
+
+    it('小数位参数非法或冲突时按未提供处理且不抛错', () => {
+        const invalid = mount(CaomeiInputNumber, {
+            props: { modelValue: 5, minFractionDigits: 25, maxFractionDigits: -1 },
+        })
+        expect(invalid.get('input').element.value).toBe('5')
+
+        const conflict = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.2345, minFractionDigits: 3, maxFractionDigits: 2 },
+        })
+        expect(conflict.get('input').element.value).toBe('1.23')
+    })
+
+    it('冲突的小数位参数不影响模型取值', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.2345, minFractionDigits: 3, maxFractionDigits: 2 },
+        })
+        await wrapper.get('input').trigger('blur')
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.23])
+    })
+
     it('输入后失焦提交数值', async () => {
         const wrapper = mount(CaomeiInputNumber, { props: { modelValue: null } })
         await wrapper.get('input').setValue('5')

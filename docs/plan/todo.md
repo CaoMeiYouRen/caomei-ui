@@ -38,7 +38,7 @@
 - 最小验收标准：模拟 reduced-motion 时 demo 内 Drawer 入场实测 0.2s 且位移可见，demo 外仍为 1ms（对照）；文档写明取舍。
 - 条目：
   - [x] demo 动画恢复层（逐项恢复入场 / 退出动画并与 `motion.css` 整理）
-  - [ ] 取舍文档与验证（说明「仅演示区域覆盖系统偏好」+ reduced-motion 对照证据）
+  - [x] 取舍文档与验证（说明「演示区 opt-in 覆盖系统偏好、站点其余部分与 transition 仍尊重偏好（加载指示全站恢复为既有例外）」+ reduced-motion 对照证据）
 
 ### 主线 M4：公共逻辑抽取（发布前）
 

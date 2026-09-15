@@ -51,8 +51,11 @@ const browser = await chromium.launch({
 
 - 暗色：`page.emulateMedia({ colorScheme: 'dark' })` **加上**站点自身 appearance（VitePress 用 `html.dark` + localStorage 键 `vitepress-theme-appearance`）；只设其一可能得到混合态。
 - reduced-motion：`page.emulateMedia({ reducedMotion: 'reduce' })` 与默认各测一次同一元素的 `getComputedStyle(el).animationDuration`。
-  - VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，会把演示区动画压平；这属于文档站行为，**不是组件缺陷**（组件库自身在 reduced-motion 下主动关动画是正确的无障碍行为）。机制见[文档与演示站设计 §9](../../../../docs/design/documentation-site.md)。
-  - 文档站现状：`docs/.vitepress/theme/motion.css` 只恢复**加载态**动画（ProgressSpinner / indeterminate ProgressBar / Skeleton），按组件类名在**全站**生效、未限定 demo 区域；「演示区域入场动画 opt-in」尚未落地（属[待办](../../../../docs/plan/todo.md)中的文档站演示动画条目）。在它落地前，入场 / 过渡动画在 reduced-motion 下仍被压平属预期；落地后须回来更新本节并补「demo 内恢复 / demo 外压平」的双上下文断言。
+  - VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，会把文档站动画**默认**压平（`motion.css` 已恢复项除外：加载指示全站恢复、演示区 opt-in 恢复 `animation`）；这属于文档站行为，**不是组件缺陷**——组件库在 reduced-motion 下大多主动关动画（AutoComplete 例外，只把 spinner 减速到 `1.6s`，层内再拉回 `0.8s`）。机制见[文档与演示站设计 §9](../../../../docs/design/documentation-site.md)。
+  - 文档站现状：`docs/.vitepress/theme/motion.css` 分两档——**加载指示全站恢复**（ProgressSpinner / indeterminate ProgressBar / Skeleton），**演示区 opt-in 仅恢复 animation**（Accordion `0.2s`、Drawer `200ms`、Toast `0.18s`、Popover / DropdownMenu / DatePicker `0.12s`、Image 脉冲 `1.2s`、Button / AutoComplete spinner；不恢复 transition）。
+    - 验证要点：① 容器内可达的元素（Accordion / Image / spinner）按 `.vitepress-demo-plugin__container` 断言；② Portal 面板挂载在 `<body>`（父链 `DIV < BODY`），**不在** demo 容器内，须按组件选择器断言，且这属预期而非缺陷；③ 对照项取 VitePress 自身元素（`.VPSidebar` / `.VPNavBarTitle` / `.VPContent`），应仍为 `0.001s` / `0s`。
+    - 两个易踩的判定陷阱：入场 / 退出的 `animation-name` **必须不同**（Reka Presence 以名称变化判定出场，复用同名 + `reverse` 会立即卸载）；Accordion 的高度插值依赖 Reka 的内联 `animation-name: none` 抑制窗口，若层内对该属性用 `!important`，`--reka-collapsible-content-height` 会被写成 0（表现为「事件触发但无插值」）。
+    - 取舍与实测证据见[文档与演示站设计 §9](../../../../docs/design/documentation-site.md) 与 M3 演示动效验证记录（`docs/design/governance/`）。
 - CSS variables 覆盖验证要包含「覆盖为 `none`」与自定义值两种，并确认覆盖写在正确的元素层级（部分 token 的默认值声明在字段外层，写在触发器上不生效——见 [Select 组件文档](../../../../docs/components/select.md) 的宽度说明与[主题与样式设计 §4.1](../../../../docs/design/theming.md)）。
 
 ## 6. 浮层稳定性测量集

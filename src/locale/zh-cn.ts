@@ -38,6 +38,10 @@ const zhCN: CaomeiLocaleMessages = {
     password: {
         show: '显示密码',
         hide: '隐藏密码',
+        prompt: '请输入密码',
+        weak: '强度：弱',
+        medium: '强度：中',
+        strong: '强度：强',
     },
     progress: {
         loading: '加载中',

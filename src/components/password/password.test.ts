@@ -123,10 +123,11 @@ describe('CaomeiPassword', () => {
         expect(wrapper.emitted('enter')).toHaveLength(1)
     })
 
-    it('class 落在根元素，原生属性透传到 input', () => {
+    it('class / style 落在根包裹层，其余原生属性透传到 input', () => {
         const wrapper = mount(CaomeiPassword, {
             attrs: {
                 class: 'custom-password',
+                style: 'max-width: 320px',
                 'data-test': 'password',
                 maxlength: 20,
                 required: true,
@@ -134,10 +135,13 @@ describe('CaomeiPassword', () => {
             },
         })
 
-        const root = wrapper.get('.caomei-input')
+        const root = wrapper.get('.caomei-password')
         const input = wrapper.get('input')
         expect(root.classes()).toContain('custom-password')
+        expect(root.attributes('style')).toContain('max-width: 320px')
         expect(root.attributes('data-test')).toBeUndefined()
+        expect(wrapper.get('.caomei-input').classes()).not.toContain('custom-password')
+        expect(wrapper.get('.caomei-input').attributes('style') ?? '').not.toContain('max-width')
         expect(input.attributes('data-test')).toBe('password')
         expect(input.attributes('maxlength')).toBe('20')
         expect(input.attributes('required')).toBeDefined()
@@ -154,6 +158,122 @@ describe('CaomeiPassword', () => {
         expect(document.activeElement).not.toBe(input)
 
         wrapper.unmount()
+    })
+
+    it('保持单根，支持父级 v-show', async () => {
+        const wrapper = mount(
+            {
+                components: { CaomeiPassword },
+                data: () => ({ visible: true }),
+                template: '<CaomeiPassword v-show="visible" />',
+            },
+            { attachTo: document.body },
+        )
+
+        const root = wrapper.get('.caomei-password')
+        expect(root.attributes('style') ?? '').not.toContain('display: none')
+
+        await wrapper.setData({ visible: false })
+        expect(root.attributes('style') ?? '').toContain('display: none')
+
+        wrapper.unmount()
+    })
+
+    describe('feedback', () => {
+        it('默认关闭，不渲染强度指示也不追加 aria-describedby', () => {
+            const wrapper = mount(CaomeiPassword)
+            expect(wrapper.find('.caomei-password__feedback').exists()).toBe(false)
+            expect(wrapper.get('input').attributes('aria-describedby')).toBeUndefined()
+        })
+
+        it('开启后空值未聚焦时隐藏，并以 prompt 文案建立描述关联', () => {
+            const wrapper = mount(CaomeiPassword, { props: { feedback: true } })
+            const feedback = wrapper.get('.caomei-password__feedback')
+
+            expect(feedback.classes()).not.toContain('caomei-password__feedback--visible')
+            expect(wrapper.get('.caomei-password__feedback-text').text()).toBe('请输入密码')
+            expect(wrapper.get('.caomei-password__meter-fill').attributes('data-level')).toBe('0')
+
+            const describedBy = wrapper.get('input').attributes('aria-describedby')
+            expect(describedBy).toBe(wrapper.get('.caomei-password__feedback-text').attributes('id'))
+        })
+
+        it('输入后按强度显示弱 / 中 / 强并更新计量档位', async () => {
+            const wrapper = mount(CaomeiPassword, { props: { feedback: true } })
+            const input = wrapper.get('input')
+            const feedback = wrapper.get('.caomei-password__feedback')
+
+            await input.setValue('abc')
+            expect(feedback.classes()).toContain('caomei-password__feedback--visible')
+            expect(wrapper.get('.caomei-password__feedback-text').text()).toBe('强度：弱')
+            expect(wrapper.get('.caomei-password__meter-fill').attributes('data-level')).toBe('1')
+
+            await input.setValue('abcdef1')
+            expect(wrapper.get('.caomei-password__feedback-text').text()).toBe('强度：中')
+            expect(wrapper.get('.caomei-password__meter-fill').attributes('data-level')).toBe('2')
+
+            await input.setValue('Abcdefg1')
+            expect(wrapper.get('.caomei-password__feedback-text').text()).toBe('强度：强')
+            expect(wrapper.get('.caomei-password__meter-fill').attributes('data-level')).toBe('3')
+        })
+
+        it('有值时失焦仍保留指示，清空后重新隐藏', async () => {
+            const wrapper = mount(CaomeiPassword, { props: { feedback: true } })
+            const input = wrapper.get('input')
+            const feedback = wrapper.get('.caomei-password__feedback')
+
+            await input.setValue('Abcdefg1')
+            await input.trigger('blur')
+            expect(feedback.classes()).toContain('caomei-password__feedback--visible')
+
+            await input.setValue('')
+            expect(feedback.classes()).not.toContain('caomei-password__feedback--visible')
+            expect(wrapper.get('.caomei-password__feedback-text').text()).toBe('请输入密码')
+        })
+
+        it('live region 使用 status 角色（隐含 polite 播报）', () => {
+            const wrapper = mount(CaomeiPassword, { props: { feedback: true } })
+            const live = wrapper.get('.caomei-password__feedback-text')
+
+            expect(live.attributes('role')).toBe('status')
+            expect(live.attributes('aria-live')).toBeUndefined()
+        })
+
+        it('合并消费方已有的 aria-describedby', () => {
+            const wrapper = mount(CaomeiPassword, {
+                props: { feedback: true },
+                attrs: { 'aria-describedby': 'hint' },
+            })
+
+            const describedBy = wrapper.get('input').attributes('aria-describedby') ?? ''
+            expect(describedBy.startsWith('hint ')).toBe(true)
+            expect(describedBy).toContain(wrapper.get('.caomei-password__feedback-text').attributes('id'))
+        })
+
+        it('文案可被 props 覆盖，并跟随注入 locale', async () => {
+            const custom = mount(CaomeiPassword, {
+                props: {
+                    feedback: true,
+                    promptLabel: '自定义提示',
+                    weakLabel: '自定义弱',
+                },
+            })
+            expect(custom.get('.caomei-password__feedback-text').text()).toBe('自定义提示')
+
+            await custom.get('input').setValue('abc')
+            expect(custom.get('.caomei-password__feedback-text').text()).toBe('自定义弱')
+
+            const localized = mount(CaomeiPassword, {
+                props: { feedback: true },
+                global: {
+                    provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+                },
+            })
+            expect(localized.get('.caomei-password__feedback-text').text()).toBe('Enter a password')
+
+            await localized.get('input').setValue('abc')
+            expect(localized.get('.caomei-password__feedback-text').text()).toBe('Strength: weak')
+        })
     })
 
     it('显隐与清除按钮使用注入 locale 的文案', async () => {

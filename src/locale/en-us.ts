@@ -38,6 +38,10 @@ const enUS: CaomeiLocaleMessages = {
     password: {
         show: 'Show password',
         hide: 'Hide password',
+        prompt: 'Enter a password',
+        weak: 'Strength: weak',
+        medium: 'Strength: medium',
+        strong: 'Strength: strong',
     },
     progress: {
         loading: 'Loading',

@@ -44,6 +44,10 @@ export interface CaomeiLocaleMessages {
     password: {
         show: string
         hide: string
+        prompt: string
+        weak: string
+        medium: string
+        strong: string
     }
     progress: {
         loading: string

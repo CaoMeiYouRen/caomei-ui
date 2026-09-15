@@ -18,6 +18,8 @@ const enUS: CaomeiLocaleMessages = {
         swatches: 'Preset colors',
         saturation: 'Saturation',
         brightness: 'Brightness',
+        areaRole: 'Color picker area',
+        thumbRole: 'Color thumb',
     },
     confirm: {
         confirm: 'Confirm',

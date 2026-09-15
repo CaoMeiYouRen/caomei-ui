@@ -24,6 +24,8 @@ export interface CaomeiLocaleMessages {
         swatches: string
         saturation: string
         brightness: string
+        areaRole: string
+        thumbRole: string
     }
     confirm: {
         confirm: string

@@ -230,8 +230,8 @@ describe('CaomeiColorPicker', () => {
         await openPanel(wrapper)
 
         const item = panel()?.querySelector('.caomei-color-picker__swatch')
-        expect(item?.getAttribute('data-color')).toBe('#00ff00')
-        expect(panel()?.querySelector('.caomei-color-picker__swatch-indicator')).not.toBeNull()
+        expect(item?.getAttribute('aria-label')).toBe('#00ff00')
+        expect(item?.getAttribute('aria-pressed')).toBe('true')
     })
 
     it('带 alpha 的输入被剥离为 6 位十六进制', () => {
@@ -251,14 +251,17 @@ describe('CaomeiColorPicker', () => {
         expect(valueText).not.toContain('Saturation')
     })
 
-    it('色板项可访问名使用色值而非 Reka 英文色名，内层装饰元素对 AT 隐藏', async () => {
-        const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#00ff00'] })
+    it('色板以按钮组呈现，可访问名与按下态来自当前模型', async () => {
+        const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#e63946', '#22c55e'] })
 
         await openPanel(wrapper)
 
-        const item = panel()?.querySelector('.caomei-color-picker__swatch')
-        expect(item?.getAttribute('aria-label')).toBe('#00ff00')
-        expect(panel()?.querySelector('.caomei-color-picker__swatch-visual')?.getAttribute('aria-hidden')).toBe('true')
+        const items = () => Array.from(panel()?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
+        expect(panel()?.querySelector('.caomei-color-picker__swatches')?.getAttribute('role')).toBe('group')
+        expect(items()[0]?.tagName).toBe('BUTTON')
+        expect(items()[0]?.getAttribute('aria-label')).toBe('#e63946')
+        expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
+        expect(items()[1]?.getAttribute('aria-pressed')).toBe('false')
     })
     it.each([
         ['#ffcccc', 20],
@@ -293,5 +296,47 @@ describe('CaomeiColorPicker', () => {
 
         expect(blurred).toBe(true)
         expect(document.activeElement).not.toBe(inputEl)
+    })
+    it('区域与 thumb 的 aria-roledescription 本地化（覆盖 Reka 英文）', async () => {
+        const wrapper = mountPicker({ modelValue: '#ff0000' })
+
+        await openPanel(wrapper)
+
+        expect(panel()?.querySelector('.caomei-color-picker__area-bg')?.getAttribute('aria-roledescription')).toBe('颜色选择区域')
+        expect(panel()?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-roledescription')).toBe('颜色滑块')
+    })
+
+    it('区域 valuenow 与 valuetext 同源（均由模型派生且为整数）', async () => {
+        // #ffcccc：HSL 100 / HSB 20 背离；低亮度下 Reka 指针值会与模型量化值差 ~2
+        const wrapper = mountPicker({ modelValue: '#ffcccc' })
+
+        await openPanel(wrapper)
+
+        const thumb = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        expect(thumb?.getAttribute('aria-valuenow')).toBe('20')
+        expect(thumb?.getAttribute('aria-valuetext')).toContain('饱和度 20')
+
+        await wrapper.setProps({ modelValue: '#3b82f6' })
+        await flush()
+
+        const after = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        expect(after?.getAttribute('aria-valuenow')).toBe('76')
+        expect(after?.getAttribute('aria-valuetext')).toContain('饱和度 76')
+    })
+
+    it('色板按下态随外部改色同步', async () => {
+        const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#e63946', '#22c55e'] })
+
+        await openPanel(wrapper)
+        const items = () => Array.from(panel()?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
+
+        expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
+        expect(items()[1]?.getAttribute('aria-pressed')).toBe('false')
+
+        await wrapper.setProps({ modelValue: '#22c55e' })
+        await flush()
+
+        expect(items()[0]?.getAttribute('aria-pressed')).toBe('false')
+        expect(items()[1]?.getAttribute('aria-pressed')).toBe('true')
     })
 })

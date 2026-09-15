@@ -18,6 +18,8 @@ const zhCN: CaomeiLocaleMessages = {
         swatches: '预设颜色',
         saturation: '饱和度',
         brightness: '明度',
+        areaRole: '颜色选择区域',
+        thumbRole: '颜色滑块',
     },
     confirm: {
         confirm: '确定',

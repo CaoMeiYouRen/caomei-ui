@@ -8,10 +8,6 @@ import {
     ColorSliderRoot,
     ColorSliderThumb,
     ColorSliderTrack,
-    ColorSwatchPickerItem,
-    ColorSwatchPickerItemIndicator,
-    ColorSwatchPickerItemSwatch,
-    ColorSwatchPickerRoot,
     colorToString,
     convertToHsb,
     parseColor,
@@ -33,6 +29,8 @@ const props = withDefaults(defineProps<{
     swatchesLabel?: string
     saturationLabel?: string
     brightnessLabel?: string
+    areaRole?: string
+    thumbRole?: string
 }>(), {
     disabled: false,
     showInput: true,
@@ -58,17 +56,31 @@ const areaModel = computed(() => {
     }
 })
 
-// 覆盖 Reka 内建的英文 aria-valuetext（如 "Saturation 71, Brightness 77"）
-const areaValueText = computed(() => {
+/**
+ * `aria-valuenow` / `aria-valuetext` 一律由模型派生（同一来源）并覆盖 Reka 内建值。
+ *
+ * Reka 的 `xValue` 直接取指针连续坐标且不取整（`aria-valuenow` 实测形如 89.99998956663995），
+ * 而模型是 8bit hex；低亮度下两者可差 ~2，会出现「程序值 90 / 播报值 88」这类互相矛盾。
+ * 统一从模型派生后，两者恒同源，且 `aria-valuenow` 为整数。
+ */
+const areaHsb = computed(() => {
     try {
-        const hsb = convertToHsb(parseColor(props.modelValue))
-        return `${props.saturationLabel ?? ''} ${Math.round(hsb.s)}, ${props.brightnessLabel ?? ''} ${Math.round(hsb.b)}`.trim()
+        return convertToHsb(parseColor(props.modelValue))
     } catch {
-        return undefined
+        return null
     }
 })
 
-/** 各 primitive 都回传颜色字符串，统一归一为 `#rrggbb` 后再上抛 */
+const areaValueNow = computed(() => (areaHsb.value ? Math.round(areaHsb.value.s) : undefined))
+
+// 覆盖 Reka 内建的英文 aria-valuetext（如 "Saturation 71, Brightness 77"），并与 valuenow 同源
+const areaValueText = computed(() => {
+    if (!areaHsb.value) {
+        return undefined
+    }
+    return `${props.saturationLabel ?? ''} ${Math.round(areaHsb.value.s)}, ${props.brightnessLabel ?? ''} ${Math.round(areaHsb.value.b)}`.trim()
+})
+
 /**
  * 区域 pointerdown 处于捕获阶段时先让十六进制输入框失焦。
  *
@@ -116,11 +128,14 @@ function onUpdate(value: unknown): void {
                     <ColorAreaArea
                         class="caomei-color-picker__area-bg"
                         :style="style"
+                        :aria-roledescription="areaRole"
                     >
                         <!-- Reka 的 anatomy 要求 thumb 位于 area 内，否则区域键盘与抓 thumb 拖拽都收不到事件 -->
                         <ColorAreaThumb
                             class="caomei-color-picker__area-thumb"
                             :aria-label="areaLabel"
+                            :aria-roledescription="thumbRole"
+                            :aria-valuenow="areaValueNow"
                             :aria-valuetext="areaValueText"
                         />
                     </ColorAreaArea>
@@ -158,31 +173,24 @@ function onUpdate(value: unknown): void {
             />
         </ColorFieldRoot>
 
-        <ColorSwatchPickerRoot
+        <div
             v-if="normalizedSwatches.length"
-            :default-value="modelValue"
-            :disabled="disabled"
-            :aria-label="swatchesLabel"
             class="caomei-color-picker__swatches"
-            @update:model-value="onUpdate"
+            role="group"
+            :aria-label="swatchesLabel"
         >
-            <ColorSwatchPickerItem
+            <button
                 v-for="swatch in normalizedSwatches"
                 :key="swatch"
-                :value="swatch"
-                :aria-label="swatch"
+                type="button"
                 class="caomei-color-picker__swatch"
-            >
-                <!-- 内层为纯装饰；Reka 会为其生成英文色名，这里统一对 AT 隐藏 -->
-                <span
-                    class="caomei-color-picker__swatch-visual"
-                    aria-hidden="true"
-                >
-                    <ColorSwatchPickerItemSwatch class="caomei-color-picker__swatch-color" />
-                    <ColorSwatchPickerItemIndicator class="caomei-color-picker__swatch-indicator" />
-                </span>
-            </ColorSwatchPickerItem>
-        </ColorSwatchPickerRoot>
+                :style="{backgroundColor: swatch}"
+                :aria-label="swatch"
+                :aria-pressed="swatch === modelValue ? 'true' : 'false'"
+                :disabled="disabled"
+                @click="onUpdate(swatch)"
+            />
+        </div>
     </div>
 </template>
 
@@ -273,32 +281,30 @@ function onUpdate(value: unknown): void {
 }
 
 .caomei-color-picker__swatch {
-    display: block;
+    box-sizing: border-box;
     width: 22px;
     height: 22px;
+    padding: 0;
+    border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-sm);
     cursor: pointer;
 }
 
-.caomei-color-picker__swatch-visual {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
+.caomei-color-picker__swatch[aria-pressed='true'] {
+    border-color: var(--caomei-color-primary);
+    box-shadow: inset 0 0 0 1px var(--caomei-color-bg);
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
 }
 
-.caomei-color-picker__swatch-color {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 1px solid var(--caomei-color-border);
-    border-radius: inherit;
+.caomei-color-picker__swatch:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
 }
 
-.caomei-color-picker__swatch-indicator {
-    position: absolute;
-    inset: 0;
-    border: 2px solid var(--caomei-color-primary);
-    border-radius: inherit;
+.caomei-color-picker__swatch:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
+
 </style>

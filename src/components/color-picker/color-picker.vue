@@ -95,6 +95,8 @@ function onUpdate(value: string): void {
                         :swatches-label="locale.colorPicker.swatches"
                         :saturation-label="locale.colorPicker.saturation"
                         :brightness-label="locale.colorPicker.brightness"
+                        :area-role="locale.colorPicker.areaRole"
+                        :thumb-role="locale.colorPicker.thumbRole"
                         @update:model-value="onUpdate"
                     />
                 </PopoverContent>
@@ -116,6 +118,8 @@ function onUpdate(value: string): void {
                 :swatches-label="locale.colorPicker.swatches"
                 :saturation-label="locale.colorPicker.saturation"
                 :brightness-label="locale.colorPicker.brightness"
+                :area-role="locale.colorPicker.areaRole"
+                :thumb-role="locale.colorPicker.thumbRole"
                 @update:model-value="onUpdate"
             />
         </div>

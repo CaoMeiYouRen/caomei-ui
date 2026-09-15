@@ -79,7 +79,7 @@
 | ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态 |
 | Drawer | 封装 Dialog 派生（四向定位 + 滑入动画） | Dialog（Reka `Drawer` 为 Vaul 形态、不负责面板定位，未采用） | 稳定 | 四向 `position`（默认 `left`）；见 [设计规范 §7](./design-spec.md)（**已实现**） |
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**Phase 7 第一阶段 M4**） |
-| ColorPicker | 封装（组合 ColorArea / ColorSlider / ColorField / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive（**已实现**） |
+| ColorPicker | 封装（组合 ColorArea / ColorSlider / ColorField；色板自建按钮组） | Color 系列 | Alpha | 组合 color primitive，色板不用 `ColorSwatchPicker`（见 [设计规范 §7](./design-spec.md)）（**已实现**） |
 | InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |

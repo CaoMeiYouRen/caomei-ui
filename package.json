@@ -66,6 +66,7 @@
     "release": "semantic-release"
   },
   "dependencies": {
+    "@internationalized/date": "3.12.4",
     "@lucide/vue": "^1.45.0",
     "@tanstack/vue-table": "9.2.4",
     "reka-ui": "2.10.4"

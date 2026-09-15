@@ -85,6 +85,7 @@
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |
 | Panel | 不新建 | — | — | 由 `Card` 的 `title` / `header` / `footer` 承载；可折叠场景用 `Accordion` |
 | SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用（**已实现**） |
+| DataView | 自建（`layout` grid / list + 插槽） | 无 | — | 列表 / 网格两态 + 加载 / 空态（**已实现**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 
 Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、TagsInput、Editable、Tree（Tree 为 Alpha）。

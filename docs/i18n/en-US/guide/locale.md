@@ -37,7 +37,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 21 namespaces by component area, covering 22 consuming components:
+`CaomeiLocaleMessages` is split into 22 namespaces by component area, covering 23 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -45,6 +45,7 @@ import {
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
+| `dataView` | `empty` | DataView |
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
@@ -54,7 +55,7 @@ import {
 | `multiSelect` | `open` `remove` `empty` | MultiSelect |
 | `pagination` | `label` `first` `previous` `next` `last` `page` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
-| `progress` | `loading` `bar` | ProgressBar / ProgressSpinner |
+| `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `splitButton` | `menu` | SplitButton |

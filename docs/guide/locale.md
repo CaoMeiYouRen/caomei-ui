@@ -37,7 +37,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 21 个命名空间，对应 22 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 22 个命名空间，对应 23 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -45,6 +45,7 @@ import {
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
+| `dataView` | `empty` | DataView |
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
@@ -54,7 +55,7 @@ import {
 | `multiSelect` | `open` `remove` `empty` | MultiSelect |
 | `pagination` | `label` `first` `previous` `next` `last` `page` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
-| `progress` | `loading` `bar` | ProgressBar / ProgressSpinner |
+| `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `splitButton` | `menu` | SplitButton |

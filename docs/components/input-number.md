@@ -25,7 +25,7 @@
 `min` / `max` 在失焦与步进时钳制取值；`step` 控制步进；`precision` 控制小数位数。
 
 > 提交时机：输入在失焦或按 Enter 时提交 `v-model`，清空提交为 `null`。
-> `step` 需大于 0，否则回退为 1；`precision` 需为 0–100 的整数，否则不取整。取整在失焦、Enter、步进与 Home / End 时生效，且先按精度取整再钳制到 `min` / `max`。
+> `step` 需大于 0，否则回退为 1；`precision` 需为 0–20 的整数（与 `minFractionDigits` / `maxFractionDigits` 同域：该值会进入 `Intl.NumberFormat` 的小数位选项，更大取值依赖 ES2023 Intl v3），超出按未提供处理、不取整。取整在失焦、Enter、步进与 Home / End 时生效，且先按精度取整再钳制到 `min` / `max`。
 > 当 `min` / `max` 的小数位多于 `precision` 时，提交值会按 `precision` 取整，因此可能略小于边界值（不会越界）。
 > 外部驱动的 `v-model` 变更会即时回填输入框。
 > `name` 用于随原生表单提交，需将组件置于 `<form>` 内；表单外不会渲染隐藏输入。

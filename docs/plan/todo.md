@@ -47,7 +47,7 @@
   - [x] Select `filter` 迁移决策（方案 A → `AutoComplete`）：经用户决策（2026-09-15）不在 Select 上实现，改为迁移映射；理由与自由文本差异见 [Backlog](./backlog.md)
   - [ ] Tag 语义与形态（severity 映射规范化、`rounded` / `outlined`、`#icon`）——说明：`#icon` 插槽与 `tone` 五档在既有实现中已具备；`outlined` 由 `variant="outline"` 承载、不新增布尔别名（迁移映射见 design-spec §7）
   - [x] Message 形态与尺寸（`variant` `simple`、`size`、severity 映射）——说明：PrimeVue Message 仅 `outlined` / `simple` 两种变体、无 `text`（下游实装的一方源码与类型取证），故不实现 `text`
-  - [x] InputNumber 分组与小数位（`useGrouping` / `minFractionDigits` / `maxFractionDigits`）——说明：`useGrouping` 默认 `true` 对齐 PrimeVue（原实现硬编码 `false`，属行为变更）
+  - [x] InputNumber 分组与小数位（`useGrouping` / `minFractionDigits` / `maxFractionDigits`）——说明：`useGrouping` 默认 `true` 对齐 PrimeVue（原实现硬编码 `false`，属行为变更）；`precision` 取值域由 0–100 收窄为 0–20（与 `Intl` 小数位选项同域，>20 依赖 ES2023 Intl v3），并修复极大值取整溢出为 `Infinity` 的问题
   - [ ] Textarea 自动增高（`autoResize`）
   - [ ] Password 强度反馈（`feedback`）
 

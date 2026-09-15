@@ -25,7 +25,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 `min` / `max` clamp the value on blur and step; `step` controls the increment; `precision` controls the number of decimal places.
 
 > Commit timing: input commits to `v-model` on blur or Enter, and clearing commits `null`.
-> `step` must be greater than 0, otherwise it falls back to 1; `precision` must be an integer from 0–100, otherwise no rounding is applied. Rounding takes effect on blur, Enter, step and Home / End, and rounds by precision before clamping to `min` / `max`.
+> `step` must be greater than 0, otherwise it falls back to 1; `precision` must be an integer from 0–20, the same domain as `minFractionDigits` / `maxFractionDigits`: the value feeds `Intl.NumberFormat`, where larger limits require ES2023 Intl v3; out-of-range values are treated as unset and no rounding is applied. Rounding takes effect on blur, Enter, step and Home / End, and rounds by precision before clamping to `min` / `max`.
 > When `min` / `max` have more decimal places than `precision`, the committed value is rounded by `precision` and may be slightly below the boundary (it never goes out of range).
 > `v-model` changes driven from outside backfill the input immediately.
 > `name` is used for native form submission and requires the component to be inside a `<form>`; outside a form no hidden input is rendered.

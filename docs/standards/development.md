@@ -66,7 +66,7 @@ test/                     # 单元与 E2E 测试
 - 包装型表单组件（根为 wrapper）使用 `inheritAttrs: false` + `useAttrs()`：`class` / `style` 留在根元素；`name` / `form` / `required` 透传到内层表单控件，`id` / `aria-*` 透传到可聚焦控件（统一复用 `_shared/use-attr-forwarding`），避免语义落到不可聚焦 wrapper 而失效。
 - 派生组件（根为另一组件）同样使用 `inheritAttrs: false` + `useAttrs()`，并显式剔除由内部状态管理的保留属性（如 Password 的 `type`），避免外部透传覆盖内部语义。
 - 布尔假值不输出到 ARIA：对非 special-boolean 属性使用 `value || undefined`，避免 `:aria-required="false"` 被渲染为 `aria-required="false"`。
-- 受控数值输入：聚焦期间不因外部 model 变化回填文本，失焦与步进统一 `clamp(round(value))` 规范化；`step` 非正回退为 1，`precision` 仅非负整数生效。
+- 受控数值输入：聚焦期间不因外部 model 变化回填文本，失焦与步进统一 `clamp(round(value))` 规范化；`step` 非正回退为 1，`precision` 取 0–20 的整数（与 `minFractionDigits` / `maxFractionDigits` 同域）、超出按未提供处理；取整用的 `10 ** n` 需做有限性守卫，极大值乘 factor 会溢出为 `Infinity` 并污染模型。
 - 封装 Reka NumberField：显式 `:step-snapping="false"` 以保留「加 step」语义；展示上限不得低于取整精度（`precision` 不得单独压低 `formatOptions.maximumFractionDigits`，否则 Reka 会按上限格式化并在失焦回读时截断模型），上限取 `maxFractionDigits` 与 `precision` 的较大值、取整仍放在包装层；`autocomplete` 需条件绑定（primitive 内建 `off`，显式 `undefined` 会覆盖）。
 - Vue 模板同一元素只允许一个无参 `v-bind`；多个需在脚本内合并为单一对象（如 `{ ...rootAttrs, ...controlAttrs }`）再绑定。
 - Reka 组件 provide 的状态在子组件卸载时不复位（如 Avatar 图片加载状态）；需要随 `src` 复位时用 `:key` 重挂 Root。

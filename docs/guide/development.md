@@ -70,3 +70,6 @@ test/             # 测试
 - 修改被 `defineProps<ImportedType>()` 引用的 `types.ts` 后，dev server 可能给出半陈旧 HMR 产物（模板已引用新 prop 而 `defineProps` 未更新）；行为异常时先重启 dev server 再排查源码。
 - Vite / VitePress 以 `codeSplitting: false` 打包 config，相对路径的动态 import 会被内联（config 加载即引入该依赖），无法借此延迟加载。
 - `docs:preview` 服务的是旧构建产物；`pkill -f "vitepress preview"` 不匹配真实进程名（`vitepress.js preview`），浏览器验证应改用 dev server 或按端口重启 preview。
+- 脚本中出现不可静态分析的 `import(变量)` 时，Vitest / Vite 会注入 `/@vite/client` helper，含 shebang 的 `.mjs` 会解析失败；产物加载冒烟应放子进程执行。
+- 仓库内 Nuxt fixture 通过其 `node_modules` 指向仓库根的软链（等价 `link:`）消费构建产物；脚本用 `realpath` 比对校验目标后再决定复用 / 重建，避免误消费非本地产物。
+- 引入 Nuxt fixture 后须同步 `.gitignore`（`.nuxt` / `.output`）、ESLint `ignores` 与根 `tsconfig` `exclude`，否则 `eslint .` 会扫描生成的打包产物，`vue-tsc` 会因缺 Nuxt 自动导入类型报错。

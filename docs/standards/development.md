@@ -83,6 +83,15 @@ test/                     # 单元与 E2E 测试
 - Reka `TimeField`（2.10.4）的 `dayPeriod` 判定只识别英文 `PM/pm/p.m.`（`useDateFormatter`），非英文 12 小时制会把「下午」判为 `AM`；`useDateField` 的提交流程再按该错误日序做 `hour±12`，使显示与写回同时出错。多语种 12 小时制时间输入不应直接封装该 primitive，需自建小时换算与日序文案（日序经 `Intl.DateTimeFormat#formatToParts` 取）。
 - Reka `AlertDialogContent` 不屏蔽 `escapeKeyDown`（2.10.4），Esc 仍关闭；`AlertDialogAction` / `Cancel` 的 DialogClose onClick 先于包裹组件自身 click 触发，结算应做顺序无关的意图捕获 + `nextTick` + 请求 id。
 - 容器型控件的可访问名须遵守 WCAG 2.5.3：无条件设置 `aria-label` 会覆盖可见文案，应仅在自定义（可能无可见文本）内容时生效。
+- 派生 / 包装组件的根不得出现「条件兄弟节点」：与主元素并列的条件块会把根编译为 Fragment（条件不成立也留 `<!--v-if-->`），使 `v-show` 与组件级指令静默失效；需要并列内容时改用单元素包裹层，`class` / `style` 仍留在根。
+- 自适应高度测量：先把 `height` 置 `auto` 再读 `scrollHeight` 才能收缩；`ResizeObserver` 按 `clientWidth` 去重（高度写回会触发自身回调）；元素不可见（`scrollHeight` 为 0）时清空高度而非写 0。
+- 同一元素同时 `v-bind` 与 `v-model` 时，运行期 `v-bind` 对象含 `modelValue` 且后写的胜：`v-model` 必须写在 `v-bind` 之后，否则半受控场景静默退回旧值；回归须覆盖「传 `modelValue` 但不回写」的半受控路径（全受控用例对两种顺序都通过，无判别力）。
+- 包装 Reka 触发器（`PopoverTrigger` 等）需 `as-child` + 自持 `<button>` + `inheritAttrs: false`，否则组件级 `class` / `style` / `id` / `data-*` 会被 Reka 根吞掉且无告警；由组件管理的属性（`aria-label` / `type` 等）在文档写明取舍。
+- 上游未透传某个可访问名 prop 时（如 `DatePickerCalendar` 的 `calendarLabel` 硬编码英文），应组合其更底层的 primitive 并在包装层接管文案；fallthrough 只在 primitive 确实接受并转发该属性时有效，硬编码文案或组件内不转发的属性无法靠它覆盖。
+- 集成 Reka 日期 primitive 的模型为 `DateValue`，构造器来自 `@internationalized/date`（`reka-ui/date` 子路径只提供部分 helper，且在 `moduleResolution: Node` 下不可解析）；公开 API 保持原生 `Date`，转换收敛在 `_shared/date`。
+- 时间类输入自建时：原生 `<input type="number">` + `change` 钳位、非法 / 空输入回滚 DOM 到模型值、`readonly` / `disabled` 在 handler 内二次守卫；`type="number"` 下 `Number('') === 0`，空串须单独判为「不改写」。
+- 组合 Reka Alpha primitive 时，包装层覆盖不到的动态可访问文案需逐一接管：`aria-valuetext`（thumb 拼英文通道名）、`aria-label`（色板项用英文色名，且内层不转发 `aria-hidden`，需自有包裹层遮罩）。
+- primitive 的 anatomy 不可改：如 `ColorAreaThumb` 必须嵌套在 `ColorAreaArea` 内，否则区域键盘（keydown 落在 area）与拖拽（pointer capture 落在 thumb）都会失效。
 
 ## 6. 组件 API 设计约定
 
@@ -110,6 +119,7 @@ test/                     # 单元与 E2E 测试
 - Stylelint `selector-not-notation: complex` 要求 `:not(a, b)` 而非 `:not(a):not(b)`。
 - 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
 - 表格单元格内放 inline-flex 组件（如复选框）会因基线对齐产生约 1px 行高抖动，选中态指示器出现时更明显；用 `display: flex` 包裹容器承载可消除，单元格高度取 max 后与文本列一致。
+- 组件 scoped 规则不得为几何属性（`overflow-y` / `max-height` 等）声明样式：这会抬高特异性、挡住消费方覆盖，使使用层叠加的封顶 / 裁剪配方失效；能依赖原生默认行为时不在组件内声明。
 
 ## 8. 构建与产物
 
@@ -117,6 +127,7 @@ test/                     # 单元与 E2E 测试
 - `vue` 与 `reka-ui` 必须 external，不打包进产物。
 - `package.json` 声明 `sideEffects`（`**/*.css`）以支持 tree-shaking。
 - 子路径导出：`caomei-ui`、`caomei-ui/styles.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`（tokens 并入 `styles.css`，暂不单列 `theme.css`）。
+- `rolldown-dts` 可能在 `dist/index.d.ts` 留下裸副作用导入；只要该包可解析且列于 `dependencies` 即可接受，不得据此宣称「公开类型面零第三方引用」。
 
 ## 9. 代码生成准则
 

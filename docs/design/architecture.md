@@ -81,6 +81,7 @@
 - 包体为单 ESM bundle + 命名导出，配合 `sideEffects` 支持 tree-shaking；按组件独立 chunk 暂缓。
 - 样式始终由消费方显式导入（`import 'caomei-ui/styles.css'`）或经 resolver 注入，未启用 `css.inject`。
 - Reka UI 依赖链中的 `vue-demi` 在 `pnpm-workspace.yaml` 的 `allowBuilds` 中显式设为 `false`（Vue 3 下其 postinstall 为空操作，无需执行）。
+- pnpm 11 不再读取 `package.json` 的 `pnpm` 字段，构建脚本放行等配置统一写进 `pnpm-workspace.yaml`（如 `allowBuilds`）；下游临时应用被 `ERR_PNPM_IGNORED_BUILDS` 阻断时据此配置。
 
 ### 4.2 构建工具选型（Vite vs tsdown）
 
@@ -113,6 +114,7 @@ Vite 与 tsdown 均可构建组件库。本项目采用「**Vite 负责开发 / 
 - 职责：组件自动导入、composables 自动导入、样式注入、主题 token 覆盖、暗色策略。
 - `@nuxt/kit` 声明为**可选 peer 依赖**：非 Nuxt 消费者不会安装它，Nuxt 应用可直接复用其同名依赖。
 - 组件与样式均来自包内 `caomei-ui` 与 `caomei-ui/styles.css`，模块不复制运行时文件。
+- 发布声明需能命名 `NuxtModule` 类型：`ReturnType<typeof defineNuxtModule<T>>` 会命中无参重载（类型缺 `with`）不可用，应显式标注 `NuxtModule<T>`；`@nuxt/schema` 作为 devDependency 提供类型并加入 tsdown `neverBundle` 以保持外部引用。
 
 ```ts
 // nuxt.config.ts

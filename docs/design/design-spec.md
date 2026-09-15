@@ -188,6 +188,8 @@
 
 详见 [momei 使用复核台账 §4.3](./governance/2026-09-14-momei-usage-audit.md)。要点：
 
+> 迁移口径：判定某个 PrimeVue prop / API「是否在用、是否生效」应以一方源码的 props 列表与消费逻辑为准，而非调用点是否传值——下游传入的 prop 可能长期静默无效。
+
 | 维度 | PrimeVue | caomei-ui |
 | --- | --- | --- |
 | 语义色 | `severity` | `tone` + `variant`（`secondary` / `contrast` → `neutral`；`info` → `primary`） |

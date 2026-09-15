@@ -4,6 +4,55 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-16 阶段归档蒸馏
+
+> 阶段归档 + 用户主动触发（2026-09-16）：活跃 39 条全部处置，迁移 28 条、删除 11 条，剩余活跃 0 条。
+
+**迁移 28 条（知识点写入目标文档）**：
+
+- [2026-09-14] [pitfall] Vitest / Vite 对脚本中不可静态分析的 `import(变量)` 注入 `/@vite/client` helper（含 shebang 的 `.mjs` 解析失败），产物加载冒烟应放子进程 → [开发指南 - 注意事项](../../guide/development.md)
+- [2026-09-14] [pitfall] Nuxt 模块发布声明须显式标注 `NuxtModule<T>`，`@nuxt/schema` 提供类型并加入 tsdown `neverBundle` → [架构设计 §5](../architecture.md)
+- [2026-09-14] [env] pnpm 11 不再读取 package.json 的 `pnpm` 字段，配置迁至 `pnpm-workspace.yaml`（`ERR_PNPM_IGNORED_BUILDS`） → [架构设计 §4.1](../architecture.md)
+- [2026-09-14] [pattern] Nuxt fixture 以 `node_modules` 软链消费构建产物，脚本用 `realpath` 校验目标后再复用 / 重建 → [开发指南 - 注意事项](../../guide/development.md)
+- [2026-09-14] [pitfall] 引入 Nuxt fixture 后须同步 `.gitignore` / ESLint `ignores` / 根 `tsconfig` `exclude` → [开发指南 - 注意事项](../../guide/development.md)
+- [2026-09-14] [pattern] 浏览器 hydration 验证：Playwright + 本地静态服务器，点击计数判定完成，`emulateMedia({ colorScheme })` 验证暗色 token → [测试规范 §7](../../standards/testing.md)
+- [2026-09-15] [pitfall] 条件兄弟节点使根变 Fragment、`v-show` 与组件级指令静默失效，需单元素包裹层 → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pattern] 自适应高度测量（先 `auto` 再读 `scrollHeight`、`ResizeObserver` 按 `clientWidth` 去重、不可见时清空） → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pitfall] scoped 规则声明几何属性会抬高特异性挡住消费方覆盖 → [开发规范 §7](../../standards/development.md)
+- [2026-09-15] [pattern] happy-dom 无布局引擎，需 `defineProperty` 注入几何、stub `ResizeObserver` → [测试规范 §8](../../standards/testing.md)
+- [2026-09-15] [pitfall] 相邻改动行无法用 `git add -p` 拆 hunk 时的临时移除法 → [Git 规范 §3](../../standards/git.md)
+- [2026-09-15] [dependency] Reka 日期 primitive 模型为 `DateValue`，依赖 `@internationalized/date`（`reka-ui/date` 子路径不可解析） → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pitfall] `v-bind` 与 `v-model` 同元素时 `v-model` 须在后，半受控用例才有判别力 → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pattern] 包装 Reka 触发器需 `as-child` + 自持 `<button>` + `inheritAttrs: false` → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pattern] `rolldown-dts` 可能留下裸副作用导入，可接受但不得宣称类型面零第三方引用 → [开发规范 §8](../../standards/development.md)
+- [2026-09-15] [pitfall] 上游未透传可访问名 prop 时应组合更底层 primitive 接管文案 → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pattern] 时间类输入自建要点（number 输入钳位、非法 / 空输入回滚、`Number('') === 0`） → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [process] 含多项能力的条目按真实用量分批交付，取证记录命令与快照日期 → [规划规范 §5](../../standards/planning.md)
+- [2026-09-15] [process] 零用量子能力不自动升降级，范围降级须用户裁定并保留理由与触发条件 → [规划规范 §3](../../standards/planning.md)
+- [2026-09-15] [process] 提交信息声明的状态变更须在 `git show` 有对应 hunk → [Git 规范 §3](../../standards/git.md)
+- [2026-09-15] [pattern] happy-dom 事件须 `cancelable: true` 才能触发 `preventDefault` 语义（`DismissableLayer` / `update:open`） → [测试规范 §8](../../standards/testing.md)
+- [2026-09-15] [pitfall] 颜色 / 几何类控件断言须位置与数值敏感，避免弱断言假阳性 → [测试规范 §8](../../standards/testing.md)
+- [2026-09-15] [pitfall] Reka Alpha primitive 的动态可访问文案（`aria-valuetext` / `aria-label` / `aria-hidden`）需包装层接管 → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pitfall] primitive anatomy 不可改（`ColorAreaThumb` 须嵌套于 `ColorAreaArea`） → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pitfall] 浏览器断言前核对文档页 `.demo-row` 索引（`vitepress preview` 旧产物部分已由 [开发指南 - 注意事项](../../guide/development.md) 覆盖） → [文档与演示站设计 §5](../documentation-site.md)
+- [2026-09-16] [pitfall] 迁移口径：API 是否生效以一方源码 props 列表为准，而非调用点是否传值 → [设计规范 §7](../design-spec.md)
+- [2026-09-16] [pitfall] 规划台账规模数字须与同一 index 的 diff 同源，提交前用 `git show :<file>` 核验 → [Git 规范 §3](../../standards/git.md)
+- [2026-09-16] [pattern] 需同时断言插槽内容与作用域参数时，插槽须用渲染函数 → [测试规范 §8](../../standards/testing.md)
+
+**删除 11 条（判定已被现有文档覆盖）**：
+
+- [2026-09-14] [pitfall] pnpm 11 移除 `pnpm link --global`、`pnpm link <dir>` 写回 `link:` 与移除链接 → [本地联调 §2](../../guide/local-linking.md)
+- [2026-09-14] [pattern] `file:` 为硬链接、重建后须重装、可正常解析下游 peer（联调优先） → [本地联调 §2.1 / §2.2](../../guide/local-linking.md)
+- [2026-09-14] [pattern] `@nuxt/kit` 声明为可选 peer 依赖 → [架构设计 §5](../architecture.md)
+- [2026-09-14] [pitfall] 文档示例 prop 须与源码类型核对、列举能力须与 export 对齐（幽灵 API） → [文档规范 §2](../../standards/documentation.md)（已实现能力才写入） / [文档与演示站设计 §9](../documentation-site.md)（示例纳入 `typecheck:docs`）
+- [2026-09-14] [pattern] 需求评估检索下游仓库真实用法（排除 `node_modules` / `dist` / `.nuxt`） → [momei 使用复核台账 §2](./2026-09-14-momei-usage-audit.md)
+- [2026-09-15] [process] Review Gate 对布局 / CSS 级联改动要求真实浏览器证据，证据随 delta 过期 → [测试规范 §2.1](../../standards/testing.md) / [AI 协作规范 §3](../../standards/ai-collaboration.md)
+- [2026-09-15] [pitfall] Reka `TimeField`（2.10.4）`dayPeriod` 仅识别英文、非英文 12 小时制误判 → [开发规范 §5](../../standards/development.md)
+- [2026-09-15] [pattern] 封装前先确认 primitive 是否覆盖目标语义（Reka `Drawer` 不定位、未采用） → [组件设计 §1.1](../components.md) / [设计规范 §7](../design-spec.md)
+- [2026-09-15] [pitfall] Review Gate 缺轮次上限会无限循环（单条目最多 2 轮） → [AI 协作规范 §3.4](../../standards/ai-collaboration.md)
+- [2026-09-15] [pattern] 单模块大改动按交付面拆批次、审查与实现可并行 → [AI 协作规范 §3.2.1](../../standards/ai-collaboration.md)
+- [2026-09-16] [pattern] DataView 类容器 `layout` 只切插槽 + 根修饰类、列定义归内容层 → [设计规范 §6 / §7](../design-spec.md)
+
 ## 2026-09-14 蒸馏批次
 
 > 用户主动触发（2026-09-14）：活跃 15 条全部处置，迁移 6 条、删除 9 条，剩余活跃 0 条。

@@ -23,6 +23,10 @@
 3. 通过 `conventional-committer` skill 生成提交消息并提交，**禁止**裸 `git commit -m "..."`。
 4. 提交必须通过 husky 钩子（commitlint / lint-staged），禁止 `--no-verify`。
 5. lint-staged 仅运行 ESLint（`*.{js,ts,vue}`）；含样式改动时先手动执行 `pnpm lint:css:check`，避免 Stylelint 问题在提交后才由 `pnpm verify` 暴露。
+6. 提交信息声明的状态变更必须能在 `git show` 中看到对应 hunk：规划台账的勾选 / 状态字段要与 diff 实际内容一致，禁止只追加说明而不改状态。
+7. 涉及规划台账规模数字（文件数 / 行数）时须与同一 index 同源：改完数字后重新 `git add`，提交前用 `git show :<file>` 核验索引版文本，避免暂存内容自相矛盾。
+
+> 相邻改动行无法用 `git add -p` 拆 hunk 时，可临时移除同文件内另一条目的改动先行提交本条目，再恢复后提交（等价于手工拆 hunk）。
 
 ## 4. 推送纪律
 

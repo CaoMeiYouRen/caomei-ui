@@ -95,6 +95,7 @@ chromium.launch({
 - 校验主题 / 暗色的计算样式时：文档站（VitePress）存在过渡动画，直接读 `backgroundColor` 会落在过渡中间值；须先注入 `transition: none !important`。静态 HTML 无法复现组件视觉——SFC scoped 样式带 `[data-v-*]`，须在真实文档站验证。容器内 headless Chromium 需 `--single-process` 才不崩。
 - UI 验证证据（脚本、截图）落盘 `test-results/`（已 gitignore），不污染工作区；需长期留存的证据应放可提交位置或内联实测值。
 - Playwright 与 Reka `RadioGroup`（RovingFocus）的键盘选中：选中在 focus 后经 `setTimeout(0)` 结算，`page.keyboard.press()` 在同 tick 内 down+up 会与选中时序竞争、误报「方向键不选中」；须用真实按键节奏（`keyboard.down` → 延时 → `keyboard.up`）。
+- 验证 SSR hydration：Playwright 配本地静态服务器，以点击计数变化判定水合完成，用 `emulateMedia({ colorScheme })` 验证暗色 token。
 
 ## 8. 组件测试写法
 
@@ -105,6 +106,10 @@ chromium.launch({
 - Reka 触发方式差异：`TabsTrigger` 激活在 `mousedown`（RovingFocus 体系），`AccordionTrigger` / `DropdownMenuTrigger` 在 `click`；单测派发的事件类型须分别匹配。
 - Reka `DismissableLayer` 的 `onKeyStroke('Escape')` 挂在 window；happy-dom 下 document 级派发不稳定，应在浮层内容元素上派发 `bubbles: true` 的 keydown。
 - happy-dom 的文件输入 `value` 恒为 `''`，无法验证「选择后复位 value」；需在实例上定义 `value` setter 记录赋值行为。
+- happy-dom 无布局引擎：`scrollHeight` / `clientWidth` 需用 `Object.defineProperty` 注入；`ResizeObserver` 可 stub 以捕获回调，断言「同宽不重测、变宽才重测」。
+- happy-dom 事件需 `cancelable: true`，`preventDefault()` 才会置 `defaultPrevented`（Reka `DismissableLayer` 依该标志决定是否 dismiss）；`closeOnEsc` / `closeOnOverlay` 的行为断言要传 `cancelable: true` 并断言 `update:open`；`pointerdown` 外部点击监听在 `setTimeout(0)` 后注册，需先等一个宏任务再派发。
+- 颜色 / 几何类控件的断言须位置与数值敏感：在 0×0 元素上点击其 50% 等同于点在最左端（hue=0），「颜色变了」这类弱断言会给出假阳性；应断言 `aria-valuenow`、thumb 几何与程序值 / 播报值一致。
+- 需同时断言插槽内容与作用域参数时，插槽必须用渲染函数（如 `slots: { list: (props) => h('div', props.items.length) }`）；VTU 的字符串插槽拿不到作用域参数，写了也只会得到假阳性。
 
 ## 9. 反模式
 

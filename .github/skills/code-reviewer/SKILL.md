@@ -29,6 +29,7 @@ metadata:
     - [ ] 2.4 若实际证据低于最低层级，直接判定为 `Reject`，而不是"暂时通过"。
 - [ ] Step 2.5: 按 audit-depth 分配审查深度 ⚠️ REQUIRED（控制用时）
     - [ ] 2.5.1 审查投入与改动风险匹配，档位与时间盒以 [AI 协作规范 §3.1 审计调用协议](../../../docs/standards/ai-collaboration.md)为唯一权威；调用方未声明 `audit-depth` 时按 `deep` 防御执行。
+    - [ ] 2.5.2 **轮次与范围**：按 [AI 协作规范 §3.4](../../../docs/standards/ai-collaboration.md) 执行——单条目默认最多 2 轮；第 2 轮仍 Reject 时只列 blocker、warning/suggest 转 follow-up；复审范围冻结在修复点与直接受影响面，同类别全库排查等新范围记 follow-up 不阻断。
     - [ ] 2.5.2 证据优先采信：调用方提供的已查证事实（实验证据、测试结果、源码行号引用）直接采用，翻源码仅限需要最终实锤且无外部参考的场景。
     - [ ] 2.5.3 收敛策略（不依赖时间感知）：审查输出固定为"audit-depth 审查范围内可交付的结论 + 未覆盖边界"，宁可给 `Reject`（附待补证据清单）也不无限深挖。
     - [ ] 2.5.4 复审只审修复点：第 2+ 轮只复查上轮问题编号对应的修复点 diff 与受影响断言，不得重读全量 diff。
@@ -80,7 +81,7 @@ metadata:
 
 ## 审计侧执行规则（audit-depth）
 
-`audit-depth` 分级、时间盒与调用方声明要求以 [AI 协作规范 §3.1 审计调用协议](../../../docs/standards/ai-collaboration.md)为唯一权威，本技能不重复抄写；审计侧执行规则（证据优先采信、收敛策略、复审只审修复点、并发分区、不自报时长、时间盒核验）以 Step 2.5 为准。
+`audit-depth` 分级、时间盒、**轮次上限与范围冻结**（§3.4）与调用方声明要求以 [AI 协作规范 §3.1 / §3.4](../../../docs/standards/ai-collaboration.md)为唯一权威，本技能不重复抄写；审计侧执行规则（证据优先采信、收敛策略、复审只审修复点、新范围转 follow-up、并发分区、不自报时长、时间盒核验）以 Step 2.5 为准。
 
 ## 输出格式
 
@@ -156,6 +157,7 @@ metadata:
 - [ ] Review Gate 结论（Pass/Reject）与问题分级（blocker/warning/suggest）分离清晰。
 - [ ] 最低验证矩阵已核对，证据缺失已导致 Reject 而非"暂时通过"。
 - [ ] audit-depth 与时间盒已由调用方声明，审查范围与深度匹配。
+- [ ] 轮次未超上限（§3.4）；复审未引入新范围，新发现已转 follow-up。
 - [ ] 多轮 review 已按问题编号给出"本轮新增/已关闭/仍待复查"。
 - [ ] 证据记录已写入 artifacts/review-gate/（如适用）。
 - [ ] Findings 排在总结前面。

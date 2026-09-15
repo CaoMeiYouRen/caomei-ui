@@ -104,6 +104,25 @@ docs/
     - 产物级守卫见 `pnpm docs:check:i18n-routing`（已接入 `verify` 与 CI）；`i18nRouting: false` 作为别名未生效时的兜底（退回回首页而非 404）。覆盖度提升后可改回默认对应路由。
 - **链接检查**：`scripts/docs/check-links.mjs` 对站点根链接额外解析 `docs/i18n/<path>`，以兼容该物理路径约定。
 - **同步范围**：英文版最终与中文版保持同步的范围**仅限「指南」与「组件介绍」**（按批次推进）；设计、规范、规划等保持骨架 / 中文源（source-only），不承诺持续翻译。
-- **列表顺序**：英文导航 / 侧边栏与组件概览中的已翻译页，按中文 sidebar 的组件顺序排列（非翻译时间顺序），保证翻译覆盖完成后两侧顺序一致。
+- **列表顺序**：英文导航 / 侧边栏与组件概览中的已翻译页，按中文 sidebar 的组件顺序排列（非翻译时间顺序），保证翻译覆盖完成后两侧顺序一致。组件侧栏自身的分组与组内顺序规则见 §11。
 - **Demo 翻译**：仅翻译含文案的 demo，英文版放在 `docs/i18n/en-US/examples/<component>/`，en 组件页以 `../examples/...` 引用；文案为语言中性的 demo 复用中文 `docs/examples/`（`../../../examples/...`），避免无意义复制。
 - **API 描述双语**：组件 `types.ts` 的 JSDoc 以中文为主，用 `@en` 标签补充英文（如 `@en Visual variant`），`gen-component-meta.mjs` 额外输出 `descriptionEn`，`<ComponentApi>` 按 locale 选用（缺失时回退中文）。`@en` 会被 tsdown 保留进 `dist/*.d.ts`，作为可接受的注释副作用。
+
+## 11. 组件分区与排序
+
+- `/components/` 侧栏按 **6 个组件分组**组织，组间顺序固定为本节表格自上而下的顺序（不采用「按使用频率」等主观口径；新增分组须先在本节登记，登记位置即最终位置）；组内按**英文组件名字母序**排列。
+- 组内顺序的唯一依据是英文字母序——实现顺序、历史登记顺序、翻译先后均不参与定序；不设「同族微调」例外，如确需例外须先在本节登记为固定规则。
+- 中英两侧侧栏使用同一分组划分与同一组件顺序：中文条目标题形如 `Button 按钮`，英文为 `Button`；组件概览的列表列序遵循同一顺序，翻译侧同步约定见 §10。
+- 分组划分（含英文分组名）以本表为准，实现落在 `docs/.vitepress/config.ts` 的中英两处 sidebar；新增组件时先定分组、再按字母序落在组内正确位置，本节与实现两处同步。
+- 本节范围限于 6 个组件分组；同侧栏内后续新增的非组件分组（组合式 API / 图标 / 国际化等）的位置，在登记到本节后生效。
+
+| 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序） |
+| --- | --- | --- |
+| 基础与布局 | Basics & Layout | Avatar、Badge、Button、ButtonGroup、Card、Divider、Image、SplitButton、Tag |
+| 表单输入 | Form Inputs | Checkbox、FileUpload、FloatLabel、Input、InputGroup、InputNumber、Password、RadioGroup、Slider、Switch、Textarea |
+| 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、MultiSelect、Select、SelectButton、ToggleButton |
+| 反馈与浮层 | Feedback & Overlays | ConfirmDialog、Dialog、Drawer、Message、Popover、Toast |
+| 数据展示 | Data Display | DataTable、DataView、Paginator、ProgressBar、ProgressSpinner、Skeleton |
+| 导航与操作 | Navigation & Actions | Accordion、DropdownMenu、Stepper、Tabs、Toolbar |
+
+> 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。

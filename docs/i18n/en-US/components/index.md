@@ -32,6 +32,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Switch](/en-US/components/switch)
 - [RadioGroup](/en-US/components/radio-group)
 - [Slider](/en-US/components/slider)
+- [SplitButton](/en-US/components/split-button)
 - [ToggleButton](/en-US/components/toggle-button)
 - [Toolbar](/en-US/components/toolbar)
 - [DataTable](/en-US/components/data-table)

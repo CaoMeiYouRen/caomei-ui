@@ -169,6 +169,7 @@
 | 组件 | 约定 |
 | --- | --- |
 | Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置 |
+| SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
 | Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认全宽；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
@@ -193,11 +194,13 @@
 | 受控字段 | `v-model:visible` / `v-model:value` | `v-model:open` / `v-model` |
 | 浮层标题 | `header` | `title` |
 | 校验态 | `class="p-invalid"` | `:invalid` |
-| 全宽 | `fluid` | 默认全宽（迁移时删除） |
+| 全宽 | `fluid` | 默认全宽（迁移时删除；例外：`SplitButton` 未实现 `fluid`，按内容宽度） |
 | 选项字段映射 | `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数；值支持 `string` / `number`） |
 | 可搜索单选 | `Select filter` | 改用 `CaomeiAutoComplete`（Reka Select 无 filter primitive，面板内搜索框违反 `aria-required-children`；自由文本差异见 [Backlog](../plan/backlog.md)） |
 
 > Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` 待评估。
+>
+> SplitButton 迁移映射（已实现）：`label` → 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名**（`development.md §组件设计`），图标按钮场景改传 `label`。`icon` → `#icon` 插槽（传 `@lucide/vue` 组件，非字符串类名）；`model` → `model`（`MenuItem` 的 `label` / `icon` / `command` / `disabled` 支持，另有 `separator`；`icon` 改传组件）；`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`size` 的 `small` / `large` → `sm` / `lg`；`rounded` → `rounded`。**未实现 / 未暴露（下游零用量）**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向：**自建**（Button + DropdownMenu 组合），Reka 无 SplitButton 对应（`Splitter` 为分栏布局，语义不符）。
 >
 > DataTable 排序：首次点击为**升序**（内部固定 `sortDescFirst: false`，对齐 PrimeVue 语义）；受控模式由挂载时是否提供 `sortField` 决定。
 >

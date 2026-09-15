@@ -37,7 +37,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 19 namespaces by component area, covering 20 consuming components:
+`CaomeiLocaleMessages` is split into 20 namespaces by component area, covering 21 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -56,6 +56,7 @@ import {
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
+| `splitButton` | `menu` | SplitButton |
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` | DataTable |

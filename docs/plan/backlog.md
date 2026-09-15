@@ -88,6 +88,9 @@
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |
 | scoped 变量声明治理 | `development.md §7` 要求「基类不预声明 CSS 变量默认值、档位类用 `:where()`」，但仍有偏差：`button` 基类直接声明 `--caomei-button-*` 默认值（基类预声明），`message` / `badge` / `tag` / `toast` 的变体类用普通类声明变量（档位类未用 `:where()`）；建议补 `check-design.mjs` 规则（现规则只查引用存在性）并逐组件收敛 | 低 |
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
+| 阴影与遮罩 token 迁移 | `--caomei-shadow-lg` / `--caomei-color-mask` 已实现（Drawer 已消费）；Dialog / ConfirmDialog / DropdownMenu / Select / Popover / MultiSelect / Toast / Card / Skeleton / Slider 等仍用原始 rgb 字面量（`check-design` 预算 13/13），待逐组件迁移 | 低 |
+| DropdownMenuTrigger 样式豁免 | `CaomeiDropdownMenuTrigger` 把 `caomei-dropdown-menu__trigger` 默认外观固定在根上，`as-child` 组合自定义按钮（如 SplitButton 的下拉按钮）时会连带合并 padding / border / background；候选补 `unstyled` / 样式豁免入口，使复合层可复用其 a11y 接线而不继承默认外观（当前 SplitButton 直接用 Reka `DropdownMenuTrigger` 绕过） | 低 |
+| 分组按钮可访问语义 | ButtonGroup / SplitButton 的根目前仅作布局容器，无障碍树中是多个独立按钮；候选为根补 `role="group"` 与可选的分组可访问名 | 低 |
 | 文档翻译旧目录守卫 | 治理发现：设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
 | ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |

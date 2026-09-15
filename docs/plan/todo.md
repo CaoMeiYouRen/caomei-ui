@@ -46,7 +46,7 @@
   - [x] Select 补充 `showClear` / `#option`（清空与自定义选项渲染）
   - [x] Select `filter` 迁移决策（方案 A → `AutoComplete`）：经用户决策（2026-09-15）不在 Select 上实现，改为迁移映射；理由与自由文本差异见 [Backlog](./backlog.md)
   - [ ] Tag 语义与形态（severity 映射规范化、`rounded` / `outlined`、`#icon`）——说明：`#icon` 插槽与 `tone` 五档在既有实现中已具备；`outlined` 由 `variant="outline"` 承载、不新增布尔别名（迁移映射见 design-spec §7）
-  - [ ] Message 形态与尺寸（`variant` `simple` / `text`、`size`、severity 映射）
+  - [x] Message 形态与尺寸（`variant` `simple`、`size`、severity 映射）——说明：PrimeVue Message 仅 `outlined` / `simple` 两种变体、无 `text`（下游实装的一方源码与类型取证），故不实现 `text`
   - [ ] InputNumber 分组与小数位（`useGrouping` / `minFractionDigits` / `maxFractionDigits`）
   - [ ] Textarea 自动增高（`autoResize`）
   - [ ] Password 强度反馈（`feedback`）

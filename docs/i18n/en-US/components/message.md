@@ -22,10 +22,21 @@ Switch the semantic tone with `tone`; supports `neutral` / `primary` / `success`
 
 ## Variants
 
-Switch the visual variant with `variant`; supports `soft` (default) / `solid` / `outline`.
+Switch the visual variant with `variant`; supports `soft` (default) / `solid` / `outline` / `simple` (an inline form with no background, border or padding, often used for field validation text).
 
 <demo
     vue="../examples/message/variants.vue"
+    ssg="true"
+/>
+
+> Migration mapping (PrimeVue → caomei-ui): `severity` → `tone` (`error` → `danger`, `warn` / `warning` → `warning`, `info` → `primary`, `secondary` / `contrast` → `neutral`, `success` → `success`; `secondary` / `contrast` / `info` are **lossy approximations**). `variant="outlined"` → `variant="outline"`, `variant="simple"` → `variant="simple"`; the default form with no `variant` maps to `soft`. PrimeVue Message only offers `outlined` / `simple` (there is no `text`).
+
+## Sizes
+
+Switch between `sm` / `md` (default) / `lg` with `size`; it affects font size and padding, while the `simple` variant consumes no padding.
+
+<demo
+    vue="../examples/message/sizes.vue"
     ssg="true"
 />
 

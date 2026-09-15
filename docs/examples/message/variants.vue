@@ -22,6 +22,11 @@ import { CaomeiMessage } from '@/components/message'
             title="outline"
             description="描边与文字着色。"
         />
+        <CaomeiMessage
+            variant="simple"
+            tone="danger"
+            description="simple：行内校验提示，无背景、边框与内边距。"
+        />
     </div>
 </template>
 

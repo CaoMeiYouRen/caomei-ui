@@ -22,10 +22,21 @@
 
 ## 变体
 
-通过 `variant` 切换视觉变体，支持 `soft`（默认）/ `solid` / `outline`。
+通过 `variant` 切换视觉变体，支持 `soft`（默认）/ `solid` / `outline` / `simple`（无背景、边框与内边距的行内形态，常用于字段校验提示）。
 
 <demo
     vue="../examples/message/variants.vue"
+    ssg="true"
+/>
+
+> 迁移映射（PrimeVue → caomei-ui）：`severity` → `tone`（`error` → `danger`、`warn` / `warning` → `warning`、`info` → `primary`、`secondary` / `contrast` → `neutral`、`success` → `success`；`secondary` / `contrast` / `info` 为**有损近似**）。`variant="outlined"` → `variant="outline"`、`variant="simple"` → `variant="simple"`；无 `variant` 的默认形态对应 `soft`。PrimeVue Message 只有 `outlined` / `simple` 两种变体（无 `text`）。
+
+## 尺寸
+
+通过 `size` 切换 `sm` / `md`（默认）/ `lg`，影响字号与内边距；`simple` 变体不消费内边距。
+
+<demo
+    vue="../examples/message/sizes.vue"
     ssg="true"
 />
 

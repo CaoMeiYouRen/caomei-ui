@@ -22,6 +22,11 @@ import { CaomeiMessage } from '@/components/message'
             title="outline"
             description="Border and colored text."
         />
+        <CaomeiMessage
+            variant="simple"
+            tone="danger"
+            description="simple: inline validation text with no background, border or padding."
+        />
     </div>
 </template>
 

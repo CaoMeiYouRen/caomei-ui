@@ -22,8 +22,10 @@ metadata:
   - [ ] 3.1 组件实现交 `frontend-developer`，遵守 [开发规范](../../../docs/standards/development.md)。
   - [ ] 3.2 自检 `lint` + `typecheck` + 定向测试。
 - [ ] Step 4: 审计（A） ⚠️ REQUIRED
-  - [ ] 4.1 交 `code-reviewer` 执行 Review Gate，声明 `audit-depth`。
-  - [ ] 4.2 blocker 关闭前不得进入后续阶段。
+  - [ ] 4.1 交 `code-reviewer` 执行 Review Gate；审计 prompt 必须声明 `audit-depth` + 理由与**时间盒**（按 [AI 协作规范 §3.1 审计调用协议](../../../docs/standards/ai-collaboration.md)计算），携带变更文件清单与已验证证据；小改动必须主动声明 `quick`。
+  - [ ] 4.2 大改动（触发条件与汇总规则见 [AI 协作规范 §3.2](../../../docs/standards/ai-collaboration.md)）按模块划分，并行发起多个 `@code-reviewer` 审计任务；小改动不并发。
+  - [ ] 4.3 发起前记录宿主时间戳，返回后实测 elapsed 并回填「实际用时 / 是否超时间盒」（见 [AI 协作规范 §3.3](../../../docs/standards/ai-collaboration.md)）。
+  - [ ] 4.4 blocker 关闭前不得进入后续阶段。
 - [ ] Step 5: 验证（V）与测试（T）
   - [ ] 5.1 涉及界面交 `ui-validator`；无 UI 影响显式说明跳过。
   - [ ] 5.2 测试补强交 `test-engineer`。
@@ -37,6 +39,8 @@ metadata:
 - 跳过 Review Gate 直接提交。
 - 一个事项多个实现主责并行。
 - 把大改动不拆分地一次推进。
+- 发起审计不带 `audit-depth` 与时间盒声明（默认 `deep` 白耗时）。
+- 大改动不按模块分区、只交由单个审查者硬扛。
 
 ## 交付前检查
 

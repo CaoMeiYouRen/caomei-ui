@@ -19,7 +19,8 @@
 - 关联 Todo:
 - 改动类型:
 - 风险等级:（低 / 中 / 高）
-- audit-depth:（quick / standard / deep，调用方声明）
+- audit-depth:（quick / standard / deep，调用方声明 + 理由）
+- 时间盒:（计算依据见 AI 协作规范 §3.1 / §3.2）
 - 记录路径:
 
 ## Round 1（第 1 轮）

@@ -37,9 +37,10 @@ description: 负责代码审查与安全审计的 review 型 agent，对代码�
 
 ## 分级审计执行协议（控制用时）
 
-- `audit-depth`（`quick` / `standard` / `deep`）由调用方（`full-stack-master` 或用户）在审计任务中显式声明，分级定义、适用改动与时间盒以 [code-reviewer](../skills/code-reviewer/SKILL.md) 的"分级审计协议"为准；调用方未声明时按 `deep` 防御执行。
-- 执行规则：证据优先采信（调用方提供的已查证事实直接采用，翻源码仅限最终实锤）、收敛策略（输出"审查范围内可交付结论 + 未覆盖边界"，宁可 Reject 附待补证据清单也不无限深挖）、复审只审修复点（第 2+ 轮只复查上轮问题编号对应修复 diff）、并发分区（>8 文件或 ≥2 模块时按模块分区、主审取最严）。
-- 时间盒核验由调用方宿主时钟事后实测，审计过程中不感知、不检查时间，不自报时长。
+- `audit-depth`（`quick` / `standard` / `deep`）与时间盒由调用方（`full-stack-master` 或用户）在审计任务中显式声明，分级定义、适用改动与时间盒计算以 [AI 协作规范 §3.1 审计调用协议](../../docs/standards/ai-collaboration.md)为唯一权威；调用方未声明时按 `deep` 防御执行。
+- 执行规则：证据优先采信、收敛策略、复审只审修复点、并发分区汇总，完整定义见 [code-reviewer skill](../skills/code-reviewer/SKILL.md) Step 2.5。
+- 并发分区：大改动（触发条件与汇总规则见 [AI 协作规范 §3.2](../../docs/standards/ai-collaboration.md)）由调用方按模块分区并行发起多个审计任务。
+- 时间盒核验由调用方宿主时钟事后实测，审计过程中不感知、不检查时间，不自报时长（见 [AI 协作规范 §3.3](../../docs/standards/ai-collaboration.md)）。
 
 ## 协作工作流 (Collaboration Workflow)
 

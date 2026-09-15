@@ -101,3 +101,4 @@
 - [2026-09-12] [pattern] VTU `trigger('keydown.enter')` 的 key 为小写，应传 `{ key: 'Enter' }` → docs/standards/testing.md
 - [2026-09-12] [pattern] Vue 模板同一元素只允许一个无参 `v-bind`，多个须脚本内合并 → docs/standards/development.md
 - [2026-09-12] [process] UI 验证证据须落盘到仓库内可提交位置或内联实测值（`dist/` 等被忽略） → docs/standards/testing.md
+- [2026-09-15] [pattern] Reka NumberField 展示上限若低于取整精度（`maximumFractionDigits < precision`），失焦回读会按上限截断模型；上限应取 `maxFractionDigits` 与 `precision` 的较大值（取代 2026-09-12 的「`precision` 不映射 `maximumFractionDigits`」） → docs/standards/development.md

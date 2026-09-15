@@ -35,6 +35,19 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+## Grouping and fraction digits
+
+`useGrouping` (default `true`) controls grouping separators such as thousands separators; `minFractionDigits` / `maxFractionDigits` (integers from 0–20) control the fraction digits used for display and rounding, with `precision` taking precedence over `maxFractionDigits`.
+
+<demo
+    vue="../examples/input-number/format.vue"
+    ssg="true"
+/>
+
+> `useGrouping` defaults to `true` (matching PrimeVue); `minFractionDigits` only pads the display without changing the model, while `maxFractionDigits` also rounds the model to that precision. Non-integers outside 0–20 are treated as unset, and when `minFractionDigits` is greater than `maxFractionDigits` the minimum is dropped to avoid an `Intl` error.
+> When `precision` is greater than `maxFractionDigits`, `precision` wins for both display and rounding.
+> When the external model or `min` / `max` has more fraction digits than `maxFractionDigits`, the display is rounded to `maxFractionDigits` (for example `max=1.005` displays as `1.01`); the model value is unchanged and always clamped by `min` / `max`.
+
 ## States
 
 `disabled` disables, `readonly` makes it read-only, and `invalid` marks a validation failure; `controls="false"` hides the increment/decrement steppers.

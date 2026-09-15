@@ -196,6 +196,8 @@
 >
 > Select 清空与自定义选项（已实现）：`show-clear` → `showClear`（清除后模型置 `null`、焦点交回触发器）；`#option` 插槽收到原始选项对象与选中态。
 >
+> InputNumber 迁移映射（已实现）：`use-grouping` → `useGrouping`（默认 `true`，对齐 PrimeVue）、`min-fraction-digits` / `max-fraction-digits` → `minFractionDigits` / `maxFractionDigits`（0–20 整数；`minFractionDigits` 仅补零展示，`maxFractionDigits` 同步取整模型，`precision` 优先）；`show-buttons` → `controls`。
+>
 > Message 迁移映射（已实现）：`severity` → `tone`（`error` → `danger`、`warn` / `warning` → `warning`、`info` → `primary`、`secondary` / `contrast` → `neutral`、`success` → `success`；`secondary` / `contrast` / `info` 为有损近似）；`variant="outlined"` → `variant="outline"`、`variant="simple"` → `variant="simple"`（PrimeVue Message 仅 `outlined` / `simple`，无 `text`；无 `variant` 的默认形态对应 `soft`）；`size` 取 `sm` / `md` / `lg`（对齐 `small` / `large`）。
 >
 > Tag 迁移映射（已实现）：`severity` → `tone`（`secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`secondary` / `contrast` / `info` 均为**有损近似**）。Tag 无 `error` 用量，通用语义色映射见 [momei 使用复核台账 §4.3](./governance/2026-09-14-momei-usage-audit.md)；`outlined` → `variant="outline"`；`rounded` → `rounded`；`value` → 默认插槽；字符串 `icon` → `#icon` 插槽。Tag **不新增** `outlined` / `severity` 布尔别名与 `value` prop（`variant` 已覆盖形态、映射走 `tone`、内容走插槽）。

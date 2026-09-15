@@ -35,6 +35,19 @@
     ssg="true"
 />
 
+## 分组与小数位
+
+`useGrouping`（默认 `true`）控制千分位等分组分隔符；`minFractionDigits` / `maxFractionDigits`（0–20 的整数）控制展示与取整的小数位，`precision` 优先于 `maxFractionDigits`。
+
+<demo
+    vue="../examples/input-number/format.vue"
+    ssg="true"
+/>
+
+> `useGrouping` 默认 `true`（对齐 PrimeVue）；`minFractionDigits` 仅补零展示、不改变模型，`maxFractionDigits` 会同步把模型按该位数取整；两者非 0–20 整数时按未提供处理，`minFractionDigits` 大于 `maxFractionDigits` 时丢弃最小值以避免 `Intl` 抛错。
+> 当 `precision` 大于 `maxFractionDigits` 时以 `precision` 为准（展示与取整一致）。
+> 当外部模型或 `min` / `max` 的小数位多于 `maxFractionDigits` 时，展示会被按 `maxFractionDigits` 取整（例如 `max=1.005` 展示为 `1.01`）；模型值不变，且始终按 `min` / `max` 收口。
+
 ## 状态
 
 `disabled` 禁用、`readonly` 只读、`invalid` 标记校验失败；`controls="false"` 隐藏增减按钮。

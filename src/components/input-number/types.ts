@@ -22,10 +22,10 @@ export interface InputNumberProps {
      */
     step?: number
     /**
-     * 小数位数（0–100 的整数）；设置后失焦与步进结果按该精度取整，且展示上限不低于该精度。
-     * 超过 20 的取值依赖 `Intl.NumberFormat` v3（Node ≥ 20 与现代浏览器）
-     * @en Number of decimal places (an integer from 0 to 100); when set, results are rounded to this precision on blur and step, and the display limit is never lower than it.
-     * Values above 20 rely on `Intl.NumberFormat` v3 (Node >= 20 and modern browsers)
+     * 小数位数（0–20 的整数）；设置后失焦与步进结果按该精度取整，且展示上限不低于该精度。
+     * 取值域与 `minFractionDigits` / `maxFractionDigits` 一致：该值会进入 `Intl.NumberFormat` 的小数位选项，>20 依赖 ES2023 Intl v3（旧运行时抛 `RangeError`）。超出按未提供处理
+     * @en Number of decimal places (an integer from 0 to 20); when set, results are rounded to this precision on blur and step, and the display limit is never lower than it.
+     * The range matches `minFractionDigits` / `maxFractionDigits`: the value feeds `Intl.NumberFormat`, where limits above 20 require ES2023 Intl v3 (older runtimes throw `RangeError`). Out-of-range values are treated as unset
      */
     precision?: number
     /**

@@ -33,6 +33,13 @@ const emit = defineEmits<{
 
 const model = defineModel<number | null>({ default: null })
 
+/**
+ * 传给 Reka 的模型值：先归一化 `-0` 为 `0`。
+ * Vue 的属性 diff 用 `!==` 判等，`-0 !== 0` 为假，故仅在 emit 侧归一化不会触发重新渲染，
+ * 展示会停留在 Intl 渲染出的 `"-0"`。
+ */
+const displayModel = computed(() => (Object.is(model.value, -0) ? 0 : model.value))
+
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -41,17 +48,22 @@ const locale = useLocale()
 const increaseLabel = computed(() => props.increaseLabel ?? locale.value.inputNumber.increase)
 const decreaseLabel = computed(() => props.decreaseLabel ?? locale.value.inputNumber.decrease)
 
-/** 归一化小数位参数：仅接受 0–20 的整数，非法值按未提供处理 */
-function resolveFractionDigits(value: number | undefined): number | undefined {
-    if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > 20) {
-        return undefined
-    }
-    return value
-}
+/** 小数位参数上限：`precision` / `minFractionDigits` / `maxFractionDigits` 共用同一取值域 */
+const DECIMAL_DIGITS_BOUND = 20
 
-/** 归一化 precision：仅接受 0–100 的整数，非法值按未提供处理 */
-function resolvePrecision(value: number | undefined): number | undefined {
-    if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > 100) {
+/**
+ * 归一化小数位参数：仅接受 0–20 的整数，非法值按未提供处理。
+ *
+ * 上限取 20 的原因：该值会进入 `Intl.NumberFormat` 的小数位选项，>20 依赖 ES2023 Intl v3
+ * （旧运行时抛 `RangeError`）；三者统一取值域后展示上限恒定 ≤ 20，可整类消除该运行时相关崩溃。
+ */
+function resolveDecimalDigits(value: number | undefined): number | undefined {
+    if (
+        typeof value !== 'number'
+        || !Number.isInteger(value)
+        || value < 0
+        || value > DECIMAL_DIGITS_BOUND
+    ) {
         return undefined
     }
     return value
@@ -67,9 +79,9 @@ function resolvePrecision(value: number | undefined): number | undefined {
  * `minimumFractionDigits` 大于 `maximumFractionDigits` 会让 Intl 抛 RangeError，故冲突时丢弃最小值。
  */
 const formatOptions = computed<Intl.NumberFormatOptions>(() => {
-    const minimum = resolveFractionDigits(props.minFractionDigits)
-    const maximum = resolveFractionDigits(props.maxFractionDigits)
-    const precision = resolvePrecision(props.precision)
+    const minimum = resolveDecimalDigits(props.minFractionDigits)
+    const maximum = resolveDecimalDigits(props.maxFractionDigits)
+    const precision = resolveDecimalDigits(props.precision)
     const conflict = minimum !== undefined && maximum !== undefined && minimum > maximum
 
     return {
@@ -103,11 +115,15 @@ const resolvedStep = computed(() =>
 /** 先按精度取整（`precision` 优先于 `maxFractionDigits`），再钳制到 min/max */
 function normalize(value: number): number {
     let next = value
-    const roundingDigits = resolvePrecision(props.precision) ?? resolveFractionDigits(props.maxFractionDigits)
+    const roundingDigits = resolveDecimalDigits(props.precision) ?? resolveDecimalDigits(props.maxFractionDigits)
 
     if (roundingDigits !== undefined) {
         const factor = 10 ** roundingDigits
-        next = Math.round(next * factor) / factor
+        const scaled = next * factor
+        // 极大值乘以 factor 会溢出为 Infinity；此时保留原值，避免把模型污染成非有限数
+        if (Number.isFinite(next) && Number.isFinite(scaled)) {
+            next = Math.round(scaled) / factor
+        }
     }
     if (props.min !== undefined) {
         next = Math.max(props.min, next)
@@ -115,7 +131,8 @@ function normalize(value: number): number {
     if (props.max !== undefined) {
         next = Math.min(props.max, next)
     }
-    return next
+    // 归一化 -0（Intl 会把 -0 展示为 "-0"）
+    return Object.is(next, -0) ? 0 : next
 }
 
 function onModelUpdate(value: number | null | undefined): void {
@@ -190,7 +207,7 @@ defineExpose({ focus, blur, inputRef })
     <NumberFieldRoot
         v-bind="rootAttrs"
         :id="id"
-        :model-value="model"
+        :model-value="displayModel"
         :min="min"
         :max="max"
         :step="resolvedStep"

@@ -1,5 +1,5 @@
 import { flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
-import { computed } from 'vue'
+import { computed, defineComponent, h, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
@@ -104,6 +104,78 @@ describe('CaomeiInputNumber', () => {
 
         await wrapper.get('input').trigger('blur')
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('precision 边界值 0 取整为整数', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1.234, precision: 0 } })
+        await wrapper.get('input').trigger('blur')
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
+    })
+
+    it('precision 边界值 20 保留已有精度且不抛错', async () => {
+        const wrapper = mount(CaomeiInputNumber, { props: { modelValue: 1.234, precision: 20 } })
+        expect(wrapper.get('input').element.value).toBe('1.234')
+
+        await wrapper.get('input').trigger('blur')
+        // 值未被改写时不产生额外提交（上限 20 不再触发 Intl RangeError 路径）
+        expect(wrapper.emitted('update:modelValue') ?? []).toEqual([])
+    })
+
+    it.each([21, 100] as const)('precision 超出 0–20（%s）时按未提供处理', async (precision) => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.239, precision, maxFractionDigits: 2 },
+        })
+        await wrapper.get('input').trigger('blur')
+
+        // 未按 precision 取整，回退到 maxFractionDigits
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.24])
+    })
+
+    it('minFractionDigits / maxFractionDigits 边界值 0 可用', () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.5, minFractionDigits: 0, maxFractionDigits: 0 },
+        })
+        expect(wrapper.get('input').element.value).toBe('2')
+    })
+
+    it('minFractionDigits / maxFractionDigits 边界值 20 可用', () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1.5, minFractionDigits: 20, maxFractionDigits: 20 },
+        })
+        expect(wrapper.get('input').element.value).toBe('1.50000000000000000000')
+    })
+
+    it('负零在初始展示与提交后都归一化为 0', async () => {
+        const value = ref<number | null>(-0)
+        const Host = defineComponent({
+            setup: () => () =>
+                h(CaomeiInputNumber, {
+                    modelValue: value.value,
+                    'onUpdate:modelValue': (next: number | null) => {
+                        value.value = next
+                    },
+                }),
+        })
+        const wrapper = mount(Host)
+
+        expect(wrapper.get('input').element.value).toBe('0')
+
+        await wrapper.get('input').trigger('blur')
+        expect(Object.is(value.value, 0)).toBe(true)
+        expect(wrapper.get('input').element.value).toBe('0')
+    })
+
+    it('极大值配合小数位不会把模型污染为 Infinity', async () => {
+        const wrapper = mount(CaomeiInputNumber, {
+            props: { modelValue: 1e300, precision: 20 },
+        })
+        await wrapper.get('input').trigger('blur')
+
+        const emitted = wrapper.emitted('update:modelValue')?.at(-1)?.[0]
+        expect(emitted === undefined || Number.isFinite(emitted as number)).toBe(true)
+        expect(wrapper.emitted('change')?.at(-1)?.[0]).toBe(1e300)
+        expect(wrapper.get('input').element.value).not.toMatch(/∞|Infinity|NaN/)
     })
 
     it('分组输入可被解析回数值', async () => {

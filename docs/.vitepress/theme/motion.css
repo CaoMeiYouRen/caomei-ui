@@ -1,14 +1,26 @@
 /*
-  VitePress 默认主题在 prefers-reduced-motion: reduce 下注入
-  `* { animation-duration: 1ms !important; animation-iteration-count: 1 !important }`，
-  会把加载指示器压成静止、失去「进行中」语义。
-  这里恢复组件自身在 reduced-motion 下的减速动画，使文档站演示仍可见；
-  仅作用于文档站，组件库本身保持低特异性。
+  文档站动效层（仅作用于文档站；组件库保持低特异性，自身继续尊重 prefers-reduced-motion）。
 
-  仅覆盖承载「加载进行中」视觉语义的动画：ProgressSpinner 的旋转、ProgressBar 不确定进度的循环、
-  Skeleton 的占位脉冲/扫光。
-  Button 内 spinner 虽同属加载态，但其加载语义由按钮 aria-busy 与禁用态承载，属纯装饰，
-  且其 keyframes 名被 scoped 重写、无法在文档层引用，故不在此恢复。
+  背景：VitePress 默认主题在 `prefers-reduced-motion: reduce` 下注入
+  `* { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 0s !important }`，
+  会把文档站内全部动画与过渡压平。文档站是「展示组件真实行为」的场所，故分两层取舍：
+
+  一、加载指示（全站恢复）：动画本身承载「进行中」语义，压平后无法表达状态，故不限于 demo ——
+      ProgressSpinner 旋转 / ProgressBar 不确定进度循环 / Skeleton 脉冲与扫光。
+
+  二、演示区 opt-in（恢复入场 / 退出动画）：让开启「减少动态效果」的访客仍能看到组件动效。
+      - 容器内可达的元素（Accordion 展开、Image 加载脉冲、Button 与 AutoComplete 的加载指示）
+        按 `.vitepress-demo-plugin__container` 作用域恢复；其中 AutoComplete 在 reduced-motion 下
+        是「减速到 1.6s」而非关闭，本层把它拉回组件默认值 0.8s；
+      - 经 Portal 挂载到 `<body>` 的面板（Drawer / Toast / Popover / DropdownMenu / DatePicker）
+        **无法**用容器作用域命中（实测父链为 `DIV < BODY < HTML`），故按组件选择器恢复 ——
+        文档站当前只在 demo 路径触发这些组件（12 页抽查：demo 容器外无任何恢复项；站点元素仍为 1ms 见 M3 验证记录），
+        站点自身 UI 不受影响；将来若新增站点级触发（站点级 Toast / Confirm 等）需重新评估该作用域；
+      - 仅恢复 `animation`（入场 / 退出 / 加载），**不恢复 transition**：hover 与状态过渡继续尊重系统偏好。
+
+  keyframes 说明：组件若在 scoped 样式块中定义 keyframes，其名称会被编译期重写（`caomei-*-<hash>`），
+  无法跨文件引用，故下文的 `caomei-demo-*` 与组件内定义等价（值同步自组件源码；组件动画变更时需一并更新）；
+  Portal 面板的 keyframes 定义在非 scoped 样式块中（名称稳定），直接引用组件名。
 */
 @media (prefers-reduced-motion: reduce) {
     .caomei-progress-spinner__indicator {
@@ -25,5 +37,268 @@
     .caomei-skeleton--wave .caomei-skeleton__line::after {
         animation-duration: 2.4s !important;
         animation-iteration-count: infinite !important;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   演示区 opt-in（容器内可达）—— 源：accordion-item / image / button / auto-complete
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    /*
+      Accordion 的高度动画需与 Reka 的内部测量共存：CollapsibleContent 先以内联
+      `animation-name: none` 抑制动画、再测自然高度并写入 `--reka-collapsible-content-height`。
+      若在此用 `!important` 声明 animation-name，会压过该内联抑制，使测量落在首帧 height 0 上
+      （实测变量被写成 `0px` 且不再随内容更新）。
+      故此处仅对 duration / timing / iteration 用 `!important`（用于压过 VitePress 的 `1ms !important`），
+      animation-name 以更高特异性（多一层 `.caomei-accordion`）压过组件 reduced-motion 的 `animation: none`。
+    */
+    .vitepress-demo-plugin__container .caomei-accordion .caomei-accordion__content[data-state='open'] {
+        animation-name: caomei-demo-accordion-down;
+        animation-duration: 0.2s !important;
+        animation-timing-function: ease-out !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-accordion .caomei-accordion__content[data-state='closed'] {
+        animation-name: caomei-demo-accordion-up;
+        animation-duration: 0.2s !important;
+        animation-timing-function: ease-out !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-image__placeholder--loading {
+        animation: caomei-demo-image-pulse 1.2s ease-in-out infinite !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-button__spinner {
+        animation: caomei-demo-spin 0.6s linear infinite !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-auto-complete__spinner {
+        animation: caomei-demo-spin 0.8s linear infinite !important;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   演示区 opt-in（Portal 面板：挂载在 <body>，容器作用域不可达，按组件选择器恢复）
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-drawer__overlay[data-state='open'] {
+        animation: caomei-demo-fade-in var(--caomei-drawer-duration, 200ms) ease !important;
+    }
+
+    .caomei-drawer__overlay[data-state='closed'] {
+        animation: caomei-demo-fade-out var(--caomei-drawer-duration, 200ms) ease !important;
+    }
+
+    .caomei-drawer__content--left[data-state='open'],
+    .caomei-drawer__content--right[data-state='open'],
+    .caomei-drawer__content--top[data-state='open'],
+    .caomei-drawer__content--bottom[data-state='open'] {
+        animation-duration: var(--caomei-drawer-duration, 200ms) !important;
+        animation-timing-function: ease !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .caomei-drawer__content--left[data-state='open'] {
+        animation-name: caomei-demo-slide-in-left !important;
+    }
+
+    .caomei-drawer__content--right[data-state='open'] {
+        animation-name: caomei-demo-slide-in-right !important;
+    }
+
+    .caomei-drawer__content--top[data-state='open'] {
+        animation-name: caomei-demo-slide-in-top !important;
+    }
+
+    .caomei-drawer__content--bottom[data-state='open'] {
+        animation-name: caomei-demo-slide-in-bottom !important;
+    }
+
+    .caomei-drawer__content--left[data-state='closed'],
+    .caomei-drawer__content--right[data-state='closed'],
+    .caomei-drawer__content--top[data-state='closed'],
+    .caomei-drawer__content--bottom[data-state='closed'] {
+        animation-duration: var(--caomei-drawer-duration, 200ms) !important;
+        animation-timing-function: ease !important;
+        animation-iteration-count: 1 !important;
+    }
+
+    .caomei-drawer__content--left[data-state='closed'] {
+        animation-name: caomei-demo-slide-out-left !important;
+    }
+
+    .caomei-drawer__content--right[data-state='closed'] {
+        animation-name: caomei-demo-slide-out-right !important;
+    }
+
+    .caomei-drawer__content--top[data-state='closed'] {
+        animation-name: caomei-demo-slide-out-top !important;
+    }
+
+    .caomei-drawer__content--bottom[data-state='closed'] {
+        animation-name: caomei-demo-slide-out-bottom !important;
+    }
+
+    /* 以下 keyframes 名称由组件在非 scoped 样式块中提供（全局名，可直接引用） */
+    .caomei-toast[data-state='open'] {
+        animation: caomei-toast-in 0.18s ease-out !important;
+    }
+
+    .caomei-toast[data-swipe='end'] {
+        animation: caomei-toast-swipe-out 0.1s ease-out forwards !important;
+    }
+
+    .caomei-popover__content {
+        animation: caomei-popover-in 0.12s ease-out !important;
+    }
+
+    .caomei-dropdown-menu__content {
+        animation: caomei-dropdown-menu-in 0.12s ease-out !important;
+    }
+
+    .caomei-date-picker__content {
+        animation: caomei-date-picker-in 0.12s ease-out !important;
+    }
+}
+
+/* 与组件内 scoped keyframes 等价的文档站副本（名称不可跨文件引用，故在此重声明）。
+   入场 / 退出使用**不同**的 keyframes 名（与组件一致）：Reka 的 Presence 以
+   「animation-name 是否变化」判定出场，复用同名 + reverse 会被判为无动画而立即卸载。 */
+@keyframes caomei-demo-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes caomei-demo-fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes caomei-demo-slide-in-left {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes caomei-demo-slide-in-right {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes caomei-demo-slide-in-top {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes caomei-demo-slide-in-bottom {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes caomei-demo-slide-out-left {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes caomei-demo-slide-out-right {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes caomei-demo-slide-out-top {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes caomei-demo-slide-out-bottom {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(100%);
+    }
+}
+
+@keyframes caomei-demo-accordion-down {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: var(--reka-accordion-content-height);
+    }
+}
+
+@keyframes caomei-demo-accordion-up {
+    from {
+        height: var(--reka-accordion-content-height);
+    }
+
+    to {
+        height: 0;
+    }
+}
+
+@keyframes caomei-demo-image-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@keyframes caomei-demo-spin {
+    to {
+        transform: rotate(360deg);
     }
 }

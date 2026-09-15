@@ -33,11 +33,11 @@
 
 ### 主线 M3：文档站演示动画 opt-in
 
-- 执行范围：`docs/.vitepress/theme/` 新增 demo 动画恢复层，目标容器 `.vitepress-demo-plugin__container` / `-preview`，覆盖 Drawer、Accordion、DatePicker 面板、DropdownMenu、Popover、Toast、Image 与 AutoComplete / Button 的加载指示（逐个恢复入场 / 退出动画的 duration 与 iteration）；与既有 `motion.css` 合并整理。
+- 执行范围：`docs/.vitepress/theme/` 新增 demo 动画恢复层（与既有 `motion.css` 合并整理），覆盖 Drawer、Accordion、DatePicker 面板、DropdownMenu、Popover、Toast、Image 与 AutoComplete / Button 的加载指示（逐个恢复入场 / 退出动画的 duration 与 iteration）；作用域按可达性分两类——容器内可达元素用 `.vitepress-demo-plugin__container` 作用域（运行时预览区类名为 `.vitepress-demo-plugin-preview`，嵌于 `__container` 内），经 Portal 挂载到 `<body>` 的面板（Drawer / Toast / Popover / DropdownMenu / DatePicker）结构上无法用容器作用域命中，改按组件选择器恢复。
 - 非目标：不改组件库（组件库继续尊重 `prefers-reduced-motion`）；不恢复全站 `transition-duration`。
 - 最小验收标准：模拟 reduced-motion 时 demo 内 Drawer 入场实测 0.2s 且位移可见，demo 外仍为 1ms（对照）；文档写明取舍。
 - 条目：
-  - [ ] demo 动画恢复层（逐项恢复入场 / 退出动画并与 `motion.css` 整理）
+  - [x] demo 动画恢复层（逐项恢复入场 / 退出动画并与 `motion.css` 整理）
   - [ ] 取舍文档与验证（说明「仅演示区域覆盖系统偏好」+ reduced-motion 对照证据）
 
 ### 主线 M4：公共逻辑抽取（发布前）

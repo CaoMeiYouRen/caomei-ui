@@ -40,3 +40,6 @@ docs/.vitepress/data
 
 # AI session state（任务态，不进入版本库）
 /.session
+
+# AI 审查记录（临时态，不进入版本库）
+/artifacts

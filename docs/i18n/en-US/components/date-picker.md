@@ -43,6 +43,6 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 - The calendar inside the panel inherits the keyboard and accessibility behavior of [Calendar](./calendar). Esc closes the panel.
 - When `invalid`, it outputs `aria-invalid="true"`.
 
-> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` is full width by default, so drop it when migrating. Range selection (`selection-mode`) is not implemented; see the [todo list](/plan/todo) (Chinese).
+> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` is full width by default, so drop it when migrating. Range selection (`selection-mode`) is not implemented: it has no downstream usage and was deferred by user decision; see the [backlog](/plan/backlog) (Chinese).
 
 <ComponentApi name="date-picker" />

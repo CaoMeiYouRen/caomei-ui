@@ -43,6 +43,6 @@
 - 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
 - `invalid` 时输出 `aria-invalid="true"`。
 
-> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid` 默认全宽，迁移时删除。范围选择（`selection-mode`）未实现，见[待办事项](../plan/todo.md)。
+> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid` 默认全宽，迁移时删除。范围选择（`selection-mode`）未实现：momei 零用量，经用户决策延后，见 [Backlog](../plan/backlog.md) §1.1。
 
 <ComponentApi name="date-picker" />

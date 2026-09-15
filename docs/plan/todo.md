@@ -58,7 +58,7 @@
 - 最小验收标准：API 文档、单元测试与英文文档页齐备；Alpha 组件补 primitive API 回归测试；`pnpm verify` 通过。
 - 条目：
   - [x] DatePicker / Calendar 基础（日期选择 + 格式化；锁 `reka-ui@2.10.4` + 回归）——说明：已交付 `CaomeiCalendar` + `CaomeiDatePicker`（内含 `CalendarPanel` 复用与共享日期转换层，并新增运行时依赖 `@internationalized/date`）；基础形态为「触发按钮 + 日历面板」，不支持手工键入（PrimeVue 为可键入 input，行为差异见 design-spec §7）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立。规模超条目估算（原估 8–10 文件 / ~500 行，实际约 42 文件 / src 新增约 1.2k 行），偏差因单一验收条目含组件对 + 共享层 + 新依赖 + 文档/测试/locale 同步
-  - [ ] DatePicker 时间 / 范围（`showTime` / `hourFormat` / `RangeCalendar`）——进行中：时间部分已交付（`showTime` / `hourFormat` / `showSeconds`，面板内为自建时间输入——Reka `TimeField`（2.10.4）的日序判定只识别英文，非英文 12 小时制显示与写回均错）；**范围部分未实现，待用户决策**——momei 快照（2026-09-15，`rg "<DatePicker"` 排除 node_modules/dist/.nuxt/.output）共 6 处 / 4 文件、`show-time` 4 处（均 `hour-format="24"`）、`selection-mode` 0 处，按真实用量收敛。本批规模 18 文件 / 新增约 727 行（超 10 文件阈值，未超 800 行阈值）
+  - [x] DatePicker 时间 / 范围（`showTime` / `hourFormat` / `RangeCalendar`）——说明：时间部分已交付（`showTime` / `hourFormat` / `showSeconds`，面板内为自建时间输入——Reka `TimeField`（2.10.4）的日序判定只识别英文，非英文 12 小时制显示与写回均错）；**范围部分经用户决策（2026-09-15）延后并移入 [Backlog](./backlog.md) §1.1**——momei 快照（2026-09-15）`<DatePicker>` 6 处 / 4 文件、`show-time` 4 处、`selection-mode` 0 处，按真实用量收敛。本批规模 18 文件 / 新增约 727 行（超 10 文件阈值，未超 800 行阈值）
   - [ ] Drawer（四向 `position`，Reka Alpha）
   - [ ] SplitButton（Button + DropdownMenu 组合）
   - [ ] ColorPicker（组合 color primitive，Reka Alpha）

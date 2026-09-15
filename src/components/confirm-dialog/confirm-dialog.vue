@@ -174,10 +174,12 @@ onUnmounted(() => store.dispose())
 
 /*
   danger 语气复用 CaomeiButton 的 primary 变体，仅就地覆写强调色变量；
-  主色前景 token 保持全局白色，无需额外声明。
+  实底取 `-danger-solid`（`-solid` 类），故前景必须同步取 `--caomei-color-on-solid`——
+  暗色下 `--caomei-color-primary-foreground` 是深色，配实底会掉到 AA 以下。
 */
 .caomei-confirm-dialog__confirm--danger {
     --caomei-color-primary: var(--caomei-color-danger-solid);
+    --caomei-color-primary-foreground: var(--caomei-color-on-solid);
 }
 
 @media (width <= 640px) {

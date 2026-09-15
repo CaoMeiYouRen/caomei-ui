@@ -21,5 +21,6 @@
 - [2026-09-14-phase7-first-stage-evaluation.md](./2026-09-14-phase7-first-stage-evaluation.md)：Phase 7 第一阶段评估记录（迁移就绪范围、缺口优先级、i18n 注入机制与用户决策；该阶段已于 2026-09-16 完成并归档，交付见 [待办归档](../../plan/todo-archive.md)）。
 - [2026-09-16-new-requirements-evaluation.md](./2026-09-16-new-requirements-evaluation.md)：2026-09-16 新需求评估记录（文档站信息架构 / 默认主色 / 站点观感 / Drawer 动画诊断 / 复用抽取 / 类型与 ESLint 严格化）。
 - [2026-09-16-pre-release-stage-evaluation.md](./2026-09-16-pre-release-stage-evaluation.md)：下一阶段评估记录（发布前收口：文档站与代码质量；5 条主线、验收标准、容量与风险，未构成阶段登记）。
+- [2026-09-16-m2-primary-browser-validation.md](./2026-09-16-m2-primary-browser-validation.md)：M2 条目 1「默认主色改蓝」浏览器验证记录（Phase 9 V 阶段：Reject 轮暗色 ConfirmDialog danger 4.07:1 回归；复验轮 F1 修复后 4.83:1、回归扫描无新增 → Pass，亮色 soft 变体 4.37:1 既有未达标维持 Backlog）。
 - [experience-archive.md](./experience-archive.md)：Session 经验归档（已蒸馏条目的摘要与链接，跨机器留存）。
 - [session-wisdom-distillation.md](./session-wisdom-distillation.md)：Session Wisdom 蒸馏机制（`.session/` 任务态与知识沉淀）。

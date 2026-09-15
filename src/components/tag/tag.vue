@@ -113,7 +113,7 @@ function onClose(): void {
 
 .caomei-tag--solid {
     background: var(--caomei-tag-solid);
-    color: var(--caomei-color-primary-foreground);
+    color: var(--caomei-color-on-solid);
 }
 
 .caomei-tag--outline {

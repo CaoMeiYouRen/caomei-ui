@@ -136,7 +136,7 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
 
 .caomei-badge--solid {
     background: var(--caomei-badge-solid);
-    color: var(--caomei-color-primary-foreground);
+    color: var(--caomei-color-on-solid);
 }
 
 .caomei-badge--outline {

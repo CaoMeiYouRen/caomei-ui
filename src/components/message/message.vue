@@ -156,7 +156,7 @@ const rootClass = computed(() => [
 
 .caomei-message--solid {
     background: var(--caomei-message-solid);
-    color: var(--caomei-color-primary-foreground);
+    color: var(--caomei-color-on-solid);
 }
 
 .caomei-message--outline {

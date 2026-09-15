@@ -24,12 +24,12 @@
 
 ### 主线 M2：默认主题主色改蓝
 
-- 执行范围：`src/styles/theme.css` 默认 `--caomei-color-primary` / `-foreground` / `-solid`（亮暗两态，暗色两处块当前均未覆盖 primary）；同步 design-spec §2.2 与 §3.2 的例外措辞及 Backlog 指针；`caomei` / `momei` 预设品牌色保持不变。
+- 执行范围：`src/styles/theme.css` 默认 `--caomei-color-primary` / `-foreground` / `-solid`（亮暗两态，暗色两处块当前均未覆盖 primary）；实底配对整改（Tag / Badge / Message 的 `--solid` 变体与 ConfirmDialog danger 确认按钮改配 `--caomei-color-on-solid`，为「亮暗两态 ≥4.5:1」的必要条件）；同步 design-spec §2.2 与 §3.2 的例外措辞及 Backlog 指针；`caomei` / `momei` 预设品牌色保持不变。
 - 非目标：预设品牌色调整；新增 `--caomei-color-accent`。
 - 最小验收标准：亮 / 暗两态 primary 前景对比度实测 ≥ 4.5:1 并留证据；文档站默认外观改前 / 改后对照；`pnpm check:design` 与全量测试通过。
 - 条目：
-  - [ ] token 与默认外观改造（`theme.css` 亮暗两态，亮 `#2563eb` / 暗 `#60a5fa`）
-  - [ ] 规范与文档同步（design-spec §2.2 / §3.2、theming.md、对比度实测证据）
+  - [x] token 与默认外观改造（`theme.css` 亮暗两态，亮 `#2563eb` / 暗 `#60a5fa`）
+  - [ ] 规范与文档同步（design-spec §2.2 值表与 §3.2 例外措辞、`-foreground` 覆盖指引与语义别名评估、theming.md、README、getting-started 中英、architecture；对比度实测证据）
 
 ### 主线 M3：文档站演示动画 opt-in
 

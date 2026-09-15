@@ -88,7 +88,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 组件覆盖率门禁 | 待启用 `coverage.thresholds` 门禁；阈值与启用时机待定 | 中 |
-| Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略 | 低 |
+| Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略；**结论与关键实测值仍须落可提交位置**（`docs/design/governance/**`、`docs/plan/**` 或提交信息），artifact 目录不得作为唯一留痕（追溯要求见 [测试规范 §2.1](../standards/testing.md) 与 ui-validator 的 references/evidence-record.md） | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |
 | scoped 变量声明治理 | `development.md §7` 要求「基类不预声明 CSS 变量默认值、档位类用 `:where()`」，但仍有偏差：`button` 基类直接声明 `--caomei-button-*` 默认值（基类预声明），`message` / `badge` / `tag` / `toast` 的变体类用普通类声明变量（档位类未用 `:where()`）；建议补 `check-design.mjs` 规则（现规则只查引用存在性）并逐组件收敛 | 低 |
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
@@ -97,6 +97,8 @@
 | 分组按钮可访问语义 | ButtonGroup / SplitButton 的根目前仅作布局容器，无障碍树中是多个独立按钮；候选为根补 `role="group"` 与可选的分组可访问名 | 低 |
 | 文档翻译旧目录守卫 | 治理发现：设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
+| 文档站锚点校验与侧栏不变式 | 治理发现（Phase 9 M1 条目 1 复审：RG-S8 / S10）：`check-links` 的 `looseNorm` 会剥离 `-`/`_`/标点，**无法发现 VitePress slug 不匹配**——实测全库 **7 处**断锚（含 `.github/skills/**` 1 处，成因：数字开头标题补 `_` 前缀、全角标点归一）；同时「中英侧栏同分组同序 / 45 页全覆盖」目前只有一次性脚本取证、无常驻守卫。候选：锚点校验对齐 VitePress slugify + 侧栏不变量脚本接入 `docs:check`（属加强门禁，需授权） | 中 |
+| ui-validator 资产 follow-up | 治理发现（2026-09-16 ui-validator agent / skill 优化复审：RG-S04 / S08）：① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担，与项目内其余 skill 现状一致），下次改动时可成节 | 低 |
 | ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；截至 Phase 7 第一阶段收口已完成组件页 45/45 与指南 8/8 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |

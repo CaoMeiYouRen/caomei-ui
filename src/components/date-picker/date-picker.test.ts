@@ -202,6 +202,203 @@ describe('CaomeiDatePicker', () => {
         wrapper.unmount()
     })
 
+    describe('showTime', () => {
+        it('渲染时 / 分输入并展示时间', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30),
+                showTime: true,
+                dateFormat: 'yy-mm-dd',
+            })
+
+            expect(wrapper.get('.caomei-date-picker').text()).toContain('26-09-05 14:30')
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+
+            const fields = getContent().findAll('.caomei-time-input__field')
+            expect(fields).toHaveLength(2)
+            expect((fields[0].element as HTMLInputElement).value).toBe('14')
+            expect((fields[1].element as HTMLInputElement).value).toBe('30')
+            expect(getContent().get('.caomei-time-input').attributes('aria-label')).toBe('时间')
+
+            wrapper.unmount()
+        })
+
+        it('showSeconds 增加秒输入', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30, 9),
+                showTime: true,
+                showSeconds: true,
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+
+            const fields = getContent().findAll('.caomei-time-input__field')
+            expect(fields).toHaveLength(3)
+            expect((fields[2].element as HTMLInputElement).value).toBe('9')
+
+            wrapper.unmount()
+        })
+
+        it('编辑时间同步回模型且保留日期', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30),
+                showTime: true,
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+            await getContent().findAll('.caomei-time-input__field')[0].setValue('9')
+            await nextTick()
+
+            const emitted = wrapper.emitted('update:modelValue')?.[0]?.[0] as Date
+            expect(emitted.getDate()).toBe(5)
+            expect(emitted.getHours()).toBe(9)
+            expect(emitted.getMinutes()).toBe(30)
+
+            wrapper.unmount()
+        })
+
+        it('hourFormat 为 12 时按日序换算小时', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30),
+                showTime: true,
+                hourFormat: '12',
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+
+            const field = getContent().get('.caomei-time-input__field')
+            const period = getContent().get('.caomei-time-input__period')
+            expect((field.element as HTMLInputElement).value).toBe('2')
+            expect((period.element as HTMLSelectElement).value).toBe('pm')
+            expect(wrapper.get('.caomei-date-picker').text()).toContain('02:30')
+
+            // 切到上午应把 14 点换算为 2 点
+            await period.setValue('am')
+            await nextTick()
+            const afternoon = wrapper.emitted('update:modelValue')?.[0]?.[0] as Date
+            expect(afternoon.getHours()).toBe(2)
+
+            wrapper.unmount()
+        })
+
+        it('选日期时保留已选时间且面板保持展开', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 15, 14, 30),
+                showTime: true,
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+            await getContent().find('[data-value=\'2026-09-20\']').trigger('click')
+            await nextTick()
+
+            const emitted = wrapper.emitted('update:modelValue')?.[0]?.[0] as Date
+            expect(emitted.getDate()).toBe(20)
+            expect(emitted.getHours()).toBe(14)
+            expect(emitted.getMinutes()).toBe(30)
+            expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('true')
+
+            wrapper.unmount()
+        })
+
+        it('readonly 时脚本改值不生效且 DOM 回滚', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30),
+                showTime: true,
+                hourFormat: '12',
+                readonly: true,
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+            const field = getContent().get('.caomei-time-input__field')
+            await field.setValue('9')
+            await nextTick()
+
+            expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+            expect((field.element as HTMLInputElement).value).toBe('2')
+
+            const period = getContent().get('.caomei-time-input__period')
+            expect(period.attributes('aria-readonly')).toBe('true')
+            await period.setValue('am')
+            await nextTick()
+            expect((period.element as HTMLSelectElement).value).toBe('pm')
+
+            wrapper.unmount()
+        })
+
+        it('未选日期时时间输入禁用，选中后启用', async () => {
+            const wrapper = mountPicker({ modelValue: null, showTime: true })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+            expect(getContent().get('.caomei-time-input__field').attributes('disabled')).toBeDefined()
+
+            await wrapper.setProps({ modelValue: new Date(2026, 8, 5, 14, 30) })
+            await nextTick()
+            expect(getContent().get('.caomei-time-input__field').attributes('disabled')).toBeUndefined()
+
+            wrapper.unmount()
+        })
+
+        it('超出范围的时间输入被钳位，空输入不改写模型', async () => {
+            const wrapper = mountPicker({
+                modelValue: new Date(2026, 8, 5, 14, 30, 9),
+                showTime: true,
+                showSeconds: true,
+            })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+
+            const fields = getContent().findAll('.caomei-time-input__field')
+            await fields[0].setValue('99')
+            await nextTick()
+            expect((wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date).getHours()).toBe(23)
+
+            await fields[1].setValue('99')
+            await nextTick()
+            expect((wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date).getMinutes()).toBe(59)
+
+            const emissions = wrapper.emitted('update:modelValue')?.length
+            await fields[0].setValue('')
+            await nextTick()
+            expect(wrapper.emitted('update:modelValue')?.length).toBe(emissions)
+            expect((fields[0].element as HTMLInputElement).value).toBe('23')
+
+            wrapper.unmount()
+        })
+
+        it('未开启 showTime 时不渲染时间字段', async () => {
+            const wrapper = mountPicker({ modelValue: new Date(2026, 8, 15) })
+
+            await wrapper.get('.caomei-date-picker').trigger('click')
+            await nextTick()
+
+            expect(document.body.querySelector('.caomei-date-picker__time')).toBeNull()
+
+            wrapper.unmount()
+        })
+    })
+
+    it('纯日期模式下再次点击已选日期取消选择并收起面板', async () => {
+        const wrapper = mountPicker({ modelValue: new Date(2026, 8, 15) })
+
+        await wrapper.get('.caomei-date-picker').trigger('click')
+        await nextTick()
+        await getContent().find('[data-value=\'2026-09-15\']').trigger('click')
+        await nextTick()
+
+        expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBeNull()
+        expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('false')
+
+        wrapper.unmount()
+    })
+
     it('有可见文本时不附加 aria-label', () => {
         const wrapper = mountPicker({ placeholder: '选择日期' })
         expect(wrapper.get('.caomei-date-picker').attributes('aria-label')).toBeUndefined()

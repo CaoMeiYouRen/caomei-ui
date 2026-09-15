@@ -5,9 +5,10 @@ import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocale } from '../../locale'
-import { formatDate } from '../_shared/date-format'
+import { formatDate, formatTime } from '../_shared/date-format'
 import CalendarPanel from '../calendar/calendar-panel.vue'
-import type { DatePickerProps } from './types'
+import TimeInput from './time-input.vue'
+import type { DatePickerProps, TimeParts } from './types'
 
 // 组合 Reka Popover + 内部 CalendarPanel：面板日历与本库 Calendar 共用接线与可访问名，
 // 避免 Reka DatePicker 内建英文文案（Event Date）无法本地化。
@@ -20,6 +21,9 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
     size: 'md',
     placeholder: '',
     showIcon: true,
+    showTime: false,
+    hourFormat: '24',
+    showSeconds: false,
     closeOnSelect: true,
     locale: defaultLocale,
     weekdayFormat: 'narrow',
@@ -31,7 +35,35 @@ const model = defineModel<Date | null>({ default: null })
 const open = defineModel<boolean>('open', { default: false })
 
 const messages = useLocale()
-const displayText = computed(() => formatDate(model.value, props.dateFormat, props.locale))
+const displayText = computed(() => {
+    const dateText = formatDate(model.value, props.dateFormat, props.locale)
+    if (!props.showTime) {
+        return dateText
+    }
+
+    return [dateText, formatTime(model.value, {
+        hourFormat: props.hourFormat,
+        showSeconds: props.showSeconds,
+        locale: props.locale,
+    })].filter(Boolean).join(' ')
+})
+
+// 面板日历只消费日期部分，时间另行编辑后合并回模型
+const dateOnly = computed(() => {
+    if (!model.value) {
+        return null
+    }
+
+    const next = new Date(model.value)
+    next.setHours(0, 0, 0, 0)
+    return next
+})
+const timeParts = computed<TimeParts>(() => ({
+    hour: model.value?.getHours() ?? 0,
+    minute: model.value?.getMinutes() ?? 0,
+    second: model.value?.getSeconds() ?? 0,
+}))
+
 const fallbackLabel = computed(() => props.label ?? messages.value.datePicker.label)
 const triggerLabel = computed(() =>
     props.label ?? (displayText.value || props.placeholder ? undefined : fallbackLabel.value),
@@ -46,11 +78,33 @@ const rootClass = computed(() => [
     },
 ])
 
-function onUpdate(value: Date | null): void {
-    model.value = value
-    if (props.closeOnSelect) {
+function onDateUpdate(value: Date | null): void {
+    if (!value) {
+        model.value = null
+        // 取消选择同样遵循 closeOnSelect；含时间选择时保持展开
+        if (props.closeOnSelect && !props.showTime) {
+            open.value = false
+        }
+        return
+    }
+
+    const next = new Date(value)
+    const current = model.value
+    if (current) {
+        next.setHours(current.getHours(), current.getMinutes(), current.getSeconds(), 0)
+    }
+    model.value = next
+
+    // 含时间选择时保持面板展开，便于继续选时间
+    if (props.closeOnSelect && !props.showTime) {
         open.value = false
     }
+}
+
+function onTimeUpdate(value: TimeParts): void {
+    const next = model.value ? new Date(model.value) : new Date()
+    next.setHours(value.hour, value.minute, value.second, 0)
+    model.value = next
 }
 </script>
 
@@ -85,7 +139,7 @@ function onUpdate(value: Date | null): void {
                 :side-offset="6"
             >
                 <CalendarPanel
-                    :model-value="model"
+                    :model-value="dateOnly"
                     :min-value="minValue"
                     :max-value="maxValue"
                     :disabled="disabled"
@@ -96,8 +150,22 @@ function onUpdate(value: Date | null): void {
                     :fixed-weeks="fixedWeeks"
                     :prevent-deselect="preventDeselect"
                     class="caomei-calendar"
-                    @update:model-value="onUpdate"
+                    @update:model-value="onDateUpdate"
                 />
+                <div
+                    v-if="showTime"
+                    class="caomei-date-picker__time"
+                >
+                    <TimeInput
+                        :model-value="timeParts"
+                        :show-seconds="showSeconds"
+                        :hour-format="hourFormat"
+                        :locale="locale"
+                        :disabled="disabled || !model"
+                        :readonly="readonly"
+                        @update:model-value="onTimeUpdate"
+                    />
+                </div>
             </PopoverContent>
         </PopoverPortal>
     </PopoverRoot>
@@ -194,6 +262,12 @@ function onUpdate(value: Date | null): void {
     outline: none;
     transform-origin: var(--reka-popover-content-transform-origin);
     animation: caomei-date-picker-in 0.12s ease-out;
+}
+
+.caomei-date-picker__time {
+    margin-top: var(--caomei-space-2);
+    padding-top: var(--caomei-space-2);
+    border-top: 1px solid var(--caomei-color-border);
 }
 
 @keyframes caomei-date-picker-in {

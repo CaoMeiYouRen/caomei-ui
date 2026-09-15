@@ -22,6 +22,10 @@ export interface CaomeiLocaleMessages {
     }
     datePicker: {
         label: string
+        time: string
+        hour: string
+        minute: string
+        second: string
     }
     dialog: {
         close: string

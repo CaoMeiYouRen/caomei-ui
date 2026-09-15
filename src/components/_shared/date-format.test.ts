@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDate } from './date-format'
+import { formatDate, formatTime } from './date-format'
 
 describe('_shared/date-format', () => {
     const date = new Date(2026, 8, 5)
@@ -31,5 +31,33 @@ describe('_shared/date-format', () => {
 
     it('未知 token 原样保留', () => {
         expect(formatDate(date, 'yy年x月', 'zh-CN')).toBe('26年x月')
+    })
+
+    describe('formatTime', () => {
+        const dateTime = new Date(2026, 8, 5, 14, 30, 9)
+
+        it('空值返回空串', () => {
+            expect(formatTime(null)).toBe('')
+        })
+
+        it('24 小时制默认不含秒', () => {
+            expect(formatTime(dateTime, { hourFormat: '24', locale: 'zh-CN' })).toBe('14:30')
+        })
+
+        it('showSeconds 时含秒', () => {
+            expect(formatTime(dateTime, { hourFormat: '24', showSeconds: true, locale: 'zh-CN' })).toBe('14:30:09')
+        })
+
+        it('12 小时制带日序（day period）', () => {
+            const formatted = formatTime(dateTime, { hourFormat: '12', locale: 'en-US' })
+            expect(formatted).toContain('02:30')
+            expect(formatted.toUpperCase()).toContain('PM')
+        })
+
+        it('zh-CN 12 小时制使用本地日序文案', () => {
+            const formatted = formatTime(dateTime, { hourFormat: '12', locale: 'zh-CN' })
+            expect(formatted).toContain('02:30')
+            expect(formatted).toContain('下午')
+        })
     })
 })

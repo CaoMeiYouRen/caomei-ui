@@ -30,6 +30,29 @@ function formatByPattern(date: Date, pattern: string, locale: string): string {
     return pattern.replace(TOKEN_PATTERN, (token) => parts[token] ?? token)
 }
 
+export interface TimeFormatOptions {
+    /** 12 / 24 小时制；缺省按 locale 惯例 */
+    hourFormat?: '12' | '24'
+    /** 是否展示秒 */
+    showSeconds?: boolean
+    /** 语言（BCP 47）；缺省时回退运行环境 locale */
+    locale?: string
+}
+
+/** 按 `hourFormat` / `showSeconds` 格式化时间；空值返回空串 */
+export function formatTime(date: Date | null | undefined, options: TimeFormatOptions = {}): string {
+    if (!date) {
+        return ''
+    }
+
+    return new Intl.DateTimeFormat(options.locale, {
+        hour: '2-digit',
+        minute: '2-digit',
+        ...(options.showSeconds ? { second: '2-digit' } : {}),
+        ...(options.hourFormat ? { hour12: options.hourFormat === '12' } : {}),
+    }).format(date)
+}
+
 /** 按 `dateFormat` token 或 locale 短日期格式化；空值返回空串 */
 export function formatDate(
     date: Date | null | undefined,

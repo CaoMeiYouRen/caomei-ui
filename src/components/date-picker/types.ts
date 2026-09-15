@@ -1,5 +1,12 @@
 import type { ComponentSize } from '../../types'
 
+/** 时间三段（时 / 分 / 秒），供内部时间输入使用 */
+export interface TimeParts {
+    hour: number
+    minute: number
+    second: number
+}
+
 export interface DatePickerProps {
     /**
      * 可选最早日期
@@ -53,9 +60,27 @@ export interface DatePickerProps {
      */
     showIcon?: boolean
     /**
-     * 选择日期后是否收起面板
+     * 是否在面板中选择时间（时 / 分，可选秒）
+     * @default false
+     * @en Whether to pick a time (hour / minute, optionally seconds) in the panel
+     */
+    showTime?: boolean
+    /**
+     * 小时制：12 或 24
+     * @default '24'
+     * @en Hour cycle: 12 or 24
+     */
+    hourFormat?: '12' | '24'
+    /**
+     * 时间是否精确到秒（`showTime` 为真时生效）
+     * @default false
+     * @en Whether the time includes seconds (effective when `showTime` is on)
+     */
+    showSeconds?: boolean
+    /**
+     * 选择日期后是否收起面板；`showTime` 为真时不收起（便于继续选时间），取消选择同理
      * @default true
-     * @en Whether to close the panel after selecting a date
+     * @en Whether to close the panel after selecting a date; while `showTime` is on it stays open so the time can be picked next, and the same applies when deselecting
      */
     closeOnSelect?: boolean
     /**

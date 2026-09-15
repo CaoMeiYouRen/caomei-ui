@@ -16,6 +16,10 @@ const zhCN: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: '日期',
+        time: '时间',
+        hour: '时',
+        minute: '分',
+        second: '秒',
     },
     dialog: {
         close: '关闭',

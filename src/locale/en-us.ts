@@ -16,6 +16,10 @@ const enUS: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: 'Date',
+        time: 'Time',
+        hour: 'Hour',
+        minute: 'Minute',
+        second: 'Second',
     },
     dialog: {
         close: 'Close',

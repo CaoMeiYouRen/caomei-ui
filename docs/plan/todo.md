@@ -59,7 +59,7 @@
 - 条目：
   - [x] DatePicker / Calendar 基础（日期选择 + 格式化；锁 `reka-ui@2.10.4` + 回归）——说明：已交付 `CaomeiCalendar` + `CaomeiDatePicker`（内含 `CalendarPanel` 复用与共享日期转换层，并新增运行时依赖 `@internationalized/date`）；基础形态为「触发按钮 + 日历面板」，不支持手工键入（PrimeVue 为可键入 input，行为差异见 design-spec §7）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立。规模超条目估算（原估 8–10 文件 / ~500 行，实际约 42 文件 / src 新增约 1.2k 行），偏差因单一验收条目含组件对 + 共享层 + 新依赖 + 文档/测试/locale 同步
   - [x] DatePicker 时间 / 范围（`showTime` / `hourFormat` / `RangeCalendar`）——说明：时间部分已交付（`showTime` / `hourFormat` / `showSeconds`，面板内为自建时间输入——Reka `TimeField`（2.10.4）的日序判定只识别英文，非英文 12 小时制显示与写回均错）；**范围部分经用户决策（2026-09-15）延后并移入 [Backlog](./backlog.md) §1.1**——momei 快照（2026-09-15）`<DatePicker>` 6 处 / 4 文件、`show-time` 4 处、`selection-mode` 0 处，按真实用量收敛。本批规模 18 文件 / 新增约 727 行（超 10 文件阈值，未超 800 行阈值）
-  - [ ] Drawer（四向 `position`，Reka Alpha）
+  - [x] Drawer 四向侧滑抽屉（`position`）——说明：封装 Reka 稳定的 Dialog primitive + 四向定位 CSS（**未采用 Reka `Drawer`**：其为 Vaul 形态，`DrawerContentImpl` 不负责面板定位、仅输出 `data-swipe-direction` 与滑动 CSS 变量，封装不减工作量却引入 Alpha 与滑动 / 吸附 / 嵌套状态；momei 3 处用量全为 `position="right"`、零滑动手势）。`position` 默认对齐 PrimeVue 的 `left`；`blockScroll`（本库 `modal` 已含滚动锁，更严格）、`position="full"`、`baseZIndex` / `closeButtonProps` 未实现或未暴露（下游零用量）；新增 `--caomei-color-mask` / `--caomei-shadow-lg` token（Drawer 消费，Dialog 等遗留字面量待迁移）。规模超条目估算（原估 5–7 文件 / ~350 行，实际 27 文件 / 新增约 1.4k 行，其中 src 组件约 0.75k），偏差因单一验收条目含组件 + locale 命名空间 + 中英文档与 8 个示例（中英各 4）。Review Gate 两轮（首轮 Reject：locale 指南命名空间计数未同步 → 修复后 Pass）
   - [ ] SplitButton（Button + DropdownMenu 组合）
   - [ ] ColorPicker（组合 color primitive，Reka Alpha）
   - [ ] DataView（`layout` grid / list + 插槽）

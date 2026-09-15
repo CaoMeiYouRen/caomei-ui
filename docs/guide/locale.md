@@ -37,7 +37,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 18 个命名空间，对应 19 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 19 个命名空间，对应 20 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -46,6 +46,7 @@ import {
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `close` | Dialog |
+| `drawer` | `label` `close` | Drawer |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |
 | `message` | `close` | Message |

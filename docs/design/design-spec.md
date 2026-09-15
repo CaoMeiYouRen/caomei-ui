@@ -70,12 +70,19 @@
 
 | 类别 | 规划 token | 说明 |
 | --- | --- | --- |
-| 阴影 | `--caomei-shadow-sm` / `-md` / `-lg` | 替代组件内 `box-shadow` 字面量 |
+| 阴影 | `--caomei-shadow-sm` / `-md` | 替代组件内 `box-shadow` 字面量（`-lg` 见 §2.6） |
 | 层级 | `--caomei-z-dropdown` / `-sticky` / `-overlay` / `-modal` / `-toast` / `-tooltip` | 替代 `z-index` 字面量 |
 | 图标 | `--caomei-icon-size-sm` / `-md` / `-lg` | 统一 `@lucide/vue` 图标尺寸 |
-| 交互 | `--caomei-color-focus-ring`、`--caomei-color-mask` | 焦点环与浮层遮罩 |
+| 交互 | `--caomei-color-focus-ring` | 焦点环（`--caomei-color-mask` 见 §2.6） |
 | 字体 | `--caomei-font-mono` | 代码 / 密钥等场景 |
 | 排版 | `--caomei-line-height-tight` / `-normal` / `-relaxed` | 标题与正文行高 |
+
+### 2.6 阴影与遮罩 token（已实现）
+
+| token | 值 | 说明 |
+| --- | --- | --- |
+| `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 浮层阴影；新增组件（Drawer）已消费，Dialog 等遗留字面量待迁移 |
+| `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩；新增组件（Drawer）已消费，Dialog 等遗留字面量待迁移 |
 
 ## 3. 颜色规范
 
@@ -167,7 +174,8 @@
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号 `font-size-sm` |
 | Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距） |
-| Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；阴影用规划 `shadow-lg` |
+| Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；阴影用 `shadow-lg` |
+| Drawer | 面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
 | DataTable | 表头/单元格底部边框取 `border`；排序按钮图标取 `text-muted`；排序态经 `aria-sort` 表达；列样式优先 `headerClass` / `bodyClass` |
 | Textarea | 自动增高时高度由内容决定、默认不出现滚动条；`rows` 为初始最小高度，`resize` 固定 `none` |
 | Password | 根为 `.caomei-password` 包裹层（单根），`class` / `style` 留在根元素；强度计量条高度 4px、圆角 `radius-full`；弱 / 中 / 强取 `danger` / `warning` / `success`；未聚焦且无值时强度区域不占布局 |
@@ -210,6 +218,8 @@
 > Password 迁移映射（已实现）：`feedback` → `feedback`（**默认值分歧且为有意**：PrimeVue 默认 `true`，此处默认 `false`。momei 32 处 `<Password>` 仅 8 处显式传 `feedback`，其余 24 处大多为外部服务凭据（密钥 / Token）字段、强度条无实际意义；其中安装向导的 `admin_password` 为用户自设密码，迁移后建议显式传 `:feedback="true"`；默认关闭可避免这些字段凭空多出区块。迁移后这 24 处将失去原先由 PrimeVue 默认开启的强度浮层，属有意行为变更而非回归）。显式开启后显示内联强度计量条与文案，聚焦或有值时可见，空值未聚焦仅保留读屏器 live region；`prompt-label` / `weak-label` / `medium-label` / `strong-label` → `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel`（默认取内建 locale `password.prompt` / `weak` / `medium` / `strong`）；`toggle-mask` → 内建切换按钮（无需 prop）；`medium-regex` / `strong-regex` 未实现（下游无用量，强度规则固定）。
 
 > Calendar / DatePicker 迁移映射（已实现，基础日期选择）：`min-value` / `max-value` → `minValue` / `maxValue`；`date-format` → `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期）；`show-icon` → `showIcon`（`icon-display="input"` 即本组件默认形态）；`fluid` 默认全宽，迁移时删除。对外 `v-model` 沿用 PrimeVue 的原生 `Date` 语义；Reka primitive 使用 `@internationalized/date` 的 `DateValue`，转换收敛在 `_shared/date`（新增该运行时依赖）。时间选择已实现：`show-time` → `showTime`、`hour-format` → `hourFormat`、`show-seconds` → `showSeconds`（面板底部自建时间输入，含时间时选中日期不自动收起；因 Reka `TimeField` 的日序判定仅识别英文、非英文 12 小时制会误判，未直接封装该 primitive）；**范围选择未实现**（`selection-mode`，momei 零用量，经用户决策 2026-09-15 移入 [Backlog](../plan/backlog.md)）。**已知行为差异**：PrimeVue `DatePicker` 是可键入的 input，本组件为「触发按钮 + 面板」，不支持手工键入日期（迁移时需确认下游无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立（本库 i18n 机制未暴露 locale tag），需一致时显式传入。
+
+> Drawer 迁移映射（已实现）：`visible` → `v-model:open`；`header` → `title`（或 `#header` 插槽，插槽替换标题区域、关闭按钮保留）；`position` → `position`（四向；**默认值对齐 PrimeVue 的 `left`**）；`dismissable` → `closeOnOverlay`；`showCloseIcon` → `closable`；`closeOnEscape` → `closeOnEsc`；`modal` → `modal`。**已知差异**：PrimeVue `blockScroll` 默认 `false`（`modal` 仅加遮罩、不锁滚动），本库 `modal="true"` 同时锁定页面滚动（更严格）；`position="full"` 未实现（momei 零用量，全屏场景可用 `modal="false"` + `style` 铺满）；层级固定为遮罩 1000 / 面板 1001、关闭按钮形态固定；`size` 为本库新增档位（PrimeVue 无此 prop，宽度经 `style` 传入，内联样式优先于档位）。**未暴露项（下游零用量）**：生命周期事件 `show` / `before-hide` / `hide` / `after-show` / `after-hide`，插槽 `#closebutton` / `#closeicon` / `#container`，prop `baseZIndex` / `autoZIndex` / `closeButtonProps` / `closeIcon`。实现取向：封装 **Reka UI 稳定的 Dialog primitive** + 四向定位 CSS，而非 Reka `Drawer`（Alpha，Vaul 形态）——后者不负责面板定位（仅输出 `data-swipe-direction` 与滑动 CSS 变量），定位仍需消费方自绘，却额外引入滑动 / 吸附 / 嵌套抽屉状态与 Alpha API 漂移风险；下游仅需侧边面板、无滑动手势用量。
 
 ## 8. 规范落实与可验证脚本（已实现）
 

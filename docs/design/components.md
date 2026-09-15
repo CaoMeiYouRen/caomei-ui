@@ -77,7 +77,7 @@
 | Stepper | 封装 | Stepper | 稳定 | 步骤导航（**已实现**） |
 | Toolbar | 封装 | Toolbar | 稳定 | |
 | ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态 |
-| Drawer | 封装（优先） | Drawer | Alpha | 亦可由 Dialog 派生；Alpha 需锁版本（**Phase 7 第一阶段 M4**） |
+| Drawer | 封装 Dialog 派生（四向定位 + 滑入动画） | Dialog（Reka `Drawer` 为 Vaul 形态、不负责面板定位，未采用） | 稳定 | 四向 `position`（默认 `left`）；见 [设计规范 §7](./design-spec.md)（**已实现**） |
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**Phase 7 第一阶段 M4**） |
 | ColorPicker | 封装（组合 ColorArea / ColorField / ColorSlider / ColorSwatchPicker） | Color 系列 | Alpha | 组合多个 color primitive（**Phase 7 第一阶段 M4**） |
 | InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |

@@ -22,6 +22,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Image](/en-US/components/image)
 - [FileUpload](/en-US/components/file-upload)
 - [Dialog](/en-US/components/dialog)
+- [Drawer](/en-US/components/drawer)
 - [ConfirmDialog](/en-US/components/confirm-dialog)
 - [Toast](/en-US/components/toast)
 - [Message](/en-US/components/message)

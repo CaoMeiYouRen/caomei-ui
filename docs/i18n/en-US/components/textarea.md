@@ -20,6 +20,17 @@ Switch the size with `size`, and control the number of initially visible lines w
     ssg="true"
 />
 
+## Auto resize
+
+With `autoResize`, the height follows the content in both directions and no scrollbar appears; `rows` still acts as the initial minimum height, and `resize` is fixed to `none` (a manually dragged size is overwritten by the next measurement).
+
+<demo
+    vue="../examples/textarea/auto-resize.vue"
+    ssg="true"
+/>
+
+> The height is unbounded; to cap it, layer `max-height` on `.caomei-textarea__control` at the usage site (the native `overflow-y: auto` then scrolls the overflow).
+
 ## States and resizing
 
 `disabled` disables, `readonly` makes it read-only, and `invalid` marks a validation failure; `resize` controls whether manual resizing is allowed.

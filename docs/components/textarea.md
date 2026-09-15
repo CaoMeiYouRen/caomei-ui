@@ -20,6 +20,17 @@
     ssg="true"
 />
 
+## 自动增高
+
+设置 `autoResize` 后，高度随内容自动增减，不再出现滚动条；`rows` 仍作为初始最小高度，`resize` 会固定为 `none`（手动拖拽的尺寸会在下一次测量时被覆盖）。
+
+<demo
+    vue="../examples/textarea/auto-resize.vue"
+    ssg="true"
+/>
+
+> 高度不设上限，需要封顶时在使用层给 `.caomei-textarea__control` 叠加 `max-height`（超出后由原生 `overflow-y: auto` 滚动）。
+
 ## 状态与调整尺寸
 
 `disabled` 禁用、`readonly` 只读、`invalid` 标记校验失败；`resize` 控制是否允许手动调整尺寸。

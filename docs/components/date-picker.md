@@ -20,6 +20,15 @@
     ssg="true"
 />
 
+## 时间选择
+
+设置 `showTime` 后在面板底部显示时间输入（时 / 分）；`hourFormat` 切换 `12` / `24` 小时制，`showSeconds` 精确到秒。含时间选择时选中日期不会自动收起面板，便于继续选时间；未选择日期时时间输入为禁用（先选日期再选时间）；时间文案随 `locale` 变化。
+
+<demo
+    vue="../examples/date-picker/datetime.vue"
+    ssg="true"
+/>
+
 ## 状态与行为
 
 - `disabled` / `readonly` / `invalid` / `size` 与 Input 家族一致。
@@ -34,6 +43,6 @@
 - 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
 - `invalid` 时输出 `aria-invalid="true"`。
 
-> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`fluid` 默认全宽，迁移时删除。
+> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid` 默认全宽，迁移时删除。范围选择（`selection-mode`）未实现，见[待办事项](../plan/todo.md)。
 
 <ComponentApi name="date-picker" />

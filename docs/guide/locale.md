@@ -44,7 +44,7 @@ import {
 | `autoComplete` | `empty` `open` | AutoComplete |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
-| `datePicker` | `label` | DatePicker |
+| `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `close` | Dialog |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |

@@ -20,6 +20,15 @@ Two-way bind with `v-model`; `placeholder` is shown while nothing is selected.
     ssg="true"
 />
 
+## Time selection
+
+With `showTime`, a time input (hour / minute) is shown at the bottom of the panel; `hourFormat` switches between `12` and `24`-hour cycles, and `showSeconds` refines to seconds. When time selection is on, picking a date does not close the panel so the time can be edited next; the time inputs are disabled until a date is selected; the time text follows `locale`.
+
+<demo
+    vue="../examples/date-picker/datetime.vue"
+    ssg="true"
+/>
+
 ## States and behavior
 
 - `disabled` / `readonly` / `invalid` / `size` behave as in the Input family.
@@ -34,6 +43,6 @@ Two-way bind with `v-model`; `placeholder` is shown while nothing is selected.
 - The calendar inside the panel inherits the keyboard and accessibility behavior of [Calendar](./calendar). Esc closes the panel.
 - When `invalid`, it outputs `aria-invalid="true"`.
 
-> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `fluid` is full width by default, so drop it when migrating.
+> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` is full width by default, so drop it when migrating. Range selection (`selection-mode`) is not implemented; see the [todo list](/plan/todo) (Chinese).
 
 <ComponentApi name="date-picker" />

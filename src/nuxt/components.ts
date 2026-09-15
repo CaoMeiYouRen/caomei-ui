@@ -17,6 +17,7 @@ export const caomeiComponents = [
     'CaomeiBadge',
     'CaomeiButton',
     'CaomeiButtonGroup',
+    'CaomeiCalendar',
     'CaomeiCard',
     'CaomeiCheckbox',
     'CaomeiConfigProvider',

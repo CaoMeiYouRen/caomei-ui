@@ -11,6 +11,11 @@ export interface CaomeiLocaleMessages {
         empty: string
         open: string
     }
+    calendar: {
+        prev: string
+        next: string
+        label: string
+    }
     confirm: {
         confirm: string
         cancel: string

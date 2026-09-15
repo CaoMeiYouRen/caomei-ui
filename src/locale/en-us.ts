@@ -5,6 +5,11 @@ const enUS: CaomeiLocaleMessages = {
         empty: 'No matching suggestions',
         open: 'Show suggestions',
     },
+    calendar: {
+        prev: 'Previous month',
+        next: 'Next month',
+        label: 'Calendar',
+    },
     confirm: {
         confirm: 'Confirm',
         cancel: 'Cancel',

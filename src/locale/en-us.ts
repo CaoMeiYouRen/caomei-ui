@@ -10,6 +10,15 @@ const enUS: CaomeiLocaleMessages = {
         next: 'Next month',
         label: 'Calendar',
     },
+    colorPicker: {
+        label: 'Color',
+        hex: 'Hex color',
+        hue: 'Hue',
+        area: 'Saturation and brightness',
+        swatches: 'Preset colors',
+        saturation: 'Saturation',
+        brightness: 'Brightness',
+    },
     confirm: {
         confirm: 'Confirm',
         cancel: 'Cancel',

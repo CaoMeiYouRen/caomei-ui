@@ -10,6 +10,15 @@ const zhCN: CaomeiLocaleMessages = {
         next: '下个月',
         label: '日历',
     },
+    colorPicker: {
+        label: '颜色',
+        hex: '十六进制颜色',
+        hue: '色相',
+        area: '饱和度与明度',
+        swatches: '预设颜色',
+        saturation: '饱和度',
+        brightness: '明度',
+    },
     confirm: {
         confirm: '确定',
         cancel: '取消',

@@ -16,6 +16,15 @@ export interface CaomeiLocaleMessages {
         next: string
         label: string
     }
+    colorPicker: {
+        label: string
+        hex: string
+        hue: string
+        area: string
+        swatches: string
+        saturation: string
+        brightness: string
+    }
     confirm: {
         confirm: string
         cancel: string

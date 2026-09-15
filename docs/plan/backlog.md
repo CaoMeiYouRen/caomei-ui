@@ -12,6 +12,8 @@
 ## 1. 候选池（待用户决策）
 
 > 2026-09-14 用户新需求（组件补全 / 使用复核 / 许可声明 / 主题预设 / 国际化 / 移动端 / 设计规范）评估结论：全部属于功能与体验增强，**无一命中插队例外清单**（安全漏洞 / 破坏下游构建 / blocker 缺陷）。经用户决策，组件补全 / 使用复核 / 主题预设 / 设计规范 / 许可声明已在 [Phase 6](./todo-archive.md) 完成并归档；**组件国际化（需求 5）与移动端 / 响应式（需求 6）延后**，与其余候选一并保留在本节。
+>
+> 2026-09-16 用户新需求（文档站组件信息架构 / 默认主题主色 / 站点观感 / Drawer 动画 / 公共逻辑抽取 / ESLint 严格化）评估结论：全部属于功能、体验或治理增强，**无一命中插队例外清单**；按 [规划规范 §3](../standards/planning.md) 默认路径登记为候选，待用户明确决策后进入当前阶段。其中「Drawer 动画」经只读诊断确认为 **VitePress reduced-motion 覆盖**（组件实现无缺陷），可作为文档站决策项。评估记录见 [2026-09-16 新需求评估记录](../design/governance/2026-09-16-new-requirements-evaluation.md)。
 
 ### 1.1 组件增强候选
 
@@ -31,7 +33,7 @@
 | 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
 | 浮层与导航增强 | M1 复核 | **部分迁出**：Dialog `show-header` / `breakpoints` / `@hide`（P1）已移入 Phase 7 第二阶段；**保留（P2）** Popover 命令式 `toggle(event)` 锚点、DropdownMenu `:model` + `:popup`、Paginator 每页条数选择、ConfirmDialog `icon`。 | 低 |
 | 实底前景 token 统一 | M3 复核 | Button 的 `tone` 实底已改用 `--caomei-color-on-solid`；Tag / Badge / Message / SelectButton 等实底仍用 `-foreground`，评估统一（含 momei 暗色 `#000` 前景的对比问题） | 中 |
-| 品牌主色对比度 | M3 复核 | 品牌主色 `#e63946` 配白字约 4.17:1，低于 AA 4.5:1；评估加深 `primary-solid` 或调整品牌色（影响 caomei 预设与 Button 默认真底色） | 中 |
+| 默认主色（品牌红） | M3 复核 + 用户需求（2026-09-16） | 两个问题合看：① **对比度**——`#e63946` 配白字约 4.17:1，低于 AA 4.5:1；② **语义冲突**——默认 `--caomei-color-primary: #e63946` 与 `--caomei-color-danger: #dc2626` 同为红色系（`caomei` 预设 primary `#e63946` / danger `#ef4444` 几乎同色），主操作易被误读为危险操作。候选：默认主色改蓝（`caomei` 预设保留品牌红）/ 仅加深至 AA 并拉开与 `danger` 的色相距离 / 维持现状并在文档说明。取证与决策点见 [2026-09-16 新需求评估记录 §3](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -108,6 +110,11 @@
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
 | wisdom 蒸馏原文留痕 | 审计发现：`.session/wisdom.md` 为 gitignored，蒸馏清空活跃段后无法复核「迁移 N 条 + 删除 M 条」的完备性（`current-task.yaml` 的 `tried_approaches` 口径不同、不可替代）；候选在清空前把活跃段原文快照落盘（归档文件或脚本产物），或在蒸馏机制 §4 增加快照步骤 | 低 |
+| 文档站组件信息架构 | 用户需求（2026-09-16）：`/components/` 当前为单一「基础组件」分组、按历史登记顺序排列；「能力说明」（组合式 API / 图标 / 内建文案与语言）挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。候选：按关联性分 6 组 + 组内字母序；能力说明归位（只改侧栏 / 改 URL / 独立顶层，三选一）；补 zh 总览页。取证与分组映射见 [评估记录 §2](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
+| 文档站观感与展示力 | 用户需求（2026-09-16）：站点观感偏单调，作为组件库展示站缺乏吸引力。候选：zh 组件总览页（分组卡片 + 画廊）/ 首页组件画廊 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
+| 文档站演示动画与 reduced-motion | 诊断发现（2026-09-16）：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现本身无缺陷。候选：维持现状 / demo 区域 opt-in 恢复 / 提供「演示动画」显式开关（含 a11y 取舍）。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | 低 |
+| 组件公共逻辑抽取 | 用户需求（2026-09-16）+ 治理发现：locale 回退取值 39 处；`inheritAttrs: false` 58 文件而 `useAttrForwarding` 仅 9 个组件复用；浮层外观散落（`bg-elevated` 24 文件；阴影 / 遮罩字面量另见本表「阴影与遮罩 token 迁移」13 处 / 10 文件）；选项列表渲染 3 份；数值钳位 2 份；焦点相关重复模式（`defineExpose({ focus })` 4 处、清空回焦 2 处、面板空白聚焦 2 处——**浮层关闭回焦由 Reka 承担，无重复实现**）。候选：以「同一模式 ≥3 处且语义一致」为门槛按需抽取。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
+| ESLint 严格化与导出类型 | 用户需求（2026-09-16）：期望对导出函数 / 组件做更严格的类型声明 lint。现状：根配置使用 `eslint-config-cmyr/vue`，显式类型与 unsafe 族规则均为 off；只读试跑 `eslint-config-cmyr/vue/strict` 得 67 error / 229 warning（命中 63 / 594 文件，绝大多数在 `.test.ts`）。候选：分批切严格预设（先显式类型子集、再 type-aware unsafe 族）/ 一次性收敛 / 仅 `src/**` 启用。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
 
 ### 1.7 服务层候选（composables）
 

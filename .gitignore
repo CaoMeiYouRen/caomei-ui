@@ -21,6 +21,7 @@ playwright-report
 docs/.vitepress/cache
 docs/.vitepress/dist
 docs/.vitepress/data
+.temp
 
 # Nuxt（playground/nuxt 冒烟 fixture 的构建产物）
 .nuxt

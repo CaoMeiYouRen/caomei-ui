@@ -136,6 +136,211 @@ describe('CaomeiTextarea', () => {
         wrapper.unmount()
     })
 
+    describe('autoResize', () => {
+        // happy-dom 无布局引擎，scrollHeight 恒为 0，需按用例注入测量值
+        function mockScrollHeight(el: HTMLTextAreaElement): { set: (value: number) => void } {
+            let value = 0
+            Object.defineProperty(el, 'scrollHeight', {
+                configurable: true,
+                get: () => value,
+            })
+
+            return {
+                set(next: number) {
+                    value = next
+                },
+            }
+        }
+
+        it('默认不启用，也不写入内联高度', () => {
+            const wrapper = mount(CaomeiTextarea, { attachTo: document.body })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+
+            expect(wrapper.get('.caomei-textarea').classes()).not.toContain('caomei-textarea--auto-resize')
+            expect(textarea.style.height).toBe('')
+
+            wrapper.unmount()
+        })
+
+        it('启用后内容变化即按 scrollHeight 写入高度', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+            mock.set(72)
+
+            await wrapper.get('textarea').setValue('第一行')
+            expect(textarea.style.height).toBe('72px')
+
+            wrapper.unmount()
+        })
+
+        it('内容增减时同步伸缩高度', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+
+            mock.set(120)
+            await wrapper.get('textarea').setValue('多行\n内容\n更多')
+            expect(textarea.style.height).toBe('120px')
+
+            mock.set(40)
+            await wrapper.get('textarea').setValue('短')
+            expect(textarea.style.height).toBe('40px')
+
+            wrapper.unmount()
+        })
+
+        it('scrollHeight 为 0 时不写死高度，保留原生 rows', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true, rows: 3 },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+            mock.set(96)
+
+            await wrapper.get('textarea').setValue('内容')
+            expect(textarea.style.height).toBe('96px')
+
+            mock.set(0)
+            await wrapper.get('textarea').setValue('')
+            expect(textarea.style.height).toBe('')
+
+            wrapper.unmount()
+        })
+
+        it('关闭 autoResize 时清除内联高度', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+            mock.set(88)
+
+            await wrapper.setProps({ modelValue: '内容' })
+            expect(textarea.style.height).toBe('88px')
+
+            await wrapper.setProps({ autoResize: false })
+            expect(textarea.style.height).toBe('')
+
+            wrapper.unmount()
+        })
+
+        // 经值变化驱动模型 watcher；隐藏/恢复的 ResizeObserver 路径由下一条用例覆盖
+        it('scrollHeight 为 0 时清空高度，恢复测量值后重新写入', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+
+            mock.set(80)
+            await wrapper.get('textarea').setValue('内容')
+            expect(textarea.style.height).toBe('80px')
+
+            // display:none 时 scrollHeight 为 0，清空内联高度而非写死 0
+            mock.set(0)
+            await wrapper.get('textarea').setValue('隐藏中')
+            expect(textarea.style.height).toBe('')
+
+            mock.set(120)
+            await wrapper.get('textarea').setValue('恢复可见')
+            expect(textarea.style.height).toBe('120px')
+
+            wrapper.unmount()
+        })
+
+        it('仅在控件宽度变化时重新测量', () => {
+            const callbacks: Array<() => void> = []
+            const original = globalThis.ResizeObserver
+            class FakeResizeObserver {
+                constructor(callback: () => void) {
+                    callbacks.push(callback)
+                }
+
+                observe(): void {
+                    // 仅需存在，重测由用例手动触发回调
+                }
+
+                disconnect(): void {
+                    // 无资源可释放
+                }
+            }
+
+            globalThis.ResizeObserver = FakeResizeObserver as unknown as typeof ResizeObserver
+
+            let wrapper: ReturnType<typeof mount> | undefined
+
+            try {
+                wrapper = mount(CaomeiTextarea, {
+                    props: { autoResize: true },
+                    attachTo: document.body,
+                })
+                const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+                const mock = mockScrollHeight(textarea)
+                let width = 0
+                Object.defineProperty(textarea, 'clientWidth', {
+                    configurable: true,
+                    get: () => width,
+                })
+
+                expect(callbacks).toHaveLength(1)
+
+                mock.set(100)
+                width = 200
+                callbacks[0]?.()
+                expect(textarea.style.height).toBe('100px')
+
+                // 宽度未变时不重测
+                mock.set(150)
+                callbacks[0]?.()
+                expect(textarea.style.height).toBe('100px')
+
+                width = 300
+                callbacks[0]?.()
+                expect(textarea.style.height).toBe('150px')
+            } finally {
+                wrapper?.unmount()
+                globalThis.ResizeObserver = original
+            }
+        })
+
+        it('自动增高时禁用手动调整尺寸，未启用时保持默认 resize', () => {
+            const auto = mount(CaomeiTextarea, { props: { autoResize: true } })
+            expect(auto.get('textarea').attributes('style')).toContain('resize: none')
+
+            const manual = mount(CaomeiTextarea)
+            expect(manual.get('textarea').attributes('style')).toContain('resize: vertical')
+        })
+
+        it('尺寸档位变化时重新测量', async () => {
+            const wrapper = mount(CaomeiTextarea, {
+                props: { autoResize: true, size: 'md' },
+                attachTo: document.body,
+            })
+            const textarea = wrapper.get('textarea').element as HTMLTextAreaElement
+            const mock = mockScrollHeight(textarea)
+
+            mock.set(60)
+            await wrapper.setProps({ modelValue: '内容' })
+            expect(textarea.style.height).toBe('60px')
+
+            mock.set(84)
+            await wrapper.setProps({ size: 'lg' })
+            expect(textarea.style.height).toBe('84px')
+
+            wrapper.unmount()
+        })
+    })
+
     it('有值时输出 data-filled，清空后移除', async () => {
         const wrapper = mount(CaomeiTextarea)
 

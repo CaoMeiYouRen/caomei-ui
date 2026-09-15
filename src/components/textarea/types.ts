@@ -52,6 +52,11 @@ export interface TextareaProps {
      */
     resize?: 'none' | 'both' | 'horizontal' | 'vertical'
     /**
+     * 高度随内容自动增减（不再需要滚动条）；`rows` 仍作为初始最小高度。开启后 `resize` 固定为 `none`（手动调整会被下一次测量覆盖）
+     * @en Whether the height follows the content automatically (no scrollbar needed); `rows` still acts as the initial minimum height. While enabled, `resize` is fixed to `none` (manual resizing would be overwritten by the next measurement)
+     */
+    autoResize?: boolean
+    /**
      * 无可见标签时的可访问名，映射 aria-label
      * @en Accessible name when there is no visible label, maps to aria-label
      */

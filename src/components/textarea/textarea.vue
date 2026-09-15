@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, type StyleValue } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type StyleValue } from 'vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type { TextareaProps } from './types'
 
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<TextareaProps>(), {
     invalid: false,
     placeholder: '',
     resize: 'vertical',
+    autoResize: false,
 })
 
 const emit = defineEmits<{
@@ -32,12 +33,122 @@ const rootClass = computed(() => [
         'caomei-textarea--invalid': props.invalid,
         'caomei-textarea--disabled': props.disabled,
         'caomei-textarea--readonly': props.readonly,
+        'caomei-textarea--auto-resize': props.autoResize,
     },
 ])
 
 const controlStyle = computed<StyleValue>(() => ({
-    resize: props.resize,
+    // 自动增高时高度由内容决定，手动调整会被下一次测量覆盖，故固定禁用
+    resize: props.autoResize ? 'none' : props.resize,
 }))
+
+// 自动增高：先归零高度再读 scrollHeight，避免上一次的行高把内容高度顶住
+// （scrollHeight 不会小于元素自身高度，否则无法收缩）。
+let resizeObserver: ResizeObserver | null = null
+let observedWidth = 0
+
+function measureHeight(): void {
+    const el = textareaRef.value
+    if (!el || !el.isConnected) {
+        return
+    }
+
+    el.style.height = 'auto'
+    const next = el.scrollHeight
+    if (next <= 0) {
+        // 不可见或尚无布局时不写死高度，保留原生 rows 行为
+        el.style.height = ''
+        return
+    }
+
+    el.style.height = `${next}px`
+}
+
+function resetHeight(): void {
+    const el = textareaRef.value
+    if (el) {
+        el.style.height = ''
+    }
+}
+
+// 容器宽度变化会改变折行结果，需重新测量；高度变化由自身写入触发，按宽度去重避免观察器自激
+function handleObservedResize(): void {
+    const el = textareaRef.value
+    if (!el) {
+        return
+    }
+
+    const width = el.clientWidth
+    if (width === observedWidth) {
+        return
+    }
+
+    observedWidth = width
+    measureHeight()
+}
+
+function startObserving(): void {
+    const el = textareaRef.value
+    if (!el || resizeObserver || typeof ResizeObserver === 'undefined') {
+        return
+    }
+
+    observedWidth = el.clientWidth
+    resizeObserver = new ResizeObserver(handleObservedResize)
+    resizeObserver.observe(el)
+}
+
+function stopObserving(): void {
+    resizeObserver?.disconnect()
+    resizeObserver = null
+}
+
+watch(
+    () => props.autoResize,
+    (enabled) => {
+        if (enabled) {
+            startObserving()
+            measureHeight()
+
+            return
+        }
+
+        stopObserving()
+        resetHeight()
+    },
+)
+
+watch(
+    model,
+    () => {
+        if (props.autoResize) {
+            measureHeight()
+        }
+    },
+    { flush: 'post' },
+)
+
+// 尺寸档位与会改变字号 / 内边距 / 初始行数，进而改变测量结果
+watch(
+    () => [props.size, props.rows],
+    () => {
+        if (props.autoResize) {
+            measureHeight()
+        }
+    },
+    { flush: 'post' },
+)
+
+onMounted(() => {
+    if (props.autoResize) {
+        startObserving()
+        measureHeight()
+    }
+})
+
+onBeforeUnmount(() => {
+    stopObserving()
+})
 
 function focus(): void {
     textareaRef.value?.focus()

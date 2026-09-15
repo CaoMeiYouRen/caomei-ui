@@ -24,6 +24,10 @@ const enUS: CaomeiLocaleMessages = {
     dialog: {
         close: 'Close',
     },
+    drawer: {
+        label: 'Drawer',
+        close: 'Close',
+    },
     input: {
         clear: 'Clear',
     },

@@ -26,10 +26,12 @@
     --caomei-color-text: #1a1a1a;
     --caomei-color-text-muted: #6b7280;
     --caomei-color-border: #e5e7eb;
+    --caomei-color-mask: rgb(0 0 0 / 0.45);
     --caomei-radius-sm: 4px;
     --caomei-radius-md: 8px;
     --caomei-radius-lg: 12px;
     --caomei-radius-full: 999px;
+    --caomei-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.18);
     --caomei-font-sans: system-ui, -apple-system, sans-serif;
     --caomei-space-1: 4px;
     --caomei-space-2: 8px;

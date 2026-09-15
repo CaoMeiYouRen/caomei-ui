@@ -26,6 +26,7 @@ export const caomeiComponents = [
     'CaomeiDatePicker',
     'CaomeiDialog',
     'CaomeiDivider',
+    'CaomeiDrawer',
     'CaomeiDropdownMenu',
     'CaomeiDropdownMenuCheckboxItem',
     'CaomeiDropdownMenuContent',

@@ -30,6 +30,10 @@ export interface CaomeiLocaleMessages {
     dialog: {
         close: string
     }
+    drawer: {
+        label: string
+        close: string
+    }
     input: {
         clear: string
     }

@@ -49,7 +49,7 @@ import {
 | `message` | `close` | Message |
 | `multiSelect` | `open` `remove` `empty` | MultiSelect |
 | `pagination` | `label` `first` `previous` `next` `last` `page` | Paginator |
-| `password` | `show` `hide` | Password |
+| `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |

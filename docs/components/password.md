@@ -24,6 +24,23 @@
     ssg="true"
 />
 
+## 强度反馈
+
+设置 `feedback`（默认关闭）后显示强度计量条与文案：聚焦或已有输入时可见，空值未聚焦时仅保留读屏器播报区域。
+
+- 默认关闭（与 PrimeVue 默认开启不同）：外部服务凭据（密钥 / Token）一类字段通常无需强度反馈，可省略不传；用户自设密码（如安装向导的管理员密码）建议显式 `feedback`。
+- 空值聚焦会插入强度区域，使输入框下方内容下移约一行（输入框自身位置不变）；对字段级辅助文案属有意取舍。
+- 强度规则与 PrimeVue 默认一致：同时含大小写与数字且 ≥8 位为强，任两类字符且 ≥6 位为中，其余非空为弱。
+- 文案走内建多语言（`password.prompt` / `weak` / `medium` / `strong`），可用 `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel` 覆盖。
+- 计量条颜色取 `danger` / `warning` / `success`，可经对应 CSS variables 覆盖。
+
+<demo
+    vue="../examples/password/feedback.vue"
+    ssg="true"
+/>
+
+> PrimeVue 的 `mediumRegex` / `strongRegex` 未实现（下游无用量），强度规则当前固定；需要自定义规则时请提出。
+
 ## 切换按钮文案
 
 切换按钮使用内建多语言标签（「显示密码」/「隐藏密码」），可通过 `showLabel` / `hideLabel` 覆盖。

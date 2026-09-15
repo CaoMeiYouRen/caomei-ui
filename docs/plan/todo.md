@@ -49,7 +49,7 @@
   - [x] Message 形态与尺寸（`variant` `simple`、`size`、severity 映射）——说明：PrimeVue Message 仅 `outlined` / `simple` 两种变体、无 `text`（下游实装的一方源码与类型取证），故不实现 `text`
   - [x] InputNumber 分组与小数位（`useGrouping` / `minFractionDigits` / `maxFractionDigits`）——说明：`useGrouping` 默认 `true` 对齐 PrimeVue（原实现硬编码 `false`，属行为变更）；`precision` 取值域由 0–100 收窄为 0–20（与 `Intl` 小数位选项同域，>20 依赖 ES2023 Intl v3），并修复极大值取整溢出为 `Infinity` 的问题
   - [x] Textarea 自动增高（`autoResize`）——说明：高度由包装层写入内联 `height`，`rows` 保留为初始最小高度；开启时 `resize` 固定 `none`；不设上限，封顶由使用层叠加 `max-height`（迁移映射见 design-spec §7）
-  - [ ] Password 强度反馈（`feedback`）
+  - [x] Password 强度反馈（`feedback`）——说明：默认关闭（PrimeVue 默认开启，本库改为显式开启）；强度规则对齐 PrimeVue 默认正则；文案走内建 locale `password.prompt` / `weak` / `medium` / `strong`，可由同名 label props 覆盖；`mediumRegex` / `strongRegex` 未实现（下游无用量）（迁移映射见 design-spec §7）
 
 ### 主线 M4：组件补全（按用量与依赖排序）
 

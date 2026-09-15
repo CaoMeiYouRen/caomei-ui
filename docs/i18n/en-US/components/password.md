@@ -24,6 +24,23 @@ Passes through Input's `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+## Strength feedback
+
+With `feedback` (off by default) a strength meter and text are shown: visible while focused or filled, and while empty and unfocused only the screen-reader live region remains.
+
+- Off by default (unlike PrimeVue, which defaults to on): external-service credentials (secret / token fields) usually need no strength feedback, so they can simply omit it; user-chosen passwords (such as the admin password in an installation wizard) should pass `feedback` explicitly.
+- Focusing an empty field inserts the strength area and pushes the content below it down by about one line (the input itself does not move); this is an intentional trade-off for field-level helper text.
+- The strength rules match PrimeVue's defaults: strong needs lower- and upper-case plus digits and at least 8 characters; medium needs any two character classes and at least 6 characters; any other non-empty value is weak.
+- Text comes from the built-in locales (`password.prompt` / `weak` / `medium` / `strong`) and can be overridden with `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel`.
+- The meter uses the `danger` / `warning` / `success` tokens, overridable through the matching CSS variables.
+
+<demo
+    vue="../examples/password/feedback.vue"
+    ssg="true"
+/>
+
+> PrimeVue's `mediumRegex` / `strongRegex` are not implemented (no downstream usage); the strength rules are currently fixed. Ask if you need custom rules.
+
 ## Toggle button text
 
 The toggle button uses built-in localized labels ("Show password" / "Hide password"), overridable via `showLabel` / `hideLabel`.

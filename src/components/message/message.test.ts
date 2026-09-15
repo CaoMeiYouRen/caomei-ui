@@ -36,6 +36,23 @@ describe('CaomeiMessage', () => {
         expect(getRoot(wrapper).classes()).toContain(`caomei-message--${variant}`)
     })
 
+    it.each(['sm', 'md', 'lg'] as const)('应用尺寸 %s', (size) => {
+        const wrapper = mount(CaomeiMessage, { props: { size } })
+        expect(wrapper.get('.caomei-message').classes()).toContain(`caomei-message--${size}`)
+    })
+
+    it('默认尺寸为 md', () => {
+        const wrapper = mount(CaomeiMessage)
+        expect(wrapper.get('.caomei-message').classes()).toContain('caomei-message--md')
+    })
+
+    it('simple 变体应用对应类并可叠加尺寸', () => {
+        const wrapper = mount(CaomeiMessage, { props: { variant: 'simple', size: 'sm' } })
+        const root = wrapper.get('.caomei-message')
+        expect(root.classes()).toContain('caomei-message--simple')
+        expect(root.classes()).toContain('caomei-message--sm')
+    })
+
     it('title 与插槽内容分别渲染', () => {
         const wrapper = mount(CaomeiMessage, {
             props: { title: '标题' },

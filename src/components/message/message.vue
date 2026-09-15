@@ -10,6 +10,7 @@ defineOptions({ name: 'CaomeiMessage' })
 const props = withDefaults(defineProps<MessageProps>(), {
     tone: 'neutral',
     variant: 'soft',
+    size: 'md',
     title: '',
     description: '',
     icon: true,
@@ -46,6 +47,7 @@ const toneIcon = computed(() => {
 const rootClass = computed(() => [
     `caomei-message--${props.tone}`,
     `caomei-message--${props.variant}`,
+    `caomei-message--${props.size}`,
 ])
 </script>
 
@@ -100,12 +102,26 @@ const rootClass = computed(() => [
     align-items: flex-start;
     gap: var(--caomei-space-2);
     width: 100%;
-    padding: var(--caomei-space-3) var(--caomei-space-4);
     border: 1px solid transparent;
     border-radius: var(--caomei-message-radius, var(--caomei-radius-md));
     font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-font-size-md);
     line-height: 1.5;
+}
+
+/* 档位类用 :where() 归零特异性；内边距与字号只在档位类声明 */
+:where(.caomei-message--sm) {
+    padding: var(--caomei-space-2) var(--caomei-space-3);
+    font-size: var(--caomei-font-size-sm);
+}
+
+:where(.caomei-message--md) {
+    padding: var(--caomei-space-3) var(--caomei-space-4);
+    font-size: var(--caomei-font-size-md);
+}
+
+:where(.caomei-message--lg) {
+    padding: var(--caomei-space-4);
+    font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-message--primary {
@@ -145,6 +161,14 @@ const rootClass = computed(() => [
 
 .caomei-message--outline {
     border-color: var(--caomei-message-tone);
+    color: var(--caomei-message-tone);
+}
+
+/* 行内形态：无背景 / 边框 / 内边距，仅保留语义色文本与图标 */
+.caomei-message--simple {
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
     color: var(--caomei-message-tone);
 }
 

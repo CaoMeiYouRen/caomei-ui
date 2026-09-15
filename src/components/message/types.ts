@@ -1,10 +1,11 @@
-import type { ComponentTone } from '../../types'
+import type { ComponentSize, ComponentTone } from '../../types'
 
 /**
- * 视觉变体
- * @en Visual variant
+ * 视觉变体：`soft` / `solid` / `outline` 为带底色或描边的卡片形态，`simple` 为无背景 / 边框 / 内边距的行内形态
+ * @en Visual variant: `soft` / `solid` / `outline` are card-like forms with a background or border, while
+ * `simple` is an inline form with no background, border or padding
  */
-export type MessageVariant = 'soft' | 'solid' | 'outline'
+export type MessageVariant = 'soft' | 'solid' | 'outline' | 'simple'
 
 /**
  * 消息内容层的语义角色
@@ -23,6 +24,11 @@ export interface MessageProps {
      * @en Visual variant
      */
     variant?: MessageVariant
+    /**
+     * 尺寸；`simple` 变体不消费内边距，仅影响字号与图标
+     * @en Size; the `simple` variant consumes no padding and only affects font size and icon
+     */
+    size?: ComponentSize
     /**
      * 标题
      * @en Title

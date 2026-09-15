@@ -163,6 +163,7 @@
 | --- | --- |
 | Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
+| Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认全宽；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号 `font-size-sm` |
 | Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距） |
@@ -207,6 +208,8 @@
 > Textarea 迁移映射（已实现）：`auto-resize` → `autoResize`（默认 `false`，高度由包装层写入内联 `height`；开启时 `resize` 固定 `none`，`rows` 保留为初始最小高度；不设上限，封顶由消费方在使用层叠加 `max-height`）。
 >
 > Password 迁移映射（已实现）：`feedback` → `feedback`（**默认值分歧且为有意**：PrimeVue 默认 `true`，此处默认 `false`。momei 32 处 `<Password>` 仅 8 处显式传 `feedback`，其余 24 处大多为外部服务凭据（密钥 / Token）字段、强度条无实际意义；其中安装向导的 `admin_password` 为用户自设密码，迁移后建议显式传 `:feedback="true"`；默认关闭可避免这些字段凭空多出区块。迁移后这 24 处将失去原先由 PrimeVue 默认开启的强度浮层，属有意行为变更而非回归）。显式开启后显示内联强度计量条与文案，聚焦或有值时可见，空值未聚焦仅保留读屏器 live region；`prompt-label` / `weak-label` / `medium-label` / `strong-label` → `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel`（默认取内建 locale `password.prompt` / `weak` / `medium` / `strong`）；`toggle-mask` → 内建切换按钮（无需 prop）；`medium-regex` / `strong-regex` 未实现（下游无用量，强度规则固定）。
+
+> Calendar / DatePicker 迁移映射（已实现，基础日期选择）：`min-value` / `max-value` → `minValue` / `maxValue`；`date-format` → `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期）；`show-icon` → `showIcon`（`icon-display="input"` 即本组件默认形态）；`fluid` 默认全宽，迁移时删除。对外 `v-model` 沿用 PrimeVue 的原生 `Date` 语义；Reka primitive 使用 `@internationalized/date` 的 `DateValue`，转换收敛在 `_shared/date`（新增该运行时依赖）。`show-time` / `hour-format` / 范围选择属 [待办事项](./plan/todo.md) 的「DatePicker 时间 / 范围」条目，本批未实现。**已知行为差异**：PrimeVue `DatePicker` 是可键入的 input，本组件为「触发按钮 + 面板」，不支持手工键入日期（迁移时需确认下游无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立（本库 i18n 机制未暴露 locale tag），需一致时显式传入。
 
 ## 8. 规范落实与可验证脚本（已实现）
 

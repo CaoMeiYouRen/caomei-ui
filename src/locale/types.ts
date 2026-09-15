@@ -20,6 +20,9 @@ export interface CaomeiLocaleMessages {
         confirm: string
         cancel: string
     }
+    datePicker: {
+        label: string
+    }
     dialog: {
         close: string
     }

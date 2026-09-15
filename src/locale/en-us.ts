@@ -14,6 +14,9 @@ const enUS: CaomeiLocaleMessages = {
         confirm: 'Confirm',
         cancel: 'Cancel',
     },
+    datePicker: {
+        label: 'Date',
+    },
     dialog: {
         close: 'Close',
     },

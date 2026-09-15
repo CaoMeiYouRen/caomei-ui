@@ -14,6 +14,9 @@ const zhCN: CaomeiLocaleMessages = {
         confirm: '确定',
         cancel: '取消',
     },
+    datePicker: {
+        label: '日期',
+    },
     dialog: {
         close: '关闭',
     },

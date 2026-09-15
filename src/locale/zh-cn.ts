@@ -25,6 +25,9 @@ const zhCN: CaomeiLocaleMessages = {
         confirm: '确定',
         cancel: '取消',
     },
+    dataView: {
+        empty: '暂无数据',
+    },
     datePicker: {
         label: '日期',
         time: '时间',

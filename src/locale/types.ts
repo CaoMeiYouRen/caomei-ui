@@ -31,6 +31,9 @@ export interface CaomeiLocaleMessages {
         confirm: string
         cancel: string
     }
+    dataView: {
+        empty: string
+    }
     datePicker: {
         label: string
         time: string

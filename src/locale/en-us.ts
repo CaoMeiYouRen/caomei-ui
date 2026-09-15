@@ -25,6 +25,9 @@ const enUS: CaomeiLocaleMessages = {
         confirm: 'Confirm',
         cancel: 'Cancel',
     },
+    dataView: {
+        empty: 'No data',
+    },
     datePicker: {
         label: 'Date',
         time: 'Time',

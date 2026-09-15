@@ -24,6 +24,7 @@ export const caomeiComponents = [
     'CaomeiConfigProvider',
     'CaomeiConfirmDialog',
     'CaomeiDataTable',
+    'CaomeiDataView',
     'CaomeiDatePicker',
     'CaomeiDialog',
     'CaomeiDivider',

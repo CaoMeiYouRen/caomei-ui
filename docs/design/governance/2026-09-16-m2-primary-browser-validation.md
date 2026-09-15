@@ -4,7 +4,7 @@
 >
 > **结论：复验通过（F1 回归已修复）**——Reject 轮唯一回归（暗色 ConfirmDialog danger 4.07:1）复验为 **4.83:1**，全库回归扫描无新增低于阈值项；剩余 2 条失败均为既有非回归项（亮色 soft primary 4.37，待产品决策 / 登记 Backlog）。执行状态以 [待办事项](../../plan/todo.md) 为准。
 >
-> 关联：[待办事项 M2](../../plan/todo.md) ｜ [设计规范 §3.2](../design-spec.md) ｜ [主题与样式设计](../theming.md) ｜ [测试规范 §2.1 / §5.1](../../standards/testing.md) ｜ [UI 验证 skill](../../../.github/skills/ui-validator/SKILL.md)
+> 关联：[待办事项 M2](../../plan/todo.md) ｜ [设计规范 §3.2](../design-spec.md) ｜ [主题与样式设计](../theming.md) ｜ [测试规范 §2.1 / §5.1](../../standards/testing.md) ｜ UI 验证 skill（`.github/skills/ui-validator/SKILL.md`）
 
 ## 1. 结论摘要（可回写评审记录）
 

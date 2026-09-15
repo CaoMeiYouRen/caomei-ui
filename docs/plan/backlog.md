@@ -7,7 +7,7 @@
 > - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）。
 > - §2 维护约定。
 >
-> Phase 6（组件库补全与规范化）已完成的条目及其评估证据已随阶段迁入 [待办归档](./todo-archive.md)；本表仅保留仍待决策的候选。
+> Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪）已完成的条目及其评估证据已随阶段迁入 [待办归档](./todo-archive.md)；本表仅保留仍待决策的候选。
 
 ## 1. 候选池（待用户决策）
 
@@ -17,18 +17,17 @@
 
 > 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已在 Phase 6 交付并归档；迁移映射规范（`severity→tone` 等）已由 M2 [设计规范 §7](../design/design-spec.md) 承接。
 >
-> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已迁入 Phase 7 第一阶段；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
+> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已在 Phase 7 第一阶段交付；其中 **Message 语义与形态增强已全部交付、无剩余候选**（`text` 变体经一方源码取证确认不存在于 PrimeVue Message，不实现），不再作为候选登记；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | Button 角标增强 | 组件实现评估 + M1 复核 | **保留（P2）**：Button 的 `:badge` 角标（M1 台账 momei 2 处）未纳入 Phase 6 M3（标记待评估）；需评估角标内容 / 位置 / 与图标共存。 | 低 |
-| Tag/Badge 增强 | 组件实现评估 + M1 复核 | **部分迁出**：Tag `severity` → `tone` 规范化、`rounded` / `outlined`、`#icon` 插槽（P0）已迁 Phase 7 第一阶段；**保留（P2）** Tag 可选中筛选 / 可编辑（Reka TagsInput）、Badge 叠加位置偏移与宽度过渡动画。 | 中 |
-| Select 增强 | 组件实现评估 + M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）。`option-label` / `option-value`、`show-clear`、`#option` 均已交付；**`filter` 经用户决策（2026-09-15）按方案 A 迁移映射到 `AutoComplete`**，不在 Select 上实现——Reka Select 把 `role="listbox"` 固定在面板元素上（`SelectContentImpl` 在 `$attrs` 之后写入，无法覆盖），面板内放搜索框会使 textbox 成为 listbox 的 owned child（违反 WAI-ARIA `aria-required-children`），可搜索单选的 primitive 是 Reka `Listbox` / `Combobox`。**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
+| Tag/Badge 增强 | 组件实现评估 + M1 复核 | **部分迁出**：Tag `severity` → `tone` 规范化、`rounded` / `outlined`、`#icon` 插槽（P0）已在 Phase 7 第一阶段交付；**保留（P2）** Tag 可选中筛选 / 可编辑（Reka TagsInput）、Badge 叠加位置偏移与宽度过渡动画。 | 中 |
+| Select 增强 | 组件实现评估 + M1 复核 | **已在 Phase 7 第一阶段交付（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）。`option-label` / `option-value`、`show-clear`、`#option` 均已交付；**`filter` 经用户决策（2026-09-15）按方案 A 迁移映射到 `AutoComplete`**，不在 Select 上实现——Reka Select 把 `role="listbox"` 固定在面板元素上（`SelectContentImpl` 在 `$attrs` 之后写入，无法覆盖），面板内放搜索框会使 textbox 成为 listbox 的 owned child（违反 WAI-ARIA `aria-required-children`），可搜索单选的 primitive 是 Reka `Listbox` / `Combobox`。**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up（2026-09-15） | 色板当前为 `role="group"` + `aria-pressed` 按钮组（Tab 遍历，无方向键 roving）；候选改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景 | 低 |
 | AutoComplete 严格选项模式 | M3 条目 2 迁移评估（2026-09-15） | `Select filter` 按方案 A 迁往 `AutoComplete`，但当前 AutoComplete 在回车 / 失焦时会提交自由文本（`commitFreeText`），与 PrimeVue `Select filter`「值必须来自选项列表」的语义有差；候选补 `strict` / 限制自由文本的开关，或按 Reka `Listbox` 另立可搜索单选形态。触发条件：下游迁移实测出现「取值必须受限于选项列表」的受控字段用例。 | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛（2026-09-15，用户决策延后） | **延后（低）**：momei 快照（2026-09-15，`rg "<DatePicker"` 排除 node_modules/dist/.nuxt/.output）`<DatePicker>` 6 处 / 4 文件、`show-time` 4 处、`selection-mode` **0 处**，零用量。候选补 `selectionMode="range"`（Reka `RangeCalendar`）或独立 RangePicker：起止值模型（`Date[]` / `{ start, end }`）、区间展示与校验、与现有 `dateFormat` / `showTime` / `minValue` / `maxValue` 的组合。触发条件：下游出现日期区间筛选 / 区间录入真实用例。 | 低 |
-| 表单输入增强 | M1 复核 | **部分迁出**：InputNumber `use-grouping` / `min-max-fraction-digits`、Textarea `auto-resize`、Password `feedback`（P0）已迁 Phase 7 第一阶段；**保留（P2）** Checkbox 分组值数组、Switch `change` 事件、FileUpload 上传能力、ToggleButton 状态文案。 | 中 |
-| Message 语义与形态增强 | M1 复核 | **已迁 Phase 7 第一阶段（P0）**：`variant` 补 `simple` / `text`、补 `size`（momei 各 14 处）、`severity`（`error` / `secondary` / `contrast`）映射。 | 中 |
+| 表单输入增强 | M1 复核 | **部分迁出**：InputNumber `use-grouping` / `min-max-fraction-digits`、Textarea `auto-resize`、Password `feedback`（P0）已在 Phase 7 第一阶段交付；**保留（P2）** Checkbox 分组值数组、Switch `change` 事件、FileUpload 上传能力、ToggleButton 状态文案。 | 中 |
 | 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
 | 浮层与导航增强 | M1 复核 | **部分迁出**：Dialog `show-header` / `breakpoints` / `@hide`（P1）已移入 Phase 7 第二阶段；**保留（P2）** Popover 命令式 `toggle(event)` 锚点、DropdownMenu `:model` + `:popup`、Paginator 每页条数选择、ConfirmDialog `icon`。 | 低 |
 | 实底前景 token 统一 | M3 复核 | Button 的 `tone` 实底已改用 `--caomei-color-on-solid`；Tag / Badge / Message / SelectButton 等实底仍用 `-foreground`，评估统一（含 momei 暗色 `#000` 前景的对比问题） | 中 |
@@ -38,7 +37,7 @@
 
 > 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已于 Phase 4 交付并归档（见 [待办归档](./todo-archive.md)）。
 >
-> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已迁入 [Phase 7 第一阶段](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) M4（实现顺序 DatePicker → Drawer → SplitButton → ColorPicker → DataView；其中 DatePicker / Calendar、Drawer、ColorPicker 为 Reka Alpha primitive，需锁 `reka-ui@2.10.4` + 回归）。本表仅保留当前无下游使用证据的长尾。
+> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已在 [Phase 7 第一阶段](./todo-archive.md) M4 交付并归档（按用量与依赖排序 DatePicker → Drawer → SplitButton → ColorPicker → DataView）。其中 `DatePicker / Calendar`、`ColorPicker` 涉及 Reka Alpha primitive，已锁 `reka-ui@2.10.4` 并补 API 回归；`Drawer` 未采用 Reka `Drawer`（Alpha / Vaul 形态、不负责面板定位），改封装 Reka **稳定**的 Dialog primitive + 四向定位 CSS（见 [组件设计 §5](../design/components.md) 与 [设计规范 §7](../design/design-spec.md)）。本表仅保留当前无下游使用证据的长尾。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|
@@ -96,7 +95,7 @@
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
 | ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
-| 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；2026-09-14 已完成组件页 39/39 与指南 4/4 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
+| 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；截至 Phase 7 第一阶段收口已完成组件页 45/45 与指南 8/8 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | Input 家族样式层共享 | attrs 透传已抽取 `useAttrForwarding`；Password 已由 Input 派生并复用其样式（未分叉），其余文本输入类组件仍各自维护 scoped 样式，出现样式分叉时再评估共享样式层 | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
@@ -104,10 +103,11 @@
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
-| ~~Nuxt 模块真实集成~~ | 已迁 [Phase 7 第一阶段](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) M1（迁移前置）：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
+| ~~Nuxt 模块真实集成~~ | 已在 [Phase 7 第一阶段](./todo-archive.md) M1 交付并归档：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
+| wisdom 蒸馏原文留痕 | 审计发现：`.session/wisdom.md` 为 gitignored，蒸馏清空活跃段后无法复核「迁移 N 条 + 删除 M 条」的完备性（`current-task.yaml` 的 `tried_approaches` 口径不同、不可替代）；候选在清空前把活跃段原文快照落盘（归档文件或脚本产物），或在蒸馏机制 §4 增加快照步骤 | 低 |
 
 ### 1.7 服务层候选（composables）
 

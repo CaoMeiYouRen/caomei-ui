@@ -23,10 +23,10 @@
 
 ## 📌 项目状态
 
-Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）与组件库补全与规范化（Phase 6，面向 caomei-ui 迁移就绪）亦已完成并归档；首版发布与下游迁移（Phase 5 第二阶段、Phase 7）待外部前置与阶段推进后决策。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
+Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）、组件库补全与规范化（Phase 6，面向 momei 迁移就绪）与迁移就绪第一阶段（Phase 7 第一阶段：消费路径与 Nuxt 接入、组件 i18n 注入机制、P0 高频增强与 5 个延后组件）亦已完成并归档；首版发布与 momei 实际迁移（Phase 5 第二阶段、Phase 7 第二阶段）待外部前置与阶段决策后推进。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
-- 目标组件集：Tier 0（9 个，已完成）+ Tier 1（8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（6 个，已完成）。
+- 目标组件集：Tier 0（9 个，已完成）+ Tier 1（8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（6 个，已完成）+ Phase 7 补全（DatePicker / Calendar、Drawer、SplitButton、ColorPicker、DataView，已完成）。
 - 规划与进展见 [路线图](./docs/plan/roadmap.md) 与 [待办事项](./docs/plan/todo.md)。
 
 ## ✨ 特性（目标形态）

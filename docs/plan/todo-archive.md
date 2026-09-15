@@ -147,6 +147,37 @@
 
 ---
 
+## Phase 7 第一阶段：迁移就绪（momei 优先）
+
+- 时间：2026-09-14 ~ 2026-09-16
+- 范围来源与授权：[Phase 7 第一阶段评估记录](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)（2026-09-14 经用户授权启动）；阶段目标为「在 momei 实际迁移之前，打通消费与接入通道、补齐迁移高频硬缺口、前置组件 i18n 注入机制」。
+- 交付：
+  - 主线 M1 消费路径与 Nuxt 接入（**本地 link 先行**）：
+    - 本地 link 调试通道：构建产物冒烟校验（`scripts/release` + CI 步骤）与中英《本地联调》指南
+    - `caomei-ui/nuxt` 真实集成：`@nuxt/kit` 组件 / composables 自动导入、样式注入、theme token 覆盖、darkMode 策略；`@nuxt/kit` 为可选 peer（无 Nuxt 消费者零成本）；漂移测试 + 模块接线单测
+    - 最小 Nuxt 消费冒烟：`playground/nuxt` fixture + `check:nuxt`（`nuxt generate` + SSR / CSS 断言），接入 `verify` 与 CI；浏览器级 hydration 实测通过
+    - 消费使用文档补全：组合式 API / 图标 / 内建文案三篇指南（中英）与「能力说明」导航分组；校正既有文档中未实现的 `useDialog` 描述
+    - 首版发布链路协调：按规划归属 Phase 5 第二阶段（待外部 npm 凭据），本阶段未承载
+  - 主线 M2 组件 i18n 注入机制：`CaomeiConfigProvider` / `provideLocale` / `useLocale` / `caomeiLocaleKey` / `mergeLocaleMessages` / `resolveLocaleMessages` 与 `CaomeiLocaleMessageOverrides`（按命名空间浅合并 + 默认语言回退）；16 个内建文案组件分三批（表单类 / 反馈浮层类 / 数据展示类）改为 `props.x ?? locale.value.<ns>.<key>`；中英文档与 momei 五语种注入示例；文档站按页面语言注入内建文案
+  - 主线 M3 P0 高频增强：Select 家族对象选项映射（`optionLabel` / `optionValue` + 非 `string` value，Select / MultiSelect / SelectButton）、Select `showClear` / `#option`、Tag `rounded` 与 `severity → tone` 映射、Message `simple` / `size`、InputNumber `useGrouping` / `minFractionDigits` / `maxFractionDigits`、Textarea `autoResize`、Password `feedback`
+  - 主线 M4 组件补全：`DatePicker` / `Calendar`（含面板内时间选择）、`Drawer`（四向侧滑）、`SplitButton`、`ColorPicker`、`DataView`
+  - 治理与流程：审查调用协议（`audit-depth` 声明、并发分区、轮次上限、复审范围冻结）、markdown lint 覆盖扩展至审查记录、Phase 6 M1 台账与 Phase 7 评估记录迁入 [design/governance](../design/governance/index.md)
+- 关键提交：规划登记 `5c98aaf` / `1565f04`；M1 `db87328` / `f920830` / `1a00524` / `f5cb168` / `f9201b8` / `5e4cb4c` / `53f3b88` / `1e84ae5` / `ce4a557`；M2 `afcd8f4` / `e70bb77` / `f11312e` / `0a6bc61` / `8dfd580` / `5111ae6` / `b865ec5` / `425219a` / `d525155`（文档站语言切换按 i18n 路由回切）；M3 `dbd6418` / `03c8d62` / `df6fdcc` / `2e03aa5` / `d2d01ce` / `fedaff3` / `cacbeb8` / `e8aa2d8` / `94ffae7` / `2d6daca` / `04a3a66` / `3ba2e76` / `5e4e05e` / `06b31db` / `0ef6178` / `7d9a9f3` / `f9a7336` / `2179d4e`；M4 `040ef87` / `0fc539f` / `a514ce6` / `e0876e4` / `dc6f790` / `08f47f4` / `4e3922f` / `ee08ea8` / `9bc70f4` / `26ad101` / `07c71fa` / `96e727a` / `1982d6c` / `4af9168` / `6df980e`；治理 `3fd108f` / `481b868` / `64e7faf` / `5af12ff`
+- 质量门：`pnpm verify` 全链路通过（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；阶段收口时全量单元测试 64 文件 / 1078 例通过；docs 链接校验 171 个 md 全有效；`check:design` 原始 rgb 预算维持 13/13（本阶段新增组件无新增原始色值）
+- 浏览器验证：各可见改动均经 `@ui-validator` 实机验证并落盘 `test-results/`（gitignored）——DatePicker 基础三轮（含 hover 覆盖选中态修复与触发结构改自持 button 后复验）、时间选择自建后复验、Drawer 四向几何 / 宿主稳定性、SplitButton 拼接几何与菜单、ColorPicker follow-up（取值同源与色板选中态）、DataView 65 条断言全过
+- 审计：各条目经 `@code-reviewer` Review Gate；多数经历「首轮 Reject → 修复 → 复审 Pass」（DatePicker 基础四轮、时间选择两轮、Drawer 两轮、SplitButton 两轮、ColorPicker 五轮后经用户决策收束审查时间盒、DataView 两轮）；治理侧据此补「轮次上限 + 范围冻结 + 单模块拆分并行」并新增审查调用协议
+- 阶段归档蒸馏：归档检查发现 `.session/wisdom.md` 活跃 39 条（≥ 阈值 20），执行蒸馏——迁移 28 条至 `docs/standards` / `docs/design` / `docs/guide`，删除 11 条（判定已被现有文档覆盖），保留 0 条；摘要见 [Session 经验归档](../design/governance/experience-archive.md)
+- 交付与遗留偏差清单：
+  - **未承载（按规划归属）**：首版发布链路协调 → Phase 5 第二阶段（待 npm 凭据），本阶段仅作并行依赖协调
+  - **范围降级（用户决策）**：`DatePicker` 范围选择（momei 零用量，快照 2026-09-15）→ [Backlog §1.1](./backlog.md)；Select `filter` 不在 Select 上实现，改为迁移映射到 `CaomeiAutoComplete`（`role="listbox"` 语义约束），自由文本差异与「严格选项模式」候选登记 Backlog §1.1
+  - **有意行为差异（登记 [设计规范 §7](../design/design-spec.md)）**：Drawer `modal="true"` 即锁滚动（PrimeVue `blockScroll` 默认 `false`）；Password `feedback` 默认关闭（PrimeVue 默认开启）；InputNumber `useGrouping` 默认 `true`（原实现硬编码 `false`）；ColorPicker `format="hex"` 统一带 `#`、`rgb` / `hsb` 模型为字符串（PrimeVue 为对象）、不支持 alpha；DatePicker 为「触发按钮 + 面板」、不支持手工键入；DataView 新增 `loading` / `loadingText`（PrimeVue v4 无 `loading` prop，下游 `:loading` 原先静默无效）
+  - **未实现（下游零用量，登记 [设计规范 §7](../design/design-spec.md)）**：SplitButton 子菜单 / `url` / `menuButtonIcon` / `fluid` 等；Drawer 生命周期事件与 `#closebutton` / `#closeicon` / `#container` / `baseZIndex` 等；DatePicker 手键输入与其余 PrimeVue 形态；DataView 分页 / 排序 / `lazy` / `dataKey` 与分页相关插槽
+  - **规模偏差**：单一验收条目含「组件 + locale 命名空间 + 中英文档 + 示例 + 测试」导致多次超规划规范粒度约束，均按先例在 todo 条目登记（DatePicker 基础约 42 文件 / src 新增约 1.2k 行；时间选择 18 / 0.73k；Drawer 27 / 1.4k；SplitButton 23 / 0.88k；ColorPicker 23 / 1.0k；DataView 24 文件含本条规划登记、其中 src 为 9 文件 / 364 行）
+  - **已登记 Backlog 的后续候选**：ColorPicker 色板导航（radiogroup + roving tabindex）、AutoComplete 严格选项模式、DatePicker 范围选择、阴影与遮罩 token 迁移、DropdownMenuTrigger 样式豁免、分组按钮可访问语义、测试隔离与偶发失败、`file-upload` 用户可见文案本地化等，见 [Backlog](./backlog.md)
+  - **已知可接受项**：`dist/index.d.ts` 保留裸副作用导入 `import "@internationalized/date"`（该依赖已列 `dependencies`）
+
+---
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

@@ -80,6 +80,7 @@ test/                     # 单元与 E2E 测试
 - Reka `ToggleGroup` 的 `VisuallyHiddenInput` 会把对象型 `modelValue` 展开为 `name[key]`、数组型为 `name[i]`；以占位对象维持受控时须仅在有效选中时传 `name`，否则占位值进入表单提交。
 - Reka `ToggleGroup` 单选点击已选项会返回 `undefined`（允许取消）；实现「必有一选中项」需让 primitive 始终受控并在包装层忽略 `undefined`。
 - SSR 直出的 `<img>` 若在水合前已完成加载，`load` 事件不会重放；水合组件需在 `onMounted` 以 `img.complete`（配合 `naturalWidth`）兜底状态。
+- Reka `TimeField`（2.10.4）的 `dayPeriod` 判定只识别英文 `PM/pm/p.m.`（`useDateFormatter`），非英文 12 小时制会把「下午」判为 `AM`；`useDateField` 的提交流程再按该错误日序做 `hour±12`，使显示与写回同时出错。多语种 12 小时制时间输入不应直接封装该 primitive，需自建小时换算与日序文案（日序经 `Intl.DateTimeFormat#formatToParts` 取）。
 - Reka `AlertDialogContent` 不屏蔽 `escapeKeyDown`（2.10.4），Esc 仍关闭；`AlertDialogAction` / `Cancel` 的 DialogClose onClick 先于包裹组件自身 click 触发，结算应做顺序无关的意图捕获 + `nextTick` + 请求 id。
 - 容器型控件的可访问名须遵守 WCAG 2.5.3：无条件设置 `aria-label` 会覆盖可见文案，应仅在自定义（可能无可见文本）内容时生效。
 

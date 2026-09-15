@@ -37,12 +37,13 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 20 namespaces by component area, covering 21 consuming components:
+`CaomeiLocaleMessages` is split into 21 namespaces by component area, covering 22 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
 | `autoComplete` | `empty` `open` | AutoComplete |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
+| `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `close` | Dialog |

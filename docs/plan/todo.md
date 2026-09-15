@@ -57,7 +57,7 @@
 - 非目标：与该组件无关的长尾候选。
 - 最小验收标准：API 文档、单元测试与英文文档页齐备；Alpha 组件补 primitive API 回归测试；`pnpm verify` 通过。
 - 条目：
-  - [ ] DatePicker / Calendar 基础（日期选择 + 格式化；锁 `reka-ui@2.10.4` + 回归）
+  - [x] DatePicker / Calendar 基础（日期选择 + 格式化；锁 `reka-ui@2.10.4` + 回归）——说明：已交付 `CaomeiCalendar` + `CaomeiDatePicker`（内含 `CalendarPanel` 复用与共享日期转换层，并新增运行时依赖 `@internationalized/date`）；基础形态为「触发按钮 + 日历面板」，不支持手工键入（PrimeVue 为可键入 input，行为差异见 design-spec §7）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立。规模超条目估算（原估 8–10 文件 / ~500 行，实际约 42 文件 / src 新增约 1.2k 行），偏差因单一验收条目含组件对 + 共享层 + 新依赖 + 文档/测试/locale 同步
   - [ ] DatePicker 时间 / 范围（`showTime` / `hourFormat` / `RangeCalendar`）
   - [ ] Drawer（四向 `position`，Reka Alpha）
   - [ ] SplitButton（Button + DropdownMenu 组合）

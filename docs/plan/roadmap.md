@@ -6,11 +6,12 @@
 
 ## 1. 现状与背景
 
-- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件）、Phase 3（Tier 2 组件）、Phase 4（Tier 3 稳定批组件）、Phase 5 第一阶段（文档站增强：docs 质量护栏 / 站内搜索 / 站点 i18n）、Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪，momei 优先）已完成并归档；Phase 5 第二阶段（首版发布 / 首个下游接入）待外部前置；Phase 7 第二阶段（momei 迁移闭环 + P1 增强）、Phase 8（下游兼容性回归）未启动；首版尚未发布。
+- Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件）、Phase 3（Tier 2 组件）、Phase 4（Tier 3 稳定批组件）、Phase 5 第一阶段（文档站增强：docs 质量护栏 / 站内搜索 / 站点 i18n）、Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪，momei 优先）已完成并归档；**Phase 9（发布前收口：文档站与代码质量）已于 2026-09-16 获授权启动**；Phase 5 第二阶段（首版发布 / 首个下游接入）待外部前置；Phase 7 第二阶段（momei 迁移闭环 + P1 增强）按用户决策排在本阶段之后；Phase 8（下游兼容性回归）未启动；首版尚未发布。
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）、Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect，以及预落地的 Switch）、Tier 2（Tabs、Accordion、DropdownMenu、SelectButton、Image、FileUpload）、Tier 3 稳定批（RadioGroup、Slider、ToggleButton、Toolbar、Skeleton、ProgressBar、Popover）与 Phase 6 补全（Divider、InputGroup、FloatLabel、ButtonGroup、AutoComplete、Stepper；Button 形态增强与 DataTable 列 / 排序 / 选择 / 分页 / 冻结列能力增强）。
+- 已落地组件：Tier 0（Button、Input、Textarea、InputNumber、Tag、Badge、Select、Dialog、Toast、Card、Checkbox、DataTable 含 `DataTableColumn` 列定义类型）、Tier 1（Avatar、Paginator、Message、ProgressSpinner、ConfirmDialog 含 `useConfirm`、Password、MultiSelect，以及预落地的 Switch）、Tier 2（Tabs、Accordion、DropdownMenu、SelectButton、Image、FileUpload）、Tier 3 稳定批（RadioGroup、Slider、ToggleButton、Toolbar、Skeleton、ProgressBar、Popover）、Phase 6 补全（Divider、InputGroup、FloatLabel、ButtonGroup、AutoComplete、Stepper；Button 形态增强与 DataTable 列 / 排序 / 选择 / 分页 / 冻结列能力增强）与 Phase 7 第一阶段（DatePicker（含面板内时间选择）/ Calendar、Drawer、SplitButton、ColorPicker、DataView；Select 家族对象选项映射 / `showClear` / `#option`、Tag `rounded`、Message `simple` / `size`、InputNumber 分组与小数位、Textarea `autoResize`、Password `feedback`）。
+- 已落地能力：组件 i18n 注入机制（`CaomeiConfigProvider` / `provideLocale` / `useLocale`，22 个命名空间 × 23 个消费组件）、`caomei-ui/nuxt` 模块（组件与 composables 自动导入、样式注入、主题与 SSR）、`caomei-ui/resolver`、主题预设（caomei / momei）与暗色机制。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
-- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 共 6 个，已完成）。
+- 目标组件集（按下游使用面统计）：Tier 0（9 个核心组件，已完成）+ Tier 1（含 Switch 共 8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 共 6 个，已完成）+ Phase 7 补全（DatePicker / Calendar、Drawer、SplitButton、ColorPicker、DataView 共 5 个，已完成）。
 
 ## 2. 阶段规划
 
@@ -18,25 +19,28 @@
 |------|------|------|----------|
 | **Phase 0** | — | 立项与 POC | 名称冻结（caomei-ui）；tsdown + Vue SFC + Reka UI + 子路径导出 POC；tokens 草案；仓库与基建 |
 | **Phase 1** | — | Tier 0 组件 | Button / Input / Select / Dialog / Toast / Card / Checkbox / Tag / DataTable（9 个） |
-| **Phase 2** | — | Tier 1 组件（Nuxt 模块延后，见 [Backlog](./backlog.md)） | Message / Password / ProgressSpinner / MultiSelect / ConfirmDialog / Avatar / Paginator（7 个；Switch 已先行落地） |
+| **Phase 2** | — | Tier 1 组件 | Message / Password / ProgressSpinner / MultiSelect / ConfirmDialog / Avatar / Paginator（7 个；Switch 已先行落地；Nuxt 模块已由 Phase 7 第一阶段交付） |
 | **Phase 3** | — | Tier 2 组件 | Tabs（含 TabList/TabContent）/ Accordion / DropdownMenu / Image / SelectButton（SegmentedControl）/ FileUpload（6 个） |
-| **Phase 4** | — | Tier 3 稳定批组件 | RadioGroup / RadioButton、Slider、ToggleButton、Toolbar、Skeleton、ProgressBar、Popover（7 个；Alpha、其余自建件与低优先候选按需后置，见 [Backlog](./backlog.md)） |
+| **Phase 4** | — | Tier 3 稳定批组件 | RadioGroup / RadioButton、Slider、ToggleButton、Toolbar、Skeleton、ProgressBar、Popover（7 个；其余长尾候选见 [Backlog](./backlog.md)，依赖 Reka Alpha primitive 的 `DatePicker / Calendar`、`ColorPicker` 已在 Phase 7 第一阶段交付） |
 | **Phase 5** | — | 文档站 + 首个下游接入（两段式；第一阶段已完成归档） | 第一阶段：docs 质量护栏、站内搜索、站点 i18n（本仓库可独立闭环）；第二阶段：semantic-release 发布、dependfix/platform 接入验证（待 npm 凭据与下游授权）；文档站版本化后置，见 [文档与演示站](../design/documentation-site.md) |
 | **Phase 6** | — | 组件库补全与规范化（momei 迁移就绪；**已完成并归档**） | 下游使用复核与缺口清单；设计规范 + 可验证脚本；caomei / momei 双主题预设（含暗色）；缺口组件补全与关键增强（Button / DataTable + Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper；Panel 由 Card 承载）；第三方许可声明（见 [待办归档](./todo-archive.md)） |
-| **Phase 7** | — | 下游迁移（momei 优先，两段式） | 第一阶段（**已完成并归档**）：迁移就绪——消费路径与 Nuxt 接入（本地 link 先行）、组件 i18n 注入机制、P0 增强、5 个延后组件（见 [待办归档](./todo-archive.md)）；第二阶段（未启动，待用户决策）：momei 迁移闭环 + P1 增强，再推 caomei-auth / rss-impact-next / afdian-linker |
+| **Phase 7** | — | 下游迁移（momei 优先，两段式） | 第一阶段（**已完成并归档**）：迁移就绪——消费路径与 Nuxt 接入（本地 link 先行）、组件 i18n 注入机制、P0 增强、5 个延后组件（见 [待办归档](./todo-archive.md)）；第二阶段（未启动）：momei 迁移闭环 + P1 增强，再推 caomei-auth / rss-impact-next / afdian-linker（按用户决策排在 Phase 9 之后） |
 | **Phase 8** | — | 下游兼容性回归机制（稳定后启用） | 已接入下游清单 + 跨仓库 CI 触发；仅在稳定使用且组件库改动时启用 |
+| **Phase 9** | — | 发布前收口：文档站与代码质量（**进行中**） | 文档站信息架构重构（6 分组 + 能力说明归位 + zh 总览页）、默认主题主色改蓝、演示动画 opt-in、公共逻辑抽取、ESLint 严格化与导出类型（条目见 [待办事项](./todo.md)，范围依据见 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)） |
 
 > **Phase 6 已完成并归档**（2026-09-14）：范围来自全量 [Backlog](./backlog.md) 的整体评估（需求 1~7），经用户决策收敛为 4 条主线（需求 1 / 2 / 3 / 4 / 7）——M1 下游使用复核、M2 设计规范与主题预设、M3 组件补全、M4 依赖许可合规；组件国际化（需求 5）与移动端 / 响应式（需求 6）延后，退回 Backlog。阶段记录见 [待办归档](./todo-archive.md)。
 
 > **Phase 7 为 momei 优先**（2026-09-14 用户授权调整）：momei 是最复杂下游，先在其闭环迁移，作为其他下游可行性的验证。
 >
-> **Phase 7 分两段**（2026-09-14 用户授权，评估见 [Phase 7 第一阶段评估记录](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)）：**第一阶段「迁移就绪」** 先打通消费与接入通道、补齐迁移 P0 高频缺口并前置组件 i18n 注入机制；**第二阶段** 执行 momei 迁移闭环（含 P1 增强）与其他下游接入。排序原则为「先改好再迁移」，按优先级 + 依赖关系推进。消费路径为**本地 link 先行**；首版发布仍归属 Phase 5 第二阶段（待外部 npm 凭据），Phase 7 M1 仅作为并行依赖协调、不重复承载。**第一阶段已于 2026-09-16 完成并归档**（M1 ~ M4 全部交付，交付与遗留偏差清单见 [待办归档](./todo-archive.md)）；第二阶段范围需经需求评估与用户明确决策后再登记。
+> **Phase 7 分两段**（2026-09-14 用户授权，评估见 [Phase 7 第一阶段评估记录](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)）：**第一阶段「迁移就绪」** 先打通消费与接入通道、补齐迁移 P0 高频缺口并前置组件 i18n 注入机制；**第二阶段** 执行 momei 迁移闭环（含 P1 增强）与其他下游接入。排序原则为「先改好再迁移」，按优先级 + 依赖关系推进。消费路径为**本地 link 先行**；首版发布仍归属 Phase 5 第二阶段（待外部 npm 凭据），Phase 7 M1 仅作为并行依赖协调、不重复承载。**第一阶段已于 2026-09-16 完成并归档**（M1 ~ M4 全部交付，交付与遗留偏差清单见 [待办归档](./todo-archive.md)）；**第二阶段顺序经用户决策（2026-09-16）定为「先收口再迁移」——排在 Phase 9 之后；其范围仍须经需求评估与用户明确决策后登记**。
 
-> **Phase 7 承接的组件补全项**（2026-09-14 用户决策，自 Phase 6 M3 延后，在 **Phase 7 第一阶段 M4** 实现）：`SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`。其中 `DatePicker / Calendar`、`Drawer`、`ColorPicker` 依赖 Reka UI **Alpha** primitive：实现时将 `reka-ui` 锁定为精确版本（当前 `2.10.4`），并为这些 primitive 的 API 契约补充回归测试，避免 Alpha API 变动导致静默破坏。
+> **Phase 9 已授权启动**（2026-09-16 用户决策）：范围来自 [2026-09-16 下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)，取 M1 ~ M5 五条主线；默认主色采用实测达标建议值（亮 `#2563eb` / 暗 `#60a5fa`）；能力说明归位取方案 B；补 zh 组件总览页；文档站观感美化保留 [Backlog](./backlog.md) 待专项评估。本阶段不承担实际发布动作（仍属 Phase 5 第二阶段）。
+
+> **Phase 7 承接的组件补全项**（2026-09-14 用户决策，自 Phase 6 M3 延后，**已于 Phase 7 第一阶段 M4 实现并归档**）：`SplitButton`、`DataView`、`DatePicker / Calendar`、`Drawer`、`ColorPicker`。其中 `DatePicker / Calendar`、`ColorPicker` 依赖 Reka UI **Alpha** primitive：实现时已锁定 `reka-ui@2.10.4` 并补充 API 契约回归测试；`Drawer` 经评估改封装稳定的 Dialog primitive（见 [设计规范 §7](../design/design-spec.md)）。
 
 > Phase 8 为**延迟启用**项：需满足「组件库基本可用 + 已接入至少一个下游 + 稳定使用一段时间后出现新改动」三个条件才启动。
 
-> 状态：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6 与 **Phase 7 第一阶段（迁移就绪，momei 优先）** 已完成并归档（见 [待办归档](./todo-archive.md)）；当前**无已授权启动的阶段**（[待办事项](./todo.md)）；Phase 5 第二阶段（首版发布 / 首个下游接入）待用户外部前置就绪后决策；Phase 7 第二阶段、Phase 8 未启动。
+> 状态：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6 与 Phase 7 第一阶段（迁移就绪，momei 优先）已完成并归档（见 [待办归档](./todo-archive.md)）；当前进行中为 **Phase 9（发布前收口：文档站与代码质量）**，条目见 [待办事项](./todo.md)、范围依据见 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)；Phase 5 第二阶段（首版发布 / 首个下游接入）待用户外部前置就绪后决策；Phase 7 第二阶段（momei 迁移闭环 + P1 增强，排在 Phase 9 之后）、Phase 8 未启动。
 
 ## 3. 设计依据
 

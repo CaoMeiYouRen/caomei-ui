@@ -4,7 +4,7 @@
 
 > **文档结构**
 >
-> - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）。
+> - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）；**状态标记**：优先级列为 `—` 且候选名带删除线＝已交付；`→ Mx（Phase 9 执行中）`＝已登记当前阶段、尚未交付（保留作决策留痕）。
 > - §2 维护约定。
 >
 > Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪）已完成的条目及其评估证据已随阶段迁入 [待办归档](./todo-archive.md)；本表仅保留仍待决策的候选。
@@ -15,7 +15,7 @@
 >
 > 2026-09-16 用户新需求（文档站组件信息架构 / 默认主题主色 / 站点观感 / Drawer 动画 / 公共逻辑抽取 / ESLint 严格化）评估结论：全部属于功能、体验或治理增强，**无一命中插队例外清单**；按 [规划规范 §3](../standards/planning.md) 默认路径登记为候选，待用户明确决策后进入当前阶段。其中「Drawer 动画」经只读诊断确认为 **VitePress reduced-motion 覆盖**（组件实现无缺陷），可作为文档站决策项。评估记录见 [2026-09-16 新需求评估记录](../design/governance/2026-09-16-new-requirements-evaluation.md)。
 >
-> **2026-09-16 用户决策**：① 文档站组件信息架构——采纳 6 分组 + 组内字母序，能力说明归位取**方案 B**（迁至 `/components/*` 并镜像 en-US），补 zh 组件总览页；② 默认主题主色——**改蓝**（`caomei` / `momei` 预设品牌色不变）；③ 站点观感——**候选保留在本表待后续评估**；④ 文档站演示动画——**对 demo 区域 opt-in 恢复入场动画**；⑤ 公共逻辑抽取与 ESLint 严格化——**在正式版本发布前完成**。决策已落到对应候选行，并纳入 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)；**本表不代表阶段登记**。
+> **2026-09-16 用户决策**：① 文档站组件信息架构——采纳 6 分组 + 组内字母序，能力说明归位取**方案 B**（迁至 `/components/*` 并镜像 en-US），补 zh 组件总览页；② 默认主题主色——**改蓝**（`caomei` / `momei` 预设品牌色不变），采用建议值（亮 `#2563eb` / 暗 `#60a5fa`）；③ 站点观感——**候选保留在本表待后续评估**；④ 文档站演示动画——**对 demo 区域 opt-in 恢复入场动画**；⑤ 公共逻辑抽取与 ESLint 严格化——**在正式版本发布前完成**。经用户授权（2026-09-16）**① ② ④ ⑤ 已登记为 [Phase 9「发布前收口」](./todo.md) 的 M1 / M2 / M3 / M4 / M5**；③ 保留本表待专项评估。范围依据见 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)。
 
 ### 1.1 组件增强候选
 
@@ -35,7 +35,7 @@
 | 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
 | 浮层与导航增强 | M1 复核 | **部分迁出**：Dialog `show-header` / `breakpoints` / `@hide`（P1）已移入 Phase 7 第二阶段；**保留（P2）** Popover 命令式 `toggle(event)` 锚点、DropdownMenu `:model` + `:popup`、Paginator 每页条数选择、ConfirmDialog `icon`。 | 低 |
 | 实底前景 token 统一 | M3 复核 | Button 的 `tone` 实底已改用 `--caomei-color-on-solid`；Tag / Badge / Message / SelectButton 等实底仍用 `-foreground`，评估统一（含 momei 暗色 `#000` 前景的对比问题） | 中 |
-| 默认主色（品牌红） | M3 复核 + 用户需求（2026-09-16） | **用户决策（2026-09-16）：默认主色改蓝**（`caomei` / `momei` 预设品牌色不变，下游品牌需求不受影响）。原始问题：① **对比度**——`#e63946` 配白字约 4.17:1，低于 AA 4.5:1；② **语义冲突**——默认 `--caomei-color-primary: #e63946` 与 `--caomei-color-danger: #dc2626` 同为红色系（`caomei` 预设 primary `#e63946` / danger `#ef4444` 几乎同色）。实施建议（实测对比度）：亮色 primary `#2563eb` + `#fff` = 5.17:1、暗色 primary `#60a5fa` + `#0b0b0d` = 7.73:1，均达 AA；具体色值在实施时按 AA 目标与既有预设模式确定。取证见 [2026-09-16 新需求评估记录 §3](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中（已决策，待阶段登记） |
+| 默认主色（品牌红） | M3 复核 + 用户需求（2026-09-16） | **已登记 Phase 9 M2（2026-09-16 用户授权）**。**用户决策：默认主色改蓝**（`caomei` / `momei` 预设品牌色不变，下游品牌需求不受影响）。原始问题：① **对比度**——`#e63946` 配白字约 4.17:1，低于 AA 4.5:1；② **语义冲突**——默认 `--caomei-color-primary: #e63946` 与 `--caomei-color-danger: #dc2626` 同为红色系（`caomei` 预设 primary `#e63946` / danger `#ef4444` 几乎同色）。实施建议（实测对比度）：亮色 primary `#2563eb` + `#fff` = 5.17:1、暗色 primary `#60a5fa` + `#0b0b0d` = 7.73:1，均达 AA；具体色值在实施时按 AA 目标与既有预设模式确定。取证见 [2026-09-16 新需求评估记录 §3](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M2（Phase 9 执行中） |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -112,11 +112,11 @@
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
 | wisdom 蒸馏原文留痕 | 审计发现：`.session/wisdom.md` 为 gitignored，蒸馏清空活跃段后无法复核「迁移 N 条 + 删除 M 条」的完备性（`current-task.yaml` 的 `tried_approaches` 口径不同、不可替代）；候选在清空前把活跃段原文快照落盘（归档文件或脚本产物），或在蒸馏机制 §4 增加快照步骤 | 低 |
-| 文档站组件信息架构 | 用户需求（2026-09-16） | **用户决策（2026-09-16）：采纳 6 分组 + 组内字母序；能力说明归位取方案 B（迁至 `/components/composables`、`/components/icons`、`/components/locale`，并镜像 en-US）；补 zh 组件总览页。** 原始问题：`/components/` 为单一「基础组件」分组、按历史登记顺序排列且仅局部族聚类；「能力说明」挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。方案 B 影响面已核实：`routingPages` 按 `docs/i18n/en-US/**` 自动收集、en 镜像同步后语言回切自动生效；需同步 `themeConfig` 链接与跨页引用。分组映射见 [评估记录 附录 A](../design/governance/2026-09-16-new-requirements-evaluation.md#附录-a组件分组映射45-页) | 中（已决策，待阶段登记） |
+| 文档站组件信息架构 | 用户需求（2026-09-16） | **已登记 Phase 9 M1（2026-09-16 用户授权）**。**用户决策：采纳 6 分组 + 组内字母序；能力说明归位取方案 B（迁至 `/components/composables`、`/components/icons`、`/components/locale`，并镜像 en-US）；补 zh 组件总览页。** 原始问题：`/components/` 为单一「基础组件」分组、按历史登记顺序排列且仅局部族聚类；「能力说明」挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。方案 B 影响面已核实：`routingPages` 按 `docs/i18n/en-US/**` 自动收集、en 镜像同步后语言回切自动生效；需同步 `themeConfig` 链接与跨页引用。分组映射见 [评估记录 附录 A](../design/governance/2026-09-16-new-requirements-evaluation.md#附录-a组件分组映射45-页) | → M1（Phase 9 执行中） |
 | 文档站观感与展示力 | 用户需求（2026-09-16） | **待后续评估（用户决策 2026-09-16：候选先留在 Backlog，后续再评估）**。候选：组件画廊 / 首页视觉 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。现状：首页为 VitePress 默认 hero；已有自定义 `layout.vue`（主题预设切换器）与 `component-api.vue`，缺总览页 / 画廊 / demo 外壳。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
-| 文档站演示动画与 reduced-motion | 诊断发现（2026-09-16） | **用户决策（2026-09-16）：对 demo 区域 opt-in 恢复入场动画。** 根因：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现无缺陷。实施要点：目标容器类为 `.vitepress-demo-plugin__container` / `-preview`，需逐个组件动画以 `!important` 恢复 duration / iteration；组件库自身与站点非 demo 区域继续尊重 reduced-motion，并在文档写明取舍。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | 低（已决策，待阶段登记） |
-| 组件公共逻辑抽取 | 用户需求（2026-09-16）+ 治理发现 | **用户决策（2026-09-16）：在正式版本发布前完成。** 优先项（≥3 处且语义一致）：locale 回退取值 39 处、attrs 透传统一（`inheritAttrs: false` 58 文件 / `v-bind="$attrs"` 37 文件而 `useAttrForwarding` 仅 9 组件）、浮层样式与 token（`bg-elevated` 24 文件；阴影 / 遮罩 13 处 / 10 文件，同本表「阴影与遮罩 token 迁移」）、选项列表渲染 3 份；数值钳位（2 份）与焦点模式（4+2+2）未达门槛不单列。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中（已决策，待阶段登记） |
-| ESLint 严格化与导出类型 | 用户需求（2026-09-16） | **用户决策（2026-09-16）：在正式版本发布前完成。** 两步走：**① 显式类型族**——`explicit-module-boundary-types` 实测 **1** 处、`no-explicit-any` **0** 处（可立即启用）；但 `explicit-function-return-type` 在严格预设中为 **off**，显式启用后实测 **约 126 处**（其中 `.test.*` 121 处），故并入步骤 ② 一并收敛。**② type-aware unsafe 族**——`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20（多在 `.test.ts`）收敛后整体切 `eslint-config-cmyr/vue/strict`（该预设试跑基线：67 error / 229 warning，命中 63 文件）。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中（已决策，待阶段登记） |
+| 文档站演示动画与 reduced-motion | 诊断发现（2026-09-16） | **已登记 Phase 9 M3（2026-09-16 用户授权）**。**用户决策：对 demo 区域 opt-in 恢复入场动画。** 根因：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现无缺陷。实施要点：目标容器类为 `.vitepress-demo-plugin__container` / `-preview`，需逐个组件动画以 `!important` 恢复 duration / iteration；组件库自身与站点非 demo 区域继续尊重 reduced-motion，并在文档写明取舍。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M3（Phase 9 执行中） |
+| 组件公共逻辑抽取 | 用户需求（2026-09-16）+ 治理发现 | **已登记 Phase 9 M4（2026-09-16 用户授权）**。**用户决策：在正式版本发布前完成。** 优先项（≥3 处且语义一致）：locale 回退取值 39 处、attrs 透传统一（`inheritAttrs: false` 58 文件 / `v-bind="$attrs"` 37 文件而 `useAttrForwarding` 仅 9 组件）、浮层样式与 token（`bg-elevated` 24 文件；阴影 / 遮罩 13 处 / 10 文件，同本表「阴影与遮罩 token 迁移」）、选项列表渲染 3 份；数值钳位（2 份）与焦点模式（4+2+2）未达门槛不单列。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M4（Phase 9 执行中） |
+| ESLint 严格化与导出类型 | 用户需求（2026-09-16） | **已登记 Phase 9 M5（2026-09-16 用户授权）**。**用户决策：在正式版本发布前完成。** 两步走：**① 显式类型族**——`explicit-module-boundary-types` 实测 **1** 处、`no-explicit-any` **0** 处（可立即启用）；但 `explicit-function-return-type` 在严格预设中为 **off**，显式启用后实测 **约 126 处**（其中 `.test.*` 121 处），故并入步骤 ② 一并收敛。**② type-aware unsafe 族**——`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20（多在 `.test.ts`）收敛后整体切 `eslint-config-cmyr/vue/strict`（该预设试跑基线：67 error / 229 warning，命中 63 文件）。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M5（Phase 9 执行中） |
 
 ### 1.7 服务层候选（composables）
 

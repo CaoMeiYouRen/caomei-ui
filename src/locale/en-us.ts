@@ -71,6 +71,9 @@ const enUS: CaomeiLocaleMessages = {
         minimum: 'Minimum',
         maximum: 'Maximum',
     },
+    splitButton: {
+        menu: 'More actions',
+    },
     stepper: {
         label: 'Steps',
     },

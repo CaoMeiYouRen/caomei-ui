@@ -61,6 +61,7 @@ export const caomeiComponents = [
     'CaomeiSelectButton',
     'CaomeiSkeleton',
     'CaomeiSlider',
+    'CaomeiSplitButton',
     'CaomeiStepper',
     'CaomeiStepperDescription',
     'CaomeiStepperIndicator',

@@ -77,6 +77,9 @@ export interface CaomeiLocaleMessages {
         minimum: string
         maximum: string
     }
+    splitButton: {
+        menu: string
+    }
     stepper: {
         label: string
     }

@@ -71,6 +71,9 @@ const zhCN: CaomeiLocaleMessages = {
         minimum: '最小值',
         maximum: '最大值',
     },
+    splitButton: {
+        menu: '更多操作',
+    },
     stepper: {
         label: '步骤',
     },

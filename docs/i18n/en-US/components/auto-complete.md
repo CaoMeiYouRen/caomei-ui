@@ -1,5 +1,7 @@
 # AutoComplete
 
+> Migration: PrimeVue `Select filter` (searchable single-select) maps to this component; note that it supports free input (Enter / blur commits arbitrary text) — if the value must come from the option list, see the "AutoComplete 严格选项模式" item in the [Backlog](/plan/backlog) (Chinese).
+
 AutoComplete is an input that combines asynchronous suggestions with free input: you can pick from the suggestion list or type any text as the value. It wraps Reka UI Combobox.
 
 ## Basic usage

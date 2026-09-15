@@ -226,3 +226,4 @@ M5 P1 增强 → 第二阶段（由迁移实际暴露驱动）
 
 - 本记录为 **2026-09-14** 时点评估，数据基于当日 momei 实仓快照与 Phase 6 M1 属性台账；迁移实施时应以真实替换清单复核用量。
 - 版本变化、momei 结构变化或用户决策调整时，本记录不追溯修改，由 [待办事项](../../plan/todo.md) 与 [路线图](../../plan/roadmap.md) 承载最新状态。
+- 后续决策指针（2026-09-15）：M3 条目「Select 补充 `filter`」经用户决策按方案 A **迁移映射到 `AutoComplete`**（Reka Select 面板固定 `role="listbox"`，面板内搜索框违反 `aria-required-children`），不在 Select 上实现；理由与自由文本差异见 [Backlog](../../plan/backlog.md)。

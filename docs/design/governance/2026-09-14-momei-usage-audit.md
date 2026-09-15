@@ -38,7 +38,7 @@
 | ToggleSwitch | 47 / 16 | `CaomeiSwitch` | 需增强（轻） | 缺 `change` 事件（改用 `@update:model-value`）；`input-id` → `id` |
 | SelectButton | 9 / 6 | `CaomeiSelectButton` | 满足（需重写） | options 仅 `{ label, value }`（无字段名映射）；`size` `small` → `sm` |
 | MultiSelect | 8 / 4 | `CaomeiMultiSelect` | 需增强 | options 仅 `{ label, value }` 且 value 仅 string（不支持数值 id）；`display=chip` / `filter` / `append-to=body` 已满足 |
-| Select | 73 / 39 | `CaomeiSelect` | 需增强 | 缺对象选项映射 + 数值 value、`show-clear`、`filter`、`#option` 插槽 |
+| Select | 73 / 39 | `CaomeiSelect` | 需增强 | 缺对象选项映射 + 数值 value、`show-clear`、`filter`、`#option` 插槽（后续结论：对象选项映射 / `show-clear` / `#option` 已交付；`filter` 经用户决策按方案 A 迁移映射到 `AutoComplete`，见 [Backlog §1.1](../../plan/backlog.md)） |
 | Dropdown | 5 / 3 | `CaomeiSelect`（旧名） | 需增强 | 同 Select 的对象选项映射缺口 |
 | DatePicker | 6 / 4 | 无 | 需新组件 | 日期 + 时间选择（`show-time` / `hour-format` / `date-format` / `show-icon`） |
 | ColorPicker | 2 / 2 | 无 | 需新组件 | 颜色选择，`format` |

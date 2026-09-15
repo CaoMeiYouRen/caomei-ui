@@ -1,5 +1,7 @@
 # AutoComplete 自动补全
 
+> 迁移：PrimeVue `Select filter`（可搜索单选）对应本组件；注意本组件支持自由输入（回车 / 失焦提交任意文本），若要求取值必须来自选项列表，见 [Backlog](../plan/backlog.md) 的「AutoComplete 严格选项模式」。
+
 自动补全是一个「异步建议 + 自由输入」的输入框：既可以从建议列表中选择，也可以直接输入任意文本作为值。基于 Reka UI Combobox 封装。
 
 ## 基础用法

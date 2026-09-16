@@ -51,6 +51,15 @@ export default defineConfig({
         baseURL: E2E_BASE_URL,
         trace: 'on-first-retry',
         launchOptions: { args: CHROMIUM_ARGS },
+        /**
+         * 布局断言基于几何，统一以 reduced-motion 运行以消除入场动画（scale / opacity）对
+         * `boundingBox()` 的干扰，使测量确定性可复现（相关组件样式声明了 reduced-motion 分支）。
+         *
+         * **代价（已登记）**：本套用例不再经过默认动效路径；「默认动效（`no-preference`）无常驻
+         * E2E 覆盖」登记于 Backlog §1.6 的「常驻 E2E 规格 follow-up」。动效的一次性实测见
+         * `docs/design/governance/2026-09-16-m3-demo-motion-validation.md`。
+         */
+        reducedMotion: 'reduce',
     },
     projects: PROJECTS.map(({ name, device, width, height }) => ({
         name,

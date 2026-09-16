@@ -251,6 +251,16 @@ function onTimeUpdate(value: TimeParts): void {
     box-sizing: border-box;
     z-index: var(--caomei-date-picker-z-index, 1050);
     width: max-content;
+
+    /*
+      窄屏上限：面板不得超出 popper 可用宽 / 可用高（`--reka-popover-content-available-*` 由 Reka
+      PopoverContentImpl 写入，回退 `none` 保持原行为）。日历为定宽定高内容（单月），上限只在可用
+      空间小于内容时生效；此时 `overflow: auto` 让内容可滚动可达，避免面板越出视口后内容不可达
+      （响应式设计 §2 降级原则、§3 矩阵 #6）。与浮层面板收敛同源，见 `docs/design/responsive.md` §3 矩阵 #6。
+    */
+    max-width: var(--reka-popover-content-available-width, none);
+    max-height: var(--reka-popover-content-available-height, none);
+    overflow: auto;
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);

@@ -49,7 +49,7 @@
 | 3 | 下拉型浮层面板 | DropdownMenu | 面板宽不超过可用宽；长选项文本省略号 | 同左 | 内容驱动（`min-width: 9rem`） | 已实现（`dropdown-menu-content.vue:49-50`：`max-width` 取 `--reka-dropdown-menu-content-available-width`，`min-width` 用 `min()` 同步收敛；文本省略号见 `:93`） |
 | 4 | 选择器浮层面板 | Select / MultiSelect / AutoComplete | 面板宽取 `max(触发器宽, 内容宽)` 且不超过可用宽；选项文本省略号 | 同左 | `min-width` = 触发器宽 | 已实现（`select.vue:363-364`、`multi-select.vue:331-332`、`auto-complete.vue:568-569`：`max-width` 取 `--reka-{select,combobox}-content-available-width`，`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛；文本省略号见 `select.vue:394`、`multi-select.vue:365`、`auto-complete.vue:602`） |
 | 5 | 定宽复合面板 | ColorPicker | `min(260px, 可用宽)`（可用宽由 popper 给出，含碰撞内边距，故面板始终落在视口内） | 260px | 260px | 已实现（`color-picker.vue:190` portal 形态 `min(260px, var(--reka-popover-content-available-width, 260px))`；`:172` 内联形态 `min(260px, 100%)` 跟随容器） |
-| 6 | 含日历面板 | DatePicker / Calendar | 面板落在视口内（内容定宽，最多占满可用宽） | 同左 | 内容定宽 `max-content` | 待实测确认（`date-picker.vue:253`） |
+| 6 | 含日历面板 | DatePicker / Calendar | 面板落在视口内（内容定宽，最多占满可用宽 / 高） | 同左 | 内容定宽 `max-content` | 已实现（`date-picker.vue:261-263`：portal 面板 `max-width` / `max-height` 取 `--reka-popover-content-available-{width,height}`（回退 `none`）+ `overflow: auto` 滚动降级；内联 Calendar 为 `inline-block` 内容驱动 198×213）。**已知边界**：内联日历**容器宽 < 198px（内容宽）**时撑出容器——使用方需保证容器 ≥ 198px 或自行约束宽度；组件未暴露多月份配置。实测与基线见[批次 3 记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md) |
 | 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | Toolbar 换行；ButtonGroup / SplitButton 组内横向滚动（换行会破坏拼接边框 / 圆角）；成员不裁切、不压缩到不可读，超出部分横向滚动可达 | 同手机（md 档，仅在实际放不下时生效） | `inline-flex` 单行 | 已实现（`toolbar.vue:60-64` 横向形态 `flex-wrap: wrap` + `max-width: 100%`；`button-group.vue:59-75` `max-width: 100%` + `overflow: auto hidden`（简写：横向滚动 / 纵向裁切），成员焦点环内缩（点出 `.caomei-button` 使特异性 0-4-0 压过 Button 的 scoped 规则）；SplitButton 经 `CaomeiButtonGroup` 继承） |
 | 8 | 分段选择 | SelectButton | 选项按内容宽换行、行内均分剩余空间（**宽度不再严格相等**），且纵向不得裁切（容器高度随行数增长） | 同手机（md 档，仅在实际放不下时生效） | 单行等宽分段 | 已实现（`select-button.vue:178-198`：`flex-wrap: wrap` + `height: auto` + 选项 `flex: 1 1 auto` + 按 size 档位补 `min-height`（减 2px 抵消根边框，单行高度不变）；`flex-basis` 为 0 时选项永远排在一行并被裁切）。**已知边界**：单个约 35 字的超长选项在 320px 视口下自身即超宽、页面仍会横向溢出——批次前同用例实测一致（非本批引入），自动化用例应取现实标签长度，或由使用方对超长选项自行约束宽度 |
 | 9 | 宽表格 | DataTable | 容器横向滚动 + 表头不换行 | 同左 | 按列宽展示 | 已实现（`data-table.vue:580`）；卡片化归使用方 |
@@ -85,17 +85,17 @@
 
 **承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，三个 project 对应本节视口。
 
-**验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。自 2026-09-17 起，断言 1 / 2 / 3（含键盘聚焦子句，按分档口径）/ 5 / 6 由常驻 Playwright 用例承载（`test/e2e/**`），批次交付以 `pnpm test:e2e` 为可复现基线；**断言 4（桌面与改动前基线一致）仍需批次自身的基线归档**，常驻用例只覆盖其形态回归部分（如窄屏规则在桌面不生效）。
+**验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。断言 4 的**「改动前基线」**（改动前数值表 + 计算样式快照 + 已知边界）落 `docs/design/governance/[YYYY-MM-DD]-<批次>-baseline.md`（可提交），取证脚本与原始 JSON 落 `test-results/<批次>/`（gitignored，供复现）；示例见[批次 3 基线记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md)。自 2026-09-17 起，断言 1 / 2 / 3（含键盘聚焦子句，按分档口径）/ 5 / 6 由常驻 Playwright 用例承载（`test/e2e/**`），批次交付以 `pnpm test:e2e` 为可复现基线；**断言 4 仍需批次自身的基线归档**，常驻用例只覆盖其形态回归部分（如窄屏规则在桌面不生效）。
 
 ## 5. 判定门槛与分批清单
 
-**门槛**：矩阵「现状」列为「待补 / 待实测确认 / 待决策」且属于**库内职责**的组件才进入批次；属使用方职责或已具备收敛能力的组件不进入。截至 2026-09-16 矩阵已无「待决策」行（#10 / #16 转为「维持」）。
+**门槛**：矩阵「现状」列为「待补 / 待实测确认 / 待决策」且属于**库内职责**的组件才进入批次；属使用方职责或已具备收敛能力的组件不进入。截至 2026-09-17 三个批次均已交付，矩阵无「待补 / 待实测确认 / 待决策」行（#10 / #16 为「维持」，其余为「已实现 / 无风险」）。
 
 | 批次 | 组件 | 依据 |
 | --- | --- | --- |
-| 批次 1 | Select、MultiSelect、AutoComplete、DropdownMenu | 同一缺陷类：浮层面板缺宽度上限（矩阵 #3 / #4），修法一致 |
-| 批次 2 | Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行） | 窄屏必现溢出或裁切（矩阵 #1 / #5 / #7 / #8） |
-| 批次 3 | DatePicker / Calendar | 需先实测确认（矩阵 #6） |
+| 批次 1（已交付 2026-09-16） | Select、MultiSelect、AutoComplete、DropdownMenu | 同一缺陷类：浮层面板缺宽度上限（矩阵 #3 / #4），修法一致 |
+| 批次 2（已交付 2026-09-16） | Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行） | 窄屏必现溢出或裁切（矩阵 #1 / #5 / #7 / #8） |
+| 批次 3（已交付 2026-09-17） | DatePicker / Calendar | 需先实测确认（矩阵 #6）→ 实测确认面板缺可用宽上限，按批次 1 同源修法收敛；基线见[批次 3 记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md) |
 | 不纳入 | DataTable 卡片化、Dialog 转全屏、页面级栅格、Stepper 方向转换、触摸目标 | 均属使用方职责或已由用户决策维持现状（见下） |
 
 **偏差与决策记录**：

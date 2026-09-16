@@ -138,6 +138,41 @@ export async function expectPanelNotNarrowerThanTrigger(panel: Locator, trigger:
 }
 
 /**
+ * §3 矩阵 #6：定宽定高面板必须带「可用空间上限」（宽 + 高两轴）。
+ *
+ * 上限由 `max-width` / `max-height: var(--reka-popover-content-available-*, none)` 提供——变量由 Reka
+ * 写入，重命名时会静默回退 `none`，此时面板在极窄 / 极矮视口会越出视口且内容不可达。故**无条件**断言
+ * 两轴计算上限均不为 `none`、两轴 `overflow` 均为可滚动取值（上限是否真正生效由探针用例的前置守卫负责）。
+ */
+export async function expectPanelSizeCapped(panel: Locator, label: string): Promise<void> {
+    const metrics = await panel.evaluate((element) => {
+        const style = getComputedStyle(element)
+        return {
+            maxWidth: style.maxWidth,
+            maxHeight: style.maxHeight,
+            overflowX: style.overflowX,
+            overflowY: style.overflowY,
+        }
+    })
+    expect(
+        metrics.maxWidth,
+        `${label} 面板缺少可用宽上限（max-width=${metrics.maxWidth}），极窄视口会越出视口`,
+    ).not.toBe('none')
+    expect(
+        metrics.maxHeight,
+        `${label} 面板缺少可用高上限（max-height=${metrics.maxHeight}），极矮视口会越出视口`,
+    ).not.toBe('none')
+    expect(
+        ['auto', 'scroll'],
+        `${label} 面板缺少横向滚动降级通道（overflow-x=${metrics.overflowX}）`,
+    ).toContain(metrics.overflowX)
+    expect(
+        ['auto', 'scroll'],
+        `${label} 面板缺少纵向滚动降级通道（overflow-y=${metrics.overflowY}）`,
+    ).toContain(metrics.overflowY)
+}
+
+/**
  * §4 断言 3（换行类容器）：容器纵向不得裁切，且每个成员的 rect 完整落在容器 client rect 内。
  * 只测横向 `scrollWidth` 会漏检「固定高度裁掉新增行」——口径与成因见 `docs/design/responsive.md` §4 断言 3。
  */

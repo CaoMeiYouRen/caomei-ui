@@ -4,6 +4,8 @@ import {
     CaomeiAutoComplete,
     CaomeiButton,
     CaomeiButtonGroup,
+    CaomeiCalendar,
+    CaomeiDatePicker,
     CaomeiDialog,
     CaomeiMultiSelect,
     CaomeiSelect,
@@ -13,9 +15,12 @@ import {
 } from '@/index'
 
 /*
- * E2E 夹具：为响应式设计 §4 的四类断言提供可复现的被测形态。
+ * E2E 夹具：为响应式设计 §4 的断言提供可复现的被测形态。
  * 用例口径见 test/e2e/responsive.e2e.ts；标签取现实 UI 文案长度，
  * 不引入响应式设计 §3 矩阵 #8 登记的超长选项边界（单个约 35 字）。
+ *
+ * 新增 section 一律追加在末尾：`ScrollCase.entryFrom` 依赖 DOM 顺序（ButtonGroup 之前
+ * 紧邻 Dialog 触发器），中间插入会破坏键盘用例。
  */
 
 /**
@@ -82,6 +87,14 @@ const splitButtonItems = [
     { label: '导出为 Markdown' },
     { label: '导出为纯文本' },
 ]
+
+/**
+ * 含日历面板用例（响应式设计 §3 矩阵 #6）：DatePicker 的 portal 面板内容定宽（`width: max-content`），
+ * 内联 Calendar 为内容驱动宽度。触发器/容器同样定宽，用于观察面板与触发的相对几何。
+ */
+const datePickerValue = ref<Date | null>(null)
+const datePickerEdgeValue = ref<Date | null>(null)
+const calendarValue = ref<Date | null>(null)
 </script>
 
 <template>
@@ -175,6 +188,29 @@ const splitButtonItems = [
                 导出当前版本记录
             </CaomeiSplitButton>
         </section>
+
+        <section id="panel-date-picker" class="fixture__case">
+            <CaomeiDatePicker
+                v-model="datePickerValue"
+                label="发布日期"
+                placeholder="请选择发布日期"
+            />
+        </section>
+
+        <section id="panel-date-picker-edge" class="fixture__case">
+            <CaomeiDatePicker
+                v-model="datePickerEdgeValue"
+                label="截止日期"
+                placeholder="截止"
+            />
+        </section>
+
+        <section id="calendar-inline" class="fixture__case">
+            <CaomeiCalendar
+                v-model="calendarValue"
+                label="内联日历"
+            />
+        </section>
     </main>
 </template>
 
@@ -202,7 +238,22 @@ const splitButtonItems = [
 
 #panel-select,
 #panel-multi-select,
-#panel-auto-complete {
+#panel-auto-complete,
+#panel-date-picker {
     width: min(20rem, 100%);
+}
+
+/*
+  右缘窄触发器：面板在视口右侧的换位 / 收敛场景（与浮层面板的右缘用例同构，见
+  `docs/design/responsive.md` §3 矩阵 #4 / #6）。触发器贴右缘，面板若不做碰撞收敛会在右侧越界。
+*/
+#panel-date-picker-edge {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+#panel-date-picker-edge > * {
+    width: min(7.5rem, 100%);
 }
 </style>

@@ -18,11 +18,12 @@
 - 非目标：文档站三语页面；RTL；语言矩阵 - 长期；locale 按需加载。
 - 最小验收标准：五语（zh-CN / en-US / zh-TW / ja-JP / ko-KR）均可解析且键集合与 zh-CN 一致（守卫脚本通过）；`pnpm verify` 全链路通过；`dist/index.d.ts` 冒烟通过。**译文质量不在本阶段验收内**——由用户复核，复核结论落到评估记录 §9 后续行；**发布前检查**：产物与 `src/locale/` 不得残留「待人工复核」标注。
 - 条目（按「可独立提交」排序）：
-  - [ ] zh-TW 文案（纯新增，独立提交）
-  - [ ] ja-JP 文案（纯新增，独立提交）
-  - [ ] ko-KR 文案（纯新增，独立提交）
-  - [ ] 注册表与类型扩展 + 键集合一致性守卫脚本（以 zh-CN 为基准）+ `use-locale.test.ts` 未知语言用例调整
-  - [ ] 文档同步（locale 指南中英 / README / development 目录树）
+  - [x] zh-TW 文案（纯新增，独立提交）
+  - [x] ja-JP 文案（纯新增，独立提交）
+  - [x] ko-KR 文案（纯新增，独立提交）
+  - [x] 注册表与类型扩展 + 键集合一致性守卫脚本（以 zh-CN 为基准）+ `use-locale.test.ts` 未知语言用例调整
+  - [x] 文档同步（locale 指南中英 / README / development 目录树）
+- **交付状态（2026-09-16）**：五语（zh-CN / en-US / zh-TW / ja-JP / ko-KR）均可解析且键集合、占位符与 zh-CN 一致——`pnpm check:locale-keys` 已接入 `governance:check`（随 `verify` 与 CI 生效）；`pnpm verify` 全链路通过（67 文件 / 1114 例）；`dist/index.d.ts` 冒烟通过（五语字面量可赋值，未注册语种与未注册键均类型报错）。**译文仍为「AI 生成、待人工复核」**：三份文案文件首行标注保留，待用户复核后移除，复核结论落到[评估记录 §9](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md)；`dist/` 产物实测无标注残留。**发布前触发项**：产物与 `src/locale/` 不得残留该标注（机检候选见 [Backlog §1.6](./backlog.md)）。
 
 ### 主线 M2：移动端与响应式
 
@@ -47,7 +48,7 @@
 > 本节仅汇总未完成项以供跨阶段可见，**不构成阶段待办登记**（登记需用户明确决策）。
 
 - 已归档：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6、Phase 7 第一阶段、Phase 9（发布前收口）。
-- 进行中：Phase 10（国际化与移动端适配，M1 语言矩阵 - 中期 / M2 移动端与响应式）。
+- 进行中：Phase 10（国际化与移动端适配）——M1 语言矩阵 - 中期已交付（译文待人工复核）；M2 移动端与响应式未启动。
 - 未启动 / 未完成：Phase 5 第二阶段（首版发布 / 首个下游接入，待外部前置）、Phase 7 第二阶段（momei 迁移闭环 + P1 增强，按用户决策排在 Phase 10 之后）、Phase 8（下游兼容性回归，稳定后启用）；范围见 [路线图](./roadmap.md)。
 - Phase 7 第一阶段遗留与偏差：首版发布链路协调（归属 Phase 5 第二阶段）、DatePicker 范围选择与 Select `filter` 的迁移决策、各组件有意行为差异与未实现项、规模偏差等，清单见 [待办归档](./todo-archive.md)。
 - 未纳入任何阶段的候选：P2 低频增强、组件国际化多语种与 RTL（中期语言矩阵**已登记 Phase 10 M1**，见 [Backlog](./backlog.md) §1.4）、移动端与响应式（**已登记 Phase 10 M2**，见 §1.5）、Button 角标（`:badge`）、文档站观感美化、wisdom 蒸馏原文留痕等，见 [Backlog](./backlog.md)。

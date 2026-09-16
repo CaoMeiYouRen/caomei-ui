@@ -105,6 +105,8 @@
 | nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
 | 文档站锚点校验与侧栏不变式 | 治理发现（Phase 9 M1 条目 1 复审：RG-S8 / S10）：`check-links` 的 `looseNorm` 会剥离 `-`/`_`/标点，**无法发现 VitePress slug 不匹配**——实测全库 **7 处**断锚（含 `.github/skills/**` 1 处，成因：数字开头标题补 `_` 前缀、全角标点归一）；同时「中英侧栏同分组同序 / 45 页全覆盖」目前只有一次性脚本取证、无常驻守卫。候选：锚点校验对齐 VitePress slugify + 侧栏不变量脚本接入 `docs:check`（属加强门禁，需授权） | 中 |
 | ui-validator 资产 follow-up | 治理发现（2026-09-16 ui-validator agent / skill 优化复审：RG-S04 / S08）：① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担，与项目内其余 skill 现状一致），下次改动时可成节 | 低 |
+| 内建文案「待人工复核」标注机检 | 治理发现（2026-09-16 M1 Review Gate：RG-S07） | 语言矩阵 - 中期为未经人工复核的译文加了「待人工复核」标注，其不残留于产物目前依赖注释形态（`//` 行注释被构建剥离）而非机检；候选把断言下沉到 `scripts/release/check-build.mjs`（`dist/**` 与 `src/locale/**` 均不得含该标注），使 [评估记录 §9](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md) 的「发布前检查」从人工核查变为可判定门禁；首版发布前落地 | 低 |
+| locale 守卫能力演进 | 治理发现（2026-09-16 M1 Review Gate：RG-S08） | `check-locale-keys` 已落地「命名空间 / 键集合 / 占位符 / 非空白值 / 注册 id 与文件名同源 / 导入路径校验」；剩余候选项：结构差异错误附带行号（59 条规模下定位成本低）、解析器容忍块注释与行尾注释（现为有意的响亮失败，与标注形态约定绑定） | 低 |
 | ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；截至 Phase 7 第一阶段收口已完成组件页 45/45 与指南 8/8 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |

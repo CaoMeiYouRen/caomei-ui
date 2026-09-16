@@ -5,6 +5,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { CaomeiInput } from '../input'
+import { useFocusControl } from '../_shared/use-focus-control'
 import type { PasswordProps } from './types'
 
 // type 由可见性状态管理，不可由外部透传覆盖（否则会静默关闭密码掩码）
@@ -120,13 +121,7 @@ function toggle(): void {
     revealed.value = !revealed.value
 }
 
-function focus(): void {
-    inputRef.value?.focus()
-}
-
-function blur(): void {
-    inputRef.value?.blur()
-}
+const { focus, blur } = useFocusControl(inputRef)
 
 defineExpose({ focus, blur })
 </script>

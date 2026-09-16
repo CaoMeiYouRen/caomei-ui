@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch, type StyleValue } from 'vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
+import { useFocusControl } from '../_shared/use-focus-control'
 import type { TextareaProps } from './types'
 
 defineOptions({ name: 'CaomeiTextarea', inheritAttrs: false })
@@ -150,13 +151,7 @@ onBeforeUnmount(() => {
     stopObserving()
 })
 
-function focus(): void {
-    textareaRef.value?.focus()
-}
-
-function blur(): void {
-    textareaRef.value?.blur()
-}
+const { focus, blur } = useFocusControl(textareaRef)
 
 defineExpose({ focus, blur, textareaRef })
 </script>

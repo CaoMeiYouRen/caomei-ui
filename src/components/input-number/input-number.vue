@@ -10,6 +10,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
+import { useFocusControl } from '../_shared/use-focus-control'
 import type { InputNumberProps } from './types'
 
 defineOptions({ name: 'CaomeiInputNumber', inheritAttrs: false })
@@ -192,13 +193,7 @@ function setInputRef(el: unknown): void {
     inputRef.value = (element as HTMLInputElement | null) ?? null
 }
 
-function focus(): void {
-    inputRef.value?.focus()
-}
-
-function blur(): void {
-    inputRef.value?.blur()
-}
+const { focus, blur } = useFocusControl(inputRef)
 
 defineExpose({ focus, blur, inputRef })
 </script>

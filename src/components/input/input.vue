@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
+import { useFocusControl } from '../_shared/use-focus-control'
 import type { InputProps } from './types'
 
 defineOptions({ name: 'CaomeiInput', inheritAttrs: false })
@@ -63,13 +64,7 @@ function onEnter(event: KeyboardEvent): void {
     emit('enter', event)
 }
 
-function focus(): void {
-    inputRef.value?.focus()
-}
-
-function blur(): void {
-    inputRef.value?.blur()
-}
+const { focus, blur } = useFocusControl(inputRef)
 
 defineExpose({ focus, blur, inputRef })
 </script>

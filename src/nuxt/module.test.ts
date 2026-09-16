@@ -93,7 +93,7 @@ describe('caomeiUiNuxtModule setup', () => {
 
         expect(addTemplate).toHaveBeenCalledWith({
             filename: 'caomei-theme.css',
-            getContents: expect.any(Function),
+            getContents: expect.any(Function) as () => string,
         })
         expect(nuxt.options.css).toEqual(['caomei-ui/styles.css', '/virtual/caomei-theme.css'])
 

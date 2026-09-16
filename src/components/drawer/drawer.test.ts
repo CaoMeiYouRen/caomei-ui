@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils'
+import { DialogContent } from 'reka-ui'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, nextTick } from 'vue'
 import { caomeiLocaleKey } from '../../composables/use-locale'
@@ -293,7 +294,7 @@ describe('CaomeiDrawer', () => {
         await nextTick()
 
         const event = { preventDefault: vi.fn() }
-        wrapper.findComponent({ name: 'DialogContent' }).vm.$emit('escapeKeyDown', event)
+        wrapper.findComponent(DialogContent).vm.$emit('escapeKeyDown', event)
 
         expect(event.preventDefault).toHaveBeenCalledTimes(prevented ? 1 : 0)
     })
@@ -310,7 +311,7 @@ describe('CaomeiDrawer', () => {
             await nextTick()
 
             const event = { preventDefault: vi.fn() }
-            wrapper.findComponent({ name: 'DialogContent' }).vm.$emit('pointerDownOutside', event)
+            wrapper.findComponent(DialogContent).vm.$emit('pointerDownOutside', event)
 
             expect(event.preventDefault).toHaveBeenCalledTimes(prevented ? 1 : 0)
         },

@@ -59,6 +59,12 @@ export default defineConfig([
             '@typescript-eslint/explicit-module-boundary-types': 'error',
             '@typescript-eslint/explicit-function-return-type': 'error',
             '@typescript-eslint/no-explicit-any': 'error',
+            // unsafe 族：禁止 any 值在调用 / 赋值 / 成员访问 / 返回处静默流转
+            '@typescript-eslint/no-unsafe-argument': 'error',
+            '@typescript-eslint/no-unsafe-assignment': 'error',
+            '@typescript-eslint/no-unsafe-call': 'error',
+            '@typescript-eslint/no-unsafe-member-access': 'error',
+            '@typescript-eslint/no-unsafe-return': 'error',
         },
     },
     {

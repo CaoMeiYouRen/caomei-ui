@@ -1,5 +1,5 @@
 import { computed, type ComputedRef } from 'vue'
-import { useData } from 'vitepress'
+import { useData, type DefaultTheme } from 'vitepress'
 
 export interface LocaleLink {
     /** 目标语言的显示名 */
@@ -54,7 +54,7 @@ function normalizeLink(link: string, addPath: boolean, path: string, addExt: boo
  * 共用本实现，桌面、平板、移动端行为一致。
  */
 export function useLangs({ correspondingLink = false }: UseLangsOptions = {}): UseLangsReturn {
-    const { site, page, theme, localeIndex, hash } = useData()
+    const { site, page, theme, localeIndex, hash } = useData<DefaultTheme.Config>()
 
     const currentLang = computed<CurrentLang>(() => {
         const index = localeIndex.value

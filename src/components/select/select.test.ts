@@ -150,7 +150,10 @@ describe('CaomeiSelect', () => {
     it('v-model 与 SelectRoot 双向绑定', async () => {
         const wrapper = mount(CaomeiSelect, { props: { options } })
 
-        wrapper.findComponent({ name: 'SelectRoot' }).vm.$emit('update:modelValue', 'apple')
+        // reka-ui 的 SelectRoot 为泛型组件，`findComponent(SelectRoot)` 会命中 DOMWrapper 重载（无 `.vm`），
+        // 故此处保留按 name 查找并对 `vm` 作显式签名断言；可解析的 primitive（如 DialogContent）用组件引用查找。
+        const root = wrapper.findComponent({ name: 'SelectRoot' })
+        ;(root.vm as { $emit: (event: string, value: string) => void }).$emit('update:modelValue', 'apple')
         await nextTick()
 
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['apple'])

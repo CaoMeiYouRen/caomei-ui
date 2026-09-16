@@ -10,6 +10,8 @@
         "vite.config.ts",
         "tsdown.config.ts",
         "vitest.config.ts",
-        "commitlint.config.ts"
+        "commitlint.config.ts",
+        "playwright.config.ts",
+        "test/e2e/fixtures/vite.config.ts"
     ]
 }

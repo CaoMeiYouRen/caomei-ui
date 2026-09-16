@@ -28,10 +28,14 @@
         "src/**/*.tsx",
         "src/**/*.vue",
         "playground/**/*.ts",
-        "playground/**/*.vue"
+        "playground/**/*.vue",
+        "test/**/*.ts",
+        "test/**/*.vue"
     ],
     "exclude": [
-        "playground/nuxt/**"
+        "playground/nuxt/**",
+        // 运行在 Node / Vite 上下文，由 tsconfig.node.json 承担（依赖 Vite 的 exports 解析）
+        "test/e2e/fixtures/vite.config.ts"
     ],
     "references": [
         {

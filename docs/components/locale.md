@@ -24,10 +24,10 @@ import {
 
 | 名称 | 类型 | 说明 |
 | --- | --- | --- |
-| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | 内建文案资源（`zh-CN` / `en-US`） |
+| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | 内建文案资源（`zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`） |
 | `defaultLocale` | `CaomeiLocale` | 默认语言，当前为 `'zh-CN'` |
 | `defaultLocaleMessages` | `CaomeiLocaleMessages` | 默认语言的完整文案对象 |
-| `CaomeiLocale` | `'zh-CN' \| 'en-US'` | 内建语言标识 |
+| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | 内建语言标识 |
 | `CaomeiLocaleMessages` | 接口 | 完整文案结构，可用于类型化自定义文案 |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | 按命名空间的部分覆盖 |
 | `CaomeiConfigProvider` | 组件 | renderless provider（仅默认插槽），props：`locale` / `messages` |
@@ -96,7 +96,7 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 ## 合并与回退
 
 - **按命名空间浅合并**：覆盖文案逐命名空间合并到基准语言之上；上例中 `pagination` 只覆盖 `label`，其余键仍取基准语言。
-- **缺省回退**：`locale` 未提供时基准为 `defaultLocaleMessages`（`zh-CN`）；未知语言标识同样回退 `zh-CN`。
+- **缺省回退**：`locale` 未提供时基准为 `defaultLocaleMessages`（`zh-CN`）；未注册的语言标识同样回退 `zh-CN`。**内建语种的基准即其自身文案**（如 `ja-JP` 未覆盖的键回退日文而非中文），覆盖仍按命名空间浅合并。
 - **优先级**：组件内建文案为「显式 props > 注入 locale」；例如 `<CaomeiPaginator label="翻页" />` 会覆盖注入的 `pagination.label`，而 `<CaomeiPaginator />` 使用注入文案。
 - `messages` 只覆盖文案，不改变组件行为；未覆盖的键请省略。
 
@@ -107,9 +107,9 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CaomeiConfigProvider } from 'caomei-ui'
+import { CaomeiConfigProvider, type CaomeiLocale } from 'caomei-ui'
 
-const locale = ref<'zh-CN' | 'en-US'>('zh-CN')
+const locale = ref<CaomeiLocale>('zh-CN')
 </script>
 
 <template>
@@ -128,9 +128,9 @@ const locale = ref<'zh-CN' | 'en-US'>('zh-CN')
 
 ```ts
 import { computed, ref } from 'vue'
-import { provideLocale, useLocale } from 'caomei-ui'
+import { provideLocale, useLocale, type CaomeiLocale } from 'caomei-ui'
 
-const locale = ref<'zh-CN' | 'en-US'>('en-US')
+const locale = ref<CaomeiLocale>('en-US')
 const overrides = computed(() => ({ pagination: { label: 'Pages' } }))
 
 // setup 中调用；locale / messages 支持 ref / getter
@@ -142,57 +142,42 @@ const messages = useLocale()
 
 ## 下游接入示例：momei
 
-momei 是 Nuxt 4 + vue-i18n 的下游项目，包含 `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` 五种语言。下面把 vue-i18n 的当前语言映射为 caomei-ui 的 `locale` 与覆盖文案，语言切换即生效（caomei-ui 本身不依赖 vue-i18n，此处仅是对接演示）。
+momei 是 Nuxt 4 + vue-i18n 的下游项目，包含 `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` 五种语言，与 caomei-ui 的内建语种一致。下面把 vue-i18n 的当前语言映射为 caomei-ui 的 `locale`，语言切换即生效（caomei-ui 本身不依赖 vue-i18n，此处仅是对接演示）。
 
 ```vue
 <!-- app.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  CaomeiConfigProvider,
-  type CaomeiLocale,
-  type CaomeiLocaleMessageOverrides,
-} from 'caomei-ui'
+import { CaomeiConfigProvider, caomeiLocales, defaultLocale, type CaomeiLocale } from 'caomei-ui'
 
 const { locale } = useI18n()
 
-// 仅 zh-CN / en-US 内建；其余语种以最接近的内建语言为基准，再按命名空间覆盖
-const caomeiLocale = computed<CaomeiLocale>(() =>
-  locale.value === 'zh-CN' || locale.value === 'zh-TW' ? 'zh-CN' : 'en-US',
-)
+// 内建语种清单取自注册表，无需手写；下游新增语种时回退到默认语言
+const builtInLocales = Object.keys(caomeiLocales) as CaomeiLocale[]
 
-const caomeiMessages = computed<CaomeiLocaleMessageOverrides | undefined>(() => {
-  if (locale.value === 'zh-TW') {
-    return { pagination: { label: '分頁' }, confirm: { confirm: '確定', cancel: '取消' } }
-  }
-  if (locale.value === 'ja-JP') {
-    return {
-      pagination: { label: 'ページネーション' },
-      confirm: { confirm: '確認', cancel: 'キャンセル' },
-    }
-  }
-  if (locale.value === 'ko-KR') {
-    return { pagination: { label: '페이지네이션' }, confirm: { confirm: '확인', cancel: '취소' } }
-  }
-  return undefined
-})
+const caomeiLocale = computed<CaomeiLocale>(() =>
+  builtInLocales.includes(locale.value as CaomeiLocale)
+    ? (locale.value as CaomeiLocale)
+    : defaultLocale,
+)
 </script>
 
 <template>
-  <CaomeiConfigProvider :locale="caomeiLocale" :messages="caomeiMessages">
+  <CaomeiConfigProvider :locale="caomeiLocale">
     <NuxtPage />
   </CaomeiConfigProvider>
 </template>
 ```
 
-- `zh-CN` / `en-US` 直接使用内建文案；只需微调个别文案时，仍可用 `messages` 做 minimal overrides。
-- `zh-TW` / `ja-JP` / `ko-KR` 传入自定义 `messages`（部分覆盖即可），未覆盖的键回退到上一步选定的基准语言。
-- `locale` 与 `messages` 均为 `computed`，vue-i18n 切换语言后 caomei-ui 内建文案随之更新，无需额外 `watch`。
+- 五种语言均直接使用内建文案，无需再传 `messages`。
+- 只需微调个别文案（如品牌措辞）时，仍可用 `messages` 做 minimal overrides：例如 `{ pagination: { label: '頁面' } }`，未覆盖的键回退该语种自身文案。
+- `locale` 为 `computed`，vue-i18n 切换语言后 caomei-ui 内建文案随之更新，无需额外 `watch`。
 
 ## 约束与提示
 
 - `messages` 的值必须是非空白字符串。例如向 `toast.label` 注入空白字符串会被 Reka `ToastProvider` 拒绝并抛错（`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`）；未覆盖的键请直接省略，不要传空串。
-- 仅内建 `zh-CN` / `en-US`。`zh-TW` / `ja-JP` / `ko-KR` 等由下游注入，可为完整替换或部分覆盖。
+- 内建 `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` 五语；其余语种由下游注入，可为完整替换或部分覆盖。
+- 新增组件文案须同步补齐全部内建语种：`pnpm check:locale-keys` 以 `zh-CN` 为基准校验命名空间、键集合与占位符（漏译 / 错键 / 漏写 `{page}` 一类占位符即失败）。
 - 组件内建文案与文档站 `docs/i18n` 的页面翻译互不影响；本页描述的是运行时文案注入。
 - 相关阅读：[组合式 API](./composables.md)、[ConfirmDialog 确认对话框](/components/confirm-dialog)、[Paginator 分页](/components/paginator)。

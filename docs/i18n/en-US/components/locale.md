@@ -24,10 +24,10 @@ import {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | Built-in message resources (`zh-CN` / `en-US`) |
+| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | Built-in message resources (`zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`) |
 | `defaultLocale` | `CaomeiLocale` | Default locale, currently `'zh-CN'` |
 | `defaultLocaleMessages` | `CaomeiLocaleMessages` | Full message object of the default locale |
-| `CaomeiLocale` | `'zh-CN' \| 'en-US'` | Built-in locale id |
+| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | Built-in locale id |
 | `CaomeiLocaleMessages` | interface | Full message shape, useful for typing custom messages |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | Per-namespace partial overrides |
 | `CaomeiConfigProvider` | component | Renderless provider (default slot only); props: `locale` / `messages` |
@@ -96,7 +96,7 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 ## Merging and fallback
 
 - **Shallow merge per namespace**: overrides are merged namespace by namespace onto the base locale; in the example above `pagination` only overrides `label` and keeps the base text for the remaining keys.
-- **Default fallback**: when `locale` is omitted the base is `defaultLocaleMessages` (`zh-CN`); an unknown locale id also falls back to `zh-CN`.
+- **Default fallback**: when `locale` is omitted the base is `defaultLocaleMessages` (`zh-CN`); an unregistered locale id also falls back to `zh-CN`. **A built-in locale is its own base** (uncovered keys in `ja-JP`, for instance, fall back to Japanese rather than Chinese), and overrides are still shallow-merged per namespace.
 - **Precedence**: built-in text resolves as "explicit props > injected locale"; for example `<CaomeiPaginator label="翻页" />` overrides the injected `pagination.label`, while `<CaomeiPaginator />` uses the injected text.
 - `messages` only overrides text and never changes component behaviour; omit keys you do not cover.
 
@@ -107,9 +107,9 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { CaomeiConfigProvider } from 'caomei-ui'
+import { CaomeiConfigProvider, type CaomeiLocale } from 'caomei-ui'
 
-const locale = ref<'zh-CN' | 'en-US'>('zh-CN')
+const locale = ref<CaomeiLocale>('zh-CN')
 </script>
 
 <template>
@@ -128,9 +128,9 @@ Outside a component tree, or with a custom provider, call `provideLocale()` (it 
 
 ```ts
 import { computed, ref } from 'vue'
-import { provideLocale, useLocale } from 'caomei-ui'
+import { provideLocale, useLocale, type CaomeiLocale } from 'caomei-ui'
 
-const locale = ref<'zh-CN' | 'en-US'>('en-US')
+const locale = ref<CaomeiLocale>('en-US')
 const overrides = computed(() => ({ pagination: { label: 'Pages' } }))
 
 // call in setup; locale / messages accept a ref or getter
@@ -142,57 +142,42 @@ const messages = useLocale()
 
 ## Downstream example: momei
 
-momei is a Nuxt 4 + vue-i18n downstream project with five locales: `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR`. The example below maps vue-i18n's current locale to caomei-ui's `locale` and message overrides, so switching the language takes effect immediately (caomei-ui does not depend on vue-i18n; this is only an integration demo).
+momei is a Nuxt 4 + vue-i18n downstream project with five locales — `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` — the same set caomei-ui builds in. The example below maps vue-i18n's current locale to caomei-ui's `locale`, so switching the language takes effect immediately (caomei-ui does not depend on vue-i18n; this is only an integration demo).
 
 ```vue
 <!-- app.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  CaomeiConfigProvider,
-  type CaomeiLocale,
-  type CaomeiLocaleMessageOverrides,
-} from 'caomei-ui'
+import { CaomeiConfigProvider, caomeiLocales, defaultLocale, type CaomeiLocale } from 'caomei-ui'
 
 const { locale } = useI18n()
 
-// Only zh-CN / en-US are built in; other locales use the closest built-in base plus namespace overrides
-const caomeiLocale = computed<CaomeiLocale>(() =>
-  locale.value === 'zh-CN' || locale.value === 'zh-TW' ? 'zh-CN' : 'en-US',
-)
+// the built-in ids come from the registry instead of a hand-written list; ids added downstream fall back to the default locale
+const builtInLocales = Object.keys(caomeiLocales) as CaomeiLocale[]
 
-const caomeiMessages = computed<CaomeiLocaleMessageOverrides | undefined>(() => {
-  if (locale.value === 'zh-TW') {
-    return { pagination: { label: '分頁' }, confirm: { confirm: '確定', cancel: '取消' } }
-  }
-  if (locale.value === 'ja-JP') {
-    return {
-      pagination: { label: 'ページネーション' },
-      confirm: { confirm: '確認', cancel: 'キャンセル' },
-    }
-  }
-  if (locale.value === 'ko-KR') {
-    return { pagination: { label: '페이지네이션' }, confirm: { confirm: '확인', cancel: '취소' } }
-  }
-  return undefined
-})
+const caomeiLocale = computed<CaomeiLocale>(() =>
+  builtInLocales.includes(locale.value as CaomeiLocale)
+    ? (locale.value as CaomeiLocale)
+    : defaultLocale,
+)
 </script>
 
 <template>
-  <CaomeiConfigProvider :locale="caomeiLocale" :messages="caomeiMessages">
+  <CaomeiConfigProvider :locale="caomeiLocale">
     <NuxtPage />
   </CaomeiConfigProvider>
 </template>
 ```
 
-- `zh-CN` / `en-US` use the built-in text directly; when only a few strings need adjusting, `messages` still works as a minimal override.
-- `zh-TW` / `ja-JP` / `ko-KR` pass custom `messages` (partial overrides are enough); uncovered keys fall back to the base locale chosen above.
-- Both `locale` and `messages` are `computed`, so caomei-ui's built-in text updates as soon as vue-i18n switches language, with no extra `watch`.
+- All five languages use the built-in text directly, so no `messages` are needed.
+- When only a few strings need adjusting (brand wording, for example), `messages` still works as a minimal override: `{ pagination: { label: '頁面' } }`, with uncovered keys falling back to that locale's own text.
+- `locale` is a `computed`, so caomei-ui's built-in text updates as soon as vue-i18n switches language, with no extra `watch`.
 
 ## Constraints and notes
 
 - Values in `messages` must be non-blank strings. For example, injecting a blank string for `toast.label` is rejected by Reka's `ToastProvider`, which throws (`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`); omit keys you do not cover instead of passing an empty string.
-- Only `zh-CN` / `en-US` are built in. `zh-TW` / `ja-JP` / `ko-KR` and others are injected by the downstream project, either as a full replacement or as partial overrides.
+- `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` are built in; other locales are injected by the downstream project, either as a full replacement or as partial overrides.
+- New component text must be added to every built-in locale: `pnpm check:locale-keys` checks namespaces, key sets and placeholders against the `zh-CN` baseline (a missing translation, a stray key, or a dropped `{page}`-style placeholder fails the check).
 - Built-in component text and the documentation site's `docs/i18n` page translation do not affect each other; this page describes runtime message injection.
 - See also: [Composables](/en-US/components/composables), [ConfirmDialog](/en-US/components/confirm-dialog), and [Paginator](/en-US/components/paginator).

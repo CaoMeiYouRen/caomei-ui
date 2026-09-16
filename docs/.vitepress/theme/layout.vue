@@ -10,7 +10,7 @@ import ThemePresetSwitcher from './components/theme-preset-switcher.vue'
 
 const { Layout } = DefaultTheme
 
-/** 文档站按页面语言注入组件内建文案（当前仅内建 zh-CN / en-US 两种，其余回落 zh-CN） */
+/** 文档站按页面语言注入组件内建文案（站点仅有 zh-CN / en-US 两种页面语言，其余回落 zh-CN） */
 const { lang } = useData()
 const locale = computed<CaomeiLocale>(() => (lang.value === 'en-US' ? 'en-US' : 'zh-CN'))
 </script>

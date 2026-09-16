@@ -80,12 +80,14 @@
 > **2026-09-14 用户决策：本组延后处理**，不纳入 Phase 6。
 >
 > 缺口依据：2026-09-14 统计（Phase 6 补全后 39 个组件）**仅 Dialog 与 ConfirmDialog 具备响应式断点**（`@media (width <= 640px)`）；其余含 `@media` 的组件文件均为 `prefers-reduced-motion`（可访问性，非响应式）。缺口含 DataTable（设计承诺「窄屏转卡片列表」但无响应式断点）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 及 Phase 6 新增组件等，须逐组件补齐并核对触摸目标尺寸。
+>
+> **2026-09-16 复核（M2 条目 1）**：上段与下表「现状」列为 2026-09-14 快照，仅作历史依据；逐组件判定以[响应式设计 §3](../design/responsive.md) 的窄屏行为矩阵为准。其中 DataTable「窄屏转卡片列表」**不纳入库内批次**（判定为使用方职责），Input 家族 / Message / Tag / Avatar / Toast 等经核对已具备窄屏收敛或属使用方布局职责。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 小屏适配补齐 | 用户需求（2026-09-14） | 现状：39 个组件（Phase 6 补全后）中仅 Dialog / ConfirmDialog 有响应式断点（约 2/39），其余基本缺失；缺口含 DataTable（设计承诺「窄屏转卡片列表」但无响应式断点）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 及 Phase 6 新增组件等，须逐组件补齐并核对触摸目标尺寸 | → M2（Phase 10 执行中） |
+| 小屏适配补齐 | 用户需求（2026-09-14） | 现状（2026-09-14 快照，逐组件判定以 [响应式设计 §3](../design/responsive.md) 的矩阵为准）：39 个组件中仅 Dialog / ConfirmDialog 有响应式断点（约 2/39），其余基本缺失；缺口含 DataTable（「窄屏转卡片列表」已判定属使用方职责）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 等；库内批次（浮层面板宽度、横向布局溢出）见矩阵 §5 | → M2（Phase 10 执行中） |
 | 移动端测试用例 | 用户需求（2026-09-14） | 为小屏适配补单元断言与 Playwright 多视口（mobile / tablet）回归；沿用现有测试规范与后续 E2E 规划 | → M2（Phase 10 执行中） |
-| 响应式规范补充 | 用户需求（2026-09-14） | 在 [主题与样式设计 §5](../design/theming.md) 基础上细化断点语义、窄屏行为矩阵（堆叠 / 全屏 / 卡片化 / 抽屉化）与验收标准 | → M2（Phase 10 执行中） |
+| ~~响应式规范补充~~ | 用户需求（2026-09-14） | **已交付（M2 条目 1，2026-09-16）**：新增[响应式设计](../design/responsive.md)——断点语义、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准与分批清单；`theming.md §5` 收敛为指针并移除未实现陈述 | — |
 
 ### 1.6 基建与治理候选
 
@@ -107,6 +109,7 @@
 | ui-validator 资产 follow-up | 治理发现（2026-09-16 ui-validator agent / skill 优化复审：RG-S04 / S08）：① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担，与项目内其余 skill 现状一致），下次改动时可成节 | 低 |
 | 内建文案「待人工复核」标注机检 | 治理发现（2026-09-16 M1 Review Gate：RG-S07） | 语言矩阵 - 中期为未经人工复核的译文加了「待人工复核」标注，其不残留于产物目前依赖注释形态（`//` 行注释被构建剥离）而非机检；候选把断言下沉到 `scripts/release/check-build.mjs`（`dist/**` 与 `src/locale/**` 均不得含该标注），使 [评估记录 §9](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md) 的「发布前检查」从人工核查变为可判定门禁；首版发布前落地 | 低 |
 | locale 守卫能力演进 | 治理发现（2026-09-16 M1 Review Gate：RG-S08） | `check-locale-keys` 已落地「命名空间 / 键集合 / 占位符 / 非空白值 / 注册 id 与文件名同源 / 导入路径校验」；剩余候选项：结构差异错误附带行号（59 条规模下定位成本低）、解析器容忍块注释与行尾注释（现为有意的响亮失败，与标注形态约定绑定） | 低 |
+| 响应式规范的治理资产与组件文档巡检 | 治理发现（2026-09-16 响应式规范 Review Gate：F1 / F2） | ① `.github/skills/vue-component-expert/SKILL.md` 与 `.github/skills/ui-validator/SKILL.md` 仍以「DataTable 转卡片 / 卡片化、全屏化」为窄屏标准实践，与本轮判定的「卡片化属使用方职责」冲突，宜改为引用[响应式设计 §3](../design/responsive.md) 的矩阵；② 以矩阵为基准巡检 `docs/components/*.md` 的窄屏承诺一致性（`confirm-dialog` / `paginator` 已一致，其余未核） | 低 |
 | ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
 | 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；截至 Phase 7 第一阶段收口已完成组件页 45/45 与指南 8/8 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |

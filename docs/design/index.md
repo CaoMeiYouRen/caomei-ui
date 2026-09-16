@@ -5,7 +5,8 @@
 | 文档 | 内容 |
 |------|------|
 | [architecture.md](./architecture.md) | 仓库形态、构建方案、包导出、Nuxt 模块、依赖选型 |
-| [theming.md](./theming.md) | 设计 token、主题切换、暗色模式、响应式 |
+| [theming.md](./theming.md) | 设计 token、主题切换、暗色模式（断点与窄屏行为见 responsive.md） |
+| [responsive.md](./responsive.md) | 断点语义、窄屏行为矩阵、验收标准与分批适配清单 |
 | [design-spec.md](./design-spec.md) | 设计规范：token 体系、尺寸 / 颜色 / 主题 / 风格、迁移映射与校验规划 |
 | [components.md](./components.md) | 组件分层与最小组件集（Tier 0/1/2、Tier 3 稳定批与 Phase 6 补全已完成） |
 | [documentation-site.md](./documentation-site.md) | 文档站与组件演示方案（demo 渲染、API 自动生成） |

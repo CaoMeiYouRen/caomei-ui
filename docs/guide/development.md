@@ -73,3 +73,5 @@ test/             # 测试
 - 脚本中出现不可静态分析的 `import(变量)` 时，Vitest / Vite 会注入 `/@vite/client` helper，含 shebang 的 `.mjs` 会解析失败；产物加载冒烟应放子进程执行。
 - 仓库内 Nuxt fixture 通过其 `node_modules` 指向仓库根的软链（等价 `link:`）消费构建产物；脚本用 `realpath` 比对校验目标后再决定复用 / 重建，避免误消费非本地产物。
 - 引入 Nuxt fixture 后须同步 `.gitignore`（`.nuxt` / `.output`）、ESLint `ignores` 与根 `tsconfig` `exclude`，否则 `eslint .` 会扫描生成的打包产物，`vue-tsc` 会因缺 Nuxt 自动导入类型报错。
+- `vitepress preview` **不消费 `--host`**（1.6.4 的 `serve()` 只读取 `port` / `root` / `base`，绑定由 `listen` 决定）；写进文档的 CLI 开关必须核源码或实测。`docs:dev` 支持 `--host`。
+- `--single-process` 下 `newContext()` 可成功但 `newPage()` 报 Target closed，浏览器自动化须避开该组合。

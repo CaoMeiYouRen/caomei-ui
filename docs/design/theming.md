@@ -132,3 +132,10 @@
 - 基于 Reka UI 的无障碍语义（ARIA、键盘导航、焦点管理）。
 - 组件必须保证键盘可达与焦点可见。
 - 可选引入 axe-core 做自动化 a11y 回归（见 Backlog）。
+
+## 7. 对比度实测约定
+
+- 实测须在**同一页面状态内**切换 token（注入旧值 → 清除注入读新值），并在测量期禁用 `transition` / `animation`；否则会采到过渡中间态，得到并不存在的差值。
+- 不要用 `git stash` 造「改前」状态重跑：Vite 的 mtime 缓存会让服务端仍发旧 CSS（改前 = 改后）。取证脚本应内置 **token 自检**（读取根元素 computed 自定义属性并断言期望值），不符即让证据作废退出。
+- 改动前景 token 前须全库枚举三类消费点：① `-solid` 实底 + `on-solid`；② 自适应底 + `-foreground`；③ **就地覆写**（如 `--caomei-color-primary: var(--caomei-color-danger-solid)`，前景仍走全局 token）。
+- 暗色下两类 token 不得共用同一前景：**自适应主色**取亮色变体作文字 / 边框（配深色前景），**跨主题稳定实底**保持品牌色（配 `on-solid` 白字）；否则必有一侧掉到 AA 以下。

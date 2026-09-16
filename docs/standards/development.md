@@ -146,6 +146,7 @@ test/                     # 单元与 E2E 测试
 - **单点定义**：同一契约只在一处定义（如类名拼接顺序、ARIA 透传优先级、布尔假值处理），引用处不得重新内联。
 - **引用点同步**：抽取后清理全部内联副本，禁止新旧实现并存。
 - **测试**：抽取出的共享单元补针对性单测；既有组件行为断言沿用，不得为配合抽取而放宽。
+- **净收益判据**：表达式级重复（如 `x || undefined`、`props.x ?? locale.value.ns.key`）抽成 helper 往往使调用点更长，属负收益；有正收益的是「语义单点 + 类型收窄 + 多处同构块」。
 
 ## 11. 质量门
 
@@ -158,3 +159,10 @@ test/                     # 单元与 E2E 测试
 - `pnpm typecheck:docs`（文档站类型检查，`vue-tsc -p docs/tsconfig.json` 零 error）
 - `pnpm test`（全部通过）
 - `pnpm build`（无报错，发布前对产物冒烟）
+
+## 12. Lint 与类型解析约定
+
+- 统计某 lint 规则的违规数时，口径必须写成「**启用后的配置 + 命令 + 范围**」：规则在预设中被设为 `off` 时，报告 0 只代表「未启用」而非「零违规」。
+- 块注释内写字面 glob 的 `*/`（如 `./.vitepress/**/*.ts`）会**提前闭合注释**，其后文本被当作代码（ESLint 报 `Parsing error`、vue-tsc 报 TS1443/TS1127）。`.d.ts` 声明不生效时，先看是否有解析错误，再怀疑 include / projectService 归属。
+- ESLint 的 type-aware 检查与 `vue-tsc` 的解析链不同：后者经 `@vue/language-core` 解析 SFC，前者走原生 TypeScript。项目未声明 `declare module '*.vue'` 时，组件导入会退化为 `any`，使 `mount()` 返回 `VueWrapper<any, any>` 并触发成片的 unsafe 族误报。
+- 通配 `*.vue` 声明是「以降低模块解析诊断换取类型链可用」的取舍：任何 `.vue` 结尾的说明符都会解析成功，路径拼错不再报 TS2307；前提是失败仍闭合（由 `pnpm build` 与 `pnpm test` 的模块解析兜底），且边界须写入声明注释。

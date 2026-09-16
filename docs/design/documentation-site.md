@@ -134,3 +134,20 @@ docs/
 | 导航与操作 | Navigation & Actions | Accordion、DropdownMenu、Stepper、Tabs、Toolbar |
 
 > 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。
+
+## 12. 演示动画的诊断与覆盖约定
+
+- 诊断「某组件没有动画」类报告时，须在**两种上下文**各测一次 `getComputedStyle(el).animationDuration`：默认与 `emulateMedia({ reducedMotion: 'reduce' })`。文档站在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important`，会把「演示静态化」误判为组件缺陷。
+- 跨层覆盖动画时，退出动画必须使用**独立命名**的 keyframes：Reka 的 Presence 以 `prevAnimationName !== currentAnimationName` 判定是否保留元素，用同名 + `animation-direction: reverse` 会被判为无动画而立即卸载。
+- 对 `animation-name` 使用 `!important` 会破坏 Reka Collapsible 的测量窗口（它先以内联 `animation-name: none` 抑制动画再测自然高度）：名字用高特异性即可，只让 duration / timing / iteration 用 `!important`。
+
+## 13. 链接与锚点校验
+
+- 站内跨节锚点必须按 VitePress 的 slugify 实算，不能凭标题字面拼：数字开头的标题会补 `_` 前缀（`## 11. 组件分区与排序` → `#_11-组件分区与排序`），全角标点被归一。
+- `pnpm docs:check:links` 的 `looseNorm` 会剥离 `-` / `_` / 标点，**「链接检查通过」不能证明锚点有效**；跨节引用优先只链页面。
+- `docs:check:links` 也不能替代 VitePress 的 dead-link 校验：前者按文件系统解析，指向 `docs/` 之外的仓库文件（如 `.github/skills/**`）会被判有效，而 VitePress 因目标不在 `srcDir` 内报 dead link 使 `docs:build` 失败。跨出 `docs/` 的引用一律写成 code span，**doc 类改动必须把 `pnpm docs:build` 纳入门禁**。
+
+## 14. API 表与公共 props 继承
+
+- 组件 `types.ts` 改为继承 `_shared/field` 的公共 props 后，`component-meta` 仍会展开继承字段并保留 JSDoc，仅展示顺序变为「组件特有 → 公共」。
+- 描述比对必须按 `name + type + default + description + descriptionEn` **全字段**比对：只比字段名会漏掉措辞损失（组件特有信息应以接口级注释保留）。

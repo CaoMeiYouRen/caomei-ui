@@ -4,6 +4,35 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-16 阶段收口蒸馏（Phase 9）
+
+> 阶段收口（2026-09-16）：活跃 24 条全部处置，全部迁移（无删除、无保留），剩余活跃 0 条。
+
+- [2026-09-16] [pattern] 诊断「组件没有动画」须在默认与 reduced-motion 两种上下文各测一次 → [文档与演示站设计 §12](../documentation-site.md)
+- [2026-09-16] [pitfall] 跨层覆盖动画的退出须用独立命名 keyframes（Reka Presence 以 animation-name 变化判定） → [文档与演示站设计 §12](../documentation-site.md)
+- [2026-09-16] [pitfall] `animation-name` 用 `!important` 会破坏 Reka Collapsible 的测量窗口 → [文档与演示站设计 §12](../documentation-site.md)
+- [2026-09-16] [pitfall] 取证计数须记录「命令 + 口径 + 范围 + 快照日期」，语义标签逐条人工核对 → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [pitfall] lint 规则为 `off` 时报告 0 只代表未启用；口径须写成「启用后的配置 + 命令 + 范围」 → [开发规范 §12](../../standards/development.md)
+- [2026-09-16] [pitfall] 站内跨节锚点须按 VitePress slugify 实算，链接检查通过不能证明锚点有效 → [文档与演示站设计 §13](../documentation-site.md)
+- [2026-09-16] [pattern] 规则与注释禁止不可判定口径，同一事实只在一处定义 → [规划规范 §9](../../standards/planning.md)
+- [2026-09-16] [pattern] 派发子代理须用 agent frontmatter 的完整 `name`（含中文括号） → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [process] agent / skill 定义正文改动属 `deep` 档，降档须显式论证 → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [pattern] 证据目录被 gitignore 时须点名排除，结论落可提交位置 → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [pattern] 对比度实测须同页切换 token 并在测量期禁用过渡 → [主题与样式设计 §7](../theming.md)
+- [2026-09-16] [pitfall] `git stash` 造改前状态会踩 Vite mtime 缓存，取证脚本须内置 token 自检 → [主题与样式设计 §7](../theming.md)
+- [2026-09-16] [pattern] 改动前景 token 前须枚举三类消费点（实底 / 自适应底 / 就地覆写） → [主题与样式设计 §7](../theming.md)
+- [2026-09-16] [pattern] 暗色下自适应主色与跨主题实底不得共用同一前景 token → [主题与样式设计 §7](../theming.md)
+- [2026-09-16] [pitfall] `docs:check:links` 不能替代 VitePress dead-link 校验，doc 改动须纳入 `docs:build` → [文档与演示站设计 §13](../documentation-site.md)
+- [2026-09-16] [pitfall] 批量文本替换未命中会静默通过，必须带 `assert old in s` → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [pattern] 「标记表 + 样例」型守卫互为牵制，新增标记须同步样例 → [测试规范 §9](../../standards/testing.md)
+- [2026-09-16] [pitfall] 批量脚本按同名首匹配改类型会误删同名字段，须锚定接口作用域 → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-16] [pattern] props 接口继承对 `component-meta` 的影响需全字段比对 → [文档与演示站设计 §14](../documentation-site.md)
+- [2026-09-16] [pattern] 抽取批次须先算净收益；表达式级重复抽 helper 常为负收益 → [开发规范 §10](../../standards/development.md)
+- [2026-09-16] [pitfall] 块注释内写字面 glob 的 `*/` 会提前闭合注释 → [开发规范 §12](../../standards/development.md)
+- [2026-09-16] [pattern] ESLint type-aware 与 vue-tsc 的类型解析链不同，无 `.vue` 声明时组件导入退化为 any → [开发规范 §12](../../standards/development.md)
+- [2026-09-16] [pattern] 通配 `*.vue` 声明是取舍，须登记「吞掉路径解析错误」的边界 → [开发规范 §12](../../standards/development.md)
+- [2026-09-16] [pitfall] `vitepress preview` 不消费 `--host`；`--single-process` 下 `newPage()` 报错 → [开发指南 - 注意事项](../../guide/development.md)
+
 ## 2026-09-16 阶段归档蒸馏
 
 > 阶段归档 + 用户主动触发（2026-09-16）：活跃 39 条全部处置，迁移 28 条、删除 11 条，剩余活跃 0 条。

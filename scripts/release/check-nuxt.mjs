@@ -39,6 +39,7 @@ export const HTML_MARKERS = [
 export const CSS_MARKERS = [
     { label: '组件样式已注入', test: (css) => css.includes('.caomei-button') },
     { label: 'theme 覆盖生效', test: (css) => /--caomei-color-primary:\s*#123456/i.test(css) },
+    { label: 'primary-foreground 别名覆盖生效', test: (css) => /--caomei-color-primary-foreground:\s*#fefefe/i.test(css) },
 ]
 
 /** 返回 content 中未命中的标记描述。 */

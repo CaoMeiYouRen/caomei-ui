@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         prefix: 'Caomei',
         darkMode: 'media',
         injectStyles: true,
-        theme: { primary: '#123456' },
+        theme: { primary: '#123456', 'primary-foreground': '#fefefe' },
     },
     app: {
         head: {

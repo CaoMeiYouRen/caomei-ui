@@ -40,7 +40,7 @@ describe('fixture 标记定义', () => {
             '<span class="caomei-button caomei-tag"></span>',
             '<p data-testid="theme-mode">auto</p>',
         ].join('')
-        const css = '.caomei-button{}:root{--caomei-color-primary:#123456}'
+        const css = '.caomei-button{}:root{--caomei-color-primary:#123456;--caomei-color-primary-foreground:#fefefe}'
 
         expect(findMissingMarkers(html, HTML_MARKERS)).toEqual([])
         expect(findMissingMarkers(css, CSS_MARKERS)).toEqual([])

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RadioGroupItem } from 'reka-ui'
-import { computed, useAttrs, useId, useSlots } from 'vue'
+import { computed, useId, useSlots } from 'vue'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { RadioButtonProps } from './types'
 
 defineOptions({ name: 'CaomeiRadioButton', inheritAttrs: false })
@@ -15,7 +16,6 @@ defineSlots<{
     default?: () => unknown
 }>()
 
-const attrs = useAttrs()
 const slots = useSlots()
 
 const generatedId = useId()
@@ -23,10 +23,7 @@ const radioId = computed(() => props.id ?? `caomei-radio-${generatedId}`)
 const hasText = computed(() => Boolean(props.text || slots.default))
 
 /** label 属性优先于透传的 aria-label；二者都缺省时由可见文本推导可访问名 */
-const forwardedAttrs = computed<Record<string, unknown>>(() => ({
-    ...attrs,
-    ...(props.label ? { 'aria-label': props.label } : {}),
-}))
+const forwardedAttrs = useLabelAttrs(() => props.label)
 </script>
 
 <template>

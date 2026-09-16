@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ProgressBarProps } from './types'
 
 defineOptions({ name: 'CaomeiProgressBar', inheritAttrs: false })
@@ -12,7 +13,6 @@ const props = withDefaults(defineProps<ProgressBarProps>(), {
     size: 'md',
 })
 
-const attrs = useAttrs()
 const locale = useLocale()
 const label = computed(() => props.label ?? locale.value.progress.bar)
 
@@ -36,10 +36,7 @@ const percentage = computed(() => {
     return Number(((normalizedValue.value / normalizedMax.value) * 100).toFixed(4))
 })
 
-const forwardedAttrs = computed<Record<string, unknown>>(() => ({
-    ...attrs,
-    ...(label.value ? { 'aria-label': label.value } : {}),
-}))
+const forwardedAttrs = useLabelAttrs(label)
 </script>
 
 <template>

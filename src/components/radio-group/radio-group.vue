@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RadioGroupRoot } from 'reka-ui'
-import { computed, useAttrs } from 'vue'
+import { computed } from 'vue'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { RadioGroupProps, RadioValue } from './types'
 
 defineOptions({ name: 'CaomeiRadioGroup', inheritAttrs: false })
@@ -17,13 +18,8 @@ const props = withDefaults(defineProps<RadioGroupProps>(), {
 
 const model = defineModel<RadioValue | undefined>()
 
-const attrs = useAttrs()
-
 /** label 属性优先于透传的 aria-label，二者都缺省时由组内标签文本推导可访问名 */
-const forwardedAttrs = computed<Record<string, unknown>>(() => ({
-    ...attrs,
-    ...(props.label ? { 'aria-label': props.label } : {}),
-}))
+const forwardedAttrs = useLabelAttrs(() => props.label)
 
 /** Reka 的 update:modelValue 载荷为更宽的 AcceptableValue，收窄为组件支持的 string | number */
 function handleUpdate(value: unknown): void {

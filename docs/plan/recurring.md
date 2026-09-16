@@ -28,10 +28,12 @@
   - ARIA 布尔假值：`rg -o ':aria-[a-z]+="[^"]*\|\| undefined"' src/components | wc -l` → 15。
   - attrs 透传：`rg -l 'const attrs = useAttrs\(\)' src/components | wc -l` → 13（含 `_shared/use-attr-forwarding.ts` 自身，排除后 12）。
   - locale 文本解析：`rg -o '\?\? locale\.value\.' src/components | wc -l` → 39。
+  - 说明：以上为纯语法口径，只覆盖 `forwardedAttrs` computed 形态；模板级 `:aria-label="label"` 与 `controlAttrs` 基座形态另列批次（见下表），需逐处核对语义后单独验收。
 
 | 批次 | 证据 | 规模 | 状态 |
 |------|------|------|------|
-| 标签属性转发（`label` 优先于透传 `aria-label`） | 10 个文件同构的 `forwardedAttrs` computed（取值源为 `props.label` 或等价 computed 文案） | 10 文件 | 执行中 |
+| 标签属性转发（`label` 优先于透传 `aria-label`） | 10 个文件同构的 `forwardedAttrs` computed（取值源为 `props.label` 或等价 computed 文案） | 10 文件 | 已交付 |
+| 标签属性转发（模板级 `:aria-label` 与 `controlAttrs` 基座形态） | `input.vue` / `select.vue` 等模板级 `:aria-label="label"`（**无条件覆盖**，与已定契约反向，属行为调整）；`checkbox.vue` / `switch.vue` 以 `controlAttrs` 为基座的同优先级形态 | 待补取证 | 待执行（含行为调整，需独立条目与验收） |
 | ARIA 布尔假值归一 | 15 处 `:aria-x="value \|\| undefined"` | 15 文件 | 执行中 |
 | attrs 透传收敛（手写 `useAttrs()` → 统一转发） | 12 文件手写，`useAttrForwarding` 仅 9 个组件消费 | 12 文件 | 执行中 |
 | locale 文本解析 | 39 处 `props.x ?? locale.value.ns.key`（props 名与路径逐处不同） | 17 文件 | 待评估净收益 |

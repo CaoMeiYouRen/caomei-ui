@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types'
+import type { FieldProps, FieldIdentityProps } from '../_shared/field'
 import type { OptionFieldAccessor, OptionValue } from '../_shared/option'
 
 /**
@@ -24,7 +24,12 @@ export interface SelectOption<V extends OptionValue = string> {
     disabled?: boolean
 }
 
-export interface SelectProps<T extends object = SelectOption> {
+/**
+ * 与公共契约的差异：`id` / `name` 落在内层输入框上，`name` 由 Reka 生成隐藏表单控件。
+ * @en Differences from the shared contract: `id` / `name` land on the inner input, and `name` generates a
+ * hidden form control via Reka.
+ */
+export interface SelectProps<T extends object = SelectOption> extends FieldProps, FieldIdentityProps {
     /**
      * 选项列表；元素可为任意对象，字段由 `optionLabel` / `optionValue` 映射
      * @en Option list; items may be arbitrary objects whose fields are mapped via `optionLabel` / `optionValue`
@@ -41,41 +46,6 @@ export interface SelectProps<T extends object = SelectOption> {
      * may be strings or numbers; options resolving to `undefined` are not rendered
      */
     optionValue?: OptionFieldAccessor<T, OptionValue>
-    /**
-     * 未选择时的占位文本
-     * @en Placeholder text when nothing is selected
-     */
-    placeholder?: string
-    /**
-     * 尺寸
-     * @en Size
-     */
-    size?: ComponentSize
-    /**
-     * 是否禁用
-     * @en Whether the select is disabled
-     */
-    disabled?: boolean
-    /**
-     * 校验失败态，映射 aria-invalid
-     * @en Validation failure state, maps to aria-invalid
-     */
-    invalid?: boolean
-    /**
-     * 表单字段名
-     * @en Form field name
-     */
-    name?: string
-    /**
-     * 关联 label 的 id
-     * @en Id of the associated label
-     */
-    id?: string
-    /**
-     * 无可见标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible label, maps to aria-label
-     */
-    label?: string
     /**
      * 展开时是否锁定页面滚动（映射自 Reka SelectContent 的 `bodyLock`）；默认 false，避免滚动条消失引起布局跳动
      * @en Whether to lock page scroll when expanded (mapped from Reka SelectContent's `bodyLock`); defaults to false to avoid layout shift from the disappearing scrollbar

@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types'
+import type { FieldProps, FieldIdentityProps } from '../_shared/field'
 
 /**
  * 建议项
@@ -60,7 +60,12 @@ export interface AutoCompleteEmits {
     clear: []
 }
 
-export interface AutoCompleteProps {
+/**
+ * 与公共契约的差异：`id` 与 `name` 落在内层输入框上；`name` 由 Reka 生成隐藏表单控件。
+ * @en Differences from the shared contract: `id` and `name` land on the inner input; `name` generates a
+ * hidden form control via Reka.
+ */
+export interface AutoCompleteProps extends FieldProps, FieldIdentityProps {
     /**
      * 建议列表；字符串项视作 `label` 与 `value` 相同的建议
      * @en Suggestion list; string items are treated as suggestions whose `label` equals their `value`
@@ -76,41 +81,6 @@ export interface AutoCompleteProps {
      * @en Whether to render the dropdown trigger on the right
      */
     dropdown?: boolean
-    /**
-     * 未输入时的占位文本
-     * @en Placeholder text when there is no input
-     */
-    placeholder?: string
-    /**
-     * 尺寸
-     * @en Size
-     */
-    size?: ComponentSize
-    /**
-     * 是否禁用
-     * @en Whether the field is disabled
-     */
-    disabled?: boolean
-    /**
-     * 校验失败态，映射 aria-invalid
-     * @en Validation failure state, maps to aria-invalid
-     */
-    invalid?: boolean
-    /**
-     * 关联 label 的 id（落在内层输入框上）
-     * @en Id of the associated label (lands on the inner input)
-     */
-    id?: string
-    /**
-     * 表单字段名；Reka 会生成隐藏表单控件
-     * @en Form field name; Reka generates a hidden form control
-     */
-    name?: string
-    /**
-     * 无可见标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible label, maps to aria-label
-     */
-    label?: string
     /**
      * 展开时是否锁定页面滚动；默认 false，避免滚动条消失引起布局跳动
      * @en Whether to lock page scroll when open; defaults to false to avoid layout shift from the disappearing scrollbar

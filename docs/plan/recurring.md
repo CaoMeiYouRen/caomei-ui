@@ -24,21 +24,25 @@
 
 - **复用地**：组件间共享落 `src/components/_shared/`，对外公开能力落 `src/composables/`。
 - **取证口径**（2026-09-16 快照，范围 `src/components`，执行时逐批复核）：
-  - 标签属性转发：`rg -l "props\.label \? \{ 'aria-label': props\.label \} : \{\}" src/components | wc -l` → 9；另有 1 处等价形态使用 computed 文案（`progress-bar.vue` 的 `label.value`），并入本批 → 合计 10。
+  - 标签属性转发：`rg -l "useLabelAttrs" src/components/*/*.vue | wc -l` → 12（整体透传 10 + `controlAttrs` 基座 2）。
+  - 表单控件公共 props 契约：候选池 `rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts | wc -l` → 31 个 `types.ts`；首批取「四项字段齐备且含身份字段」的表单控件，复核 `rg -ln 'extends (FieldProps|FieldStateProps)' src/components/*/types.ts | wc -l` → 7（`password` 经 `Omit<InputProps, 'type'>` 间接继承，不计入）。
+  - 聚焦控制：`rg -l 'useFocusControl' src/components/*/*.vue | wc -l` → 4。
   - ARIA 布尔假值：`rg -o ':aria-[a-z]+="[^"]*\|\| undefined"' src/components | wc -l` → 15。
-  - attrs 透传：`rg -l 'const attrs = useAttrs\(\)' src/components | wc -l` → 13（含 `_shared/use-attr-forwarding.ts` 自身，排除后 12）。
   - locale 文本解析：`rg -o '\?\? locale\.value\.' src/components | wc -l` → 39。
-  - 说明：以上为纯语法口径，只覆盖 `forwardedAttrs` computed 形态；模板级 `:aria-label="label"` 与 `controlAttrs` 基座形态另列批次（见下表），需逐处核对语义后单独验收。
+- **描述收敛决策**（2026-09-16，首批）：公共 props 的 JSDoc 采用通用措辞（如「是否禁用」/ "Whether the control is disabled"）；组件特有约束不靠重复字段声明承载，改在组件 `types.ts` 的接口级注释保留（如 select-button 的 `role="group"` id 约束、select / multi-select / auto-complete 的 `id` / `name` 落点）。
 
 | 批次 | 证据 | 规模 | 状态 |
 |------|------|------|------|
-| 标签属性转发（`label` 优先于透传 `aria-label`） | 10 个文件同构的 `forwardedAttrs` computed（取值源为 `props.label` 或等价 computed 文案） | 10 文件 | 已交付 |
-| 标签属性转发（模板级 `:aria-label` 与 `controlAttrs` 基座形态） | `input.vue` / `select.vue` 等模板级 `:aria-label="label"`（**无条件覆盖**，与已定契约反向，属行为调整）；`checkbox.vue` / `switch.vue` 以 `controlAttrs` 为基座的同优先级形态 | 待补取证 | 待执行（含行为调整，需独立条目与验收） |
-| ARIA 布尔假值归一 | 15 处 `:aria-x="value \|\| undefined"` | 15 文件 | 执行中 |
-| attrs 透传收敛（手写 `useAttrs()` → 统一转发） | 12 文件手写，`useAttrForwarding` 仅 9 个组件消费 | 12 文件 | 执行中 |
-| locale 文本解析 | 39 处 `props.x ?? locale.value.ns.key`（props 名与路径逐处不同） | 17 文件 | 待评估净收益 |
-| 选项列表渲染 | Select / MultiSelect / AutoComplete 各 1 份 | 3 文件 | 待评估 DOM 一致性 |
-| 数值钳位 | 2 处 `clamp` | 2 文件 | 未达门槛，不实施 |
+| 标签属性转发（`label` 优先于透传 `aria-label`） | 12 个文件同构的 `forwardedAttrs`：整体透传 10 处 + `controlAttrs` 基座 2 处（checkbox / switch） | 12 文件 | 已交付 |
+| 表单控件公共 props 契约（首批） | `size` / `disabled` / `invalid` / `placeholder` / `name` / `id` / `label` 内联重复，口径命令见上 | 7 文件 | 已交付 |
+| 表单控件聚焦控制 | 4 个组件重复的 `focus` / `blur` 委托样板 | 4 文件 | 已交付 |
+| 表单控件公共 props 契约（第二批） | `checkbox/types.ts`（size / disabled / invalid / name / id / label）、`radio-group/types.ts`（`RadioGroupProps` 同 6 字段，`RadioButtonProps` 另有 disabled / id / label）、`switch/types.ts`（disabled / name / id / label）；命令 `rg -n 'size\?:|disabled\?:|invalid\?:' src/components/{checkbox,radio-group,switch}/types.ts` | 3 文件 | 待执行（需逐组件核对特有描述与字段子集） |
+| 标签属性转发（模板级 `:aria-label` 无条件覆盖） | 12 处模板级 `:aria-label="label"`（标签为空时渲染空属性，与已定契约反向） | 12 文件 | 待执行（含行为调整，需独立验收） |
+| attrs 透传收敛 | 手写 `useAttrs()` 已收敛至 `stepper` / `slider` 2 处（二者语义不同，未达门槛） | 2 文件 | 未达门槛（不实施） |
+| ARIA 布尔假值归一 | 15 处 `:aria-x="value \|\| undefined"`（规则已在开发规范单点定义，抽取后表达式变长） | 15 文件 | 未达门槛（净收益不为正） |
+| locale 文本解析 | 39 处 `props.x ?? locale.value.ns.key`（props 名与路径逐处不同） | 17 文件 | 未达门槛（净收益不为正） |
+| 选项列表渲染 | Select（`SelectItem`）1 份 + MultiSelect / AutoComplete（`ComboboxItem`）2 份，primitive 与插槽能力不同 | 3 文件 | 未达门槛（语义不一致） |
+| 数值钳位 | 2 处 `clamp` | 2 文件 | 未达门槛（不实施） |
 
 ### 2.2 样式重复收敛
 
@@ -52,4 +56,6 @@
 
 | 轮次 | 日期 | 范围 | 产出 | 证据 |
 |------|------|------|------|------|
-| 首轮 | 2026-09-16 | 代码复用治理：标签属性转发 / ARIA 布尔假值 / attrs 透传收敛；同步落地治理规范 | 见对应提交 | §2.1 取证口径与提交记录 |
+| 首轮 | 2026-09-16 | 治理规范落地 + 代码复用治理：标签属性转发 / 表单控件公共 props 契约 / 聚焦控制 | 开发规范与规划规范新增长期任务制度；`_shared` 新增 `useLabelAttrs` / `field` / `useFocusControl` | §2.1 取证口径与提交记录 |
+
+> 2026-09-16 复评：ARIA 布尔假值归一、locale 文本解析、attrs 透传收敛三条由「执行中 / 待评估净收益」改判为「未达门槛」——依据为抽取后净收益不为正或语义不一致（见 §2.1 各批次证据列）；改判在已认可方向内由执行方判定。

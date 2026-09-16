@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types'
+import type { FieldProps, FieldIdentityProps } from '../_shared/field'
 import type { OptionFieldAccessor, OptionValue } from '../_shared/option'
 
 /**
@@ -24,7 +24,12 @@ export interface MultiSelectOption<V extends OptionValue = string> {
     disabled?: boolean
 }
 
-export interface MultiSelectProps<T extends object = MultiSelectOption> {
+/**
+ * 与公共契约的差异：`id` 与 `name` 落在内层输入框上；`name` 由 Reka 为每个选中值生成 `name[index]` 隐藏控件。
+ * @en Differences from the shared contract: `id` and `name` land on the inner input; `name` generates a
+ * `name[index]` hidden control per selected value via Reka.
+ */
+export interface MultiSelectProps<T extends object = MultiSelectOption> extends FieldProps, FieldIdentityProps {
     /**
      * 选项列表；元素可为任意对象，字段由 `optionLabel` / `optionValue` 映射
      * @en Option list; items may be arbitrary objects whose fields are mapped via `optionLabel` / `optionValue`
@@ -42,45 +47,10 @@ export interface MultiSelectProps<T extends object = MultiSelectOption> {
      */
     optionValue?: OptionFieldAccessor<T, OptionValue>
     /**
-     * 未选择任何项时的占位文本
-     * @en Placeholder text when nothing is selected
-     */
-    placeholder?: string
-    /**
-     * 尺寸
-     * @en Size
-     */
-    size?: ComponentSize
-    /**
-     * 是否禁用
-     * @en Whether the select is disabled
-     */
-    disabled?: boolean
-    /**
-     * 校验失败态，映射 aria-invalid
-     * @en Validation failure state, maps to aria-invalid
-     */
-    invalid?: boolean
-    /**
-     * 表单字段名；Reka 会为每个选中值生成 `name[index]` 隐藏控件
-     * @en Form field name; Reka generates a `name[index]` hidden control per selected value
-     */
-    name?: string
-    /**
      * 是否必填；作用于隐藏表单控件以触发原生表单校验（需同时提供 name）
      * @en Whether it is required; targets the hidden form controls to trigger native validation (requires name)
      */
     required?: boolean
-    /**
-     * 关联 label 的 id（落在内层输入框上）
-     * @en Id of the associated label (lands on the inner input)
-     */
-    id?: string
-    /**
-     * 无可见标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible label, maps to aria-label
-     */
-    label?: string
     /**
      * 展开时是否锁定页面滚动；默认 false，避免滚动条消失引起布局跳动
      * @en Whether to lock page scroll when open; defaults to false to avoid layout shift from the disappearing scrollbar

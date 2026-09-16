@@ -1,11 +1,6 @@
-import type { ComponentSize } from '../../types'
+import type { FieldProps, FieldIdentityProps } from '../_shared/field'
 
-export interface InputNumberProps {
-    /**
-     * 尺寸
-     * @en Size
-     */
-    size?: ComponentSize
+export interface InputNumberProps extends FieldProps, FieldIdentityProps {
     /**
      * 允许的最小值；失焦或步进时钳制
      * @en Minimum allowed value; clamped on blur or step
@@ -29,35 +24,10 @@ export interface InputNumberProps {
      */
     precision?: number
     /**
-     * 是否禁用
-     * @en Whether the input is disabled
-     */
-    disabled?: boolean
-    /**
      * 是否只读
      * @en Whether the input is read-only
      */
     readonly?: boolean
-    /**
-     * 校验失败态，映射 aria-invalid
-     * @en Validation failure state, maps to aria-invalid
-     */
-    invalid?: boolean
-    /**
-     * 占位文本
-     * @en Placeholder text
-     */
-    placeholder?: string
-    /**
-     * 表单字段名
-     * @en Form field name
-     */
-    name?: string
-    /**
-     * 关联 label 的 id
-     * @en Id of the associated label
-     */
-    id?: string
     /**
      * 浏览器自动填充提示
      * @en Browser autocomplete hint
@@ -93,9 +63,4 @@ export interface InputNumberProps {
      * @en Accessible label of the decrement button; defaults to the current locale's "Decrease" text
      */
     decreaseLabel?: string
-    /**
-     * 无可见标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible label, maps to aria-label
-     */
-    label?: string
 }

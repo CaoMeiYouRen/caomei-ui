@@ -37,6 +37,8 @@ Two-way bind the selected value with `v-model` and pass the options via `options
 
 The `#option` slot customizes the panel option content; it receives `option` (the **raw** option object) and `selected` (whether it is the selected one). Without it, the mapped display text is rendered.
 
+Slot content is rendered on a **single line** and truncated with an ellipsis (the panel width converges to the available width on narrow screens; see matrix #4 in [Responsive design](/design/responsive), Chinese), so control truncation yourself for multi-line or rich option content.
+
 <demo
     vue="../examples/select/option-slot.vue"
     ssg="true"

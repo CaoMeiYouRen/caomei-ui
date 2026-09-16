@@ -33,12 +33,14 @@
 - 条目：
   - [x] 响应式规范补充（断点语义与窄屏行为矩阵）
   - [ ] 小屏适配补齐（分批，先核心控件）
-    - **批次 1（浮层面板宽度越界）**：Select、MultiSelect、AutoComplete、DropdownMenu
+    - **批次 1（浮层面板宽度越界）**：Select、MultiSelect、AutoComplete、DropdownMenu —— **已交付（2026-09-16）**：面板 `max-width` 取 `--reka-{select,combobox,dropdown-menu}-content-available-width`（回退 `none`），`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛（否则 `min-width` 会压过 `max-width`）；补 `box-sizing: border-box`；长选项文本补省略号（Select 新增 `__item-text` 规则并在组件文档写明插槽按单行截断，MultiSelect / AutoComplete 的 label 补 `flex: 1; min-width: 0`）。V 阶段实测（390 / 768 / 1280 三档 + 右缘窄触发器边界用例）：面板均在视口内、面板内无横向溢出、窄屏长文本省略号、0 console error；对照组（同时移除 `max-width` 与 `min-width`）在 390 下越界 710px（证明收敛规则承重）；`min()` 必要性另经独立探针实测（触发器宽 320 > 可用宽 300 时，朴素 `min-width` 写法越界 12px）。**未引入面板 `max-width` token**：与同规则既有 `max-height` 直连 Reka 变量的做法一致，使用方可按类选择器覆盖；如需 token 化另起评估。记录与截图见 `test-results/m2-batch1/`（gitignored；结论与数值已落本行）
     - **批次 2（横向布局窄屏必现溢出 / 裁切）**：Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行）
     - **批次 3（需先实测）**：DatePicker / Calendar
     - **不纳入**：DataTable 卡片化、页面级栅格、Stepper 方向转换（使用方职责）；触摸目标（用户决策：暂不提升）
     - 批次依据、行为矩阵与偏差说明见[响应式设计 §5](../design/responsive.md)（登记门槛原写「Tier 0 / Tier 1 组件为一批」；经源码核对，必现溢出 / 裁切项既有 Tier 0 / 1 的 Dialog / ConfirmDialog（footer 换行），又有 Tier 2 / 3 的横向布局类，故批次按缺陷类划分并已在此登记）
   - [ ] 移动端测试用例（Playwright 多视口）
+    - 断言清单：承载[响应式设计 §4](../design/responsive.md) 的 6 条标准（无横向溢出 / 浮层面板在视口内 / 关键内容不丢失 / 桌面无回归 / 0 console error / 面板不窄于触发器）
+    - 基线归档：每批次的「改动前」截图与计算样式快照落 `test-results/<批次>/`，结论与关键数值同步落可提交位置
 - **交付状态（条目 1，2026-09-16）**：新增 [响应式设计](../design/responsive.md)——断点语义（sm 640 / md 768 / lg 1024；桌面优先 + `max-width` 收敛 + 字面量白名单）、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准（390 / 768 / 1280 视口 + 5 条断言，布局断言归 Playwright）、批次清单与三项决策落定；`theming.md §5` 收敛为指针并移除未实现的「窄屏转卡片列表 / 转 Drawer」陈述，`design-spec.md §2.3` 与 `development.md §7` 补指针，设计索引与文档站侧栏同步。
 - **待决策（条目 1 提出）→ 已决策（2026-09-16，用户）**：① 触摸目标**暂不提升**到 ≥44px 命中区（维持 Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px；后续如提升须引入不改变视觉尺寸的命中区原语，候选见 [Backlog §1.5](./backlog.md)）；② Stepper 横向窄屏**由使用方适配**（组件不内建自动转换，需纵向时改 `orientation="vertical"`，已写入 Stepper 组件文档与[响应式设计 §1](../design/responsive.md)）；③ 「DataTable 转卡片列表」「Dialog 转全屏」**不作为默认行为**，窄屏以响应式适配为主（与[响应式设计](../design/responsive.md) 非目标一致，相关 AI 资产表述同步对齐）。
 

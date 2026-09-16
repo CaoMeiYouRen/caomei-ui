@@ -46,8 +46,8 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | 对话框型浮层 | Dialog / ConfirmDialog | `calc(100vw - 2 × space-4)` 内收 | `min(90vw, 480 / 400px)` | `min(90vw, 既定宽度)` | 已实现（`dialog.vue:202`、`confirm-dialog.vue:187`）；footer 多按钮不换行待补 |
 | 2 | 侧边抽屉 | Drawer | 左右向 `min(90vw, size)`；上下向 `min(90vh, size)` | 同左 | 同左 | 已实现（`drawer.vue:156,171`） |
-| 3 | 下拉型浮层面板 | DropdownMenu | 面板宽不超过可用宽；长选项文本省略号 | 同左 | 内容驱动（`min-width: 9rem`） | **待补 `max-width`**（`dropdown-menu-content.vue:44`） |
-| 4 | 选择器浮层面板 | Select / MultiSelect / AutoComplete | 面板宽取 `max(触发器宽, 内容宽)` 且不超过可用宽；选项文本省略号 | 同左 | `min-width` = 触发器宽 | **待补 `max-width`**（`select.vue:357`、`multi-select.vue:326`、`auto-complete.vue:563`） |
+| 3 | 下拉型浮层面板 | DropdownMenu | 面板宽不超过可用宽；长选项文本省略号 | 同左 | 内容驱动（`min-width: 9rem`） | 已实现（`dropdown-menu-content.vue:49-50`：`max-width` 取 `--reka-dropdown-menu-content-available-width`，`min-width` 用 `min()` 同步收敛；文本省略号见 `:93`） |
+| 4 | 选择器浮层面板 | Select / MultiSelect / AutoComplete | 面板宽取 `max(触发器宽, 内容宽)` 且不超过可用宽；选项文本省略号 | 同左 | `min-width` = 触发器宽 | 已实现（`select.vue:363-364`、`multi-select.vue:331-332`、`auto-complete.vue:568-569`：`max-width` 取 `--reka-{select,combobox}-content-available-width`，`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛；文本省略号见 `select.vue:394`、`multi-select.vue:365`、`auto-complete.vue:602`） |
 | 5 | 定宽复合面板 | ColorPicker | `min(260px, 100vw - 2 × space-4)` | 260px | 260px | **待补**（`color-picker.vue:171,187` 固定 260px） |
 | 6 | 含日历面板 | DatePicker / Calendar | 面板落在视口内（内容定宽，最多占满可用宽） | 同左 | 内容定宽 `max-content` | 待实测确认（`date-picker.vue:253`） |
 | 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | 允许换行；成员完整可见（不裁切、不压缩到不可读） | 默认沿用桌面形态 | `inline-flex` 单行 | **待补**（`toolbar.vue:38`、`button-group.vue:23,42`、`split-button.vue:129`） |
@@ -71,11 +71,14 @@
 2. **浮层 / 面板在视口内**：`left >= 0 && right <= innerWidth`（需要滚动的面板另满足内容可滚动可达）；
 3. **关键内容不丢失**：按钮 / 选项文本完整可见，或按矩阵明确允许省略号；省略号场景须保留可访问名或 `title`，不得出现无提示的信息丢失；
 4. **桌面无回归**：1280×800 下组件几何与计算样式与批次实施前的基线一致；基线（截图或计算样式快照）随该批次的验证记录归档；
-5. **0 console error**。
+5. **0 console error**；
+6. **面板不窄于触发器**（仅「面板宽度匹配触发器」的浮层组件：Select / MultiSelect / AutoComplete）：可用宽足够时面板宽 `>= 触发器宽 - 1` —— 该断言用于守卫 `min(触发器宽, 可用宽)` 收敛语义与 Reka 变量重命名导致的静默失效。
 
 浮层组件另须通过[测试规范 §5.1](../standards/testing.md) 的页面稳定性测量（遮罩完整、`in-flow` 不位移、CLS 归因）。
 
 **承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。
+
+**验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。常驻的 Playwright 用例覆盖上述断言后，批次交付即以其为可复现基线。
 
 ## 5. 判定门槛与分批清单
 

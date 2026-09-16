@@ -77,7 +77,7 @@
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `--caomei-dropdown-menu-z-index` | `1050` | 面板层级（高于 Dialog 的 1001，低于 Toast 的 1100） |
-| `--caomei-dropdown-menu-min-width` | `9rem` | 面板最小宽度 |
+| `--caomei-dropdown-menu-min-width` | `9rem` | 面板最小宽度（窄屏收敛为 `min(9rem, 可用宽)`，上限亦取可用宽，见[响应式设计 §3](../design/responsive.md) 矩阵 #3） |
 | `--caomei-dropdown-menu-padding` | `--caomei-space-1` | 面板内边距 |
 | `--caomei-dropdown-menu-bg` | `--caomei-color-bg` | 面板背景色 |
 | `--caomei-dropdown-menu-border` | `--caomei-color-border` | 面板描边色 |

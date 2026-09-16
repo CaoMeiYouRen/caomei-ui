@@ -37,6 +37,8 @@
 
 `#option` 插槽用于自定义面板选项内容，收到 `option`（**原始**选项对象）与 `selected`（是否为当前选中项）；未提供时回退渲染映射后的显示文本。
 
+插槽内容按**单行**渲染并带省略号截断（面板宽度在窄屏收敛为可用宽度，见[响应式设计 §3](../design/responsive.md) 矩阵 #4），因此多行 / 富文本选项请自行控制截断。
+
 <demo
     vue="../examples/select/option-slot.vue"
     ssg="true"

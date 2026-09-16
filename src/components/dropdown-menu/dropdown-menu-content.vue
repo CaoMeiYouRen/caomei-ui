@@ -41,7 +41,14 @@ withDefaults(defineProps<DropdownMenuContentProps>(), {
     z-index: var(--caomei-dropdown-menu-z-index, 1050);
     display: flex;
     flex-direction: column;
-    min-width: var(--caomei-dropdown-menu-min-width, 9rem);
+
+    /*
+    窄屏收敛：宽度上限取 popper 可用宽（与触发器宽同源，见 responsive.md §3 矩阵 #3）；
+    min-width 同步用 min() 收敛，否则 min-width 会压过 max-width 导致越界。
+    桌面下可用宽远大于自然宽度，无表现变化。
+     */
+    min-width: min(var(--caomei-dropdown-menu-min-width, 9rem), var(--reka-dropdown-menu-content-available-width));
+    max-width: var(--reka-dropdown-menu-content-available-width, none);
     max-height: var(--reka-dropdown-menu-content-available-height);
     padding: var(--caomei-dropdown-menu-padding, var(--caomei-space-1));
     overflow: hidden auto;

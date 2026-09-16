@@ -171,7 +171,7 @@ function clearValue(): void {
                         :value="option.value"
                         :disabled="option.disabled"
                     >
-                        <SelectItemText>
+                        <SelectItemText class="caomei-select__item-text">
                             <slot
                                 name="option"
                                 :option="option.raw"
@@ -352,9 +352,18 @@ function clearValue(): void {
 -->
 <style>
 .caomei-select__content {
+    box-sizing: border-box;
     z-index: 1000;
     overflow: hidden;
-    min-width: var(--reka-select-trigger-width);
+
+    /*
+    窄屏收敛：宽度上限取 popper 可用宽（Reka 由 floating-ui 的 size 中间件写在 popper 包裹层，
+    与触发器宽同源）；min-width 同步用 min() 收敛，否则 min-width 会压过 max-width 导致越界。
+    桌面下可用宽远大于面板自然宽度，故该上限不改变既有表现。
+    两个变量同时提供，缺失时 max-width 回退 none、min-width 回退 auto（退回本规则引入前的行为）。
+     */
+    min-width: min(var(--reka-select-trigger-width), var(--reka-select-content-available-width));
+    max-width: var(--reka-select-content-available-width, none);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
@@ -381,6 +390,15 @@ function clearValue(): void {
 
 .caomei-select__item[data-highlighted] {
     background: var(--caomei-color-bg-elevated);
+}
+
+/* 长选项文本省略号：面板宽度被可用宽限制后，文本须可收缩而非撑破面板 */
+.caomei-select__item-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .caomei-select__item[data-disabled] {

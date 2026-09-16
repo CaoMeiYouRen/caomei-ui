@@ -558,9 +558,17 @@ watch(normalizedOptions, () => {
 -->
 <style>
 .caomei-auto-complete__content {
+    box-sizing: border-box;
     z-index: 1000;
     overflow: hidden;
-    min-width: var(--reka-combobox-trigger-width);
+
+    /*
+    窄屏收敛：宽度上限取 popper 可用宽（与触发器宽同源，见 responsive.md §3 矩阵 #4）；
+    min-width 同步用 min() 收敛，否则 min-width 会压过 max-width 导致越界。
+    桌面下可用宽远大于自然宽度，无表现变化。
+     */
+    min-width: min(var(--reka-combobox-trigger-width), var(--reka-combobox-content-available-width));
+    max-width: var(--reka-combobox-content-available-width, none);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
@@ -594,6 +602,8 @@ watch(normalizedOptions, () => {
 }
 
 .caomei-auto-complete__item-label {
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

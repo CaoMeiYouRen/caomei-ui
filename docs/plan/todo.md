@@ -59,9 +59,10 @@
 
 - 执行范围：① 启用显式类型族（`explicit-module-boundary-types` 实测 1 处、`no-explicit-any` 0 处）；② 收敛 type-aware unsafe 族（`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20）与 `explicit-function-return-type`（src 内约 126 处，严格预设中该规则为 off），随后整体切 `eslint-config-cmyr/vue/strict` 并收紧 `--max-warnings`。
 - 非目标：为过规则而改组件行为；不引入新的 lint 依赖。
+- 分批约束：`--max-warnings` 已收紧至 0，后续批次只允许用 `files` 作用域分层或直接修复来分批，**禁止把规则降级为 warn 或回调阈值**。
 - 最小验收标准：`pnpm lint:check` 零 error 且 warning 阈值下调有据；`pnpm verify` 全链路通过；`dist/index.d.ts` 冒烟通过。
 - 条目：
-  - [ ] 启用显式类型族并收紧 `--max-warnings`
+  - [x] 启用显式类型族并收紧 `--max-warnings`
   - [ ] 收敛 unsafe 族与 `explicit-function-return-type`（实现与测试分批）
   - [ ] 切换 `vue/strict` 并固化门禁（verify 全绿 + 类型产物冒烟）
 

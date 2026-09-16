@@ -4,7 +4,7 @@
 
 > **文档结构**
 >
-> - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）；**状态标记**：优先级列为 `—` 且候选名带删除线＝已交付；`→ Mx（Phase 9 执行中）`＝已登记当前阶段、尚未交付（保留作决策留痕）。
+> - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）；**状态标记**：优先级列为 `—` 且候选名带删除线＝**已交付**（交付摘要与归档指针见行内）；`→ Mx（Phase 9 执行中）`＝已登记阶段且尚未交付（Phase 9 已于 2026-09-16 归档，该标记现无在行条目）。
 > - §2 维护约定。
 >
 > Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪）已完成的条目及其评估证据已随阶段迁入 [待办归档](./todo-archive.md)；本表仅保留仍待决策的候选。
@@ -53,7 +53,9 @@
 |------|------|------|--------|
 | 富文本与图表封装 | momei 使用面 | Editor / Chart 建议外购（Tiptap / ECharts），不自研 | 低 |
 
-### 1.4 国际化候选（需求 5，延后）
+### 1.4 国际化候选（需求 5）
+
+> **用户决策（2026-09-16）：下一阶段优先方向**——先进入「语言矩阵 - 中期」（zh-TW / ja-JP / ko-KR），依据是下游 momei 为国际化项目，组件至少需支持其对应语言。阶段范围仍须单独评估并在授权启动时登记。
 
 > 承接原「国际文字内置文案补全」候选并按用户需求（2026-09-14）扩展为完整机制。**现状（2026-09-15 更新）**：「组件 i18n 注入机制」已随 Phase 7 第一阶段 M2 落地（`CaomeiConfigProvider` / `provideLocale` + `useLocale`，16 个内建文案组件已消费注入 locale），文档站也已按页面语言注入（英文页展示英文内建文案），16 个内建文案组件范围内的英文文档页中文问题已解决；非内建文案组件（如 file-upload）的用户可见中文另见本表候选。本表余项收敛为语言矩阵与 locale 注册治理等中期 / 长期候选，以及 file-upload 类非内建文案补缺。**用户决策（2026-09-13）：当前接受现状**；机制已落地，其余语种的本地化由下游注入承担。
 >
@@ -71,7 +73,9 @@
 | locale 组织与注册治理 | 用户需求（2026-09-14） | 语言数量增长后的目录组织、注册表、按需加载与类型约束；可参考 momei `i18n/config` registry 机制 | 低 |
 | file-upload 用户可见文案本地化 | 迁移评估发现（2026-09-15） | file-upload 的默认插槽与 `file` 插槽已可由下游自定义，但库内建文案（默认提示与移除 `aria-label`）仍为中文，不在 16 个内建文案组件范围内；需评估补 `fileUpload` locale 命名空间 | 低 |
 
-### 1.5 移动端与响应式候选（需求 6，延后）
+### 1.5 移动端与响应式候选（需求 6）
+
+> **用户决策（2026-09-16）：语言矩阵之后的下一优先方向**（小屏适配补齐、移动端测试用例、响应式规范补充三条）。阶段范围仍须单独评估并在授权启动时登记。
 
 > **2026-09-14 用户决策：本组延后处理**，不纳入 Phase 6。
 >
@@ -116,11 +120,11 @@
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
 | wisdom 蒸馏原文留痕 | 审计发现：`.session/wisdom.md` 为 gitignored，蒸馏清空活跃段后无法复核「迁移 N 条 + 删除 M 条」的完备性（`current-task.yaml` 的 `tried_approaches` 口径不同、不可替代）；候选在清空前把活跃段原文快照落盘（归档文件或脚本产物），或在蒸馏机制 §4 增加快照步骤 | 低 |
-| 文档站组件信息架构 | 用户需求（2026-09-16） | **已登记 Phase 9 M1（2026-09-16 用户授权）**。**用户决策：采纳 6 分组 + 组内字母序；能力说明归位取方案 B（迁至 `/components/composables`、`/components/icons`、`/components/locale`，并镜像 en-US）；补 zh 组件总览页。** 原始问题：`/components/` 为单一「基础组件」分组、按历史登记顺序排列且仅局部族聚类；「能力说明」挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。方案 B 影响面已核实：`routingPages` 按 `docs/i18n/en-US/**` 自动收集、en 镜像同步后语言回切自动生效；需同步 `themeConfig` 链接与跨页引用。分组映射见 [评估记录 附录 A](../design/governance/2026-09-16-new-requirements-evaluation.md#附录-a组件分组映射45-页) | → M1（Phase 9 执行中） |
+| ~~文档站组件信息架构~~ | 用户需求（2026-09-16） | **已交付并归档（Phase 9 M1 三条目，2026-09-16）**：侧栏 6 分组 + 组内字母序（中英同序）、能力说明三页归位 `/components/`、新增 zh 组件总览页；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M1（2026-09-16 用户授权）**。**用户决策：采纳 6 分组 + 组内字母序；能力说明归位取方案 B（迁至 `/components/composables`、`/components/icons`、`/components/locale`，并镜像 en-US）；补 zh 组件总览页。** 原始问题：`/components/` 为单一「基础组件」分组、按历史登记顺序排列且仅局部族聚类；「能力说明」挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。方案 B 影响面已核实：`routingPages` 按 `docs/i18n/en-US/**` 自动收集、en 镜像同步后语言回切自动生效；需同步 `themeConfig` 链接与跨页引用。分组映射见 [评估记录 附录 A](../design/governance/2026-09-16-new-requirements-evaluation.md#附录-a组件分组映射45-页) | — |
 | 文档站观感与展示力 | 用户需求（2026-09-16） | **待后续评估（用户决策 2026-09-16：候选先留在 Backlog，后续再评估）**。候选：组件画廊 / 首页视觉 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。现状：首页为 VitePress 默认 hero；已有自定义 `layout.vue`（主题预设切换器）与 `component-api.vue`，缺总览页 / 画廊 / demo 外壳。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
-| 文档站演示动画与 reduced-motion | 诊断发现（2026-09-16） | **已登记 Phase 9 M3（2026-09-16 用户授权）**。**用户决策：对 demo 区域 opt-in 恢复入场动画。** 根因：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 原仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现无缺陷。**交付形态（2026-09-16 条目 1 落地）**：加载指示全站恢复 + 演示区 opt-in（仅 `animation`，不恢复 transition）；容器内可达元素（Accordion / Image / Button / AutoComplete spinner）按 `.vitepress-demo-plugin__container` 作用域，Portal 面板（Drawer / Toast / Popover / DropdownMenu / DatePicker）因挂载在 `<body>` 改按组件选择器恢复（偏离原「容器作用域」实施要点，理由与验证见 [M3 验证记录](../design/governance/2026-09-16-m3-demo-motion-validation.md)）。**遗留（本次未做，需另行评估）**：① `caomei-demo-*` keyframes 副本与组件动画数值无一致性守卫（组件动画变更时仅靠注释同步）；② Toast `swipe-out` 规则无运行期实测；③ `docs/.vitepress/theme/**` CSS 不在 stylelint 覆盖内（`lint:css` 只跑 `src/**`）。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M3（Phase 9 执行中） |
-| 组件公共逻辑抽取 | 用户需求（2026-09-16）+ 治理发现 | **已登记 Phase 9 M4，并升级为长期任务（2026-09-16 用户决策）**：持续载体为 [长期任务台账](./recurring.md)（代码复用治理），Phase 9 M4 承载首轮与规范落地，首轮批次为标签属性转发 / ARIA 布尔假值 / attrs 透传收敛。优先项（≥3 处且语义一致）：locale 回退取值 39 处（迁入长期任务待评估净收益）、attrs 透传统一（`inheritAttrs: false` 58 文件 / `v-bind="$attrs"` 37 文件而 `useAttrForwarding` 仅 9 组件；其中手写 `useAttrs()` 的 12 文件为首轮批次）、浮层样式与 token（`bg-elevated` 24 文件；阴影 / 遮罩 13 处 / 10 文件，迁入长期任务「样式重复收敛」）、选项列表渲染 3 份（迁入长期任务待评估 DOM 一致性）；数值钳位（2 份）与焦点模式（4+2+2）未达门槛不单列。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M4（Phase 9 执行中） |
-| ESLint 严格化与导出类型 | 用户需求（2026-09-16） | **已登记 Phase 9 M5（2026-09-16 用户授权）**。**用户决策：在正式版本发布前完成。** 两步走：**① 显式类型族**——`explicit-module-boundary-types` 实测 **1** 处、`no-explicit-any` **0** 处（可立即启用）；但 `explicit-function-return-type` 在严格预设中为 **off**，显式启用后实测 **约 126 处**（其中 `.test.*` 121 处），故并入步骤 ② 一并收敛。**② type-aware unsafe 族**——`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20（多在 `.test.ts`）收敛后整体切 `eslint-config-cmyr/vue/strict`（该预设试跑基线：67 error / 229 warning，命中 63 文件）。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | → M5（Phase 9 执行中） |
+| ~~文档站演示动画与 reduced-motion~~ | 诊断发现（2026-09-16） | **已交付并归档（Phase 9 M3 两条目，2026-09-16）**：加载指示全站恢复 + 演示区 opt-in 恢复入场 / 退出动画；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M3（2026-09-16 用户授权）**。**用户决策：对 demo 区域 opt-in 恢复入场动画。** 根因：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 原仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现无缺陷。**交付形态（2026-09-16 条目 1 落地）**：加载指示全站恢复 + 演示区 opt-in（仅 `animation`，不恢复 transition）；容器内可达元素（Accordion / Image / Button / AutoComplete spinner）按 `.vitepress-demo-plugin__container` 作用域，Portal 面板（Drawer / Toast / Popover / DropdownMenu / DatePicker）因挂载在 `<body>` 改按组件选择器恢复（偏离原「容器作用域」实施要点，理由与验证见 [M3 验证记录](../design/governance/2026-09-16-m3-demo-motion-validation.md)）。**遗留（本次未做，需另行评估）**：① `caomei-demo-*` keyframes 副本与组件动画数值无一致性守卫（组件动画变更时仅靠注释同步）；② Toast `swipe-out` 规则无运行期实测；③ `docs/.vitepress/theme/**` CSS 不在 stylelint 覆盖内（`lint:css` 只跑 `src/**`）。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
+| ~~组件公共逻辑抽取~~ | 用户需求（2026-09-16）+ 治理发现 | **已交付并归档（Phase 9 M4 四条目，2026-09-16）**：长期任务机制落地；首轮三项抽取为标签属性转发（12 处）、表单控件公共 props 契约（首批 7 文件）、聚焦控制（4 处）——原列的 ARIA 布尔假值归一与 attrs 透传收敛经复评判为未达门槛（净收益不为正）；见 [待办归档](./todo-archive.md) 与 [长期任务台账](./recurring.md)。原始登记：**已登记 Phase 9 M4，并升级为长期任务（2026-09-16 用户决策）**。持续载体为 [长期任务台账](./recurring.md)（代码复用治理），Phase 9 M4 承载首轮与规范落地，首轮批次为标签属性转发 / ARIA 布尔假值 / attrs 透传收敛。优先项（≥3 处且语义一致）：locale 回退取值 39 处（迁入长期任务待评估净收益）、attrs 透传统一（`inheritAttrs: false` 58 文件 / `v-bind="$attrs"` 37 文件而 `useAttrForwarding` 仅 9 组件；其中手写 `useAttrs()` 的 12 文件为首轮批次）、浮层样式与 token（`bg-elevated` 24 文件；阴影 / 遮罩 13 处 / 10 文件，迁入长期任务「样式重复收敛」）、选项列表渲染 3 份（迁入长期任务待评估 DOM 一致性）；数值钳位（2 份）与焦点模式（4+2+2）未达门槛不单列。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
+| ~~ESLint 严格化与导出类型~~ | 用户需求（2026-09-16） | **已交付并归档（Phase 9 M5 三条目，2026-09-16）**：启用显式类型族、收敛 unsafe 族（189 → 0）、切换 `vue/strict` 并固化零告警门禁；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M5（2026-09-16 用户授权）**。 两步走：**① 显式类型族**——`explicit-module-boundary-types` 实测 **1** 处、`no-explicit-any` **0** 处（可立即启用）；但 `explicit-function-return-type` 在严格预设中为 **off**，显式启用后实测 **约 126 处**（其中 `.test.*` 121 处），故并入步骤 ② 一并收敛。**② type-aware unsafe 族**——`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20（多在 `.test.ts`）收敛后整体切 `eslint-config-cmyr/vue/strict`（该预设试跑基线：67 error / 229 warning，命中 63 文件）。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
 
 ### 1.7 服务层候选（composables）
 
@@ -131,6 +135,8 @@
 > `docs/design/components.md` 曾将该服务列为服务层目标，2026-09-14 已按实现移除（截至移除时无导出、亦无规划登记）。
 
 ### 1.8 下游协同候选
+
+> **用户决策（2026-09-16）**：本轮（Phase 9）结束后，正式进入「**momei 迁移可行性评估**」——先做可行性结论再定迁移范围（属 Phase 7 第二阶段的前置评估）。调查依据：momei 当前尚未依赖 `caomei-ui`（`package.json` 无该依赖），FileUpload 等组件仍走 PrimeVue。
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|

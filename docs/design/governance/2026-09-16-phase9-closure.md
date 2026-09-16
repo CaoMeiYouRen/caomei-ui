@@ -17,25 +17,31 @@
 
 ## 2. 待用户决策项
 
-### 2.1 需明确裁定的契约变更
+### 2.1 契约变更裁定（已决策，2026-09-16）
 
-- **`update:modelValue` 事件签名放宽为 `File[] | null`**（M5-3，file-upload）
-  - 背景：`modelValue: null` 在改动前会崩溃，修复时把「可能为 null」写成契约。
-  - 影响：下游写显式 `@update:model-value="files = $event"`（`files: File[]`）时需自行判空。
-  - 选项：① 接受（尚未发布，无存量下游）；② 追加运行时归一（把 `null` 转 `[]` 后再 emit）。
+| 项 | 结论 | 依据 |
+| --- | --- | --- |
+| `update:modelValue` 签名放宽为 `File[] \| null`（M5-3，file-upload） | **接受放宽**，不改动现有实现 | ① caomei-ui 尚未发布，momei 等下游**均未接入**（`package.json` 无 `caomei-ui` 依赖），零存量用量；② momei 唯一的 `FileUpload` 用量（`components/settings/settings-profile.vue:19-27`）走 `mode="basic"` + `custom-upload` + `@uploader` 回调，**不使用 `v-model`**，不受签名变更影响；取证（2026-09-16 快照）：`rg -n 'caomei-ui' /root/projects/*/package.json` → 本地全部下游仓库均无该依赖；`rg -n '<FileUpload' /root/projects/momei --glob '!node_modules'` → 1 处；③ 追加运行时归一（`null` → `[]`）会引入无谓分支 |
 
-### 2.2 长期任务下一轮范围（台账 §2 待执行批次）
+> 下游迁移提示：若后续以 `v-model` 绑定文件列表，绑定类型需容纳 `File[] | null`（或在调用处归一），已随本条留痕。
+
+### 2.2 长期任务下一轮范围（已确认，2026-09-16）
+
+> 用户决策：**同意当前范围**（下列三项保持台账登记，按阶段收口 / 发布前触发执行）。
 
 - **表单控件公共 props 契约（后续候选）**：`date-picker` / `color-picker` / `slider` / `toggle-button` / `file-upload`（5 文件）
 - **标签属性转发（模板级 `:aria-label`）**：12 处无条件覆盖，与已定「空值不覆盖」契约反向，**含行为调整**，需独立验收
 - **样式重复收敛**：阴影与遮罩 token 迁移（13 处 / 10 文件）、禁用态样式块（12 文件）
 
-### 2.3 阶段方向（需授权才登记）
+### 2.3 下一阶段方向（用户决策，2026-09-16）
 
-- Phase 5 第二阶段（首版发布 / 首个下游接入）：待 npm 凭据等外部前置
-- Phase 7 第二阶段（momei 迁移闭环 + P1 增强）：按用户决策「先收口再迁移」，现排在本阶段之后
-- Phase 8（下游兼容性回归）：稳定使用后启用
-- Backlog §1.1~§1.8 未决策候选（组件增强 P2、国际化语言矩阵与 RTL、移动端与响应式、治理项等）
+> 方向已定，**阶段范围仍须按规划规范单独评估并在授权启动时登记**（不预先占用编号）。
+
+1. **语言矩阵 - 中期**（优先）：追加 zh-TW / ja-JP / ko-KR —— 依据是 momei 为国际化项目，组件至少需支持其对应语言（当前 16 个内建文案组件仅承载 zh-CN / en-US 两份文案，其余语种由下游注入）。
+2. **移动端与响应式**（次之）：小屏适配补齐、移动端测试用例、响应式规范补充（Backlog §1.5 三条）。
+3. **momei 迁移可行性评估**：本轮结束后正式进入（属 Phase 7 第二阶段的前置评估，先做可行性结论再定迁移范围）。
+
+其余候选（Phase 5 第二阶段发布 / Phase 8 下游兼容性回归 / Backlog 组件增强与治理项）保持待决策。
 
 ## 3. 已登记待执行项（无需再次决策）
 
@@ -47,6 +53,7 @@
 | 文档站锚点校验对齐 VitePress slugify | Backlog §1.6 | M1 条目 1 Review |
 | 测试隔离与偶发失败（并发下偶发 flaky） | Backlog §1.6 | 既有候选 |
 | 对比度遗留项（soft 变体文本、calendar weekday、toast icon、预设品牌色例外） | Backlog §1.6 | M2 V 阶段 |
+| 归档块补关键提交 hash 与「组件文档与设计文档同步」显式结论行（Phase 7 块有 hash 先例） | 本文档 §3（下次归档惯例统一时处理） | 本批 Review 建议 |
 
 ## 4. 已知偏差与风险（记录在案，不阻塞）
 

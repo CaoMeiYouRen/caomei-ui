@@ -178,6 +178,24 @@
 
 ---
 
+## Phase 9：发布前收口（文档站与代码质量）
+
+- 时间：2026-09-16（单日完成）
+- 授权与范围：2026-09-16 用户授权启动，范围取 M1 ~ M5；范围依据 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)
+- 交付（5 条主线 / 14 条目全部完成）：
+  - **M1 文档站信息架构**（3 条）：`/components/` 侧栏改 6 分组 + 组内字母序（中英同分组同序）；能力说明三页归位 `/components/composables`、`/components/icons`、`/components/locale` 并同步 en 镜像；新增 zh 组件总览页（与 en `Overview` 对称）
+  - **M2 默认主题主色改蓝**（2 条）：默认主色由 `#e63946` 改为亮 `#2563eb` / 暗 `#60a5fa`（实测 5.17:1 / 7.73:1）；配套实底前景配对整改与 `primary-foreground` 语义别名；规范、README、示例与架构文档同步
+  - **M3 演示动画 opt-in**（2 条）：加载指示全站恢复 + 演示区 opt-in 恢复入场 / 退出动画（仅 `animation`，不恢复 transition）；取舍与 reduced-motion 对照证据落盘
+  - **M4 公共逻辑抽取**（4 条）：落地长期任务机制；首轮三项抽取——标签属性转发 `useLabelAttrs`（12 处）、表单控件公共 props 契约 `_shared/field`（首批 7 文件）、聚焦控制 `useFocusControl`（4 处）
+  - **M5 ESLint 严格化与导出类型**（3 条）：启用显式类型族并收紧 `--max-warnings` 至 0；收敛 unsafe 族（189 → 0）并统一 `.vue` 模块类型解析；切换 `vue/strict` 并固化门禁（strict 违规 69 error / 34 warning → 0 / 0）
+- 阶段内附加产出：
+  - 长期任务机制（[规划规范 §8](../standards/planning.md) + [长期任务台账](./recurring.md) + 开发规范「公共逻辑抽取与复用」）
+  - 表单控件公共 props 契约第二批（`checkbox` / `radio-group` / `switch`，阶段收口前触发）
+  - session wisdom 蒸馏（活跃 24 条全部迁移，剩余 0 条）
+- 质量门：`pnpm verify` 全链路通过（lint / lint:css / lint:md / typecheck / typecheck:docs / 全量 test 66 文件 1089 例 / build / check:build / check:nuxt / docs:build / i18n-routing / governance）；`dist/index.d.ts` 冒烟通过（151.3 KB、无悬空相对导入）
+- 审计结论：各批次均经 `@code-reviewer` Review Gate；M4 优化点 2+3 与 M5-3 各拦下真实缺陷（含 2 处对外行为回归与 1 处骨架依赖风险），修复后放行；M5-3 与 M1 条目 2+3 按模块分区并行审计
+- 遗留与后续：见 [Phase 9 收口与遗留清单](../design/governance/2026-09-16-phase9-closure.md)
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

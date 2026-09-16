@@ -23,9 +23,10 @@ import {
  * 用例级自动断言「0 console error」（断言 5）。断言 4（桌面与改动前基线一致）需批次自身基线归档，
  * 常驻用例只覆盖其形态回归部分（窄屏规则在桌面不生效）。
  *
- * **键盘聚焦口径现状**：§4 要求的强口径（无条件完整可见）当前不可达且待用户裁定——
- * 详见 `docs/design/responsive.md` §4 的键盘聚焦段与本仓库 backlog 候选。本文件按可判定部分断言，
- * 并在窄屏下硬性要求「完全在滚动区外」的分支被触发，避免该口径静默失去覆盖。
+ * **键盘聚焦口径**：`docs/design/responsive.md` §4 采用**分档判定**（2026-09-17 用户裁定）——聚焦前
+ * 完全在滚动区外 ⇒ 必须完整滚入；聚焦前已相交 ⇒ 必须仍相交（native 焦点滚动在聚焦前已有像素级
+ * 可见边时不再介入，故「无条件完整可见」不作为验收标准，增强候选见仓库 backlog）。窄屏下硬性要求
+ * 「完全在滚动区外」的分支被触发，避免该口径静默失去覆盖。
  *
  * 每个用例在 mobile / tablet / desktop 三个 project 下各跑一遍（见 playwright.config.ts）。
  */
@@ -240,7 +241,7 @@ test.describe('滚动类容器：键盘聚焦滚入', () => {
                 type: 'observation',
                 description: fullyVisible
                     ? `${scrollCase.name}：Tab 遍历后聚焦成员完整可见`
-                    : `${scrollCase.name}：Tab 遍历后聚焦成员仅部分可见（强口径不可达，待裁定）`,
+                    : `${scrollCase.name}：Tab 遍历后聚焦成员仅部分可见（聚焦前已相交，native 不再滚动）`,
             })
         })
 
@@ -262,7 +263,7 @@ test.describe('滚动类容器：键盘聚焦滚入', () => {
                 scrollCase.name,
             )
 
-            // 窄屏下必须构造出「聚焦前完全在滚动区外」，否则强口径分支失去覆盖（恒真用例）
+            // 窄屏下必须构造出「聚焦前完全在滚动区外」，否则分档口径的完整滚入分支失去覆盖（恒真用例）
             if (narrow) {
                 expect(
                     wasFullyOutside,

@@ -208,17 +208,14 @@ export async function expectScrollContainerMembersNotClipped(
 }
 
 /**
- * §4 断言 3（滚动类容器）的**可判定部分**：以真实按键节奏（Tab）遍历到最后一个成员后，
- * 聚焦成员必须落在容器可视区内（不得被裁切到可视区外）。
+ * §4 键盘聚焦口径的**相交分支**：以真实按键节奏（Tab）遍历到最后一个成员后，
+ * 该成员必须仍落在容器可视区内（不得被滚出可视区）。
  *
- * 返回值：聚焦成员是否**完整**落在容器内（供行为观测与用例的补充断言）。
+ * 返回值：聚焦成员是否**完整**落在容器内（仅作行为观测；native 焦点滚动在聚焦前已有像素级
+ * 可见边时不再介入，故「完整可见」不是本分支的验收要求）。
  *
- * **为何不是「必须完整」**：规范口径要求聚焦成员完整落在容器 client rect 内，但该强口径
- * **当前不可达且待用户裁定**（见 `docs/design/responsive.md` §4 的键盘聚焦段）。已实测的
- * native 行为：Chromium 的焦点滚动只在聚焦元素**与滚动区完全不相交**时才介入（触发后居中）；
- * 若聚焦前已有一条像素级可见边（前一个成员居中滚动后留下的窄边），浏览器不再滚动。该行为已在
- * 无组件 CSS 的纯 HTML 夹具上复现同构几何，判为非本库特有。故本用例只断言「相交」，
- * 强口径的可判定形态见 `expectKeyboardEntryRevealsFirstMember`，组件侧补偿见 backlog 候选。
+ * 分档口径与依据见 `docs/design/responsive.md` §4（2026-09-17 用户裁定）：聚焦前完全在滚动区外 ⇒
+ * 必须完整滚入（见 `expectKeyboardEntryRevealsFirstMember`）；聚焦前已相交 ⇒ 必须仍相交（本函数）。
  */
 export async function expectKeyboardTabFocusVisibleInContainer(
     page: Page,
@@ -251,11 +248,10 @@ export async function scrollContainerToEnd(container: Locator): Promise<void> {
 }
 
 /**
- * §4 断言 3（滚动类容器）：容器已滚到末尾时，键盘从容器外进入的首个成员必须被滚入可视区。
+ * §4 键盘聚焦口径：容器已滚到末尾时，键盘从容器外进入的首个成员必须被滚入可视区。
  *
- * 契约按聚焦前的实际几何判定（依据见 `expectKeyboardTabFocusVisibleInContainer` 的边界说明：
- * native 焦点滚动只保证「与滚动区相交」，仅当聚焦元素完全落在滚动区外时才保证完整滚入）：
- * - 聚焦前完全在滚动区外 ⇒ 聚焦后必须**完整**落在容器内；
+ * 契约即 §4 的分档判定（2026-09-17 用户裁定，依据见 `docs/design/responsive.md` §4）：
+ * - 聚焦前完全在滚动区外 ⇒ 聚焦后必须**完整**落在容器 client rect 内；
  * - 聚焦前已相交 ⇒ 聚焦后必须仍相交。
  *
  * 返回值：strict 分支是否被触发（供行为观测；夹具几何应使其在 390 / 768 下触发）。

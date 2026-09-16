@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     prefix: 'Caomei',
     darkMode: 'class',
     injectStyles: true,
-    theme: { primary: '#e63946' },
+    theme: { primary: '#2563eb' },
   },
 })
 ```
@@ -62,10 +62,12 @@ Override CSS variables:
 
 ```css
 :root {
-  --caomei-color-primary: #e63946;
+  --caomei-color-primary: #2563eb;
   --caomei-radius-md: 6px;
 }
 ```
+
+If the custom brand colour is used as a solid or soft background behind text/icons, override the matching `-solid` and `-foreground` for that tone (e.g. `primary-solid` / `primary-foreground`) as well (see [Theming and styles §4](/design/theming), Chinese).
 
 See [Theming and styles](/design/theming) (Chinese) for details.
 

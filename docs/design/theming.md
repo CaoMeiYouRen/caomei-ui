@@ -14,7 +14,7 @@
 
 ```css
 :root {
-  --caomei-color-primary: #e63946;
+  --caomei-color-primary: #2563eb;
   --caomei-color-primary-foreground: #ffffff;
   --caomei-color-bg: #ffffff;
   --caomei-color-bg-elevated: #f7f7f8;
@@ -24,11 +24,12 @@
   --caomei-color-success: #15803d;
   --caomei-color-warning: #b45309;
   --caomei-color-danger: #dc2626;
-  --caomei-color-primary-solid: #e63946;
+  --caomei-color-primary-solid: #2563eb;
   --caomei-color-success-solid: #15803d;
   --caomei-color-warning-solid: #b45309;
   --caomei-color-danger-solid: #dc2626;
   --caomei-color-neutral-solid: #52525b;
+  --caomei-color-on-solid: #fff;
 
   --caomei-radius-sm: 4px;
   --caomei-radius-md: 8px;
@@ -46,6 +47,8 @@
 }
 
 :is(.dark, [data-theme='dark']) {
+  --caomei-color-primary: #60a5fa;
+  --caomei-color-primary-foreground: #0b0b0d;
   --caomei-color-bg: #0b0b0d;
   --caomei-color-bg-elevated: #17171a;
   --caomei-color-text: #f5f5f5;
@@ -57,7 +60,7 @@
 }
 ```
 
-`--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，保证暗色下白字对比度。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
+`--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-foreground` 是**与该 tone 配套的前景色**（tone 作底时的文字 / 图标色，随明暗切换，如暗色 `primary-foreground` 取深色 `#0b0b0d` 以配亮蓝底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，固定配 `--caomei-color-on-solid`（保证实底白字对比度）。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
 
 > 以上 token 片段为节选，完整清单以 `src/styles/theme.css` 为准。断点约定为 sm 640px / md 768px / lg 1024px；`@media` 不支持 CSS 自定义属性，故未定义 `--caomei-breakpoint-*`（详见 [设计规范 §2.3](./design-spec.md)）。
 
@@ -82,7 +85,7 @@
 
 不提供 Tailwind preset 作为内置依赖；如需为 Tailwind 用户提供 token 映射，另作可选文档。
 
-> `solid` 变体的实底色由 `--caomei-color-<tone>-solid` 控制，该组 token 跨主题稳定（不随明暗切换），以保证白字对比度；替换品牌强调色时需同时覆盖对应 `-solid`。
+> `solid` 变体的实底色由 `--caomei-color-<tone>-solid` 控制，该组 token 跨主题稳定（不随明暗切换），以保证与 `--caomei-color-on-solid` 的对比度；替换品牌强调色时需同时覆盖对应 `-solid`，并在该色会作为底承载文字 / 图标时一并覆盖 `--caomei-color-primary-foreground`（Nuxt 模块可用 `primary-foreground` 别名，但别名写入的是单条 `:root` 声明、跨明暗同值，需要按明暗分别取值时仍以 CSS 覆盖为准；详见 [设计规范 §2.2](./design-spec.md)）。
 
 ### 4.1 表单控件宽度
 

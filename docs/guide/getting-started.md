@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     prefix: 'Caomei',
     darkMode: 'class',
     injectStyles: true,
-    theme: { primary: '#e63946' },
+    theme: { primary: '#2563eb' },
   },
 })
 ```
@@ -62,10 +62,12 @@ export default defineConfig({
 
 ```css
 :root {
-  --caomei-color-primary: #e63946;
+  --caomei-color-primary: #2563eb;
   --caomei-radius-md: 6px;
 }
 ```
+
+若自定义品牌色会作为实底或底色承载文字 / 图标，需同时覆盖对应 tone 的 `-solid` 与 `-foreground`（如 `primary-solid` / `primary-foreground`）（详见 [主题与样式 §4](/design/theming)）。
 
 详见 [主题与样式](/design/theming)。
 

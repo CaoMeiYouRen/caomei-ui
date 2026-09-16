@@ -23,9 +23,9 @@
 
 | token | 语义 | 亮色默认 | 暗色默认 |
 | --- | --- | --- | --- |
-| `--caomei-color-primary` | 品牌强调色（文字 / 边框 / soft 底） | `#e63946` | `#e63946` |
-| `--caomei-color-primary-foreground` | primary 实底上的前景色 | `#ffffff` | `#ffffff` |
-| `--caomei-color-primary-solid` | primary 实底（跨主题稳定） | `#e63946` | `#e63946` |
+| `--caomei-color-primary` | 品牌强调色（文字 / 边框 / soft 底） | `#2563eb` | `#60a5fa` |
+| `--caomei-color-primary-foreground` | `primary` 作底时的前景色（随主题自适应） | `#fff` | `#0b0b0d` |
+| `--caomei-color-primary-solid` | primary 实底（跨主题稳定，固定配 `--caomei-color-on-solid`） | `#2563eb` | `#2563eb` |
 | `--caomei-color-success` | 成功强调色 | `#15803d` | `#4ade80` |
 | `--caomei-color-success-solid` | 成功实底 | `#15803d` | `#15803d` |
 | `--caomei-color-warning` | 警告强调色 | `#b45309` | `#fbbf24` |
@@ -34,13 +34,13 @@
 | `--caomei-color-danger-solid` | 危险实底 | `#dc2626` | `#dc2626` |
 | `--caomei-color-neutral-solid` | 中性实底（无强调色） | `#52525b` | `#52525b` |
 | `--caomei-color-on-solid` | 实底上的稳定前景色 | `#fff` | `#fff` |
-| `--caomei-color-bg` | 页面背景 | `#ffffff` | `#0b0b0d` |
+| `--caomei-color-bg` | 页面背景 | `#fff` | `#0b0b0d` |
 | `--caomei-color-bg-elevated` | 抬升面（卡片 / 浮层） | `#f7f7f8` | `#17171a` |
 | `--caomei-color-text` | 主文字 | `#1a1a1a` | `#f5f5f5` |
 | `--caomei-color-text-muted` | 次要文字 | `#6b7280` | `#a1a1aa` |
 | `--caomei-color-border` | 边框 / 分隔线 | `#e5e7eb` | `#2a2a2e` |
 
-> `--caomei-color-<tone>` 随主题自适应；`--caomei-color-<tone>-solid` 跨主题稳定，保证实底白字对比度；替换品牌色时需同时覆盖对应的 `-solid`。
+> `--caomei-color-<tone>` 随主题自适应；`--caomei-color-<tone>-solid` 跨主题稳定，保证实底与 `--caomei-color-on-solid` 的对比度；**替换品牌色时需同时覆盖对应的 `-solid`**。若自定义强调色会被当作底色承载文字 / 图标（`primary` 作底的按钮、选中态等），还需同时覆盖 `--caomei-color-primary-foreground`——它随主题变化（暗色为深色 `#0b0b0d`），只改 `primary` 不改它会与自定义色失配；Nuxt 模块可用 `primary-foreground` 别名覆盖——注意别名写入的是**单条 `:root` 声明**（同一值跨明暗），需要按明暗分别取值时仍以 CSS 覆盖为准。
 
 ### 2.3 尺寸 token（已实现）
 
@@ -96,7 +96,9 @@
 
 - 正文与背景对比度 ≥ 4.5:1；大号文本与图形 ≥ 3:1（WCAG AA）。
 - `-solid` 实底与 `--caomei-color-on-solid` 前景必须满足 AA（其余 tone 实底均 ≥ 4.5:1）。
-  - **已知例外**：品牌主色 `#e63946`（caomei 预设 `primary-solid`）配白字约 4.17:1，略低于阈值；作为既有品牌色暂予接受，跟踪见 [Backlog](../plan/backlog.md)。
+  - **默认主题（2026-09-16 起）达标**：`primary` 与 `primary-foreground` 配对——亮 `#2563eb` + `#fff` = **5.17:1**、暗 `#60a5fa` + `#0b0b0d` = **7.73:1**；`primary-solid` 与 `on-solid` 配对两态均 **5.17:1**。实测证据见 [M2 浏览器验证记录](./governance/2026-09-16-m2-primary-browser-validation.md)。
+  - **本节（`-solid` 配对）的唯一例外**：`caomei` 预设 `primary-solid` `#e63946` 配 `on-solid` 白字约 **4.17:1**，略低于阈值；用户决策预设品牌色保持不变，故暂予接受，跟踪见 [Backlog](../plan/backlog.md)「对比度遗留项盘点」。同预设 `danger-solid` `#b91c1c` 配白字 **6.47:1** 达标。
+  - **不在本节范围的其它既有缺口**（按第一条「正文 ≥ 4.5:1 / 图形 ≥ 3:1」跟踪，见同一 Backlog 行）：亮色 soft 变体 primary 文本 4.37:1、`.caomei-calendar__weekday` 亮色 4.48:1、`.caomei-toast__icon` 暗色 2.54:1；`caomei` 预设 `danger` `#ef4444` 作为前景色时：纯白底约 **3.76:1**、soft 变体的 `color-mix(tone 12%)` 底约 **3.22:1**（消费点为 soft / outline 文本；invalid 描边属图形、3:1 阈值下达标，无需改动；实底仍走 `danger-solid`）。
 - 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
 
 ## 4. 主题与暗色

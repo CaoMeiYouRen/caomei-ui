@@ -124,7 +124,7 @@ export default defineNuxtConfig({
     prefix: 'Caomei',
     darkMode: 'class',
     injectStyles: true,
-    theme: { primary: '#e63946', radius: '0.5rem' },
+    theme: { primary: '#2563eb', radius: '0.5rem' },
   },
 })
 ```

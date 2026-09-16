@@ -58,7 +58,7 @@ async function save(): Promise<void> {
 
 `tone="danger"` is for destructive actions such as deletion and switches the confirm button to the danger accent.
 
-> The full precedence for the button text is "per-request > host props > injected locale"; see [Built-in text and locales](/en-US/guide/locale).
+> The full precedence for the button text is "per-request > host props > injected locale"; see [Built-in text and locales](/en-US/components/locale).
 
 <demo
     vue="../examples/confirm-dialog/tone.vue"

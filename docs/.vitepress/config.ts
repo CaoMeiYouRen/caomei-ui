@@ -259,14 +259,6 @@ export default defineConfig({
                                 { text: 'AI Development', link: '/en-US/guide/ai-development' },
                             ],
                         },
-                        {
-                            text: 'Capabilities',
-                            items: [
-                                { text: 'Composables', link: '/en-US/guide/composables' },
-                                { text: 'Icons', link: '/en-US/guide/icons' },
-                                { text: 'Built-in text and locales', link: '/en-US/guide/locale' },
-                            ],
-                        },
                     ],
                     // 与中文侧栏同分组、同组件、同顺序（组内按组件名字母序）；
                     // 分组命名与规则见 docs/design/documentation-site.md §11。
@@ -347,6 +339,14 @@ export default defineConfig({
                                 { text: 'Toolbar', link: '/en-US/components/toolbar' },
                             ],
                         },
+                        {
+                            text: 'Capabilities',
+                            items: [
+                                { text: 'Composables', link: '/en-US/components/composables' },
+                                { text: 'Icons', link: '/en-US/components/icons' },
+                                { text: 'Built-in text and locales', link: '/en-US/components/locale' },
+                            ],
+                        },
                     ],
                     '/en-US/design/': [
                         {
@@ -418,7 +418,7 @@ export default defineConfig({
         routingPages,
         nav: [
             { text: '指南', link: '/guide/getting-started' },
-            { text: '组件', link: '/components/button' },
+            { text: '组件', link: '/components/' },
             { text: '设计', link: '/design/architecture' },
             { text: '规范', link: '/standards/index' },
             { text: '规划', link: '/plan/roadmap' },
@@ -435,18 +435,11 @@ export default defineConfig({
                         { text: 'AI 协同开发', link: '/guide/ai-development' },
                     ],
                 },
-                {
-                    text: '能力说明',
-                    items: [
-                        { text: '组合式 API', link: '/guide/composables' },
-                        { text: '图标', link: '/guide/icons' },
-                        { text: '内建文案与语言', link: '/guide/locale' },
-                    ],
-                },
             ],
-            // 组件侧栏定序规则：组间顺序固定为 docs/design/documentation-site.md §11 表格自上而下的顺序，
+            // 组件侧栏定序规则：组间顺序固定为 docs/design/documentation-site.md §11 自上而下的登记顺序，
             // 组内按英文组件名字母序；中英两侧同分组、同组件、同顺序。
             '/components/': [
+                { text: '总览', link: '/components/' },
                 {
                     text: '基础与布局',
                     items: [
@@ -520,6 +513,14 @@ export default defineConfig({
                         { text: 'Stepper 步骤条', link: '/components/stepper' },
                         { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Toolbar 工具条', link: '/components/toolbar' },
+                    ],
+                },
+                {
+                    text: '能力说明',
+                    items: [
+                        { text: '组合式 API', link: '/components/composables' },
+                        { text: '图标', link: '/components/icons' },
+                        { text: '内建文案与语言', link: '/components/locale' },
                     ],
                 },
             ],

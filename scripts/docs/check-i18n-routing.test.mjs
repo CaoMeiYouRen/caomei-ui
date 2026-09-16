@@ -5,26 +5,26 @@ import { describe, expect, it } from 'vitest'
 import { checkPage, collectHrefsForLabel } from './check-i18n-routing.mjs'
 
 const desktopAnchor =
-    '<a class="VPLink link" href="/en-US/guide/locale"><!--[--><span>English</span><!--]--></a>'
-const mobileAnchor = '<a class="link" href="/en-US/guide/locale">English</a>'
+    '<a class="VPLink link" href="/en-US/components/locale"><!--[--><span>English</span><!--]--></a>'
+const mobileAnchor = '<a class="link" href="/en-US/components/locale">English</a>'
 const tabletAnchor =
-    '<a class="VPLink link" href="/en-US/guide/locale"><span>English</span></a>'
+    '<a class="VPLink link" href="/en-US/components/locale"><span>English</span></a>'
 
 describe('collectHrefsForLabel', () => {
     it('提取默认主题三种菜单标记下的链接', () => {
         const html = `<nav>${desktopAnchor}${mobileAnchor}${tabletAnchor}</nav>`
 
         expect(collectHrefsForLabel(html, 'English')).toEqual([
-            '/en-US/guide/locale',
-            '/en-US/guide/locale',
-            '/en-US/guide/locale',
+            '/en-US/components/locale',
+            '/en-US/components/locale',
+            '/en-US/components/locale',
         ])
     })
 
     it('只收集文本完全匹配的锚点', () => {
-        const html = '<a href="/en-US/">English</a><a href="/guide/locale">简体中文</a>'
+        const html = '<a href="/en-US/">English</a><a href="/components/locale">简体中文</a>'
 
-        expect(collectHrefsForLabel(html, '简体中文')).toEqual(['/guide/locale'])
+        expect(collectHrefsForLabel(html, '简体中文')).toEqual(['/components/locale'])
         expect(collectHrefsForLabel(html, 'Deutsch')).toEqual([])
     })
 })
@@ -40,9 +40,9 @@ function writeDist(files) {
 describe('checkPage', () => {
     it('产物缺失时报告错误', () => {
         const errors = checkPage('/tmp/not-exist-caomei', {
-            page: 'guide/locale.html',
+            page: 'components/locale.html',
             label: 'English',
-            expected: '/en-US/guide/locale',
+            expected: '/en-US/components/locale',
             reason: '已翻译页回切对应路由',
         })
 
@@ -55,7 +55,7 @@ describe('checkPage', () => {
             checkPage(dir, {
                 page: 'locale.html',
                 label: 'English',
-                expected: '/en-US/guide/locale',
+                expected: '/en-US/components/locale',
                 reason: '已翻译页回切对应路由',
             }),
         ).toEqual([])
@@ -66,7 +66,7 @@ describe('checkPage', () => {
         const errors = checkPage(dir, {
             page: 'locale.html',
             label: 'English',
-            expected: '/en-US/guide/locale',
+            expected: '/en-US/components/locale',
             reason: '已翻译页回切对应路由',
         })
 

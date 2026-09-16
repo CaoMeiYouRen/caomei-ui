@@ -58,7 +58,7 @@ async function save(): Promise<void> {
 
 `tone="danger"` 用于删除等破坏性操作，将确认按钮切换为危险强调色。
 
-> 按钮文案的完整优先级为「单次请求 > 宿主 props > 注入 locale」，见[内建文案与语言](/guide/locale)。
+> 按钮文案的完整优先级为「单次请求 > 宿主 props > 注入 locale」，见[内建文案与语言](/components/locale)。
 
 <demo
     vue="../examples/confirm-dialog/tone.vue"

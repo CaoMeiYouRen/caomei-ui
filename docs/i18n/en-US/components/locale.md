@@ -195,4 +195,4 @@ const caomeiMessages = computed<CaomeiLocaleMessageOverrides | undefined>(() => 
 - Values in `messages` must be non-blank strings. For example, injecting a blank string for `toast.label` is rejected by Reka's `ToastProvider`, which throws (`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`); omit keys you do not cover instead of passing an empty string.
 - Only `zh-CN` / `en-US` are built in. `zh-TW` / `ja-JP` / `ko-KR` and others are injected by the downstream project, either as a full replacement or as partial overrides.
 - Built-in component text and the documentation site's `docs/i18n` page translation do not affect each other; this page describes runtime message injection.
-- See also: [Composables](/en-US/guide/composables), [ConfirmDialog](/en-US/components/confirm-dialog), and [Paginator](/en-US/components/paginator).
+- See also: [Composables](/en-US/components/composables), [ConfirmDialog](/en-US/components/confirm-dialog), and [Paginator](/en-US/components/paginator).

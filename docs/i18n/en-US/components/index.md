@@ -54,6 +54,13 @@ Component pages are translated incrementally and listed in the same order as the
 
 Until a page is translated, refer to the Chinese documentation.
 
+## Capabilities
+
+- [Composables](/en-US/components/composables) — `useToast` / `useConfirm` / `useTheme` / `useLocale` and related APIs
+- [Icons](/en-US/components/icons) — icon wrappers and the `@lucide/vue` integration
+- [Built-in text and locales](/en-US/components/locale) — injecting built-in text, language switching and namespaces
+
+
 ## Chinese documentation
 
 Chinese pages are the primary reference. The Chinese pages for the components above are:

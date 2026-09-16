@@ -25,12 +25,12 @@ export const distRoot = join(projectRoot, 'docs/.vitepress/dist')
  * （未翻译页 → `/en-US/`，已翻译页 → `/en-US/<route>`），否则守卫会按预期失败。
  */
 export const ROUTING_CASES = [
-    { page: 'guide/locale.html', label: 'English', expected: '/en-US/guide/locale', reason: '已翻译页回切对应路由' },
+    { page: 'components/locale.html', label: 'English', expected: '/en-US/components/locale', reason: '已翻译页回切对应路由' },
     { page: 'components/button.html', label: 'English', expected: '/en-US/components/button', reason: '已翻译页回切对应路由' },
     { page: 'design/components.html', label: 'English', expected: '/en-US/', reason: '未翻译页回退 locale 首页' },
     { page: 'standards/development.html', label: 'English', expected: '/en-US/', reason: '未翻译页回退 locale 首页' },
     { page: 'plan/todo.html', label: 'English', expected: '/en-US/', reason: '未翻译页回退 locale 首页' },
-    { page: 'en-US/guide/locale.html', label: '简体中文', expected: '/guide/locale', reason: '反向回切中文源页' },
+    { page: 'en-US/components/locale.html', label: '简体中文', expected: '/components/locale', reason: '反向回切中文源页' },
     { page: 'en-US/design/index.html', label: '简体中文', expected: '/design/', reason: '反向回切中文源页' },
 ]
 

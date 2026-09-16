@@ -73,9 +73,9 @@ export default defineConfig({
 
 ## 下一步
 
-- [组合式 API](./composables.md)
-- [图标](./icons.md)
-- [内建文案与语言](./locale.md)
+- [组合式 API](/components/composables)
+- [图标](/components/icons)
+- [内建文案与语言](/components/locale)
 - [开发指南](./development.md)
 - [组件设计](/design/components)
 - [项目规范](/standards/index)

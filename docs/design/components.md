@@ -109,7 +109,7 @@ Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选�
 | `useLocale` | 读取当前注入的组件内建文案 |
 | `provideLocale` | 向下提供组件内建文案（非组件 / 自定义 Provider 场景） |
 
-> 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。`provideLocale` 为 Provider 入口（对应 §1 Provider 层），列入本表便于查找；其合并、回退与运行时切换见[内建文案与语言](../guide/locale.md)。
+> 服务式 composable 的运行时状态用 provide/inject 的 per-provider store（而非模块级单例），以满足「组件库不引入全局 store」并保证 SSR 每请求隔离；自增 id 等序列同样置于 store 闭包内。`provideLocale` 为 Provider 入口（对应 §1 Provider 层），列入本表便于查找；其合并、回退与运行时切换见[内建文案与语言](../components/locale.md)。
 
 ## 8. 组件开发顺序
 

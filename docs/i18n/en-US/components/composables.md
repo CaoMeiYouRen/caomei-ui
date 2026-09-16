@@ -14,7 +14,7 @@ Besides components, caomei-ui exports a set of composables covering theming, toa
 import { provideLocale, useConfirm, useLocale, useTheme, useToast } from 'caomei-ui'
 ```
 
-For the full mechanism behind `useLocale` / `provideLocale` (merging, fallback, precedence and runtime switching), see [Built-in text and locales](/en-US/guide/locale).
+For the full mechanism behind `useLocale` / `provideLocale` (merging, fallback, precedence and runtime switching), see [Built-in text and locales](/en-US/components/locale).
 
 ## Placing the providers
 
@@ -32,7 +32,7 @@ For the full mechanism behind `useLocale` / `provideLocale` (merging, fallback, 
 
 In non-Nuxt projects, replace `<NuxtPage />` with your root content.
 
-Injecting built-in text is a separate layer: place `<CaomeiConfigProvider>` (or call `provideLocale()`) once at the root, alongside the providers above; see [Built-in text and locales](/en-US/guide/locale).
+Injecting built-in text is a separate layer: place `<CaomeiConfigProvider>` (or call `provideLocale()`) once at the root, alongside the providers above; see [Built-in text and locales](/en-US/components/locale).
 
 ## useTheme
 
@@ -150,7 +150,7 @@ provideLocale({ locale: () => currentLocale.value })
 | `ProvideLocaleOptions.locale` | `MaybeRefOrGetter<CaomeiLocale \| undefined>` | Base locale, defaults to `'zh-CN'` |
 | `ProvideLocaleOptions.messages` | `MaybeRefOrGetter<CaomeiLocaleMessageOverrides \| undefined>` | Per-namespace partial overrides |
 
-For the full semantics (merging, fallback, precedence, runtime switching and the momei example), see [Built-in text and locales](/en-US/guide/locale).
+For the full semantics (merging, fallback, precedence, runtime switching and the momei example), see [Built-in text and locales](/en-US/components/locale).
 
 ## SSR and state isolation
 

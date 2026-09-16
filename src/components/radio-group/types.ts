@@ -1,4 +1,4 @@
-import type { ComponentSize } from '../../types'
+import type { FieldIdentityProps, FieldStateProps } from '../_shared/field'
 
 /**
  * 单选项值，取 Reka UI `AcceptableValue` 中可用的 `string | number` 子集
@@ -18,12 +18,12 @@ export type RadioGroupOrientation = 'horizontal' | 'vertical'
  */
 export type RadioGroupDirection = 'ltr' | 'rtl'
 
-export interface RadioGroupProps {
-    /**
-     * 尺寸
-     * @en Size
-     */
-    size?: ComponentSize
+/**
+ * 与公共契约的差异：`disabled` 禁用整组；`name` 提供后选中值随表单提交；`id` 落在根元素上。
+ * @en Differences from the shared contract: `disabled` disables the whole group; `name` submits the
+ * selected value when provided; `id` lands on the root element.
+ */
+export interface RadioGroupProps extends FieldStateProps, FieldIdentityProps {
     /**
      * 非受控模式下的初始选中值；受控时改用 `v-model`。
      *
@@ -31,21 +31,13 @@ export interface RadioGroupProps {
      * @en Initial selected value in uncontrolled mode; use `v-model` instead when controlled. A value of `undefined` means nothing is selected.
      */
     defaultValue?: RadioValue
-    /**
-     * 是否禁用整组
-     * @en Whether the whole group is disabled
-     */
-    disabled?: boolean
+
     /**
      * 是否必填（原生表单校验）
      * @en Whether it is required (native form validation)
      */
     required?: boolean
-    /**
-     * 表单字段名；提供后选中值随表单提交
-     * @en Form field name; when provided the selected value is submitted with the form
-     */
-    name?: string
+
     /**
      * 组内排列方向，默认垂直
      * @en In-group orientation, vertical by default
@@ -61,23 +53,15 @@ export interface RadioGroupProps {
      * @en Whether keyboard navigation wraps around
      */
     loop?: boolean
-    /**
-     * 校验失败态，映射 aria-invalid
-     * @en Validation failure state, maps to aria-invalid
-     */
-    invalid?: boolean
-    /**
-     * 根元素 id
-     * @en Root element id
-     */
-    id?: string
-    /**
-     * 无可见分组标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible group label, maps to aria-label
-     */
-    label?: string
+
 }
 
+/**
+ * 选项级契约：`disabled` / `id` / `label` 描述的是**单个选项**（与 `SelectOption` 等选项接口同类），
+ * 不并入控件级的 `FieldStateProps` / `FieldIdentityProps`。
+ * @en Option-level contract: `disabled` / `id` / `label` describe a single option (same class as
+ * `SelectOption`), and are therefore not folded into the control-level shared contracts.
+ */
 export interface RadioButtonProps {
     /**
      * 该选项的值，需在同一组内唯一

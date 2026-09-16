@@ -36,7 +36,8 @@
 | 标签属性转发（`label` 优先于透传 `aria-label`） | 12 个文件同构的 `forwardedAttrs`：整体透传 10 处 + `controlAttrs` 基座 2 处（checkbox / switch） | 12 文件 | 已交付 |
 | 表单控件公共 props 契约（首批） | `size` / `disabled` / `invalid` / `placeholder` / `name` / `id` / `label` 内联重复，口径命令见上 | 7 文件 | 已交付 |
 | 表单控件聚焦控制 | 4 个组件重复的 `focus` / `blur` 委托样板 | 4 文件 | 已交付 |
-| 表单控件公共 props 契约（第二批） | `checkbox/types.ts`（size / disabled / invalid / name / id / label）、`radio-group/types.ts`（`RadioGroupProps` 同 6 字段，`RadioButtonProps` 另有 disabled / id / label）、`switch/types.ts`（disabled / name / id / label）；命令 `rg -n 'size\?:|disabled\?:|invalid\?:' src/components/{checkbox,radio-group,switch}/types.ts` | 3 文件 | 待执行（需逐组件核对特有描述与字段子集） |
+| 表单控件公共 props 契约（第二批） | `checkbox` 与 `radio-group` 的 `RadioGroupProps` 纳入 `FieldStateProps` + `FieldIdentityProps` 共 6 字段；`switch` 仅纳入 `FieldIdentityProps`（name / id / label）——`disabled` 保留内联，因 `FieldStateProps` 含 `size` / `invalid`，纳入会新增对外 props。`RadioButtonProps` 的 disabled / id / label 属**选项级语义**，与 Option 接口同类，不纳入。复核命令 `rg -ln 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts \| wc -l` → 10 | 3 文件 | 已交付 |
+| 表单控件公共 props 契约（后续候选） | 仍满足门槛的字段级重复：`date-picker` / `color-picker` / `slider` / `toggle-button` / `file-upload` 的 `types.ts`；命令 `rg -l 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts` 之外仍有内联同名字段 | 5 文件 | 待执行（下次触发时重新取证） |
 | 标签属性转发（模板级 `:aria-label` 无条件覆盖） | 12 处模板级 `:aria-label="label"`（标签为空时渲染空属性，与已定契约反向） | 12 文件 | 待执行（含行为调整，需独立验收） |
 | attrs 透传收敛 | 手写 `useAttrs()` 已收敛至 `stepper` / `slider` 2 处（二者语义不同，未达门槛） | 2 文件 | 未达门槛（不实施） |
 | ARIA 布尔假值归一 | 15 处 `:aria-x="value \|\| undefined"`（规则已在开发规范单点定义，抽取后表达式变长） | 15 文件 | 未达门槛（净收益不为正） |
@@ -57,5 +58,6 @@
 | 轮次 | 日期 | 范围 | 产出 | 证据 |
 |------|------|------|------|------|
 | 首轮 | 2026-09-16 | 治理规范落地 + 代码复用治理：标签属性转发 / 表单控件公共 props 契约 / 聚焦控制 | 开发规范与规划规范新增长期任务制度；`_shared` 新增 `useLabelAttrs` / `field` / `useFocusControl` | §2.1 取证口径与提交记录 |
+| 第 2 轮（阶段收口前触发） | 2026-09-16 | 代码复用治理：表单控件公共 props 契约第二批（checkbox / radio-group / switch） | 3 个 `types.ts` 改为继承公共契约；组件特有约束以接口级注释保留 | §2.1 取证口径与提交记录 |
 
 > 2026-09-16 复评：ARIA 布尔假值归一、locale 文本解析、attrs 透传收敛三条由「执行中 / 待评估净收益」改判为「未达门槛」——依据为抽取后净收益不为正或语义不一致（见 §2.1 各批次证据列）；改判在已认可方向内由执行方判定。

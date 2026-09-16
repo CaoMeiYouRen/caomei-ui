@@ -18,7 +18,7 @@ const icons = {
     right: AlignRight,
 } as const
 
-function iconFor(value: string | number) {
+function iconFor(value: string | number): (typeof icons)[keyof typeof icons] {
     return icons[value as keyof typeof icons]
 }
 </script>

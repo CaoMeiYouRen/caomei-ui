@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, ref, type VNode } from 'vue'
 import { CaomeiButton } from '@/components/button'
 import { CaomeiToastProvider, type ToastPosition } from '@/components/toast'
 import { useToast } from '@/composables/use-toast'
@@ -17,7 +17,7 @@ const position = ref<ToastPosition>('bottom-center')
 
 // 演示嵌套 Provider：useToast 解析最近的 Provider，从而覆盖文档站全局默认位置。
 const Trigger = defineComponent({
-    setup() {
+    setup(): () => VNode {
         const toast = useToast()
         return () =>
             h(

@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
-import { computed, ref, toRaw, watch, type CSSProperties } from 'vue'
+import { computed, ref, toRaw, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
@@ -79,13 +79,13 @@ const tableColumns = computed<Array<ColumnDef<typeof dataTableFeatures, T>>>(() 
         header: column.header ?? column.key,
         enableSorting: Boolean(column.sortable),
         sortFn: column.sortable ? (column.sortFn ?? 'alphanumeric') : undefined,
-        accessorFn: (row: T) => {
+        accessorFn: (row: T): unknown => {
             if (typeof column.accessor === 'function') {
                 return column.accessor(row)
             }
             return getByPath(row, column.accessor ?? column.key)
         },
-        cell: (info) => {
+        cell: (info): VNodeChild => {
             if (column.cell) {
                 return column.cell({
                     row: info.row.original,
@@ -417,7 +417,7 @@ watch(effectivePageSize, (size) => {
     }
 })
 
-watch([() => props.rows, () => props.totalRecords], () => {
+watch([(): number => props.rows, (): number | undefined => props.totalRecords], () => {
     if ((!props.paginator && !props.lazy) || isPageControlled.value) {
         return
     }

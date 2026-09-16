@@ -9,7 +9,7 @@ import './caomei-demo.css'
 export default {
     extends: DefaultTheme,
     Layout,
-    enhanceApp({ app }) {
+    enhanceApp({ app }): void {
         app.component('ComponentApi', ComponentApi)
     },
 } satisfies Theme

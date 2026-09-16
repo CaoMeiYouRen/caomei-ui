@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, ref, type VNode } from 'vue'
 import { CaomeiButton } from '@/components/button'
 import { CaomeiToastProvider, type ToastPosition } from '@/components/toast'
 import { useToast } from '@/composables/use-toast'
@@ -18,7 +18,7 @@ const position = ref<ToastPosition>('bottom-center')
 // Demonstrates a nested Provider: useToast resolves the nearest Provider,
 // overriding the docs site's global default position.
 const Trigger = defineComponent({
-    setup() {
+    setup(): () => VNode {
         const toast = useToast()
         return () =>
             h(

@@ -30,7 +30,7 @@
     "build": "tsdown",
     "build:watch": "tsdown --watch",
     "lint": "cross-env NODE_ENV=production eslint . --fix",
-    "lint:check": "cross-env NODE_ENV=production eslint . --max-warnings 10",
+    "lint:check": "cross-env NODE_ENV=production eslint . --max-warnings 0",
     "lint:css": "stylelint src/**/*.{html,css,scss,sass,vue} --fix",
     "lint:css:check": "stylelint src/**/*.{html,css,scss,sass,vue}",
     "lint:md": "lint-md \"*.md\" \"docs/**/*.md\" \".github/**/*.md\" --fix",

@@ -117,7 +117,7 @@ async function setupComponentMetaWatch(server: MetaWatchServer): Promise<void> {
     let timer: ReturnType<typeof setTimeout> | undefined
     let attempts = 0
 
-    const flush = () => {
+    const flush = (): void => {
         timer = undefined
         if (pending.size === 0) {
             return
@@ -173,7 +173,7 @@ async function setupComponentMetaWatch(server: MetaWatchServer): Promise<void> {
         }
     }
 
-    const schedule = (file: string) => {
+    const schedule = (file: string): void => {
         const relative = path.relative(componentsDir, file)
         if (relative.startsWith('..') || path.isAbsolute(relative) || !COMPONENT_FILE_RE.test(file)) {
             return
@@ -192,7 +192,7 @@ function componentMetaWatch(): Plugin {
     return {
         name: 'caomei-ui:component-meta-watch',
         apply: 'serve',
-        configureServer(server) {
+        configureServer(server): void {
             setupComponentMetaWatch(server).catch((error) => {
                 server.config.logger.error(`[component-meta-watch] 初始化失败：${String(error)}`)
             })

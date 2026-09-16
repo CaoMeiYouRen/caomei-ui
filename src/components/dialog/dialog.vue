@@ -175,6 +175,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 .caomei-dialog__footer {
     display: flex;
     flex-shrink: 0;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--caomei-space-2);
 }

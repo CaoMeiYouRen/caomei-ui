@@ -30,7 +30,7 @@
 | 断点 | 字面量 | 语义（视口区间） | 库内职责 |
 | --- | --- | --- | --- |
 | sm | `@media (width <= 640px)` | 手机（≤640px） | 窄屏下会溢出 / 越界的组件必须在此收敛 |
-| md | `@media (width <= 768px)` | 平板（641–1023px）；该字面量在手机宽度同样命中，与 sm 规则叠加生效 | 默认沿用桌面形态；仅当桌面形态在平板宽度**必然**溢出时才收敛 |
+| md | `@media (width <= 768px)` | 平板窄侧（641–768px）；该字面量在手机宽度同样命中，与 sm 规则叠加生效 | 默认沿用桌面形态；组件形态在 768px 及以下**可能**溢出时用此档收敛（仅在实际放不下时改变形态，如换行 / 组内滚动）。**769–1023px 无档可用**：该区间维持桌面形态，如需覆盖须显式登记理由 |
 | lg | 默认形态（不写媒体查询） | 桌面（≥1024px） | 组件的默认形态 |
 
 - **方向**：桌面优先。收敛统一用 `@media (width <= <断点>)`；同一组件内不得用 `min-width` 表达同一条件。确需在更宽视口切换增强形态时，须在该组件内注释说明理由。
@@ -44,14 +44,14 @@
 
 | # | 行为模式 | 组件 | 手机（≤640） | 平板（641–1023） | 桌面（≥1024） | 现状 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 对话框型浮层 | Dialog / ConfirmDialog | `calc(100vw - 2 × space-4)` 内收 | `min(90vw, 480 / 400px)` | `min(90vw, 既定宽度)` | 已实现（`dialog.vue:202`、`confirm-dialog.vue:187`）；footer 多按钮不换行待补 |
+| 1 | 对话框型浮层 | Dialog / ConfirmDialog | `calc(100vw - 2 × space-4)` 内收；页脚放不下时换行 | `min(90vw, 480 / 400px)` | `min(90vw, 既定宽度)`；页脚单行（放不下时换行） | 已实现（窄屏宽度见 `dialog.vue:203,205`、`confirm-dialog.vue:188,190`；页脚 `flex-wrap: wrap` 见 `dialog.vue:178`、`confirm-dialog.vue:173`） |
 | 2 | 侧边抽屉 | Drawer | 左右向 `min(90vw, size)`；上下向 `min(90vh, size)` | 同左 | 同左 | 已实现（`drawer.vue:156,171`） |
 | 3 | 下拉型浮层面板 | DropdownMenu | 面板宽不超过可用宽；长选项文本省略号 | 同左 | 内容驱动（`min-width: 9rem`） | 已实现（`dropdown-menu-content.vue:49-50`：`max-width` 取 `--reka-dropdown-menu-content-available-width`，`min-width` 用 `min()` 同步收敛；文本省略号见 `:93`） |
 | 4 | 选择器浮层面板 | Select / MultiSelect / AutoComplete | 面板宽取 `max(触发器宽, 内容宽)` 且不超过可用宽；选项文本省略号 | 同左 | `min-width` = 触发器宽 | 已实现（`select.vue:363-364`、`multi-select.vue:331-332`、`auto-complete.vue:568-569`：`max-width` 取 `--reka-{select,combobox}-content-available-width`，`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛；文本省略号见 `select.vue:394`、`multi-select.vue:365`、`auto-complete.vue:602`） |
-| 5 | 定宽复合面板 | ColorPicker | `min(260px, 100vw - 2 × space-4)` | 260px | 260px | **待补**（`color-picker.vue:171,187` 固定 260px） |
+| 5 | 定宽复合面板 | ColorPicker | `min(260px, 可用宽)`（可用宽由 popper 给出，含碰撞内边距，故面板始终落在视口内） | 260px | 260px | 已实现（`color-picker.vue:190` portal 形态 `min(260px, var(--reka-popover-content-available-width, 260px))`；`:172` 内联形态 `min(260px, 100%)` 跟随容器） |
 | 6 | 含日历面板 | DatePicker / Calendar | 面板落在视口内（内容定宽，最多占满可用宽） | 同左 | 内容定宽 `max-content` | 待实测确认（`date-picker.vue:253`） |
-| 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | 允许换行；成员完整可见（不裁切、不压缩到不可读） | 默认沿用桌面形态 | `inline-flex` 单行 | **待补**（`toolbar.vue:38`、`button-group.vue:23,42`、`split-button.vue:129`） |
-| 8 | 分段选择 | SelectButton | 允许换行或横向滚动；禁止裁切 | 同左 | 单行等宽分段 | **待补**（`select-button.vue:136` `overflow: hidden` + `:159` `nowrap`） |
+| 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | Toolbar 换行；ButtonGroup / SplitButton 组内横向滚动（换行会破坏拼接边框 / 圆角）；成员不裁切、不压缩到不可读，超出部分横向滚动可达 | 同手机（md 档，仅在实际放不下时生效） | `inline-flex` 单行 | 已实现（`toolbar.vue:60-64` 横向形态 `flex-wrap: wrap` + `max-width: 100%`；`button-group.vue:59-75` `max-width: 100%` + `overflow: auto hidden`（简写：横向滚动 / 纵向裁切），成员焦点环内缩（点出 `.caomei-button` 使特异性 0-4-0 压过 Button 的 scoped 规则）；SplitButton 经 `CaomeiButtonGroup` 继承） |
+| 8 | 分段选择 | SelectButton | 选项按内容宽换行、行内均分剩余空间（**宽度不再严格相等**），且纵向不得裁切（容器高度随行数增长） | 同手机（md 档，仅在实际放不下时生效） | 单行等宽分段 | 已实现（`select-button.vue:178-198`：`flex-wrap: wrap` + `height: auto` + 选项 `flex: 1 1 auto` + 按 size 档位补 `min-height`（减 2px 抵消根边框，单行高度不变）；`flex-basis` 为 0 时选项永远排在一行并被裁切）。**已知边界**：单个约 35 字的超长选项在 320px 视口下自身即超宽、页面仍会横向溢出——批次前同用例实测一致（非本批引入），自动化用例应取现实标签长度，或由使用方对超长选项自行约束宽度 |
 | 9 | 宽表格 | DataTable | 容器横向滚动 + 表头不换行 | 同左 | 按列宽展示 | 已实现（`data-table.vue:580`）；卡片化归使用方 |
 | 10 | 横向步骤条 | Stepper（`orientation="row"`） | 不内建自动转换：随容器压缩；需纵向时由使用方改 `orientation="vertical"` | 同左 | 等宽横向 | 维持（`stepper-list.vue:27` 固定 `flex-direction: row`，无自动转换；随容器压缩由 `stepper-item.vue:31,34` 的 `flex: 1 1 0` + `min-width: 0` 承担；决策见 §5） |
 | 11 | 分页 | Paginator | 自动换行 | 同左 | 单行 | 已实现（`paginator.vue:124`） |
@@ -67,9 +67,9 @@
 
 **断言**（对每个进入批次的组件，按其矩阵行的期望行为）：
 
-1. **无横向溢出**：组件根或最近的滚动容器满足 `scrollWidth <= clientWidth + 1`；
+1. **无横向溢出**：页面与组件根（或最近的容器）不得出现非预期横向溢出；**矩阵明确允许内部滚动**的组件（ButtonGroup / SplitButton / Tabs / DataTable）以「容器 `overflow-x` 为 `auto` / `scroll` 且成员自身不被裁切（成员 `scrollWidth <= clientWidth + 1`）」判定；
 2. **浮层 / 面板在视口内**：`left >= 0 && right <= innerWidth`（需要滚动的面板另满足内容可滚动可达）；
-3. **关键内容不丢失**：按钮 / 选项文本完整可见，或按矩阵明确允许省略号；省略号场景须保留可访问名或 `title`，不得出现无提示的信息丢失；
+3. **关键内容不丢失**：按钮 / 选项文本完整可见，或按矩阵明确允许省略号（省略号场景须保留可访问名或 `title`）；**换行类容器不得出现纵向裁切**（`scrollHeight <= clientHeight + 1`，且每个成员的 rect 完整落在容器 client rect 内——只测横向 `scrollWidth` 会漏检被固定高度裁掉的行）；
 4. **桌面无回归**：1280×800 下组件几何与计算样式与批次实施前的基线一致；基线（截图或计算样式快照）随该批次的验证记录归档；
 5. **0 console error**；
 6. **面板不窄于触发器**（仅「面板宽度匹配触发器」的浮层组件：Select / MultiSelect / AutoComplete）：可用宽足够时面板宽 `>= 触发器宽 - 1` —— 该断言用于守卫 `min(触发器宽, 可用宽)` 收敛语义与 Reka 变量重命名导致的静默失效。

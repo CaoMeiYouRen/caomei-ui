@@ -168,7 +168,8 @@ function onUpdate(value: string): void {
 }
 
 .caomei-color-picker__panel--inline {
-    width: 260px;
+    /* 内联形态跟随容器：窄容器内收敛为容器宽度，避免固定 260px 溢出 */
+    width: min(260px, 100%);
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-lg);
@@ -184,7 +185,9 @@ function onUpdate(value: string): void {
 .caomei-color-picker__panel {
     z-index: 1001;
     box-sizing: border-box;
-    width: 260px;
+
+    /* 窄屏收敛：面板宽度取 `min(260px, popper 可用宽)`，避免固定宽度越出视口（回退保持既有 260px） */
+    width: min(260px, var(--reka-popover-content-available-width, 260px));
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-lg);

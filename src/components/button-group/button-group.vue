@@ -51,6 +51,34 @@ const rootClass = computed(() => `caomei-button-group--${props.orientation}`)
     flex-shrink: 0;
 }
 
+/*
+  窄屏：成员 `flex-shrink: 0`，且拼接边框 / 圆角由相邻选择器决定、换行会破坏拼接外观，
+  故改为组内横向滚动（成员保持完整可读）；成员总宽可超过平板可用宽，故按响应式设计 §2 的
+  md 档（≤768px）收敛，仅在实际放不下时出现滚动。依据见响应式设计 §3 矩阵 #7。
+*/
+@media (width <= 768px) {
+    .caomei-button-group--horizontal {
+        max-width: 100%;
+
+        /*
+          简写：横向可滚动、纵向裁切。纵向显式 hidden 是为了避免 `overflow-x: auto` 使
+          `overflow-y` 计算为 `auto`，从而凭空引入纵向滚动容器；纵向 ink（焦点环）由成员
+          内缩补偿（见下），非 Button 成员自行声明的外溢装饰则被裁切、由使用方自担。
+        */
+        overflow: auto hidden;
+    }
+
+    /*
+      滚动容器会裁切 `outline-offset: 2px` 的焦点环，故成员焦点环改内缩（同 SelectButton 的既有做法）。
+      选择器点出 `.caomei-button`：Button 自身的 `:focus-visible` 规则经 scoped 编译后同为
+      0-3-0 特异性，仅靠样式表顺序取胜；此处抬到 0-4-0 使其不依赖打包顺序。非 Button 成员
+      自行声明的焦点环不受影响（其可读性由使用方自担）。
+    */
+    .caomei-button-group--horizontal :deep(> .caomei-button:focus-visible) {
+        outline-offset: -2px;
+    }
+}
+
 .caomei-button-group--vertical :deep(> *:not(:last-child)) {
     border-block-end-width: 0;
 }

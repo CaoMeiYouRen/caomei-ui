@@ -170,6 +170,7 @@ onUnmounted(() => {
 
 .caomei-confirm-dialog__footer {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--caomei-space-2);
 }

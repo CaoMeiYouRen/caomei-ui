@@ -165,6 +165,39 @@ function handleUpdate(value: unknown): void {
     border-left: none;
 }
 
+/*
+  窄屏：选项按内容宽参与换行（`flex-basis: auto` 才进入换行计算；basis 为 0 时所有选项永远
+  排在一行并被裁切），行内仍由 `flex-grow` 均分；选项总宽可超过平板可用宽，故按响应式设计
+  §2 的 md 档（≤768px）收敛，仅在实际放不下时换行。
+
+  换行需要容器高度随行数增长：size 档位的高度声明在 `:where()` 内（零特异性），此处用类选择器
+  释放为 `auto`，否则新增行会落到盒子外被根元素的 `overflow: hidden` 裁掉；同时给成员补
+  `min-height`——容器高度不再固定后成员会被压成文字行高。成员高度减去根元素上下边框（2px），
+  使单行形态的高度与释放前完全一致。依据见响应式设计 §3 矩阵 #8。
+*/
+@media (width <= 768px) {
+    .caomei-select-button {
+        flex-wrap: wrap;
+        height: auto;
+    }
+
+    .caomei-select-button__item {
+        flex: 1 1 auto;
+    }
+
+    :where(.caomei-select-button--sm) .caomei-select-button__item {
+        min-height: calc(var(--caomei-control-height-sm) - 2px);
+    }
+
+    :where(.caomei-select-button--md) .caomei-select-button__item {
+        min-height: calc(var(--caomei-control-height-md) - 2px);
+    }
+
+    :where(.caomei-select-button--lg) .caomei-select-button__item {
+        min-height: calc(var(--caomei-control-height-lg) - 2px);
+    }
+}
+
 .caomei-select-button__item:hover:not([data-disabled], [data-state='on']) {
     background: var(--caomei-color-bg-elevated);
 }

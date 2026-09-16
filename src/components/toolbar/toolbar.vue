@@ -50,6 +50,19 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     flex-direction: column;
     align-items: stretch;
 }
+
+/*
+  窄屏允许横向形态换行：成员为 `flex-shrink: 0`，不加换行时整条工具栏会被压出容器；成员总宽
+  可超过平板可用宽，故按响应式设计 §2 的 md 档（≤768px）收敛。仅在实际放不下时生效，桌面不变。
+  纵向形态（`--vertical`）不参与：其换行由使用方的高度约束决定，本组件不预设。
+  依据见响应式设计 §3 矩阵 #7。
+*/
+@media (width <= 768px) {
+    .caomei-toolbar--horizontal {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+}
 </style>
 
 <!--

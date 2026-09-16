@@ -51,6 +51,10 @@ Use the `#option` slot to customize each option's content (such as icon + text);
     ssg="true"
 />
 
+## Narrow-screen behaviour
+
+Below 768px the options wrap by content width and share the remaining space within each row (widths are no longer strictly equal); the container grows with the number of rows so wrapped options are never clipped. The desktop form is a single row of equal-width segments. See matrix #8 in [Responsive design](/design/responsive) (Chinese).
+
 ## Form integration
 
 With `name`, the component is submitted with a native form when inside `<form>`: single-select submits `name=value` (no field is produced when nothing is selected), and multi-select submits by index as `name[0]`, `name[1]` and so on.

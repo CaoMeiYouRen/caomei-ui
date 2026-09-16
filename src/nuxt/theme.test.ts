@@ -12,6 +12,12 @@ describe('resolveThemeVariables', () => {
         ])
     })
 
+    it('primary-foreground 别名映射到对应 CSS 变量', () => {
+        expect(resolveThemeVariables({ 'primary-foreground': '#0b0b0d' })).toEqual([
+            { name: '--caomei-color-primary-foreground', value: '#0b0b0d' },
+        ])
+    })
+
     it('以 `--` 开头的键原样使用', () => {
         expect(resolveThemeVariables({ '--caomei-color-bg': '#000' })).toEqual([
             { name: '--caomei-color-bg', value: '#000' },

@@ -9,6 +9,7 @@
  */
 export const CAOMEI_THEME_ALIASES: Record<string, string> = {
     primary: '--caomei-color-primary',
+    'primary-foreground': '--caomei-color-primary-foreground',
     'primary-solid': '--caomei-color-primary-solid',
     danger: '--caomei-color-danger',
     'danger-solid': '--caomei-color-danger-solid',

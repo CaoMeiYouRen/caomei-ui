@@ -37,6 +37,7 @@
 - 测试文件与被测源码同目录或集中在 `test/`，命名 `*.test.ts` / `*.spec.ts`。
 - 组件测试命名：`<component>.test.ts`。
 - E2E 集中在 `test/e2e/`，命名 `*.e2e.ts`。
+- E2E 夹具（`test/e2e/fixtures/`）是独立 Vite 应用，被测对象为 `src/` 源码（而非构建产物或文档站）；由 `playwright.config.ts` 的 `webServer` 拉起（`127.0.0.1:4501`，端口固定），三个 project 对应[响应式设计 §4](../design/responsive.md) 的验收视口，几何断言基座在 `test/e2e/helpers/`。
 
 ## 5. 验证矩阵
 
@@ -118,6 +119,6 @@ chromium.launch({
 - 测试依赖执行顺序或外部网络。
 - 把「命令跑过了」当作「测试通过」的结论。
 
-## 9. 守卫型测试的写法
+## 10. 守卫型测试的写法
 
 - 「标记表 + 样例」型守卫（如 `check-nuxt.mjs` 的 `CSS_MARKERS` 与 `check-nuxt.test.mjs` 的样例 CSS）互为牵制：新增标记必须同步样例，否则单测立即失败；反之新增 marker 时补 fixture + 断言，可把「链路可用」从推理升级为实测。

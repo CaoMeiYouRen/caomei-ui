@@ -86,7 +86,8 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | 小屏适配补齐 | 用户需求（2026-09-14） | 现状（2026-09-14 快照，逐组件判定以 [响应式设计 §3](../design/responsive.md) 的矩阵为准）：39 个组件中仅 Dialog / ConfirmDialog 有响应式断点（约 2/39），其余基本缺失；缺口含 DataTable（「窄屏转卡片列表」已判定属使用方职责）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 等；库内批次（浮层面板宽度、横向布局溢出）见矩阵 §5 | → M2（Phase 10 执行中） |
-| 移动端测试用例 | 用户需求（2026-09-14） | 为小屏适配补单元断言与 Playwright 多视口（mobile / tablet）回归；沿用现有测试规范与后续 E2E 规划 | → M2（Phase 10 执行中） |
+| 移动端测试用例 | 用户需求（2026-09-14） | 为小屏适配补单元断言与 Playwright 多视口（mobile / tablet）回归；沿用现有测试规范与后续 E2E 规划。**第一步已落地（2026-09-17）**：根 `playwright.config.ts` + `test/e2e/**`（夹具 / helpers / 多视口用例），`pnpm test:e2e` 全绿；**键盘聚焦强口径待用户裁定**（见下行候选与[待办事项](./todo.md) 条目说明）；剩余批次 3（DatePicker / Calendar）用例与改动前基线归档 | → M2（Phase 10 执行中） |
+| 滚动容器键盘聚焦「完整可见」 | 实测发现（2026-09-17 常驻 E2E 建设） | Chromium 的焦点滚动只在聚焦元素与滚动区**完全不相交**时介入（触发后居中）；若聚焦前已有一条像素级可见边（前一个成员居中滚动后留下的窄边），浏览器不再滚动，聚焦成员可能只露出几像素。已在无组件 CSS 的纯 HTML 夹具上复现同构几何，**非本库特有**；故[响应式设计 §4](../design/responsive.md) 的「完整落在容器 client rect 内」当前不可达，常驻用例暂按「相交 + 聚焦前完全在滚动区外时完整滚入」断言（**待用户裁定**：接受分档口径，或保留强口径并由本候选承接组件补偿）。若要求无条件完整可见，需在滚动容器（ButtonGroup / SplitButton / Tabs / DataTable）的 `focusin` 时主动滚动聚焦成员；实现前须一并评估：作用域（仅窄屏可滚动档 vs 全档）、页面纵向滚动副作用、RTL（当前非目标） | 低 |
 | 触摸目标增强（≥44px 命中区） | 用户决策（2026-09-16） | 用户裁定**暂不提升**，维持现状：Checkbox / RadioButton 视觉尺寸 18px、Switch 40px、`control-height-sm` 28px（`theme.css:43`）。提升须引入「不改变视觉尺寸的不可见命中区」原语，影响全部小尺寸控件；触发条件（建议）为下游无障碍审计提出或下游移动端规范要求 | 低 |
 | ~~响应式规范补充~~ | 用户需求（2026-09-14） | **已交付（M2 条目 1，2026-09-16）**：新增[响应式设计](../design/responsive.md)——断点语义、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准与分批清单；`theming.md §5` 收敛为指针并移除未实现陈述 | — |
 
@@ -118,8 +119,9 @@
 | Input 家族样式层共享 | **已迁入[长期任务台账](./recurring.md)**（样式重复收敛 → Input 家族样式层共享批次，条件触发）。attrs 透传已抽取 `useAttrForwarding`；Password 已由 Input 派生并复用其样式（未分叉），其余文本输入类组件仍各自维护 scoped 样式，出现样式分叉时再评估共享样式层 | 低 |
 | a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
 | 视觉回归基线 | Playwright 截图比对主题/暗色/响应式，并对浮层断言页面稳定性（遮罩完整、`in-flow` 不位移；fixed 元素按滚动条宽容差） | 低 |
-| 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现 | 低 |
+| 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现。**部分落地（2026-09-17）**：`playwright.config.ts` + `test/e2e/**` 已存在并承载响应式布局断言；**剩余**：① 上述浮层交互规格（焦点落位 / 滚动锁复位 / 遮罩拦截）与页面稳定性测量（[测试规范 §5.1](../standards/testing.md)）；② E2E 接入 `pnpm verify` / CI（需流水线 `playwright install --with-deps chromium` 与容器参数，属门禁增强，需授权） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
+| 常驻 E2E 规格 follow-up | 审计发现（2026-09-17 常驻 E2E 建设）：① 滚动容器口径已覆盖 ButtonGroup，Tabs / DataTable 仍无夹具用例（规范见[响应式设计 §3 / §4](../design/responsive.md)）；② 键盘聚焦相关表述在同一文件内并用「滚动区」与「容器可视区」，宜向「容器 client rect」归一；③ `playwright.config.ts` 与 `test/e2e/fixtures/vite.config.ts` 登记在 `tsconfig.node.json`，而 `pnpm typecheck`（`vue-tsc --noEmit`）不构建 references，故「typecheck 通过」不含这两个文件——与既有 `vite.config.ts` / `vitest.config.ts` 同状，属既有工程约定，评估是否纳入统一类型检查 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
 | ~~Nuxt 模块真实集成~~ | 已在 [Phase 7 第一阶段](./todo-archive.md) M1 交付并归档：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
 | 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |

@@ -21,7 +21,7 @@ metadata:
   - [ ] 2.4 支持 `class` 透传与 `v-model`（受控组件）。
 - [ ] Step 3: 主题与响应式
   - [ ] 3.1 确认亮/暗主题下表现正常。
-  - [ ] 3.2 确认窄屏布局（如 DataTable 转卡片、Dialog 转全屏）。
+  - [ ] 3.2 按[响应式设计 §3](../../../docs/design/responsive.md) 的窄屏行为矩阵确认窄屏行为（组件自身 chrome 收敛：宽度内收 / 换行 / 横向滚动 / 截断）；卡片化与转全屏不作为默认行为。
 - [ ] Step 4: 类型与导出 ⚠️ REQUIRED
   - [ ] 4.1 在 `src/index.ts` 导出组件与类型。
   - [ ] 4.2 `pnpm typecheck` 零 error。

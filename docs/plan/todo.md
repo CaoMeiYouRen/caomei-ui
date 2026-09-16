@@ -35,12 +35,12 @@
   - [ ] 小屏适配补齐（分批，先核心控件）
     - **批次 1（浮层面板宽度越界）**：Select、MultiSelect、AutoComplete、DropdownMenu
     - **批次 2（横向布局窄屏必现溢出 / 裁切）**：Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行）
-    - **批次 3（需先定策略或实测）**：Stepper（横向窄屏策略）、DatePicker / Calendar（实测后按需）
-    - **不纳入**：DataTable 卡片化、页面级栅格（使用方职责）；触摸目标（待决策）
+    - **批次 3（需先实测）**：DatePicker / Calendar
+    - **不纳入**：DataTable 卡片化、页面级栅格、Stepper 方向转换（使用方职责）；触摸目标（用户决策：暂不提升）
     - 批次依据、行为矩阵与偏差说明见[响应式设计 §5](../design/responsive.md)（登记门槛原写「Tier 0 / Tier 1 组件为一批」；经源码核对，必现溢出 / 裁切项既有 Tier 0 / 1 的 Dialog / ConfirmDialog（footer 换行），又有 Tier 2 / 3 的横向布局类，故批次按缺陷类划分并已在此登记）
   - [ ] 移动端测试用例（Playwright 多视口）
-- **交付状态（条目 1，2026-09-16）**：新增 [响应式设计](../design/responsive.md)——断点语义（sm 640 / md 768 / lg 1024；桌面优先 + `max-width` 收敛 + 字面量白名单）、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准（390 / 768 / 1280 视口 + 5 条断言，布局断言归 Playwright）、批次清单与两项待决策；`theming.md §5` 收敛为指针并移除未实现的「窄屏转卡片列表 / 转 Drawer」陈述，`design-spec.md §2.3` 与 `development.md §7` 补指针，设计索引与文档站侧栏同步。
-- **待决策（条目 1 提出）**：① 触摸目标是否提升到 ≥44px 命中区（Checkbox / RadioButton 视觉尺寸 18px、Switch 40px、`control-height-sm` 28px）；② Stepper 横向窄屏策略（横向滚动 / 隐藏描述文案 / 由使用方转 `column`）。
+- **交付状态（条目 1，2026-09-16）**：新增 [响应式设计](../design/responsive.md)——断点语义（sm 640 / md 768 / lg 1024；桌面优先 + `max-width` 收敛 + 字面量白名单）、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准（390 / 768 / 1280 视口 + 5 条断言，布局断言归 Playwright）、批次清单与三项决策落定；`theming.md §5` 收敛为指针并移除未实现的「窄屏转卡片列表 / 转 Drawer」陈述，`design-spec.md §2.3` 与 `development.md §7` 补指针，设计索引与文档站侧栏同步。
+- **待决策（条目 1 提出）→ 已决策（2026-09-16，用户）**：① 触摸目标**暂不提升**到 ≥44px 命中区（维持 Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px；后续如提升须引入不改变视觉尺寸的命中区原语，候选见 [Backlog §1.5](./backlog.md)）；② Stepper 横向窄屏**由使用方适配**（组件不内建自动转换，需纵向时改 `orientation="vertical"`，已写入 Stepper 组件文档与[响应式设计 §1](../design/responsive.md)）；③ 「DataTable 转卡片列表」「Dialog 转全屏」**不作为默认行为**，窄屏以响应式适配为主（与[响应式设计](../design/responsive.md) 非目标一致，相关 AI 资产表述同步对齐）。
 
 > **阶段容量裁定**：本阶段登记 2 条主线，低于 [规划规范 §6](../standards/planning.md) 的 3–6 条下界——依据是 M1（语言矩阵）与 M2（移动端与响应式）各自为独立工作流，且用户决策明确 momei 可行性评估**排在本阶段之后**，故不凑数增设主线。
 

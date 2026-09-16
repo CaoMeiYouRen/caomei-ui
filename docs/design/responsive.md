@@ -20,6 +20,7 @@
 - 页面级栅格、堆叠与断点驱动的显示 / 隐藏；
 - 控件宽度上限（[主题与样式 §4](./theming.md)：文本类控件默认不设上限，宽度由使用层容器控制）；
 - 表格列取舍与卡片化（`DataTable` 列定义与卡片形态在消费方）；
+- 步骤条方向选择（横向步骤条在窄屏需纵向排布时，由使用方改 `orientation="vertical"`）；
 - 页面语言下的文案长度控制。
 
 **非目标**：移动端独立包；触摸手势（左滑返回 / 下拉刷新）；基于 JS 的视口分支与 `breakpoint` props；容器查询（Container Queries）；`DataTable` 卡片化；触摸目标尺寸（a11y 独立议题，见 §5）。
@@ -52,13 +53,13 @@
 | 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | 允许换行；成员完整可见（不裁切、不压缩到不可读） | 默认沿用桌面形态 | `inline-flex` 单行 | **待补**（`toolbar.vue:38`、`button-group.vue:23,42`、`split-button.vue:129`） |
 | 8 | 分段选择 | SelectButton | 允许换行或横向滚动；禁止裁切 | 同左 | 单行等宽分段 | **待补**（`select-button.vue:136` `overflow: hidden` + `:159` `nowrap`） |
 | 9 | 宽表格 | DataTable | 容器横向滚动 + 表头不换行 | 同左 | 按列宽展示 | 已实现（`data-table.vue:580`）；卡片化归使用方 |
-| 10 | 横向步骤条 | Stepper（`orientation="row"`） | 待定策略（横向滚动 / 隐藏描述 / 使用方转 `column`） | 同左 | 等宽横向 | **待决策**（`stepper-list.vue:27`） |
+| 10 | 横向步骤条 | Stepper（`orientation="row"`） | 不内建自动转换：随容器压缩；需纵向时由使用方改 `orientation="vertical"` | 同左 | 等宽横向 | 维持（`stepper-list.vue:27` 固定 `flex-direction: row`，无自动转换；随容器压缩由 `stepper-item.vue:31,34` 的 `flex: 1 1 0` + `min-width: 0` 承担；决策见 §5） |
 | 11 | 分页 | Paginator | 自动换行 | 同左 | 单行 | 已实现（`paginator.vue:124`） |
 | 12 | 标签页 | Tabs | 列表横向滚动 | 同左 | 单行 | 已实现（`tabs-list.vue:29`） |
 | 13 | 长文本容器 | FileUpload 文件名、面板选项文本 | `min-width: 0` + 省略号 | 同左 | 同左 | 已实现（`file-upload.vue:331`）；面板选项文本随 #3 / #4 收敛 |
 | 14 | 表单控件宽度 | Input 家族 / Slider / InputNumber | `width: 100%`，上限由使用方容器决定 | 同左 | 默认 `max-width` token | 已实现（`input.vue:122`、`slider.vue:140`、`input-number.vue:258`） |
 | 15 | 单元素展示 | Card / Tag / Badge / Message / Skeleton / Image / Avatar | 随容器自适应 | 同左 | 同左 | 无风险（`image.vue:149`、`message.vue:104` 为 `width: 100%`；`card.vue:135` 宽度随容器；`tag.vue:73`、`avatar.vue:91`、`badge.vue:81` 为随内容 / 定尺寸元素；`skeleton.vue:78` 宽度默认 `100%`） |
-| 16 | 触摸目标 | Checkbox / RadioButton / Switch、`control-height-sm` | 待决策（见 §5） | — | — | **待决策**（`checkbox.vue:129` 18px、`radio-button.vue:85` 18px、`switch.vue:52` 40px） |
+| 16 | 触摸目标 | Checkbox / RadioButton / Switch、`control-height-sm` | 维持现状（不做 ≥44px 提升，决策见 §5） | — | — | 维持（`checkbox.vue:129` 18px、`radio-button.vue:85` 18px、`switch.vue:52` 40px、`theme.css:43` 控件高度 28px） |
 
 ## 4. 验收标准
 
@@ -78,17 +79,18 @@
 
 ## 5. 判定门槛与分批清单
 
-**门槛**：矩阵「现状」列为「待补 / 待决策」且属于**库内职责**的组件才进入批次；属使用方职责或已具备收敛能力的组件不进入。
+**门槛**：矩阵「现状」列为「待补 / 待实测确认 / 待决策」且属于**库内职责**的组件才进入批次；属使用方职责或已具备收敛能力的组件不进入。截至 2026-09-16 矩阵已无「待决策」行（#10 / #16 转为「维持」）。
 
 | 批次 | 组件 | 依据 |
 | --- | --- | --- |
 | 批次 1 | Select、MultiSelect、AutoComplete、DropdownMenu | 同一缺陷类：浮层面板缺宽度上限（矩阵 #3 / #4），修法一致 |
 | 批次 2 | Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行） | 窄屏必现溢出或裁切（矩阵 #1 / #5 / #7 / #8） |
-| 批次 3 | Stepper（横向窄屏策略）、DatePicker / Calendar（实测后按需） | 需先定策略或先实测（矩阵 #6 / #10） |
-| 不纳入 | DataTable 卡片化、页面级栅格、触摸目标 | 前两项属使用方职责；触摸目标见下 |
+| 批次 3 | DatePicker / Calendar | 需先实测确认（矩阵 #6） |
+| 不纳入 | DataTable 卡片化、Dialog 转全屏、页面级栅格、Stepper 方向转换、触摸目标 | 均属使用方职责或已由用户决策维持现状（见下） |
 
-**偏差与决策请求**：
+**偏差与决策记录**：
 
 - **批次口径偏差**：登记门槛写「判为需适配的 Tier 0 / Tier 1 组件为一批」（Tier 分层见[组件设计](./components.md)）。经源码核对，Tier 0 / Tier 1 中多数组件的窄屏形态已收敛（矩阵 #1 的面板宽度、#9、#11，以及 #14 中的 Input 家族），库内**浮层面板宽度**类仅 Select / MultiSelect 待补；而「必现溢出 / 裁切」的项既有 Tier 0 / Tier 1 的 Dialog、ConfirmDialog（footer 换行），也有 Tier 2 / Tier 3 的布局类（Toolbar、ButtonGroup、SelectButton、ColorPicker）。故批次 1 以**缺陷类**为单位（含同缺陷类的 AutoComplete（Tier 3）、DropdownMenu（Tier 2）），批次 2 承接其余必现溢出的横向布局类。偏差已在[待办事项](../plan/todo.md) 登记。
-- **待决策 ①**：触摸目标是否提升到 ≥44px 命中区（当前 Checkbox / RadioButton 视觉尺寸 18px、Switch 40px、`control-height-sm` 28px）。属 a11y 议题，涉及全部小尺寸控件的视觉 / 命中原语，需单独决策。
-- **待决策 ②**：Stepper 横向窄屏策略取「横向滚动」「隐藏描述文案」还是「由使用方转 `column`」。
+- **已决策 ①（2026-09-16，用户）**：触摸目标**暂不提升**到 ≥44px 命中区，维持现有视觉尺寸（Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px）。后续如需提升，须引入不改变视觉尺寸的不可见命中区原语，候选登记见 [Backlog §1.5](../plan/backlog.md)。
+- **已决策 ②（2026-09-16，用户）**：Stepper 横向窄屏**由使用方适配**——组件不内建横向→纵向的自动转换或滚动策略，需纵向形态时由使用方改 `orientation="vertical"`（已登记于 [Stepper 组件文档](../components/stepper.md) 与本节 §1 使用方职责）。
+- **已决策 ③（2026-09-16，用户）**：「DataTable 转卡片列表」「Dialog 转全屏」**不作为默认行为**，窄屏以响应式适配（横向滚动 / 内收宽度 / 换行 / 截断）为主；卡片化与全屏化仅在业务需要时由使用方实现（结论与 §1 非目标一致）。

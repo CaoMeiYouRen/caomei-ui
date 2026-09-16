@@ -24,6 +24,8 @@ The root default slot forwards Reka's context (`modelValue`, `totalSteps`, `isPr
 
 `dir` only affects keyboard arrow navigation (mapping left/right and up/down under RTL); set `dir="rtl"` on an ancestor element for layout mirroring.
 
+Narrow screens (≤640px) do **not** auto-switch horizontal to vertical: a horizontal stepper compresses with its container, so pass `orientation="vertical"` when you want the stacked form. See matrix #10 in [Responsive design](/design/responsive) (Chinese).
+
 ## Controlled and uncontrolled
 
 - Controlled: pass `v-model`, and the current step is decided entirely by external state.

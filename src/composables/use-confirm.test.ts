@@ -42,7 +42,7 @@ describe('createConfirmStore', () => {
 
     it('confirm 对象透传全部选项', () => {
         const store = createConfirmStore()
-        store.confirm({
+        void store.confirm({
             title: '删除',
             description: '不可恢复',
             confirmLabel: '删除',

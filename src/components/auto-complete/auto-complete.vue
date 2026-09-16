@@ -72,8 +72,8 @@ const selectedValues = computed<string[]>(() => {
 
 /** 单选模式下的当前值；多选时取首个值仅用于兼容 Reka 的单值形状 */
 const singleValue = computed<string>(() => {
-    const first = selectedValues.value[0]
-    return first ?? ''
+    const values = selectedValues.value
+    return values.length > 0 ? values[0] : ''
 })
 
 const hasValue = computed(() => (props.multiple ? selectedValues.value.length > 0 : singleValue.value !== ''))
@@ -135,6 +135,8 @@ function displayValue(value: unknown): string {
     if (props.multiple || value === undefined || value === null) {
         return ''
     }
+    // 既有行为：按 JS 默认字符串化（原始类型即其字面量）
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     const key = String(value)
     return optionMap.value.get(key)?.label ?? key
 }
@@ -148,18 +150,24 @@ function onUpdateModel(value: unknown): void {
         model.value = value
         return
     }
+    // 既有对外行为：按 JS 默认字符串化写回模型
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     model.value = value === undefined || value === null ? '' : String(value)
 }
 
 function onItemSelect(event: CustomEvent<{ value?: AcceptableValue }>): void {
-    const value = event.detail?.value
+    const value = event.detail.value
     if (value !== undefined && value !== null) {
+        // 既有对外行为：事件载荷按 JS 默认字符串化
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         emit('select', String(value))
     }
 }
 
 function onHighlight(payload: { value: AcceptableValue } | undefined): void {
     const value = payload?.value
+    // 既有对外行为：高亮值按 JS 默认字符串化
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
     highlightedValue.value = value === undefined || value === null ? undefined : String(value)
 }
 

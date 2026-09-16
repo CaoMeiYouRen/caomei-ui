@@ -93,9 +93,13 @@ export function createConfirmStore(): ConfirmStore {
         request,
         open,
         confirm,
-        cancel: () => settle(false),
+        cancel: (): void => {
+            settle(false)
+        },
         settle,
-        dispose: () => settle(false),
+        dispose: (): void => {
+            settle(false)
+        },
     }
 }
 

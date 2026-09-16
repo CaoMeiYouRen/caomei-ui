@@ -12,7 +12,9 @@ function stubMatchMedia(matches: boolean) {
     vi.stubGlobal('matchMedia', vi.fn(() => query))
     return {
         emit: (next: boolean) => {
-            listeners.forEach((cb) => cb({ matches: next }))
+            listeners.forEach((cb) => {
+                cb({ matches: next })
+            })
         },
     }
 }

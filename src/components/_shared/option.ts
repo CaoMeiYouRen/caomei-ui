@@ -62,6 +62,6 @@ export function resolveOptionValue<T extends object>(
  * @en Resolve an option's disabled state: only `disabled === true` counts as disabled; a missing field
  * or any other truthy value leaves the option enabled.
  */
-export function resolveOptionDisabled<T extends object>(option: T): boolean {
+export function resolveOptionDisabled(option: object): boolean {
     return (option as Record<string, unknown>).disabled === true
 }

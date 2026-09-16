@@ -72,7 +72,7 @@ describe('CaomeiConfirmDialog', () => {
     it('请求打开后渲染标题、描述与默认按钮文案并建立 aria 关联', async () => {
         await mountHost()
 
-        api?.confirm({ title: '删除文件', description: '删除后不可恢复' })
+        void api?.confirm({ title: '删除文件', description: '删除后不可恢复' })
         await flushPromises()
 
         const dialog = getDialog()
@@ -145,7 +145,7 @@ describe('CaomeiConfirmDialog', () => {
     it('单次请求的 label 覆盖组件默认值', async () => {
         await mountHost({ confirmLabel: '默认确定', cancelLabel: '默认取消' })
 
-        api?.open({
+        void api?.open({
             title: '删除',
             confirmLabel: '删除',
             cancelLabel: '保留',
@@ -159,7 +159,7 @@ describe('CaomeiConfirmDialog', () => {
     it('未提供单次 label 时回退到组件默认值', async () => {
         await mountHost({ confirmLabel: '好的', cancelLabel: '算了' })
 
-        api?.confirm('继续操作？')
+        void api?.confirm('继续操作？')
         await flushPromises()
 
         expect(getCancelButton().textContent?.trim()).toBe('算了')
@@ -176,7 +176,7 @@ describe('CaomeiConfirmDialog', () => {
         mounted.push(wrapper)
         await flushPromises()
 
-        api?.confirm('继续操作？')
+        void api?.confirm('继续操作？')
         await flushPromises()
 
         expect(getCancelButton().textContent?.trim()).toBe('Cancel')
@@ -209,7 +209,7 @@ describe('CaomeiConfirmDialog', () => {
     it('danger 语气为确认按钮附加危险强调类', async () => {
         await mountHost()
 
-        api?.open({ title: '删除', tone: 'danger' })
+        void api?.open({ title: '删除', tone: 'danger' })
         await flushPromises()
 
         expect(getConfirmButton().classList.contains('caomei-confirm-dialog__confirm--danger')).toBe(
@@ -221,7 +221,7 @@ describe('CaomeiConfirmDialog', () => {
     it('neutral 语气不附加危险强调类', async () => {
         await mountHost()
 
-        api?.confirm('继续操作？')
+        void api?.confirm('继续操作？')
         await flushPromises()
 
         expect(getConfirmButton().className).not.toContain('confirm--danger')
@@ -230,7 +230,7 @@ describe('CaomeiConfirmDialog', () => {
     it('透传原生属性到对话框内容', async () => {
         await mountHost({ 'data-test': 'confirm' })
 
-        api?.confirm('继续操作？')
+        void api?.confirm('继续操作？')
         await flushPromises()
 
         expect(getDialog()?.getAttribute('data-test')).toBe('confirm')

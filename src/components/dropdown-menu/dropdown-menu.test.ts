@@ -196,7 +196,7 @@ describe('CaomeiDropdownMenu', () => {
         const wrapper = mountRich()
         await openMenu(wrapper)
 
-        const content = getContent()!
+        const content = getContent() as HTMLElement
         expect(content.querySelectorAll('[role="menuitem"]')).toHaveLength(2)
         expect(content.querySelectorAll('[role="menuitemcheckbox"]')).toHaveLength(1)
         expect(content.querySelectorAll('[role="menuitemradio"]')).toHaveLength(2)
@@ -230,10 +230,12 @@ describe('CaomeiDropdownMenu', () => {
     })
 
     it('勾选项在选中与未选中间切换', async () => {
-        const wrapper = mountRich({ onCheckbox: (event) => event.preventDefault() })
+        const wrapper = mountRich({ onCheckbox: (event) => {
+            event.preventDefault()
+        } })
         await openMenu(wrapper)
 
-        const checkbox = document.body.querySelector<HTMLElement>('[role="menuitemcheckbox"]')!
+        const checkbox = document.body.querySelector<HTMLElement>('[role="menuitemcheckbox"]') as HTMLElement
         expect(checkbox.getAttribute('data-state')).toBe('unchecked')
 
         await clickElement(checkbox)
@@ -247,8 +249,12 @@ describe('CaomeiDropdownMenu', () => {
 
     it('单选组在选项间切换选中', async () => {
         const wrapper = mountRich({
-            onRadioA: (event) => event.preventDefault(),
-            onRadioB: (event) => event.preventDefault(),
+            onRadioA: (event) => {
+                event.preventDefault()
+            },
+            onRadioB: (event) => {
+                event.preventDefault()
+            },
         })
         await openMenu(wrapper)
 

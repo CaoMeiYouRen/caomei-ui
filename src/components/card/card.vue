@@ -24,7 +24,7 @@ defineSlots<{
 const slots = useSlots()
 
 const hasHeader = computed(() =>
-    Boolean(slots.header || slots.title || slots.extra || props.title || props.subtitle),
+    [slots.header, slots.title, slots.extra, props.title, props.subtitle].some(Boolean),
 )
 
 const rootClass = computed(() => [

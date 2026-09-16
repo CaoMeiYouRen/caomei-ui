@@ -149,7 +149,7 @@ describe('CaomeiColorPicker', () => {
         expect(wrapper.find('.caomei-color-picker__area').exists()).toBe(true)
     })
 
-    it('disabled 传递到触发按钮与面板区域', async () => {
+    it('disabled 传递到触发按钮与面板区域', () => {
         const inlineWrapper = mountPicker({ inline: true, disabled: true })
         expect(inlineWrapper.get('.caomei-color-picker__area-bg').attributes('aria-disabled')).toBe('true')
 

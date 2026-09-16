@@ -38,7 +38,9 @@ class FakeImage {
             this.complete = true
             this.naturalWidth = 1
         }
-        this.listeners.get(type)?.forEach((handler) => handler())
+        this.listeners.get(type)?.forEach((handler) => {
+            handler()
+        })
     }
 }
 

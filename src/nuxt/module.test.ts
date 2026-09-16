@@ -12,8 +12,9 @@ vi.mock('@nuxt/kit', () => {
     const defineNuxtModule = (definition: {
         defaults?: Record<string, unknown>
         setup: (options: Record<string, unknown>, nuxt: unknown) => void
-    }) => (inlineOptions: Record<string, unknown>, nuxt: unknown) =>
+    }) => (inlineOptions: Record<string, unknown>, nuxt: unknown) => {
         definition.setup({ ...definition.defaults, ...inlineOptions }, nuxt)
+    }
 
     return {
         addComponent: addComponentMock,

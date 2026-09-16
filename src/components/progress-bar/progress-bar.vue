@@ -22,7 +22,7 @@ const normalizedMax = computed(() => (Number.isFinite(props.max) && props.max > 
 /** 收窄为合法值，避免 Reka 对越界 / 非有限值告警 */
 const normalizedValue = computed<number | null>(() => {
     const value = props.value
-    if (value === null || value === undefined || !Number.isFinite(value)) {
+    if (value === null || !Number.isFinite(value)) {
         return null
     }
     return Math.min(normalizedMax.value, Math.max(0, value))

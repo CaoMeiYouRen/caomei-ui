@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Download, RefreshCw } from '@lucide/vue'
-import { CaomeiIcon } from '@/icons'
 import { CaomeiSplitButton } from '@/components/split-button'
 import type { SplitButtonMenuItem } from '@/components/split-button'
 

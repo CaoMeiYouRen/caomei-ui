@@ -87,7 +87,9 @@ function onCancel(): void {
     settleDeferred(false)
 }
 
-onUnmounted(() => store.dispose())
+onUnmounted(() => {
+    store.dispose()
+})
 </script>
 
 <template>

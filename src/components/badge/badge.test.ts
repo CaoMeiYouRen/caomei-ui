@@ -3,6 +3,11 @@ import { describe, expect, it } from 'vitest'
 import { CaomeiBadge } from './index'
 
 describe('CaomeiBadge', () => {
+    it('value 为 null 时按无值处理，不渲染徽标', () => {
+        const wrapper = mount(CaomeiBadge, { props: { value: null } })
+        expect(wrapper.find('.caomei-badge').exists()).toBe(false)
+    })
+
     it('无 value 且非圆点时不渲染徽标', () => {
         const wrapper = mount(CaomeiBadge)
         expect(wrapper.find('.caomei-badge').exists()).toBe(false)

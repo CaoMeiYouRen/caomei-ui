@@ -151,9 +151,7 @@ async function setupComponentMetaWatch(server: MetaWatchServer): Promise<void> {
             for (const target of targets) {
                 // moduleGraph 以 POSIX 路径为 key，Windows 下需归一化
                 for (const mod of server.moduleGraph.getModulesByFile(normalizePath(target)) ?? []) {
-                    if (mod) {
-                        server.moduleGraph.invalidateModule(mod)
-                    }
+                    server.moduleGraph.invalidateModule(mod)
                 }
             }
             server.ws.send({ type: 'full-reload' })
@@ -193,7 +191,7 @@ function componentMetaWatch(): Plugin {
         name: 'caomei-ui:component-meta-watch',
         apply: 'serve',
         configureServer(server): void {
-            setupComponentMetaWatch(server).catch((error) => {
+            setupComponentMetaWatch(server).catch((error: unknown) => {
                 server.config.logger.error(`[component-meta-watch] 初始化失败：${String(error)}`)
             })
         },

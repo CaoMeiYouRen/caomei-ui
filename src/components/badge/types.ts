@@ -26,7 +26,7 @@ export interface BadgeProps {
      * 显示的值（数字超出 max 时显示 `max+`）
      * @en Displayed value (shows `max+` when a number exceeds max)
      */
-    value?: string | number
+    value?: string | number | null
     /**
      * 数值上限，超出时显示 `max+`
      * @en Numeric maximum; shows `max+` when exceeded

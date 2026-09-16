@@ -33,6 +33,8 @@ describe('resolveOptionField', () => {
     })
 
     it('函数访问器返回 undefined 时保留 undefined，不回退默认字段', () => {
+        // 访问器显式返回 undefined，用于覆盖「函数访问器返回空值」分支
+        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
         const result = resolveOptionField(option, () => undefined, 'name')
         expect(result).toBeUndefined()
     })

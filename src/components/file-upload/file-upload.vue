@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
     disabled: false,
 })
 
-const model = defineModel<File[]>({ default: () => [] })
+const model = defineModel<File[] | null>({ default: () => [] })
 
 const slots = useSlots()
 const { rootAttrs, controlAttrs } = useAttrForwarding()
@@ -33,7 +33,7 @@ const inputAttrs = computed<{ name?: string, form?: string, required?: boolean }
     }
 })
 const buttonAttrs = computed(() => {
-    const { name, form, required, ...rest } = controlAttrs.value
+    const { name: _name, form: _form, required: _required, ...rest } = controlAttrs.value
     return rest
 })
 

@@ -56,6 +56,8 @@ function normalizeLink(link: string, addPath: boolean, path: string, addExt: boo
 export function useLangs({ correspondingLink = false }: UseLangsOptions = {}): UseLangsReturn {
     const { site, page, theme, localeIndex, hash } = useData<DefaultTheme.Config>()
 
+    // 运行期 `site.locales` 可能缺少当前语言或目标语言条目，判空依据运行期配置而非类型声明
+    /* eslint-disable @typescript-eslint/no-unnecessary-condition */
     const currentLang = computed<CurrentLang>(() => {
         const index = localeIndex.value
         const locale = site.value.locales?.[index]
@@ -87,5 +89,6 @@ export function useLangs({ correspondingLink = false }: UseLangsOptions = {}): U
             })
     })
 
+    /* eslint-enable @typescript-eslint/no-unnecessary-condition */
     return { localeLinks, currentLang }
 }

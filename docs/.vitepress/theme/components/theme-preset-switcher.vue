@@ -8,7 +8,7 @@ const presets = [
 ] as const
 
 const STORAGE_KEY = 'caomei-docs-preset'
-const VALID_PRESETS: Set<string> = new Set(presets.map((preset) => preset.value))
+const VALID_PRESETS: Set<string> = new Set<string>(presets.map((preset) => preset.value))
 const current = ref('')
 
 function apply(value: string): void {

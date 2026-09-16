@@ -198,7 +198,7 @@ describe('CaomeiAutoComplete', () => {
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['apple', 'banana']])
     })
 
-    it('多选模式下无标签时显示占位文本，有标签时隐藏', async () => {
+    it('多选模式下无标签时显示占位文本，有标签时隐藏', () => {
         const empty = mount(CaomeiAutoComplete, {
             props: { options, multiple: true, modelValue: [], placeholder: '请输入' },
         })

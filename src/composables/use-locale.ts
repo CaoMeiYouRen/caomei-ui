@@ -45,9 +45,7 @@ export function mergeLocaleMessages(
     }
     const merged = { ...base }
     const writable = merged as Record<string, Record<string, string>>
-    for (const [namespace, values] of Object.entries(overrides) as Array<
-        [string, Partial<Record<string, string>> | undefined]
-    >) {
+    for (const [namespace, values] of Object.entries(overrides) as [string, Partial<Record<string, string>> | undefined][]) {
         if (values) {
             writable[namespace] = { ...writable[namespace], ...values } as Record<string, string>
         }

@@ -58,7 +58,8 @@ function resolveRowKey(row: T, index: number): string {
         return String(key(row, index))
     }
     if (typeof key === 'string') {
-        return String((row as Record<string, unknown>)[key] ?? index)
+        const value = (row as Record<string, unknown>)[key]
+        return typeof value === 'string' || typeof value === 'number' ? String(value) : String(index)
     }
     return String(index)
 }
@@ -73,7 +74,7 @@ function getByPath(row: T, path: string): unknown {
     }, row)
 }
 
-const tableColumns = computed<Array<ColumnDef<typeof dataTableFeatures, T>>>(() =>
+const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
     props.columns.map((column) => ({
         id: column.key,
         header: column.header ?? column.key,
@@ -94,6 +95,8 @@ const tableColumns = computed<Array<ColumnDef<typeof dataTableFeatures, T>>>(() 
                 })
             }
             const value = info.getValue()
+            // 默认插槽按 JS 默认字符串化输出（对象 → [object Object]），此为既有对外行为
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             return value === null || value === undefined ? '' : String(value)
         },
     })),
@@ -197,7 +200,7 @@ function onSortingChange(updater: Updater<SortingState>): void {
     if (!isSortControlled.value) {
         internalSorting.value = next
     }
-    const first = next[0]
+    const first = next.length > 0 ? next[0] : undefined
     emit('sort', {
         sortField: first?.id ?? '',
         sortOrder: first ? (first.desc ? 'desc' : 'asc') : '',
@@ -209,6 +212,8 @@ function onRowSelectionChange(updater: Updater<RowSelectionState>): void {
     if (!isSelectionControlled.value) {
         internalSelection.value = next
     }
+    // 选中态取值本身即布尔；此处按 truthy 过滤，规则对索引访问的判定不适用
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const selected = props.data.filter((row, index) => next[resolveRowKey(row, index)])
     emit('update:selection', props.selectionMode === 'single' ? (selected[0] ?? null) : selected)
 }

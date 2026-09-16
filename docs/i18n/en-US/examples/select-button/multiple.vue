@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { CaomeiSelectButton } from '@/components/select-button'
 
-const styles = ref<Array<string | number>>(['bold'])
+const styles = ref<(string | number)[]>(['bold'])
 
 const options = [
     { label: 'Bold', value: 'bold' },

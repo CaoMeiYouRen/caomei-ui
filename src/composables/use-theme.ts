@@ -53,7 +53,9 @@ export function useTheme(initial: ThemeMode = 'auto'): UseThemeReturn {
         if (typeof query.addEventListener === 'function') {
             query.addEventListener('change', onChange)
             if (getCurrentScope()) {
-                onScopeDispose(() => query.removeEventListener('change', onChange))
+                onScopeDispose(() => {
+                    query.removeEventListener('change', onChange)
+                })
             }
         }
     }

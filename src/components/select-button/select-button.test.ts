@@ -229,7 +229,7 @@ describe('CaomeiSelectButton', () => {
 
     it('option 插槽可自定义选项内容', () => {
         const SlotSelectButton = CaomeiSelectButton as unknown as DefineComponent<
-            SelectButtonProps<SelectButtonOption>
+            SelectButtonProps
         >
         const wrapper = mount(SlotSelectButton, {
             props: { options },

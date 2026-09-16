@@ -50,7 +50,7 @@ let observedWidth = 0
 
 function measureHeight(): void {
     const el = textareaRef.value
-    if (!el || !el.isConnected) {
+    if (!el?.isConnected) {
         return
     }
 

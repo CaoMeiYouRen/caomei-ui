@@ -259,7 +259,7 @@ describe('CaomeiTextarea', () => {
         })
 
         it('仅在控件宽度变化时重新测量', () => {
-            const callbacks: Array<() => void> = []
+            const callbacks: (() => void)[] = []
             const original = globalThis.ResizeObserver
             class FakeResizeObserver {
                 constructor(callback: () => void) {

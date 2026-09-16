@@ -33,6 +33,11 @@ function lastValue(wrapper: ReturnType<typeof mountUpload>): File[] {
 }
 
 describe('CaomeiFileUpload', () => {
+    it('modelValue 为 null 时按空列表渲染，不抛错', () => {
+        const wrapper = mount(CaomeiFileUpload, { props: { modelValue: null } })
+        expect(wrapper.find('.caomei-file-upload').exists()).toBe(true)
+    })
+
     it('渲染选择按钮与隐藏文件输入', () => {
         const wrapper = mountUpload({ accept: 'image/*', multiple: true })
 

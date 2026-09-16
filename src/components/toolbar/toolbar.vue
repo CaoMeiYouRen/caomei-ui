@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ToolbarRoot } from 'reka-ui'
-import { computed, useAttrs } from 'vue'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ToolbarProps } from './types'
 
 defineOptions({ name: 'CaomeiToolbar', inheritAttrs: false })
@@ -11,13 +11,8 @@ const props = withDefaults(defineProps<ToolbarProps>(), {
     label: '',
 })
 
-const attrs = useAttrs()
-
 /** label 属性优先于透传的 aria-label；二者都缺省时由容器语义推导 */
-const forwardedAttrs = computed<Record<string, unknown>>(() => ({
-    ...attrs,
-    ...(props.label ? { 'aria-label': props.label } : {}),
-}))
+const forwardedAttrs = useLabelAttrs(() => props.label)
 </script>
 
 <template>

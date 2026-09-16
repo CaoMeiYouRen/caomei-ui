@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ToolbarToggleGroup } from 'reka-ui'
-import { computed, useAttrs } from 'vue'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ToolbarToggleGroupModelValue, ToolbarToggleGroupProps } from './types'
 
 defineOptions({ name: 'CaomeiToolbarToggleGroup', inheritAttrs: false })
@@ -14,12 +14,7 @@ const props = withDefaults(defineProps<ToolbarToggleGroupProps>(), {
 
 const model = defineModel<ToolbarToggleGroupModelValue | undefined>()
 
-const attrs = useAttrs()
-
-const forwardedAttrs = computed<Record<string, unknown>>(() => ({
-    ...attrs,
-    ...(props.label ? { 'aria-label': props.label } : {}),
-}))
+const forwardedAttrs = useLabelAttrs(() => props.label)
 
 /** Reka 载荷为更宽的 AcceptableValue，收窄为组件支持的 string | number（及数组） */
 function handleUpdate(value: unknown): void {

@@ -11,6 +11,8 @@ export interface AttrForwarding {
  * 将 `useAttrs()` 拆分为「根元素」与「内部表单控件」两路：
  * class / style 保留在根元素以便布局覆盖，其余原生属性透传给内层控件。
  * 使用方组件必须设置 `inheritAttrs: false`。
+ *
+ * 根自身即可访问、无需分流的组件用 `useLabelAttrs` 整体透传。
  */
 export function useAttrForwarding(): AttrForwarding {
     const attrs = useAttrs()

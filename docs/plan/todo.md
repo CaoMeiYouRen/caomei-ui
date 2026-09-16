@@ -63,7 +63,7 @@
 - 最小验收标准：`pnpm lint:check` 零 error 且 warning 阈值下调有据；`pnpm verify` 全链路通过；`dist/index.d.ts` 冒烟通过。
 - 条目：
   - [x] 启用显式类型族并收紧 `--max-warnings`
-  - [ ] 收敛 unsafe 族与 `explicit-function-return-type`（实现与测试分批）
+  - [x] 收敛 unsafe 族与 `explicit-function-return-type`（实现与测试分批）
   - [ ] 切换 `vue/strict` 并固化门禁（verify 全绿 + 类型产物冒烟）
 
 > 计数口径与快照日期见 [评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md) §3「M5 ESLint 严格化与导出类型」小节与同节末尾的「取证口径」块（2026-09-16 快照）。

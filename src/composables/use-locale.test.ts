@@ -3,7 +3,7 @@ import { computed, defineComponent, h, inject, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { describe, expect, it } from 'vitest'
 import { CaomeiConfigProvider } from '../components/config-provider'
-import { defaultLocaleMessages, type CaomeiLocale } from '../locale'
+import { caomeiLocales, defaultLocaleMessages, type CaomeiLocale } from '../locale'
 import {
     caomeiLocaleKey,
     mergeLocaleMessages,
@@ -37,7 +37,18 @@ describe('resolveLocaleMessages', () => {
 
     it('按语言标识选择内建文案，未知语言回退默认', () => {
         expect(resolveLocaleMessages('en-US').input.clear).toBe('Clear')
-        expect(resolveLocaleMessages('ja-JP' as CaomeiLocale)).toBe(defaultLocaleMessages)
+        expect(resolveLocaleMessages('fr-FR' as CaomeiLocale)).toBe(defaultLocaleMessages)
+    })
+
+    it('新增内建语种按自身文案解析', () => {
+        // 断言钉住的是内建译文原文：人工复核改动译文时需同步更新
+        expect(resolveLocaleMessages('zh-TW').pagination.label).toBe('分頁')
+        expect(resolveLocaleMessages('ja-JP').input.clear).toBe('クリア')
+        expect(resolveLocaleMessages('ko-KR').input.clear).toBe('지우기')
+    })
+
+    it('注册表包含五个内建语种', () => {
+        expect(Object.keys(caomeiLocales)).toEqual(['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR'])
     })
 
     it('原型链键不被当作内建语言', () => {

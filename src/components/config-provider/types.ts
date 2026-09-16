@@ -2,8 +2,8 @@ import type { CaomeiLocale, CaomeiLocaleMessageOverrides } from '../../locale'
 
 export interface ConfigProviderProps {
     /**
-     * 基准语言：内建 `zh-CN` / `en-US`，默认 `zh-CN`
-     * @en Base locale: built-in `zh-CN` / `en-US`, defaults to `zh-CN`
+     * 基准语言：取 `CaomeiLocale` 之一（内建语种见 locale 指南），默认 `zh-CN`；未注册语种回退默认文案
+     * @en Base locale: one of `CaomeiLocale` (see the locale guide for built-in ids), defaults to `zh-CN`; an unregistered id falls back to the default messages
      */
     locale?: CaomeiLocale
     /**

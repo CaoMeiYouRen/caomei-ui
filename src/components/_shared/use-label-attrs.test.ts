@@ -43,7 +43,35 @@ const Wrapper = defineComponent({
     },
 })
 
+const BaseHost = defineComponent({
+    name: 'LabelAttrsBaseHost',
+    inheritAttrs: false,
+    props: {
+        label: { type: String, default: '' },
+    },
+    setup(props) {
+        const base = computed<Record<string, unknown>>(() => ({
+            'aria-label': 'passed-in',
+            'data-x': 'base',
+        }))
+        const forwardedAttrs = useLabelAttrs(() => props.label, base)
+        return () => h('button', forwardedAttrs.value)
+    },
+})
+
 describe('useLabelAttrs', () => {
+    it('传入基座时以基座为准，组件自身透传属性不参与', async () => {
+        const wrapper = mount(BaseHost, { attrs: { 'data-y': 'ignored' } })
+
+        const button = wrapper.get('button')
+        expect(button.attributes('aria-label')).toBe('passed-in')
+        expect(button.attributes('data-x')).toBe('base')
+        expect(button.attributes('data-y')).toBeUndefined()
+
+        await wrapper.setProps({ label: 'explicit' })
+        expect(wrapper.get('button').attributes('aria-label')).toBe('explicit')
+    })
+
     it('无 label 时保留透传的 aria-label 与其余属性', () => {
         const wrapper = mount(Host, {
             attrs: { 'aria-label': 'passed-in', disabled: true, 'data-x': 'y' },

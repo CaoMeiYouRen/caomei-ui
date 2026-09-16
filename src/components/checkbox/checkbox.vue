@@ -4,6 +4,7 @@ import { CheckboxRoot } from 'reka-ui'
 import { computed, useId, useSlots } from 'vue'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { CheckboxProps, CheckboxState } from './types'
 
 defineOptions({ name: 'CaomeiCheckbox', inheritAttrs: false })
@@ -31,13 +32,7 @@ const hasText = computed(() => Boolean(props.text || slots.default))
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 /** label 属性优先于透传的 aria-label，二者都缺省时交由 Reka 从可见标签推导 */
-const forwardedAttrs = computed<Record<string, unknown>>(() => {
-    const merged = { ...controlAttrs.value }
-    if (props.label) {
-        merged['aria-label'] = props.label
-    }
-    return merged
-})
+const forwardedAttrs = useLabelAttrs(() => props.label, controlAttrs)
 
 const rootClass = computed(() => [
     `caomei-checkbox--${props.size}`,

@@ -70,6 +70,12 @@ export const LINE_COUNT_TARGETS = [
         errorLimit: 600,
         rationale: '待办归档主窗口只保留近线阶段窗口与归档索引。',
     },
+    {
+        file: 'docs/plan/recurring.md',
+        warningLimit: 200,
+        errorLimit: 300,
+        rationale: '长期任务台账只保留任务 / 批次摘要与执行记录，细则下沉到规范与设计文档。',
+    },
 ]
 
 export function parseArgs(argv = process.argv) {

@@ -1,6 +1,6 @@
 # caomei-ui 项目路线图
 
-本文档展示 caomei-ui 的发展路线与阶段规划。任务执行状态见 [待办事项](./todo.md)，长期候选见 [Backlog](./backlog.md)，已完成阶段见 [待办归档](./todo-archive.md)。
+本文档展示 caomei-ui 的发展路线与阶段规划。任务执行状态见 [待办事项](./todo.md)，长期候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)，已完成阶段见 [待办归档](./todo-archive.md)。
 
 > 定位：caomei-ui 是一个基于 Vue 3 + Reka UI 的自建组件库，用于替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
 

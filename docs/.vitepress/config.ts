@@ -567,6 +567,7 @@ export default defineConfig({
                         { text: '路线图', link: '/plan/roadmap' },
                         { text: '待办事项', link: '/plan/todo' },
                         { text: 'Backlog', link: '/plan/backlog' },
+                        { text: '长期任务', link: '/plan/recurring' },
                         { text: '待办归档', link: '/plan/todo-archive' },
                     ],
                 },

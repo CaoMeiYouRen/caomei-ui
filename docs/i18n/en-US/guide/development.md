@@ -60,7 +60,7 @@ test/             # Tests
 
 ## Quality gates
 
-See [Development standards - Quality gates](/standards/development#_10-质量门) (Chinese) and [Testing standards - Verification matrix](/standards/testing#_5-验证矩阵) (Chinese).
+See [Development standards - Quality gates](/standards/development#_11-质量门) (Chinese) and [Testing standards - Verification matrix](/standards/testing#_5-验证矩阵) (Chinese).
 
 ## Notes
 

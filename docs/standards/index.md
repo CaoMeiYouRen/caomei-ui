@@ -11,7 +11,7 @@
 | 文档规范 | [documentation.md](./documentation.md) | 文档站、规范/设计/规划文档的维护与同步 |
 | Git 规范 | [git.md](./git.md) | 分支、提交、合并与推送纪律 |
 | 安全规范 | [security.md](./security.md) | 密钥、依赖、输入校验、终端与供应链安全 |
-| 规划规范 | [planning.md](./planning.md) | backlog / roadmap / todo 制度与新需求准入流程 |
+| 规划规范 | [planning.md](./planning.md) | backlog / roadmap / todo / 长期任务制度与新需求准入流程 |
 | AI 协作规范 | [ai-collaboration.md](./ai-collaboration.md) | PDTFC+ 工作流、搜索优先、交接与验证矩阵 |
 | AI 资产治理 | [ai-governance.md](./ai-governance.md) | agents / skills 库存、镜像、外部资产准入与治理 |
 

@@ -95,6 +95,16 @@ const splitButtonItems = [
 const datePickerValue = ref<Date | null>(null)
 const datePickerEdgeValue = ref<Date | null>(null)
 const calendarValue = ref<Date | null>(null)
+
+/**
+ * 浮层断点宽度用例（响应式设计 §3 矩阵 #17）：断点键取迁移期实测值（1199 / 575），
+ * 三档验收视口分别命中「不命中 / 1199 档 / 575 档」三条路径。
+ */
+const dialogBreakpointsOpen = ref(false)
+const dialogBreakpoints = { '1199px': '85vw', '575px': '95vw' }
+
+/** 无头部用例：`showHeader=false` 时头部与关闭按钮不渲染，标题转为视觉隐藏的可访问名 */
+const dialogHeaderlessOpen = ref(false)
 </script>
 
 <template>
@@ -210,6 +220,40 @@ const calendarValue = ref<Date | null>(null)
                 v-model="calendarValue"
                 label="内联日历"
             />
+        </section>
+
+        <section id="dialog-breakpoints" class="fixture__case">
+            <CaomeiButton @click="dialogBreakpointsOpen = true">
+                打开断点对话框
+            </CaomeiButton>
+            <CaomeiDialog
+                v-model:open="dialogBreakpointsOpen"
+                title="断点宽度"
+                size="lg"
+                :breakpoints="dialogBreakpoints"
+            >
+                <p>视口 ≤1199px 时面板宽 85vw，≤575px 时 95vw。</p>
+            </CaomeiDialog>
+        </section>
+
+        <section id="dialog-headerless" class="fixture__case">
+            <CaomeiButton @click="dialogHeaderlessOpen = true">
+                打开无头部对话框
+            </CaomeiButton>
+            <CaomeiDialog
+                v-model:open="dialogHeaderlessOpen"
+                title="无头部对话框"
+                :show-header="false"
+                :close-on-overlay="false"
+                :close-on-esc="false"
+            >
+                <p>头部与关闭按钮不渲染，需通过下方按钮关闭。</p>
+                <template #footer>
+                    <CaomeiButton @click="dialogHeaderlessOpen = false">
+                        关闭
+                    </CaomeiButton>
+                </template>
+            </CaomeiDialog>
         </section>
     </main>
 </template>

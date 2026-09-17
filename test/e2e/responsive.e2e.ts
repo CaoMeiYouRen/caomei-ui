@@ -39,6 +39,28 @@ import {
 const MD_BREAKPOINT = 768
 
 /**
+ * Dialog 断点宽度用例（响应式设计 §3 矩阵 #17）：键与夹具 `dialogBreakpoints` 同源。
+ * 三档验收视口分别命中「不命中（回退 lg）/ 1199 档 / 575 档」。
+ */
+const DIALOG_BREAKPOINT_WIDE_PX = 1199
+const DIALOG_BREAKPOINT_NARROW_PX = 575
+const DIALOG_BREAKPOINT_WIDE_PERCENT = 85
+const DIALOG_BREAKPOINT_NARROW_PERCENT = 95
+/** `size="lg"` 的档位宽度上限（未命中任何断点时的回退） */
+const DIALOG_LG_MAX_WIDTH = 640
+
+/** 视口宽度命中的断点档位（百分比）；宽于最宽档时返回 `undefined`（回退 `size` 档位宽度） */
+function resolvedDialogBreakpointPercent(viewportWidth: number): number | undefined {
+    if (viewportWidth <= DIALOG_BREAKPOINT_NARROW_PX) {
+        return DIALOG_BREAKPOINT_NARROW_PERCENT
+    }
+    if (viewportWidth <= DIALOG_BREAKPOINT_WIDE_PX) {
+        return DIALOG_BREAKPOINT_WIDE_PERCENT
+    }
+    return undefined
+}
+
+/**
  * 上限生效路径的合成探针尺寸：三档验收视口下面板（224×239）的可用空间上限恒不生效，
  * 故「上限生效 + 滚动降级」路径由探针用例承担——宽探针低于内容宽（224px）、高探针低于内容高（239px）。
  */
@@ -156,6 +178,8 @@ const CASE_SECTION_IDS = [
     'panel-date-picker',
     'panel-date-picker-edge',
     'calendar-inline',
+    'dialog-breakpoints',
+    'dialog-headerless',
 ]
 
 /**
@@ -342,6 +366,68 @@ test.describe('内联日历：不裁切且落在容器内', () => {
         await expect(calendar).toBeVisible()
         await expectWrapContainerNotClipped(section, calendar, '内联日历')
         await expectWrapContainerNotClipped(calendar, calendar.locator('.caomei-calendar__grid'), '内联日历网格')
+    })
+})
+
+test.describe('浮层断点宽度（Dialog.breakpoints）', () => {
+    test('面板宽度按命中档位取值且落在视口内', async ({ page }) => {
+        const viewport = await viewportOf(page)
+        const trigger = page.locator('#dialog-breakpoints button').first()
+        const panel = page.locator('.caomei-dialog__content')
+
+        await trigger.click()
+        await expect(panel).toBeVisible()
+
+        const percent = resolvedDialogBreakpointPercent(viewport.width)
+        const expected = percent === undefined
+            ? Math.min(viewport.width * 0.9, DIALOG_LG_MAX_WIDTH)
+            : (viewport.width * percent) / 100
+
+        const box = await boxOf(panel)
+        expect(
+            box.width,
+            `视口 ${viewport.width} 命中档位 ${percent ?? '无（回退 lg）'}，面板宽应为 ${expected}`,
+        ).toBeCloseTo(expected, 0)
+
+        await expectInsideViewport(panel, viewport, 'Dialog 断点面板')
+        await expectLocatorNoHorizontalOverflow(panel, 'Dialog 断点面板')
+
+        await page.keyboard.press('Escape')
+        await expect(panel).toBeHidden()
+    })
+})
+
+test.describe('无头部对话框（Dialog showHeader=false）', () => {
+    test('头部与关闭按钮不渲染，标题保留不可见可访问名', async ({ page }) => {
+        const trigger = page.locator('#dialog-headerless button').first()
+        await trigger.click()
+
+        const panel = page.locator('.caomei-dialog__content')
+        await expect(panel).toBeVisible()
+
+        await expect(panel.locator('.caomei-dialog__header')).toHaveCount(0)
+        await expect(panel.locator('.caomei-dialog__close')).toHaveCount(0)
+
+        const labelledby = await panel.getAttribute('aria-labelledby')
+        expect(labelledby, '隐藏标题仍须提供可访问名').toBeTruthy()
+        const accessibleName = await page.evaluate(
+            (id) => document.getElementById(id)?.textContent ?? '',
+            labelledby as string,
+        )
+        expect(accessibleName.trim()).toBe('无头部对话框')
+
+        const hiddenTitle = await panel.locator('.caomei-dialog__title').evaluate((element) => {
+            const style = getComputedStyle(element)
+            return { width: style.width, clipPath: style.clipPath }
+        })
+        expect(hiddenTitle.width, '隐藏标题应为 1px 盒').toBe('1px')
+        expect(hiddenTitle.clipPath, '隐藏标题应被裁切').toContain('inset')
+
+        await expectInsideViewport(panel, await viewportOf(page), '无头部对话框')
+        await expectLocatorNoHorizontalOverflow(panel, '无头部对话框')
+
+        await panel.locator('.caomei-dialog__footer button').click()
+        await expect(panel).toBeHidden()
     })
 })
 

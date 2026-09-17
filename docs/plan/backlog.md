@@ -99,13 +99,15 @@
 
 ### 1.8 下游协同候选
 
-> **momei 迁移可行性评估（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**用户决策 5 项**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部完成**、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）见[路线图 Phase 7 第二阶段](./roadmap.md)与评估记录 §6。
+> **momei 迁移可行性评估（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**用户决策 5 项**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部纳入执行**（**范围登记，非「已交付」**）、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）见[路线图 Phase 7 第二阶段](./roadmap.md)与评估记录 §6。**2026-09-17 用户授权启动 Phase 7 第二阶段**：范围已拆分为原子条目并登记于[待办事项](./todo.md)；**momei 侧迁移由 momei 项目在自己的仓库执行、本仓不触碰 momei 文件**；本仓承担迁移计划与验收标准（M1）、B0 交接资产（M2）与库侧能力面补齐（M3 / M4 / M5）。
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 迁移执行 | **已决策：按 C3 分批全量执行**。B0 准备（token / 图标映射表 + 视觉基线）→ B1 库侧补齐 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载 | → Phase 7 第二阶段（范围已登记，待启动） |
-| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，**组件能力面**唯一结构性差距）；**B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode` / `maxFileSize` / `auto` / `chooseLabel`、ToggleButton `onLabel` / `offLabel`。**已决策：全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；与 §1.1 / §1.2 的同类候选合并实现 | → Phase 7 第二阶段（范围已登记，待启动；B1 先行） |
-| 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用 | 延迟 |
+| momei 迁移执行 | **已决策：按 C3 分批全量执行**；**执行主体为 momei 项目**（在其仓库执行，本仓不触碰 momei 文件）。B0b 视觉基线 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载。本仓等待其反馈后再决定下一轮动作 | → Phase 7 第二阶段（本仓已启动；momei 侧执行由 momei 项目负责，本仓等待反馈） |
+| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，**组件能力面**唯一结构性差距）；**B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode` / `maxFileSize` / `auto` / `chooseLabel`、ToggleButton `onLabel` / `offLabel`。**已决策：全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；**已登记为 Phase 7 第二阶段 M3 / M4 / M5 原子条目（本仓执行）**；与 §1.1 / §1.2 的同类候选合并实现 | → Phase 7 第二阶段 M3 / M4 / M5（本仓执行，已启动） |
+| 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用；**本阶段不启用跨仓触发**，回归由 momei 每周回归任务承载 | 延迟 |
+
+> **M6 的去向（等待期滚动执行）**：Phase 7 第二阶段 M6 在等待 momei 侧反馈期间，从 §1.1 组件增强候选、§1.2 长尾组件候选与 §1.6 基建与治理候选中按门槛重新取证后逐批追加为原子条目；本节各行保持原状，追加时不改变候选状态。
 
 ## 2. 维护约定
 

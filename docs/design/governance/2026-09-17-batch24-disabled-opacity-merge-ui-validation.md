@@ -3,7 +3,7 @@
 - 日期：2026-09-17
 - 范围：工作区未提交 diff 的「禁用态 `0.5` 档归并」批次（用户 2026-09-17 裁决「归并」）——19 处 `opacity: 0.5` 改为 `opacity: var(--caomei-disabled-opacity)`（默认 `0.6`）
 - 类型：**有意的视觉变更**（禁用态 `0.5` → `0.6`），需真实渲染计算样式取证
-- 依据：[设计规范 §2.6 阴影、遮罩与状态 token](../../design/design-spec.md)、[组件风格约定](../../design/design-spec.md)、[主题与样式设计](../../design/theming.md)、[测试规范 §5 / §5.1](../../standards/testing.md)、[UI 验证 skill](../../../.github/skills/ui-validator/SKILL.md)
+- 依据：[设计规范 §2.6 阴影、遮罩与状态 token](../../design/design-spec.md)、[组件风格约定](../../design/design-spec.md)、[主题与样式设计](../../design/theming.md)、[测试规范 §5 / §5.1](../../standards/testing.md)、UI 验证 skill（`.github/skills/ui-validator/SKILL.md`）
 - 被测对象：`src/components/**` 中 19 处（18 文件）禁用态选择器；基线 revision `b7d9613`
 
 ## 范围（scope）

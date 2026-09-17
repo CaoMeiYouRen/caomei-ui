@@ -42,17 +42,17 @@
 
 #### M3 DataTable 列插槽（A 级，唯一结构性差距）
 
-- 执行范围：为列定义补齐 `#header` / `#body` 插槽形态，并补列级 `selection-mode`、`align-frozen`；含单测与中英迁移示例。用量依据：[评估记录 §2.3](../design/governance/2026-09-17-momei-migration-feasibility.md)（`<Column>` 153 / 20 文件、`#body` 123、`slotProps` 163）。
+- 执行范围：为列定义补齐按列 key 命名的 `#cell-{key}` / `#header-{key}` 作用域插槽；`align-frozen` 与列级 `selection-mode` 经一方源码取证后**收敛为迁移映射、不新增 API**（2026-09-17 用户决策，见 M3-3 行）；含单测与中英迁移示例。用量依据：[评估记录 §2.3](../design/governance/2026-09-17-momei-migration-feasibility.md)（`<Column>` 153 / 20 文件、`#body` 123、`slotProps` 163）。
 - 非目标：不改写现有 `columns` + `cell` 能力；不做 B2 页面迁移（momei 侧）；不含其他列级 prop。
-- 最小验收标准：单测覆盖插槽命中 / 回退 / 作用域字段与两个列级 prop 的生效与默认；中英迁移示例对照 PrimeVue `#body` + `slotProps`；本仓 `pnpm verify` 通过。
+- 最小验收标准：单测覆盖插槽命中 / 回退 / 作用域字段 / 父组件动态增删；中英迁移示例对照 PrimeVue `#body` + `slotProps`，并含 `frozen` 与 `selection-mode` 的映射行；本仓 `pnpm verify` 通过。
 
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
-| M3-1 | 列插槽机制与 `#header` / `#body` 插槽 | 列定义类型面 + DataTable 渲染 + 单测；插槽作用域覆盖行数据、列定义、值与索引；无插槽时保持 `cell` 函数行为 | 单测覆盖「插槽命中」「无插槽回退 `cell`」「作用域字段存在」；既有 DataTable 用例零回归 | — |
-| M3-2 | 列插槽迁移示例与文档（中英） | 中英 DataTable 组件页补迁移示例（对照 PrimeVue `<Column #body>` + `slotProps`）；[设计规范 §7](../design/design-spec.md) 登记映射 | 中英示例各覆盖 `#header` / `#body`；设计规范 §7 有对应映射行；`docs:build` 通过 | M3-1 |
-| M3-3 | 列级 `selection-mode` 与 `align-frozen` | 列定义补列级 `selection-mode`、`align-frozen`，对齐 PrimeVue 语义；含单测与中英文档登记 | 两个 prop 的生效路径与默认值有单测覆盖；未设置时行为与现状一致；中英文档与设计规范 §7 登记 | M3-1 |
+| M3-1 | 列插槽机制与 `#cell-{key}` / `#header-{key}` 插槽 | 列插槽解析 + 单元格 / 表头渲染 + 单测；插槽名按列 `key` 命名，作用域含行数据、取值、索引与列定义；无插槽时保持 `cell` 函数与默认取值行为 | 单测覆盖「插槽命中」「优先于 `cell` 函数」「作用域四字段」「无插槽回退」「表头插槽」「可排序列表头保留排序按钮」「父组件动态增删插槽」；既有 DataTable 用例零回归 | — |
+| M3-2 | 列插槽迁移示例与文档（中英） | 中英 DataTable 组件页新增「列插槽」与「从 PrimeVue 迁移」两节 + `column-slots` 示例；[设计规范 §7](../design/design-spec.md) 登记迁移映射 | 中英示例各覆盖 `#cell-{key}` / `#header-{key}`；设计规范 §7 有对应映射行（含 `frozen` / `selection-mode`）；`docs:build` 通过 | M3-1 |
+| M3-3 | `align-frozen` 与列级 `selection-mode` 收敛为映射（**2026-09-17 用户决策：不新增 API**） | 经 PrimeVue 一方源码取证（`column/index.d.ts`：`frozen?: boolean` + `alignFrozen?: 'left' \| 'right'` + `selectionMode?: 'single' \| 'multiple'`），确认 `align-frozen` 语义为**冻结停靠方向**、已由本库 `frozen: 'left' \| 'right'` 覆盖；列级 `selection-mode` 的 momei 两处用量均在首列，已由表格级 `selectionMode` 覆盖。两者按 M3-2 写入迁移映射，不新增 prop | 映射行进入组件文档与设计规范 §7 并可由 momei 侧直接执行；零新增公开 API | M3-2 |
 
-状态：M3-1 ~ M3-3 为**已登记（范围授权）**，尚未交付。若单条实测超过[规划规范 §5](../standards/planning.md) 的粒度阈值（10 文件 / 800 行新增），按「能力实现 / 文档示例」再拆。
+状态：M3-1 ~ M3-3 已交付（2026-09-17），待 `@code-reviewer` 第 2 轮复核。交付形态：M3-1 实现列插槽（`src/components/data-table/` 4 文件，+199 / −6）；M3-2 补中英组件页「列插槽」「从 PrimeVue 迁移」两节与 `column-slots` 示例；M3-3 经 PrimeVue 一方源码取证收敛为迁移映射（**不新增 API**，2026-09-17 用户决策）。附带修复：ESLint ignores 补 `docs/.vitepress/.temp/**`（VitePress 构建中间产物，已 gitignore 但 ESLint 9 不读 `.gitignore`，本地跑过 `docs:build` 后 `verify` 会把产物当源码 lint）。**V 阶段**：`@ui-validator` 两轮（首轮 48 项断言 + 示例修正后复验 25 项，失败 0 / console error 0），记录见 [列插槽浏览器验证](../design/governance/2026-09-17-column-slots-ui-validation.md)；观察项 O1（示例用 `index` 作序号、排序后错位）已消解（示例改为只解构 `{row}`，两页文档补 `index` 语义提示）。实测规模未超[规划规范 §5](../standards/planning.md) 粒度阈值。质量门：`pnpm verify` exit 0（含 `lint:check` / `lint:css:check` / `lint:md:check` / `typecheck` / `typecheck:docs` / 全量 test 1176 例 / `build` / `check:build` / `check:nuxt` / `docs:build` / `docs:check:i18n-routing` / `governance:check`）；期间曾命中 2 例既有 flaky（`CaomeiInputNumber` / `CaomeiSplitButton` 各一例，与本批无关），隔离复跑与全量复跑均通过。
 
 #### M4 B1 增强·数据与表单类
 

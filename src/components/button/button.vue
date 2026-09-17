@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { CaomeiBadge } from '../badge'
 import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ButtonProps } from './types'
 
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     rounded: false,
     iconPosition: 'start',
     type: 'button',
+    badgeTone: 'neutral',
 })
 
 const emit = defineEmits<{
@@ -80,6 +82,12 @@ function onClick(event: MouseEvent): void {
         >
             <slot name="icon" />
         </span>
+        <CaomeiBadge
+            v-if="badge"
+            class="caomei-button__badge"
+            :value="badge"
+            :tone="badgeTone"
+        />
     </button>
 </template>
 
@@ -91,6 +99,7 @@ function onClick(event: MouseEvent): void {
     --caomei-button-text: var(--caomei-color-text);
     --caomei-button-focus: var(--caomei-color-primary);
 
+    position: relative;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -207,6 +216,18 @@ function onClick(event: MouseEvent): void {
 .caomei-button__icon,
 .caomei-button__spinner {
     flex-shrink: 0;
+}
+
+/*
+  角标以右上角外扩方式叠加（对齐 PrimeVue）：按钮需为定位上下文且不裁切，
+  `pointer-events: none` 保证角标不吞掉按钮的点击区域。
+*/
+.caomei-button__badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    pointer-events: none;
 }
 
 .caomei-button__spinner {

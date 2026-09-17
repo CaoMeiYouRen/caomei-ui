@@ -56,6 +56,19 @@ While `loading`, the button is disabled and shows a loading indicator; `block` m
     ssg="true"
 />
 
+## Badge
+
+A non-empty `badge` string renders a badge at the button's top-right corner (the string is the content); `badgeTone` controls its tone (defaults to `neutral`, corresponding to PrimeVue's default `badge-severity` of `secondary`). Pass `undefined` or an empty string to hide it, which is handy for count-driven visibility.
+
+<demo
+    vue="../../../examples/button/badge.vue"
+    ssg="true"
+/>
+
+> The badge is offset beyond the top-right corner: it does not participate in the button's layout and does not change its size. Unless the accessible name is overridden via `label` (or a forwarded `aria-label`), the badge text is included in the name derived from the visible text (for example "Notifications3").
+>
+> Because the badge extends past the button's bounds, an ancestor must not clip it (`overflow: hidden` / `clip` and the like), or the badge will be cut off.
+
 ## Accessibility
 
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).

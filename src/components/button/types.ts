@@ -44,6 +44,17 @@ export interface ButtonProps {
      */
     iconPosition?: ButtonIconPosition
     /**
+     * 角标内容；提供非空字符串时渲染在按钮右上角（对齐 PrimeVue `:badge`）
+     * @en Badge content; a non-empty string renders a badge at the button's top-right corner
+     * (matching PrimeVue's `:badge`)
+     */
+    badge?: string
+    /**
+     * 角标色调；默认 `neutral`（对应 PrimeVue `badgeSeverity` 默认值 `secondary`）
+     * @en Badge tone; defaults to `neutral` (matching PrimeVue's default `secondary` badge severity)
+     */
+    badgeTone?: ComponentTone
+    /**
      * 无可见文本时的可访问名（映射 aria-label）
      * @en Accessible name when there is no visible text (maps aria-label)
      */

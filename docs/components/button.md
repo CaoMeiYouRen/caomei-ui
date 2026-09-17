@@ -56,6 +56,19 @@
     ssg="true"
 />
 
+## 角标
+
+`badge` 提供非空字符串时在按钮右上角渲染角标（内容即该字符串），`badgeTone` 控制色调（默认 `neutral`，对应 PrimeVue `badge-severity` 的默认值 `secondary`）；传 `undefined` 或空串即不渲染，可用于按数量控制显隐。
+
+<demo
+    vue="../examples/button/badge.vue"
+    ssg="true"
+/>
+
+> 角标以右上角外扩方式叠加，不参与按钮布局、也不改变按钮尺寸；未用 `label`（或透传 `aria-label`）覆盖可访问名时，角标文本会计入由可见文本推导的可访问名（如「通知 3」）。
+>
+> 因角标超出按钮边界，承载它的祖先元素不要设置会裁切的 `overflow`（`hidden` / `clip` 等），否则角标会被切掉。
+
 ## 无障碍
 
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。

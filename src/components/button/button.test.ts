@@ -187,4 +187,50 @@ describe('CaomeiButton', () => {
         expect(wrapper.find('.caomei-button__content').exists()).toBe(false)
         expect(wrapper.find('.caomei-button__icon').exists()).toBe(true)
     })
+
+    it('提供 badge 时渲染角标内容与默认色调', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { badge: '5' },
+            slots: { default: '通知' },
+        })
+
+        const badge = wrapper.get('button .caomei-button__badge')
+        expect(badge.text()).toBe('5')
+        expect(badge.classes()).toContain('caomei-badge--neutral')
+    })
+
+    it('未提供 badge 或传空串时不渲染角标', () => {
+        const without = mount(CaomeiButton, { slots: { default: '通知' } })
+        expect(without.find('.caomei-button__badge').exists()).toBe(false)
+
+        const empty = mount(CaomeiButton, { props: { badge: '' }, slots: { default: '通知' } })
+        expect(empty.find('.caomei-button__badge').exists()).toBe(false)
+    })
+
+    it('badgeTone 控制角标色调', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { badge: '99+', badgeTone: 'danger' },
+        })
+
+        expect(wrapper.get('.caomei-button__badge').classes()).toContain('caomei-badge--danger')
+    })
+
+    it('未用 label 覆盖可访问名时角标文本计入由可见文本推导的可访问名', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { badge: '3' },
+            slots: { default: '通知' },
+        })
+
+        expect(wrapper.get('button').attributes('aria-label')).toBeUndefined()
+        expect(wrapper.get('button').text()).toBe('通知3')
+    })
+
+    it('提供 label 时角标文本不进入可访问名', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { badge: '3', label: '通知' },
+            slots: { default: '通知' },
+        })
+
+        expect(wrapper.get('button').attributes('aria-label')).toBe('通知')
+    })
 })

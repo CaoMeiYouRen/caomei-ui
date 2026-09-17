@@ -58,7 +58,7 @@
 
 ## 无障碍
 
-- `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`。
+- `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
 - 加载态通过 `aria-busy` 标注，并沿用原生 `disabled` 阻止交互。
 
 <ComponentApi name="button" />

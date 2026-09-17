@@ -31,7 +31,7 @@ When `total` is 0, only page 1 is shown and paging is disabled; `disabled` disab
 
 ## Accessibility
 
-- The root is a `<nav>` whose `aria-label` defaults to the current locale's pagination label (Chinese by default), overridable via `label`; when a page has several paginators, it is best to name them individually so landmark navigation can distinguish them.
+- The root is a `<nav>` whose accessible name resolves as `label` > forwarded `aria-label` > the current locale's pagination label (Chinese by default); a forwarded `aria-label` applies when `label` is absent (or empty). When a page has several paginators, it is best to name them individually so landmark navigation can distinguish them.
 - Page numbers and paging buttons are native `<button>`s; the current page outputs `aria-current="page"`, and the ellipsis is marked `aria-hidden`.
 - Page numbers and paging buttons have built-in accessible names from the current locale, overridable via `pageLabel` / `firstLabel` / `previousLabel` / `nextLabel` / `lastLabel`; `{page}` in `pageLabel` is replaced by the page number.
 - The first / last page buttons are disabled automatically on the first / last page, and the paging buttons are likewise disabled at the boundaries.

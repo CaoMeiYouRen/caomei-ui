@@ -3,7 +3,7 @@ import { computed, useSlots } from 'vue'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { BadgeProps } from './types'
 
-defineOptions({ name: 'CaomeiBadge' })
+defineOptions({ name: 'CaomeiBadge', inheritAttrs: false })
 
 const props = withDefaults(defineProps<BadgeProps>(), {
     tone: 'danger',
@@ -48,18 +48,26 @@ const rootClass = computed(() => [
 const ariaHidden = computed(() => (props.dot && !props.label ? 'true' : undefined))
 
 const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
+
+/** `role` / `aria-hidden` 仅在组件有明确意见时输出，避免以 `undefined` 覆盖消费者透传值。 */
+const ariaAttrs = computed<Record<string, string>>(() => ({
+    ...(ariaHidden.value ? { 'aria-hidden': ariaHidden.value } : {}),
+    ...(ariaRole.value ? { role: ariaRole.value } : {}),
+}))
 </script>
 
 <template>
-    <span v-if="overlay" class="caomei-badge-wrapper">
+    <span
+        v-if="overlay"
+        class="caomei-badge-wrapper"
+        v-bind="$attrs"
+    >
         <slot />
         <span
             v-if="visible"
             class="caomei-badge"
             :class="rootClass"
-            v-bind="labelAttrs(label)"
-            :aria-hidden="ariaHidden"
-            :role="ariaRole"
+            v-bind="{...labelAttrs(label), ...ariaAttrs}"
         >
             {{ displayValue }}
         </span>
@@ -68,9 +76,7 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
         v-else-if="visible"
         class="caomei-badge"
         :class="rootClass"
-        v-bind="labelAttrs(label)"
-        :aria-hidden="ariaHidden"
-        :role="ariaRole"
+        v-bind="{...$attrs, ...labelAttrs(label), ...ariaAttrs}"
     >
         {{ displayValue }}
     </span>

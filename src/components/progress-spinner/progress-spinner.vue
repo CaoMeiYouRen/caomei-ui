@@ -1,29 +1,38 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { labelAttrs } from '../_shared/use-label-attrs'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ProgressSpinnerProps } from './types'
 
-defineOptions({ name: 'CaomeiProgressSpinner' })
+defineOptions({ name: 'CaomeiProgressSpinner', inheritAttrs: false })
 
 const props = withDefaults(defineProps<ProgressSpinnerProps>(), {
     size: 'md',
 })
 
 const locale = useLocale()
-const label = computed(() => props.label ?? locale.value.progress.loading)
+const attrs = useAttrs()
+/**
+ * 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言默认文案。
+ * 空串按「无意见」处理（`??` 不跳过空串），此时 `labelAttrs` 不输出属性、透传值由基座保留。
+ */
+const label = computed(
+    () => props.label ?? (attrs['aria-label'] as string | undefined) ?? locale.value.progress.loading,
+)
+
+const forwardedAttrs = useLabelAttrs(() => label.value)
 
 const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
 </script>
 
 <template>
     <ProgressRoot
+        v-bind="forwardedAttrs"
         :model-value="null"
         as="span"
         class="caomei-progress-spinner"
         :class="rootClass"
-        v-bind="labelAttrs(label)"
     >
         <ProgressIndicator
             as="span"

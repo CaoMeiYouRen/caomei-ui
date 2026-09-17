@@ -40,8 +40,9 @@
 
 ## 无障碍
 
-- `dot` 模式无可见文本，建议通过 `label` 提供可访问名（映射 `aria-label` 并补充 `role="img"`）；未提供时对辅助技术隐藏。
+- `dot` 模式无可见文本，建议通过 `label` 提供可访问名（映射 `aria-label` 并补充 `role="img"`）；未提供 `label` 时对辅助技术隐藏（此时透传的 `aria-label` 也会被 `aria-hidden` 抵消）。
+- 非 `dot` 模式下可访问名 `label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
 - 数值模式下 `label` 会覆盖可见文本的朗读内容，一般无需设置。
-- 叠加模式保留插槽内容语义，徽标为兄弟节点；`class` 等透传属性落在包裹容器 `.caomei-badge-wrapper` 上。
+- 叠加模式保留插槽内容语义，徽标为兄弟节点；`class` 等透传属性落在包裹容器 `.caomei-badge-wrapper` 上（徽标自身的可访问名取 `label`）。
 
 <ComponentApi name="badge" />

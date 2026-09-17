@@ -30,7 +30,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 ## Accessibility
 
 - The root is `role="progressbar"`; `aria-valuenow` is not output when the progress is indeterminate.
-- The accessible name defaults to the current locale's "Loading" text, overridable via `label`; adjacent visible text should match `label`.
+- The accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Loading" text; a forwarded `aria-label` applies when `label` is absent (or empty). Adjacent visible text should match `label`.
 - It respects `prefers-reduced-motion`: when motion is reduced it slows the rotation rather than stopping it (keeping motion to express "in progress"). An application's global reduced-motion rule (such as VitePress's default `* { animation-duration: 1ms !important }`) may stop the animation entirely; the docs site restores the slowed rotation in place so the demo stays visible.
 
 ## Style customization

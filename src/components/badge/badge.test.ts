@@ -94,6 +94,45 @@ describe('CaomeiBadge', () => {
         expect(wrapper.get('.caomei-badge').attributes('aria-label')).toBeUndefined()
     })
 
+    it('label 优先于透传的 aria-label，缺省时保留透传值', () => {
+        const explicit = mount(CaomeiBadge, {
+            props: { value: 5, label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(explicit.get('.caomei-badge').attributes('aria-label')).toBe('显式名')
+
+        const forwarded = mount(CaomeiBadge, {
+            props: { value: 5 },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(forwarded.get('.caomei-badge').attributes('aria-label')).toBe('透传名')
+    })
+
+    it('叠加模式透传属性仍落包裹容器，徽标取 label', () => {
+        const wrapper = mount(CaomeiBadge, {
+            props: { value: 5, label: '显式名' },
+            attrs: { class: 'custom', 'data-x': 'y', 'aria-label': '透传名' },
+            slots: { default: '<button>消息</button>' },
+        })
+
+        const container = wrapper.get('.caomei-badge-wrapper')
+        expect(container.classes()).toContain('custom')
+        expect(container.attributes('data-x')).toBe('y')
+        expect(container.attributes('aria-label')).toBe('透传名')
+        expect(wrapper.get('.caomei-badge').attributes('aria-label')).toBe('显式名')
+    })
+
+    it('组件无意见时保留透传的 role 与 aria-hidden', () => {
+        const wrapper = mount(CaomeiBadge, {
+            props: { value: 5 },
+            attrs: { role: 'status', 'aria-hidden': 'true' },
+        })
+
+        const badge = wrapper.get('.caomei-badge')
+        expect(badge.attributes('role')).toBe('status')
+        expect(badge.attributes('aria-hidden')).toBe('true')
+    })
+
     it('叠加分支同样由 label 提供可访问名', () => {
         const wrapper = mount(CaomeiBadge, {
             props: { dot: true, label: '有新消息' },

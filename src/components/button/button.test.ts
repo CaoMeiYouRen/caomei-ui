@@ -97,6 +97,25 @@ describe('CaomeiButton', () => {
         expect(forwarded.get('button').attributes('aria-label')).toBe('透传名')
     })
 
+    it('label 优先于透传的 aria-label', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(wrapper.get('button').attributes('aria-label')).toBe('显式名')
+    })
+
+    it('加载态由组件表达 aria-busy，非加载态保留透传值', async () => {
+        const forwarded = mount(CaomeiButton, { attrs: { 'aria-busy': 'false' } })
+        expect(forwarded.get('button').attributes('aria-busy')).toBe('false')
+
+        const loading = mount(CaomeiButton, { props: { loading: true } })
+        expect(loading.get('button').attributes('aria-busy')).toBe('true')
+
+        await forwarded.setProps({ loading: true })
+        expect(forwarded.get('button').attributes('aria-busy')).toBe('true')
+    })
+
     it('合并透传的 class 与属性', () => {
         const wrapper = mount(CaomeiButton, {
             attrs: { class: 'custom-button', 'data-test': 'button' },

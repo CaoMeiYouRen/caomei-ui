@@ -58,7 +58,7 @@ While `loading`, the button is disabled and shows a loading indicator; `block` m
 
 ## Accessibility
 
-- `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`.
+- `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).
 - The loading state is marked with `aria-busy` and still uses native `disabled` to block interaction.
 
 <ComponentApi name="button" />

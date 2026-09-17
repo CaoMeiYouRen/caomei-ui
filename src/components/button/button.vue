@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { labelAttrs } from '../_shared/use-label-attrs'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ButtonProps } from './types'
 
-defineOptions({ name: 'CaomeiButton' })
+defineOptions({ name: 'CaomeiButton', inheritAttrs: false })
 
 const props = withDefaults(defineProps<ButtonProps>(), {
     variant: 'primary',
@@ -27,6 +27,14 @@ defineSlots<{
 
 const isInactive = computed(() => props.disabled || props.loading)
 
+const forwardedAttrs = useLabelAttrs(() => props.label)
+
+/** 加载态由组件表达 `aria-busy`；非加载态保留消费者透传值。 */
+const rootAttrs = computed<Record<string, unknown>>(() => ({
+    ...forwardedAttrs.value,
+    ...(props.loading ? { 'aria-busy': 'true' } : {}),
+}))
+
 const rootClass = computed(() => [
     `caomei-button--${props.variant}`,
     `caomei-button--${props.size}`,
@@ -45,12 +53,11 @@ function onClick(event: MouseEvent): void {
 
 <template>
     <button
+        v-bind="rootAttrs"
         class="caomei-button"
         :class="rootClass"
         :type="type"
         :disabled="isInactive"
-        :aria-busy="loading || undefined"
-        v-bind="labelAttrs(label)"
         @click="onClick"
     >
         <span

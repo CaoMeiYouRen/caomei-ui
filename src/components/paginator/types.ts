@@ -25,8 +25,8 @@ export interface PaginatorProps {
      */
     disabled?: boolean
     /**
-     * 根节点的可访问名，映射 `aria-label`；默认取当前语言的分页文案
-     * @en Accessible name of the root, maps to `aria-label`; defaults to the current locale's pagination label
+     * 根节点的可访问名，映射 `aria-label`；优先级高于透传的 `aria-label`，两者都未提供时取当前语言的分页文案
+     * @en Accessible name of the root, maps to `aria-label`; takes precedence over a forwarded `aria-label`, falling back to the current locale's pagination label when neither is given
      */
     label?: string
     /**

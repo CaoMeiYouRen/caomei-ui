@@ -31,7 +31,7 @@
 
 ## 无障碍
 
-- 根节点为 `<nav>`，`aria-label` 默认为当前语言的分页文案（默认中文「分页」），可用 `label` 覆盖；同一页面存在多个分页器时建议分别命名，便于 landmark 导航区分。
+- 根节点为 `<nav>`，可访问名优先级为 `label` > 透传 `aria-label` > 当前语言分页文案（默认中文「分页」）；未提供 `label`（或传空串）时透传值生效；同一页面存在多个分页器时建议分别命名，便于 landmark 导航区分。
 - 页码与翻页按钮均为原生 `<button>`；当前页输出 `aria-current="page"`，省略号标记为 `aria-hidden`。
 - 页码与翻页按钮具备内建可访问名（默认取当前语言文案），可通过 `pageLabel` / `firstLabel` / `previousLabel` / `nextLabel` / `lastLabel` 覆盖；`pageLabel` 中的 `{page}` 会替换为页码。
 - 首页 / 末页按钮在第一页 / 末页时自动禁用，翻页按钮在边界同样禁用。

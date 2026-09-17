@@ -10,13 +10,13 @@ import {
     PaginationPrev,
     PaginationRoot,
 } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { labelAttrs } from '../_shared/use-label-attrs'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { PaginatorProps } from './types'
 
-defineOptions({ name: 'CaomeiPaginator' })
+defineOptions({ name: 'CaomeiPaginator', inheritAttrs: false })
 
 const props = withDefaults(defineProps<PaginatorProps>(), {
     itemsPerPage: 10,
@@ -28,7 +28,15 @@ const props = withDefaults(defineProps<PaginatorProps>(), {
 const page = defineModel<number>('page', { default: 1 })
 
 const locale = useLocale()
-const label = computed(() => props.label ?? locale.value.pagination.label)
+const attrs = useAttrs()
+/**
+ * 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言默认文案。
+ * 空串按「无意见」处理（`??` 不跳过空串），此时 `labelAttrs` 不输出属性、透传值由基座保留。
+ */
+const label = computed(
+    () => props.label ?? (attrs['aria-label'] as string | undefined) ?? locale.value.pagination.label,
+)
+const forwardedAttrs = useLabelAttrs(() => label.value)
 const firstLabel = computed(() => props.firstLabel ?? locale.value.pagination.first)
 const previousLabel = computed(() => props.previousLabel ?? locale.value.pagination.previous)
 const nextLabel = computed(() => props.nextLabel ?? locale.value.pagination.next)
@@ -42,13 +50,13 @@ function resolvePageLabel(value: number): string {
 
 <template>
     <PaginationRoot
+        v-bind="forwardedAttrs"
         v-model:page="page"
         :items-per-page="itemsPerPage"
         :total="total"
         :sibling-count="siblingCount"
         :show-edges="showEdges"
         :disabled="disabled"
-        v-bind="labelAttrs(label)"
         class="caomei-paginator"
     >
         <PaginationList

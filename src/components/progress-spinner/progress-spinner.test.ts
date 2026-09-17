@@ -49,6 +49,29 @@ describe('CaomeiProgressSpinner', () => {
         expect(root.attributes('data-test')).toBe('spinner')
     })
 
+    it('label 优先于透传的 aria-label', () => {
+        const wrapper = mount(CaomeiProgressSpinner, {
+            props: { label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('显式名')
+    })
+
+    it('label 为空串时不输出空属性，透传值保留', () => {
+        const wrapper = mount(CaomeiProgressSpinner, {
+            props: { label: '' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('透传名')
+    })
+
+    it('未提供 label 时透传 aria-label 优先于语言默认文案', () => {
+        const wrapper = mount(CaomeiProgressSpinner, {
+            attrs: { 'aria-label': '正在同步' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('正在同步')
+    })
+
     it('可访问名使用注入 locale 的文案', () => {
         const wrapper = mount(CaomeiProgressSpinner, {
             global: {

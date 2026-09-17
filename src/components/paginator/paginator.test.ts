@@ -37,6 +37,30 @@ describe('CaomeiPaginator', () => {
         expect(getRoot(custom).attributes('aria-label')).toBe('结果分页')
     })
 
+    it('label 优先于透传的 aria-label', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50, label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('显式名')
+    })
+
+    it('label 为空串时不输出空属性，透传值保留', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50, label: '' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('透传名')
+    })
+
+    it('未提供 label 时透传 aria-label 优先于语言默认文案', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50 },
+            attrs: { 'aria-label': '订单列表分页' },
+        })
+        expect(getRoot(wrapper).attributes('aria-label')).toBe('订单列表分页')
+    })
+
     it('itemsPerPage 缺省为 10', () => {
         const wrapper = mount(CaomeiPaginator, { props: { total: 25 } })
 

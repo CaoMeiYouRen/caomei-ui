@@ -11,7 +11,7 @@ description: 负责需求澄清、范围判定、验收标准定义与规划文�
 
 - [AGENTS.md](../../AGENTS.md)
 - [规划规范](../../docs/standards/planning.md)
-- [路线图](../../docs/plan/roadmap.md) | [待办事项](../../docs/plan/todo.md) | [Backlog](../../docs/plan/backlog.md)
+- [路线图](../../docs/plan/roadmap.md) | [待办事项](../../docs/plan/todo.md) | [Backlog](../../docs/plan/backlog.md) | [待办归档](../../docs/plan/todo-archive.md) | [长期任务](../../docs/plan/recurring.md)
 - Session 任务态：`.session/current-task.yaml`（git-ignored，存在时优先读取以恢复上次规划进度）
 
 ## 核心职责
@@ -30,9 +30,11 @@ description: 负责需求澄清、范围判定、验收标准定义与规划文�
 
 ### 3. 规划维护
 
-- 维护 `roadmap.md` / `todo.md` / `backlog.md` 的状态与条目。
+- 维护 `roadmap.md` / `todo.md` / `backlog.md` / `todo-archive.md` / `recurring.md` 五个载体的状态与条目。
+- **归档清理**：按 [规划规范 §7](../../docs/standards/planning.md) 执行「完成项不留存」并确认长期任务触发义务已留痕（操作细则见 `todo-manager` skill）。
 - Session 开局先读取 `.session/current-task.yaml` 恢复上次规划进度，收尾时更新其 `progress` / `next_steps`。
-- 阶段完成后协调 `@documentation-specialist` 归档到 `todo-archive.md`。
+- 阶段完成后协调 `@documentation-specialist` 归档到 `todo-archive.md`；归档前确认长期任务触发义务已执行并留痕。
+- 用户决策落定后，确认全部受影响载体（规范 / 计划 / 组件文档 / AI 资产）同步完成。
 
 ## 输出
 

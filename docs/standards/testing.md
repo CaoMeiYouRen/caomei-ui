@@ -97,6 +97,10 @@ chromium.launch({
 - UI 验证证据（脚本、截图）落盘 `test-results/`（已 gitignore），不污染工作区；需长期留存的证据应放可提交位置或内联实测值。
 - Playwright 与 Reka `RadioGroup`（RovingFocus）的键盘选中：选中在 focus 后经 `setTimeout(0)` 结算，`page.keyboard.press()` 在同 tick 内 down+up 会与选中时序竞争、误报「方向键不选中」；须用真实按键节奏（`keyboard.down` → 延时 → `keyboard.up`）。
 - 验证 SSR hydration：Playwright 配本地静态服务器，以点击计数变化判定水合完成，用 `emulateMedia({ colorScheme })` 验证暗色 token。
+- **E2E project 的设备与动效基线**：名为 mobile / tablet 的 project 应使用对应设备描述符（如 `Pixel 5` / `Galaxy Tab S4`）再覆盖 viewport——`devices['Desktop Chrome']` 会带入桌面 UA / screen；布局断言宜统一以 `reducedMotion: 'reduce'` 运行（入场动画的 `scale` 会让 `boundingBox()` 读到中间尺寸），代价是默认动效路径失去常驻覆盖，须在配置注释与 Backlog 双向登记。
+- **几何断言的容器口径**：容器的「可视区」取 client rect（`getBoundingClientRect()` + `clientLeft` / `clientTop` + `clientWidth` / `clientHeight`）；`boundingBox()` 是 border box，直接当可视区用会多出边框宽。
+- **真实页面验证与合成夹具互补**：夹具给可判定的几何数值，真实页面（文档站产物预览）额外暴露宿主侧效应（外壳最小宽、主题 / 表格重置）；两者数值有差时应逐项归因，再判是否为组件缺陷。
+- **判别「上游行为 vs 组件缺陷」**：用**无组件 CSS 的纯 HTML 夹具**复现同构几何，可把结论钉死在上游（如 Chromium 焦点滚动只在聚焦元素与滚动区完全不相交时介入）。
 
 ## 8. 组件测试写法
 
@@ -122,3 +126,7 @@ chromium.launch({
 ## 10. 守卫型测试的写法
 
 - 「标记表 + 样例」型守卫（如 `check-nuxt.mjs` 的 `CSS_MARKERS` 与 `check-nuxt.test.mjs` 的样例 CSS）互为牵制：新增标记必须同步样例，否则单测立即失败；反之新增 marker 时补 fixture + 断言，可把「链路可用」从推理升级为实测。
+- 校验机器格式化源码的守卫用**严格正则 + 遇未知行抛错**（不静默跳过），并把格式前提与 lint 规则绑定；按扩展名扫目录时须排除同目录 `*.test.ts`，否则第一个为该目录加单测的人会收到指向错误的报错。
+- 由注册表派生的公开联合类型扩展后，d.ts 冒烟须带**负向对照**（`@ts-expect-error` 下未注册值应报错），否则「通过」无法区分「类型被放宽」与「类型正确」。
+- **几何类常驻用例必须守卫自己的前置条件**：先构造状态（如把容器滚到末尾）再硬断言该状态成立（`expect(wasFullyOutside).toBe(true)`），否则夹具一改用例即静默恒真；夹具几何要留可判定余量（内容总宽明显超出容器，而非刀刃值），无判别力的用例应删除并在注释写明机制同源。
+- 断言只覆盖一个轴会漏检另一轴：允许换行 / 滚动的容器除横向口径外必须同时断言 `scrollHeight <= clientHeight + 1` 与「成员 rect 落在容器 client rect 内」。

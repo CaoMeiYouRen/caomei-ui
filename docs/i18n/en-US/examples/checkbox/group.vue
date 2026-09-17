@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { CaomeiCheckbox } from '@/components/checkbox'
-import type { CheckboxState } from '@/components/checkbox'
 
 const fruits = [
     { value: 'apple', label: 'Apple' },
@@ -10,18 +9,9 @@ const fruits = [
 ]
 
 const selected = ref<string[]>(['apple'])
-
-function isSelected(value: string): boolean {
-    return selected.value.includes(value)
-}
-
-function toggle(value: string, state: CheckboxState | undefined): void {
-    if (state === true) {
-        selected.value = [...selected.value, value]
-    } else {
-        selected.value = selected.value.filter((item) => item !== value)
-    }
-}
+const selectedLabels = computed(() =>
+    fruits.filter((item) => selected.value.includes(item.value)).map((item) => item.label),
+)
 </script>
 
 <template>
@@ -29,12 +19,12 @@ function toggle(value: string, state: CheckboxState | undefined): void {
         <CaomeiCheckbox
             v-for="item in fruits"
             :key="item.value"
-            :model-value="isSelected(item.value)"
+            v-model="selected"
+            :value="item.value"
             :text="item.label"
-            @update:model-value="(state) => toggle(item.value, state)"
         />
         <p class="demo-state">
-            Selected: {{ selected.join(', ') || 'none' }}
+            Selected: {{ selectedLabels.join(', ') || 'none' }}
         </p>
     </div>
 </template>

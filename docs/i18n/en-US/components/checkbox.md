@@ -32,12 +32,14 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 
 ## Multi-select group
 
-A group can be managed with an array model, binding each item to whether it is included in the array:
+Pass an array to `v-model` and use `value` as the membership key to enter group semantics: clicking adds or removes that `value` from the array (matching PrimeVue). Checkboxes in one group only need to share the same array model — no manual membership bookkeeping required.
 
 <demo
     vue="../examples/checkbox/group.vue"
     ssg="true"
 />
+
+> `value` is required with an array model; without it a click does not change the model. Use [CheckboxGroup](./checkbox-group.md) when you need a group container (group accessibility semantics, whole-array form submission, select-all / indeterminate).
 
 ## Form integration
 
@@ -50,7 +52,7 @@ With `name`, the checkbox is submitted with a native form when inside `<form>`; 
 </form>
 ```
 
-> Currently only single-value form submission is supported; there is no group container, so multi-select groups with object values are not supported yet.
+> With an array model each checkbox submits one value under its own `name` (sharing one `name` across the group submits multiple values); use [CheckboxGroup](./checkbox-group.md) for whole-array submission or select-all.
 
 ## Accessibility
 

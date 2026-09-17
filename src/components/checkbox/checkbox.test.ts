@@ -212,3 +212,49 @@ describe('CaomeiCheckbox', () => {
         expect(control.attributes('data-test')).toBe('checkbox')
     })
 })
+
+describe('CaomeiCheckbox 数组模型', () => {
+    it('点击把 value 追加进数组模型', async () => {
+        const wrapper = mount(CaomeiCheckbox, {
+            props: { modelValue: ['apple'], value: 'banana', text: '香蕉' },
+        })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['apple', 'banana']])
+    })
+
+    it('点击把已含的 value 移出数组模型', async () => {
+        const wrapper = mount(CaomeiCheckbox, {
+            props: { modelValue: ['apple', 'banana'], value: 'banana', text: '香蕉' },
+        })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['apple']])
+    })
+
+    it('数组模型含该值时渲染选中态，数字值按严格相等匹配', () => {
+        const checked = mount(CaomeiCheckbox, { props: { modelValue: [2], value: 2 } })
+        expect(getControl(checked).attributes('aria-checked')).toBe('true')
+
+        const unchecked = mount(CaomeiCheckbox, { props: { modelValue: [2], value: 1 } })
+        expect(getControl(unchecked).attributes('aria-checked')).toBe('false')
+    })
+
+    it('数组模型缺少 value 时点击不改写模型', async () => {
+        const wrapper = mount(CaomeiCheckbox, { props: { modelValue: [] } })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('单值模型行为不受影响', async () => {
+        const wrapper = mount(CaomeiCheckbox, { props: { modelValue: false, value: 'yes' } })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([true])
+    })
+})

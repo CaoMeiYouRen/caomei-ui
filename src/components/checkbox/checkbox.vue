@@ -5,7 +5,7 @@ import { computed, useId, useSlots } from 'vue'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useLabelAttrs } from '../_shared/use-label-attrs'
-import type { CheckboxProps, CheckboxState } from './types'
+import type { CheckboxModel, CheckboxProps, CheckboxState } from './types'
 
 defineOptions({ name: 'CaomeiCheckbox', inheritAttrs: false })
 
@@ -22,7 +22,36 @@ defineSlots<{
     default?: () => unknown
 }>()
 
-const model = defineModel<CheckboxState>()
+const model = defineModel<CheckboxModel>()
+
+/**
+ * 传给 Reka 的模型值：
+ * 数组模型（分组用法）下折算为「是否包含 `value`」的布尔值，其余形态原样透传（含 `indeterminate`）。
+ */
+const controlValue = computed<CheckboxState | undefined>(() => {
+    if (!Array.isArray(model.value)) {
+        return model.value
+    }
+    return props.value !== undefined && model.value.includes(props.value)
+})
+
+/**
+ * 承接 Reka 的交互结果：数组模型下按 `value` 增删成员（对齐 PrimeVue 分组语义），
+ * 其余形态直接写回布尔 / 半选值。
+ */
+function onModelUpdate(next: CheckboxState | undefined): void {
+    if (!Array.isArray(model.value)) {
+        model.value = next
+        return
+    }
+    const value = props.value
+    if (value === undefined) {
+        return
+    }
+    model.value = next === true
+        ? (model.value.includes(value) ? model.value : [...model.value, value])
+        : model.value.filter((item) => item !== value)
+}
 
 const slots = useSlots()
 const generatedId = useId()
@@ -52,13 +81,14 @@ const rootClass = computed(() => [
         <CheckboxRoot
             v-bind="forwardedAttrs"
             :id="checkboxId"
-            v-model="model"
+            :model-value="controlValue"
             class="caomei-checkbox__control"
             :disabled="disabled"
             :required="required || undefined"
             :name="name"
             :value="value"
             :aria-invalid="invalid || undefined"
+            @update:model-value="onModelUpdate"
         >
             <!--
               指示器在 CheckboxRoot 默认插槽内自绘，而非使用 Reka 的 CheckboxIndicator：

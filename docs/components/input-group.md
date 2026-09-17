@@ -32,8 +32,9 @@
 ## 边框拼接约定
 
 - 成员按 DOM 顺序拼接：首成员保留起始侧圆角、末成员保留结束侧圆角，中间成员去圆角。
+- 组内圆角：组合首尾外侧圆角由 `--caomei-input-group-radius` 定制，连接侧恒为 0；成员自身与其内层元素的圆角由拼接规则接管（`Select` 的可见圆角在内层触发器上，跟随成员根元素取值）。
 - 相邻成员以 `-1px` 外边距重叠边框，避免出现 2px 双线；聚焦成员会自动抬升到相邻边框之上。
-- 输入类成员（`Input` / `InputNumber` / `Select` / `MultiSelect` / `Textarea`）自动占满剩余宽度，并解除成员自身的 `max-width` 限制（`Select` / `InputNumber` 默认封顶），使组合真正铺满；其余成员（如 `Button`）保持内容宽度。
+- 输入类成员（`Input` / `InputNumber` / `Select` / `MultiSelect` / `Textarea`）自动占满剩余宽度，并解除成员自身的 `max-width` 限制（`Select` / `InputNumber` 默认封顶），使组合真正铺满；该规则以更高特异性直接置 `max-width: none`，故组内覆盖 `--caomei-select-max-width` 一类成员级宽度上限变量同样不生效；其余成员（如 `Button`）保持内容宽度。
 
 ## 无障碍
 

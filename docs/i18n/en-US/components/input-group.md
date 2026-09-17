@@ -32,8 +32,9 @@ Any form control can be a member, for example a select plus an action button:
 ## Border joining rules
 
 - Members are joined in DOM order: the first keeps the start-side radius, the last keeps the end-side radius, and middle members are squared.
+- Group radii: the outer radii at the two ends are customised through `--caomei-input-group-radius`, while the joining sides are always 0; the radii of members and of their inner elements are taken over by the joining rules (a `Select`'s visible radius lives on its inner trigger and follows the member root's value).
 - Adjacent members overlap their borders with a `-1px` margin to avoid a 2px double line; the focused member is lifted above neighbouring borders.
-- Input-like members (`Input` / `InputNumber` / `Select` / `MultiSelect` / `Textarea`) fill the remaining width and have their own `max-width` lifted (both `Select` and `InputNumber` cap their width by default) so the group truly fills; other members (such as `Button`) keep their content width.
+- Input-like members (`Input` / `InputNumber` / `Select` / `MultiSelect` / `Textarea`) fill the remaining width and have their own `max-width` lifted (both `Select` and `InputNumber` cap their width by default) so the group truly fills; that rule sets `max-width: none` with higher specificity, so overriding a member-level width cap such as `--caomei-select-max-width` inside a group has no effect either; other members (such as `Button`) keep their content width.
 
 ## Accessibility
 

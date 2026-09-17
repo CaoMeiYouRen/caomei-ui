@@ -24,7 +24,7 @@
 | :-: | --- | --- | --- | :-: |
 | M1-1 | 迁移计划与验收标准交接文档 | 落 `docs/design/governance/2026-09-17-momei-migration-handover-plan.md`，登记治理索引 | 文档非空且被索引收录；批次划分 / 前置条件 / 开工顺序 / 出口条件 / 16 条差异清单 / 视觉基线方法与判定口径 / 回归口径 / 包体对比要求 / 清单产出要求九项齐备 | — |
 
-状态：M1-1 已产出（文档落 2026-09-17），待 `@code-reviewer` Review Gate 放行。
+状态：M1-1 已交付（文档落 2026-09-17），经 `@code-reviewer` Review Gate 两轮（第 1 轮 Reject：治理索引把 B0b 视觉基线错记为由 caomei-ui 承担等 → 修复后第 2 轮 Pass）；提交 8924924。
 
 #### M2 B0 交接资产
 
@@ -52,7 +52,7 @@
 | M3-2 | 列插槽迁移示例与文档（中英） | 中英 DataTable 组件页新增「列插槽」与「从 PrimeVue 迁移」两节 + `column-slots` 示例；[设计规范 §7](../design/design-spec.md) 登记迁移映射 | 中英示例各覆盖 `#cell-{key}` / `#header-{key}`；设计规范 §7 有对应映射行（含 `frozen` / `selection-mode`）；`docs:build` 通过 | M3-1 |
 | M3-3 | `align-frozen` 与列级 `selection-mode` 收敛为映射（**2026-09-17 用户决策：不新增 API**） | 经 PrimeVue 一方源码取证（`column/index.d.ts`：`frozen?: boolean` + `alignFrozen?: 'left' \| 'right'` + `selectionMode?: 'single' \| 'multiple'`），确认 `align-frozen` 语义为**冻结停靠方向**、已由本库 `frozen: 'left' \| 'right'` 覆盖；列级 `selection-mode` 的 momei 两处用量均在首列，已由表格级 `selectionMode` 覆盖。两者按 M3-2 写入迁移映射，不新增 prop | 映射行进入组件文档与设计规范 §7 并可由 momei 侧直接执行；零新增公开 API | M3-2 |
 
-状态：M3-1 ~ M3-3 已交付（2026-09-17），待 `@code-reviewer` 第 2 轮复核。交付形态：M3-1 实现列插槽（`src/components/data-table/` 4 文件，+199 / −6）；M3-2 补中英组件页「列插槽」「从 PrimeVue 迁移」两节与 `column-slots` 示例；M3-3 经 PrimeVue 一方源码取证收敛为迁移映射（**不新增 API**，2026-09-17 用户决策）。附带修复：ESLint ignores 补 `docs/.vitepress/.temp/**`（VitePress 构建中间产物，已 gitignore 但 ESLint 9 不读 `.gitignore`，本地跑过 `docs:build` 后 `verify` 会把产物当源码 lint）。**V 阶段**：`@ui-validator` 两轮（首轮 48 项断言 + 示例修正后复验 25 项，失败 0 / console error 0），记录见 [列插槽浏览器验证](../design/governance/2026-09-17-column-slots-ui-validation.md)；观察项 O1（示例用 `index` 作序号、排序后错位）已消解（示例改为只解构 `{row}`，两页文档补 `index` 语义提示）。实测规模未超[规划规范 §5](../standards/planning.md) 粒度阈值。质量门：`pnpm verify` exit 0（含 `lint:check` / `lint:css:check` / `lint:md:check` / `typecheck` / `typecheck:docs` / 全量 test 1176 例 / `build` / `check:build` / `check:nuxt` / `docs:build` / `docs:check:i18n-routing` / `governance:check`）；期间曾命中 2 例既有 flaky（`CaomeiInputNumber` / `CaomeiSplitButton` 各一例，与本批无关），隔离复跑与全量复跑均通过。
+状态：M3-1 ~ M3-3 已交付（2026-09-17），经 `@code-reviewer` Review Gate 两轮（第 1 轮 Reject：决策口径未回扫、UI 改动缺 V 阶段 → 修复后第 2 轮 Pass，blocker 全关、同轮新增 warning 已同批修正）；提交 ef6dd48 / 521d52f / f10aa8b / 7a62e10。交付形态：M3-1 实现列插槽（`src/components/data-table/` 4 文件，+199 / −6）；M3-2 补中英组件页「列插槽」「从 PrimeVue 迁移」两节与 `column-slots` 示例；M3-3 经 PrimeVue 一方源码取证收敛为迁移映射（**不新增 API**，2026-09-17 用户决策）。附带修复：ESLint ignores 补 `docs/.vitepress/.temp/**`（VitePress 构建中间产物，已 gitignore 但 ESLint 9 不读 `.gitignore`，本地跑过 `docs:build` 后 `verify` 会把产物当源码 lint）。**V 阶段**：`@ui-validator` 两轮（首轮 48 项断言 + 示例修正后复验 25 项，失败 0 / console error 0），记录见 [列插槽浏览器验证](../design/governance/2026-09-17-column-slots-ui-validation.md)；观察项 O1（示例用 `index` 作序号、排序后错位）已消解（示例改为只解构 `{row}`，两页文档补 `index` 语义提示）。实测规模未超[规划规范 §5](../standards/planning.md) 粒度阈值。质量门：`pnpm verify` exit 0（含 `lint:check` / `lint:css:check` / `lint:md:check` / `typecheck` / `typecheck:docs` / 全量 test 1176 例 / `build` / `check:build` / `check:nuxt` / `docs:build` / `docs:check:i18n-routing` / `governance:check`）；期间曾命中 2 例既有 flaky（`CaomeiInputNumber` / `CaomeiSplitButton` 各一例，与本批无关），隔离复跑与全量复跑均通过。
 
 #### M4 B1 增强·数据与表单类
 

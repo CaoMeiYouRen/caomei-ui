@@ -7,7 +7,7 @@
 | 层 | 内容 | 示例 |
 |----|------|------|
 | Primitive 层 | Reka UI 原始件，不直接对外 | Select / Dialog 等组件内部使用的 primitive |
-| 封装 / 自建层 | Reka UI 封装，或原生元素 + 样式 / 变体 | 封装：Select、Dialog、Switch、Toast、Checkbox；自建：Button、Input、Card、Tag / Badge |
+| 封装 / 自建层 | Reka UI 封装，或原生元素 + 样式 / 变体 | 封装：Select、Dialog、Switch、Toast、Checkbox / CheckboxGroup；自建：Button、Input、Card、Tag / Badge |
 | 复合层 | 多 primitive 组合 | DataTable、ConfirmDialog、MultiSelect |
 | Provider 层 | renderless 上下文组件（仅默认插槽，无 DOM） | ConfigProvider（内建文案注入，消费 `useLocale` / `provideLocale`） |
 | 服务层 | composables | useToast、useConfirm、useTheme |
@@ -35,6 +35,7 @@
 | Toast | 封装 Toast + 服务封装 | Toast |
 | Card | 自建（布局 + variants） | 无 |
 | Checkbox | 封装 Checkbox | Checkbox |
+| CheckboxGroup | 封装 CheckboxGroup（分组值数组 + 全选 / 半选） | CheckboxGroup |
 
 ## 3. Tier 1：强烈推荐（8 个）
 

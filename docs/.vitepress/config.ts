@@ -282,6 +282,7 @@ export default defineConfig({
                             text: 'Form Inputs',
                             items: [
                                 { text: 'Checkbox', link: '/en-US/components/checkbox' },
+                                { text: 'CheckboxGroup', link: '/en-US/components/checkbox-group' },
                                 { text: 'FileUpload', link: '/en-US/components/file-upload' },
                                 { text: 'FloatLabel', link: '/en-US/components/float-label' },
                                 { text: 'Input', link: '/en-US/components/input' },
@@ -458,6 +459,7 @@ export default defineConfig({
                     text: '表单输入',
                     items: [
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
+                        { text: 'CheckboxGroup 复选框组', link: '/components/checkbox-group' },
                         { text: 'FileUpload 文件上传', link: '/components/file-upload' },
                         { text: 'FloatLabel 浮动标签', link: '/components/float-label' },
                         { text: 'Input 输入框', link: '/components/input' },

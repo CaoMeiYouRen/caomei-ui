@@ -94,7 +94,7 @@
 | `.caomei-input-number__button:disabled` | 0.5 | 0.5 |
 | `.caomei-file-upload__remove:disabled` | 0.5 | 0.5 |
 
-> 「标签触发器」无 0.5 档位：`CaomeiTag` 禁用态即批次 3 迁移的 0.6（见 §2），仓库内不存在 `.caomei-tag` 的 0.5 规则。本节为 `0.5` 档**抽样（11/19）**，其余 8 处选择器见「未覆盖边界」。`toggle-button` 未纳入批次 3 的 `0.6` 收敛范围（是否归并待台账裁决）。
+> 「标签触发器」无 0.5 档位：`CaomeiTag` 禁用态即批次 3 迁移的 0.6（见 §2），仓库内不存在 `.caomei-tag` 的 0.5 规则。本节为 `0.5` 档**抽样（11/19）**，其余 8 处选择器见「未覆盖边界」。`toggle-button` 未纳入批次 3 的 `0.6` 收敛范围（是否归并待台账裁决——该裁决已于同日落地为「归并」，见 [batch24 记录](./2026-09-17-batch24-disabled-opacity-merge-ui-validation.md)）。
 
 ## 4. 批次 2：阴影 / 遮罩计算值（选择器 → 期望 → 实测）
 
@@ -154,6 +154,8 @@
 - 未跑构建产物（`pnpm build` + preview）；本次验证对象是 `src/` 源码直读的 dev 页，产物级一致性由既有 CI / `governance:check` 承载。
 - `check:design` 已通过（`rgb 警告 0/0 处`），但未纳入本记录的浏览器取证范围。
 - `0.5` 档未实测的 8 处选择器（本记录 §3 为 11/19 抽样）：`.caomei-paginator__control:disabled`、`.caomei-accordion__trigger[data-disabled]`、`.caomei-tabs__trigger[data-disabled]`、`.caomei-select-button__item[data-disabled]`、`.caomei-stepper__trigger[data-disabled]`、`.caomei-stepper__indicator`（`[data-disabled]` 后代）、`.caomei-password__toggle:disabled`、`.caomei-toolbar__button:disabled`。
+
+> **让渡说明**：上述 8 处未实测选择器与本节 §3 的 `0.5` 档抽样，已由后续批次记录 [2026-09-17 batch24 禁用态 0.5 档归并验证](./2026-09-17-batch24-disabled-opacity-merge-ui-validation.md) 全量接管（19 处逐项实测）；本文作为当日快照保留原口径，后续以此文与 batch24 记录为准。
 
 ## 截图清单
 

@@ -69,6 +69,7 @@ description: 负责端到端编排的全局 agent，适用于需要统筹需求�
     - **审计调用协议**：审计 prompt 必须声明 `audit-depth`（`quick` / `standard` / `deep` + 理由）与**计算出的时间盒**，并携带变更文件清单、已验证证据摘要、复审问题编号；分级与时间盒以 [AI 协作规范 §3.1](../../docs/standards/ai-collaboration.md)为准，未声明按 `deep` 防御执行（会显著拖长用时，小改动必须主动声明 `quick`）。
     - **并发分区**：大改动（触发条件与汇总规则见 [AI 协作规范 §3.2](../../docs/standards/ai-collaboration.md)）按模块划分并行发起多个 `@code-reviewer` 任务；小改动不并发。
     - **用时实测**：发起前记录宿主时间戳，返回后实测 elapsed 并回填「实际用时 / 是否超时间盒」（见 [AI 协作规范 §3.3](../../docs/standards/ai-collaboration.md)）。
+    - **轮次上限未过**：同一原子条目达到 [AI 协作规范 §3.4 / §3.5](../../docs/standards/ai-collaboration.md) 的轮次上限仍未 `Pass` 时不得原样续审，先按 §3.5 执行改进协议（缩面 → 复发 finding 转机检约束 → 缺信息先搜索取证）。
 4. **收口**：按序联动 `ui-validator`、`test-engineer`、`quality-guardian`、`code-reviewer`、`documentation-specialist`；提交前加载 `conventional-committer`。
 
 ## 默认交接
@@ -79,7 +80,7 @@ description: 负责端到端编排的全局 agent，适用于需要统筹需求�
 4. D 完成后必须经 `code-reviewer` Review Gate，不可自我审查替代；调用审计时按 §协作工作流 的审计调用协议声明 `audit-depth` 与时间盒。
 5. 涉及界面渲染交 `ui-validator`，测试补强交 `test-engineer`。
 6. 文档变化交 `documentation-specialist` 收口。
-7. 分批提交：每个原子条目独立提交；未通过 Review Gate 不得提交；不自动 push。
+7. 分批提交：每个原子条目独立提交；批次内已通过 Review Gate 的子范围先提交（部分交付）；未通过 Review Gate 不得提交；不自动 push。
 
 ## 边界
 

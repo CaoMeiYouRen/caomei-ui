@@ -119,7 +119,7 @@
 - [2026-09-15] [process] Review Gate 对布局 / CSS 级联改动要求真实浏览器证据，证据随 delta 过期 → [测试规范 §2.1](../../standards/testing.md) / [AI 协作规范 §3](../../standards/ai-collaboration.md)
 - [2026-09-15] [pitfall] Reka `TimeField`（2.10.4）`dayPeriod` 仅识别英文、非英文 12 小时制误判 → [开发规范 §5](../../standards/development.md)
 - [2026-09-15] [pattern] 封装前先确认 primitive 是否覆盖目标语义（Reka `Drawer` 不定位、未采用） → [组件设计 §1.1](../components.md) / [设计规范 §7](../design-spec.md)
-- [2026-09-15] [pitfall] Review Gate 缺轮次上限会无限循环（单条目最多 2 轮） → [AI 协作规范 §3.4](../../standards/ai-collaboration.md)
+- [2026-09-15] [pitfall] Review Gate 缺轮次上限会无限循环（当时的单条目预算为 2 轮，现行口径已更新，以链接处为准） → [AI 协作规范 §3.4](../../standards/ai-collaboration.md)
 - [2026-09-15] [pattern] 单模块大改动按交付面拆批次、审查与实现可并行 → [AI 协作规范 §3.2.1](../../standards/ai-collaboration.md)
 - [2026-09-16] [pattern] DataView 类容器 `layout` 只切插槽 + 根修饰类、列定义归内容层 → [设计规范 §6 / §7](../design-spec.md)
 

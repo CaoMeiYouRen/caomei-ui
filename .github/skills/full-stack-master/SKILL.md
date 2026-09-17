@@ -26,12 +26,14 @@ metadata:
   - [ ] 4.2 大改动（触发条件与汇总规则见 [AI 协作规范 §3.2](../../../docs/standards/ai-collaboration.md)）按模块划分，并行发起多个 `@code-reviewer` 审计任务；小改动不并发。
   - [ ] 4.3 发起前记录宿主时间戳，返回后实测 elapsed 并回填「实际用时 / 是否超时间盒」（见 [AI 协作规范 §3.3](../../../docs/standards/ai-collaboration.md)）。
   - [ ] 4.4 blocker 关闭前不得进入后续阶段。
+  - [ ] 4.5 同一原子条目达到 [AI 协作规范 §3.4 / §3.5](../../../docs/standards/ai-collaboration.md) 的轮次上限仍未 `Pass` 时不得原样续审：先按 §3.5 执行改进协议（缩面 → 复发 finding 转机检约束 → 缺信息先搜索取证），再决定是否续审。
 - [ ] Step 5: 验证（V）与测试（T）
   - [ ] 5.1 涉及界面交 `ui-validator`；无 UI 影响显式说明跳过。
   - [ ] 5.2 测试补强交 `test-engineer`。
 - [ ] Step 6: 收口（F）
   - [ ] 6.1 文档同步交 `documentation-specialist`。
   - [ ] 6.2 用 `conventional-committer` 提交，不自动 push。
+  - [ ] 6.3 批次内已有子范围通过 Review Gate 时先提交该子范围（部分交付），不累积到整批通过。
 
 ## 反模式
 
@@ -41,11 +43,13 @@ metadata:
 - 把大改动不拆分地一次推进。
 - 发起审计不带 `audit-depth` 与时间盒声明（默认 `deep` 白耗时）。
 - 大改动不按模块分区、只交由单个审查者硬扛。
+- Review Gate 达到轮次上限仍未过却原样续审：不缩面、不转机检约束、不补搜索取证。
 
 ## 交付前检查
 
 - [ ] 验收标准已满足且可验证。
-- [ ] Review Gate 已 Pass。
+- [ ] Review Gate 已 Pass（达到轮次上限仍未过时已按 §3.5 执行缩面 / 机检约束 / 取证）。
+- [ ] 已通过部分的子范围已单独提交，未累积到整批。
 - [ ] 测试与质量门通过。
 - [ ] 文档与规划已同步。
 - [ ] 提交符合 Conventional Commits，未 push。

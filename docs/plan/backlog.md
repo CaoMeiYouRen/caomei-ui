@@ -73,6 +73,7 @@
 | scoped 变量声明治理 | `development.md §7` 要求「基类不预声明 CSS 变量默认值、档位类用 `:where()`」，但仍有偏差：`button` 基类直接声明 `--caomei-button-*` 默认值（基类预声明），`message` / `badge` / `tag` / `toast` 的变体类用普通类声明变量（档位类未用 `:where()`）；建议补 `check-design.mjs` 规则（现规则只查引用存在性）并逐组件收敛 | 低 |
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
 | 文档站演示动画遗留项 | ① `caomei-demo-*` keyframes 副本与组件动画数值无一致性守卫（组件动画变更时仅靠注释同步）；② Toast `swipe-out` 规则无运行期实测；③ `docs/.vitepress/theme/**` CSS 不在 stylelint 覆盖内（`lint:css` 只跑 `src/**`） | 低 |
+| 禁用态不透明度字面量回归守卫 | 2026-09-17 第 5 轮已把 `opacity: 0.6` 全部收敛到 `--caomei-disabled-opacity`，但 `check:design` 只守 `#hex` / `rgb()` / `hsl()`，无法阻止该字面量回流。候选：为 `opacity: 0.6` 加同类预算守卫（`0.5` 档在裁决前不纳入），避免一次性清理被后续开发稀释 | 低 |
 | DropdownMenuTrigger 样式豁免 | `CaomeiDropdownMenuTrigger` 把 `caomei-dropdown-menu__trigger` 默认外观固定在根上，`as-child` 组合自定义按钮（如 SplitButton 的下拉按钮）时会连带合并 padding / border / background；候选补 `unstyled` / 样式豁免入口，使复合层可复用其 a11y 接线而不继承默认外观（当前 SplitButton 直接用 Reka `DropdownMenuTrigger` 绕过） | 低 |
 | 分组按钮可访问语义 | ButtonGroup / SplitButton 的根目前仅作布局容器，无障碍树中是多个独立按钮；候选为根补 `role="group"` 与可选的分组可访问名 | 低 |
 | ui-validator 资产 follow-up | ① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担），下次改动时可成节；③ `.github/agents/ui-validator.agent.md` 的「窄屏降级行为」宜与[响应式设计 §3](../design/responsive.md) 矩阵口径对齐（改为「按矩阵核对窄屏响应式行为，卡片化 / 转全屏不作默认预期」） | 低 |

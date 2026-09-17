@@ -93,7 +93,8 @@ chromium.launch({
 })
 ```
 
-- 校验主题 / 暗色的计算样式时：文档站（VitePress）存在过渡动画，直接读 `backgroundColor` 会落在过渡中间值；须先注入 `transition: none !important`。静态 HTML 无法复现组件视觉——SFC scoped 样式带 `[data-v-*]`，须在真实文档站验证。容器内 headless Chromium 需 `--single-process` 才不崩。
+- 校验主题 / 暗色的计算样式时：文档站（VitePress）存在过渡动画，直接读 `backgroundColor` 会落在过渡中间值；须先注入 `transition: none !important`。静态 HTML 无法复现组件视觉——SFC scoped 样式带 `[data-v-*]`，须在真实文档站验证。
+  - **root 容器内交互时崩溃**（`Target crashed`，加载与既有用例同样命中）：先试 `--no-zygote`——实测可恢复且**保留多 context 能力**，已随 root 分支写入 `playwright.config.ts`。`--single-process` 虽同样绕过崩溃，但会阻止创建第二个 context，仅在 `--no-zygote` 无效时作为兜底。
 - UI 验证证据（脚本、截图）落盘 `test-results/`（已 gitignore），不污染工作区；需长期留存的证据应放可提交位置或内联实测值。
 - Playwright 与 Reka `RadioGroup`（RovingFocus）的键盘选中：选中在 focus 后经 `setTimeout(0)` 结算，`page.keyboard.press()` 在同 tick 内 down+up 会与选中时序竞争、误报「方向键不选中」；须用真实按键节奏（`keyboard.down` → 延时 → `keyboard.up`）。
 - 验证 SSR hydration：Playwright 配本地静态服务器，以点击计数变化判定水合完成，用 `emulateMedia({ colorScheme })` 验证暗色 token。

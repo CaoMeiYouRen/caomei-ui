@@ -15,12 +15,15 @@ const IS_ROOT = typeof process.getuid === 'function' && process.getuid() === 0
  * Chromium 启动参数（测试规范 §7）：
  * - `--disable-dev-shm-usage`：容器内 `/dev/shm` 过小；
  * - `--no-sandbox`：仅在 CI 或 root 下下发，本地开发保留沙箱；
- * - 不加 `--single-process`——它会阻止创建第二个 context，仅在容器内 headless 崩溃时才需要；
+ * - `--no-zygote`：root 容器内 zygote 会导致渲染进程在**交互时**崩溃（`Target crashed`，既有用例
+ *   同样命中，属环境而非用例问题）；关闭 zygote 后恢复，且仍可创建多个 context。`--single-process`
+ *   虽同样绕过崩溃，但会阻止创建第二个 context，故不采用（口径见测试规范 §7）；
  * - `/tmp` 不可写的环境以 `TMPDIR=<可写目录> pnpm test:e2e` 运行。
  */
 const CHROMIUM_ARGS = [
     '--disable-dev-shm-usage',
     ...(process.env.CI || IS_ROOT ? ['--no-sandbox'] : []),
+    ...(IS_ROOT ? ['--no-zygote'] : []),
 ]
 
 /**

@@ -46,8 +46,10 @@ const rootClass = computed(() => `caomei-input-group--${props.orientation}`)
   输入类成员占满剩余宽度：宽度取 1% 让 flex 以剩余空间计算，避免默认 width:100% 挤占按钮；
   同时解除成员自身的 max-width（Select / InputNumber 默认封顶），使组合真正铺满。
   使用 :is() 列举以保持单条规则，:is() 的特异性取参数最高值（单个类），足以压过成员自身样式。
+  列举的是「承载宽度的成员根元素」：Select 的根元素是字段包装层 `.caomei-select__field`
+  （宽度上限也声明在该元素上），其内层触发器不参与组合布局。
 */
-.caomei-input-group--horizontal :deep(> :is(.caomei-input, .caomei-input-number, .caomei-select, .caomei-multi-select, .caomei-textarea)) {
+.caomei-input-group--horizontal :deep(> :is(.caomei-input, .caomei-input-number, .caomei-select__field, .caomei-multi-select, .caomei-textarea)) {
     flex: 1 1 auto;
     min-width: 0;
     max-width: none;
@@ -112,6 +114,16 @@ const rootClass = computed(() => `caomei-input-group--${props.orientation}`)
 .caomei-input-group--vertical :deep(> *:last-child) {
     border-end-start-radius: var(--caomei-input-group-radius, var(--caomei-radius-md));
     border-end-end-radius: var(--caomei-input-group-radius, var(--caomei-radius-md));
+}
+
+/*
+  Select 的可见边框与圆角位于内层触发器 `.caomei-select` 上，成员根元素只是定位 / 宽度包装层，
+  上面的圆角规则落在包装层后不会被内层沿用（表现为与选择器组合时拼接侧圆角仍在）。
+  故让组内的触发器继承包装层圆角，使同一组规则（含 --caomei-input-group-radius）对 Select 同样成立。
+  注意：选择器依赖 `.caomei-select` 是 `.caomei-select__field` 的直接子，Select 内部结构变更时本规则会静默失配。
+*/
+.caomei-input-group :deep(> .caomei-select__field > .caomei-select) {
+    border-radius: inherit;
 }
 
 /* 聚焦成员抬升，保证自身边框压在重叠的相邻边框之上（:focus-within 自身聚焦或含聚焦均匹配） */

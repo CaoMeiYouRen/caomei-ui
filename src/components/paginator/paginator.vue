@@ -13,7 +13,9 @@ import {
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import type { OptionValue } from '../_shared/option'
 import { useLabelAttrs, resolveLabelName } from '../_shared/use-label-attrs'
+import { CaomeiSelect } from '../select'
 import type { PaginatorProps } from './types'
 
 defineOptions({ name: 'CaomeiPaginator', inheritAttrs: false })
@@ -27,6 +29,10 @@ const props = withDefaults(defineProps<PaginatorProps>(), {
 
 const page = defineModel<number>('page', { default: 1 })
 
+const emit = defineEmits<{
+    'update:itemsPerPage': [value: number]
+}>()
+
 const locale = useLocale()
 const attrs = useAttrs()
 /** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
@@ -37,9 +43,32 @@ const previousLabel = computed(() => props.previousLabel ?? locale.value.paginat
 const nextLabel = computed(() => props.nextLabel ?? locale.value.pagination.next)
 const lastLabel = computed(() => props.lastLabel ?? locale.value.pagination.last)
 const pageLabel = computed(() => props.pageLabel ?? locale.value.pagination.page)
+const rowsPerPageLabel = computed(
+    () => props.rowsPerPageLabel ?? locale.value.pagination.rowsPerPage,
+)
+
+/** 每页条数候选映射为 Select 的选项对象（本库 Select 仅接受对象选项） */
+const rowsPerPageChoices = computed(() =>
+    (props.rowsPerPageOptions ?? []).map((value) => ({ label: String(value), value })),
+)
 
 function resolvePageLabel(value: number): string {
     return pageLabel.value.replaceAll('{page}', String(value))
+}
+
+/**
+ * 切换每页条数：向父级抛出 `update:itemsPerPage`，并按 PrimeVue 的偏移保持语义重新推导页码
+ * （保留当前首行偏移 `(page - 1) * itemsPerPage`，而非无条件回到第 1 页）。
+ * 仅接受候选内的值：Select 的模型面较宽（含 `null` / `undefined` / 字符串），此处按白名单收窄。
+ */
+function onRowsPerPageChange(value: OptionValue | null | undefined): void {
+    const next = typeof value === 'number' ? value : Number(value)
+    if (!Number.isFinite(next) || !props.rowsPerPageOptions?.includes(next)) {
+        return
+    }
+    const first = Math.max(page.value - 1, 0) * props.itemsPerPage
+    emit('update:itemsPerPage', next)
+    page.value = Math.floor(first / next) + 1
 }
 </script>
 
@@ -112,6 +141,16 @@ function resolvePageLabel(value: number): string {
                 </PaginationLast>
             </li>
         </PaginationList>
+        <span v-if="rowsPerPageChoices.length > 0" class="caomei-paginator__rows-per-page">
+            <CaomeiSelect
+                :model-value="itemsPerPage"
+                :options="rowsPerPageChoices"
+                :label="rowsPerPageLabel"
+                :disabled="disabled"
+                size="sm"
+                @update:model-value="onRowsPerPageChange"
+            />
+        </span>
     </PaginationRoot>
 </template>
 
@@ -121,6 +160,20 @@ function resolvePageLabel(value: number): string {
 */
 .caomei-paginator {
     display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--caomei-paginator-gap, 4px);
+}
+
+/*
+  每页条数选择器：外层收紧宽度，并经 `--caomei-select-max-width` 让内层字段跟随
+  （Select 的宽度上限声明在字段包装层上，覆盖变量需作用于其祖先）。
+*/
+.caomei-paginator__rows-per-page {
+    --caomei-select-max-width: 100%;
+
+    display: inline-flex;
+    width: var(--caomei-paginator-rows-width, 6rem);
 }
 
 .caomei-paginator__list {

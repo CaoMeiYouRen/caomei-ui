@@ -13,6 +13,20 @@ function pageButtons(wrapper: ReturnType<typeof mount>) {
     return wrapper.findAll('.caomei-paginator__control[data-type="page"]')
 }
 
+/** 打开每页条数选择器（Reka Select 以 Enter 打开面板） */
+async function openRowsPerPage(wrapper: ReturnType<typeof mount>): Promise<void> {
+    await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+    await nextTick()
+}
+
+/** 选中已打开面板中的第 index 个候选项（Reka SelectItem 以 pointerup 提交选中） */
+async function selectRowOption(index: number): Promise<void> {
+    const option = document.querySelectorAll<HTMLElement>('[role="option"]')[index]
+    option.dispatchEvent(new Event('pointerup', { bubbles: true }))
+    await nextTick()
+    await nextTick()
+}
+
 describe('CaomeiPaginator', () => {
     it('默认渲染页码与翻页按钮', () => {
         const wrapper = mount(CaomeiPaginator, { props: { total: 50, itemsPerPage: 10 } })
@@ -244,5 +258,73 @@ describe('CaomeiPaginator', () => {
         expect(getRoot(wrapper).attributes('aria-label')).toBe('Pagination')
         expect(wrapper.find('[aria-label="Previous page"]').exists()).toBe(true)
         expect(pageButtons(wrapper)[0].attributes('aria-label')).toBe('Page 1')
+    })
+
+    it('未提供 rowsPerPageOptions 时不渲染每页条数选择器', () => {
+        const wrapper = mount(CaomeiPaginator, { props: { total: 50 } })
+
+        expect(wrapper.find('.caomei-paginator__rows-per-page').exists()).toBe(false)
+    })
+
+    it('提供 rowsPerPageOptions 时渲染选择器并显示当前每页条数', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50, itemsPerPage: 20, rowsPerPageOptions: [10, 20, 50] },
+        })
+
+        expect(wrapper.get('.caomei-paginator__rows-per-page').get('.caomei-select').text()).toBe(
+            '20',
+        )
+    })
+
+    it('切换每页条数时按首行偏移重新推导页码，而非无条件回到第 1 页', async () => {
+        // 第 3 页 / 每页 10 → 首行偏移 20；切到每页 20 → floor(20 / 20) + 1 = 第 2 页
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 100, page: 3, itemsPerPage: 10, rowsPerPageOptions: [10, 20, 50] },
+            attachTo: document.body,
+        })
+
+        await openRowsPerPage(wrapper)
+        await selectRowOption(1)
+
+        expect(wrapper.emitted('update:itemsPerPage')?.at(-1)).toEqual([20])
+        expect(wrapper.emitted('update:page')?.at(-1)).toEqual([2])
+
+        wrapper.unmount()
+    })
+
+    it('首行偏移不足一页时页码回到第 1 页', async () => {
+        // 首行偏移 20；切到每页 50 → floor(20 / 50) + 1 = 第 1 页
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 100, page: 3, itemsPerPage: 10, rowsPerPageOptions: [10, 20, 50] },
+            attachTo: document.body,
+        })
+
+        await openRowsPerPage(wrapper)
+        await selectRowOption(2)
+
+        expect(wrapper.emitted('update:itemsPerPage')?.at(-1)).toEqual([50])
+        expect(wrapper.emitted('update:page')?.at(-1)).toEqual([1])
+
+        wrapper.unmount()
+    })
+
+    it('disabled 时每页条数选择器同样禁用', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 50, disabled: true, rowsPerPageOptions: [10, 20] },
+        })
+
+        expect(wrapper.get('.caomei-select').attributes('disabled')).toBeDefined()
+    })
+
+    it('每页条数选择器可访问名默认本地化，可被 rowsPerPageLabel 覆盖', () => {
+        const byLocale = mount(CaomeiPaginator, {
+            props: { total: 50, rowsPerPageOptions: [10, 20] },
+        })
+        expect(byLocale.get('.caomei-select').attributes('aria-label')).toBe('每页条数')
+
+        const byProp = mount(CaomeiPaginator, {
+            props: { total: 50, rowsPerPageOptions: [10, 20], rowsPerPageLabel: '每页显示' },
+        })
+        expect(byProp.get('.caomei-select').attributes('aria-label')).toBe('每页显示')
     })
 })

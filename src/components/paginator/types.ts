@@ -10,6 +10,16 @@ export interface PaginatorProps {
      */
     itemsPerPage?: number
     /**
+     * 每页条数候选；提供后渲染每页条数选择器（缺省不渲染）
+     * @en Rows-per-page choices; a rows-per-page selector is rendered when provided (hidden otherwise)
+     */
+    rowsPerPageOptions?: number[]
+    /**
+     * 每页条数选择器可访问名；默认取当前语言的「每页条数」
+     * @en Accessible name of the rows-per-page selector; defaults to the current locale's "Rows per page" text
+     */
+    rowsPerPageLabel?: string
+    /**
      * 当前页两侧显示的页码数量
      * @en Number of page numbers shown on each side of the current page
      */

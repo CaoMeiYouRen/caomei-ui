@@ -39,6 +39,7 @@ const koKR: CaomeiLocaleMessages = {
         second: '초',
     },
     dialog: {
+        label: '대화 상자',
         close: '닫기',
     },
     drawer: {

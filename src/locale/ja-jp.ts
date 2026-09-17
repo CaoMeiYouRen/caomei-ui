@@ -39,6 +39,7 @@ const jaJP: CaomeiLocaleMessages = {
         second: '秒',
     },
     dialog: {
+        label: 'ダイアログ',
         close: '閉じる',
     },
     drawer: {

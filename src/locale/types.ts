@@ -45,6 +45,7 @@ export interface CaomeiLocaleMessages {
         second: string
     }
     dialog: {
+        label: string
         close: string
     }
     drawer: {

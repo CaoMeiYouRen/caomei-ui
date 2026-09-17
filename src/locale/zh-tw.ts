@@ -39,6 +39,7 @@ const zhTW: CaomeiLocaleMessages = {
         second: '秒',
     },
     dialog: {
+        label: '對話框',
         close: '關閉',
     },
     drawer: {

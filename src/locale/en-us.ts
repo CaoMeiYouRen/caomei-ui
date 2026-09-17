@@ -39,6 +39,7 @@ const enUS: CaomeiLocaleMessages = {
         second: 'Second',
     },
     dialog: {
+        label: 'Dialog',
         close: 'Close',
     },
     drawer: {

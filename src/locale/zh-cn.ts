@@ -39,6 +39,7 @@ const zhCN: CaomeiLocaleMessages = {
         second: '秒',
     },
     dialog: {
+        label: '对话框',
         close: '关闭',
     },
     drawer: {

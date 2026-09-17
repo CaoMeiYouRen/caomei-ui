@@ -183,4 +183,162 @@ describe('CaomeiDialog', () => {
             expect(event.preventDefault).toHaveBeenCalledTimes(prevented ? 1 : 0)
         },
     )
+
+    it('title 缺省时回退内建文案作为不可见可访问名，不产生空标题', async () => {
+        mount(CaomeiDialog, { props: { open: true } })
+        await nextTick()
+
+        const dialog = getDialog()
+        const labelledby = dialog?.getAttribute('aria-labelledby')
+        const titleElement = document.getElementById(labelledby as string)
+        expect(titleElement?.textContent).toBe('对话框')
+        expect(titleElement?.classList.contains('caomei-dialog__title--hidden')).toBe(true)
+    })
+
+    it('title 缺省时使用注入 locale 的可访问名文案', async () => {
+        mount(CaomeiDialog, {
+            props: { open: true },
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+        await nextTick()
+
+        const labelledby = getDialog()?.getAttribute('aria-labelledby')
+        expect(document.getElementById(labelledby as string)?.textContent).toBe('Dialog')
+    })
+
+    it('showHeader=false 时不渲染头部与关闭按钮，标题转为不可见可访问名', async () => {
+        mount(CaomeiDialog, {
+            props: { title: '标题', description: '描述', open: true, showHeader: false },
+        })
+        await nextTick()
+
+        const dialog = getDialog()
+        expect(document.querySelector('.caomei-dialog__header')).toBeNull()
+        expect(document.querySelector('.caomei-dialog__close')).toBeNull()
+
+        const labelledby = dialog?.getAttribute('aria-labelledby')
+        const titleElement = document.getElementById(labelledby as string)
+        expect(titleElement?.textContent).toBe('标题')
+        expect(titleElement?.classList.contains('caomei-dialog__title--hidden')).toBe(true)
+
+        const describedby = dialog?.getAttribute('aria-describedby')
+        expect(document.getElementById(describedby as string)?.textContent).toBe('描述')
+    })
+
+    it('open 由真转假时抛出 hide，初始与打开时不触发', async () => {
+        const wrapper = mount(CaomeiDialog, { props: { title: '标题', open: false } })
+        await nextTick()
+        expect(wrapper.emitted('hide')).toBeUndefined()
+
+        await wrapper.setProps({ open: true })
+        await nextTick()
+        expect(wrapper.emitted('hide')).toBeUndefined()
+
+        await wrapper.setProps({ open: false })
+        await nextTick()
+        expect(wrapper.emitted('hide')).toEqual([[]])
+    })
+
+    it('点击关闭按钮同时抛出 update:open=false 与 hide', async () => {
+        const wrapper = mount(CaomeiDialog, { props: { title: '标题', open: true } })
+        await nextTick()
+
+        ;(document.querySelector('.caomei-dialog__close') as HTMLElement).click()
+        await nextTick()
+
+        expect(wrapper.emitted('update:open')?.[0]).toEqual([false])
+        expect(wrapper.emitted('hide')).toEqual([[]])
+    })
+
+    it('未提供 breakpoints 时不注入断点样式', async () => {
+        mount(CaomeiDialog, { props: { title: '标题', open: true } })
+        await nextTick()
+
+        const dialog = getDialog()
+        expect(dialog?.hasAttribute('data-caomei-dialog-breakpoint')).toBe(false)
+        expect(dialog?.querySelector('style')).toBeNull()
+    })
+
+    it('提供 breakpoints 时按实例选择器注入媒体查询，窄档在后', async () => {
+        mount(CaomeiDialog, {
+            props: {
+                title: '标题',
+                open: true,
+                breakpoints: { '1199px': '85vw', '575px': '95vw' },
+            },
+        })
+        await nextTick()
+
+        const dialog = getDialog()
+        const id = dialog?.getAttribute('data-caomei-dialog-breakpoint')
+        expect(id).toBeTruthy()
+
+        const css = dialog?.querySelector('style')?.textContent ?? ''
+        expect(css).toContain(`.caomei-dialog__content[data-caomei-dialog-breakpoint="${id}"]`)
+        expect(css).toContain('@media (width <= 1199px)')
+        expect(css).toContain('@media (width <= 575px)')
+        expect(css).toContain('width: 85vw;')
+        expect(css).toContain('width: 95vw;')
+        expect(css.indexOf('575px')).toBeGreaterThan(css.indexOf('1199px'))
+    })
+
+    it('提供 title 时标题不隐藏', async () => {
+        mount(CaomeiDialog, { props: { title: '标题', open: true } })
+        await nextTick()
+
+        const titleElement = document.querySelector('.caomei-dialog__title')
+        expect(titleElement?.textContent).toBe('标题')
+        expect(titleElement?.classList.contains('caomei-dialog__title--hidden')).toBe(false)
+    })
+
+    it('非法断点条目被忽略，全部非法时不注入样式', async () => {
+        const partial = mount(CaomeiDialog, {
+            props: {
+                title: '标题',
+                open: true,
+                breakpoints: { '1199px': '85vw', small: '90vw', '640px': 'expression(alert(1))' },
+            },
+        })
+        await nextTick()
+
+        const css = getDialog()?.querySelector('style')?.textContent ?? ''
+        expect(css).toContain('@media (width <= 1199px)')
+        expect(css).not.toContain('640px')
+        expect(css).not.toContain('small')
+        partial.unmount()
+
+        mount(CaomeiDialog, {
+            props: { title: '标题', open: true, breakpoints: { small: '90vw' } },
+        })
+        await nextTick()
+
+        const dialog = getDialog()
+        expect(dialog?.hasAttribute('data-caomei-dialog-breakpoint')).toBe(false)
+        expect(dialog?.querySelector('style')).toBeNull()
+    })
+
+    it('breakpoints 变更后实例属性与样式同步增删', async () => {
+        const wrapper = mount(CaomeiDialog, { props: { title: '标题', open: true } })
+        await nextTick()
+        expect(getDialog()?.querySelector('style')).toBeNull()
+
+        await wrapper.setProps({ breakpoints: { '640px': '100vw' } })
+        await nextTick()
+        expect(getDialog()?.querySelector('style')?.textContent).toContain(
+            '@media (width <= 640px)',
+        )
+
+        await wrapper.setProps({ breakpoints: { '768px': '90vw' } })
+        await nextTick()
+        const updated = getDialog()?.querySelector('style')?.textContent ?? ''
+        expect(updated).toContain('@media (width <= 768px)')
+        expect(updated).not.toContain('640px')
+
+        await wrapper.setProps({ breakpoints: {} })
+        await nextTick()
+        expect(getDialog()?.hasAttribute('data-caomei-dialog-breakpoint')).toBe(false)
+        expect(getDialog()?.querySelector('style')).toBeNull()
+    })
 })

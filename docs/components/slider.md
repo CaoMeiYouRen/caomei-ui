@@ -74,7 +74,7 @@
 | `--caomei-slider-thumb-size` | `18px` | 滑块尺寸 |
 | `--caomei-slider-thumb-bg` | `--caomei-color-bg` | 滑块背景色 |
 | `--caomei-slider-thumb-border` | `--caomei-color-primary` | 滑块描边色 |
-| `--caomei-slider-thumb-shadow` | `0 1px 2px rgb(0 0 0 / 20%)` | 滑块阴影 |
+| `--caomei-slider-thumb-shadow` | `--caomei-shadow-xs`（`0 1px 2px rgb(0 0 0 / 0.2)`） | 滑块阴影 |
 | `--caomei-slider-focus` | `--caomei-color-primary` | 聚焦描边色 |
 
 ```css

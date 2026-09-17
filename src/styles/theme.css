@@ -34,6 +34,9 @@
     --caomei-radius-md: 8px;
     --caomei-radius-lg: 12px;
     --caomei-radius-full: 999px;
+    --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.2);
+    --caomei-shadow-sm: 0 4px 12px rgb(0 0 0 / 0.08);
+    --caomei-shadow-md: 0 8px 24px rgb(0 0 0 / 0.12);
     --caomei-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.18);
     --caomei-font-sans: system-ui, -apple-system, sans-serif;
     --caomei-space-1: 4px;
@@ -45,6 +48,7 @@
     --caomei-control-height-lg: 44px;
     --caomei-input-number-max-width: 12rem;
     --caomei-select-max-width: 20rem;
+    --caomei-skeleton-highlight: rgb(255 255 255 / 0.6);
     --caomei-font-size-sm: 12px;
     --caomei-font-size-md: 14px;
     --caomei-font-size-lg: 16px;

@@ -112,7 +112,7 @@ function lineStyle(index: number): Record<string, string> {
     background: linear-gradient(
         90deg,
         transparent,
-        var(--caomei-skeleton-highlight, rgb(255 255 255 / 0.6)),
+        var(--caomei-skeleton-highlight),
         transparent
     );
     transform: translateX(-100%);

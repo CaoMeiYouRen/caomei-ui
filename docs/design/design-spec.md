@@ -6,7 +6,7 @@
 
 ## 1. 目标与原则
 
-- **组件与样式解耦**：组件只消费 `--caomei-*` 语义 token，不硬编码品牌色 / 尺寸。现状：`src/components` 无 `#hex` 硬编码；仍有 13 处 `rgb()` / `rgba()` 字面量（4 处为 `var(--x, fallback)` 兜底，9 处为遮罩 / 阴影直接字面量），待 §2.5 规划 token 化。
+- **组件与样式解耦**：组件只消费 `--caomei-*` 语义 token，不硬编码品牌色 / 尺寸。现状：组件样式块内无 `#hex` / `rgb()` / `rgba()` 字面量（`check:design` 预算 0）；elevation 阴影与遮罩由 §2.6 token 承载。尚未收敛的一类：AutoComplete / DatePicker 面板的自适应阴影，以及各输入类控件的焦点环（`color-mix()` 就地组合，后者随 §2.5 规划的 `--caomei-color-focus-ring` 落地）。
 - **100% 可覆盖**：所有视觉由 token 决定，消费者可整体覆盖。
 - **两套默认预设**：`caomei`（源 caomei-auth）与 `momei`（源 momei），均含亮 / 暗两态。
 - **不引入 Tailwind / UnoCSS**。
@@ -66,23 +66,31 @@
 
 ### 2.5 规划新增 token（待实现）
 
-为落实「层级与阴影」「图标尺寸」「焦点环」「遮罩」等细节，规划新增以下 token（实现归入 M2 主题预设与后续组件增强）：
+为落实「层级」「图标尺寸」「焦点环」等细节，规划新增以下 token（实现归入后续组件增强）：
 
 | 类别 | 规划 token | 说明 |
 | --- | --- | --- |
-| 阴影 | `--caomei-shadow-sm` / `-md` | 替代组件内 `box-shadow` 字面量（`-lg` 见 §2.6） |
 | 层级 | `--caomei-z-dropdown` / `-sticky` / `-overlay` / `-modal` / `-toast` / `-tooltip` | 替代 `z-index` 字面量 |
 | 图标 | `--caomei-icon-size-sm` / `-md` / `-lg` | 统一 `@lucide/vue` 图标尺寸 |
 | 交互 | `--caomei-color-focus-ring` | 焦点环（`--caomei-color-mask` 见 §2.6） |
 | 字体 | `--caomei-font-mono` | 代码 / 密钥等场景 |
 | 排版 | `--caomei-line-height-tight` / `-normal` / `-relaxed` | 标题与正文行高 |
 
-### 2.6 阴影与遮罩 token（已实现）
+### 2.6 阴影、遮罩与组件层外观 token（已实现）
 
 | token | 值 | 说明 |
 | --- | --- | --- |
-| `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 浮层阴影；新增组件（Drawer）已消费，Dialog 等遗留字面量待迁移 |
-| `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩；新增组件（Drawer）已消费，Dialog 等遗留字面量待迁移 |
+| `--caomei-shadow-xs` | `0 1px 2px rgb(0 0 0 / 0.2)` | 微元素阴影（滑块拇指） |
+| `--caomei-shadow-sm` | `0 4px 12px rgb(0 0 0 / 0.08)` | 抬升面阴影（卡片） |
+| `--caomei-shadow-md` | `0 8px 24px rgb(0 0 0 / 0.12)` | 浮层阴影（DropdownMenu / Popover / Select / MultiSelect / Toast） |
+| `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 模态类浮层阴影（Dialog / ConfirmDialog / Drawer / ColorPicker） |
+| `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩（Dialog / ConfirmDialog / Drawer） |
+| `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | 骨架屏 `wave` 扫光高光 |
+
+- 组件层覆盖钩子 `--caomei-card-shadow` / `--caomei-card-shadow-hover` / `--caomei-slider-thumb-shadow` 保留，默认回退到上表档位（`sm` / `md` / `xs`）。
+- 阴影档位独立于控件尺寸阶梯（§2.3 的 `control-height-*` 等）：`xs` 专供滑块拇指等微元素，不随控件尺寸缩放。
+- 原始字面量不得回到组件样式：`check:design` 的 rgb/hsl 预算已收紧为 0（覆盖 `#hex` / `rgb()` / `rgba()` / `hsl()` / `hsla()`，`color-mix()` 构成的阴影不在其扫描面）。
+- 上述 token 由样式入口（`caomei-ui/styles.css` → `theme.css`）统一提供，属硬依赖：组件不再保留末位字面量兜底，未引样式入口时相关声明不生效。
 
 ## 3. 颜色规范
 
@@ -178,7 +186,7 @@
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号 `font-size-sm` |
 | Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距） |
-| Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；阴影用 `shadow-lg` |
+| Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；Dialog 阴影取 `shadow-lg`，Popover / DropdownMenu / Select / MultiSelect / Toast 取 `shadow-md` |
 | Drawer | 面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
 | DataTable | 表头/单元格底部边框取 `border`；排序按钮图标取 `text-muted`；排序态经 `aria-sort` 表达；列样式优先 `headerClass` / `bodyClass` |
 | DataView | 内容区不设内边距与背景（条目排版由插槽内容决定）；`layout` 只切换根修饰类与 `list` / `grid` 插槽，网格列定义交给使用方内容层；空态 / 加载态文案居中、取 `text-muted`（加载态取 `primary`） |
@@ -238,14 +246,14 @@
 
 - **规范可验证脚本**：`scripts/governance/check-design.mjs`，经 `pnpm check:design` 运行，已纳入 `pnpm governance:check` 与 `pnpm verify`：
   1. token 引用存在性（`var(--caomei-*)` 未定义且无 fallback 为错误）；
-  2. 组件原始色值（`#hex` 为错误；`rgb()` / `hsl()` 为警告，已知 13 处待 token 化）；
+  2. 组件原始色值（`#hex` 与 `rgb()` / `rgba()` / `hsl()` / `hsla()` 均为错误，rgb/hsl 预算 0）；
   3. 档位常量一致性（`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone`）；
   4. 旧命名泄漏（组件类型中的 `'small'` / `'large'`）。
 - **单测**：`scripts/governance/check-design.test.mjs` 将上述不变量固化为断言。
 - **新组件自检清单**：新增组件按下列顺序核对，全部满足方可进入 Review Gate。
   1. 命名与结构：`Caomei` + `PascalCase`；目录 `src/components/<kebab>/`，含同名 `.vue`、`types.ts`、`index.ts` 与 `.test.ts`；在 `src/index.ts` 导出。
   2. 档位：props 复用全局 `ComponentSize` / `ComponentVariant` / `ComponentTone`，不自定义档位命名。
-  3. 样式：只消费 `--caomei-*` token，不写原始色值；档位类用 `:where()`，默认值经 `var(--x, fallback)` 消费。
+  3. 样式：只消费 `--caomei-*` token，不写原始色值；全局 token 直用，组件覆盖钩子经 `var(--组件-token, 全局 token 或档位)` 消费；档位类用 `:where()`。
   4. 图标：经 `#icon` 插槽 + `@lucide/vue`，不使用字符串图标名。
   5. 无障碍：键盘可达、焦点可见、必要的 ARIA 与文案本地化键。
   6. 文档与测试：API 文档页（中 / 英）与行为测试（含失败路径）。

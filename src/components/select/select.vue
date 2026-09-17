@@ -368,7 +368,7 @@ function clearValue(): void {
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    box-shadow: var(--caomei-shadow-md);
 }
 
 .caomei-select__viewport {

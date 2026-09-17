@@ -52,7 +52,7 @@ withDefaults(defineProps<PopoverContentProps>(), {
     border-radius: var(--caomei-popover-radius, var(--caomei-radius-md));
     background: var(--caomei-popover-bg, var(--caomei-color-bg));
     color: var(--caomei-color-text);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-font-size-md);
     outline: none;

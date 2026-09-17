@@ -88,7 +88,7 @@ const rootClass = computed(() => [
 
 .caomei-card--elevated {
     background: var(--caomei-card-bg, var(--caomei-color-bg));
-    box-shadow: var(--caomei-card-shadow, 0 4px 12px rgb(0 0 0 / 0.08));
+    box-shadow: var(--caomei-card-shadow, var(--caomei-shadow-sm));
 }
 
 .caomei-card--filled {
@@ -116,7 +116,7 @@ const rootClass = computed(() => [
 }
 
 .caomei-card--hoverable:hover {
-    box-shadow: var(--caomei-card-shadow-hover, 0 8px 24px rgb(0 0 0 / 0.12));
+    box-shadow: var(--caomei-card-shadow-hover, var(--caomei-shadow-md));
     transform: translateY(-2px);
 }
 

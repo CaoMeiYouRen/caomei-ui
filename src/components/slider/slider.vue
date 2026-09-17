@@ -187,7 +187,7 @@ function handleCommit(values: number[]): void {
     border: 2px solid var(--caomei-slider-thumb-border, var(--caomei-color-primary));
     border-radius: 50%;
     background: var(--caomei-slider-thumb-bg, var(--caomei-color-bg));
-    box-shadow: var(--caomei-slider-thumb-shadow, 0 1px 2px rgb(0 0 0 / 0.2));
+    box-shadow: var(--caomei-slider-thumb-shadow, var(--caomei-shadow-xs));
     cursor: grab;
 }
 

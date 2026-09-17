@@ -24,8 +24,8 @@ const STYLES = join(SRC, 'styles')
 const COMPONENTS = join(SRC, 'components')
 const TYPES_FILE = join(SRC, 'types.ts')
 
-/** 已知遗留的原始 rgb/hsl 字面量预算（遮罩 / 阴影，待 token 化）；超出即新增回归。 */
-export const RGB_BUDGET = 13
+/** 已知遗留的原始 rgb/hsl 字面量预算：0 = 预算覆盖的原始色值字面量已清零（`color-mix()` 组合不在其扫描面），任何原始色值即回归。 */
+export const RGB_BUDGET = 0
 
 const EXPECTED_UNIONS = {
     ComponentSize: ['sm', 'md', 'lg'],
@@ -210,7 +210,7 @@ function main() {
         problems.push(`[naming] ${file}: 出现 PrimeVue 旧尺寸命名 'small' / 'large'`)
     }
     for (const issue of result.rawColors.warnings) {
-        notes.push(`[color:warn] ${issue.file}:${issue.line}: 原始 rgb/hsl 色值（待 token 化）：${issue.text}`)
+        notes.push(`[color:warn] ${issue.file}:${issue.line}: 组件内原始 rgb/hsl 字面量（预算 ${RGB_BUDGET} 处，超出即失败）：${issue.text}`)
     }
 
     notes.forEach((line) => console.warn(line))

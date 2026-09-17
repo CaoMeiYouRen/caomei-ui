@@ -56,7 +56,7 @@ withDefaults(defineProps<DropdownMenuContentProps>(), {
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-dropdown-menu-bg, var(--caomei-color-bg));
     color: var(--caomei-color-text);
-    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);
     transform-origin: var(--reka-dropdown-menu-content-transform-origin);
     animation: caomei-dropdown-menu-in 0.12s ease-out;

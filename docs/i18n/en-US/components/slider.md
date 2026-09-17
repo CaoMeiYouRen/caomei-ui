@@ -74,7 +74,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-slider-thumb-size` | `18px` | Thumb size |
 | `--caomei-slider-thumb-bg` | `--caomei-color-bg` | Thumb background color |
 | `--caomei-slider-thumb-border` | `--caomei-color-primary` | Thumb border color |
-| `--caomei-slider-thumb-shadow` | `0 1px 2px rgb(0 0 0 / 20%)` | Thumb shadow |
+| `--caomei-slider-thumb-shadow` | `--caomei-shadow-xs` (`0 1px 2px rgb(0 0 0 / 0.2)`) | Thumb shadow |
 | `--caomei-slider-focus` | `--caomei-color-primary` | Focus ring color |
 
 ```css

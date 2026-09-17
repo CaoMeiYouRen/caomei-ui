@@ -46,7 +46,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-skeleton-gap` | `--caomei-space-2` | Gap between lines |
 | `--caomei-skeleton-radius` | `--caomei-radius-sm` | Border radius |
 | `--caomei-skeleton-bg` | `--caomei-color-bg-elevated` | Placeholder background color |
-| `--caomei-skeleton-highlight` | `rgb(255 255 255 / 60%)` | `wave` sweep highlight color |
+| `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | `wave` sweep highlight color |
 | `--caomei-skeleton-last-line-width` | `60%` | Width of the last line in a multi-line skeleton |
 
 ```css

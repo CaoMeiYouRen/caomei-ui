@@ -46,7 +46,7 @@
 | `--caomei-skeleton-gap` | `--caomei-space-2` | 多行间距 |
 | `--caomei-skeleton-radius` | `--caomei-radius-sm` | 圆角 |
 | `--caomei-skeleton-bg` | `--caomei-color-bg-elevated` | 占位背景色 |
-| `--caomei-skeleton-highlight` | `rgb(255 255 255 / 60%)` | `wave` 扫光高光色 |
+| `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | `wave` 扫光高光色 |
 | `--caomei-skeleton-last-line-width` | `60%` | 多行末行宽度 |
 
 ```css

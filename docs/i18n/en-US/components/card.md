@@ -61,8 +61,8 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-card-border` | `--caomei-color-border` | Border color |
 | `--caomei-card-radius` | `--caomei-radius-lg` | Border radius |
 | `--caomei-card-padding` | from the `padding` step | Padding of each section |
-| `--caomei-card-shadow` | `0 4px 12px rgb(0 0 0 / 0.08)` | `elevated` shadow |
-| `--caomei-card-shadow-hover` | `0 8px 24px rgb(0 0 0 / 0.12)` | `hoverable` hover shadow |
+| `--caomei-card-shadow` | `--caomei-shadow-sm` (`0 4px 12px rgb(0 0 0 / 0.08)`) | `elevated` shadow |
+| `--caomei-card-shadow-hover` | `--caomei-shadow-md` (`0 8px 24px rgb(0 0 0 / 0.12)`) | `hoverable` hover shadow |
 
 ```css
 .caomei-card {

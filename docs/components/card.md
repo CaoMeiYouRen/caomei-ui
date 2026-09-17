@@ -61,8 +61,8 @@
 | `--caomei-card-border` | `--caomei-color-border` | 描边颜色 |
 | `--caomei-card-radius` | `--caomei-radius-lg` | 圆角 |
 | `--caomei-card-padding` | 由 `padding` 档位决定 | 各区块内边距 |
-| `--caomei-card-shadow` | `0 4px 12px rgb(0 0 0 / 0.08)` | `elevated` 阴影 |
-| `--caomei-card-shadow-hover` | `0 8px 24px rgb(0 0 0 / 0.12)` | `hoverable` 悬浮阴影 |
+| `--caomei-card-shadow` | `--caomei-shadow-sm`（`0 4px 12px rgb(0 0 0 / 0.08)`） | `elevated` 阴影 |
+| `--caomei-card-shadow-hover` | `--caomei-shadow-md`（`0 8px 24px rgb(0 0 0 / 0.12)`） | `hoverable` 悬浮阴影 |
 
 ```css
 .caomei-card {

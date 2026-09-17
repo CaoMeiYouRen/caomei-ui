@@ -130,7 +130,7 @@ onUnmounted(() => {
     position: fixed;
     z-index: 1000;
     inset: 0;
-    background: rgb(0 0 0 / 0.45);
+    background: var(--caomei-color-mask);
 }
 
 .caomei-confirm-dialog__content {
@@ -152,7 +152,7 @@ onUnmounted(() => {
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
-    box-shadow: 0 12px 32px rgb(0 0 0 / 0.18);
+    box-shadow: var(--caomei-shadow-lg);
     transform: translate(-50%, -50%);
 }
 

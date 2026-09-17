@@ -23,7 +23,8 @@ describe('check-design 仓库不变量', () => {
         expect(result.rawColors.errors).toEqual([])
         expect(result.typeIssues).toEqual([])
         expect(result.legacyNaming).toEqual([])
-        expect(result.rawColors.warnings.length).toBeLessThanOrEqual(RGB_BUDGET)
+        expect(result.rawColors.warnings).toEqual([])
+        expect(RGB_BUDGET).toBe(0)
     })
 
     it('全局 token 覆盖基础与两套预设', () => {
@@ -65,6 +66,13 @@ describe('check-design 负向用例', () => {
     it('识别组件内原始 hex 色值', () => {
         const entries = [{ file: '/tmp/opencode/x.vue', text: '<style>.a { color: #fff; }</style>' }]
         expect(findRawColors(entries).errors).toHaveLength(1)
+    })
+
+    it('识别组件内原始 rgb 色值（预算为 0 时任何一处都超预算）', () => {
+        const entries = [{ file: '/tmp/opencode/x.vue', text: '<style>.a { box-shadow: 0 8px 24px rgb(0 0 0 / 0.12); }</style>' }]
+        const warnings = findRawColors(entries).warnings
+        expect(warnings).toHaveLength(1)
+        expect(warnings.length).toBeGreaterThan(RGB_BUDGET)
     })
 
     it('script / template 内容不误报', () => {

@@ -7,6 +7,8 @@ export default defineConfig([
             'docs/.vitepress/dist/**',
             'docs/.vitepress/cache/**',
             'docs/.vitepress/data/**',
+            // VitePress 构建中间产物（已 gitignore；ESLint 9 不自动读取 .gitignore）
+            'docs/.vitepress/.temp/**',
             '**/dist/**',
             '**/.nuxt/**',
             '**/.output/**',

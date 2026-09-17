@@ -230,6 +230,117 @@ describe('CaomeiDataTable 交互特性', () => {
         expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
     })
 
+    it('rowsPerPageOptions 透传给分页器', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                rowsPerPageOptions: [2, 5],
+            },
+        })
+
+        expect(wrapper.findComponent(CaomeiPaginator).props('rowsPerPageOptions')).toEqual([2, 5])
+        expect(wrapper.find('.caomei-paginator__rows-per-page').exists()).toBe(true)
+    })
+
+    it('未提供 rowsPerPageOptions 时不渲染每页条数选择器', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2 },
+        })
+
+        expect(wrapper.find('.caomei-paginator__rows-per-page').exists()).toBe(false)
+    })
+
+    it('切换每页条数抛出 update:rows / page 并按偏移保持语义重新切片', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                rowsPerPageOptions: [2, 5],
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 3)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(1)
+
+        // 第 3 页 / 每页 2 → 首行偏移 4；切到每页 5 → floor(4 / 5) = 0 → 第 1 页
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:itemsPerPage', 5)
+        await nextTick()
+
+        expect(wrapper.emitted('update:rows')?.[0]?.[0]).toBe(5)
+        expect(wrapper.emitted('update:page')?.at(-1)?.[0]).toBe(1)
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('A')
+    })
+
+    it('totalRecords 变化不重置用户选择的每页条数', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                rowsPerPageOptions: [2, 5],
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:itemsPerPage', 5)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+
+        // 总数变化只重新钳位页码，不得把页大小回退到 props.rows（否则退化为 2 行）
+        await wrapper.setProps({ totalRecords: 13 })
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+    })
+
+    it('受控分页下切换每页条数的 page 载荷按新 rows 计算 pageCount', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                page: 2,
+                rowsPerPageOptions: [2, 5],
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:itemsPerPage', 5)
+        await nextTick()
+
+        expect(wrapper.emitted('page')?.at(-1)?.[0]).toEqual({
+            page: 1,
+            rows: 5,
+            first: 0,
+            pageCount: 1,
+        })
+    })
+
+    it('受控 page 下切换每页条数只抛出事件，切片由父级决定', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                page: 2,
+                rowsPerPageOptions: [2, 5],
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:itemsPerPage', 5)
+        await nextTick()
+
+        expect(wrapper.emitted('update:rows')?.[0]?.[0]).toBe(5)
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+    })
+
     it('lazy 模式不切片并按 totalRecords 渲染分页器', () => {
         const wrapper = mount(DataTable, {
             props: {

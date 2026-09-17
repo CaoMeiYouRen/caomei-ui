@@ -64,6 +64,8 @@
 | 表级 `<template #header>` / `#footer` | 无表级 header / footer 插槽；标题改用 `caption`，操作区放在表格容器外 |
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'`（单个字段同时表达是否冻结与停靠方向） |
 | `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，**其宽度与样式不可配置**（内建 `1%` 宽 + 内边距） |
+| `rows-per-page-options` | 同名 `rowsPerPageOptions`，切换抛出 `update:rows` 并按偏移保持语义重新推导页码 |
+| `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"`（字段口径一致，另带 `pageCount`） |
 
 ## 排序
 
@@ -85,7 +87,7 @@
 
 ## 分页
 
-`paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。
+`paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。提供 `rowsPerPageOptions` 后在分页器渲染每页条数选择器，切换时抛出 `update:rows`（配合 `v-model:rows` 使用），并按保留首行偏移的语义重新推导页码（受控分页下同时抛出 `update:page`，裁剪与否由父级决定）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。
 
 <demo
     vue="../examples/data-table/pagination.vue"

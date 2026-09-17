@@ -31,6 +31,7 @@ const emit = defineEmits<{
     sort: [event: DataTableSortEvent]
     'update:selection': [selection: T[] | T | null]
     'update:page': [page: number]
+    'update:rows': [rows: number]
     page: [event: DataTablePageEvent]
 }>()
 
@@ -415,12 +416,13 @@ const tableMinWidth = computed(() => {
     return total > 0 ? `${total}px` : undefined
 })
 
-const pageCount = computed(() => {
+/** 按给定每页条数计算总页数（未启用分页器 / lazy 时恒为 1） */
+function resolvePageCount(pageSize: number): number {
     if (!props.paginator && !props.lazy) {
         return 1
     }
-    return Math.max(1, Math.ceil(totalRows.value / Math.max(props.rows, 1)))
-})
+    return Math.max(1, Math.ceil(totalRows.value / Math.max(pageSize, 1)))
+}
 
 function emitPage(next: PaginationState): void {
     const page = next.pageIndex + 1
@@ -429,7 +431,8 @@ function emitPage(next: PaginationState): void {
         page,
         rows: next.pageSize,
         first: next.pageIndex * next.pageSize,
-        pageCount: pageCount.value,
+        // 按本次载荷自身的 pageSize 计算：受控分页下父级尚未回写 `rows`，不能用旧值推算
+        pageCount: resolvePageCount(next.pageSize),
     } satisfies DataTablePageEvent)
 }
 
@@ -443,7 +446,9 @@ watch([(): number => props.rows, (): number | undefined => props.totalRecords], 
     if ((!props.paginator && !props.lazy) || isPageControlled.value) {
         return
     }
-    const size = effectivePageSize.value
+    // 取内部当前页大小而非 `props.rows`：用户经每页条数选择器改过大小后，
+    // `totalRecords` 变化不得把选择静默重置回默认值（显式改 `props.rows` 由上方 watch 同步）
+    const size = internalPagination.value.pageSize
     const maxIndex = Math.max(0, Math.ceil(totalRows.value / Math.max(size, 1)) - 1)
     internalPagination.value = {
         pageIndex: Math.min(internalPagination.value.pageIndex, maxIndex),
@@ -454,6 +459,24 @@ watch([(): number => props.rows, (): number | undefined => props.totalRecords], 
 
 function goToPage(page: number): void {
     table.setPageIndex(Math.max(page - 1, 0))
+}
+
+/**
+ * 切换每页条数：抛出 `update:rows`，并按 PrimeVue 的偏移保持语义保留当前首行偏移、
+ * 重新推导页码（受控分页下同样抛出 `update:page`，由父级决定是否采纳）。
+ */
+function setPageSize(rows: number): void {
+    const current = currentPagination.value
+    if (rows === current.pageSize) {
+        return
+    }
+    const first = current.pageIndex * current.pageSize
+    const pageIndex = Math.floor(first / Math.max(rows, 1))
+    if (!isPageControlled.value) {
+        internalPagination.value = { pageIndex, pageSize: rows }
+    }
+    emit('update:rows', rows)
+    emitPage({ pageIndex, pageSize: rows })
 }
 </script>
 
@@ -602,7 +625,9 @@ function goToPage(page: number): void {
                 :page="currentPagination.pageIndex + 1"
                 :items-per-page="currentPagination.pageSize"
                 :total="totalRows"
+                :rows-per-page-options="rowsPerPageOptions"
                 @update:page="goToPage"
+                @update:items-per-page="setPageSize"
             />
         </div>
     </div>

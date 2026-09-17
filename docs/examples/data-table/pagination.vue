@@ -21,21 +21,23 @@ const data: User[] = Array.from({ length: 23 }, (_, index) => ({
 }))
 
 const page = ref(1)
+const rows = ref(5)
 </script>
 
 <template>
     <div class="demo-stack">
         <CaomeiDataTable
             v-model:page="page"
+            v-model:rows="rows"
             :data="data"
             :columns="columns"
             row-key="id"
             paginator
-            :rows="5"
+            :rows-per-page-options="[5, 10, 20]"
             caption="分页成员"
         />
         <p class="demo-hint">
-            第 {{ page }} 页
+            第 {{ page }} 页，每页 {{ rows }} 条
         </p>
     </div>
 </template>

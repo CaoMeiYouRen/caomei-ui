@@ -178,6 +178,12 @@ export interface DataTableProps<T> {
      */
     rows?: number
     /**
+     * 每页条数候选；提供后在分页器渲染每页条数选择器，切换时抛出 `update:rows`
+     * @en Rows-per-page choices; when provided, a rows-per-page selector is rendered in the paginator
+     * and switching it emits `update:rows`
+     */
+    rowsPerPageOptions?: number[]
+    /**
      * 总条数；`lazy` 时由服务端提供，缺省用 `data.length`
      * @en Total records; provided by the server when `lazy`, defaults to `data.length`
      */

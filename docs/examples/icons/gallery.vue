@@ -88,6 +88,9 @@ const icons: { component: Component, name: string, label: string }[] = [
     padding: 12px 8px;
     border: 1px solid var(--vp-c-divider);
     border-radius: 8px;
+
+    /* 文档站会给正文列表项加 `li + li` 外边距，网格内会表现为卡片高度参差 */
+    margin: 0;
 }
 
 .demo-grid__icon {

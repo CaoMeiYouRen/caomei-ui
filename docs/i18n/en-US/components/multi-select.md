@@ -22,6 +22,26 @@ Two-way bind an array of values (strings or numbers) with `v-model`; selected va
 
 > Field resolution: the string form of `optionLabel` / `optionValue` supports `a.b` dot-paths. When `optionValue` does not resolve to a string or number (`null`, a boolean, a missing field), that option is **not rendered**; when `optionLabel` resolves to no text, the option's text is empty.
 
+## Clear
+
+`showClear` shows a clear button **when values are selected and the field is not disabled** (the `options` list need not be non-empty, so values not present in `options` can still be cleared); clicking it resets the model to an empty array and returns focus to the input. The button's accessible name defaults to the current locale's "Clear" text, overridable via `clearLabel`.
+
+<demo
+    vue="../examples/multi-select/clear.vue"
+    ssg="true"
+/>
+
+## Custom options
+
+The `#option` slot customizes the panel option content and receives `option` (the **raw** option object) and `selected` (whether it is the current selection); without it the mapped display text is rendered.
+
+<demo
+    vue="../examples/multi-select/option-slot.vue"
+    ssg="true"
+/>
+
+> Option filtering still uses the text mapped from `optionLabel` (Reka uses a text snapshot for type-to-filter); the slot content only affects the panel display.
+
 ## States and sizes
 
 `disabled` disables and `invalid` marks a validation failure (maps to `aria-invalid`); `size` supports `sm` / `md` / `lg`.
@@ -39,6 +59,7 @@ Two-way bind an array of values (strings or numbers) with `v-model`; selected va
 - Note: native attributes such as `maxlength` are forwarded to the **search input**, not the selected-value text, so they only affect the filter input length.
 - The open trigger's accessible name defaults to "Show options", overridable via `openLabel` (overriding Reka's built-in English name).
 - The remove button's accessible name is "Remove + option text"; the prefix is overridable via `removeLabel`. When no options match it shows "No matching options", overridable via `emptyLabel`.
+- The clear button renders when `showClear` is set and values are selected; its accessible name defaults to "Clear" and is overridable via `clearLabel`. After clearing, focus returns to the search input.
 - Page scroll is not locked on open by default (`bodyLock=false`) to avoid layout shift from the disappearing scrollbar; enable it via `bodyLock` when needed.
 
 ## Scope

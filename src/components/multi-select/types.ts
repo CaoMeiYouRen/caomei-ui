@@ -57,6 +57,17 @@ export interface MultiSelectProps<T extends object = MultiSelectOption> extends 
      */
     bodyLock?: boolean
     /**
+     * 有选中项时是否显示清除按钮；点击后模型置为空数组并把焦点交回输入框
+     * @en Whether to show a clear button when values are selected; clicking it resets the model to an
+     * empty array and returns focus to the input
+     */
+    showClear?: boolean
+    /**
+     * 清除按钮可访问名；默认取当前语言的「清除」
+     * @en Accessible name of the clear button; defaults to the current locale's "Clear" text
+     */
+    clearLabel?: string
+    /**
      * 展开触发器可访问名；默认取当前语言的「展开选项」
      * @en Accessible name of the open trigger; defaults to the current locale's "Show options" text
      */

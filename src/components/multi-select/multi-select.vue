@@ -12,7 +12,7 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -37,7 +37,16 @@ const props = withDefaults(defineProps<MultiSelectProps<T>>(), {
     invalid: false,
     required: false,
     bodyLock: false,
+    showClear: false,
 })
+
+defineSlots<{
+    /**
+     * 自定义选项内容；`option` 为原始选项对象，`selected` 表示是否为当前选中项
+     * @en Custom option content; `option` is the raw option object and `selected` marks the selected one
+     */
+    option?: (props: { option: T, selected: boolean }) => unknown
+}>()
 
 const model = defineModel<OptionValue[]>({ default: () => [] })
 
@@ -47,6 +56,7 @@ const locale = useLocale()
 const openLabel = computed(() => props.openLabel ?? locale.value.multiSelect.open)
 const removeLabel = computed(() => props.removeLabel ?? locale.value.multiSelect.remove)
 const emptyLabel = computed(() => props.emptyLabel ?? locale.value.multiSelect.empty)
+const clearLabel = computed(() => props.clearLabel ?? locale.value.multiSelect.clear)
 
 const rootClass = computed(() => [
     `caomei-multi-select--${props.size}`,
@@ -57,11 +67,15 @@ const rootClass = computed(() => [
 ])
 
 interface NormalizedOption {
+    /** 原始选项对象，供 `#option` 插槽使用 */
+    raw: T
     /** 解析后的选项值（字符串或数字） */
     value: OptionValue
     /** 解析后的显示文本；字段缺省时为 undefined */
     label: string | undefined
     disabled: boolean
+    /** 是否为当前选中项 */
+    selected: boolean
 }
 
 /** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
@@ -73,9 +87,11 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
             continue
         }
         result.push({
+            raw: option,
             value,
             label: resolveOptionField(option, props.optionLabel, 'label'),
             disabled: resolveOptionDisabled(option),
+            selected: model.value.includes(value),
         })
     }
     return result
@@ -99,6 +115,29 @@ const selectedOptions = computed<NormalizedOption[]>(() => {
 
 function removeValue(value: OptionValue): void {
     model.value = model.value.filter((item) => item !== value)
+}
+
+/** 有选中项且未禁用时显示清除按钮（与 Select 的 `showClear` 口径一致） */
+const clearable = computed(() => props.showClear && model.value.length > 0 && !props.disabled)
+
+const inputRef = ref<{ $el?: unknown } | null>(null)
+
+/**
+ * 清空模型，并把焦点交回输入框：清除后按钮自身被移除，否则焦点会掉到 body。
+ * 注意清空后各选项的 `selected` 同步复位，面板保持当前开合状态不变。
+ */
+function clearValue(): void {
+    model.value = []
+    void nextTick(() => {
+        // 受控用法下外层可能拒绝更新：此时按钮仍在，不应把它自身的焦点抢走
+        if (clearable.value) {
+            return
+        }
+        const element = inputRef.value?.$el
+        if (element instanceof HTMLElement) {
+            element.focus()
+        }
+    })
 }
 
 /** 点击字段空白处聚焦搜索输入框，贴合原生多选字段的交互习惯 */
@@ -146,11 +185,21 @@ function onAnchorClick(event: MouseEvent): void {
             <ComboboxInput
                 v-bind="{...controlAttrs, ...labelAttrs(label)}"
                 :id="id"
+                ref="inputRef"
                 class="caomei-multi-select__input"
                 :placeholder="model.length === 0 ? placeholder : undefined"
                 :aria-invalid="invalid || undefined"
                 :disabled="disabled"
             />
+            <button
+                v-if="clearable"
+                type="button"
+                class="caomei-multi-select__clear"
+                :aria-label="clearLabel"
+                @click.stop="clearValue"
+            >
+                <CaomeiIcon :icon="X" />
+            </button>
             <ComboboxTrigger
                 class="caomei-multi-select__icon"
                 :disabled="disabled"
@@ -178,7 +227,15 @@ function onAnchorClick(event: MouseEvent): void {
                         :disabled="option.disabled"
                         :text-value="option.label"
                     >
-                        <span class="caomei-multi-select__item-label">{{ option.label }}</span>
+                        <span class="caomei-multi-select__item-label">
+                            <slot
+                                name="option"
+                                :option="option.raw"
+                                :selected="option.selected"
+                            >
+                                {{ option.label }}
+                            </slot>
+                        </span>
                         <ComboboxItemIndicator class="caomei-multi-select__indicator">
                             <CaomeiIcon :icon="Check" />
                         </ComboboxItemIndicator>
@@ -306,6 +363,35 @@ function onAnchorClick(event: MouseEvent): void {
 
 .caomei-multi-select__input:disabled {
     cursor: not-allowed;
+}
+
+/*
+  清除按钮为字段内的常规 flex 成员（不是绝对定位）：本组件字段可多行换行，
+  绝对定位在标签占满首行时会压在标签之上，改为随输入行流动。
+*/
+.caomei-multi-select__clear {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--caomei-color-text-muted);
+
+    /* 按钮默认不继承字体：显式继承以保持图标与字段文本同源 */
+    font: inherit;
+    cursor: pointer;
+}
+
+.caomei-multi-select__clear:hover {
+    color: var(--caomei-color-text);
+}
+
+.caomei-multi-select__clear:focus-visible {
+    border-radius: var(--caomei-radius-sm);
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
 }
 
 .caomei-multi-select__icon {

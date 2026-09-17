@@ -473,3 +473,138 @@ describe('CaomeiMultiSelect 对象选项映射', () => {
         wrapper.unmount()
     })
 })
+
+describe('CaomeiMultiSelect 清除与自定义选项', () => {
+    it('showClear 且有选中项时渲染清除按钮，无值时隐藏', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'], showClear: true },
+        })
+
+        expect(wrapper.find('.caomei-multi-select__clear').exists()).toBe(true)
+
+        await wrapper.setProps({ modelValue: [] })
+        expect(wrapper.find('.caomei-multi-select__clear').exists()).toBe(false)
+    })
+
+    it('未开启 showClear 时不渲染清除按钮', () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'] },
+        })
+
+        expect(wrapper.find('.caomei-multi-select__clear').exists()).toBe(false)
+    })
+
+    it('点击清除按钮把模型置为空数组并把焦点交回输入框', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple', 'banana'], showClear: true },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-multi-select__clear').trigger('click')
+        await flushPromises()
+        await nextTick()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[]])
+        expect(document.activeElement).toBe(wrapper.get('.caomei-multi-select__input').element)
+
+        wrapper.unmount()
+    })
+
+    it('清除按钮可访问名默认取当前语言，可被 clearLabel 覆盖', () => {
+        const byLocale = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'], showClear: true },
+        })
+        expect(byLocale.get('.caomei-multi-select__clear').attributes('aria-label')).toBe('清除')
+
+        const byProp = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'], showClear: true, clearLabel: '重置' },
+        })
+        expect(byProp.get('.caomei-multi-select__clear').attributes('aria-label')).toBe('重置')
+    })
+
+    it('disabled 时不渲染清除按钮', () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: ['apple'], showClear: true, disabled: true },
+        })
+
+        expect(wrapper.find('.caomei-multi-select__clear').exists()).toBe(false)
+    })
+
+    it('option 插槽收到原始选项对象与选中状态', async () => {
+        interface SlotOption {
+            name: string
+            id: number
+            hint: string
+        }
+
+        const SlotMultiSelect = CaomeiMultiSelect as unknown as DefineComponent<MultiSelectProps<SlotOption>>
+
+        const wrapper = mount(SlotMultiSelect, {
+            props: {
+                options: [
+                    { name: '一', id: 1, hint: '第一项' },
+                    { name: '二', id: 2, hint: '第二项' },
+                ],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: [2],
+            },
+            slots: {
+                option: ({ option, selected }: { option: SlotOption, selected: boolean }) =>
+                    h('span', { class: 'custom-option' }, `${option.hint}${selected ? '*' : ''}`),
+            },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+
+        const rendered = document.querySelectorAll('.custom-option')
+        expect(rendered).toHaveLength(2)
+        expect(rendered[0].textContent).toBe('第一项')
+        expect(rendered[1].textContent).toBe('第二项*')
+
+        wrapper.unmount()
+    })
+
+    it('受控父级拒绝更新时保留清除按钮，不把焦点抢到输入框', async () => {
+        const emittedValues: unknown[] = []
+        const Host = defineComponent({
+            setup() {
+                return () => h(CaomeiMultiSelect, {
+                    options,
+                    modelValue: ['apple'],
+                    showClear: true,
+                    // 刻意不回写：模拟受控父级拒绝更新
+                    'onUpdate:modelValue': (value: unknown) => {
+                        emittedValues.push(value)
+                    },
+                })
+            },
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+
+        await wrapper.get('.caomei-multi-select__clear').trigger('click')
+        await flushPromises()
+        await nextTick()
+
+        expect(emittedValues).toEqual([[]])
+        expect(wrapper.find('.caomei-multi-select__clear').exists()).toBe(true)
+        expect(document.activeElement).not.toBe(wrapper.get('.caomei-multi-select__input').element)
+
+        wrapper.unmount()
+    })
+
+    it('未提供 option 插槽时回退渲染映射文本', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, modelValue: [] },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered[0].textContent).toContain('苹果')
+
+        wrapper.unmount()
+    })
+})

@@ -1,47 +1,32 @@
 # 长期规划与 Backlog
 
-本文档记录已评估的候选与长期主线；候选准入、优先级与插队例外规则见 [规划规范 §3](../standards/planning.md#3-新需求处理原则hard-requirement)，本文档不重述。
+本文档记录**仍待用户决策**的候选与长期主线；候选准入、优先级与插队例外规则见 [规划规范 §3](../standards/planning.md)，本文档不重述。
 
 > **文档结构**
 >
-> - §1 候选池：**仍待用户决策**的候选（含外购建议等不纳入自研的记录）；**状态标记**：优先级列为 `—` 且候选名带删除线＝**已交付**（交付摘要与归档指针见行内）；`→ Mx（Phase N 执行中）`＝已登记当前阶段且尚未交付（当前在行条目指向 Phase 10）。
+> - §1 候选池：仅收录**尚未决策 / 尚未交付**的候选（含外购建议等不纳入自研的记录）；`→ Mx（Phase N …）` 表示已登记到某阶段的既有范围（未启动时标「范围已登记」）。
 > - §2 维护约定。
 >
-> Phase 6（组件库补全与规范化）与 Phase 7 第一阶段（迁移就绪）已完成的条目及其评估证据已随阶段迁入 [待办归档](./todo-archive.md)；本表仅保留仍待决策的候选。
+> 已交付与已归档条目随阶段迁入 [待办归档](./todo-archive.md)，本表不保留（含交付摘要与归档指针）。
 
 ## 1. 候选池（待用户决策）
 
-> 2026-09-14 用户新需求（组件补全 / 使用复核 / 许可声明 / 主题预设 / 国际化 / 移动端 / 设计规范）评估结论：全部属于功能与体验增强，**无一命中插队例外清单**（安全漏洞 / 破坏下游构建 / blocker 缺陷）。经用户决策，组件补全 / 使用复核 / 主题预设 / 设计规范 / 许可声明已在 [Phase 6](./todo-archive.md) 完成并归档；**组件国际化（需求 5）与移动端 / 响应式（需求 6）延后**，与其余候选一并保留在本节。
->
-> 2026-09-16 用户新需求（文档站组件信息架构 / 默认主题主色 / 站点观感 / Drawer 动画 / 公共逻辑抽取 / ESLint 严格化）评估结论：全部属于功能、体验或治理增强，**无一命中插队例外清单**；按 [规划规范 §3](../standards/planning.md) 默认路径登记为候选，待用户明确决策后进入当前阶段。其中「Drawer 动画」经只读诊断确认为 **VitePress reduced-motion 覆盖**（组件实现无缺陷），可作为文档站决策项。评估记录见 [2026-09-16 新需求评估记录](../design/governance/2026-09-16-new-requirements-evaluation.md)。
->
-> **2026-09-16 用户决策**：① 文档站组件信息架构——采纳 6 分组 + 组内字母序，能力说明归位取**方案 B**（迁至 `/components/*` 并镜像 en-US），补 zh 组件总览页；② 默认主题主色——**改蓝**（`caomei` / `momei` 预设品牌色不变），采用建议值（亮 `#2563eb` / 暗 `#60a5fa`）；③ 站点观感——**候选保留在本表待后续评估**；④ 文档站演示动画——**对 demo 区域 opt-in 恢复入场动画**；⑤ 公共逻辑抽取与 ESLint 严格化——**在正式版本发布前完成**。经用户授权（2026-09-16）**① ② ④ ⑤ 已登记为 [Phase 9「发布前收口」](./todo.md) 的 M1 / M2 / M3 / M4 / M5**；③ 保留本表待专项评估。范围依据见 [下一阶段评估记录](../design/governance/2026-09-16-pre-release-stage-evaluation.md)。
-
 ### 1.1 组件增强候选
 
-> 2026-09-14 Phase 6 M1 复核（[momei 使用复核台账](../design/governance/2026-09-14-momei-usage-audit.md)）产出 23 项「需增强」结论，按组件归并如下。其中 Button 形态增强与 DataTable 能力增强已在 Phase 6 交付并归档；迁移映射规范（`severity→tone` 等）已由 M2 [设计规范 §7](../design/design-spec.md) 承接。
->
-> **2026-09-14 复核与迁出**：经 [Phase 7 第一阶段评估记录 §4](../design/governance/2026-09-14-phase7-first-stage-evaluation.md) 按 momei 真实用量调研，**P0 高频硬缺口**（Select 家族对象选项映射 / Tag / Message / InputNumber / Textarea / Password）已在 Phase 7 第一阶段交付；其中 **Message 语义与形态增强已全部交付、无剩余候选**（`text` 变体经一方源码取证确认不存在于 PrimeVue Message，不实现），不再作为候选登记；**P1**（Image / ProgressSpinner / Dialog / DataTable 剩余）经用户决策**移入 Phase 7 第二阶段**，由迁移实际暴露驱动；本表保留 **P2 低频项**（Button 角标、Badge 叠加、浮动层命令式 API、Menu 数据驱动、Paginator、FileUpload、ToggleButton、Toolbar、Checkbox 分组值、Switch change）以及跨组件 token 治理项，待迁移实际暴露后决策。
+> 来源：momei 使用复核台账与各阶段治理发现；仅列仍待决策的候选。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| Button 角标增强 | 组件实现评估 + M1 复核 | **保留（P2）**：Button 的 `:badge` 角标（M1 台账 momei 2 处）未纳入 Phase 6 M3（标记待评估）；需评估角标内容 / 位置 / 与图标共存。 | 低 |
-| Tag/Badge 增强 | 组件实现评估 + M1 复核 | **部分迁出**：Tag `severity` → `tone` 规范化、`rounded` / `outlined`、`#icon` 插槽（P0）已在 Phase 7 第一阶段交付；**保留（P2）** Tag 可选中筛选 / 可编辑（Reka TagsInput）、Badge 叠加位置偏移与宽度过渡动画。 | 中 |
-| Select 增强 | 组件实现评估 + M1 复核 | **已在 Phase 7 第一阶段交付（P0）**：`option-label` / `option-value` 字段映射、非 string value、`show-clear`、`#option` 插槽（`option-label` 计数 88：Select 66 / Dropdown 5 / MultiSelect 8 / SelectButton 9；Dropdown 为旧名归入 Select）。`option-label` / `option-value`、`show-clear`、`#option` 均已交付；**`filter` 经用户决策（2026-09-15）按方案 A 迁移映射到 `AutoComplete`**，不在 Select 上实现——Reka Select 把 `role="listbox"` 固定在面板元素上（`SelectContentImpl` 在 `$attrs` 之后写入，无法覆盖），面板内放搜索框会使 textbox 成为 listbox 的 owned child（违反 WAI-ARIA `aria-required-children`），可搜索单选的 primitive 是 Reka `Listbox` / `Combobox`。**保留（P2）** 分组（SelectGroup）与可编辑组合。 | 中 |
-| ColorPicker 色板导航增强 | M4 条目 5 follow-up（2026-09-15） | 色板当前为 `role="group"` + `aria-pressed` 按钮组（Tab 遍历，无方向键 roving）；候选改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景 | 低 |
-| AutoComplete 严格选项模式 | M3 条目 2 迁移评估（2026-09-15） | `Select filter` 按方案 A 迁往 `AutoComplete`，但当前 AutoComplete 在回车 / 失焦时会提交自由文本（`commitFreeText`），与 PrimeVue `Select filter`「值必须来自选项列表」的语义有差；候选补 `strict` / 限制自由文本的开关，或按 Reka `Listbox` 另立可搜索单选形态。触发条件：下游迁移实测出现「取值必须受限于选项列表」的受控字段用例。 | 低 |
-| DatePicker 范围选择 | M4 条目 2 范围收敛（2026-09-15，用户决策延后） | **延后（低）**：momei 快照（2026-09-15，`rg "<DatePicker"` 排除 node_modules/dist/.nuxt/.output）`<DatePicker>` 6 处 / 4 文件、`show-time` 4 处、`selection-mode` **0 处**，零用量。候选补 `selectionMode="range"`（Reka `RangeCalendar`）或独立 RangePicker：起止值模型（`Date[]` / `{ start, end }`）、区间展示与校验、与现有 `dateFormat` / `showTime` / `minValue` / `maxValue` 的组合。触发条件：下游出现日期区间筛选 / 区间录入真实用例。 | 低 |
-| 表单输入增强 | M1 复核 | **部分迁出**：InputNumber `use-grouping` / `min-max-fraction-digits`、Textarea `auto-resize`、Password `feedback`（P0）已在 Phase 7 第一阶段交付；**保留（P2）** Checkbox 分组值数组、Switch `change` 事件、FileUpload 上传能力、ToggleButton 状态文案。 | 中 |
-| 展示类组件增强 | M1 复核 | **部分迁出**：Image `preview` + `#indicatoricon`、ProgressSpinner `stroke-width` / `animation-duration` / 任意尺寸（P1）已移入 Phase 7 第二阶段；**保留（P2）** Toolbar `#start` / `#center` / `#end` 分区插槽。 | 低 |
-| 浮层与导航增强 | M1 复核 | **部分迁出**：Dialog `show-header` / `breakpoints` / `@hide`（P1）已移入 Phase 7 第二阶段；**保留（P2）** Popover 命令式 `toggle(event)` 锚点、DropdownMenu `:model` + `:popup`、Paginator 每页条数选择、ConfirmDialog `icon`。 | 低 |
-| 实底前景 token 统一 | M3 复核 | **由 Phase 9 M2 条目 1 部分交付（2026-09-16）**：Tag / Badge / Message 的 `--solid` 变体已改配 `--caomei-color-on-solid`，ConfirmDialog danger 实底同步配套。**保留**：其余实底消费点复核；`primary-foreground` 语义别名 **已补（M2 条目 2，2026-09-16）**：`src/nuxt/theme.ts` 新增 `primary-foreground` 别名，消费者覆盖 `primary` 时可一并表达暗色配对。**前提更正**：SelectButton 实底消费的是自适应 `--caomei-color-primary`（配对本就正确、无需改）；momei 暗色前景 `#000` 实测 8.19:1 达标，原「momei 暗色对比问题」不成立 | 中 |
-| ~~默认主色（品牌红）~~ | M3 复核 + 用户需求（2026-09-16） | **已交付（Phase 9 M2 两条目，2026-09-16）**：默认主色由 `#e63946` 改为亮 `#2563eb` / 暗 `#60a5fa`（实底 `-solid` 保持 `#2563eb` 跨主题稳定），亮暗两态实测 **5.17:1 / 7.73:1**；配套整改 Tag / Badge / Message / ConfirmDialog 的实底前景并补齐 `primary-foreground` 语义别名，规范、README / getting-started（中英）与架构文档已同步。原始问题（留痕）：① 对比度——`#e63946` 配白字约 4.17:1 低于 AA；② 语义冲突——默认 primary 与 danger 同为红色系（`caomei` 预设 primary `#e63946` / danger `#ef4444` 几乎同色）。取证见 [2026-09-16 新需求评估记录 §3](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
+| Tag/Badge 增强 | 组件实现评估 + M1 复核 | Tag 可选中筛选 / 可编辑（Reka TagsInput）；Badge 叠加位置偏移与宽度过渡动画 | 中 |
+| Select 增强 | 组件实现评估 + M1 复核 | 分组（SelectGroup）与可编辑组合。**`filter` 不在 Select 实现**：Reka Select 把 `role="listbox"` 固定在面板元素上（`SelectContentImpl` 在 `$attrs` 之后写入，无法覆盖），面板内放搜索框会使 textbox 成为 listbox 的 owned child（违反 WAI-ARIA `aria-required-children`），可搜索单选应走 `Listbox` / `Combobox` | 中 |
+| 实底前景 token 配对复核 | M3 复核 | 复核其余实底消费点的 `-solid` × `-foreground` 配对，避免跨主题配对冲突（规范口径见 [设计规范 §2.2 / §3.2](../design/design-spec.md)） | 中 |
+| ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板当前为 `role="group"` + `aria-pressed` 按钮组（Tab 遍历，无方向键 roving）；候选改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景 | 低 |
+| AutoComplete 严格选项模式 | M3 条目 2 迁移评估 | AutoComplete 在回车 / 失焦时会提交自由文本（`commitFreeText`），与 PrimeVue `Select filter`「值必须来自选项列表」的语义有差；候选补 `strict` / 限制自由文本的开关，或按 Reka `Listbox` 另立可搜索单选形态。触发条件：下游迁移实测出现「取值必须受限于选项列表」的受控字段用例 | 低 |
+| DatePicker 范围选择 | M4 条目 2 范围收敛（用户决策延后） | 候选补 `selectionMode="range"`（Reka `RangeCalendar`）或独立 RangePicker：起止值模型（`Date[]` / `{ start, end }`）、区间展示与校验、与现有 `dateFormat` / `showTime` / `minValue` / `maxValue` 的组合。触发条件：下游出现日期区间筛选 / 区间录入真实用例（momei 快照 `selection-mode` 零用量） | 低 |
+
+> 下列组件增强项已**并入下游迁移的 B1 清单**（决策见 §1.8，此处不重复定义）：Button `:badge`、Image `preview`、ProgressSpinner `strokeWidth`、Toolbar 分区插槽、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Popover / DropdownMenu 命令式、FileUpload 上传能力、ToggleButton 状态文案。
 
 ### 1.2 长尾组件候选（Tier 3）
-
-> 依据调研文档于 2026-09-13 重新评估，实现方式与 Reka 成熟度见 [组件设计 §5](../design/components.md)，本表只登记候选与优先级。优先级为「中」的 7 个候选（RadioGroup / RadioButton、ProgressBar、Popover、Slider、Skeleton、Toolbar、ToggleButton；其中 Skeleton 为自建纯样式）已于 Phase 4 交付并归档（见 [待办归档](./todo-archive.md)）。
->
-> 由 momei 使用面驱动的组件已在 Phase 6 交付或决策：Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 已实现并归档，Panel 由 `Card` 承载不新建；`SplitButton` / `DataView` / `DatePicker / Calendar` / `Drawer` / `ColorPicker` 已在 [Phase 7 第一阶段](./todo-archive.md) M4 交付并归档（按用量与依赖排序 DatePicker → Drawer → SplitButton → ColorPicker → DataView）。其中 `DatePicker / Calendar`、`ColorPicker` 涉及 Reka Alpha primitive，已锁 `reka-ui@2.10.4` 并补 API 回归；`Drawer` 未采用 Reka `Drawer`（Alpha / Vaul 形态、不负责面板定位），改封装 Reka **稳定**的 Dialog primitive + 四向定位 CSS（见 [组件设计 §5](../design/components.md) 与 [设计规范 §7](../design/design-spec.md)）。本表仅保留当前无下游使用证据的长尾。
 
 | 候选 | 来源 | 优先级 |
 |------|------|:-:|
@@ -55,109 +40,76 @@
 
 ### 1.4 国际化候选（需求 5）
 
-> **用户决策（2026-09-16）：下一阶段优先方向**——先进入「语言矩阵 - 中期」（zh-TW / ja-JP / ko-KR），依据是下游 momei 为国际化项目，组件至少需支持其对应语言。**已登记 Phase 10 M1（2026-09-16 用户授权）**。
-
-> 承接原「国际文字内置文案补全」候选并按用户需求（2026-09-14）扩展为完整机制。**现状（2026-09-16 更新）**：「组件 i18n 注入机制」已随 Phase 7 第一阶段 M2 落地（`CaomeiConfigProvider` / `provideLocale` + `useLocale`，消费面实测 25 个 `.vue`（23 个组件目录），2026-09-16 快照），文档站也已按页面语言注入（英文页展示英文内建文案），上述组件范围内的英文文档页中文问题已解决；非内建文案组件（如 file-upload）的用户可见中文另见本表候选。本表余项收敛为语言矩阵与 locale 注册治理等中期 / 长期候选，以及 file-upload 类非内建文案补缺。**用户决策（2026-09-13）：当前接受现状**；机制已落地，其余语种的本地化由下游注入承担。
->
-> **2026-09-14 用户决策：本组含短期 zh-CN / en-US 一并延后**，不纳入 Phase 6。
->
-> **2026-09-14 迁移评估更新**：因 momei 支持 5 种语言且动态切换，组件内建文案缺口会在迁移后造成多语言回归（详见 [Phase 7 第一阶段评估记录 §5](../design/governance/2026-09-14-phase7-first-stage-evaluation.md)）。**「组件 i18n 注入机制」（含短期 zh-CN / en-US）已在 Phase 7 第一阶段 M2 落地**（2026-09-15；翻译语种由下游注入）；中期 / 长期语言矩阵、RTL 与 locale 注册治理仍保留在本表待决策。
-
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| ~~组件 i18n 注入机制~~ | 用户需求（2026-09-14） | 已落地 Phase 7 第一阶段 M2：locale provider（`CaomeiConfigProvider` / `provideLocale` + `useLocale`）与逐组件覆盖，支持下游注入 | — |
-| ~~语言矩阵 - 短期~~ | 用户需求（2026-09-14） | 已落地 Phase 7 第一阶段 M2：zh-CN / en-US 承载现有两份文案；zh-TW / ja-JP / ko-KR 由下游注入 | — |
-| 语言矩阵 - 中期 | 用户需求（2026-09-14） | **已登记 Phase 10 M1（2026-09-16 用户授权）**：库内建 zh-TW / ja-JP / ko-KR 三语文案（方案 A；AI 基于 zh-CN 生成 + 用户复核），按语种拆三个提交 + 键集合一致性守卫（以 zh-CN 为基准）。范围依据见 [语言矩阵 - 中期评估记录](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md) | → M1（Phase 10 执行中） |
-| 语言矩阵 - 长期 | 用户需求（2026-09-14） | 追加俄语、法语、德语、西班牙语、葡萄牙语；视情况追加希腊语、意大利语、印地语、孟加拉语、印度尼西亚语等 | 低 |
-| RTL（阿拉伯语）支持 | 用户需求（2026-09-14） | 从右往左排版涉及逻辑属性、图标镜像、浮层定位与滑动手势镜像，风险高，单独立项谨慎评估，不与其他语言捆绑 | 低 |
-| locale 组织与注册治理 | 用户需求（2026-09-14） | 语言数量增长后的目录组织、注册表、按需加载与类型约束；可参考 momei `i18n/config` registry 机制 | 低 |
-| file-upload 用户可见文案本地化 | 迁移评估发现（2026-09-15） | file-upload 的默认插槽与 `file` 插槽已可由下游自定义，但库内建文案（默认提示与移除 `aria-label`）仍为中文，不在「消费 `useLocale` 的 23 个组件目录」范围内；需评估补 `fileUpload` locale 命名空间 | 低 |
+| 语言矩阵 - 长期 | 用户需求 | 追加俄语、法语、德语、西班牙语、葡萄牙语；视情况追加希腊语、意大利语、印地语、孟加拉语、印度尼西亚语等 | 低 |
+| RTL（阿拉伯语）支持 | 用户需求 | 从右往左排版涉及逻辑属性、图标镜像、浮层定位与滑动手势镜像，风险高，单独立项谨慎评估，不与其他语言捆绑 | 低 |
+| locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载与类型约束；可参考 momei `i18n/config` registry 机制 | 低 |
+| file-upload 用户可见文案本地化 | 迁移评估发现 | file-upload 的默认插槽与 `file` 插槽已可由下游自定义，但库内建文案（默认提示与移除 `aria-label`）仍为中文，不在「消费 `useLocale` 的组件目录」范围内；需评估补 `fileUpload` locale 命名空间 | 低 |
 
 ### 1.5 移动端与响应式候选（需求 6）
 
-> **用户决策（2026-09-16）：语言矩阵之后的下一优先方向**（小屏适配补齐、移动端测试用例、响应式规范补充三条）。**已登记 Phase 10 M2（2026-09-16 用户授权）**。
-
-> **2026-09-14 用户决策：本组延后处理**，不纳入 Phase 6。
->
-> 缺口依据：2026-09-14 统计（Phase 6 补全后 39 个组件）**仅 Dialog 与 ConfirmDialog 具备响应式断点**（`@media (width <= 640px)`）；其余含 `@media` 的组件文件均为 `prefers-reduced-motion`（可访问性，非响应式）。缺口含 DataTable（设计承诺「窄屏转卡片列表」但无响应式断点）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 及 Phase 6 新增组件等，须逐组件补齐并核对触摸目标尺寸。
->
-> **2026-09-16 复核（M2 条目 1）**：上段与下表「现状」列为 2026-09-14 快照，仅作历史依据；逐组件判定以[响应式设计 §3](../design/responsive.md) 的窄屏行为矩阵为准。其中 DataTable「窄屏转卡片列表」**不纳入库内批次**（判定为使用方职责），Input 家族 / Message / Tag / Avatar / Toast 等经核对已具备窄屏收敛或属使用方布局职责。
-
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 小屏适配补齐 | 用户需求（2026-09-14） | 现状（2026-09-14 快照，逐组件判定以 [响应式设计 §3](../design/responsive.md) 的矩阵为准）：39 个组件中仅 Dialog / ConfirmDialog 有响应式断点（约 2/39），其余基本缺失；缺口含 DataTable（「窄屏转卡片列表」已判定属使用方职责）、Input 家族（Input / Textarea / InputNumber / Password）、Select / MultiSelect、Message、Avatar、Tag、Accordion、Slider、Toast 等；库内批次（浮层面板宽度、横向布局溢出）见矩阵 §5 | → M2（Phase 10 执行中） |
-| 移动端测试用例 | 用户需求（2026-09-14） | 为小屏适配补单元断言与 Playwright 多视口（mobile / tablet）回归；沿用现有测试规范与后续 E2E 规划。**第一步已落地（2026-09-17）**：根 `playwright.config.ts` + `test/e2e/**`（夹具 / helpers / 多视口用例），`pnpm test:e2e` 全绿；键盘聚焦口径已由用户裁定为分档判定；三条目（含 3 个适配批次与常驻用例 / 改动前基线归档）均已交付，剩余仅「E2E 接入 `pnpm verify` / CI」（见 §1.6） | → M2（Phase 10 执行中） |
-| 滚动容器键盘聚焦「无条件完整可见」 | 实测发现（2026-09-17 常驻 E2E 建设）+ 用户裁定（2026-09-17，选项 A：不作为当前验收标准） | Chromium 的焦点滚动只在聚焦元素与滚动区**完全不相交**时介入（触发后居中）；若聚焦前已有一条像素级可见边（前一个成员居中滚动后留下的窄边），浏览器不再滚动，聚焦成员可能只露出几像素。已在无组件 CSS 的纯 HTML 夹具上复现同构几何，**非本库特有**；用户裁定采用分档口径（[响应式设计 §4](../design/responsive.md)）。本候选为其增强形态：若要**无条件**完整可见，需在滚动容器（ButtonGroup / SplitButton / Tabs / DataTable）的 `focusin` 时主动滚动聚焦成员；触发条件（建议）为下游无障碍审计提出，或出现「键盘用户无法察觉聚焦项」的实际反馈。实现前须一并评估：作用域（仅窄屏可滚动档 vs 全档）、页面纵向滚动副作用、RTL（当前非目标） | 低 |
-| 触摸目标增强（≥44px 命中区） | 用户决策（2026-09-16） | 用户裁定**暂不提升**，维持现状：Checkbox / RadioButton 视觉尺寸 18px、Switch 40px、`control-height-sm` 28px（`theme.css:43`）。提升须引入「不改变视觉尺寸的不可见命中区」原语，影响全部小尺寸控件；触发条件（建议）为下游无障碍审计提出或下游移动端规范要求 | 低 |
-| ~~响应式规范补充~~ | 用户需求（2026-09-14） | **已交付（M2 条目 1，2026-09-16）**：新增[响应式设计](../design/responsive.md)——断点语义、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准与分批清单；`theming.md §5` 收敛为指针并移除未实现陈述 | — |
+| 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 + 用户裁定（选项 A：不作为当前验收标准） | Chromium 的焦点滚动只在聚焦元素与滚动区**完全不相交**时介入（触发后居中）；若聚焦前已有一条像素级可见边（前一个成员居中滚动后留下的窄边），浏览器不再滚动，聚焦成员可能只露出几像素。已在无组件 CSS 的纯 HTML 夹具复现同构几何，**非本库特有**；现行验收取分档口径（[响应式设计 §4](../design/responsive.md)）。本候选为其增强形态：若要**无条件**完整可见，需在滚动容器（ButtonGroup / SplitButton / Tabs / DataTable）的 `focusin` 时主动滚动聚焦成员；触发条件（建议）为下游无障碍审计提出，或出现「键盘用户无法察觉聚焦项」的实际反馈。实现前须一并评估：作用域（仅窄屏可滚动档 vs 全档）、页面纵向滚动副作用、RTL（当前非目标） | 低 |
+| 触摸目标增强（≥44px 命中区） | 用户决策 | 用户裁定**暂不提升**，维持现状：Checkbox / RadioButton 视觉尺寸 18px、Switch 40px、`control-height-sm` 28px（`theme.css:43`）。提升须引入「不改变视觉尺寸的不可见命中区」原语，影响全部小尺寸控件；触发条件（建议）为下游无障碍审计提出或下游移动端规范要求 | 低 |
 
 ### 1.6 基建与治理候选
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 组件覆盖率门禁 | 待启用 `coverage.thresholds` 门禁；阈值与启用时机待定 | 中 |
+| AI 资产指针（`AGENTS.md`） | `AGENTS.md` §11「相关文档」缺长期任务台账与规划载体的指针；该文件为受保护文件，须用户明确指示后随一次授权变更执行（改 `.github/**` 时同步 `.claude/` `.opencode/` `.agents/` 镜像） | 低 |
+| 文档翻译旧目录守卫 | 设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
+| 对比度遗留项盘点 | ① **亮色 soft 变体 primary 文本 4.37:1**（Tag / Message，`color-mix` 12% 底 + primary 文本）——需产品 / 设计决策（引入 soft 专用文本色或加深文本），候选 `--caomei-color-primary-emphasis` 一类；② `.caomei-calendar__weekday` 亮色 4.48:1（`--caomei-color-text-muted`）；③ `.caomei-toast__icon` 暗色 2.54:1（`neutral-solid`，图形阈值 3）；④ **预设品牌色既有例外**：caomei 预设 `primary-solid #e63946` 配 `on-solid` 白字 4.17:1（实底配对例外）、其 `danger #ef4444` 作前景色约 3.76:1（正文 / 图形对比度）；同预设 `danger-solid #b91c1c` 配白字 6.47:1 达标，勿误改。预设品牌色经用户决策不变，故例外长期跟踪。取证见 [M2 浏览器验证记录](../design/governance/2026-09-16-m2-primary-browser-validation.md) 与 [设计规范 §3.2](../design/design-spec.md) | 中 |
+| nav/sidebar 链接校验 | `themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
+| 文档站锚点校验与侧栏不变式 | `check-links` 的 `looseNorm` 会剥离 `-`/`_`/标点，**无法发现 VitePress slug 不匹配**（实测全库 7 处断锚，含 `.github/skills/**` 1 处；成因：数字开头标题补 `_` 前缀、全角标点归一）；同时「中英侧栏同分组同序 / 45 页全覆盖」目前只有一次性脚本取证、无常驻守卫。候选：锚点校验对齐 VitePress slugify + 侧栏不变量脚本接入 `docs:check`（属加强门禁，需授权） | 中 |
+| 英文文档同步治理 | 英文版与中文版同步（仅指南与组件介绍）已完成组件页与指南覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
+| a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
+| 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源 / 时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
+| 空文件与截断守卫 | 事故发现（2026-09-17，**同日复发两次**）：文档替换脚本用「`open(...,'w').write(open(...,).read())`」——`'w'` **先截断后读**，先后把一处 204 行的治理记录与 `docs/standards/planning.md` 清空为 0 字节。`lint-md` 与 `docs:check` 的行数 / 链接检查对空 `.md` 天然放行（无坏链、0 行）；第二次由**锚点校验间接暴露**（其他文档引用该文件的锚点全部解析失败）。候选：① `docs:check` 增加「受版本控制的 `docs/**` 与根 `README` 不得为 0 字节 / 不得低于经验下界行数」的最小守卫；② **表格结构守卫**：Markdown 表格行必须处于「含分隔行」的表格块内（2026-09-17 实测一处 `backlog.md` 表格被插入的引用块截断，产生无表头的孤立行，而 `lint-md` 与 `docs:check` 均放行）；③ 批量改写脚本禁止 `open(path,'w').write(open(path).read())` 形态（须读→改→写分离，或写临时文件后替换） | 中 |
 | Review Gate 证据留存 | 评审结论与浏览器验证截图归档到 `artifacts/review-gate/` 并纳入 `.gitignore` 策略；**结论与关键实测值仍须落可提交位置**（`docs/design/governance/**`、`docs/plan/**` 或提交信息），artifact 目录不得作为唯一留痕（追溯要求见 [测试规范 §2.1](../standards/testing.md) 与 ui-validator 的 references/evidence-record.md） | 低 |
 | 层级与阴影 token | Dialog / Select 等浮层组件 z-index 与 box-shadow 目前为字面量，后续抽 `--caomei-z-*` 与阴影 token 统一管理 | 低 |
 | scoped 变量声明治理 | `development.md §7` 要求「基类不预声明 CSS 变量默认值、档位类用 `:where()`」，但仍有偏差：`button` 基类直接声明 `--caomei-button-*` 默认值（基类预声明），`message` / `badge` / `tag` / `toast` 的变体类用普通类声明变量（档位类未用 `:where()`）；建议补 `check-design.mjs` 规则（现规则只查引用存在性）并逐组件收敛 | 低 |
 | 文档站版本化 | 首版发布前无版本基线可切，选型与落地后置（依赖首版发布）；VitePress 版本化方案需先做 Search-First 选型核实 | 低 |
-| 阴影与遮罩 token 迁移 | **已迁入[长期任务台账](./recurring.md)**（样式重复收敛 → 阴影与遮罩 token 迁移批次）。`--caomei-shadow-lg` / `--caomei-color-mask` 已实现（Drawer 已消费）；Dialog / ConfirmDialog / DropdownMenu / Select / Popover / MultiSelect / Toast / Card / Skeleton / Slider 等仍用原始 rgb 字面量（`check-design` 预算 13/13），待逐组件迁移 | 低 |
+| 文档站演示动画遗留项 | ① `caomei-demo-*` keyframes 副本与组件动画数值无一致性守卫（组件动画变更时仅靠注释同步）；② Toast `swipe-out` 规则无运行期实测；③ `docs/.vitepress/theme/**` CSS 不在 stylelint 覆盖内（`lint:css` 只跑 `src/**`） | 低 |
+| 阴影与遮罩 token 迁移 | **已迁入[长期任务台账](./recurring.md)**（样式重复收敛 → 阴影与遮罩 token 迁移批次）。`--caomei-shadow-lg` / `--caomei-color-mask` 已实现；Dialog / ConfirmDialog / DropdownMenu / Select / Popover / MultiSelect / Toast / Card / Skeleton / Slider 等仍用原始 rgb 字面量（`check-design` 预算 13/13），待逐组件迁移 | 低 |
 | DropdownMenuTrigger 样式豁免 | `CaomeiDropdownMenuTrigger` 把 `caomei-dropdown-menu__trigger` 默认外观固定在根上，`as-child` 组合自定义按钮（如 SplitButton 的下拉按钮）时会连带合并 padding / border / background；候选补 `unstyled` / 样式豁免入口，使复合层可复用其 a11y 接线而不继承默认外观（当前 SplitButton 直接用 Reka `DropdownMenuTrigger` 绕过） | 低 |
 | 分组按钮可访问语义 | ButtonGroup / SplitButton 的根目前仅作布局容器，无障碍树中是多个独立按钮；候选为根补 `role="group"` 与可选的分组可访问名 | 低 |
-| 规划载体同步到 AI 资产 | 治理发现（2026-09-16 M4 规范落地 Review Gate） | 新增 [长期任务台账](./recurring.md) 后，规划维护角色的定义未同步：`.github/skills/todo-manager/SKILL.md` 仍写「三层结构（roadmap / todo / backlog / todo-archive）」且无长期任务流转；`.github/agents/product-manager.agent.md` 的规划文档清单与维护职责未含长期任务台账（执行 / 维护主责缺位）；`AGENTS.md` §11 相关文档缺指针（受保护文件，须用户明确指示）。改动 `.github/**` 须同步 `.claude/` `.opencode/` `.agents/` 镜像 | 中 |
-| 文档翻译旧目录守卫 | 治理发现：设计文档已声明「不保留 `docs/<locale>/`」但无自动校验；对齐 momei 增加 `docs:check:i18n`，检测旧目录回流与重复翻译页 | 中 |
-| 对比度遗留项盘点 | 治理发现（Phase 9 M2 条目 1 V 阶段实测） | ① **亮色 soft 变体 primary 文本 4.37:1**（Tag / Message，`color-mix` 12% 底 + primary 文本；改前 3.52，暗色 5.54 通过）——需产品 / 设计决策（引入 soft 专用文本色或加深文本），候选 `--caomei-color-primary-emphasis` 一类；② `.caomei-calendar__weekday` 亮色 4.48:1（`--caomei-color-text-muted`，与 M2 无关，改前同值）；③ `.caomei-toast__icon` 暗色 2.54:1（`neutral-solid`，图形阈值 3，改前改后一致）；④ **预设品牌色既有例外（design-spec §3.2 的 tracker 落点）**：caomei 预设 `primary-solid #e63946` 配 `on-solid` 白字 **4.17:1**（属 §3.2 第二条的实底配对例外）；其 `danger #ef4444` 作为**前景色**落在浅底时约 **3.76:1**（消费点为 Tag / Message 的 soft / outline 文本与 invalid 描边等，属 §3.2 第一条的正文 / 图形对比度）；同一预设的 `danger-solid #b91c1c` 配白字 **6.47:1** 达标，勿误改。用户决策预设品牌色不变，故例外随本行长期跟踪。取证见 [M2 浏览器验证记录](../design/governance/2026-09-16-m2-primary-browser-validation.md) | 中 |
-| nav/sidebar 链接校验 | 治理发现：`themeConfig.nav/sidebar` 链接不在 `check-links` 与 VitePress dead-link 覆盖内，多 locale 下风险放大；评估纳入校验 | 中 |
-| 文档站锚点校验与侧栏不变式 | 治理发现（Phase 9 M1 条目 1 复审：RG-S8 / S10）：`check-links` 的 `looseNorm` 会剥离 `-`/`_`/标点，**无法发现 VitePress slug 不匹配**——实测全库 **7 处**断锚（含 `.github/skills/**` 1 处，成因：数字开头标题补 `_` 前缀、全角标点归一）；同时「中英侧栏同分组同序 / 45 页全覆盖」目前只有一次性脚本取证、无常驻守卫。候选：锚点校验对齐 VitePress slugify + 侧栏不变量脚本接入 `docs:check`（属加强门禁，需授权） | 中 |
-| ui-validator 资产 follow-up | 治理发现（2026-09-16 ui-validator agent / skill 优化复审：RG-S04 / S08）：① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担，与项目内其余 skill 现状一致），下次改动时可成节；③ `.github/agents/ui-validator.agent.md` 的「窄屏降级行为」宜与[响应式设计 §3](../design/responsive.md) 矩阵口径对齐（改为「按矩阵核对窄屏响应式行为，卡片化 / 转全屏不作默认预期」），下次触碰该文件时一并改 | 低 |
-| 内建文案「待人工复核」标注机检 | 治理发现（2026-09-16 M1 Review Gate：RG-S07） | 语言矩阵 - 中期为未经人工复核的译文加了「待人工复核」标注，其不残留于产物目前依赖注释形态（`//` 行注释被构建剥离）而非机检；候选把断言下沉到 `scripts/release/check-build.mjs`（`dist/**` 与 `src/locale/**` 均不得含该标注），使 [评估记录 §9](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md) 的「发布前检查」从人工核查变为可判定门禁；首版发布前落地 | 低 |
-| locale 守卫能力演进 | 治理发现（2026-09-16 M1 Review Gate：RG-S08） | `check-locale-keys` 已落地「命名空间 / 键集合 / 占位符 / 非空白值 / 注册 id 与文件名同源 / 导入路径校验」；剩余候选项：结构差异错误附带行号（59 条规模下定位成本低）、解析器容忍块注释与行尾注释（现为有意的响亮失败，与标注形态约定绑定） | 低 |
-| ~~响应式规范的治理资产与组件文档巡检~~ | 治理发现（2026-09-16 响应式规范 Review Gate：F1 / F2） | **已落地（2026-09-16）**：① `vue-component-expert` / `ui-validator` 的窄屏条目改为指向[响应式设计 §3](../design/responsive.md) 的矩阵，并明确「卡片化 / 转全屏不作为默认」；② 按矩阵巡检 `docs/components/*.md` 的窄屏表述（含 `confirm-dialog.md:94`、`paginator.md:38`、`drawer.md:48`（全屏由使用方 `modal="false"` + `style` 实现）、`image.md:49`（响应式图片属业务层）、`select.md:78`（移动端背景滚动，矩阵未覆盖滚动锁）），无冲突 | — |
-| ~~i18n 对应路由回切~~ | 已落地（2026-09-15）：语言菜单按 `routingPages` 覆盖感知回切——已翻译页回切对应路由，未翻译页回退 locale 首页；桌面与移动端一致 | — |
-| 文档站首页 hydration mismatch | 验证发现：生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
-| 英文文档同步治理 | 用户方向：英文版与中文版同步（仅指南与组件介绍）；截至 Phase 7 第一阶段收口已完成组件页 45/45 与指南 8/8 英文覆盖；剩余为 parity / freshness 校验与未翻译页回链策略，参考 momei translation-governance | 中 |
+| ui-validator 资产 follow-up | ① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担），下次改动时可成节；③ `.github/agents/ui-validator.agent.md` 的「窄屏降级行为」宜与[响应式设计 §3](../design/responsive.md) 矩阵口径对齐（改为「按矩阵核对窄屏响应式行为，卡片化 / 转全屏不作默认预期」） | 低 |
+| locale 守卫能力演进 | `check-locale-keys` 已落地「命名空间 / 键集合 / 占位符 / 非空白值 / 注册 id 与文件名同源 / 导入路径校验」；剩余候选项：结构差异错误附带行号（59 条规模下定位成本低）、解析器容忍块注释与行尾注释（现为有意的响亮失败） | 低 |
+| 文档站首页 hydration mismatch | 生产构建首页出现 SSR/CSR 属性不一致告警，中文首页同样复现，与 i18n 无关；待定位是否上游行为 | 低 |
 | @iconify/vue 可选接入 | 当前图标仅支持 `@lucide/vue` 组件；按需引入 `@iconify/vue` 支持字符串图标名（escape hatch） | 低 |
 | Input 家族样式层共享 | **已迁入[长期任务台账](./recurring.md)**（样式重复收敛 → Input 家族样式层共享批次，条件触发）。attrs 透传已抽取 `useAttrForwarding`；Password 已由 Input 派生并复用其样式（未分叉），其余文本输入类组件仍各自维护 scoped 样式，出现样式分叉时再评估共享样式层 | 低 |
-| a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 | 中 |
-| 视觉回归基线 | Playwright 截图比对主题/暗色/响应式，并对浮层断言页面稳定性（遮罩完整、`in-flow` 不位移；fixed 元素按滚动条宽容差） | 低 |
-| 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格与 playwright 配置，使验证可在 CI 复现。**部分落地（2026-09-17）**：`playwright.config.ts` + `test/e2e/**` 已存在并承载响应式布局断言；**剩余**：① 上述浮层交互规格（焦点落位 / 滚动锁复位 / 遮罩拦截）与页面稳定性测量（[测试规范 §5.1](../standards/testing.md)）；② E2E 接入 `pnpm verify` / CI（需流水线 `playwright install --with-deps chromium` 与容器参数，属门禁增强，需授权） | 低 |
+| 视觉回归基线 | Playwright 截图比对主题 / 暗色 / 响应式，并对浮层断言页面稳定性（遮罩完整、`in-flow` 不位移；fixed 元素按滚动条宽容差） | 低 |
+| 浮层交互 E2E 规格 | ConfirmDialog / Dialog 的焦点落位、滚动锁复位、遮罩拦截等浏览器态行为目前仅由一次性脚本验证；待补 `test/e2e/` 规格。**剩余**：① 上述浮层交互规格（焦点落位 / 滚动锁复位 / 遮罩拦截）与页面稳定性测量（[测试规范 §5.1](../standards/testing.md)）；② E2E 接入 `pnpm verify` / CI（需流水线 `playwright install --with-deps chromium` 与容器参数，属门禁增强，需授权） | 低 |
+| 常驻 E2E 规格 follow-up | ① 滚动容器口径已覆盖 ButtonGroup，Tabs / DataTable 仍无夹具用例（规范见[响应式设计 §3 / §4](../design/responsive.md)）；② 键盘聚焦相关表述宜向「容器 client rect」归一；③ 日历面板内的焦点态（日格 `outline-offset: 1px` 在滚动容器内是否被裁）无断言，静态推算不裁但缺实测；同批还有「上限生效态双轴滚动行为 / 窄容器 < 198px 的内联日历 / `showTime` 形态纵向尺寸」无用例；④ 常驻 E2E 统一以 reduced-motion 运行（几何确定性所需），**默认动效路径（no-preference）自此无常驻覆盖**——如需回归可增设一个 no-preference 的 project，或对动效单独设用例；⑤ `playwright.config.ts` 与 `test/e2e/fixtures/vite.config.ts` 登记在 `tsconfig.node.json`，而 `pnpm typecheck`（`vue-tsc --noEmit`）不构建 references，故「typecheck 通过」不含这两个文件——与既有 `vite.config.ts` / `vitest.config.ts` 同状，属既有工程约定，评估是否纳入统一类型检查 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射，不内置依赖 | 低 |
-| 空文件与截断守卫 | 事故发现（2026-09-17）：一处文档替换脚本因 `open(...,'w')` **先截断后读**，把 204 行的治理记录清空为 0 字节，而 `lint-md` 与 `docs:check`（links / line-count）对空 `.md` 天然放行（无坏链、0 行），事故直到人工核对才暴露。候选：① `docs:check` 增加「受版本控制的 `docs/**` 与根 `README` 不得为 0 字节 / 不得低于经验下界行数」的最小守卫；② 批量改写脚本禁止 `open(path,'w').write(open(path).read())` 形态（须读→改→写分离，或写临时文件后替换） | 中 |
-| 常驻 E2E 规格 follow-up | 审计发现（2026-09-17 常驻 E2E 建设）：① 滚动容器口径已覆盖 ButtonGroup，Tabs / DataTable 仍无夹具用例（规范见[响应式设计 §3 / §4](../design/responsive.md)）；② 键盘聚焦相关表述在同一文件内并用「滚动区」与「容器可视区」，宜向「容器 client rect」归一；②′ 日历面板内的焦点态（日格 `outline-offset: 1px` 在新引入的滚动容器内是否被裁）无断言，静态推算不裁但缺实测；同批还有「上限生效态双轴滚动行为 / 窄容器 < 198px 的内联日历 / `showTime` 形态纵向尺寸」无用例（见[批次 3 记录](../design/governance/2026-09-17-m2-batch3-calendar-baseline.md) §6）；④ 常驻 E2E 统一以 reduced-motion 运行（几何确定性所需），**默认动效路径（no-preference）自此无常驻覆盖**——如需回归可增设一个 no-preference 的 project，或对动效单独设用例；③ `playwright.config.ts` 与 `test/e2e/fixtures/vite.config.ts` 登记在 `tsconfig.node.json`，而 `pnpm typecheck`（`vue-tsc --noEmit`）不构建 references，故「typecheck 通过」不含这两个文件——与既有 `vite.config.ts` / `vitest.config.ts` 同状，属既有工程约定，评估是否纳入统一类型检查；⑤ 空文件守卫：`lint-md` 与 `docs:check`（links / line-count）对 0 字节 `.md` 天然放行，2026-09-17 曾有一处治理记录被改写脚本清空（见「空文件与截断守卫」行），宜纳入同批治理 | 低 |
 | Storybook 组件工坊 | 暂不启用；组件演示优先使用文档站（见 [文档与演示站](../design/documentation-site.md)） | 低 |
-| ~~Nuxt 模块真实集成~~ | 已在 [Phase 7 第一阶段](./todo-archive.md) M1 交付并归档：`caomei-ui/nuxt` 接入 `@nuxt/kit`，实现组件 / composables 自动导入、样式注入、主题与 SSR | — |
-| 执行层规则重述与失效引用收敛 | 治理发现：code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
+| 执行层规则重述与失效引用收敛 | code-reviewer `SKILL.md` §5.6 仍重述 planning §4 的编号禁令（宜改为一行引用）；`code-quality-checklist.md` 的「不可简化清单」引用了不存在的 `security.md §8`（该清单本体缺失，应补入安全规范或改指权威位置），「事实源层次」引用 `documentation.md §4`（实际为「维护职责」，事实源原则在 §2，且 `L0 > L1 > L2 > L3` 表述全仓未定义） | 低 |
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
-| 测试隔离与偶发失败 | 全量并发下多个组件测试偶发失败（曾观测到 dropdown-menu / accordion / dialog / confirm-dialog / multi-select / select / tabs），隔离或复跑即通过；疑似 Reka + happy-dom 并发资源/时序问题。建议排查共享 DOM 与计时依赖，必要时降并发或加隔离重置，消除 flaky 以保 `verify` 门禁可信 | 中 |
-| wisdom 蒸馏原文留痕 | 审计发现：`.session/wisdom.md` 为 gitignored，蒸馏清空活跃段后无法复核「迁移 N 条 + 删除 M 条」的完备性（`current-task.yaml` 的 `tried_approaches` 口径不同、不可替代）；候选在清空前把活跃段原文快照落盘（归档文件或脚本产物），或在蒸馏机制 §4 增加快照步骤 | 低 |
-| ~~文档站组件信息架构~~ | 用户需求（2026-09-16） | **已交付并归档（Phase 9 M1 三条目，2026-09-16）**：侧栏 6 分组 + 组内字母序（中英同序）、能力说明三页归位 `/components/`、新增 zh 组件总览页；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M1（2026-09-16 用户授权）**。**用户决策：采纳 6 分组 + 组内字母序；能力说明归位取方案 B（迁至 `/components/composables`、`/components/icons`、`/components/locale`，并镜像 en-US）；补 zh 组件总览页。** 原始问题：`/components/` 为单一「基础组件」分组、按历史登记顺序排列且仅局部族聚类；「能力说明」挂在 `/guide/` 下；zh 组件区缺总览页（en-US 有）。方案 B 影响面已核实：`routingPages` 按 `docs/i18n/en-US/**` 自动收集、en 镜像同步后语言回切自动生效；需同步 `themeConfig` 链接与跨页引用。分组映射见 [评估记录 附录 A](../design/governance/2026-09-16-new-requirements-evaluation.md#附录-a组件分组映射45-页) | — |
-| 文档站观感与展示力 | 用户需求（2026-09-16） | **待后续评估（用户决策 2026-09-16：候选先留在 Backlog，后续再评估）**。候选：组件画廊 / 首页视觉 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。现状：首页为 VitePress 默认 hero；已有自定义 `layout.vue`（主题预设切换器）与 `component-api.vue`，缺总览页 / 画廊 / demo 外壳。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
-| ~~文档站演示动画与 reduced-motion~~ | 诊断发现（2026-09-16） | **已交付并归档（Phase 9 M3 两条目，2026-09-16）**：加载指示全站恢复 + 演示区 opt-in 恢复入场 / 退出动画；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M3（2026-09-16 用户授权）**。**用户决策：对 demo 区域 opt-in 恢复入场动画。** 根因：VitePress 默认主题在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important` 与 `transition-duration: 0s !important`，使 demo 入场动画与全部过渡失效（`motion.css` 原仅恢复 ProgressSpinner / ProgressBar / Skeleton）；Drawer 等组件实现无缺陷。**交付形态（2026-09-16 条目 1 落地）**：加载指示全站恢复 + 演示区 opt-in（仅 `animation`，不恢复 transition）；容器内可达元素（Accordion / Image / Button / AutoComplete spinner）按 `.vitepress-demo-plugin__container` 作用域，Portal 面板（Drawer / Toast / Popover / DropdownMenu / DatePicker）因挂载在 `<body>` 改按组件选择器恢复（偏离原「容器作用域」实施要点，理由与验证见 [M3 验证记录](../design/governance/2026-09-16-m3-demo-motion-validation.md)）。**遗留（本次未做，需另行评估）**：① `caomei-demo-*` keyframes 副本与组件动画数值无一致性守卫（组件动画变更时仅靠注释同步）；② Toast `swipe-out` 规则无运行期实测；③ `docs/.vitepress/theme/**` CSS 不在 stylelint 覆盖内（`lint:css` 只跑 `src/**`）。见 [评估记录 §5](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
-| ~~组件公共逻辑抽取~~ | 用户需求（2026-09-16）+ 治理发现 | **已交付并归档（Phase 9 M4 四条目，2026-09-16）**：长期任务机制落地；首轮三项抽取为标签属性转发（12 处）、表单控件公共 props 契约（首批 7 文件）、聚焦控制（4 处）——原列的 ARIA 布尔假值归一与 attrs 透传收敛经复评判为未达门槛（净收益不为正）；见 [待办归档](./todo-archive.md) 与 [长期任务台账](./recurring.md)。原始登记：**已登记 Phase 9 M4，并升级为长期任务（2026-09-16 用户决策）**。持续载体为 [长期任务台账](./recurring.md)（代码复用治理），Phase 9 M4 承载首轮与规范落地，首轮批次为标签属性转发 / ARIA 布尔假值 / attrs 透传收敛。优先项（≥3 处且语义一致）：locale 回退取值 39 处（迁入长期任务待评估净收益）、attrs 透传统一（`inheritAttrs: false` 58 文件 / `v-bind="$attrs"` 37 文件而 `useAttrForwarding` 仅 9 组件；其中手写 `useAttrs()` 的 12 文件为首轮批次）、浮层样式与 token（`bg-elevated` 24 文件；阴影 / 遮罩 13 处 / 10 文件，迁入长期任务「样式重复收敛」）、选项列表渲染 3 份（迁入长期任务待评估 DOM 一致性）；数值钳位（2 份）与焦点模式（4+2+2）未达门槛不单列。见 [评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
-| ~~ESLint 严格化与导出类型~~ | 用户需求（2026-09-16） | **已交付并归档（Phase 9 M5 三条目，2026-09-16）**：启用显式类型族、收敛 unsafe 族（189 → 0）、切换 `vue/strict` 并固化零告警门禁；见 [待办归档](./todo-archive.md)。原始登记：**已登记 Phase 9 M5（2026-09-16 用户授权）**。 两步走：**① 显式类型族**——`explicit-module-boundary-types` 实测 **1** 处、`no-explicit-any` **0** 处（可立即启用）；但 `explicit-function-return-type` 在严格预设中为 **off**，显式启用后实测 **约 126 处**（其中 `.test.*` 121 处），故并入步骤 ② 一并收敛。**② type-aware unsafe 族**——`no-unsafe-argument` 146 / `no-unsafe-call` 22 / `no-unsafe-member-access` 20（多在 `.test.ts`）收敛后整体切 `eslint-config-cmyr/vue/strict`（该预设试跑基线：67 error / 229 warning，命中 63 文件）。见 [评估记录 §7](../design/governance/2026-09-16-new-requirements-evaluation.md) | — |
+| wisdom 蒸馏的机检完备性 | 蒸馏以「迁移 N 条 + 删除 M 条」自报，无脚本核验（`.session/wisdom.md` 为 gitignored）；候选在蒸馏机制增加「清空前活跃段快照 + 条目数对账」步骤（2026-09-17 蒸馏已按「原文摘要逐条入归档 + 计数对账」执行，但仍是人工步骤） | 低 |
+| 文档站观感与展示力 | **待后续评估**（用户决策：候选先留在 Backlog）。候选：组件画廊 / 首页视觉 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。现状：首页为 VitePress 默认 hero；已有自定义 `layout.vue`（主题预设切换器）与 `component-api.vue`，缺总览页 / 画廊 / demo 外壳。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
 
 ### 1.7 服务层候选（composables）
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 通用对话框服务 `useDialog` | 用户需求（2026-09-14） | **评估结论：暂不实现（2026-09-14）**。5 个下游仓库（momei / caomei-auth / afdian-linker / rss-impact-next / dependfix）检索 `useDialog`、`DynamicDialog`、`DialogService` 零命中；momei 的 37 处 Dialog 全为声明式（`v-model:visible`，必要时 `defineExpose({ open, close })`），PrimeVue `DynamicDialog` 亦未使用；确认场景由 `useConfirm`、轻提示由 `useToast`、自定义内容由 `CaomeiDialog` 覆盖。**触发条件**：出现非组件上下文（store / 路由守卫 / 请求拦截器 / 工具函数）的命令式弹窗用例，或迁移试点确认声明式不可覆盖，或第二个下游提出同一诉求。若实现，范围收敛为基于 `CaomeiDialog` 的 `useDialog()` + 宿主组件，先支持「标题 + 文本 + 确认 / 取消」与「自定义组件 + props」。 | 低 |
-
-> `docs/design/components.md` 曾将该服务列为服务层目标，2026-09-14 已按实现移除（截至移除时无导出、亦无规划登记）。
+| 通用对话框服务 `useDialog` | 用户需求 | **评估结论：暂不实现**。5 个下游仓库（momei / caomei-auth / afdian-linker / rss-impact-next / dependfix）检索 `useDialog`、`DynamicDialog`、`DialogService` 零命中；momei 的 Dialog 全为声明式（`v-model:visible`，必要时 `defineExpose({ open, close })`）；确认场景由 `useConfirm`、轻提示由 `useToast`、自定义内容由 `CaomeiDialog` 覆盖。**触发条件**：出现非组件上下文（store / 路由守卫 / 请求拦截器 / 工具函数）的命令式弹窗用例，或迁移试点确认声明式不可覆盖，或第二个下游提出同一诉求。若实现，范围收敛为基于 `CaomeiDialog` 的 `useDialog()` + 宿主组件 | 低 |
 
 ### 1.8 下游协同候选
 
-> **用户决策（2026-09-16）**：本轮（Phase 9）结束后，正式进入「**momei 迁移可行性评估**」——先做可行性结论再定迁移范围（属 Phase 7 第二阶段的前置评估）。调查依据：momei 当前尚未依赖 `caomei-ui`（`package.json` 无该依赖），FileUpload 等组件仍走 PrimeVue。
->
-> **评估已完成（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。能力面无阻塞（需新组件 11/11 已交付；需增强项受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0）；三个先决条件：DataTable 列级插槽先行、主题映射表与视觉基线先行、分批 + 关键路径先行 + 双库并存白名单。**已决策（2026-09-17 用户）**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部完成**、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）已登记于[待办事项](./todo.md)的「下一阶段：Phase 7 第二阶段」段。
+> **momei 迁移可行性评估（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**用户决策 5 项**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部完成**、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）见[路线图 Phase 7 第二阶段](./roadmap.md)与评估记录 §6。
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 迁移执行 | **已决策（2026-09-17 用户）：按 C3 分批全量执行**。B0 准备（token / 图标映射表 + 视觉基线）→ B1 库侧补齐 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载。**范围已登记于[待办事项](./todo.md)「下一阶段」段，待启动** | → Phase 7 第二阶段（范围已登记） |
-| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，**组件能力面**唯一结构性差距）；**B 级 14 项**（[评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2）：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel`（共 14 项）。**已决策（2026-09-17 用户）：A 级 + B 级 14 项全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；与 §1.1 / §1.2 的同类候选合并实现（逐项原子条目见[待办事项](./todo.md)「下一阶段」段） | → Phase 7 第二阶段（B1 先行） |
+| momei 迁移执行 | **已决策：按 C3 分批全量执行**。B0 准备（token / 图标映射表 + 视觉基线）→ B1 库侧补齐 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载 | → Phase 7 第二阶段（范围已登记，待启动） |
+| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，**组件能力面**唯一结构性差距）；**B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode` / `maxFileSize` / `auto` / `chooseLabel`、ToggleButton `onLabel` / `offLabel`。**已决策：全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；与 §1.1 / §1.2 的同类候选合并实现 | → Phase 7 第二阶段（范围已登记，待启动；B1 先行） |
 | 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用 | 延迟 |
 
 ## 2. 维护约定
 
 - 新增候选时注明来源（用户需求 / 治理发现 / 使用面统计）与初步优先级。
-- 被否决的候选记录结论与理由。
-- 候选状态流转：§1 候选池 → 用户决策后登记到 [待办事项](./todo.md) 当前阶段 → 阶段完成后随 [待办归档](./todo-archive.md) 迁移。
-- 重复发生或需按期重复执行的治理动作，按 [规划规范](../standards/planning.md) 的长期任务制度升级到 [长期任务台账](./recurring.md)，并在本表对应行标注迁出。
+- 被否决的候选记录结论与理由（如 §1.7 `useDialog`、§1.1 `Select filter`）。
+- 候选状态流转：§1 候选池 → 用户决策后登记到 [待办事项](./todo.md) 当前阶段 → 阶段完成后随 [待办归档](./todo-archive.md) 迁移；**已交付 / 已归档条目不在本表保留任何内容**。
+- 重复发生或需按期重复执行的治理动作，按 [规划规范 §8](../standards/planning.md) 的长期任务制度升级到 [长期任务台账](./recurring.md)，并在本表对应行标注迁出。

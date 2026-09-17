@@ -1,63 +1,52 @@
 # 长期任务
 
-本文档登记**周期性治理任务**：动作会随开发推进反复发生、需要按固定节奏重复执行，而非一次性交付的候选。准入、编号与粒度规则见 [规划规范](../standards/planning.md)，本文档不重述。
+本文档登记**周期性治理任务**：动作会随开发推进反复发生、需要按固定节奏重复执行，而非一次性交付。准入、编号与粒度规则见[规划规范 §8](../standards/planning.md)，本文档不重述。
 
-> **定位**：本文档承载已认可方向、需按期重复执行的治理任务；与 [Backlog](./backlog.md) 的分工、准入与编号规则见 [规划规范](../standards/planning.md)。
+> **定位**：本台账**只有可多阶段反复执行的任务**（每个任务 = 判定门槛 + 触发时机 + 可追加的批次）；一次性工作、已完成批次与无关记录不进入本表（已交付内容见 git 历史与[待办归档](./todo-archive.md)）。
 
 ## 1. 执行规则
 
-制度定义与准入（方向认可、任务与批次、编号、触发义务、门槛纪律）见 [规划规范](../standards/planning.md)，本节只记录操作细则：
+制度定义与准入见[规划规范 §8](../standards/planning.md)，本节只记录操作细则：
 
 - **批次追加**：在已认可方向下，按任务的判定门槛直接把工作包登记为批次，无需重复走用户决策。
-- **每轮范围自定**：一轮执行不要求清空任务；按「价值 × 风险 × 粒度」选取至少一个原子批次。
-- **抽取复用受准则约束**：逻辑层抽取必须满足 [开发规范](../standards/development.md) 的「公共逻辑抽取与复用」小节。
-- **未达门槛者不进入执行**：留在本表并标注缺口（待补取证 / 条件触发），不得为凑数纳入。
+- **每轮范围自定**：一轮执行不要求清空任务；按「价值 × 风险 × 粒度」选取本轮批次。若本轮为**门槛复核轮**（用户明确限定当轮为零代码改动域、或实现条件未备），可只做门槛 / 取证复核并留痕——但在「产出」列须显式写明未纳入实现批次的理由与下次触发点；复核轮不计入交付轮次，批次顺延至下一触发点。
+- **抽取复用受准则约束**：逻辑层抽取必须满足[开发规范](../standards/development.md) 的「公共逻辑抽取与复用」小节。
+- **未达门槛者不进入执行**：判定为「不实施 / 条件触发」的候选只保留一行结论（依据在[评估记录 §6](../design/governance/2026-09-16-new-requirements-evaluation.md)），不得为凑数纳入。
 
 ## 2. 任务台账
 
 | 任务 | 判定门槛 | 触发时机 | 上次执行 | 状态 |
 |------|----------|----------|----------|------|
-| 代码复用治理 | 同一模式 ≥3 处且语义一致，且抽取后净收益为正 | 阶段收口前 / 发布前 | 2026-09-16（首轮） | 进行中 |
+| 代码复用治理 | 同一模式 ≥3 处且语义一致，且抽取后净收益为正 | 阶段收口前 / 发布前 | 2026-09-17（第 3 轮：门槛复核） | 进行中 |
 | 样式重复收敛 | 同一视觉效果在 ≥3 个组件重复，且已存在或可归纳为语义 token | 阶段收口前 / 发布前 | 未执行 | 待启动 |
 
 ### 2.1 代码复用治理
 
 - **复用地**：组件间共享落 `src/components/_shared/`，对外公开能力落 `src/composables/`。
-- **取证口径**（2026-09-16 快照，范围 `src/components`，执行时逐批复核）：
-  - 标签属性转发：`rg -l "useLabelAttrs" src/components/*/*.vue | wc -l` → 12（整体透传 10 + `controlAttrs` 基座 2）。
-  - 表单控件公共 props 契约：候选池 `rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts | wc -l` → 31 个 `types.ts`；首批取「四项字段齐备且含身份字段」的表单控件，复核 `rg -ln 'extends (FieldProps|FieldStateProps)' src/components/*/types.ts | wc -l` → 7（`password` 经 `Omit<InputProps, 'type'>` 间接继承，不计入）。
-  - 聚焦控制：`rg -l 'useFocusControl' src/components/*/*.vue | wc -l` → 4。
-  - ARIA 布尔假值：`rg -o ':aria-[a-z]+="[^"]*\|\| undefined"' src/components | wc -l` → 15。
-  - locale 文本解析：`rg -o '\?\? locale\.value\.' src/components | wc -l` → 39。
-- **描述收敛决策**（2026-09-16，首批）：公共 props 的 JSDoc 采用通用措辞（如「是否禁用」/ "Whether the control is disabled"）；组件特有约束不靠重复字段声明承载，改在组件 `types.ts` 的接口级注释保留（如 select-button 的 `role="group"` id 约束、select / multi-select / auto-complete 的 `id` / `name` 落点）。
+- **取证口径**（2026-09-17 复核）：标签属性转发 `rg -l "useLabelAttrs" src/components/*/*.vue | wc -l` → 12；模板级 `:aria-label="label"` `rg -o ':aria-label="label"' src/components | wc -l` → 12；已继承公共契约 `rg -ln 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts | wc -l` → 10；仍含内联同名字段的 `rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts | wc -l` → 30；聚焦控制 `rg -l 'useFocusControl' src/components/*/*.vue | wc -l` → 4。
+- **描述收敛决策**：公共 props 的 JSDoc 采用通用措辞（如「是否禁用」/ "Whether the control is disabled"）；组件特有约束不靠重复字段声明承载，改在组件 `types.ts` 的接口级注释保留（如 select-button 的 `role="group"` id 约束、select / multi-select / auto-complete 的 `id` / `name` 落点）。
 
-| 批次 | 证据 | 规模 | 状态 |
+| 待执行批次 | 证据 | 规模 | 说明 |
 |------|------|------|------|
-| 标签属性转发（`label` 优先于透传 `aria-label`） | 12 个文件同构的 `forwardedAttrs`：整体透传 10 处 + `controlAttrs` 基座 2 处（checkbox / switch） | 12 文件 | 已交付 |
-| 表单控件公共 props 契约（首批） | `size` / `disabled` / `invalid` / `placeholder` / `name` / `id` / `label` 内联重复，口径命令见上 | 7 文件 | 已交付 |
-| 表单控件聚焦控制 | 4 个组件重复的 `focus` / `blur` 委托样板 | 4 文件 | 已交付 |
-| 表单控件公共 props 契约（第二批） | `checkbox` 与 `radio-group` 的 `RadioGroupProps` 纳入 `FieldStateProps` + `FieldIdentityProps` 共 6 字段；`switch` 仅纳入 `FieldIdentityProps`（name / id / label）——`disabled` 保留内联，因 `FieldStateProps` 含 `size` / `invalid`，纳入会新增对外 props。`RadioButtonProps` 的 disabled / id / label 属**选项级语义**，与 Option 接口同类，不纳入。复核命令 `rg -ln 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts \| wc -l` → 10 | 3 文件 | 已交付 |
-| 表单控件公共 props 契约（后续候选） | 仍满足门槛的字段级重复：`date-picker` / `color-picker` / `slider` / `toggle-button` / `file-upload` 的 `types.ts`；命令 `rg -l 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts` 之外仍有内联同名字段 | 5 文件 | 待执行（下次触发时重新取证） |
-| 标签属性转发（模板级 `:aria-label` 无条件覆盖） | 12 处模板级 `:aria-label="label"`（标签为空时渲染空属性，与已定契约反向） | 12 文件 | 待执行（含行为调整，需独立验收） |
-| attrs 透传收敛 | 手写 `useAttrs()` 已收敛至 `stepper` / `slider` 2 处（二者语义不同，未达门槛） | 2 文件 | 未达门槛（不实施） |
-| ARIA 布尔假值归一 | 15 处 `:aria-x="value \|\| undefined"`（规则已在开发规范单点定义，抽取后表达式变长） | 15 文件 | 未达门槛（净收益不为正） |
-| locale 文本解析 | 39 处 `props.x ?? locale.value.ns.key`（props 名与路径逐处不同） | 17 文件 | 未达门槛（净收益不为正） |
-| 选项列表渲染 | Select（`SelectItem`）1 份 + MultiSelect / AutoComplete（`ComboboxItem`）2 份，primitive 与插槽能力不同 | 3 文件 | 未达门槛（语义不一致） |
-| 数值钳位 | 2 处 `clamp` | 2 文件 | 未达门槛（不实施） |
+| 表单控件公共 props 契约（后续候选） | 仍满足门槛的字段级重复：`date-picker` / `color-picker` / `slider` / `toggle-button` / `file-upload` 的 `types.ts`（2026-09-17 复核：30 个 `types.ts` 含内联同名字段） | 5 文件 | 下次触发时重新取证后实施 |
+| 标签属性转发（模板级 `:aria-label` 无条件覆盖） | 12 处模板级 `:aria-label="label"`（标签为空时渲染空属性，与已定契约反向） | 12 文件 | 含行为调整，需独立验收 |
+
+- **已判定不纳入（依据见评估记录 §6，保留结论避免重复评估）**：attrs 透传收敛（仅 2 处手写 `useAttrs()`，语义不同）、ARIA 布尔假值归一（15 处，抽取后表达式变长）、locale 文本解析（39 处，props 名与路径逐处不同）、选项列表渲染（3 份，primitive 与插槽能力不同）、数值钳位（2 处）。
 
 ### 2.2 样式重复收敛
 
-| 批次 | 证据 | 规模 | 状态 |
+| 待执行批次 | 证据 | 规模 | 说明 |
 |------|------|------|------|
-| 阴影与遮罩 token 迁移 | 13 处原始 `rgb`（遮罩 / 阴影），`check-design` 预算 13 | 10 文件 | 待执行（需先归纳阴影 token 档位） |
-| 禁用态样式块 | 12 个 `.caomei-x--disabled` 同构块（`cursor` / `opacity` / 背景） | 12 文件 | 待执行 |
-| Input 家族样式层共享 | 仅知 Password 已由 Input 派生并复用样式，其余各自维护 | — | 未达门槛（缺 ≥3 处同构取证），条件触发：出现样式分叉时补取证后启动 |
+| 阴影与遮罩 token 迁移 | 13 处原始 `rgb`（遮罩 / 阴影），`pnpm check:design` 预算 13/13（2026-09-17 复核未变） | 10 文件 | 需先归纳阴影 token 档位 |
+| 禁用态样式块 | 12 个 `.caomei-x--disabled` 同构块（`cursor` / `opacity` / 背景；2026-09-17 复核文件数 12） | 12 文件 | 待归纳禁用态公共块 |
+| Input 家族样式层共享 | 仅知 Password 已由 Input 派生并复用样式，其余各自维护 | — | **条件触发**：出现样式分叉时补 ≥3 处同构取证后启动 |
 
 ## 3. 执行记录
 
 | 轮次 | 日期 | 范围 | 产出 | 证据 |
 |------|------|------|------|------|
-| 首轮 | 2026-09-16 | 治理规范落地 + 代码复用治理：标签属性转发 / 表单控件公共 props 契约 / 聚焦控制 | 开发规范与规划规范新增长期任务制度；`_shared` 新增 `useLabelAttrs` / `field` / `useFocusControl` | §2.1 取证口径与提交记录 |
-| 第 2 轮（阶段收口前触发） | 2026-09-16 | 代码复用治理：表单控件公共 props 契约第二批（checkbox / radio-group / switch） | 3 个 `types.ts` 改为继承公共契约；组件特有约束以接口级注释保留 | §2.1 取证口径与提交记录 |
+| 首轮 | 2026-09-16 | 治理规范落地 + 代码复用治理：标签属性转发 / 表单控件公共 props 契约（首批） / 聚焦控制 | 开发规范与规划规范新增长期任务制度；`_shared` 新增 `useLabelAttrs` / `field` / `useFocusControl` | §2.1 取证口径与 git 历史 |
+| 第 2 轮 | 2026-09-16 | 代码复用治理：表单控件公共 props 契约（第二批：`checkbox` / `radio-group` / `switch`） | 3 个 `types.ts` 改为继承公共契约；组件特有约束以接口级注释保留 | §2.1 取证口径与 git 历史 |
+| 第 3 轮（Phase 10 收口前触发，**门槛复核轮**） | 2026-09-17 | **门槛复核**（两组任务的全部候选重新取证，见 §2.1 / §2.2 的 2026-09-17 口径） | 门槛与规模未变：待执行批次 2+3 项仍成立；未达门槛 5 项结论维持 | 用户本轮授权范围为**归档与规划清理**（零代码改动域），故未纳入实现批次；**下次触发点**：下一次阶段收口 / 发布前，或与下游迁移（B1 库侧补齐）并行时执行 |
 
-> 2026-09-16 复评：ARIA 布尔假值归一、locale 文本解析、attrs 透传收敛三条由「执行中 / 待评估净收益」改判为「未达门槛」——依据为抽取后净收益不为正或语义不一致（见 §2.1 各批次证据列）；改判在已认可方向内由执行方判定。
+> **触发义务**（[规划规范 §8](../standards/planning.md)）：每个阶段收口前与每次发布前各执行一轮；未留下执行记录视为未执行。第 3 轮已在本次 Phase 10 归档前执行并留痕（上表）。

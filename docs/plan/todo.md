@@ -4,71 +4,7 @@
 
 ## 当前阶段
 
-> **Phase 10：国际化与移动端适配** — 2026-09-16 经用户授权启动；语言矩阵范围依据 [语言矩阵 - 中期评估记录](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md)。
->
-> **阶段目标**：把组件库从「机制支持多语」推进到「开箱支持目标下游语言」，并把移动端 / 响应式适配从零散断点收敛为可验收的规范与分批交付。
->
-> **阶段非目标**：文档站新增 zh-TW / ja-JP / ko-KR 三语页面（站点翻译属独立决策）；RTL；语言矩阵 - 长期（俄 / 法 / 德 / 西 / 葡）；locale 按需加载（包体评估结论为可接受，不引入）；触摸手势等新交互。
->
-> **用户决策（2026-09-16）**：① 语言矩阵取**方案 A**（库内建 5 语）；② 翻译来源为 **AI 基于 zh-CN 生成译文 + 用户复核**（属「机器翻译 + 人工校对」的具体化；复核前译文标注「AI 生成、待人工复核」）；③ 三语文案**按语种拆三个提交**；④ 补**一致性检查的审查与脚本**，以**简体中文（zh-CN）为基准**比对键集合；⑤ 包体影响已评估（结论：可接受）。
-
-### 主线 M1：语言矩阵 - 中期（zh-TW / ja-JP / ko-KR）
-
-- 执行范围：新增三份内建文案（各 59 条，结构对齐 `CaomeiLocaleMessages`）；`caomeiLocales` 注册表与 `CaomeiLocale` 类型扩展；新增「各语种键集合与 zh-CN 一致」的守卫脚本并接入门禁；`use-locale.test.ts` 的未知语言回退用例改用未注册语种（如 `fr-FR`）并补新语种解析断言；三语文案文件头部标注「AI 生成、待人工复核」（复核后移除，复核结论落到评估记录 §9 后续行）；**实现注意**：产物保留 `//#region` 类注释，需确认文件头注释是否随构建进入 `dist`，必要时改用不会被保留的标注形式；文档同步（locale 指南中英、`README.md`、`docs/standards/development.md` 目录树）。
-- 非目标：文档站三语页面；RTL；语言矩阵 - 长期；locale 按需加载。
-- 最小验收标准：五语（zh-CN / en-US / zh-TW / ja-JP / ko-KR）均可解析且键集合与 zh-CN 一致（守卫脚本通过）；`pnpm verify` 全链路通过；`dist/index.d.ts` 冒烟通过。**译文质量不在本阶段验收内**——由用户复核，复核结论落到评估记录 §9 后续行；**发布前检查**：产物与 `src/locale/` 不得残留「待人工复核」标注。
-- 条目（按「可独立提交」排序）：
-  - [x] zh-TW 文案（纯新增，独立提交）
-  - [x] ja-JP 文案（纯新增，独立提交）
-  - [x] ko-KR 文案（纯新增，独立提交）
-  - [x] 注册表与类型扩展 + 键集合一致性守卫脚本（以 zh-CN 为基准）+ `use-locale.test.ts` 未知语言用例调整
-  - [x] 文档同步（locale 指南中英 / README / development 目录树）
-- **交付状态（2026-09-16）**：五语（zh-CN / en-US / zh-TW / ja-JP / ko-KR）均可解析且键集合、占位符与 zh-CN 一致——`pnpm check:locale-keys` 已接入 `governance:check`（随 `verify` 与 CI 生效）；`pnpm verify` 全链路通过（67 文件 / 1114 例）；`dist/index.d.ts` 冒烟通过（五语字面量可赋值，未注册语种与未注册键均类型报错）。**译文仍为「AI 生成、待人工复核」**：三份文案文件首行标注保留，待用户复核后移除，复核结论落到[评估记录 §9](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md)；`dist/` 产物实测无标注残留。**发布前触发项**：产物与 `src/locale/` 不得残留该标注（机检候选见 [Backlog §1.6](./backlog.md)）。
-
-### 主线 M2：移动端与响应式
-
-- 执行范围：先补响应式规范（断点语义、窄屏行为矩阵与验收标准），再按规范分批补齐组件小屏适配，并补移动端测试用例（Playwright 多视口）。**批次判定门槛**：以响应式规范中「窄屏行为矩阵」判为需适配的 Tier 0 / Tier 1 组件为一批（首批清单在条目 1 落地后确定并登记，**口径偏差见条目 2 下的批次说明**），不得笼统写「分批」。
-- 非目标：全量组件一次性适配；触摸手势等新交互。
-- 最小验收标准：规范落地并登记；每批适配组件在 mobile（390）/ tablet（768）视口实测通过；`pnpm test` 与 `pnpm verify` 全链路通过。
-- 条目：
-  - [x] 响应式规范补充（断点语义与窄屏行为矩阵）
-  - [x] 小屏适配补齐（分批，先核心控件）
-    - **批次 1（浮层面板宽度越界）**：Select、MultiSelect、AutoComplete、DropdownMenu —— **已交付（2026-09-16）**：面板 `max-width` 取 `--reka-{select,combobox,dropdown-menu}-content-available-width`（回退 `none`），`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛（否则 `min-width` 会压过 `max-width`）；补 `box-sizing: border-box`；长选项文本补省略号（Select 新增 `__item-text` 规则并在组件文档写明插槽按单行截断，MultiSelect / AutoComplete 的 label 补 `flex: 1; min-width: 0`）。V 阶段实测（390 / 768 / 1280 三档 + 右缘窄触发器边界用例）：面板均在视口内、面板内无横向溢出、窄屏长文本省略号、0 console error；对照组（同时移除 `max-width` 与 `min-width`）在 390 下越界 710px（证明收敛规则承重）；`min()` 必要性另经独立探针实测（触发器宽 320 > 可用宽 300 时，朴素 `min-width` 写法越界 12px）。**未引入面板 `max-width` token**：与同规则既有 `max-height` 直连 Reka 变量的做法一致，使用方可按类选择器覆盖；如需 token 化另起评估。记录与截图见 `test-results/m2-batch1/`（gitignored；结论与数值已落本行）
-    - **批次 2（横向布局窄屏必现溢出 / 裁切）**：Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行） —— **已交付（2026-09-16）**：Toolbar 横向形态换行（md 档 `flex-wrap: wrap` + `max-width: 100%`）；ButtonGroup / SplitButton 组内横向滚动（`max-width: 100%` + `overflow: auto hidden`，换行会破坏拼接边框 / 圆角），成员焦点环同档内缩（点出 `.caomei-button` 使特异性 0-4-0 确定性压过 Button 的 scoped 规则，不依赖打包顺序）；SelectButton 选项按内容宽换行（`flex-wrap: wrap` + 根 `height: auto` + 选项 `flex: 1 1 auto` + 按 size 档位补 `min-height: calc(控件高度 - 2px)`；释放固定高度是必须的，否则新增行会被根元素 `overflow: hidden` 裁掉）；ColorPicker 面板 `min(260px, 可用宽)`（内联形态 `min(260px, 100%)`）；Dialog / ConfirmDialog 页脚 `flex-wrap: wrap`。收敛档位：横向布局类按 §2 md 档（≤768px）——成员总宽可超过平板可用宽，规则仅在实际放不下时改变形态，桌面（≥1024）与放得下的平板不受影响；769–1023px 无档可用（见响应式设计 §2）。**V 阶段实测**（390 / 768 / 1280 + 320 与 240 合成探针，含纵向口径）：页面无横向溢出；换行类同时满足 `scrollHeight <= clientHeight + 1` 与「成员 rect 完整落在容器内」（行数 2–5 时容器高度随行数增长）；scroll 类容器 `overflow-x: auto`、成员 0 裁切；ColorPicker 面板在视口内；0 console error；四组对照均复现旧缺陷（Toolbar 移除换行 → 页面溢出 424px；SelectButton 恢复旧规则 → 容器越界 414px；Dialog 页脚移除换行 → 由 2 行压缩为 1 行；ColorPicker 固定 260px 在 240px 探针下越界 20px）。**已知形态变化（披露）**：① SelectButton 窄屏「单行等宽」变为「按内容宽换行、行内均分剩余空间」，宽度不再严格相等；② 页脚 `flex-wrap` 无条件生效，极端页脚（多年长文本按钮）在桌面由「压缩到一行」变为两行，常规页脚几何不变（已实测）；③ **已知边界（非本批引入）**：单个约 35 字的超长选项在 320px 视口下自身超宽致页面横向溢出，批次前后实测一致，条目 3 用例取现实标签长度。**Review Gate**：第 1 轮 Reject（唯一 blocker：SelectButton 换行后固定高度致纵向裁切，横向口径测不到）→ 修复后第 2 轮 **Pass**（复审以真实组件复测三档 size 的换行高度、末行可点、焦点环计算值与门户面板不被裁切，B1 与 W1~W4 / S1~S4 全部关闭）。记录见 `test-results/m2-batch2/`（gitignored，关键数值已落本行）
-    - **批次 3（含日历面板）**：DatePicker / Calendar —— **已交付（2026-09-17）**：实测确认 portal 面板为定宽内容（`width: max-content`，224×239）且**无可用宽上限**（计算 `max-width: none`），在 390 / 768 / 1280 与 320 / 280 / 240 探针下靠 floating-ui shift 落在视口内（390 右缘窄触发器出现 0.18px 亚像素越界），按矩阵 #6「最多占满可用宽 / 高」补 `max-width` / `max-height: var(--reka-popover-content-available-{width,height}, none)` + `overflow: auto`（与批次 1 同源；变量由 Reka `PopoverContentImpl` 写入）。**改动前后逐项对照**：390 / 320 / 280 / 240 / 768 / 1280 几何完全一致（仅上限与 `overflow-x` 计算值变化、面板内无滚动条），布局视口 222px 时面板由 224 收敛到 200（越界消除）；**纵向**同步收敛——极矮视口（可用高 226 / 186px < 面板高 239px）下无上限时越出 13 / 53px，补 `max-height` 后面板高收敛为 226 / 186px 且内部可滚（内容可达）；内联 Calendar（内容宽 198px）本批不改。**已知边界（非本批引入）**：内联日历内容宽 198px，布局视口或**容器**宽 < 198px 时撑出溢出（使用方需保证容器 ≥ 198px 或自行约束宽度；组件未暴露多月份配置）。基线记录落 [2026-09-17-m2-batch3-calendar-baseline](../design/governance/2026-09-17-m2-batch3-calendar-baseline.md)（可提交），脚本 / 原始 JSON 落 `test-results/m2-batch3/`（gitignored）
-    - **不纳入**：DataTable 卡片化、页面级栅格、Stepper 方向转换（使用方职责）；触摸目标（用户决策：暂不提升）
-    - 批次依据、行为矩阵与偏差说明见[响应式设计 §5](../design/responsive.md)（登记门槛原写「Tier 0 / Tier 1 组件为一批」；经源码核对，必现溢出 / 裁切项既有 Tier 0 / 1 的 Dialog / ConfirmDialog（footer 换行），又有 Tier 2 / 3 的横向布局类，故批次按缺陷类划分并已在此登记）
-  - [x] 移动端测试用例（Playwright 多视口）
-    - 断言清单：承载[响应式设计 §4](../design/responsive.md) 的 6 条标准（无横向溢出 / 浮层面板在视口内 / 关键内容不丢失 / 桌面无回归 / 0 console error / 面板不窄于触发器），并按容器类型给出可判定口径：
-      - **允许内部滚动的容器**（ButtonGroup / SplitButton / Tabs / DataTable）：`overflow-x` 在 sm / md 档为 `auto` / `scroll`、桌面为 `visible`，并在内容确实超宽时核验确有滚动量（`scrollWidth > clientWidth`）；每个成员 `scrollWidth <= clientWidth + 1`；**键盘聚焦按聚焦前几何分档判定**（完全在滚动区外 ⇒ 必须完整滚入；已相交 ⇒ 必须仍相交，见[响应式设计 §4](../design/responsive.md)）
-      - **换行类容器**（Toolbar / SelectButton / Dialog 页脚）：`scrollHeight <= clientHeight + 1`（无纵向裁切）；每个成员 rect 完整落在容器 client rect 内；行数变化仅作行为观测，不作为通过条件
-      - **浮层面板**：bounding rect 在视口内；匹配触发器宽度的组件另断言面板宽 ≥ 触发器宽 - 1
-      - **含日历面板**（DatePicker）：面板落在视口内、带可用宽上限（计算 `max-width` 不为 `none`）且内容完整；内联 Calendar 与其网格完整落在容器内
-    - 基线归档：每批次的「改动前」截图与计算样式快照落 `test-results/<批次>/`，结论与关键数值同步落可提交位置
-    - **已决策（2026-09-17，用户，选项 A）**：键盘聚焦采用**分档口径**——聚焦前完全落在滚动区外 ⇒ 聚焦后必须完整滚入；聚焦前已相交 ⇒ 必须仍相交。依据：Chromium 的焦点滚动只在聚焦元素与滚动区完全不相交时介入（触发后居中），聚焦前存在像素级可见边时不再滚动；已在无组件 CSS 的纯 HTML 夹具复现同构几何，判为非本库特有。「无条件完整可见」**不作为当前验收标准**，作为增强候选登记 [Backlog §1.5](./backlog.md)（含作用域 / 页面纵向滚动副作用 / RTL 等待评估项）。
-    - **交付状态（第一步，2026-09-17）**：仓库此前无 Playwright 配置与用例，本轮落地常驻规格——根 `playwright.config.ts`（mobile / tablet / desktop 三个 project，对应[响应式设计 §4](../design/responsive.md) 视口 + webServer + 容器启动参数）、`test/e2e/fixtures/`（独立 Vite 夹具，被测对象为 `src/` 源码，覆盖 3 个浮层面板 + Toolbar / SelectButton / Dialog 页脚 + ButtonGroup / SplitButton，标签取现实长度）、`test/e2e/helpers/layout.ts`（几何断言基座）与 `test/e2e/responsive.e2e.ts`（11 用例 × 3 视口，含 0 console error 的自动 fixture）。实测 `pnpm test:e2e` **33/33 通过**（三档页面横向溢出 0；换行类行数 Toolbar 3/2/1、SelectButton 3/1/1、页脚 2/2/2，`scrollHeight <= clientHeight` 全成立；ButtonGroup `overflow-x` auto/auto/visible 且滚动量 625/247/0；三个面板触发器宽 320 → 面板宽 320、面板内溢出 0；0 console error）。split 按钮内容不超宽，其键盘用例因无判别力未保留（滚动容器样式由 `CaomeiButtonGroup` 承载，机制同源）。记录与数值脚本见 `test-results/m2-item3-e2e/`（gitignored）。
-    - **交付状态（批次 3，2026-09-17）**：夹具补 DatePicker（常规 + 右缘窄触发器）与内联 Calendar 三节，用例补「含日历面板」（2 例：常规 / 右缘）、「可用宽 / 高上限生效路径」（2 例合成探针）与「内联日历」（1 例），`pnpm test:e2e` **48/48 通过**（16 用例 × 3 视口，连续三次冷启动复跑一致）；「改动前基线」归档落 [2026-09-17-m2-batch3-calendar-baseline](../design/governance/2026-09-17-m2-batch3-calendar-baseline.md)（含批次 3 数值表、桌面 1280 计算样式快照与已知边界）。**至此条目 3 断言清单与基线归档均落地**；剩余仅 E2E 未接入 `pnpm verify` / CI（需在流水线安装浏览器，属门禁增强，候选登记 [Backlog §1.6](./backlog.md)）
-- **交付状态（条目 1，2026-09-16）**：新增 [响应式设计](../design/responsive.md)——断点语义（sm 640 / md 768 / lg 1024；桌面优先 + `max-width` 收敛 + 字面量白名单）、16 行窄屏行为矩阵（含源码取证位置与现状判定）、验收标准（390 / 768 / 1280 视口 + 断言清单，布局断言归 Playwright；断言 6「面板不窄于触发器」由后续批次补充，现行清单见[响应式设计 §4](../design/responsive.md)）、批次清单与三项决策落定；`theming.md §5` 收敛为指针并移除未实现的「窄屏转卡片列表 / 转 Drawer」陈述，`design-spec.md §2.3` 与 `development.md §7` 补指针，设计索引与文档站侧栏同步。
-- **待决策（条目 1 提出）→ 已决策（2026-09-16，用户）**：① 触摸目标**暂不提升**到 ≥44px 命中区（维持 Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px；后续如提升须引入不改变视觉尺寸的命中区原语，候选见 [Backlog §1.5](./backlog.md)）；② Stepper 横向窄屏**由使用方适配**（组件不内建自动转换，需纵向时改 `orientation="vertical"`，已写入 Stepper 组件文档与[响应式设计 §1](../design/responsive.md)）；③ 「DataTable 转卡片列表」「Dialog 转全屏」**不作为默认行为**，窄屏以响应式适配为主（与[响应式设计](../design/responsive.md) 非目标一致，相关 AI 资产表述同步对齐）。
-
-> **阶段容量裁定**：本阶段登记 2 条主线，低于 [规划规范 §6](../standards/planning.md) 的 3–6 条下界——依据是 M1（语言矩阵）与 M2（移动端与响应式）各自为独立工作流，且用户决策明确 momei 可行性评估**排在 M1 / M2 交付之后（阶段尾部）**——该评估已于 2026-09-17 按用户指令执行完毕（见下方再评估点），故不凑数增设主线。
-
-> **阶段尾部再评估点：momei 迁移可行性评估 —— 已完成（2026-09-17）**，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**结论：可行（有条件）**——能力面无阻塞（台账 §4.1 需新组件 11/11 已交付；§4.2 受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0；momei 用量自 2026-09-14 逐项未变）；三个先决条件为「DataTable 列级插槽先行」「主题映射表与视觉基线先行」「分批 + 关键路径先行 + 双库并存白名单」。**已决策（5 项，2026-09-17 用户）**：① 迁移方案取 **C3 分批全量**；② **先做 B1 库侧补齐**；③ B 级 **14 项全部完成**；④ **接受** 16 条有意差异（含 `Select filter → AutoComplete` 2 处、`Tag severity → tone` 125 处、`Dialog title` 必填 35 处）；⑤ 双库并存期回归强度由**每周回归任务跑 momei 的测试**承载（不要求每批跑 momei 全量 E2E）。据此，Phase 7 第二阶段的范围已按[规划规范 §3](../standards/planning.md)「用户明确决策后登记」登记于下方「下一阶段」段。
-
-## 下一阶段：Phase 7 第二阶段（momei 迁移闭环）——范围已登记（2026-09-17 用户决策）
-
-> **依据**：[momei 迁移可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md)（结论「可行（有条件）」）+ 用户决策 2026-09-17（5 项，见上文再评估点）。本段登记**已授权范围**；原子条目与开工顺序在启动时按[规划规范 §4](../standards/planning.md) 拆分。
-
-- **执行范围（五批）**：**B0 准备**（`--p-*` → `--caomei-*` token 对照表、128 个 `pi pi-*` → lucide 图标映射表、双库并存隔离策略、视觉基线采集）→ **B1 库侧补齐（先决，先行）** → **B2 数据类页面迁移**（20 个 `<Column>` 文件）→ **B3 表单与设置页面迁移** → **B4 展示 / 浮层 / 收尾**（`.toggle()` 结构改写、图标全量替换、i18n 插件替换、测试与 E2E 改写、卸载 PrimeVue）。
-- **B1 范围（已授权：A 级 + B 级 14 项全部纳入；**本段为范围登记，非「已交付」**）**：
-  - **A 级（结构性）**：DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`）——20 个列表页的关键路径先决。
-  - **B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel`（共 14 项）。
-- **最小验收标准**：每个补齐项带单测 + 中英文档；DataTable 列插槽提供迁移示例；`pnpm verify` 全链路通过（含 `test:nuxt-smoke`）。
-- **回归口径（用户决策）**：迁移期与并存期由**每周回归任务跑 momei 的测试**（现成承载者：momei 的 `Weekly Regression`，cron 周五 12:00；跑 `regression:weekly` + typecheck + build + lint + 包体预算 + 覆盖率），不要求每批跑 momei 全量 E2E；若需「caomei-ui 变更即验证 momei」的跨仓触发，属 [Phase 8 下游兼容性回归机制](./roadmap.md)（未启动），需另行授权。
-- **非目标**：其他下游（caomei-auth / rss-impact-next / afdian-linker / dependfix）的迁移；PrimeVue 之外的框架迁移；16 条有意差异的库侧改造（已由用户决策接受现状）。
-- **启动前置**：① B0 / B1 原子条目拆分与开工顺序；② momei 工作区干净（评估快照含一处未提交 `AGENTS.md`）；③ 阶段启动与 Phase 10 收口的先后关系确认（见下）。
-
-> **待确认**：Phase 10 的**收口与归档**（[规划规范 §7](../standards/planning.md)）——M1 三语文案人工复核为用户侧遗留、M2 与尾部评估均已交付；归档前须检查[长期任务](../plan/recurring.md)触发义务。用户确认收口后，本段方可作为「当前阶段」承接。
+> **当前无进行中阶段**——Phase 10（国际化与移动端适配）已于 2026-09-17 完成并归档（见[待办归档](./todo-archive.md)）。下一阶段的范围与启动须由用户明确决策后登记（[规划规范 §3](../standards/planning.md)）；已登记范围与未启动阶段见[路线图](./roadmap.md)，未决策候选见 [Backlog](./backlog.md)。
 
 ## 阶段验收通则
 
@@ -78,9 +14,6 @@
 
 > 本节仅汇总未完成项以供跨阶段可见，**不构成阶段待办登记**（登记需用户明确决策）。
 
-- 已归档：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6、Phase 7 第一阶段、Phase 9（发布前收口）。
-- 进行中 / 待收口：Phase 10（国际化与移动端适配）——M1 语言矩阵 - 中期已交付（**三语文案人工复核为用户侧遗留**）；**M2 三条目（含 3 个适配批次）与阶段尾部再评估点（momei 迁移可行性评估）均已交付**（2026-09-17）；阶段收口（归档）待用户确认。
-- 下一阶段（**范围已登记，待启动**）：**Phase 7 第二阶段（momei 迁移闭环）**——2026-09-17 用户决策取 C3 分批全量、B1 库侧补齐先行（含评估 §3.2 的 A 级与 B 级 14 项，即 P1 增强的落点）、接受 16 条有意差异、回归由每周回归任务承载；范围与批次见上「下一阶段」段。
-- 未启动 / 未完成：Phase 5 第二阶段（首版发布 / 首个下游接入，待外部前置）、Phase 7 第二阶段（momei 迁移闭环 + P1 增强，按用户决策排在 Phase 10 之后）、Phase 8（下游兼容性回归，稳定后启用）；范围见 [路线图](./roadmap.md)。
-- Phase 7 第一阶段遗留与偏差：首版发布链路协调（归属 Phase 5 第二阶段）、DatePicker 范围选择与 Select `filter` 的迁移决策、各组件有意行为差异与未实现项、规模偏差等，清单见 [待办归档](./todo-archive.md)。
-- 未纳入任何阶段的候选：P2 低频增强、组件国际化多语种与 RTL（中期语言矩阵**已登记 Phase 10 M1**，见 [Backlog](./backlog.md) §1.4）、移动端与响应式（**已登记 Phase 10 M2**，见 §1.5）、Button 角标（`:badge`）、文档站观感美化、wisdom 蒸馏原文留痕等，见 [Backlog](./backlog.md)。
+- **未启动 / 未完成阶段**：Phase 5 第二阶段（首版发布 / 首个下游接入，待外部前置）；Phase 7 第二阶段（momei 迁移闭环，范围已登记 2026-09-17、待启动）；Phase 8（下游兼容性回归，稳定后启用）。范围见[路线图](./roadmap.md)。
+- **未纳入任何阶段的候选**：见 [Backlog](./backlog.md)（组件增强、国际化与 RTL、移动端与响应式、基建与治理、服务层、下游协同等分组）。
+- **已完成阶段的遗留项与已知偏差**：见[待办归档](./todo-archive.md) 与 [Backlog](./backlog.md)（后者承载其中仍待决策的候选）。

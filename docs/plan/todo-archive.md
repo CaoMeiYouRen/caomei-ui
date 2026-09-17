@@ -196,6 +196,24 @@
 - 审计结论：各批次均经 `@code-reviewer` Review Gate；M4 优化点 2+3 与 M5-3 各拦下真实缺陷（含 2 处对外行为回归与 1 处骨架依赖风险），修复后放行；M5-3 与 M1 条目 2+3 按模块分区并行审计
 - 遗留与后续：见 [Phase 9 收口与遗留清单](../design/governance/2026-09-16-phase9-closure.md)
 
+## Phase 10：国际化与移动端适配
+
+- 时间：2026-09-16 ~ 2026-09-17（2026-09-16 用户授权启动；2026-09-17 收口归档）
+- 授权范围（用户决策 2026-09-16）：语言矩阵取**方案 A**（库内建 5 语）；译文由 **AI 基于 zh-CN 生成 + 用户复核**（复核前标注、复核后移除）；三语文案**按语种拆三个提交**；补**键集合一致性守卫**（以 zh-CN 为基准）；包体影响评估为可接受。范围依据见[语言矩阵 - 中期评估记录](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md)。
+- 交付（两条主线）：
+  - **M1 语言矩阵 - 中期**（5 条目）：新增 zh-TW / ja-JP / ko-KR 三份内建文案（各 59 条，语言约定见下）；`caomeiLocales` 注册表与 `CaomeiLocale` 类型扩展；新增 `scripts/governance/check-locale-keys.mjs`（命名空间 / 键集合 / 占位符 / 非空白值 / 注册 id 与文件名同源 / 导入路径校验，含 21 例单测）并接入 `governance:check`；`use-locale.test.ts` 补三语解析断言与未注册语种回退用例；locale 指南（中英）/ README / 开发规范目录树同步。**译文复核（2026-09-17）**：三语逐条对照 zh-CN 复核，**无明显错误**；复核修正 zh-TW `autoComplete.empty` / `multiSelect.empty` 两处措辞（「無符合的」→「沒有符合的」）；移除三份文件首行的「AI 生成、待人工复核」标注并关闭条目；结论落[评估记录 §9.1](../design/governance/2026-09-16-language-matrix-midterm-evaluation.md)
+  - **M2 移动端与响应式**（3 条目）：新增 `docs/design/responsive.md`（断点语义 sm 640 / md 768 / lg 1024、16 行窄屏行为矩阵含源码取证、6 条验收标准、3 个适配批次与三项决策落定）；**三个适配批次**——① 浮层面板宽度收敛（Select / MultiSelect / AutoComplete / DropdownMenu：`max-width` 取 Reka 可用宽 + `min-width: min(触发器宽, 可用宽)` + 长选项省略号）；② 横向布局与定宽面板（Toolbar 换行、ButtonGroup / SplitButton 组内横向滚动含焦点环内缩、SelectButton 按内容宽换行并释放固定高度、ColorPicker `min(260px, 可用宽)`、Dialog / ConfirmDialog 页脚换行）；③ 含日历面板（DatePicker portal 面板补两轴可用空间上限 + 滚动降级，含极窄 / 极矮探针）；**常驻 Playwright 多视口用例**（根 `playwright.config.ts` + `test/e2e/fixtures/` 源码夹具 + `helpers/layout.ts` + 16 用例 × 3 视口 = 48/48，覆盖面板 / 换行 / 滚动 / 键盘聚焦 / 含日历面板五类口径，0 console error 自动 fixture）；**改动前基线归档**落 `docs/design/governance/2026-09-17-m2-batch3-calendar-baseline.md`
+  - **阶段尾部再评估点**：momei 迁移可行性评估（[记录](../design/governance/2026-09-17-momei-migration-feasibility.md)）——结论「可行（有条件）」，用户决策 5 项（C3 分批全量 / B1 库侧补齐先行 / B 级 14 项全做 / 接受 16 条有意差异 / 回归由每周回归任务跑 momei 测试承载）
+- 阶段内附加产出：常驻 E2E 基建（Playwright 三档 project、webServer 拉起源码夹具、reduced-motion 保证几何确定性）；「键盘聚焦」验收口径经用户裁定为**分档判定**（选项 A）并落规范与用例；`theming.md §5` / `design-spec.md §2.3` / `development.md §7` 补响应式指针
+- 提交（未推送）：`610aefa`（授权启动）、`5346f9f`（复核流程细化）、`bd34117` / `8f230e7` / `e2bd99b`（三语各一枚）、`e2ef930`（注册表 + 守卫）、`055704d`（文档同步）、`2de5539`（M1 收口）、`622e7fc`（响应式规范）、`de1c317`（决策落定）、`bc0d167`（批次 1）、`9b2de72`（批次 2）、`e493855` / `c37b17f`（常驻 E2E 基建与用例）、`38c317c` / `19b0eab`（条目 3 收口与键盘聚焦口径）、`b9036c6`（批次 3）、`681d42e` / `a22d742`（可行性评估与记录修复）、`9bbde96`（空文件守卫候选）；收口提交：译文复核与阶段归档（2026-09-17）
+- 质量门：阶段内各批次 `pnpm verify` 全链路通过；收口时 `pnpm check:locale-keys`（五语 59 条对齐）/ 全量 `pnpm test`（67 文件 1114 例）/ `pnpm test:e2e`（48/48）/ `docs:check`（184 md）/ `lint:check` / `lint:css:check` / `typecheck` / `build` + `check:build` 全绿
+- 审计结论：各条目均经 `@code-reviewer` Review Gate——M1 各条目 Pass（含 2 项提交前必改）；M2 批次 2 首轮 **Reject**（SelectButton 换行后固定高度致纵向裁切，横向口径漏检）→ 二轮 Pass；条目 3 首轮两分区（用例 Pass / 文档 Reject：验收口径放宽须用户裁定）→ 回滚口径放宽并修复 → 二轮 Pass，随后键盘聚焦裁定与批次 3 增量均一轮 Pass；可行性评估两轮 Pass（第 2 轮另修复记录被截断事故）
+- 遗留与后续（候选均登记于 [Backlog](./backlog.md)，不在本条重复）：
+  - 语言矩阵的后续语种（俄 / 法 / 德 / 西 / 葡）、RTL、locale 注册治理、file-upload 内建文案本地化 → Backlog §1.4
+  - M2 未纳入项（DataTable 卡片化 / Dialog 转全屏 / 页面级栅格 / Stepper 方向转换 / 触摸目标）与已知边界（内联日历内容宽 198px 等）→ [响应式设计](../design/responsive.md) §1 / §3 / §5
+  - 常驻 E2E 尚未接入 `pnpm verify` / CI、浮层交互规格、reduced-motion 的默认动效路径无覆盖 → Backlog §1.6
+  - momei 迁移的执行范围与 5 项决策 → 待启动的 Phase 7 第二阶段（见 [路线图](./roadmap.md) 与[可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md)）
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

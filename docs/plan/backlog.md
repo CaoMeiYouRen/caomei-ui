@@ -146,12 +146,12 @@
 
 > **用户决策（2026-09-16）**：本轮（Phase 9）结束后，正式进入「**momei 迁移可行性评估**」——先做可行性结论再定迁移范围（属 Phase 7 第二阶段的前置评估）。调查依据：momei 当前尚未依赖 `caomei-ui`（`package.json` 无该依赖），FileUpload 等组件仍走 PrimeVue。
 >
-> **评估已完成（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。能力面无阻塞（需新组件 11/11 已交付；需增强项受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0）；三个先决条件：DataTable 列级插槽先行、主题映射表与视觉基线先行、分批 + 关键路径先行 + 双库并存白名单。**迁移范围与批次待用户决策**（C1/C2/C3 与 B1 取舍），决策前不登记阶段范围。
+> **评估已完成（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。能力面无阻塞（需新组件 11/11 已交付；需增强项受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0）；三个先决条件：DataTable 列级插槽先行、主题映射表与视觉基线先行、分批 + 关键路径先行 + 双库并存白名单。**已决策（2026-09-17 用户）**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部完成**、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）已登记于[待办事项](./todo.md)的「下一阶段：Phase 7 第二阶段」段。
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 迁移执行 | 若用户决策执行（评估推荐 C3 分批全量）：B0 准备（token / 图标映射表 + 视觉基线）→ B1 库侧补齐 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）。**范围须经用户决策后登记**（Phase 7 第二阶段或新授权阶段） | 待决策 |
-| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，唯一结构性差距）；**B 级 14 项**（[评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2）：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover / DropdownMenu 命令式（或迁移写法指引）、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel`；评估建议先做前 10 项。**是否执行与取舍待用户决策**；与 §1.1 / §1.2 的同类候选合并评估 | 待决策 |
+| momei 迁移执行 | **已决策（2026-09-17 用户）：按 C3 分批全量执行**。B0 准备（token / 图标映射表 + 视觉基线）→ B1 库侧补齐 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载。**范围已登记于[待办事项](./todo.md)「下一阶段」段，待启动** | → Phase 7 第二阶段（范围已登记） |
+| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`，**组件能力面**唯一结构性差距）；**B 级 14 项**（[评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2）：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel`（共 14 项）。**已决策（2026-09-17 用户）：A 级 + B 级 14 项全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；与 §1.1 / §1.2 的同类候选合并实现（逐项原子条目见[待办事项](./todo.md)「下一阶段」段） | → Phase 7 第二阶段（B1 先行） |
 | 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用 | 延迟 |
 
 ## 2. 维护约定

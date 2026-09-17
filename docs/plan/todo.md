@@ -53,7 +53,22 @@
 
 > **阶段容量裁定**：本阶段登记 2 条主线，低于 [规划规范 §6](../standards/planning.md) 的 3–6 条下界——依据是 M1（语言矩阵）与 M2（移动端与响应式）各自为独立工作流，且用户决策明确 momei 可行性评估**排在 M1 / M2 交付之后（阶段尾部）**——该评估已于 2026-09-17 按用户指令执行完毕（见下方再评估点），故不凑数增设主线。
 
-> **阶段尾部再评估点：momei 迁移可行性评估 —— 已完成（2026-09-17）**，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**结论：可行（有条件）**——能力面无阻塞（台账 §4.1 需新组件 11/11 已交付；§4.2 受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0；momei 用量自 2026-09-14 逐项未变）；三个先决条件为「DataTable 列级插槽先行」「主题映射表与视觉基线先行」「分批 + 关键路径先行 + 双库并存白名单」。**待用户决策（5 项）**：① 迁移方案 C1 不迁移 / C2 部分迁移 / C3 分批全量（评估推荐 C3）；② 若 C3，是否先执行 B1 库侧补齐（含 DataTable 列插槽，需以阶段条目或新授权阶段承载）；③ 首批 B 级增强取舍（§3.2 共 14 项，建议先做 B1 的 10 项）；④ 16 条有意差异的接受度（重点：`Select filter → AutoComplete` 2 处、`Tag severity → tone` 125 处、`Dialog title` 必填 35 处）；⑤ 双库并存期长度与回归强度。**决策前不登记 Phase 7 第二阶段范围**（按[规划规范 §3](../standards/planning.md)）。
+> **阶段尾部再评估点：momei 迁移可行性评估 —— 已完成（2026-09-17）**，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**结论：可行（有条件）**——能力面无阻塞（台账 §4.1 需新组件 11/11 已交付；§4.2 受检 24 项＝完全交付 8 / 部分交付 16 / 完全未交付 0；momei 用量自 2026-09-14 逐项未变）；三个先决条件为「DataTable 列级插槽先行」「主题映射表与视觉基线先行」「分批 + 关键路径先行 + 双库并存白名单」。**已决策（5 项，2026-09-17 用户）**：① 迁移方案取 **C3 分批全量**；② **先做 B1 库侧补齐**；③ B 级 **14 项全部完成**；④ **接受** 16 条有意差异（含 `Select filter → AutoComplete` 2 处、`Tag severity → tone` 125 处、`Dialog title` 必填 35 处）；⑤ 双库并存期回归强度由**每周回归任务跑 momei 的测试**承载（不要求每批跑 momei 全量 E2E）。据此，Phase 7 第二阶段的范围已按[规划规范 §3](../standards/planning.md)「用户明确决策后登记」登记于下方「下一阶段」段。
+
+## 下一阶段：Phase 7 第二阶段（momei 迁移闭环）——范围已登记（2026-09-17 用户决策）
+
+> **依据**：[momei 迁移可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md)（结论「可行（有条件）」）+ 用户决策 2026-09-17（5 项，见上文再评估点）。本段登记**已授权范围**；原子条目与开工顺序在启动时按[规划规范 §4](../standards/planning.md) 拆分。
+
+- **执行范围（五批）**：**B0 准备**（`--p-*` → `--caomei-*` token 对照表、128 个 `pi pi-*` → lucide 图标映射表、双库并存隔离策略、视觉基线采集）→ **B1 库侧补齐（先决，先行）** → **B2 数据类页面迁移**（20 个 `<Column>` 文件）→ **B3 表单与设置页面迁移** → **B4 展示 / 浮层 / 收尾**（`.toggle()` 结构改写、图标全量替换、i18n 插件替换、测试与 E2E 改写、卸载 PrimeVue）。
+- **B1 范围（已授权：A 级 + B 级 14 项全部纳入；**本段为范围登记，非「已交付」**）**：
+  - **A 级（结构性）**：DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`）——20 个列表页的关键路径先决。
+  - **B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel`（共 14 项）。
+- **最小验收标准**：每个补齐项带单测 + 中英文档；DataTable 列插槽提供迁移示例；`pnpm verify` 全链路通过（含 `test:nuxt-smoke`）。
+- **回归口径（用户决策）**：迁移期与并存期由**每周回归任务跑 momei 的测试**（现成承载者：momei 的 `Weekly Regression`，cron 周五 12:00；跑 `regression:weekly` + typecheck + build + lint + 包体预算 + 覆盖率），不要求每批跑 momei 全量 E2E；若需「caomei-ui 变更即验证 momei」的跨仓触发，属 [Phase 8 下游兼容性回归机制](./roadmap.md)（未启动），需另行授权。
+- **非目标**：其他下游（caomei-auth / rss-impact-next / afdian-linker / dependfix）的迁移；PrimeVue 之外的框架迁移；16 条有意差异的库侧改造（已由用户决策接受现状）。
+- **启动前置**：① B0 / B1 原子条目拆分与开工顺序；② momei 工作区干净（评估快照含一处未提交 `AGENTS.md`）；③ 阶段启动与 Phase 10 收口的先后关系确认（见下）。
+
+> **待确认**：Phase 10 的**收口与归档**（[规划规范 §7](../standards/planning.md)）——M1 三语文案人工复核为用户侧遗留、M2 与尾部评估均已交付；归档前须检查[长期任务](../plan/recurring.md)触发义务。用户确认收口后，本段方可作为「当前阶段」承接。
 
 ## 阶段验收通则
 
@@ -64,7 +79,8 @@
 > 本节仅汇总未完成项以供跨阶段可见，**不构成阶段待办登记**（登记需用户明确决策）。
 
 - 已归档：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6、Phase 7 第一阶段、Phase 9（发布前收口）。
-- 进行中：Phase 10（国际化与移动端适配）——M1 语言矩阵 - 中期已交付（译文待人工复核）；**M2 移动端与响应式三条目（含 3 个适配批次）已全部交付**（响应式规范 / 两批小屏适配 + 批次 3 / 常驻 Playwright 多视口用例与基线归档），阶段尾部再评估点（momei 迁移可行性评估）已完成（2026-09-17，结论「可行（有条件）」），当前无进行中阶段事项，待用户就迁移范围与批次决策。
+- 进行中 / 待收口：Phase 10（国际化与移动端适配）——M1 语言矩阵 - 中期已交付（**三语文案人工复核为用户侧遗留**）；**M2 三条目（含 3 个适配批次）与阶段尾部再评估点（momei 迁移可行性评估）均已交付**（2026-09-17）；阶段收口（归档）待用户确认。
+- 下一阶段（**范围已登记，待启动**）：**Phase 7 第二阶段（momei 迁移闭环）**——2026-09-17 用户决策取 C3 分批全量、B1 库侧补齐先行（含评估 §3.2 的 A 级与 B 级 14 项，即 P1 增强的落点）、接受 16 条有意差异、回归由每周回归任务承载；范围与批次见上「下一阶段」段。
 - 未启动 / 未完成：Phase 5 第二阶段（首版发布 / 首个下游接入，待外部前置）、Phase 7 第二阶段（momei 迁移闭环 + P1 增强，按用户决策排在 Phase 10 之后）、Phase 8（下游兼容性回归，稳定后启用）；范围见 [路线图](./roadmap.md)。
 - Phase 7 第一阶段遗留与偏差：首版发布链路协调（归属 Phase 5 第二阶段）、DatePicker 范围选择与 Select `filter` 的迁移决策、各组件有意行为差异与未实现项、规模偏差等，清单见 [待办归档](./todo-archive.md)。
 - 未纳入任何阶段的候选：P2 低频增强、组件国际化多语种与 RTL（中期语言矩阵**已登记 Phase 10 M1**，见 [Backlog](./backlog.md) §1.4）、移动端与响应式（**已登记 Phase 10 M2**，见 §1.5）、Button 角标（`:badge`）、文档站观感美化、wisdom 蒸馏原文留痕等，见 [Backlog](./backlog.md)。

@@ -1,4 +1,3 @@
-// AI 生成、待人工复核：译文由 AI 基于 zh-CN 生成，经人工复核后移除此行。
 import type { CaomeiLocaleMessages } from './types'
 
 const jaJP: CaomeiLocaleMessages = {

@@ -1,9 +1,8 @@
-// AI 生成、待人工复核：译文由 AI 基于 zh-CN 生成，经人工复核后移除此行。
 import type { CaomeiLocaleMessages } from './types'
 
 const zhTW: CaomeiLocaleMessages = {
     autoComplete: {
-        empty: '無符合的建議',
+        empty: '沒有符合的建議',
         open: '展開建議',
     },
     calendar: {
@@ -56,7 +55,7 @@ const zhTW: CaomeiLocaleMessages = {
     multiSelect: {
         open: '展開選項',
         remove: '移除',
-        empty: '無符合的選項',
+        empty: '沒有符合的選項',
     },
     pagination: {
         label: '分頁',

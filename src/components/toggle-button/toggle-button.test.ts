@@ -119,4 +119,32 @@ describe('CaomeiToggleButton', () => {
         expect(button.classes()).toContain('custom')
         expect(button.attributes('data-test')).toBe('toggle')
     })
+
+    it('两态文案按按下状态渲染并随受控值更新', async () => {
+        const wrapper = mount(CaomeiToggleButton, {
+            props: { modelValue: false, onLabel: '开', offLabel: '关' },
+        })
+
+        expect(wrapper.get('.caomei-toggle-button').text()).toBe('关')
+
+        await wrapper.setProps({ modelValue: true })
+        expect(wrapper.get('.caomei-toggle-button').text()).toBe('开')
+    })
+
+    it('仅提供单侧文案时不生效（回退默认插槽）', () => {
+        const onlyOn = mount(CaomeiToggleButton, { props: { onLabel: '开' } })
+        expect(onlyOn.get('.caomei-toggle-button').text()).toBe('')
+
+        const onlyOff = mount(CaomeiToggleButton, { props: { offLabel: '关' } })
+        expect(onlyOff.get('.caomei-toggle-button').text()).toBe('')
+    })
+
+    it('默认插槽优先于两态文案', () => {
+        const wrapper = mount(CaomeiToggleButton, {
+            props: { onLabel: '开', offLabel: '关' },
+            slots: { default: '自定义' },
+        })
+
+        expect(wrapper.get('.caomei-toggle-button').text()).toBe('自定义')
+    })
 })

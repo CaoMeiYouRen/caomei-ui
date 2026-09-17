@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Toggle } from 'reka-ui'
+import { computed } from 'vue'
 import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ToggleButtonProps } from './types'
 
@@ -15,6 +16,14 @@ const model = defineModel<boolean>({ default: false })
 
 /** label 属性优先于透传的 aria-label；二者都缺省时由可见文本推导可访问名 */
 const forwardedAttrs = useLabelAttrs(() => props.label)
+
+/** 两态文案：仅当 `onLabel` / `offLabel` 同时提供时生效（对齐 PrimeVue），否则回退默认插槽 */
+const stateLabel = computed(() => {
+    if (!props.onLabel || !props.offLabel) {
+        return undefined
+    }
+    return model.value ? props.onLabel : props.offLabel
+})
 </script>
 
 <template>
@@ -25,7 +34,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
         class="caomei-toggle-button"
         :class="`caomei-toggle-button--${size}`"
     >
-        <slot />
+        <slot>{{ stateLabel }}</slot>
     </Toggle>
 </template>
 

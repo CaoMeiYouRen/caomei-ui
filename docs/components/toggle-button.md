@@ -20,6 +20,17 @@
     ssg="true"
 />
 
+## 两态文案
+
+`onLabel` / `offLabel` 分别指定按下与未按下时的可见文本；**两者需同时提供**才生效，只提供其一时按无文案处理；默认插槽优先于两态文案。
+
+> 与 PrimeVue 的差异（有意）：PrimeVue 为两态文案内建 `Yes` / `No` 默认值，本库不内建任何默认文案，因此两 prop 都未提供时渲染默认插槽（缺省为空）。
+
+<demo
+    vue="../examples/toggle-button/labels.vue"
+    ssg="true"
+/>
+
 ## 尺寸
 
 通过 `size` 切换尺寸，支持 `sm` / `md` / `lg`。
@@ -43,6 +54,7 @@
 - 控件渲染为原生 `<button>`（隐式 button 角色），`aria-pressed` 输出 `true` / `false`。
 - 支持键盘聚焦与空格 / 回车切换。
 - 可见文本即其可访问名；仅图标时用 `label` 提供可访问名（映射 `aria-label`）。
+- 提供两态文案时可见文本随按下态切换，可访问名随之变化；需要固定可访问名时用 `label` 覆盖。
 - 同时提供可见文本与 `label` 时，`label` 应包含或等于可见文本，避免可访问名与可见文案分叉（WCAG 2.5.3）。
 - 聚焦时显示 `:focus-visible` 描边，并遵循 `prefers-reduced-motion`。
 

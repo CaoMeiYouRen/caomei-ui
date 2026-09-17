@@ -20,6 +20,17 @@ For icon-only buttons, use `label` to provide the accessible name.
     ssg="true"
 />
 
+## State labels
+
+`onLabel` / `offLabel` set the visible text for the pressed and unpressed states; **both must be provided** to take effect, and providing only one is treated as no label. The default slot takes precedence over the state labels.
+
+> Intentional difference from PrimeVue: PrimeVue ships built-in `Yes` / `No` defaults for the two state labels, while this library ships no default text, so when neither prop is given the default slot renders (empty by default).
+
+<demo
+    vue="../examples/toggle-button/labels.vue"
+    ssg="true"
+/>
+
 ## Sizes
 
 Switch the size with `size`; supports `sm` / `md` / `lg`.
@@ -43,6 +54,7 @@ The pressed state is determined by `v-model`; `disabled` disables interaction.
 - The control renders as a native `<button>` (implicit button role); `aria-pressed` outputs `true` / `false`.
 - Supports keyboard focus and toggling with Space / Enter.
 - The visible text is its accessible name; for icon-only buttons, use `label` to provide the accessible name (mapped to `aria-label`).
+- With state labels the visible text follows the pressed state, so the accessible name changes too; override `label` when a fixed accessible name is required.
 - When both visible text and `label` are provided, `label` should contain or equal the visible text to avoid a mismatch between the accessible name and the visible label (WCAG 2.5.3).
 - Keyboard focus shows a `:focus-visible` ring and respects `prefers-reduced-motion`.
 

@@ -4,6 +4,47 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-17 阶段归档蒸馏（Phase 10）
+
+> 阶段归档（2026-09-17）：活跃 **25 条全部迁移**（无删除、无保留），剩余活跃 0 条。本轮蒸馏同时把可复用规则外科式写入对应规范（`planning §3.8 / §7 / §9`、`ai-collaboration §8`、`testing §7 / §10`、`documentation §4`），下列条目即其来源与落点。
+
+### 规则与规范书写
+
+- [2026-09-16] [pattern] 必须留在源码但不得进产物的临时标注写成文件首行的 `//` 行注释：tsdown / rolldown 会剥离普通行注释、保留 `//#region` 与 JSDoc——「标注没进产物」按注释归属决定，须实测 `grep` 产物确认 → [语言矩阵评估记录 §9.1](./2026-09-16-language-matrix-midterm-evaluation.md)（标注本身已于复核后移除）
+- [2026-09-16] [pattern] 行为矩阵 / 批次清单类规范必须每行带取证位置（含「无风险」排除项），且「现状」判定与取证方式口径自洽 → [规划规范 §9](../../standards/planning.md)
+- [2026-09-16] [pattern] 注释与文档里的枚举能力清单会随扩展立即过期，且公开类型面的 JSDoc 会进产物；改为单点引用式表述 → [文档规范 §4](../../standards/documentation.md)
+- [2026-09-16] [pattern] 用新权威文档承接旧文档的「未实现承诺」时须全库清理所有引用点（`rg` 扫残留） → [文档规范 §4](../../standards/documentation.md)
+- [2026-09-16] [pattern] 用户对待决策项的答复须同步三处载体 + 受影响的组件文档，并回扫 AI 资产的「旧心智」表述 → [规划规范 §3.8](../../standards/planning.md)
+- [2026-09-17] [pattern] 用户把「分批取舍」改成「全部完成」时，旧的分档数字必须一并删除（否则同一集合出现多个互斥计数） → [规划规范 §9](../../standards/planning.md)
+- [2026-09-17] [pattern] 规划载体里「范围已登记」与「已交付」必须在同一句显式区分，避免后续 session 跳过实现 → [规划规范 §9](../../standards/planning.md)
+- [2026-09-17] [pattern] 「唯一差距 / 最大盲区」这类全称判断须限定作用域（跨维度并列时不加限定会自相矛盾） → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-17] [pattern] 验收标准的放宽属「范围降级」，须先取证再交用户裁定；正确姿势是回滚口径放宽 + 权威文档标注「未达标待裁定」，不得静默改写已授权条目的验收承诺 → [规划规范 §3.7](../../standards/planning.md)
+
+### 测试与浏览器验证
+
+- [2026-09-16] [pattern] 断言只覆盖一个轴会漏检另一轴：换行容器的固定高度 + `overflow: hidden` 会裁掉新增行，必须同时断言 `scrollHeight <= clientHeight + 1` 与成员 rect 落在容器 client rect 内 → [测试规范 §10](../../standards/testing.md) 与[响应式设计 §4](../responsive.md)
+- [2026-09-17] [pattern] 常驻几何用例必须守卫自己的前置条件（先构造状态再硬断言该状态成立），夹具几何留可判定余量，无判别力的用例删除 → [测试规范 §10](../../standards/testing.md)
+- [2026-09-17] [pattern] 合成探针（极窄 / 极矮视口）除前置守卫外，`setViewportSize` 之后须**重新打开**浮层（点击把触发器滚入视口，否则 popper 锚定在视口外产生假失败） → [测试规范 §10](../../standards/testing.md)
+- [2026-09-17] [pattern] 布局断言里容器的「可视区」取 client rect；`boundingBox()` 是 border box → [测试规范 §7](../../standards/testing.md)
+- [2026-09-17] [pattern] E2E project 的 mobile / tablet 须用对应设备描述符（`devices['Desktop Chrome']` 会带入桌面 UA / screen）；容器内以 root 运行才需 `--no-sandbox` → [测试规范 §7](../../standards/testing.md)
+- [2026-09-17] [pattern] 布局类 E2E 宜统一以 `reducedMotion: 'reduce'` 运行（入场动画 `scale` 会让 `boundingBox()` 读到中间尺寸），代价是默认动效路径失去常驻覆盖，须双向登记 → [测试规范 §7](../../standards/testing.md) 与 [Backlog §1.6](../../plan/backlog.md)
+- [2026-09-17] [pattern] 真实页面验证（文档站产物预览）与合成夹具互补且不可互替，数值有差时逐项归因再判是否为组件缺陷 → [测试规范 §7](../../standards/testing.md)
+- [2026-09-17] [pattern] 判别「上游行为 vs 组件缺陷」用无组件 CSS 的纯 HTML 夹具复现同构几何（Chromium 焦点滚动只在完全不相交时介入） → [测试规范 §7](../../standards/testing.md) 与[响应式设计 §4](../responsive.md)
+- [2026-09-16] [pattern] 校验机器格式化源码的守卫用严格正则 + 遇未知行抛错，且按扩展名扫目录须排除同目录 `*.test.ts` → [测试规范 §10](../../standards/testing.md)
+- [2026-09-16] [pattern] 由注册表派生的公开联合类型扩展后，d.ts 冒烟须带负向对照（`@ts-expect-error` 下未注册值应报错） → [测试规范 §10](../../standards/testing.md)
+
+### 组件实现与响应式
+
+- [2026-09-16] [pattern] 组件库响应式断点取值与目标下游既有断点变量对齐（momei 640 / 768 / 1024），更细的下游布局断点属使用方职责 → [响应式设计 §2](../responsive.md)
+- [2026-09-16] [pattern] 档位高度由 `:where()` 声明时，窄屏释放固定高度只需普通类选择器；释放后须按档位补回成员 `min-height`（减去根元素边框宽） → [响应式设计 §3 矩阵 #8](../responsive.md)
+- [2026-09-17] [pattern] 浮层「可用空间上限」要两轴都给（只补 `max-width` 会漏掉纵向越界），修法同源：`--reka-popover-content-available-{width,height}` + `overflow: auto`，并在验收视口确认几何零变化 → [响应式设计 §3 矩阵 #6](../responsive.md)
+
+### 评估、审计与协作流程
+
+- [2026-09-17] [pattern] 评估 / 审计类交付的计数必须给「命令 + 口径 + 范围 + 快照日期」，与上次口径的差异要在结论旁披露；同一集合的计数多处引用时须在定义处给可复算口径 → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-17] [pattern] 跨仓只读评估须写明目标仓 revision 与工作区脏状态（含「未触碰」声明与统计范围排除项） → [AI 协作规范 §8](../../standards/ai-collaboration.md)
+- [2026-09-17] [pattern] 批量改写脚本必须「读 → 改 → 写」分离：`open(path,'w').write(open(path).read())` 会先截断再读把文件写成空；写后须核验产物非空。**检测盲区**：空 `.md` 对 `lint-md` 与链接 / 行数检查天然放行 → [AI 协作规范 §8](../../standards/ai-collaboration.md) 与 [Backlog §1.6](../../plan/backlog.md)（守卫候选）
+
 ## 2026-09-16 阶段收口蒸馏（Phase 9）
 
 > 阶段收口（2026-09-16）：活跃 24 条全部处置，全部迁移（无删除、无保留），剩余活跃 0 条。

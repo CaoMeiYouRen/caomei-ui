@@ -31,6 +31,13 @@
 </form>
 ```
 
+## 事件
+
+- `update:modelValue`：随 `v-model` 使用，值由父级驱动。
+- `change`：**仅用户交互**（点击 / 键盘切换）时触发，载荷为切换后的布尔值；父级程序化改 `modelValue` 不触发。
+
+> PrimeVue 的 `change` 载荷是原生事件对象，本库改为直接给出布尔值；下游只做「切换后刷新」而不读取载荷时可原样迁移。
+
 ## 无障碍
 
 - 控件基于 Reka UI 渲染为 `role="switch"` 的按钮，`aria-checked` 输出 `true` / `false`，支持键盘聚焦与切换。

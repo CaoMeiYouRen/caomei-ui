@@ -14,6 +14,23 @@ const props = withDefaults(defineProps<SwitchProps>(), {
 
 const model = defineModel<boolean>({ default: false })
 
+const emit = defineEmits<{
+    /**
+     * 用户交互切换时触发（程序化改值不触发），载荷为切换后的值
+     * @en Emitted when the user toggles the switch (not on programmatic changes); payload is the new value
+     */
+    change: [value: boolean]
+}>()
+
+/**
+ * Reka 仅在实际交互时抛出 `update:modelValue`，父级程序化改值不会回抛，
+ * 因此以该事件作为「用户交互」判别点，并据此补发 `change`。
+ */
+function onModelUpdate(value: boolean): void {
+    model.value = value
+    emit('change', value)
+}
+
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 /** label 属性优先于透传的 aria-label；二者都缺省时交由 Reka 从 `label[for]` 推导 */
@@ -27,13 +44,14 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
     <SwitchRoot
         v-bind="switchAttrs"
         :id="id"
-        v-model="model"
+        :model-value="model"
         :name="name"
         :value="value"
         :disabled="disabled"
         :required="required || undefined"
         class="caomei-switch"
         :class="{'caomei-switch--disabled': disabled}"
+        @update:model-value="onModelUpdate"
     >
         <SwitchThumb class="caomei-switch__thumb" />
     </SwitchRoot>

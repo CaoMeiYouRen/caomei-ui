@@ -31,6 +31,13 @@ With `name`, the switch is submitted with a native form when inside `<form>`; `v
 </form>
 ```
 
+## Events
+
+- `update:modelValue`: used with `v-model`; the parent drives the value.
+- `change`: emitted **only on user interaction** (click / keyboard toggle) with the new boolean value; a programmatic `modelValue` change from the parent does not emit it.
+
+> PrimeVue passes the native event object as the `change` payload, whereas this library passes the boolean directly; downstream code that just refreshes on change (without reading the payload) can migrate as-is.
+
 ## Accessibility
 
 - The control is rendered by Reka UI as a button with `role="switch"`; `aria-checked` outputs `true` / `false`, with keyboard focus and toggling.

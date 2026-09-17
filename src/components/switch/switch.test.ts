@@ -167,4 +167,38 @@ describe('CaomeiSwitch', () => {
         await nextTick()
         expect(outsideForm.find('input[type="checkbox"]').exists()).toBe(false)
     })
+
+    it('用户点击切换时抛出 change 并携带新值', async () => {
+        const wrapper = mount(CaomeiSwitch, { props: { modelValue: false } })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('change')?.[0]).toEqual([true])
+    })
+
+    it('用户关闭时 change 携带 false', async () => {
+        const wrapper = mount(CaomeiSwitch, { props: { modelValue: true } })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('change')?.[0]).toEqual([false])
+    })
+
+    it('程序化改值不触发 change', async () => {
+        const wrapper = mount(CaomeiSwitch, { props: { modelValue: false } })
+
+        await wrapper.setProps({ modelValue: true })
+        await nextTick()
+
+        expect(wrapper.emitted('change')).toBeUndefined()
+        expect(getControl(wrapper).attributes('aria-checked')).toBe('true')
+    })
+
+    it('禁用时点击不触发 change', async () => {
+        const wrapper = mount(CaomeiSwitch, { props: { disabled: true } })
+
+        await getControl(wrapper).trigger('click')
+
+        expect(wrapper.emitted('change')).toBeUndefined()
+    })
 })

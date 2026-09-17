@@ -179,7 +179,7 @@
 
 | 组件 | 约定 |
 | --- | --- |
-| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置 |
+| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
 | Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
@@ -213,7 +213,7 @@
 | 选项字段映射 | `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数；值支持 `string` / `number`） |
 | 可搜索单选 | `Select filter` | 改用 `CaomeiAutoComplete`（Reka Select 无 filter primitive，面板内搜索框违反 `aria-required-children`；自由文本差异见 [Backlog](../plan/backlog.md)） |
 
-> Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` 待评估。
+> Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` → `badge`（非空字符串渲染于右上角外扩、不参与布局），`badge-severity` → `badgeTone`（`secondary` → `neutral`（默认同为中性色级）、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`info` / `contrast` 为**有损近似**，统一落 `neutral`）；`badge-class` 未实现（角标元素带 `.caomei-button__badge` 类，可直接覆盖样式）。
 >
 > SplitButton 迁移映射（已实现）：`label` → 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名**（`development.md §组件设计`），图标按钮场景改传 `label`。`icon` → `#icon` 插槽（传 `@lucide/vue` 组件，非字符串类名）；`model` → `model`（`MenuItem` 的 `label` / `icon` / `command` / `disabled` 支持，另有 `separator`；`icon` 改传组件）；`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`size` 的 `small` / `large` → `sm` / `lg`；`rounded` → `rounded`。**未实现 / 未暴露（下游零用量）**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向：**自建**（Button + DropdownMenu 组合），Reka 无 SplitButton 对应（`Splitter` 为分栏布局，语义不符）。
 >
@@ -226,6 +226,14 @@
 > Select 家族对象选项映射（已实现）：`option-label` / `option-value` → `optionLabel` / `optionValue`，字符串形态支持 `a.b` 点号路径；`optionValue` 解析结果非 `string` / `number` 的选项不渲染（Select / MultiSelect / SelectButton 一致）。
 >
 > Select 清空与自定义选项（已实现）：`show-clear` → `showClear`（清除后模型置 `null`、焦点交回触发器）；`#option` 插槽收到原始选项对象与选中态。
+>
+> Switch 迁移映射（已实现）：`change` → `change`，**载荷差异属有意**——PrimeVue 传原生事件对象，本库直接给出切换后的布尔值；且只在用户交互时触发，父级程序化改 `modelValue` 不触发（下游若只做「切换后刷新」可原样迁移）。`input-id` → `id`；`aria-label` → `label`（本库统一为不可见可访问名，`aria-labelledby` 仍可经属性透传）。**未暴露**：`true-value` / `false-value`（`v-model` 即布尔值，`value` 仅作表单提交值）、`readonly`、`input-class` / `input-style`（下游零用量）。
+>
+> ToggleButton 迁移映射（已实现）：`on-label` / `off-label` → `onLabel` / `offLabel`；`aria-label` → `label`（本库统一为不可见可访问名）。**已知差异（有意）**：PrimeVue 为两态文案内建 `Yes` / `No` 默认值、且 `hasLabel` 仅在两者都非空时成立；本库不内建任何默认文案，`onLabel` / `offLabel` 需**同时**提供才渲染，否则回退默认插槽。**未实现**：`on-icon` / `off-icon`（字符串图标名；图标用默认插槽内的 `@lucide/vue` 组件表达，不新增 `#icon` 插槽）。
+>
+> Paginator 迁移映射（已实现）：`rows` → `itemsPerPage`、`total-records` → `total`、`v-model:first`（0 基偏移）→ `v-model:page`（1 基页码）；`rows-per-page-options` → `rowsPerPageOptions`（切换时抛出 `update:itemsPerPage`，并按 PrimeVue 的偏移保持语义保留首行偏移、重新推导页码；`disabled` 一并传递到选择器）；`@page` 的分页状态改用 `update:page` / `update:itemsPerPage` 组合，需要 0 基偏移时按 `(page - 1) * itemsPerPage` 换算。**未实现（下游 1 处用量）**：`template` 与 `CurrentPageReport`——分页器不提供模板插槽与「第 x / 共 y 页」报表，迁移时在分页器旁按 `page` / `itemsPerPage` / `total` 自行渲染。
+>
+> MultiSelect 清空与自定义选项（已实现）：`show-clear` → `showClear`（清除后模型置为**空数组**、焦点交回搜索输入框）；`#option` 插槽收到原始选项对象与选中态。**与 PrimeVue 的三点差异（均属有意）**：① PrimeVue `#option` 额外提供 `index`，本库未提供（Select 的 `#option` 同此口径），仅用 `option` / `selected` 的下游写法可直接迁移；② 清除按钮为字段内的常规 flex 成员（本组件字段可多行换行，绝对定位叠加会压住标签），非 PrimeVue 的绝对定位形态，可通过 CSS 覆盖；③ 清除按钮显隐条件为 `showClear && 有选中项 && 未禁用`，不附加 PrimeVue 的「`options` 非空」与 `loading` 条件——允许选项未加载或选中值不在 `options` 内时仍可清空。
 >
 > InputNumber 迁移映射（已实现）：`use-grouping` → `useGrouping`（默认 `true`，对齐 PrimeVue）、`min-fraction-digits` / `max-fraction-digits` → `minFractionDigits` / `maxFractionDigits`（0–20 整数；`minFractionDigits` 仅补零展示，`maxFractionDigits` 同步取整模型）；`precision`（0–20 整数，超出按未提供处理）优先于 `maxFractionDigits`；`show-buttons` → `controls`。
 >

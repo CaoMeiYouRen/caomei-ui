@@ -75,8 +75,8 @@ export interface SliderProps {
      */
     required?: boolean
     /**
-     * 单滑块的可访问名，映射 aria-label
-     * @en Accessible name of a single thumb, maps to aria-label
+     * 单滑块的可访问名，映射 aria-label；优先级为「本 prop > 透传 `aria-label` > 内建文案」
+     * @en Accessible name of a single thumb, maps to aria-label; priority is "this prop > forwarded `aria-label` > the built-in text"
      */
     label?: string
     /**

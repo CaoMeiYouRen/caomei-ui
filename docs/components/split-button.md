@@ -40,7 +40,7 @@
 
 ## 无障碍
 
-- 下拉按钮带内建可访问名（「更多操作」/ "More actions"），可通过 `menuLabel` 覆盖；仅图标时该名称即其可访问名。
+- 主按钮的可访问名优先级为 `label` > 透传 `aria-label`（无内建兜底文案）；下拉按钮带内建可访问名（「更多操作」/ "More actions"），可通过 `menuLabel` 覆盖；仅图标时该名称即其可访问名。
 - 下拉按钮暴露 `aria-haspopup="menu"` 与 `aria-expanded`，菜单支持方向键导航与 Esc 关闭（由 Reka DropdownMenu 提供）。
 
 <ComponentApi name="split-button" />

@@ -33,7 +33,7 @@
 ## 无障碍
 
 - 渲染为 `role="progressbar"`，确定进度输出 `aria-valuenow` / `aria-valuemin` / `aria-valuemax`；不确定进度不输出 `aria-valuenow`。
-- 可访问名默认取当前语言的「进度」文案，可用 `label` 覆盖；`label` 优先级高于透传的 `aria-label`。
+- 可访问名优先级为 `label` > 透传 `aria-label` > 当前语言的「进度」文案。
 - 不确定进度的循环动画遵循 `prefers-reduced-motion`（降速而非移除）。
 
 ## 样式定制

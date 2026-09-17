@@ -175,12 +175,11 @@ function formatSize(bytes: number): string {
     >
         <button
             ref="dropzoneRef"
-            v-bind="buttonAttrs"
+            v-bind="{...buttonAttrs, ...(accessibleLabel ? {'aria-label': accessibleLabel} : {})}"
             type="button"
             class="caomei-file-upload__dropzone"
             :class="{'caomei-file-upload__dropzone--dragging': isDragging}"
             :disabled="disabled"
-            :aria-label="accessibleLabel"
             @click="openPicker"
             @dragenter.prevent="handleDragEnter"
             @dragover.prevent

@@ -33,7 +33,7 @@ The model accepts `#rgb` / `#rrggbb` / `#rrggbbaa`, `rgb()` / `rgba()`, `hsl()` 
 
 ## Accessibility
 
-- The trigger button carries a built-in accessible name ("Color"), overridable via `label`; `invalid` marks `aria-invalid`.
+- The trigger button's accessible name resolves as `label` > forwarded `aria-label` > the built-in "Color" text; `invalid` marks `aria-invalid`.
 - Every focusable control inside the panel (area / hue thumbs, hex input, swatch buttons) takes its **accessible name** and `aria-roledescription` from the built-in locale messages; the area thumb's `aria-valuenow` and `aria-valuetext` share one source (both derived from the model and integral), while the hue thumb's `aria-valuetext` is Reka's raw number. Swatch buttons are named by their color value and their `aria-pressed` follows the current color live.
 - Keyboard: arrow keys adjust the area / hue; Enter or blur commits the input.
 - **Known limitations**: the swatch buttons do not support arrow-key roving navigation (use Tab); the hue thumb's `aria-valuetext` remains Reka's raw number (no localization needed).

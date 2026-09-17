@@ -9,10 +9,11 @@ import {
     ToastTitle,
     ToastViewport,
 } from 'reka-ui'
-import { computed, watch, type Component } from 'vue'
+import { computed, useAttrs, watch, type Component } from 'vue'
 import { createToastStore, provideToastStore, type ToastItem, type ToastTone } from '../../composables/use-toast'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import type { ToastProviderProps } from './types'
 
 defineOptions({ name: 'CaomeiToastProvider', inheritAttrs: false })
@@ -32,8 +33,17 @@ const { toasts } = store
 provideToastStore(store)
 
 const locale = useLocale()
-const label = computed(() => props.label ?? locale.value.toast.label)
-const viewportLabel = computed(() => props.viewportLabel ?? locale.value.toast.viewport)
+const attrs = useAttrs()
+const label = computed(() => resolveLabelName(props.label, undefined, locale.value.toast.label))
+/** 视口 landmark 名优先级：显式 `viewportLabel` > 透传 `aria-label` > 语言兜底文案 */
+const viewportLabel = computed(
+    () => resolveLabelName(props.viewportLabel, attrs['aria-label'], locale.value.toast.viewport),
+)
+/** `aria-label` 已用于 landmark 命名，故不再随其余属性重复落到内层列表 */
+const viewportAttrs = computed(() => {
+    const { 'aria-label': _label, ...rest } = attrs
+    return rest
+})
 const closeLabel = computed(() => locale.value.toast.close)
 
 watch(
@@ -114,7 +124,7 @@ function onOpenChange(id: string, open: boolean): void {
             </ToastClose>
         </ToastRoot>
         <ToastViewport
-            v-bind="$attrs"
+            v-bind="viewportAttrs"
             class="caomei-toast-viewport"
             :class="viewportClass"
             :hotkey="hotkey"

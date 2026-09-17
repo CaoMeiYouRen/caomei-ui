@@ -2,6 +2,7 @@
 import { SliderRange, SliderRoot, SliderThumb, SliderTrack } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import type { SliderProps, SliderValue } from './types'
 
 defineOptions({ name: 'CaomeiSlider', inheritAttrs: false })
@@ -68,7 +69,7 @@ function resolveThumbLabel(index: number, count: number): string | undefined {
         return props.thumbLabels[index]
     }
     if (count === 1) {
-        return props.label || messages.value.thumb
+        return resolveLabelName(props.label, attrs['aria-label'], messages.value.thumb)
     }
     if (count === 2) {
         return index === 0 ? messages.value.minimum : messages.value.maximum

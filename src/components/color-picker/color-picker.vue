@@ -7,9 +7,10 @@ import {
     colorToString,
     parseColor,
 } from 'reka-ui'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useAttrs, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { toHex6 } from '../_shared/color'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import CaomeiColorPickerPanel from './color-picker-panel.vue'
 import type { ColorPickerProps } from './types'
 
@@ -31,7 +32,11 @@ const emit = defineEmits<{
 const locale = useLocale()
 const open = ref(false)
 
-const triggerLabel = computed(() => props.label || locale.value.colorPicker.label)
+const attrs = useAttrs()
+
+const triggerLabel = computed(
+    () => resolveLabelName(props.label, attrs['aria-label'], locale.value.colorPicker.label),
+)
 
 /** 归一为 `#rrggbb`（剥离 alpha）；空值或非法值回退 `defaultColor`（不写回模型） */
 function toHex(value?: string): string {

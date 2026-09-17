@@ -38,8 +38,8 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 
 ## Accessibility
 
-- The trigger is a `button` with `aria-expanded`. When there is no visible text (date / placeholder), `label` or the current locale's "Date" text is used as the accessible name.
-- Native attributes such as `class` / `style` / `id` / `data-*` / `title` land on the trigger `<button>`, which helps external layout and `<label for>` association. `aria-label` is managed via the `label` prop (not added when `label` is omitted and visible text exists), `aria-invalid` via `invalid`, and `type` is fixed to `button`.
+- The trigger is a `button` with `aria-expanded`. Its accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Date" text; when none applies (visible date text or a placeholder is present) no `aria-label` is added.
+- Native attributes such as `class` / `style` / `id` / `data-*` / `title` land on the trigger `<button>`, which helps external layout and `<label for>` association. `aria-label` comes from the `label` prop together with a forwarded `aria-label` (see above), `aria-invalid` from `invalid`, and `type` is fixed to `button`.
 - The calendar inside the panel inherits the keyboard and accessibility behavior of [Calendar](./calendar). Esc closes the panel.
 - When `invalid`, it outputs `aria-invalid="true"`.
 

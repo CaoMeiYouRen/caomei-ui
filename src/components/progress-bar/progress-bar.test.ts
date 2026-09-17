@@ -96,6 +96,20 @@ describe('CaomeiProgressBar', () => {
         expect(getRoot(wrapper).attributes('aria-label')).toBe('上传进度')
     })
 
+    it('label 优先于透传的 aria-label，缺省时透传值优先于内建文案', () => {
+        const explicit = mount(CaomeiProgressBar, {
+            props: { value: 30, label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(explicit).attributes('aria-label')).toBe('显式名')
+
+        const forwarded = mount(CaomeiProgressBar, {
+            props: { value: 30 },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getRoot(forwarded).attributes('aria-label')).toBe('透传名')
+    })
+
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸类 %s', (size) => {
         const wrapper = mount(CaomeiProgressBar, { props: { value: 30, size } })
 

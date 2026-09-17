@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Calendar as CalendarIcon } from '@lucide/vue'
 import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocale } from '../../locale'
 import { formatDate, formatTime } from '../_shared/date-format'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import CalendarPanel from '../calendar/calendar-panel.vue'
 import TimeInput from './time-input.vue'
 import type { DatePickerProps, TimeParts } from './types'
@@ -64,9 +65,18 @@ const timeParts = computed<TimeParts>(() => ({
     second: model.value?.getSeconds() ?? 0,
 }))
 
-const fallbackLabel = computed(() => props.label ?? messages.value.datePicker.label)
+const fallbackLabel = computed(() => messages.value.datePicker.label)
+const attrs = useAttrs()
+/**
+ * 触发器可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案；
+ * 已有可见文本 / 占位文本时不额外声明可访问名（避免覆盖可见文案）。
+ */
 const triggerLabel = computed(() =>
-    props.label ?? (displayText.value || props.placeholder ? undefined : fallbackLabel.value),
+    resolveLabelName(
+        props.label,
+        attrs['aria-label'],
+        displayText.value || props.placeholder ? undefined : fallbackLabel.value,
+    ),
 )
 
 const rootClass = computed(() => [

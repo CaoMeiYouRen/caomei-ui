@@ -50,8 +50,8 @@ export interface SplitButtonMenuItem {
 export interface SplitButtonProps {
     /**
      * 主按钮的不可见可访问名（映射 `aria-label`），用于图标按钮等无可见文本的场景；
-     * 主按钮的可见文本请使用默认插槽
-     * @en Invisible accessible name of the main button (maps to `aria-label`), for icon-only usage; use the default slot for the visible text
+     * 主按钮的可见文本请使用默认插槽；可访问名优先级为「本 prop > 透传 `aria-label`」（无内建兜底文案）
+     * @en Invisible accessible name of the main button (maps to `aria-label`), for icon-only usage; use the default slot for the visible text. Priority is "this prop > forwarded `aria-label`" (no built-in fallback)
      */
     label?: string
     /**

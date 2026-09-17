@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { computed, defineComponent, h, ref } from 'vue'
-import { labelAttrs, useLabelAttrs } from './use-label-attrs'
+import { labelAttrs, resolveLabelName, useLabelAttrs } from './use-label-attrs'
 
 const Host = defineComponent({
     name: 'LabelAttrsHost',
@@ -66,6 +66,29 @@ describe('labelAttrs', () => {
 
     it.each([undefined, null, ''])('缺省或空串（%s）时不输出任何属性', (value) => {
         expect(labelAttrs(value)).toEqual({})
+    })
+})
+
+describe('resolveLabelName', () => {
+    it('显式 label 优先于透传值与兜底文案', () => {
+        expect(resolveLabelName('显式名', '透传名', '兜底名')).toBe('显式名')
+    })
+
+    it('label 缺省或为空串时取透传值', () => {
+        expect(resolveLabelName(undefined, '透传名', '兜底名')).toBe('透传名')
+        expect(resolveLabelName('', '透传名', '兜底名')).toBe('透传名')
+    })
+
+    it('均缺省时回退兜底文案，且不返回空串', () => {
+        expect(resolveLabelName(undefined, undefined, '兜底名')).toBe('兜底名')
+        expect(resolveLabelName('', '', '兜底名')).toBe('兜底名')
+        expect(resolveLabelName(undefined, undefined, '')).toBeUndefined()
+        expect(resolveLabelName(undefined, undefined, undefined)).toBeUndefined()
+    })
+
+    it('非字符串透传值（如对象 / 数组）按缺省处理', () => {
+        expect(resolveLabelName(undefined, { a: 1 }, '兜底名')).toBe('兜底名')
+        expect(resolveLabelName(undefined, 42, '兜底名')).toBe('兜底名')
     })
 })
 

@@ -33,7 +33,7 @@
 
 ## 无障碍
 
-- 触发按钮带内建可访问名（「颜色」），可通过 `label` 覆盖；`invalid` 时标注 `aria-invalid`。
+- 触发按钮可访问名优先级为 `label` > 透传 `aria-label` > 内建「颜色」文案；`invalid` 时标注 `aria-invalid`。
 - 面板内可聚焦控件（区域 / 色相 thumb、十六进制输入框、色板按钮）的**可访问名**与 `aria-roledescription` 均走内建 locale 文案；区域 thumb 的 `aria-valuenow` 与 `aria-valuetext` 同源（均由模型派生，为整数），色相 thumb 的 `aria-valuetext` 为 Reka 生成的裸数值；色板按钮以色值作为名称、`aria-pressed` 随当前颜色实时同步。
 - 键盘操作：区域 / 色相用方向键调整；输入框回车或失焦提交。
 - **已知限制**：色板按钮不支持方向键 roving 导航（用 Tab 遍历）；色相 thumb 的 `aria-valuetext` 仍为 Reka 生成的裸数值（无本地化需求）。

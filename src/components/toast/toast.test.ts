@@ -114,6 +114,16 @@ describe('CaomeiToastProvider', () => {
         )
     })
 
+    it('视口可访问名：viewportLabel > 透传 aria-label > 内建文案', async () => {
+        await mountProvider({ 'aria-label': '透传名' })
+        expect(document.querySelector('[role="region"]')?.getAttribute('aria-label')).toBe('透传名')
+
+        await mountProvider({ viewportLabel: '站内通知', 'aria-label': '透传名' })
+        expect(
+            document.querySelectorAll('[role="region"]')[1]?.getAttribute('aria-label'),
+        ).toBe('站内通知')
+    })
+
     it('视口与关闭按钮默认可访问名取内建文案', async () => {
         await mountProvider()
 

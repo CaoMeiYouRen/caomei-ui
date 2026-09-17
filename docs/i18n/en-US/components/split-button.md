@@ -40,7 +40,7 @@ The menu side is controlled by `menuSide` (default `bottom`) and `menuAlign` (de
 
 ## Accessibility
 
-- The menu button carries a built-in accessible name ("More actions"), overridable via `menuLabel`; when icon-only, that name is its accessible name.
+- The main button's accessible name resolves as `label` > forwarded `aria-label` (there is no built-in fallback text); the menu button's built-in accessible name ("More actions") is overridable via `menuLabel`.
 - The menu button exposes `aria-haspopup="menu"` and `aria-expanded`, and the menu supports arrow-key navigation and Esc to close (provided by Reka DropdownMenu).
 
 <ComponentApi name="split-button" />

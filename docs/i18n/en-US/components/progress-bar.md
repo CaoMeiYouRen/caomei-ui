@@ -33,7 +33,7 @@ Switch the height with `size`; supports `sm` / `md` / `lg`.
 ## Accessibility
 
 - It renders as `role="progressbar"`; a determinate progress outputs `aria-valuenow` / `aria-valuemin` / `aria-valuemax`, while an indeterminate progress outputs no `aria-valuenow`.
-- The accessible name defaults to the current locale's "Progress" text, overridable via `label`; `label` takes precedence over a forwarded `aria-label`.
+- The accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Progress" text.
 - The indeterminate looping animation respects `prefers-reduced-motion` (slows down rather than removing it).
 
 ## Style customization

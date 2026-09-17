@@ -52,7 +52,7 @@ With `name`, the slider is submitted with a native form when inside `<form>`. Re
 ## Accessibility
 
 - Each thumb renders as a focusable element with `role="slider"`, outputting `aria-valuenow` / `aria-valuemin` / `aria-valuemax` and `aria-orientation`.
-- Accessible names: use `label` for a single thumb and `thumb-labels` for a range; both fall back to the built-in text.
+- Accessible names: use `label` for a single thumb and `thumb-labels` for a range; the priority is `thumb-labels` / `label` > forwarded `aria-label` (single thumb only) > the built-in text.
 - Keyboard support: arrow keys / `PageUp` / `PageDown` adjust the value (`Shift` or the page keys accelerate), and `Home` / `End` jump to the minimum / maximum.
 - When `disabled`, the thumb is not focusable and `aria-disabled` is set.
 - The descriptive attributes `aria-describedby` / `aria-labelledby` are forwarded to every thumb.

@@ -69,6 +69,21 @@ describe('CaomeiSplitButton', () => {
         expect(mainButton(wrapper).text()).toBe('')
     })
 
+    it('主按钮可访问名：label 优先于透传 aria-label，缺省时取透传值', () => {
+        const explicit = mount(CaomeiSplitButton, {
+            props: { label: '保存' },
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(mainButton(explicit).attributes('aria-label')).toBe('保存')
+
+        const forwarded = mount(CaomeiSplitButton, {
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(mainButton(forwarded).attributes('aria-label')).toBe('透传名')
+    })
+
     it('渲染 icon 插槽到主按钮', () => {
         const wrapper = mountSplit({}, { icon: '<svg data-test="icon" />' })
 

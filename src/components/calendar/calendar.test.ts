@@ -10,6 +10,37 @@ function mountCalendar(props: Record<string, unknown> = {}) {
 }
 
 describe('CaomeiCalendar', () => {
+    it('label 覆盖面板可访问名，且优先于透传的 aria-label', () => {
+        const custom = mountCalendar({ label: '预约日历' })
+        expect(custom.get('.caomei-calendar').attributes('aria-label')).toBe('预约日历')
+        custom.unmount()
+
+        const explicit = mount(CaomeiCalendar, {
+            props: { label: '预约日历' },
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(explicit.get('.caomei-calendar').attributes('aria-label')).toBe('预约日历')
+        explicit.unmount()
+
+        const forwarded = mount(CaomeiCalendar, {
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(forwarded.get('.caomei-calendar').attributes('aria-label')).toBe('透传名')
+        forwarded.unmount()
+    })
+
+    it('未显式提供可访问名时保留日历的月份上下文', () => {
+        const wrapper = mountCalendar({ modelValue: new Date(2026, 8, 15) })
+        const name = wrapper.get('.caomei-calendar').attributes('aria-label') ?? ''
+
+        expect(name.startsWith('日历')).toBe(true)
+        expect(name).not.toBe('日历')
+
+        wrapper.unmount()
+    })
+
     it('渲染当前月份网格与星期表头', () => {
         const wrapper = mountCalendar({ modelValue: new Date(2026, 8, 15) })
 

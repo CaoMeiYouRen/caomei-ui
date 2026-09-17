@@ -50,8 +50,8 @@ export interface FieldIdentityProps {
      */
     id?: string
     /**
-     * 无可见标签时的可访问名，映射 aria-label
-     * @en Accessible name when there is no visible label, maps to aria-label
+     * 无可见标签时的可访问名，映射 aria-label；优先级高于透传的 aria-label，缺省或空串时透传值生效
+     * @en Accessible name when there is no visible label, maps to aria-label; takes precedence over a forwarded aria-label, which applies when this is missing or empty
      */
     label?: string
 }

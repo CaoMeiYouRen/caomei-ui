@@ -82,8 +82,8 @@ export interface CalendarProps {
      */
     initialFocus?: boolean
     /**
-     * 日历容器的可访问名；默认取当前语言的「日历」
-     * @en Accessible name of the calendar; defaults to the current locale's "Calendar" text
+     * 日历容器的可访问名；优先级为「本 prop > 透传 `aria-label` > 当前语言的「日历」」
+     * @en Accessible name of the calendar; priority is "this prop > forwarded `aria-label` > the current locale's \"Calendar\" text"
      */
     label?: string
 }

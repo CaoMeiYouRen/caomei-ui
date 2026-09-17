@@ -40,6 +40,20 @@ describe('CaomeiSlider', () => {
         expect(getThumbs(wrapper)[0].attributes('aria-label')).toBe('音量')
     })
 
+    it('label 优先于透传的 aria-label，缺省时透传值优先于内建文案', () => {
+        const explicit = mount(CaomeiSlider, {
+            props: { modelValue: 20, label: '音量' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getThumbs(explicit)[0].attributes('aria-label')).toBe('音量')
+
+        const forwarded = mount(CaomeiSlider, {
+            props: { modelValue: 20 },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(getThumbs(forwarded)[0].attributes('aria-label')).toBe('透传名')
+    })
+
     it('受控时方向键按步进更新 v-model', async () => {
         const wrapper = mount(CaomeiSlider, { props: controlledProps(20) })
 

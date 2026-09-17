@@ -405,4 +405,21 @@ describe('CaomeiDatePicker', () => {
 
         wrapper.unmount()
     })
+
+    it('label 优先于透传的 aria-label，缺省时透传值优先于内建文案', () => {
+        const explicit = mount(CaomeiDatePicker, {
+            props: { label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(explicit.get('.caomei-date-picker').attributes('aria-label')).toBe('显式名')
+        explicit.unmount()
+
+        const forwarded = mount(CaomeiDatePicker, {
+            attrs: { 'aria-label': '透传名' },
+            attachTo: document.body,
+        })
+        expect(forwarded.get('.caomei-date-picker').attributes('aria-label')).toBe('透传名')
+        forwarded.unmount()
+    })
 })

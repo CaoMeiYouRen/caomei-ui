@@ -31,6 +31,6 @@ Two-way bind with `v-model`; the value is `null` when nothing is selected.
 
 - Keyboard accessible: arrow keys move between dates, Enter / Space selects.
 - The previous / next buttons take their accessible names from the current locale ("Previous month" / "Next month"), switchable via locale injection.
-- The calendar container's accessible name comes from `label` or the current locale's "Calendar" text.
+- The calendar container's accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Calendar" text; when no explicit name is given, Reka's synthesized month context is kept (`Calendar, <month>`).
 
 <ComponentApi name="calendar" />

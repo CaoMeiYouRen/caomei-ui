@@ -2,6 +2,7 @@
 import { StepperRoot } from 'reka-ui'
 import { computed, useAttrs, useTemplateRef } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import type { StepperExposed, StepperProps } from './types'
 
 defineOptions({ name: 'CaomeiStepper', inheritAttrs: false })
@@ -16,9 +17,9 @@ const model = defineModel<number>()
 const attrs = useAttrs()
 const locale = useLocale()
 
-/** 使用方透传的 aria-label 优先于 props，再回退到当前语言的内建文案 */
+/** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
 const ariaLabel = computed(
-    () => (attrs['aria-label'] as string | undefined) ?? props.label ?? locale.value.stepper.label,
+    () => resolveLabelName(props.label, attrs['aria-label'], locale.value.stepper.label),
 )
 
 const stepperRef = useTemplateRef<StepperExposed>('stepperRef')

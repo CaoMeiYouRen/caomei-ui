@@ -38,8 +38,8 @@
 
 ## 无障碍
 
-- 触发器为 `button`，带 `aria-expanded` 表达展开状态；无可见文本（日期 / 占位符）时使用 `label` 或当前语言的「日期」作为可访问名。
-- `class` / `style` / `id` / `data-*` / `title` 等原生属性落在触发器 `<button>` 上，便于外部布局与 `<label for>` 关联；`aria-label` 由 `label` prop 管理（未传 `label` 且有可见文本时不附加），`aria-invalid` 由 `invalid` 管理，`type` 固定为 `button`。
+- 触发器为 `button`，带 `aria-expanded` 表达展开状态；可访问名优先级为 `label` > 透传 `aria-label` > 当前语言的「日期」，三者都不可用时（已有可见日期文本或占位符）不附加 `aria-label`。
+- `class` / `style` / `id` / `data-*` / `title` 等原生属性落在触发器 `<button>` 上，便于外部布局与 `<label for>` 关联；`aria-label` 由 `label` prop 与透传 `aria-label` 共同决定（见上一条），`aria-invalid` 由 `invalid` 管理，`type` 固定为 `button`。
 - 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
 - `invalid` 时输出 `aria-invalid="true"`。
 

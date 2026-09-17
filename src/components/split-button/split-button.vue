@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ChevronDown } from '@lucide/vue'
 import { DropdownMenuTrigger } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import { resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiButton } from '../button'
 // 两按钮的拼接（去内侧边框宽度 + 相邻圆角）复用 ButtonGroup，避免重复实现同一套规则
 import { CaomeiButtonGroup } from '../button-group'
@@ -37,7 +38,10 @@ defineSlots<{
 }>()
 
 const locale = useLocale()
+const attrs = useAttrs()
 const menuLabel = computed(() => props.menuLabel || locale.value.splitButton.menu)
+/** 主按钮可访问名优先级：显式 `label` > 透传 `aria-label`（无语言兜底文案） */
+const mainLabel = computed(() => resolveLabelName(props.label, attrs['aria-label'], undefined))
 const items = computed(() => props.model ?? [])
 
 function onSelect(item: SplitButtonMenuItem, event: Event): void {
@@ -58,7 +62,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
             :rounded="rounded"
             :disabled="disabled"
             :loading="loading"
-            :label="label"
+            :label="mainLabel"
             @click="emit('click', $event)"
         >
             <template v-if="$slots.default">

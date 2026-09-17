@@ -62,6 +62,14 @@ describe('CaomeiColorPicker', () => {
         expect(trigger(wrapper).attributes('aria-label')).toBe('主题色')
     })
 
+    it('label 优先于透传的 aria-label，缺省时透传值优先于内建文案', () => {
+        const explicit = mountPicker({ label: '显式名' }, { attrs: { 'aria-label': '透传名' } })
+        expect(trigger(explicit).attributes('aria-label')).toBe('显式名')
+
+        const forwarded = mountPicker({}, { attrs: { 'aria-label': '透传名' } })
+        expect(trigger(forwarded).attributes('aria-label')).toBe('透传名')
+    })
+
     it('触发按钮使用注入 locale 的文案', () => {
         const wrapper = mountPicker({}, {
             global: { provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) } },

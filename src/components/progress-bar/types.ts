@@ -17,8 +17,8 @@ export interface ProgressBarProps {
      */
     size?: ComponentSize
     /**
-     * 可访问名；默认取当前语言的「进度」文案
-     * @en Accessible name; defaults to the current locale's "Progress" text
+     * 可访问名；优先级为「本 prop > 透传 `aria-label` > 当前语言的「进度」文案」
+     * @en Accessible name; priority is "this prop > forwarded `aria-label` > the current locale's \"Progress\" text"
      */
     label?: string
 }

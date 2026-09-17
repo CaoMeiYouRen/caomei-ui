@@ -118,7 +118,7 @@ toast.clear()
 
 ## 无障碍与 SSR
 
-- 视口为 `role="region"` 的可访问区域，支持 `F8` 聚焦；`label` / `viewportLabel` 取自当前语言，可通过 props 覆盖。
+- 视口为 `role="region"` 的可访问区域，支持 `F8` 聚焦；视口可访问名优先级为 `viewportLabel` > 透传 `aria-label` > 当前语言文案；每条提示的 `label` 与关闭按钮文案取自当前语言，可通过 props 覆盖。
 - `foreground`（默认）提示以 `assertive` 播报，`background` 以 `polite` 播报。
 - Provider 的提示队列与自增序列随实例创建，不在模块级共享，因此 SSR 下不会跨请求泄漏状态；未入队时视口无可见内容。
 

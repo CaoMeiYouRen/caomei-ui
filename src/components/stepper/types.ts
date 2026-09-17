@@ -37,8 +37,8 @@ export interface StepperProps {
      */
     dir?: StepperDirection
     /**
-     * 步骤条的可访问名（映射 aria-label）；默认取当前语言的「步骤」
-     * @en Accessible name of the stepper (maps to aria-label); defaults to the current locale's "Steps" text
+     * 步骤条的可访问名（映射 aria-label）；优先级为「本 prop > 透传 `aria-label` > 当前语言的「步骤」」
+     * @en Accessible name of the stepper (maps to aria-label); priority is "this prop > forwarded `aria-label` > the current locale's \"Steps\" text"
      */
     label?: string
 }

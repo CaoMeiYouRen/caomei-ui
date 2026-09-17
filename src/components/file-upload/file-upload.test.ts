@@ -241,4 +241,13 @@ describe('CaomeiFileUpload', () => {
         })
         expect(withCustom.get('.caomei-file-upload__dropzone').attributes('aria-label')).toBe('上传附件')
     })
+
+    it('自定义提示内容且未提供 label 时保留透传的 aria-label', () => {
+        const forwarded = mount(CaomeiFileUpload, {
+            attrs: { 'aria-label': '透传名' },
+            slots: { default: () => h('span', '图标提示') },
+            attachTo: document.body,
+        })
+        expect(forwarded.get('.caomei-file-upload__dropzone').attributes('aria-label')).toBe('透传名')
+    })
 })

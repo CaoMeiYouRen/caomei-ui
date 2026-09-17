@@ -13,7 +13,7 @@ import {
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
-import { useLabelAttrs } from '../_shared/use-label-attrs'
+import { useLabelAttrs, resolveLabelName } from '../_shared/use-label-attrs'
 import type { PaginatorProps } from './types'
 
 defineOptions({ name: 'CaomeiPaginator', inheritAttrs: false })
@@ -29,13 +29,8 @@ const page = defineModel<number>('page', { default: 1 })
 
 const locale = useLocale()
 const attrs = useAttrs()
-/**
- * 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言默认文案。
- * 空串按「无意见」处理（`??` 不跳过空串），此时 `labelAttrs` 不输出属性、透传值由基座保留。
- */
-const label = computed(
-    () => props.label ?? (attrs['aria-label'] as string | undefined) ?? locale.value.pagination.label,
-)
+/** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
+const label = computed(() => resolveLabelName(props.label, attrs['aria-label'], locale.value.pagination.label))
 const forwardedAttrs = useLabelAttrs(() => label.value)
 const firstLabel = computed(() => props.firstLabel ?? locale.value.pagination.first)
 const previousLabel = computed(() => props.previousLabel ?? locale.value.pagination.previous)

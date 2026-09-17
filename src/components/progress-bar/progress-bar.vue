@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { useLabelAttrs } from '../_shared/use-label-attrs'
+import { resolveLabelName, useLabelAttrs } from '../_shared/use-label-attrs'
 import type { ProgressBarProps } from './types'
 
 defineOptions({ name: 'CaomeiProgressBar', inheritAttrs: false })
@@ -14,7 +14,9 @@ const props = withDefaults(defineProps<ProgressBarProps>(), {
 })
 
 const locale = useLocale()
-const label = computed(() => props.label ?? locale.value.progress.bar)
+const attrs = useAttrs()
+/** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
+const label = computed(() => resolveLabelName(props.label, attrs['aria-label'], locale.value.progress.bar))
 
 /** 非正 / 非有限的 max 归一为默认值，避免 Reka 告警 */
 const normalizedMax = computed(() => (Number.isFinite(props.max) && props.max > 0 ? props.max : 100))

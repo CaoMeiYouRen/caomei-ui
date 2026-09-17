@@ -235,6 +235,16 @@ describe('CaomeiStepper', () => {
         expect(custom.get('.caomei-stepper').attributes('aria-label')).toBe('安装进度')
     })
 
+    it('label 优先于透传的 aria-label', () => {
+        const wrapper = mount(CaomeiStepper, {
+            props: { label: '安装进度' },
+            attrs: { 'aria-label': '透传名' },
+            slots: createSlots(),
+        })
+
+        expect(wrapper.get('.caomei-stepper').attributes('aria-label')).toBe('安装进度')
+    })
+
     it('aria-label 使用注入 locale 的文案，透传 aria-label 仍优先', () => {
         const translated = mount(CaomeiStepper, {
             slots: createSlots(),

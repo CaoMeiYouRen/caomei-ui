@@ -52,7 +52,7 @@
 ## 无障碍
 
 - 每个滑块渲染为 `role="slider"` 的可聚焦元素，输出 `aria-valuenow` / `aria-valuemin` / `aria-valuemax` 与 `aria-orientation`。
-- 可访问名：单滑块用 `label`，范围滑块用 `thumb-labels`；缺省回退到内建文案。
+- 可访问名：单滑块用 `label`，范围滑块用 `thumb-labels`；优先级为 `thumb-labels` / `label` > 透传 `aria-label`（仅单滑块）> 内建文案。
 - 键盘支持：方向键 / `PageUp` / `PageDown` 调整数值（`Shift` 或翻页键加速），`Home` / `End` 跳到最小值 / 最大值。
 - `disabled` 时滑块不可聚焦，并设置 `aria-disabled`。
 - 描述性属性 `aria-describedby` / `aria-labelledby` 会透传到每个滑块。

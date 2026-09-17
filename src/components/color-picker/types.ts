@@ -52,8 +52,8 @@ export interface ColorPickerProps {
      */
     invalid?: boolean
     /**
-     * 触发按钮的不可见可访问名；默认取内建文案「颜色」
-     * @en Invisible accessible name of the trigger button; defaults to the built-in "Color" text
+     * 触发按钮的不可见可访问名；优先级为「本 prop > 透传 `aria-label` > 内建文案「颜色」」
+     * @en Invisible accessible name of the trigger button; priority is "this prop > forwarded `aria-label` > the built-in \"Color\" text"
      */
     label?: string
 }

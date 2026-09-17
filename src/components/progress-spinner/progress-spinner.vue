@@ -2,7 +2,7 @@
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { useLabelAttrs } from '../_shared/use-label-attrs'
+import { useLabelAttrs, resolveLabelName } from '../_shared/use-label-attrs'
 import type { ProgressSpinnerProps } from './types'
 
 defineOptions({ name: 'CaomeiProgressSpinner', inheritAttrs: false })
@@ -13,12 +13,9 @@ const props = withDefaults(defineProps<ProgressSpinnerProps>(), {
 
 const locale = useLocale()
 const attrs = useAttrs()
-/**
- * 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言默认文案。
- * 空串按「无意见」处理（`??` 不跳过空串），此时 `labelAttrs` 不输出属性、透传值由基座保留。
- */
+/** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
 const label = computed(
-    () => props.label ?? (attrs['aria-label'] as string | undefined) ?? locale.value.progress.loading,
+    () => resolveLabelName(props.label, attrs['aria-label'], locale.value.progress.loading),
 )
 
 const forwardedAttrs = useLabelAttrs(() => label.value)

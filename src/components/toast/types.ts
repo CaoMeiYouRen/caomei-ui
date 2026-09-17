@@ -25,8 +25,8 @@ export interface ToastProviderProps {
      */
     label?: string
     /**
-     * 视口 landmark 标签，支持 `{hotkey}` 占位符
-     * @en Viewport landmark label; supports the `{hotkey}` placeholder
+     * 视口 landmark 标签，支持 `{hotkey}` 占位符；优先级为「本 prop > 透传 `aria-label` > 当前语言文案」
+     * @en Viewport landmark label; supports the `{hotkey}` placeholder. Priority is "this prop > forwarded `aria-label` > the current locale text"
      */
     viewportLabel?: string
     /**

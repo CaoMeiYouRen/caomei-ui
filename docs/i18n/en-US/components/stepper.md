@@ -65,7 +65,7 @@ Besides the root component API below, each part of the compound component has on
 
 ## Accessibility
 
-- The root renders `role="group"`, and Reka provides `aria-current` and step-state semantics; the accessible name defaults to the localized "Steps" text (`label` overrides it).
+- The root renders `role="group"`, and Reka provides `aria-current` and step-state semantics; the accessible name resolves as `label` > forwarded `aria-label` > the localized "Steps" text.
 - Triggers render as `button` and support `Enter` / Space; in `linear` mode, non-reachable triggers carry `disabled` and `data-disabled`.
 - The focus ring uses `:focus-visible` and respects `prefers-reduced-motion`.
 

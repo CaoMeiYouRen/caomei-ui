@@ -118,7 +118,7 @@ Toast styles are based on CSS variables and kept low-specificity for easy overri
 
 ## Accessibility and SSR
 
-- The viewport is a `role="region"` accessible area and supports `F8` to focus; `label` / `viewportLabel` come from the current locale and can be overridden via props.
+- The viewport is a `role="region"` accessible area and supports `F8` to focus; its accessible name resolves as `viewportLabel` > forwarded `aria-label` > the current locale text. Each toast's `label` and the close button's text come from the current locale and can be overridden via props.
 - `foreground` toasts (default) are announced as `assertive`; `background` toasts as `polite`.
 - The Provider's toast queue and auto-increment sequence are created per instance and not shared at module level, so no state leaks across requests during SSR; the viewport has no visible content until a toast is enqueued.
 

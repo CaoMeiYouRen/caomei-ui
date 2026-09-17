@@ -33,7 +33,7 @@ Two-way bind the file list (`File[]`) with `v-model`; add files by clicking the 
 
 ## Accessibility
 
-- The select area is a native `<button>`, focusable and activatable via keyboard; the built-in prompt text carries its own accessible name, so use `label` for the accessible name (mapped to `aria-label`) only when the default slot is replaced with content that has no visible text (such as an icon only).
+- The select area is a native `<button>`, focusable and activatable via keyboard; the built-in prompt text carries its own accessible name, so use `label` for the accessible name (mapped to `aria-label`) only when the default slot is replaced with content that has no visible text (such as an icon only). When `label` is omitted, a forwarded `aria-label` is preserved.
 - The file input is visually hidden with `tabindex="-1"` / `aria-hidden="true"` to avoid duplicate focus and redundant announcements.
 - The remove button provides an accessible name that combines a removal prefix with the file name; the prefix is currently hard-coded and not localized.
 

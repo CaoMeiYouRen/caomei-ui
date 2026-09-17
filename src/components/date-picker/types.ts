@@ -112,8 +112,8 @@ export interface DatePickerProps {
      */
     preventDeselect?: boolean
     /**
-     * 触发器的可访问名；默认取当前语言的「日期」，有可见文本（日期 / 占位符）时无需设置
-     * @en Accessible name of the trigger; defaults to the current locale's "Date" text. Not needed when visible text (date / placeholder) is present
+     * 触发器的可访问名；优先级为「本 prop > 透传 `aria-label` > 当前语言的「日期」」，有可见文本（日期 / 占位符）且前两者都缺省时不附加
+     * @en Accessible name of the trigger; priority is "this prop > forwarded `aria-label` > the current locale's \"Date\" text", and none is added when visible text (date / placeholder) is present and neither applies
      */
     label?: string
     /**

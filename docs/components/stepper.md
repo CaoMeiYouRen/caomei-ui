@@ -65,7 +65,7 @@
 
 ## 无障碍
 
-- 根元素渲染 `role="group"`，由 Reka 提供 `aria-current` 与步骤状态语义；可访问名默认取本地化「步骤」文案（`label` 可覆盖）。
+- 根元素渲染 `role="group"`，由 Reka 提供 `aria-current` 与步骤状态语义；可访问名优先级为 `label` > 透传 `aria-label` > 本地化「步骤」文案。
 - 触发器渲染为 `button`，支持 `Enter` / 空格激活；`linear` 模式下不可跳步的触发器带 `disabled` 与 `data-disabled`。
 - 焦点环使用 `:focus-visible`，并遵循 `prefers-reduced-motion`。
 

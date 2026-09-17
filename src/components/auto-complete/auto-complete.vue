@@ -615,7 +615,7 @@ watch(normalizedOptions, () => {
 
 .caomei-auto-complete__item[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-auto-complete__indicator {

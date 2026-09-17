@@ -55,7 +55,7 @@ withDefaults(defineProps<StepperTriggerProps>(), {
 
 .caomei-stepper__trigger[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {

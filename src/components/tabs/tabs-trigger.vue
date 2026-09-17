@@ -61,7 +61,7 @@ withDefaults(defineProps<TabTriggerProps>(), {
 
 .caomei-tabs__trigger[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 :where(.caomei-tabs--vertical) .caomei-tabs__trigger {

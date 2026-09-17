@@ -180,7 +180,7 @@ function resolvePageLabel(value: number): string {
 
 .caomei-paginator__control:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-paginator__ellipsis {

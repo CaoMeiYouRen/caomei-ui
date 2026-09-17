@@ -103,7 +103,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 .caomei-toolbar__button:disabled,
 .caomei-toolbar__button[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-toolbar__button[data-state='on'] {

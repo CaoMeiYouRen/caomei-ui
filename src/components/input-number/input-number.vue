@@ -354,7 +354,7 @@ defineExpose({ focus, blur, inputRef })
 
 .caomei-input-number__button:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-input-number__button:hover:not(:disabled) {

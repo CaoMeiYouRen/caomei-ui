@@ -83,7 +83,7 @@ withDefaults(defineProps<AccordionItemProps>(), {
 
 .caomei-accordion__trigger[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-accordion__title {

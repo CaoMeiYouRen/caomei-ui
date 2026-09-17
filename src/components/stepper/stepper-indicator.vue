@@ -59,6 +59,6 @@ defineSlots<{
 }
 
 .caomei-stepper__item[data-disabled] .caomei-stepper__indicator {
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 </style>

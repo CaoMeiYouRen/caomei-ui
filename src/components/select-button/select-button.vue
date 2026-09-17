@@ -214,7 +214,7 @@ function handleUpdate(value: unknown): void {
 
 .caomei-select-button__item[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 :where(.caomei-select-button--sm) {

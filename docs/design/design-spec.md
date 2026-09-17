@@ -86,7 +86,7 @@
 | `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 模态类浮层阴影（Dialog / ConfirmDialog / Drawer / ColorPicker） |
 | `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩（Dialog / ConfirmDialog / Drawer） |
 | `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | 骨架屏 `wave` 扫光高光 |
-| `--caomei-disabled-opacity` | `0.6` | 禁用态整体不透明度（原 18 处字面量已收敛）；另有 19 处禁用态仍使用 `0.5` 字面量（根控件 `toggle-button` 与多个子部件并存），是否归并见[长期任务台账](../plan/recurring.md) |
+| `--caomei-disabled-opacity` | `0.6` | 禁用态整体不透明度（37 处禁用态——根控件 / 子部件 / 条目——已全部收敛，组件内无字面量残留） |
 
 - 组件层覆盖钩子 `--caomei-card-shadow` / `--caomei-card-shadow-hover` / `--caomei-slider-thumb-shadow` 保留，默认回退到上表档位（`sm` / `md` / `xs`）。
 - 阴影档位独立于控件尺寸阶梯（§2.3 的 `control-height-*` 等）：`xs` 专供滑块拇指等微元素，不随控件尺寸缩放。
@@ -193,7 +193,7 @@
 | DataView | 内容区不设内边距与背景（条目排版由插槽内容决定）；`layout` 只切换根修饰类与 `list` / `grid` 插槽，网格列定义交给使用方内容层；空态 / 加载态文案居中、取 `text-muted`（加载态取 `primary`） |
 | Textarea | 自动增高时高度由内容决定、默认不出现滚动条；`rows` 为初始最小高度，`resize` 固定 `none` |
 | Password | 根为 `.caomei-password` 包裹层（单根），`class` / `style` 留在根元素；强度计量条高度 4px、圆角 `radius-full`；弱 / 中 / 强取 `danger` / `warning` / `success`；未聚焦且无值时强度区域不占布局 |
-| 所有组件 | 焦点态可见；禁用态不改变布局尺寸；禁用态不透明度经 `--caomei-disabled-opacity` 单点定义（另有 19 处 `0.5` 档禁用态，根控件与子部件并存，待台账裁决后归并）；`cursor: not-allowed` 与禁用背景按需逐组件声明、未 token 化 |
+| 所有组件 | 焦点态可见；禁用态不改变布局尺寸；禁用态不透明度统一为 `--caomei-disabled-opacity`（37 处，含根控件 / 子部件 / 条目，无字面量残留）；`cursor: not-allowed` 与禁用背景按需逐组件声明、未 token 化 |
 
 ## 7. 迁移映射规范（PrimeVue → caomei-ui）
 

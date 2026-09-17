@@ -126,7 +126,7 @@ const nextLabel = computed(() => locale.value.calendar.next)
 
 .caomei-calendar__nav:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-calendar__grid {
@@ -185,7 +185,7 @@ const nextLabel = computed(() => locale.value.calendar.next)
 .caomei-calendar__day[data-disabled] {
     color: var(--caomei-color-text-muted);
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-calendar__day[data-unavailable] {

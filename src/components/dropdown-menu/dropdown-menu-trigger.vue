@@ -50,7 +50,7 @@ withDefaults(defineProps<DropdownMenuTriggerProps>(), {
 
 .caomei-dropdown-menu__trigger[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {

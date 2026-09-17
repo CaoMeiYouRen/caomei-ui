@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<PopoverTriggerProps>(), {
 
 .caomei-popover__trigger:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {

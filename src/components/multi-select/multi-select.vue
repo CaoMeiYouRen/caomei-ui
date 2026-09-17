@@ -378,7 +378,7 @@ function onAnchorClick(event: MouseEvent): void {
 
 .caomei-multi-select__item[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-multi-select__indicator {

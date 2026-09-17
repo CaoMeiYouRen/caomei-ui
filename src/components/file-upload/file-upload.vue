@@ -364,7 +364,7 @@ function formatSize(bytes: number): string {
 
 .caomei-file-upload__remove:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -73,7 +73,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 
 .caomei-toggle-button[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 :where(.caomei-toggle-button--sm) {

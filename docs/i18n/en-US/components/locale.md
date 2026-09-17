@@ -48,7 +48,7 @@ import {
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `dataView` | `empty` | DataView |
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
-| `dialog` | `close` | Dialog |
+| `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |

@@ -2,7 +2,9 @@
 
 本文档定义 caomei-ui 的**断点语义**、**窄屏行为矩阵**与**验收标准**，并登记分批适配清单。断点的实现约束见[开发规范 §7](../standards/development.md)；与主题 / 浮层稳定性相关的约定见[主题与样式 §5](./theming.md)。
 
-> **现状快照（2026-09-16）**：`src/` 内共 33 处 `@media` —— 28 处 `prefers-reduced-motion`、3 处 `prefers-color-scheme`（暗色）、**仅 2 处宽度类**（`src/components/dialog/dialog.vue:202`、`src/components/confirm-dialog/confirm-dialog.vue:187`，均为 `@media (width <= 640px)`）。库内无 `breakpoint` / `responsive` props，亦无基于视口宽度的 `matchMedia` 监听（`src/composables/use-theme.ts` 的 `matchMedia` 用于暗色模式，与视口宽度无关）。
+> **现状快照（2026-09-16）**：`src/` 内共 33 处 `@media` —— 28 处 `prefers-reduced-motion`、3 处 `prefers-color-scheme`（暗色）、**仅 2 处宽度类**（`src/components/dialog/dialog.vue:202`、`src/components/confirm-dialog/confirm-dialog.vue:187`，均为 `@media (width <= 640px)`；行号以快照日期为准）。库内无 `breakpoint` / `responsive` props，亦无基于视口宽度的 `matchMedia` 监听（`src/composables/use-theme.ts` 的 `matchMedia` 用于暗色模式，与视口宽度无关）。
+>
+> **2026-09-18 更新**：新增 `Dialog.breakpoints`（使用方传入视口上限 → 生成媒体查询），仍**无 JS 视口分支**、无 `matchMedia` 视口监听；见 §2 使用方断点数据与 §3 矩阵 #17。
 
 ## 1. 目标与边界
 
@@ -23,7 +25,7 @@
 - 步骤条方向选择（横向步骤条在窄屏需纵向排布时，由使用方改 `orientation="vertical"`）；
 - 页面语言下的文案长度控制。
 
-**非目标**：移动端独立包；触摸手势（左滑返回 / 下拉刷新）；基于 JS 的视口分支与 `breakpoint` props；容器查询（Container Queries）；`DataTable` 卡片化；触摸目标尺寸（a11y 独立议题，见 §5）。
+**非目标**：移动端独立包；触摸手势（左滑返回 / 下拉刷新）；基于 JS 的视口分支与通用 `breakpoint` props（**例外**：`Dialog.breakpoints` 为下游迁移对齐项，按使用方传入的视口上限生成媒体查询，不使用 `matchMedia` / 视口监听，见 §2 与 §3 #17）；容器查询（Container Queries）；`DataTable` 卡片化；触摸目标尺寸（a11y 独立议题，见 §5）。
 
 ## 2. 断点语义
 
@@ -35,6 +37,7 @@
 
 - **方向**：桌面优先。收敛统一用 `@media (width <= <断点>)`；同一组件内不得用 `min-width` 表达同一条件。确需在更宽视口切换增强形态时，须在该组件内注释说明理由。
 - **字面量白名单**：宽度查询只允许 `640` / `768` / `1024`。`@media` 不支持 CSS 自定义属性，故不使用 token（同[设计规范 §2.3](./design-spec.md)）。该白名单在[开发规范 §7](../standards/development.md) 与[设计规范 §2.3](./design-spec.md) 中作为实现约束复述，三处取值须一致，变更时同步。
+- **使用方断点数据**：`Dialog.breakpoints` 的键由使用方传入（属使用方数据、非库内静态规则），不受上条字面量白名单约束；库建议取 640 / 768 / 1024，迁移期实测用量为 `1199px` / `575px`，均按 `width <=` 语义处理。命中多个断点时以最窄档为准（与键顺序无关）。
 - **与下游对齐**：三个值与下游 momei 的断点变量一致（`styles/_variables.scss` 的 `$breakpoint-sm/md/lg` = 640 / 768 / 1024）。momei 另有 960 / 1200 / 1280 等布局断点，属使用方页面布局职责，库不跟进。
 - **降级原则**：窄屏只收敛形态，不隐藏功能。信息可被截断（省略号）或被收纳进滚动容器，但不得出现「桌面可见、窄屏消失且无替代路径」的功能。
 
@@ -60,6 +63,7 @@
 | 14 | 表单控件宽度 | Input 家族 / Slider / InputNumber | `width: 100%`，上限由使用方容器决定 | 同左 | 默认 `max-width` token | 已实现（`input.vue:122`、`slider.vue:140`、`input-number.vue:258`） |
 | 15 | 单元素展示 | Card / Tag / Badge / Message / Skeleton / Image / Avatar | 随容器自适应 | 同左 | 同左 | 无风险（`image.vue:149`、`message.vue:104` 为 `width: 100%`；`card.vue:135` 宽度随容器；`tag.vue:73`、`avatar.vue:91`、`badge.vue:81` 为随内容 / 定尺寸元素；`skeleton.vue:78` 宽度默认 `100%`） |
 | 16 | 触摸目标 | Checkbox / RadioButton / Switch、`control-height-sm` | 维持现状（不做 ≥44px 提升，决策见 §5） | — | — | 维持（`checkbox.vue:129` 18px、`radio-button.vue:85` 18px、`switch.vue:52` 40px、`theme.css:43` 控件高度 28px） |
+| 17 | 浮层断点宽度 | Dialog（`breakpoints`） | 使用方传入的视口上限 → 面板宽度；命中多个取最窄档 | 同左 | 未传时按 `size` 档位宽度 | 已实现（`dialog.vue` 按实例属性选择器注入媒体查询 + `breakpoints.ts` 解析 / 生成；键须 px、值须安全长度，非法条目忽略；未使用 `!important`、无视图口监听） |
 
 ## 4. 验收标准
 

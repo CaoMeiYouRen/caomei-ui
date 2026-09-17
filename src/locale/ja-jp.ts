@@ -56,6 +56,7 @@ const jaJP: CaomeiLocaleMessages = {
         open: '選択肢を表示',
         remove: '削除',
         empty: '一致する選択肢がありません',
+        clear: 'クリア',
     },
     pagination: {
         label: 'ページネーション',
@@ -64,6 +65,7 @@ const jaJP: CaomeiLocaleMessages = {
         next: '次のページ',
         last: '最後のページ',
         page: '{page} ページ',
+        rowsPerPage: '1 ページあたりの件数',
     },
     password: {
         show: 'パスワードを表示',

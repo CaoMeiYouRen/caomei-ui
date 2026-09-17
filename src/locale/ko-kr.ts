@@ -56,6 +56,7 @@ const koKR: CaomeiLocaleMessages = {
         open: '옵션 표시',
         remove: '제거',
         empty: '일치하는 옵션이 없습니다',
+        clear: '지우기',
     },
     pagination: {
         label: '페이지네이션',
@@ -64,6 +65,7 @@ const koKR: CaomeiLocaleMessages = {
         next: '다음 페이지',
         last: '마지막 페이지',
         page: '{page} 페이지',
+        rowsPerPage: '페이지당 항목 수',
     },
     password: {
         show: '비밀번호 표시',

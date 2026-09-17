@@ -56,6 +56,7 @@ const zhCN: CaomeiLocaleMessages = {
         open: '展开选项',
         remove: '移除',
         empty: '无匹配选项',
+        clear: '清除',
     },
     pagination: {
         label: '分页',
@@ -64,6 +65,7 @@ const zhCN: CaomeiLocaleMessages = {
         next: '下一页',
         last: '末页',
         page: '第 {page} 页',
+        rowsPerPage: '每页条数',
     },
     password: {
         show: '显示密码',

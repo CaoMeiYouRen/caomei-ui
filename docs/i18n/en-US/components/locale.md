@@ -52,8 +52,8 @@ import {
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |
 | `message` | `close` | Message |
-| `multiSelect` | `open` `remove` `empty` | MultiSelect |
-| `pagination` | `label` `first` `previous` `next` `last` `page` | Paginator |
+| `multiSelect` | `open` `remove` `empty` `clear` | MultiSelect |
+| `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
 | `select` | `clear` | Select |

@@ -56,6 +56,7 @@ const enUS: CaomeiLocaleMessages = {
         open: 'Show options',
         remove: 'Remove',
         empty: 'No matching options',
+        clear: 'Clear',
     },
     pagination: {
         label: 'Pagination',
@@ -64,6 +65,7 @@ const enUS: CaomeiLocaleMessages = {
         next: 'Next page',
         last: 'Last page',
         page: 'Page {page}',
+        rowsPerPage: 'Rows per page',
     },
     password: {
         show: 'Show password',

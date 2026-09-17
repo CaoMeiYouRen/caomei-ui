@@ -62,6 +62,7 @@ export interface CaomeiLocaleMessages {
         open: string
         remove: string
         empty: string
+        clear: string
     }
     pagination: {
         label: string
@@ -70,6 +71,7 @@ export interface CaomeiLocaleMessages {
         next: string
         last: string
         page: string
+        rowsPerPage: string
     }
     password: {
         show: string

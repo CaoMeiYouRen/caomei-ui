@@ -56,6 +56,7 @@ const zhTW: CaomeiLocaleMessages = {
         open: '展開選項',
         remove: '移除',
         empty: '沒有符合的選項',
+        clear: '清除',
     },
     pagination: {
         label: '分頁',
@@ -64,6 +65,7 @@ const zhTW: CaomeiLocaleMessages = {
         next: '下一頁',
         last: '末頁',
         page: '第 {page} 頁',
+        rowsPerPage: '每頁筆數',
     },
     password: {
         show: '顯示密碼',

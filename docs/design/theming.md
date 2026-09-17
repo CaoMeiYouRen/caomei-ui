@@ -94,19 +94,25 @@
 - `--caomei-input-number-max-width`（默认 `12rem`）
 - `--caomei-select-max-width`（默认 `20rem`）
 
-需要撑满所在列时，将该 token 覆盖为 `none`（作用于字段外层 `.caomei-select__field` 或其祖先）：
+`MultiSelect` / `AutoComplete` / `DatePicker` 的上限不各自声明默认值，按回退链取 `--caomei-select-max-width`，可用 `--caomei-multi-select-max-width` / `--caomei-auto-complete-max-width` / `--caomei-date-picker-max-width` 单独覆盖。
+
+需要撑满所在列时，把对应 token 覆盖为 `none`：`Select` 的上限由字段外层 `.caomei-select__field` 承载，需覆盖在该元素或其祖先上；`MultiSelect` / `AutoComplete` / `DatePicker` 直接读取组件根元素上的 token，覆盖在组件元素或其祖先上即可。
 
 ```css
 .caomei-select__field {
   --caomei-select-max-width: none;
 }
+
+.caomei-date-picker {
+  --caomei-date-picker-max-width: none;
+}
 ```
 
-> 选择器的宽度上限由字段外层 `.caomei-select__field` 承载（其内为触发器与清除按钮两个兄弟节点），该 token 需覆盖在字段外层或其祖先上，直接写在 `.caomei-select`（触发器）上不会生效；字段外层的 scoped 规则直接声明了 `max-width`，用普通类覆盖 `max-width` 属性会因特异性不足而失效，请改用 token。
+> `Select` 的宽度上限由字段外层 `.caomei-select__field` 承载（其内为触发器与清除按钮两个兄弟节点），直接写在 `.caomei-select`（触发器）上不会生效。上述 scoped 规则都以「组件类 + scope 属性」声明 `max-width`，故用单类选择器覆盖 `max-width` 属性会因特异性不足而失效，请改用 token。
 
 文本类控件（`Input` / `Textarea`）默认不设上限，如需限制宽度，在使用层通过容器或 `max-width` 控制即可。
 
-> 该默认 `max-width` 会改变既有页面中数值输入框与选择器的宽度；如需保持全宽，请将对应 token 覆盖为 `none`。
+> 这些默认 `max-width` 会改变既有页面中数值输入框 / 选择器 / 日期选择器的宽度；如需保持全宽，请将对应 token 覆盖为 `none`。
 
 ## 5. 响应式
 

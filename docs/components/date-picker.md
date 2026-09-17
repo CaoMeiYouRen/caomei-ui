@@ -32,6 +32,7 @@
 ## 状态与行为
 
 - `disabled` / `readonly` / `invalid` / `size` 与 Input 家族一致。
+- 宽度：默认 `width: 100%`，并由 `--caomei-date-picker-max-width` 设可覆盖的 `max-width`（未覆盖时回退 `--caomei-select-max-width`，默认 `20rem`；见[主题与样式设计 §4.1](../design/theming.md)）。需要撑满所在列时在同一元素或其祖先上把该变量覆盖为 `none`。
 - `minValue` / `maxValue` 限制可选日期；`closeOnSelect`（默认 `true`）控制选中后是否收起。
 - 展开状态支持 `v-model:open` 受控；`showIcon` 控制是否显示日历图标。
 - `locale` 控制日历与日期的语言，默认取组件库默认语言（`zh-CN`）；它与注入的内建文案语言相互独立，需要一致时请显式传入。
@@ -43,6 +44,18 @@
 - 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
 - `invalid` 时输出 `aria-invalid="true"`。
 
-> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid` 默认全宽，迁移时删除。范围选择（`selection-mode`）未实现：momei 零用量，经用户决策延后，见 [Backlog](../plan/backlog.md) §1.1。
+> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid`（撑满容器宽度）迁移时删除，需要真正全宽时把 `--caomei-date-picker-max-width` 覆盖为 `none`（本组件默认带 `20rem` 上限）。范围选择（`selection-mode`）未实现：momei 零用量，经用户决策延后，见 [Backlog](../plan/backlog.md) §1.1。
+
+## 样式定制
+
+| 变量 | 默认 | 说明 |
+|------|------|------|
+| `--caomei-date-picker-max-width` | `--caomei-select-max-width` | 触发器最大宽度 |
+
+```css
+.caomei-date-picker {
+    --caomei-date-picker-max-width: none;
+}
+```
 
 <ComponentApi name="date-picker" />

@@ -69,7 +69,7 @@
 | 6 | Dialog `title` 必填、窄屏不转全屏 | 35 处 `header` → `title`；窄屏形态按 Phase 10 决策核对 | `header` 残留计数 = 0；窄屏未出现全屏形态 | 评估记录 §4#6；[响应式设计](../responsive.md) |
 | 7 | Message 无 `text` 变体 | 确认无 `variant="text"` 用法 | `variant="text"` 用量 = 0 | 评估记录 §4#7 |
 | 8 | Tag 无 `outlined` / `severity` / `value` 别名 | 125 处 `severity` → `tone`；`secondary` / `contrast` / `info` 逐处确认近似映射 | `severity` 残留计数 = 0；近似映射逐处有记录 | 评估记录 §4#8；设计规范 §7 |
-| 9 | Select / MultiSelect `fluid` 需删除 | 删除 `fluid`（本库默认全宽） | `fluid` 残留计数 = 0 | 评估记录 §4#9；设计规范 §7 |
+| 9 | Select / MultiSelect `fluid` 需删除 | 删除 `fluid`（本库默认 `width: 100%`，并另有可覆盖的宽度上限）。同类项：`DatePicker` 默认带 `20rem` 宽度上限（momei `fluid` 用量 2 处 / 2 文件，快照 `cb663aee` 只读统计），删除 `fluid` 后需真正全宽时覆盖 `--caomei-date-picker-max-width: none`，见[设计规范 §7](../design-spec.md) | `fluid` 残留计数 = 0；宽度结果另按设计规范 §7 的 token 口径核对 | 评估记录 §4#9；设计规范 §7 |
 | 10 | Password `feedback` 默认 `false` | 8 处显式传参保留；其余按字段场景决定是否显式传 `true` | 强度反馈形态与迁移前一致，或差异逐处有记录 | 评估记录 §4#10；设计规范 §7 |
 | 11 | InputNumber `useGrouping` 默认 `true` | 确认千分位展示形态 | 展示形态变化逐处有记录 | 评估记录 §4#11；设计规范 §7 |
 | 12 | ColorPicker `format` 语义差异（hex 带 `#`、rgb / hsb 为字符串、无 alpha） | 2 处逐处核对模型形态与适配代码 | 模型形态符合本库口径，或适配代码已移除 | 评估记录 §4#12；设计规范 §7 |

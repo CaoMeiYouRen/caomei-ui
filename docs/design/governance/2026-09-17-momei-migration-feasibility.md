@@ -67,7 +67,7 @@ Top 10 热点：Button 356、InputText 178、Column 153、Tag 127、Select 73、
 | Button `severity` / `text` / `outlined` / `rounded` / `icon` | 192 / 164 / 35 / 103 / 253 | `tone` + `variant` / `variant="ghost"` / `variant="outline"` / `rounded` / `#icon` 插槽 | 机械改写（`severity` 语义映射需确认） |
 | Tag `severity` | 125 | `tone`（`secondary` / `contrast` / `info` 为有损近似） | 机械改写 + 语义确认 |
 | Message `severity` / `variant` | 51 / 14 | `tone` / `variant`（`simple` 已交付；`text` 一方取证不存在） | 机械改写 |
-| Select `fluid` / `filter` / `option-label` / `option-value` / `showClear` | 37 / **2** / 66 / 66 / 0 | `fluid` 需**删除**（默认全宽）；`filter` 映射到 `CaomeiAutoComplete`（用户已决策方案 A）；对象选项映射已交付 | 2 处需改组件（其余机械） |
+| Select `fluid` / `filter` / `option-label` / `option-value` / `showClear` | 37 / **2** / 66 / 66 / 0 | `fluid` 需**删除**（本库默认 `width: 100%`）；`filter` 映射到 `CaomeiAutoComplete`（用户已决策方案 A）；对象选项映射已交付。同类计数：`DatePicker` `fluid` 2 处 / 2 文件（见 §4 #9） | 2 处需改组件（其余机械） |
 | Dialog `v-model:visible` / `header` / `breakpoints` / `modal` | 28 / 35 / 2 / 36 | `v-model:open` / `title`（必填）/ 未实现 / `modal` | 机械 + 2 处需方案 |
 | DataTable `lazy` / `selection-mode` / Column `selection-mode` / `frozen` | 13 / 0 / 2 / 1 | 已交付（`lazy` / `selectionMode` / `frozen`）；列级 `selection-mode` 与 `align-frozen` 经用户决策（2026-09-17）**收敛为迁移映射、不新增 API**（`align-frozen` → `frozen: 'left' \| 'right'`；列级 `selection-mode` → 表格级 `selectionMode`，选择列固定首列） | 全部已覆盖 |
 | Paginator `v-model:first` / `template` / 每页条数 | 3 / 1 / 0 | `v-model:page`（模型不同）/ 未实现 | 3 处需改写 |
@@ -130,7 +130,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | 6 | Dialog `title` 必填、窄屏不转全屏 | 35 处 `header` → `title`；窄屏形态**已由用户决策**（Phase 10 M2：「Dialog 转全屏不作为默认行为」，见 [待办事项](../../plan/todo.md)），迁移按现决策执行 |
 | 7 | Message 无 `text` 变体（PrimeVue 亦无，属台账误记） | 无影响 |
 | 8 | Tag 不提供 `outlined` / `severity` / `value` 别名 | 125 处 `severity` → `tone`（语义映射需确认 `secondary` / `contrast` / `info`） |
-| 9 | Select / MultiSelect `fluid` 需删除 | 37 + 5 处 |
+| 9 | Select / MultiSelect `fluid` 需删除 | 37 + 5 处；**同类 `DatePicker` `fluid` 2 处 / 2 文件**（快照 `cb663aee` 只读统计，命令见表下注），`DatePicker` 默认带 `20rem` 宽度上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width: none` |
 | 10 | Password `feedback` 默认 `false` | 32 处；8 处显式传 `feedback` → 建议迁移时显式声明 |
 | 11 | InputNumber `useGrouping` 默认 `true` | 39 处；需确认展示形态变化（千分位） |
 | 12 | ColorPicker `format` 语义差异（hex 带 `#`、rgb/hsb 为字符串、无 alpha） | 2 处，需逐处核对 |
@@ -138,6 +138,8 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | 14 | DataTable 首次点击排序为升序（`sortDescFirst: false`） | 20 文件，需确认与 PrimeVue 默认一致 |
 | 15 | Panel 由 Card 承接 | 3 处需改写 |
 | 16 | 触摸目标维持现状（< 44px） | 管理端为主，影响有限 |
+
+> 第 9 行的 `DatePicker` 计数复现命令（在 momei 仓库根、快照 `cb663aee`、只读执行）：处数 `rg -U -o '<DatePicker\b' --glob '*.vue' | wc -l` = 6；文件数 `rg -U -l '<DatePicker\b' --glob '*.vue' | wc -l` = 4；带 `fluid` 的文件 `rg -U -l '<DatePicker[^>]*\bfluid\b' --glob '*.vue'` = 2，且这两个文件各含 1 个 `DatePicker` 标签，故「2 处 / 2 文件」。
 
 ## 5. 风险与反面验证
 

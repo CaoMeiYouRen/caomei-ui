@@ -52,7 +52,7 @@
 | 间距 | `--caomei-space-1` ~ `-4` | 4 / 8 / 12 / 16 px | 组件内边距与间隙 |
 | 字号 | `--caomei-font-size-sm` / `-md` / `-lg` | 12 / 14 / 16 px | 控件文本与标题 |
 | 圆角 | `--caomei-radius-sm` / `-md` / `-lg` / `-full` | 4 / 8 / 12 / 999 px | 控件 / 容器 / 浮层 / 胶囊 |
-| 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限 |
+| 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限；`MultiSelect` / `AutoComplete` / `DatePicker` 未声明默认值，按回退链取 `--caomei-select-max-width`（见[主题与样式设计 §4.1](./theming.md)） |
 
 消费统计（`src/` 内引用次数）：radius sm 22 / md 20 / lg 3 / full 1；control-height sm 11 / md 14 / lg 9；font-size sm 18 / md 39 / lg 15；space-1 ~ 4 分别 41 / 46 / 24 / 23。
 
@@ -182,7 +182,7 @@
 | Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
-| Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认全宽；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
+| Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
 | ColorPicker | 触发器为 `control-height-md` 方形按钮、圆角 `radius-md`；面板圆角 `radius-lg`、宽度 260px、阴影 `shadow-lg`；色块圆角 `radius-sm`、色板 22px 按钮（选中态用 `primary` 描边 + `aria-pressed`）、滑条取 `radius-full` |
 | Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号 `font-size-sm` |
@@ -209,7 +209,7 @@
 | 受控字段 | `v-model:visible` / `v-model:value` | `v-model:open` / `v-model` |
 | 浮层标题 | `header` | `title` |
 | 校验态 | `class="p-invalid"` | `:invalid` |
-| 全宽 | `fluid` | 默认全宽（迁移时删除；例外：`SplitButton` 未实现 `fluid`，按内容宽度） |
+| 全宽 | `fluid` | 默认 `width: 100%`（迁移时删除；例外：`SplitButton` 未实现 `fluid`，按内容宽度）。选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`）另带 `20rem` 宽度上限，需要真正全宽时把对应上限 token 覆盖为 `none`（`DatePicker` 为 `--caomei-date-picker-max-width`；见[主题与样式设计 §4.1](./theming.md)） |
 | 选项字段映射 | `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数；值支持 `string` / `number`） |
 | 可搜索单选 | `Select filter` | 改用 `CaomeiAutoComplete`（Reka Select 无 filter primitive，面板内搜索框违反 `aria-required-children`；自由文本差异见 [Backlog](../plan/backlog.md)） |
 
@@ -237,7 +237,7 @@
 >
 > Password 迁移映射（已实现）：`feedback` → `feedback`（**默认值分歧且为有意**：PrimeVue 默认 `true`，此处默认 `false`。momei 32 处 `<Password>` 仅 8 处显式传 `feedback`，其余 24 处大多为外部服务凭据（密钥 / Token）字段、强度条无实际意义；其中安装向导的 `admin_password` 为用户自设密码，迁移后建议显式传 `:feedback="true"`；默认关闭可避免这些字段凭空多出区块。迁移后这 24 处将失去原先由 PrimeVue 默认开启的强度浮层，属有意行为变更而非回归）。显式开启后显示内联强度计量条与文案，聚焦或有值时可见，空值未聚焦仅保留读屏器 live region；`prompt-label` / `weak-label` / `medium-label` / `strong-label` → `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel`（默认取内建 locale `password.prompt` / `weak` / `medium` / `strong`）；`toggle-mask` → 内建切换按钮（无需 prop）；`medium-regex` / `strong-regex` 未实现（下游无用量，强度规则固定）。
 
-> Calendar / DatePicker 迁移映射（已实现，基础日期选择）：`min-value` / `max-value` → `minValue` / `maxValue`；`date-format` → `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期）；`show-icon` → `showIcon`（`icon-display="input"` 即本组件默认形态）；`fluid` 默认全宽，迁移时删除。对外 `v-model` 沿用 PrimeVue 的原生 `Date` 语义；Reka primitive 使用 `@internationalized/date` 的 `DateValue`，转换收敛在 `_shared/date`（新增该运行时依赖）。时间选择已实现：`show-time` → `showTime`、`hour-format` → `hourFormat`、`show-seconds` → `showSeconds`（面板底部自建时间输入，含时间时选中日期不自动收起；因 Reka `TimeField` 的日序判定仅识别英文、非英文 12 小时制会误判，未直接封装该 primitive）；**范围选择未实现**（`selection-mode`，momei 零用量，经用户决策 2026-09-15 移入 [Backlog](../plan/backlog.md)）。**已知行为差异**：PrimeVue `DatePicker` 是可键入的 input，本组件为「触发按钮 + 面板」，不支持手工键入日期（迁移时需确认下游无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立（本库 i18n 机制未暴露 locale tag），需一致时显式传入。
+> Calendar / DatePicker 迁移映射（已实现，基础日期选择）：`min-value` / `max-value` → `minValue` / `maxValue`；`date-format` → `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期）；`show-icon` → `showIcon`（`icon-display="input"` 即本组件默认形态）；`fluid`（撑满容器宽度）迁移时删除，需要真正全宽时把 `--caomei-date-picker-max-width` 覆盖为 `none`（本组件默认带 `20rem` 上限）。对外 `v-model` 沿用 PrimeVue 的原生 `Date` 语义；Reka primitive 使用 `@internationalized/date` 的 `DateValue`，转换收敛在 `_shared/date`（新增该运行时依赖）。时间选择已实现：`show-time` → `showTime`、`hour-format` → `hourFormat`、`show-seconds` → `showSeconds`（面板底部自建时间输入，含时间时选中日期不自动收起；因 Reka `TimeField` 的日序判定仅识别英文、非英文 12 小时制会误判，未直接封装该 primitive）；**范围选择未实现**（`selection-mode`，momei 零用量，经用户决策 2026-09-15 移入 [Backlog](../plan/backlog.md)）。**已知行为差异**：PrimeVue `DatePicker` 是可键入的 input，本组件为「触发按钮 + 面板」，不支持手工键入日期（迁移时需确认下游无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立（本库 i18n 机制未暴露 locale tag），需一致时显式传入。
 
 > Drawer 迁移映射（已实现）：`visible` → `v-model:open`；`header` → `title`（或 `#header` 插槽，插槽替换标题区域、关闭按钮保留）；`position` → `position`（四向；**默认值对齐 PrimeVue 的 `left`**）；`dismissable` → `closeOnOverlay`；`showCloseIcon` → `closable`；`closeOnEscape` → `closeOnEsc`；`modal` → `modal`。**已知差异**：PrimeVue `blockScroll` 默认 `false`（`modal` 仅加遮罩、不锁滚动），本库 `modal="true"` 同时锁定页面滚动（更严格）；`position="full"` 未实现（momei 零用量，全屏场景可用 `modal="false"` + `style` 铺满）；层级固定为遮罩 1000 / 面板 1001、关闭按钮形态固定；`size` 为本库新增档位（PrimeVue 无此 prop，宽度经 `style` 传入，内联样式优先于档位）。**未暴露项（下游零用量）**：生命周期事件 `show` / `before-hide` / `hide` / `after-show` / `after-hide`，插槽 `#closebutton` / `#closeicon` / `#container`，prop `baseZIndex` / `autoZIndex` / `closeButtonProps` / `closeIcon`。实现取向：封装 **Reka UI 稳定的 Dialog primitive** + 四向定位 CSS，而非 Reka `Drawer`（Alpha，Vaul 形态）——后者不负责面板定位（仅输出 `data-swipe-direction` 与滑动 CSS 变量），定位仍需消费方自绘，却额外引入滑动 / 吸附 / 嵌套抽屉状态与 Alpha API 漂移风险；下游仅需侧边面板、无滑动手势用量。
 

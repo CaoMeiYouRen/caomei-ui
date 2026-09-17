@@ -182,6 +182,11 @@ function onTimeUpdate(value: TimeParts): void {
 </template>
 
 <style scoped>
+/*
+  宽度上限：与选择器家族（Select / MultiSelect / AutoComplete）同源，默认回退 `--caomei-select-max-width`
+  （20rem），避免在宽容器中把触发按钮拉到过长；需要撑满所在列时在同一元素或其祖先上把
+  `--caomei-date-picker-max-width` 覆盖为 `none`。上限声明在触发器自身（本组件无字段包装层）。
+*/
 .caomei-date-picker {
     box-sizing: border-box;
     display: inline-flex;
@@ -189,6 +194,7 @@ function onTimeUpdate(value: TimeParts): void {
     justify-content: space-between;
     gap: var(--caomei-space-2);
     width: 100%;
+    max-width: var(--caomei-date-picker-max-width, var(--caomei-select-max-width));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);

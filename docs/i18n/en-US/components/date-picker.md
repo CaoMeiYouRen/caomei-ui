@@ -32,6 +32,7 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 ## States and behavior
 
 - `disabled` / `readonly` / `invalid` / `size` behave as in the Input family.
+- Width: `width: 100%` by default, with an overridable `max-width` from `--caomei-date-picker-max-width` (falling back to `--caomei-select-max-width`, default `20rem`; see [Theming and styles §4.1](/design/theming), Chinese). To fill its column, set that variable to `none` on the element or an ancestor.
 - `minValue` / `maxValue` constrain selectable dates; `closeOnSelect` (default `true`) controls whether the panel closes after a pick.
 - The open state supports `v-model:open`; `showIcon` toggles the calendar icon.
 - `locale` controls the calendar and date language, defaulting to the library's default locale (`zh-CN`). It is independent of the injected built-in text locale; pass it explicitly when the two must match.
@@ -43,6 +44,18 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 - The calendar inside the panel inherits the keyboard and accessibility behavior of [Calendar](./calendar). Esc closes the panel.
 - When `invalid`, it outputs `aria-invalid="true"`.
 
-> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` is full width by default, so drop it when migrating. Range selection (`selection-mode`) is not implemented: it has no downstream usage and was deferred by user decision; see the [backlog](/plan/backlog) (Chinese).
+> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` (fill the container width) is dropped when migrating, and true full width is obtained by setting `--caomei-date-picker-max-width` to `none` (the default cap is `20rem`). Range selection (`selection-mode`) is not implemented: it has no downstream usage and was deferred by user decision; see the [backlog](/plan/backlog) (Chinese).
+
+## Style customization
+
+| Variable | Default | Description |
+|------|------|------|
+| `--caomei-date-picker-max-width` | `--caomei-select-max-width` | Maximum trigger width |
+
+```css
+.caomei-date-picker {
+    --caomei-date-picker-max-width: none;
+}
+```
 
 <ComponentApi name="date-picker" />

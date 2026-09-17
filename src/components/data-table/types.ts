@@ -73,6 +73,24 @@ export interface DataTableColumn<T> {
     bodyStyle?: CSSProperties
 }
 
+/**
+ * `#cell-{key}` 插槽作用域；插槽优先于列定义的 `cell` 函数
+ * @en `#cell-{key}` slot scope; takes precedence over the column's `cell` function
+ */
+export interface DataTableCellSlotProps<T> extends DataTableCellContext<T> {
+    /** 当前列定义 */
+    column: DataTableColumn<T>
+}
+
+/**
+ * `#header-{key}` 插槽作用域；渲染在排序列的排序按钮内部，保留排序交互
+ * @en `#header-{key}` slot scope; rendered inside the sort button for sortable columns, keeping sort interaction
+ */
+export interface DataTableHeaderSlotProps<T> {
+    /** 当前列定义 */
+    column: DataTableColumn<T>
+}
+
 export interface DataTableProps<T> {
     /**
      * 行数据

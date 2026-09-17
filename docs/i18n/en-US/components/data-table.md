@@ -20,7 +20,7 @@ Common `DataTableColumn` fields:
 | `key` | `string` | Unique column id, also the default value field |
 | `header` | `string` | Header text; falls back to `key` |
 | `accessor` | `string \| (row) => unknown` | Value field name (dot-path nesting supported) or function |
-| `cell` | `(context) => VNodeChild` | Custom cell content; `context` contains `row` / `value` / `index` |
+| `cell` | `(context) => VNodeChild` | Custom cell content; `context` contains `row` / `value` / `index`; overridden by a same-named column slot when present |
 | `width` | `string` | Column width, e.g. `120px` / `20%` |
 | `align` | `'left' \| 'center' \| 'right'` | Horizontal alignment, defaults to `left` |
 | `sortable` | `boolean` | Whether the column is sortable (header renders a sort button) |
@@ -33,6 +33,37 @@ Common `DataTableColumn` fields:
     vue="../examples/data-table/custom-cell.vue"
     ssg="true"
 />
+
+## Column slots
+
+Besides the `cell` function in a column definition, you can customize cells and headers with **scoped slots named after the column key**; slots take precedence over `cell`, and columns without a slot keep their previous behavior.
+
+| Slot | Scope | Description |
+|------|-------|-------------|
+| `#cell-{key}` | `{ row, value, index, column }` | Cell content of that column |
+| `#header-{key}` | `{ column }` | Header content of that column; for sortable columns it renders inside the sort button, keeping sort interaction |
+
+<demo
+    vue="../examples/data-table/column-slots.vue"
+    ssg="true"
+/>
+
+> `{key}` is the column's `key` (e.g. `key: 'status'` maps to `#cell-status`); `column` is the full column definition, useful for rendering per column config. Slot names are matched as plain strings and are **not key-checked** — a mistyped `key` does not error, it silently falls back to the default value.
+>
+> `index` in the scope is the **source-data row index** (same as the `cell` function context) and does not follow the displayed order after sorting; if you need a display row number, compute it from the current render order instead of using `index` directly.
+>
+> For sortable columns the `#header-{key}` slot renders inside the sort `<button>`, so **avoid placing buttons or links** in it (nested interactive controls break keyboard semantics).
+
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+|----------|----------------|
+| `<Column field="x" :header="…">` | An entry in the `columns` array: `{ key: 'x', header: … }` (`key` also serves as the default value field) |
+| `<template #body="{ data }">` / `#body="slotProps"` | `<template #cell-{key}="{ row, value, index }">` (`data` maps to `row`; `slotProps.data` likewise) |
+| Column-level `<template #header>` | `<template #header-{key}="{ column }">` |
+| Table-level `<template #header>` / `#footer` | No table-level header / footer slot; use `caption` for the title and place the action area outside the table container |
+| `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'` (one field expresses both frozen state and docking side) |
+| `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
 
 ## Sorting
 
@@ -100,7 +131,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions, sorting, row selection, pagination, frozen columns and loading state are all supported.
+- Currently column definitions and column slots, sorting, row selection, pagination, frozen columns and loading state are all supported.
 
 ## Accessibility
 

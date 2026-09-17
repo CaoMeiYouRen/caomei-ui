@@ -1,12 +1,12 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
-import { computed, ref, toRaw, watch, type CSSProperties, type VNodeChild } from 'vue'
+import { computed, ref, toRaw, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTablePageEvent, DataTableProps, DataTableSortEvent } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableSortEvent } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -34,9 +34,21 @@ const emit = defineEmits<{
     page: [event: DataTablePageEvent]
 }>()
 
+// 插槽声明仅供类型推导；存在性判断在模板渲染期进行，以反映父组件对插槽的增删
 defineSlots<{
     empty?: () => unknown
+    /** 单元格插槽，按列 key 命名（`#cell-{key}`）；优先于列定义的 `cell` 函数 */
+    [name: `cell-${string}`]: (props: DataTableCellSlotProps<T>) => unknown
+    /** 表头插槽，按列 key 命名（`#header-{key}`）；渲染在排序按钮内部 */
+    [name: `header-${string}`]: (props: DataTableHeaderSlotProps<T>) => unknown
 }>()
+
+const slots = useSlots()
+
+/** 判断某个列是否提供了指定类型的插槽 */
+function hasColumnSlot(kind: 'cell' | 'header', key: string): boolean {
+    return Boolean((slots as Record<string, unknown>)[`${kind}-${key}`])
+}
 
 const locale = useLocale()
 const emptyText = computed(() => props.emptyText ?? locale.value.table.empty)
@@ -353,6 +365,11 @@ function headerTitle(key: string): string {
     return columnMap.value.get(key)?.header ?? key
 }
 
+/** 取列定义；调用点均来自 `props.columns` 派生的表头 / 单元格，缺省分支仅用于类型收窄 */
+function columnDef(key: string): DataTableColumn<T> {
+    return columnMap.value.get(key) ?? { key }
+}
+
 const bodyColspan = computed(() => Math.max(props.columns.length + (props.selectionMode ? 1 : 0), 1))
 
 const allRowsSelected = computed(() => table.getIsAllRowsSelected())
@@ -487,7 +504,12 @@ function goToPage(page: number): void {
                             class="caomei-data-table__sort"
                             @click="toggleSort(header.column.id)"
                         >
-                            <span>{{ headerTitle(header.column.id) }}</span>
+                            <slot
+                                v-if="hasColumnSlot('header', header.column.id)"
+                                :name="`header-${header.column.id}`"
+                                :column="columnDef(header.column.id)"
+                            />
+                            <span v-else>{{ headerTitle(header.column.id) }}</span>
                             <ChevronUp
                                 v-if="sortState(header.column.id) === 'asc'"
                                 class="caomei-data-table__sort-icon"
@@ -501,6 +523,11 @@ function goToPage(page: number): void {
                                 aria-hidden="true"
                             />
                         </button>
+                        <slot
+                            v-else-if="hasColumnSlot('header', header.column.id)"
+                            :name="`header-${header.column.id}`"
+                            :column="columnDef(header.column.id)"
+                        />
                         <FlexRender
                             v-else-if="!header.isPlaceholder"
                             :header="header"
@@ -553,7 +580,18 @@ function goToPage(page: number): void {
                             :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
                             :style="cellStyle(cell.column.id)"
                         >
-                            <FlexRender :cell="cell" />
+                            <slot
+                                v-if="hasColumnSlot('cell', cell.column.id)"
+                                :name="`cell-${cell.column.id}`"
+                                :row="row.original"
+                                :value="cell.getValue()"
+                                :index="row.index"
+                                :column="columnDef(cell.column.id)"
+                            />
+                            <FlexRender
+                                v-else
+                                :cell="cell"
+                            />
                         </td>
                     </tr>
                 </template>

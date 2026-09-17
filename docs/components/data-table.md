@@ -20,7 +20,7 @@
 | `key` | `string` | 列唯一标识，同时作为默认取值字段 |
 | `header` | `string` | 表头文本，缺省显示 `key` |
 | `accessor` | `string \| (row) => unknown` | 取值字段名（支持 `a.b` 点号嵌套）或函数 |
-| `cell` | `(context) => VNodeChild` | 自定义单元格内容，`context` 含 `row` / `value` / `index` |
+| `cell` | `(context) => VNodeChild` | 自定义单元格内容，`context` 含 `row` / `value` / `index`；同名列插槽存在时被其覆盖 |
 | `width` | `string` | 列宽，如 `120px` / `20%` |
 | `align` | `'left' \| 'center' \| 'right'` | 水平对齐，默认 `left` |
 | `sortable` | `boolean` | 该列是否可排序（表头渲染为排序按钮） |
@@ -33,6 +33,37 @@
     vue="../examples/data-table/custom-cell.vue"
     ssg="true"
 />
+
+## 列插槽
+
+除列定义里的 `cell` 函数外，还可用**按列 key 命名的作用域插槽**自定义单元格与表头；插槽优先于 `cell` 函数，未提供插槽的列保持原有行为。
+
+| 插槽 | 作用域 | 说明 |
+|------|--------|------|
+| `#cell-{key}` | `{ row, value, index, column }` | 该列的单元格内容 |
+| `#header-{key}` | `{ column }` | 该列的表头内容；可排序列中渲染在排序按钮内部，排序交互保留 |
+
+<demo
+    vue="../examples/data-table/column-slots.vue"
+    ssg="true"
+/>
+
+> 插槽名中的 `{key}` 即列定义里的 `key`（如 `key: 'status'` 对应 `#cell-status`）；`column` 为该列的完整定义，便于按列配置渲染。插槽名按字符串匹配，**不做键校验**——`key` 写错不会报错，只会静默回退到默认取值。
+>
+> 作用域中的 `index` 是**数据源行索引**（与 `cell` 函数上下文一致），排序后不随显示位置变化；若要展示"显示序号"，请按当前渲染顺序自行计算，不要直接用 `index`。
+>
+> 可排序列的 `#header-{key}` 渲染在排序 `<button>` 内部，**请勿在其中放置按钮或链接**等可交互元素（会形成嵌套交互控件并破坏键盘语义）。
+
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+|----------|--------|
+| `<Column field="x" :header="…">` | `columns` 数组中的 `{ key: 'x', header: … }`（`key` 兼作默认取值字段） |
+| `<template #body="{ data }">` / `#body="slotProps"` | `<template #cell-{key}="{ row, value, index }">`（`data` 对应 `row`，`slotProps.data` 同理） |
+| 列级 `<template #header>` | `<template #header-{key}="{ column }">` |
+| 表级 `<template #header>` / `#footer` | 无表级 header / footer 插槽；标题改用 `caption`，操作区放在表格容器外 |
+| `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'`（单个字段同时表达是否冻结与停靠方向） |
+| `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，**其宽度与样式不可配置**（内建 `1%` 宽 + 内边距） |
 
 ## 排序
 
@@ -100,7 +131,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义、排序、行选择、分页、冻结列与加载态。
+- 当前已支持列定义与列插槽、排序、行选择、分页、冻结列与加载态。
 
 ## 无障碍
 

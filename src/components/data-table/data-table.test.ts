@@ -1,9 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { computed, h, nextTick, type DefineComponent } from 'vue'
+import { computed, defineComponent, h, nextTick, type DefineComponent } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
-import type { DataTableColumn, DataTableProps } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
 
 interface Row {
@@ -374,5 +374,139 @@ describe('CaomeiDataTable', () => {
             props: { data: [], columns: baseColumns, emptyText: '自定义空态' },
         })
         expect(empty.get('.caomei-data-table__empty').text()).toBe('自定义空态')
+    })
+})
+
+describe('CaomeiDataTable 列插槽', () => {
+    it('#cell-{key} 插槽替代默认取值，未提供插槽的列不受影响', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns },
+            slots: {
+                'cell-name': (props: DataTableCellSlotProps<Row>) => [
+                    h('em', { class: 'cell-slot' }, String(props.value)),
+                ],
+            },
+        })
+
+        expect(wrapper.findAll('.cell-slot').map((node) => node.text())).toEqual(['Ada', 'Bob'])
+        expect(wrapper.findAll('.caomei-data-table__td').map((cell) => cell.text())).toEqual([
+            'Ada',
+            '36',
+            'Bob',
+            '24',
+        ])
+    })
+
+    it('#cell-{key} 插槽优先于列定义的 cell 函数', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: [{ key: 'name', header: '姓名', cell: () => '来自 cell' }],
+            },
+            slots: {
+                'cell-name': () => [h('span', { class: 'cell-slot' }, '来自插槽')],
+            },
+        })
+
+        expect(wrapper.get('.cell-slot').text()).toBe('来自插槽')
+        expect(wrapper.text()).not.toContain('来自 cell')
+    })
+
+    it('#cell-{key} 插槽作用域包含 row / value / index / column', () => {
+        const scopes: DataTableCellSlotProps<Row>[] = []
+        mount(DataTable, {
+            props: { data: baseData, columns: baseColumns },
+            slots: {
+                'cell-age': (props: DataTableCellSlotProps<Row>) => {
+                    scopes.push(props)
+                    return [h('span', String(props.value))]
+                },
+            },
+        })
+
+        expect(scopes).toHaveLength(2)
+        expect(scopes[0].row).toEqual(baseData[0])
+        expect(scopes[0].value).toBe(36)
+        expect(scopes[0].index).toBe(0)
+        expect(scopes[0].column.key).toBe('age')
+        expect(scopes[1].index).toBe(1)
+    })
+
+    it('未提供插槽时回退 cell 函数与默认取值', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: [
+                    { key: 'name', header: '姓名', cell: ({ row }) => `cb:${row.name}` },
+                    { key: 'age', header: '年龄' },
+                ],
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__td').map((cell) => cell.text())).toEqual([
+            'cb:Ada',
+            '36',
+            'cb:Bob',
+            '24',
+        ])
+    })
+
+    it('#header-{key} 插槽渲染表头，作用域含列定义', () => {
+        const scopes: DataTableHeaderSlotProps<Row>[] = []
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns },
+            slots: {
+                'header-name': (props: DataTableHeaderSlotProps<Row>) => {
+                    scopes.push(props)
+                    return [h('span', { class: 'header-slot' }, '自定义表头')]
+                },
+            },
+        })
+
+        expect(wrapper.get('.header-slot').text()).toBe('自定义表头')
+        expect(scopes[0].column.key).toBe('name')
+        expect(wrapper.findAll('.caomei-data-table__th').map((cell) => cell.text())).toEqual([
+            '自定义表头',
+            '年龄',
+        ])
+    })
+
+    it('#header-{key} 插槽在可排序列中保留排序按钮', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: [{ key: 'name', header: '姓名', sortable: true }],
+            },
+            slots: {
+                'header-name': () => [h('span', { class: 'header-slot' }, '自定义表头')],
+            },
+        })
+
+        const sortButton = wrapper.get('.caomei-data-table__sort')
+        expect(sortButton.find('.header-slot').exists()).toBe(true)
+        expect(wrapper.get('th.caomei-data-table__th').attributes('aria-sort')).toBe('none')
+    })
+
+    it('父组件增删插槽后渲染结果同步更新', async () => {
+        const Host = defineComponent({
+            props: { withSlot: { type: Boolean, default: false } },
+            setup(hostProps) {
+                return () =>
+                    h(DataTable, { data: baseData, columns: baseColumns }, hostProps.withSlot
+                        ? { 'cell-name': () => [h('span', { class: 'cell-slot' }, '来自插槽')] }
+                        : {})
+            },
+        })
+
+        const wrapper = mount(Host)
+        expect(wrapper.find('.cell-slot').exists()).toBe(false)
+        expect(wrapper.get('.caomei-data-table__td').text()).toBe('Ada')
+
+        await wrapper.setProps({ withSlot: true })
+        expect(wrapper.find('.cell-slot').exists()).toBe(true)
+
+        await wrapper.setProps({ withSlot: false })
+        expect(wrapper.find('.cell-slot').exists()).toBe(false)
+        expect(wrapper.get('.caomei-data-table__td').text()).toBe('Ada')
     })
 })

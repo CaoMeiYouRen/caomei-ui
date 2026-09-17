@@ -10,6 +10,9 @@ const enUS: CaomeiLocaleMessages = {
         next: 'Next month',
         label: 'Calendar',
     },
+    checkbox: {
+        selectAll: 'Select all',
+    },
     colorPicker: {
         label: 'Color',
         hex: 'Hex color',

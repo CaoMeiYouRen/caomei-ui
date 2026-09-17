@@ -16,6 +16,9 @@ export interface CaomeiLocaleMessages {
         next: string
         label: string
     }
+    checkbox: {
+        selectAll: string
+    }
     colorPicker: {
         label: string
         hex: string

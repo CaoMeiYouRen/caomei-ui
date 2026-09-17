@@ -10,6 +10,9 @@ const zhTW: CaomeiLocaleMessages = {
         next: '下個月',
         label: '日曆',
     },
+    checkbox: {
+        selectAll: '全選',
+    },
     colorPicker: {
         label: '顏色',
         hex: '十六進位顏色',

@@ -10,6 +10,9 @@ const koKR: CaomeiLocaleMessages = {
         next: '다음 달',
         label: '달력',
     },
+    checkbox: {
+        selectAll: '전체 선택',
+    },
     colorPicker: {
         label: '색상',
         hex: '16진수 색상',

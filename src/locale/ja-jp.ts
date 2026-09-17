@@ -10,6 +10,9 @@ const jaJP: CaomeiLocaleMessages = {
         next: '翌月',
         label: 'カレンダー',
     },
+    checkbox: {
+        selectAll: 'すべて選択',
+    },
     colorPicker: {
         label: '色',
         hex: '16進数カラー',

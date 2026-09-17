@@ -11,7 +11,7 @@
 
 **结论：可行（有条件）**——momei 迁移到 caomei-ui **不存在不可逾越的能力阻塞**；剩余缺口全部是「库侧可补的增强」或「一次性机械改写」，无「PrimeVue 有、caomei-ui 结构上做不到」的能力。三个先决条件：
 
-1. **DataTable 列级插槽先行**（**组件能力面**唯一结构性差距；样式与主题耦合另见先决条件 2）：momei 用 `<Column>` 153 次、其中 `#body` 123 次、`slotProps` 163 处（11 文件）；caomei-ui 的列定义是 `columns` prop + `cell` 函数，没有列 `#body` / `#header` 插槽。要么库侧补列插槽，要么在 20 个列表页把模板逻辑改写成 render 函数（成本与可维护性都更差）。
+1. **DataTable 列级插槽先行**（**组件能力面**唯一结构性差距；样式与主题耦合另见先决条件 2）：momei 用 `<Column>` 153 次、其中 `#body` 123 次、`slotProps` 163 处（11 文件）；caomei-ui 的列定义是 `columns` prop + `cell` 函数，没有列 `#body` / `#header` 插槽。要么库侧补列插槽，要么在 20 个列表页把模板逻辑改写成 render 函数（成本与可维护性都更差）。**后续进展（2026-09-17）**：该先决条件已满足——库侧交付 `#cell-{key}` / `#header-{key}` 列插槽（见[设计规范 §7](../../design/design-spec.md)）；迁移时请以该节的现行映射为准。
 2. **主题映射表与视觉基线先行**：momei 对 PrimeVue 的样式耦合是迁移面里最大且最不可机械化的部分（`--p-*` token 引用 1312 处、含 PrimeVue 选择器的 SCSS 20 个文件、组件 class 190 处、`:deep(` 119 / `:global(` 47）。需先产出 `--p-*` → `--caomei-*` 对照表，并在迁移前采集视觉基线（计算样式 / 截图）。
 3. **分批 + 关键路径先行 + 并存白名单**：不要一次性切库；按「库侧补齐 → 数据类页面 → 表单与设置页 → 展示与浮层 → 收尾」五批推进，双库并存期按路由 / 页面白名单隔离，避免全局并存。
 
@@ -69,7 +69,7 @@ Top 10 热点：Button 356、InputText 178、Column 153、Tag 127、Select 73、
 | Message `severity` / `variant` | 51 / 14 | `tone` / `variant`（`simple` 已交付；`text` 一方取证不存在） | 机械改写 |
 | Select `fluid` / `filter` / `option-label` / `option-value` / `showClear` | 37 / **2** / 66 / 66 / 0 | `fluid` 需**删除**（默认全宽）；`filter` 映射到 `CaomeiAutoComplete`（用户已决策方案 A）；对象选项映射已交付 | 2 处需改组件（其余机械） |
 | Dialog `v-model:visible` / `header` / `breakpoints` / `modal` | 28 / 35 / 2 / 36 | `v-model:open` / `title`（必填）/ 未实现 / `modal` | 机械 + 2 处需方案 |
-| DataTable `lazy` / `selection-mode` / Column `selection-mode` / `frozen` | 13 / 0 / 2 / 1 | 已交付（`lazy` / `selectionMode` / `frozen`；列级 `selection-mode` 与 `align-frozen` 未实现） | 大部分已覆盖 |
+| DataTable `lazy` / `selection-mode` / Column `selection-mode` / `frozen` | 13 / 0 / 2 / 1 | 已交付（`lazy` / `selectionMode` / `frozen`）；列级 `selection-mode` 与 `align-frozen` 经用户决策（2026-09-17）**收敛为迁移映射、不新增 API**（`align-frozen` → `frozen: 'left' \| 'right'`；列级 `selection-mode` → 表格级 `selectionMode`，选择列固定首列） | 全部已覆盖 |
 | Paginator `v-model:first` / `template` / 每页条数 | 3 / 1 / 0 | `v-model:page`（模型不同）/ 未实现 | 3 处需改写 |
 | DatePicker `show-time` / `hour-format` / `show-seconds` / `date-format` / `show-icon` | 4 / 4 / 2 / 2 / 3 | 全部已交付；**不支持手工键入**（触发按钮 + 面板）、无范围选择 | 机械（momei 无 `manual-input` / `selection-mode` 用法） |
 
@@ -89,7 +89,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 
 | 级别 | 组件 | 缺失能力 | momei 用量 |
 | --- | --- | --- | --- |
-| **A 结构性（关键路径）** | DataTable / Column | 列 `#body` / `#header` 插槽（现仅 `cell` 函数）、列级 `selection-mode`、`align-frozen` | `<Column>` 153 / 20 文件、`#body` 123、列 `selection-mode` 2、`frozen` 1 |
+| **A 结构性（关键路径）** | DataTable / Column | 列 `#body` / `#header` 插槽（现仅 `cell` 函数）、列级 `selection-mode`、`align-frozen`。**后续进展（2026-09-17）**：列插槽已交付为 `#cell-{key}` / `#header-{key}`（见[设计规范 §7](../../design/design-spec.md)）；列级 `selection-mode` 与 `align-frozen` 经用户决策收敛为迁移映射、不新增 API | `<Column>` 153 / 20 文件、`#body` 123、列 `selection-mode` 2、`frozen` 1 |
 | B 需增强（**共 14 项**，可绕行但留债） | MultiSelect | `#option` 插槽、`showClear` | 8 / 4 文件 |
 | B | Paginator | 每页条数选择、`template` | 用量 3；缺 `rowsPerPageOptions`（momei 用量 0）与 `template`（momei 用量 1）的能力支持 |
 | B | Image | `preview` 点击放大 / 遮罩、`#indicatoricon` | 11 / 10 文件 |
@@ -143,7 +143,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 
 **主要风险（按影响排序）**：
 
-1. **DataTable 是关键路径且存在结构性差距**：20 个列表页是 momei 管理端主路径（`/admin/posts`、`/admin/users`、`/admin/friend-links`、`/admin/ai/*`）。列 `#body` 插槽缺失意味着要么先补库能力，要么在 20 个文件里把声明式模板改写成 render 函数（20 个文件 × 最多 21 个 `<Column>`，含 `slotProps` 的 scoped slot 结构）——后者把声明式模板变成命令式渲染，**建议优先做库侧补齐**。
+1. **DataTable 是关键路径且存在结构性差距**：20 个列表页是 momei 管理端主路径（`/admin/posts`、`/admin/users`、`/admin/friend-links`、`/admin/ai/*`）。列 `#body` 插槽缺失意味着要么先补库能力，要么在 20 个文件里把声明式模板改写成 render 函数（20 个文件 × 最多 21 个 `<Column>`，含 `slotProps` 的 scoped slot 结构）——后者把声明式模板变成命令式渲染，**建议优先做库侧补齐**。**该风险已于 2026-09-17 消解**：库侧列插槽已交付，且库侧补齐路径被采纳。
 2. **样式与主题耦合是最大盲区**：1312 处 `var(--p-*)` + 20 个 SCSS 文件 + 119 处 `:deep()` 说明 momei 大量依赖 PrimeVue 内部结构；caomei-ui 的「极简样式 + token 覆盖」需要逐项建立映射并做视觉回归。这是唯一「无法靠计数判断完成度」的部分，必须用计算样式 / 截图基线闭环。
 3. **双库并存期**：两套主题 token（`--p-*` 与 `--caomei-*`）+ 两套组件样式会同时进入产物，PrimeVue 使用 CSS `@layer`；并存期需按路由 / 页面白名单隔离，并监控包体。
 4. **命令式 API 与锚点定位**：`useToast`（33 个 `.vue`）/ `useConfirm`（10 个 `.vue`）是机械映射，但 `.toggle(event)`（6 处 / 5 文件）依赖「以事件坐标为锚点」的浮层定位，caomei-ui 现为声明式 trigger——这 5 个文件需要结构改写（或库侧补命令式入口，属 Backlog §1.1 的 `useDialog` 同类候选）。
@@ -165,7 +165,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | 批次 | 内容 | 出口条件 |
 | --- | --- | --- |
 | B0 准备（库侧 + momei 侧） | `--p-*` → `--caomei-*` token 对照表；128 个 `pi pi-*` → lucide 图标映射表；双库并存隔离策略（路由白名单）；视觉基线采集（列表 / 表单 / 浮层各 1 页） | 两张映射表评审通过；基线可复现 |
-| B1 库侧补齐（**先决，先行**） | A 级：DataTable 列 `#body` / `#header` 插槽（含列级 `selection-mode`、`align-frozen`）；B 级 **14 项全部纳入 B1 执行**（**范围登记，非「已交付」**；含评估曾建议延后与并入 B4 的 4 项）：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel` | 每个补齐项带单测 + 文档；DataTable 列插槽有迁移示例（中英） |
+| B1 库侧补齐（**先决，先行**） | A 级：DataTable 列插槽 `#cell-{key}` / `#header-{key}`（**2026-09-17 已交付**）；`align-frozen` 与列级 `selection-mode` 经用户决策（2026-09-17）**收敛为迁移映射、不新增 API**；B 级 **14 项全部纳入 B1 执行**（**范围登记，非「已交付」**；含评估曾建议延后与并入 B4 的 4 项）：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode`/`maxFileSize`/`auto`/`chooseLabel`、ToggleButton `onLabel`/`offLabel` | 每个补齐项带单测 + 文档；DataTable 列插槽有迁移示例（中英） |
 | B2 数据类页面迁移 | 20 个 `<Column>` 文件（`/admin/posts`、`/admin/users`、`/admin/friend-links`、`/admin/ai/*`、`/admin/migrations/*`） | 列表功能（排序 / 分页 / 选择 / 列插槽）逐页回归；视觉基线与 B0 一致 |
 | B3 表单与设置页面迁移 | `components/admin/settings/*`、`components/installation/*`、auth / submit / register 等表单页 | 表单交互（校验 / 提交 / 提示）回归；`useToast` / `useConfirm` 映射完成 |
 | B4 展示、浮层与收尾 | 展示类组件、浮层（Dialog / Drawer / Popover / DropdownMenu）、`.toggle()` 结构改写、图标全量替换、i18n 插件替换、测试与 E2E 改写、卸载 PrimeVue | 全量测试与 E2E 通过；`pnpm test:nuxt-smoke` 等价冒烟通过；包体对比记录 |

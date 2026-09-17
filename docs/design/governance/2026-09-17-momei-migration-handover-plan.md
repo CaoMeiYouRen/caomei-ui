@@ -19,7 +19,7 @@
 | --- | --- | --- |
 | B0a 库侧资产 | `--p-*` → `--caomei-*` token 对照表；`pi pi-*` → lucide 图标映射表；双库并存隔离策略（路由 / 页面白名单）与包体监控口径 | caomei-ui |
 | B0b 视觉基线 | 视觉基线采集（列表 / 表单 / 浮层各 1 页），方法见 §7 | momei 项目 |
-| B1 库侧补齐 | A 级：DataTable 列 `#header` / `#body` 插槽（含列级 `selection-mode`、`align-frozen`）；B 级 14 项增强（清单见[评估记录 §3.2](./2026-09-17-momei-migration-feasibility.md)） | caomei-ui |
+| B1 库侧补齐 | A 级：DataTable 列插槽——`#cell-{key}` / `#header-{key}`（**2026-09-17 已交付**，用法见[设计规范 §7](../../design/design-spec.md) 与组件页「列插槽」节）；`align-frozen` 与列级 `selection-mode` 经用户决策（2026-09-17）**收敛为迁移映射、不新增 API**（`frozen` + `align-frozen` → 单个 `frozen: 'left' \| 'right'`；列级 `<Column selection-mode>` → 表格级 `selectionMode`，选择列固定渲染在首列）；B 级 14 项增强（清单见[评估记录 §3.2](./2026-09-17-momei-migration-feasibility.md)） | caomei-ui |
 | B2 数据类页面迁移 | 20 个 `<Column>` 文件（`/admin/posts`、`/admin/users`、`/admin/friend-links`、`/admin/ai/*`、`/admin/migrations/*`） | momei 项目 |
 | B3 表单与设置页面迁移 | `components/admin/settings/*`、`components/installation/*`、auth / submit / register 等表单页 | momei 项目 |
 | B4 展示、浮层与收尾 | 展示类组件、浮层（Dialog / Drawer / Popover / DropdownMenu）、`.toggle()` 结构改写、图标替换、i18n 插件替换、测试与 E2E 改写、卸载 PrimeVue | momei 项目 |

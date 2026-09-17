@@ -141,7 +141,7 @@ function onClose(): void {
 
 .caomei-tag--disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-tag--rounded {

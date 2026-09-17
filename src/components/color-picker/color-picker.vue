@@ -153,7 +153,7 @@ function onUpdate(value: string): void {
 
 .caomei-color-picker__trigger:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-color-picker__trigger--invalid {

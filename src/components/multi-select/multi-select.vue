@@ -226,7 +226,7 @@ function onAnchorClick(event: MouseEvent): void {
 .caomei-multi-select--disabled {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 :where(.caomei-multi-select--sm) {

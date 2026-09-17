@@ -117,7 +117,7 @@ const rootClass = computed(() => [
 
 .caomei-checkbox--disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-checkbox__control {

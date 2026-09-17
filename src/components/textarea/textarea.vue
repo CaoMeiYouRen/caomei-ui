@@ -217,7 +217,7 @@ defineExpose({ focus, blur, textareaRef })
 .caomei-textarea--disabled {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-textarea--readonly {

@@ -220,7 +220,7 @@ function onTimeUpdate(value: TimeParts): void {
 .caomei-date-picker--disabled {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-date-picker--readonly {

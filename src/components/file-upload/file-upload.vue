@@ -286,7 +286,7 @@ function formatSize(bytes: number): string {
 
 .caomei-file-upload__dropzone:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-file-upload__icon {

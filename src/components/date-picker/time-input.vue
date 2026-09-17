@@ -268,7 +268,7 @@ function onDayPeriodChange(event: Event): void {
 .caomei-time-input__period:disabled {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-time-input__field[readonly],

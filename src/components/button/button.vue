@@ -100,7 +100,7 @@ function onClick(event: MouseEvent): void {
 
 .caomei-button:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-button:focus-visible {

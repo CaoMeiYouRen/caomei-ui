@@ -304,7 +304,7 @@ function onUpdate(value: unknown): void {
 
 .caomei-color-picker__swatch:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 </style>

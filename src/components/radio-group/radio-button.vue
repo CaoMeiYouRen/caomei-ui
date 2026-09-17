@@ -75,7 +75,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 
 .caomei-radio-button[data-disabled] {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-radio-button__indicator {

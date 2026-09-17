@@ -417,7 +417,7 @@ watch(normalizedOptions, () => {
 .caomei-auto-complete--disabled {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 :where(.caomei-auto-complete--sm) {

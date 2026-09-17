@@ -197,7 +197,7 @@ function handleCommit(values: number[]): void {
 }
 
 .caomei-slider--disabled {
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-slider--disabled .caomei-slider__thumb {

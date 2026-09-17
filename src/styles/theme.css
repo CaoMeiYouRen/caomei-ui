@@ -38,6 +38,7 @@
     --caomei-shadow-sm: 0 4px 12px rgb(0 0 0 / 0.08);
     --caomei-shadow-md: 0 8px 24px rgb(0 0 0 / 0.12);
     --caomei-shadow-lg: 0 12px 32px rgb(0 0 0 / 0.18);
+    --caomei-disabled-opacity: 0.6;
     --caomei-font-sans: system-ui, -apple-system, sans-serif;
     --caomei-space-1: 4px;
     --caomei-space-2: 8px;

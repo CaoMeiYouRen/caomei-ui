@@ -40,6 +40,6 @@ const model = defineModel<Date | null>({ default: null })
 }
 
 .caomei-calendar[data-disabled] {
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 </style>

@@ -71,7 +71,7 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
 
 .caomei-switch--disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: var(--caomei-disabled-opacity);
 }
 
 .caomei-switch__thumb {

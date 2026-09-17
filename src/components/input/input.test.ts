@@ -67,6 +67,17 @@ describe('CaomeiInput', () => {
         expect(wrapper.get('input').attributes('aria-label')).toBe('搜索')
     })
 
+    it('label 为空串时不输出 aria-label，也不覆盖透传值', () => {
+        const empty = mount(CaomeiInput, { props: { label: '' } })
+        expect(empty.get('input').attributes('aria-label')).toBeUndefined()
+
+        const forwarded = mount(CaomeiInput, {
+            props: { label: '' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(forwarded.get('input').attributes('aria-label')).toBe('透传名')
+    })
+
     it('无值时不渲染清除按钮', () => {
         const wrapper = mount(CaomeiInput, { props: { clearable: true, modelValue: '' } })
         expect(wrapper.find('.caomei-input__clear').exists()).toBe(false)

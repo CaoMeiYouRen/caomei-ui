@@ -89,6 +89,21 @@ describe('CaomeiBadge', () => {
         expect(wrapper.get('.caomei-badge').attributes('aria-hidden')).toBe('true')
     })
 
+    it('label 为空串时不输出空 aria-label', () => {
+        const wrapper = mount(CaomeiBadge, { props: { dot: true, label: '' } })
+        expect(wrapper.get('.caomei-badge').attributes('aria-label')).toBeUndefined()
+    })
+
+    it('叠加分支同样由 label 提供可访问名', () => {
+        const wrapper = mount(CaomeiBadge, {
+            props: { dot: true, label: '有新消息' },
+            slots: { default: '<button>消息</button>' },
+        })
+        const badge = wrapper.get('.caomei-badge')
+        expect(badge.attributes('aria-label')).toBe('有新消息')
+        expect(badge.attributes('role')).toBe('img')
+    })
+
     it('圆点模式提供 label 时映射 aria-label', () => {
         const wrapper = mount(CaomeiBadge, { props: { dot: true, label: '有新消息' } })
 

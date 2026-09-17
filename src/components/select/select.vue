@@ -16,6 +16,7 @@ import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { SelectProps } from './types'
 
 defineOptions({ name: 'CaomeiSelect', inheritAttrs: false })
@@ -128,7 +129,7 @@ function clearValue(): void {
             :class="`caomei-select__field--${size}`"
         >
             <SelectTrigger
-                v-bind="$attrs"
+                v-bind="{...$attrs, ...labelAttrs(label)}"
                 :id="id"
                 ref="triggerRef"
                 class="caomei-select"
@@ -136,7 +137,6 @@ function clearValue(): void {
                 :data-filled="hasValue ? 'true' : undefined"
                 :data-has-placeholder="placeholder ? 'true' : undefined"
                 :aria-invalid="invalid || undefined"
-                :aria-label="label"
             >
                 <SelectValue class="caomei-select__value">
                     <span v-if="selectedLabel">{{ selectedLabel }}</span>

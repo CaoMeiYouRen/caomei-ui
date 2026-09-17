@@ -42,7 +42,7 @@ With `autoResize`, the height follows the content in both directions and no scro
 
 ## Accessibility
 
-- `label` provides an accessible name when there is no visible label and maps to `aria-label`. Use this prop; passing a native `aria-label` directly will be overridden by the component.
+- `label` provides an accessible name when there is no visible label and maps to `aria-label`; `label` takes precedence over a passed-in `aria-label`, and the passed-in value applies when `label` is not provided (or empty).
 - When `invalid`, it outputs `aria-invalid="true"`.
 - `class` lands on the root element; native attributes such as `maxlength` / `required` are forwarded to the inner `textarea`.
 

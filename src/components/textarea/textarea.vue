@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type StyleValue } from 'vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useFocusControl } from '../_shared/use-focus-control'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { TextareaProps } from './types'
 
 defineOptions({ name: 'CaomeiTextarea', inheritAttrs: false })
@@ -167,7 +168,7 @@ defineExpose({ focus, blur, textareaRef })
             :id="id"
             ref="textareaRef"
             v-model="model"
-            v-bind="controlAttrs"
+            v-bind="{...controlAttrs, ...labelAttrs(label)}"
             class="caomei-textarea__control"
             :style="controlStyle"
             :disabled="disabled"
@@ -177,7 +178,6 @@ defineExpose({ focus, blur, textareaRef })
             :autocomplete="autocomplete"
             :rows="rows"
             :aria-invalid="invalid || undefined"
-            :aria-label="label"
             @focus="emit('focus', $event)"
             @blur="emit('blur', $event)"
             @change="emit('change', $event)"

@@ -1,6 +1,17 @@
 import { computed, toValue, useAttrs, type ComputedRef, type MaybeRefOrGetter } from 'vue'
 
 /**
+ * 可访问名转属性：有值时输出 `aria-label`，缺省（含空字符串）时不输出该属性，
+ * 因此不会覆盖元素上已有的透传值。
+ *
+ * 供**内层可访问控件**在模板中转发可访问名（`v-bind="labelAttrs(label)"`）；
+ * 根即可访问控件的整体透传用 `useLabelAttrs`。
+ */
+export function labelAttrs(label: string | undefined | null): Record<string, string> {
+    return label ? { 'aria-label': label } : {}
+}
+
+/**
  * 透传 attrs，并让显式提供的可访问名优先于外部传入的 `aria-label`。
  *
  * 供「根即可访问控件」的组件使用（使用方必须设置 `inheritAttrs: false`）：
@@ -19,7 +30,7 @@ export function useLabelAttrs(
         const text = toValue(label)
         return {
             ...base,
-            ...(text ? { 'aria-label': text } : {}),
+            ...labelAttrs(text),
         }
     })
 }

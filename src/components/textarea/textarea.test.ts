@@ -61,6 +61,13 @@ describe('CaomeiTextarea', () => {
         expect(wrapper.get('textarea').attributes('aria-label')).toBe('备注')
     })
 
+    it('未提供 label 时保留透传的 aria-label', () => {
+        const wrapper = mount(CaomeiTextarea, {
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(wrapper.get('textarea').attributes('aria-label')).toBe('透传名')
+    })
+
     it('透传 name / id / autocomplete 到原生 textarea', () => {
         const wrapper = mount(CaomeiTextarea, {
             props: { name: 'remark', id: 'remark-input', autocomplete: 'off' },

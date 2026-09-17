@@ -13,6 +13,7 @@ import {
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { PaginatorProps } from './types'
 
 defineOptions({ name: 'CaomeiPaginator' })
@@ -47,7 +48,7 @@ function resolvePageLabel(value: number): string {
         :sibling-count="siblingCount"
         :show-edges="showEdges"
         :disabled="disabled"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
         class="caomei-paginator"
     >
         <PaginationList

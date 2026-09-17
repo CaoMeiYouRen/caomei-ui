@@ -22,6 +22,7 @@ import {
     resolveOptionValue,
     type OptionValue,
 } from '../_shared/option'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { MultiSelectProps } from './types'
 
 defineOptions({ name: 'CaomeiMultiSelect', inheritAttrs: false })
@@ -143,12 +144,11 @@ function onAnchorClick(event: MouseEvent): void {
                 </button>
             </span>
             <ComboboxInput
-                v-bind="controlAttrs"
+                v-bind="{...controlAttrs, ...labelAttrs(label)}"
                 :id="id"
                 class="caomei-multi-select__input"
                 :placeholder="model.length === 0 ? placeholder : undefined"
                 :aria-invalid="invalid || undefined"
-                :aria-label="label"
                 :disabled="disabled"
             />
             <ComboboxTrigger

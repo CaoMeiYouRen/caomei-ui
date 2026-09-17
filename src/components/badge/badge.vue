@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { BadgeProps } from './types'
 
 defineOptions({ name: 'CaomeiBadge' })
@@ -56,7 +57,7 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
             v-if="visible"
             class="caomei-badge"
             :class="rootClass"
-            :aria-label="label"
+            v-bind="labelAttrs(label)"
             :aria-hidden="ariaHidden"
             :role="ariaRole"
         >
@@ -67,7 +68,7 @@ const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
         v-else-if="visible"
         class="caomei-badge"
         :class="rootClass"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
         :aria-hidden="ariaHidden"
         :role="ariaRole"
     >

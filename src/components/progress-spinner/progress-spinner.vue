@@ -2,6 +2,7 @@
 import { ProgressIndicator, ProgressRoot } from 'reka-ui'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { ProgressSpinnerProps } from './types'
 
 defineOptions({ name: 'CaomeiProgressSpinner' })
@@ -22,7 +23,7 @@ const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
         as="span"
         class="caomei-progress-spinner"
         :class="rootClass"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
     >
         <ProgressIndicator
             as="span"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type { ButtonProps } from './types'
 
 defineOptions({ name: 'CaomeiButton' })
@@ -49,7 +50,7 @@ function onClick(event: MouseEvent): void {
         :type="type"
         :disabled="isInactive"
         :aria-busy="loading || undefined"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
         @click="onClick"
     >
         <span

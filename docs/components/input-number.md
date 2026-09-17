@@ -59,7 +59,7 @@
 
 ## 无障碍
 
-- `label` 用于无可见标签时提供可访问名，映射为 `aria-label`；请使用该 prop，直接传入原生 `aria-label` 会被组件覆盖。
+- `label` 用于无可见标签时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
 - `invalid` 时输出 `aria-invalid="true"`。
 - 输入为 `role="spinbutton"`，支持方向键步进、PageUp / PageDown 十倍步进、Home / End 跳至 `min` / `max`；`min` / `max` 映射 `aria-valuemin` / `aria-valuemax`。
 - 增减按钮使用内建多语言标签（增加 / 减少），可通过 `increaseLabel` / `decreaseLabel` 覆盖；到达 `min` / `max` 时自动禁用，并支持长按连续步进。

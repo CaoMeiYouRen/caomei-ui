@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { computed, defineComponent, h, ref } from 'vue'
-import { useLabelAttrs } from './use-label-attrs'
+import { labelAttrs, useLabelAttrs } from './use-label-attrs'
 
 const Host = defineComponent({
     name: 'LabelAttrsHost',
@@ -57,6 +57,16 @@ const BaseHost = defineComponent({
         const forwardedAttrs = useLabelAttrs(() => props.label, base)
         return () => h('button', forwardedAttrs.value)
     },
+})
+
+describe('labelAttrs', () => {
+    it('有值时输出 aria-label', () => {
+        expect(labelAttrs('名称')).toEqual({ 'aria-label': '名称' })
+    })
+
+    it.each([undefined, null, ''])('缺省或空串（%s）时不输出任何属性', (value) => {
+        expect(labelAttrs(value)).toEqual({})
+    })
 })
 
 describe('useLabelAttrs', () => {

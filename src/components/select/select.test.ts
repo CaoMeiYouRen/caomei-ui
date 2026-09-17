@@ -70,6 +70,14 @@ describe('CaomeiSelect', () => {
         expect(wrapper.get('.caomei-select').attributes('aria-label')).toBe('水果')
     })
 
+    it('未提供 label 时保留透传的 aria-label', () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(wrapper.get('.caomei-select').attributes('aria-label')).toBe('透传名')
+    })
+
     it('透传 id 与原生属性', () => {
         const wrapper = mount(CaomeiSelect, {
             props: { options, id: 'fruit-select' },

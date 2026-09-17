@@ -17,6 +17,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type {
     AutoCompleteEmits,
     AutoCompleteOption,
@@ -308,14 +309,13 @@ watch(normalizedOptions, () => {
                 </button>
             </span>
             <ComboboxInput
-                v-bind="controlAttrs"
+                v-bind="{...controlAttrs, ...labelAttrs(label)}"
                 :id="id"
                 v-model="inputValue"
                 class="caomei-auto-complete__input"
                 :placeholder="inputPlaceholder"
                 :disabled="disabled"
                 :aria-invalid="invalid || undefined"
-                :aria-label="label"
                 :display-value="displayValue"
                 @input="onInput"
                 @keydown.enter="onEnter"

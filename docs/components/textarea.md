@@ -42,7 +42,7 @@
 
 ## 无障碍
 
-- `label` 用于无可见标签时提供可访问名，映射为 `aria-label`；请使用该 prop，直接传入原生 `aria-label` 会被组件覆盖。
+- `label` 用于无可见标签时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
 - `invalid` 时输出 `aria-invalid="true"`。
 - `class` 落在根元素；`maxlength` / `required` 等原生属性透传到内部 `textarea`。
 

@@ -59,7 +59,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 
 ## Accessibility
 
-- `label` provides an accessible name when there is no visible label and maps to `aria-label`. Use this prop; passing a native `aria-label` directly will be overridden by the component.
+- `label` provides an accessible name when there is no visible label and maps to `aria-label`; `label` takes precedence over a passed-in `aria-label`, and the passed-in value applies when `label` is not provided (or empty).
 - When `invalid`, it outputs `aria-invalid="true"`.
 - The input is `role="spinbutton"` and supports arrow-key steps, PageUp / PageDown for tenfold steps, and Home / End to jump to `min` / `max`; `min` / `max` map to `aria-valuemin` / `aria-valuemax`.
 - The steppers use built-in localized labels (increase / decrease), overridable via `increaseLabel` / `decreaseLabel`; they are disabled automatically at `min` / `max` and support press-and-hold continuous stepping.

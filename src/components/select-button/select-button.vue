@@ -2,6 +2,7 @@
 import { ToggleGroupItem, ToggleGroupRoot } from 'reka-ui'
 import { computed } from 'vue'
 import { resolveOptionDisabled, resolveOptionField, resolveOptionValue } from '../_shared/option'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import type {
     SelectButtonModelValue,
     SelectButtonProps,
@@ -98,7 +99,7 @@ function handleUpdate(value: unknown): void {
 
 <template>
     <ToggleGroupRoot
-        v-bind="$attrs"
+        v-bind="{...$attrs, ...labelAttrs(label)}"
         :id="id"
         :type="rootType"
         :model-value="groupValue"
@@ -107,7 +108,6 @@ function handleUpdate(value: unknown): void {
         orientation="horizontal"
         class="caomei-select-button"
         :class="[`caomei-select-button--${size}`, {'caomei-select-button--invalid': invalid}]"
-        :aria-label="label"
         :aria-invalid="invalid || undefined"
         @update:model-value="handleUpdate"
     >

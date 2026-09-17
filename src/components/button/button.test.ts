@@ -86,6 +86,17 @@ describe('CaomeiButton', () => {
         expect(wrapper.get('button').attributes('aria-label')).toBe('设置')
     })
 
+    it('label 为空串时不输出空 aria-label，也不覆盖透传值', () => {
+        const empty = mount(CaomeiButton, { props: { label: '' } })
+        expect(empty.get('button').attributes('aria-label')).toBeUndefined()
+
+        const forwarded = mount(CaomeiButton, {
+            props: { label: '' },
+            attrs: { 'aria-label': '透传名' },
+        })
+        expect(forwarded.get('button').attributes('aria-label')).toBe('透传名')
+    })
+
     it('合并透传的 class 与属性', () => {
         const wrapper = mount(CaomeiButton, {
             attrs: { class: 'custom-button', 'data-test': 'button' },

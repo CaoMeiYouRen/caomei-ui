@@ -28,6 +28,15 @@ export interface PopoverTriggerProps {
      * @en Whether to disable the trigger
      */
     disabled?: boolean
+    /**
+     * 去掉内建触发器外观类，仅保留开合与无障碍接线。
+     *
+     * 配合 `as-child` 复用自定义按钮（如 `CaomeiButton`）时使用：外观类合并到子元素会与子元素自身
+     * 样式竞争（padding / border / background 等），`unstyled` 让复合层只借用行为、不继承默认皮肤。
+     * @default false
+     * @en Drop the built-in trigger appearance class, keeping only the open/close and a11y wiring. Use it with `as-child` when reusing a custom button so the default skin does not merge onto the child and compete with its own padding / border / background.
+     */
+    unstyled?: boolean
 }
 
 export interface PopoverContentProps {

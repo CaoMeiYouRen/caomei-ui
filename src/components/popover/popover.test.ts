@@ -65,6 +65,28 @@ function getContent(): HTMLElement | null {
     return document.querySelector('.caomei-popover__content')
 }
 
+/**
+ * 触发器外观豁免场景：`as-child` 复用带自身样式的自定义按钮。
+ * 断言子元素是否被合并内建外观类（`.caomei-popover__trigger`）。
+ */
+function mountCustomTrigger(triggerProps: Record<string, unknown> = {}) {
+    return mount(CaomeiPopover, {
+        attachTo: document.body,
+        slots: {
+            default: () => [
+                h(CaomeiPopoverTrigger, { asChild: true, ...triggerProps }, {
+                    default: () => h('button', { class: 'demo-custom-trigger' }, '自定义按钮'),
+                }),
+                h(CaomeiPopoverContent, { default: () => h('p', '浮层内容') }),
+            ],
+        },
+    })
+}
+
+function getCustomTrigger(): HTMLButtonElement {
+    return document.querySelector('.demo-custom-trigger') as HTMLButtonElement
+}
+
 afterEach(() => {
     document.body.innerHTML = ''
 })
@@ -169,6 +191,40 @@ describe('CaomeiPopover', () => {
         const content = getContent() as HTMLElement
         expect(content.getAttribute('data-side')).toBe('top')
         expect(content.getAttribute('data-align')).toBe('start')
+
+        wrapper.unmount()
+    })
+
+    it('as-child 复用自定义按钮时默认会把内建触发器外观类合并到子元素', () => {
+        const wrapper = mountCustomTrigger()
+
+        expect(getCustomTrigger().classList.contains('caomei-popover__trigger')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('unstyled 为 true 时不再合并内建触发器外观类', () => {
+        const wrapper = mountCustomTrigger({ unstyled: true })
+
+        expect(getCustomTrigger().classList.contains('caomei-popover__trigger')).toBe(false)
+        expect(getCustomTrigger().classList.contains('demo-custom-trigger')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('unstyled 仅去掉外观类，开合与无障碍接线保持', async () => {
+        const wrapper = mountCustomTrigger({ unstyled: true })
+        await nextTick()
+
+        const trigger = getCustomTrigger()
+        expect(trigger.getAttribute('aria-haspopup')).toBe('dialog')
+        expect(trigger.getAttribute('aria-expanded')).toBe('false')
+
+        trigger.click()
+        await nextTick()
+
+        expect(trigger.getAttribute('aria-expanded')).toBe('true')
+        expect(getContent()).not.toBeNull()
 
         wrapper.unmount()
     })

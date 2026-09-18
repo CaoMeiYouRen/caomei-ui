@@ -6,6 +6,7 @@ defineOptions({ name: 'CaomeiPopoverTrigger', inheritAttrs: false })
 
 const props = withDefaults(defineProps<PopoverTriggerProps>(), {
     disabled: false,
+    unstyled: false,
 })
 </script>
 
@@ -13,7 +14,7 @@ const props = withDefaults(defineProps<PopoverTriggerProps>(), {
     <PopoverTrigger
         v-bind="$attrs"
         :disabled="props.disabled || undefined"
-        class="caomei-popover__trigger"
+        :class="props.unstyled ? undefined : 'caomei-popover__trigger'"
     >
         <slot />
     </PopoverTrigger>

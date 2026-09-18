@@ -73,4 +73,16 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `change` | `change`（**载荷差异属有意**：PrimeVue 传原生事件对象，本库直接给切换后的布尔值；且仅用户交互触发，父级程序化改 `modelValue` 不触发） |
+| `inputId` | `id` |
+| `aria-label` | `label`（不可见可访问名，`aria-labelledby` 仍可经属性透传） |
+
+**未暴露**：`true-value` / `false-value`（`v-model` 即布尔值，`value` 仅作表单提交值）、`readonly`、`input-class` / `input-style`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="switch" />

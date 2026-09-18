@@ -73,4 +73,16 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `change` | `change` (**intentional payload difference**: PrimeVue passes the native event object, this library passes the resulting boolean; it also fires only on user interaction, not when the parent changes `modelValue`) |
+| `inputId` | `id` |
+| `aria-label` | `label` (visually hidden accessible name; `aria-labelledby` can still be forwarded) |
+
+**Not exposed**: `true-value` / `false-value` (`v-model` is already boolean; `value` is only the form submission value), `readonly`, `input-class` / `input-style`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="switch" />

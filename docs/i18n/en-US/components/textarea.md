@@ -52,4 +52,18 @@ Besides `update:modelValue`, it also provides `focus`, `blur` and `change`; `foc
 
 > Width: `width: 100%` by default to fit form grids; to constrain the width, control it at the usage site with a container or `max-width` (see [Theming and styles §4.1](/design/theming), Chinese).
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `auto-resize` | `autoResize` (defaults to `false`; when on, `resize` is forced to `none` and `rows` becomes the initial minimum height; there is no cap — add `max-height` at the usage layer) |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `invalid` | Same name |
+| `fluid` | Drop it: `width: 100%` by default |
+| `rows` / `placeholder` / `name` / `id` | Same names |
+
+**Not implemented**: `variant` (`outlined` / `filled`), `formControl`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="textarea" />

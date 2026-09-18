@@ -52,4 +52,18 @@
 
 > 宽度：默认 `width: 100%` 以适配表单栅格；如需限制宽度，在使用层通过容器或 `max-width` 控制（详见[主题与样式设计 §4.1](../design/theming.md)）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `auto-resize` | `autoResize`（默认 `false`；开启时 `resize` 固定 `none`，`rows` 为初始最小高度；不设上限，封顶由使用层叠加 `max-height`） |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `invalid` | 同名 |
+| `fluid` | 删除：默认 `width: 100%` |
+| `rows` / `placeholder` / `name` / `id` | 同名 |
+
+**未实现**：`variant`（`outlined` / `filled`）、`formControl`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="textarea" />

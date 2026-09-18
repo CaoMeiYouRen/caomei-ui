@@ -97,4 +97,18 @@
 | `label` | `string` | `''` | 无可见文本时的可访问名，映射 `aria-label` |
 | `id` | `string` | 自动生成 | 关联外部 label 的 id |
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| 多个 `<RadioButton v-model name :value>` | `<CaomeiRadioGroup v-model>` + `<CaomeiRadioButton :value>` 子项（组持模型、子项持值） |
+| `binary` | 未实现：二态场景改用单个 `CaomeiSwitch` |
+| `inputId`（子项） | `id`（子项） |
+| `aria-label` | `label`（组与子项的可访问名） |
+| 无 | `orientation`（默认 `vertical`）、`loop`、`required`、`invalid`、`dir` 由分组统一提供 |
+
+**未实现 / 未暴露**：`variant`、`readonly`、`tabindex`、`input-class` / `input-style`、`formControl`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="radio-group" />

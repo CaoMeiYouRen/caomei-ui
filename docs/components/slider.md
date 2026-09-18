@@ -85,4 +85,18 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `range`（布尔） | 未暴露：由模型推导（`number` → 单滑块、`number[]` → 多滑块） |
+| `min` / `max` / `step` | 同名 |
+| `orientation`（`horizontal` / `vertical`） | 同名 |
+| `ariaLabel` / `ariaLabelledby` | `label`（`aria-labelledby` 透传仍生效） |
+| 无 | `inverted`（反转方向）、`minStepsBetweenThumbs`、`thumbLabels`、`dir`、`name` / `required` 为本库新增 |
+
+**未实现**：`invalid`、`tabindex`、`formControl`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="slider" />

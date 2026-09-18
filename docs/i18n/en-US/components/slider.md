@@ -85,4 +85,18 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `range` (boolean) | Not exposed: derived from the model (`number` → single thumb, `number[]` → multiple thumbs) |
+| `min` / `max` / `step` | Same names |
+| `orientation` (`horizontal` / `vertical`) | Same name |
+| `ariaLabel` / `ariaLabelledby` | `label` (a forwarded `aria-labelledby` still applies) |
+| — | `inverted` (reverse the direction), `minStepsBetweenThumbs`, `thumbLabels`, `dir`, `name` / `required` are new here |
+
+**Not implemented**: `invalid`, `tabindex`, `formControl`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="slider" />

@@ -97,4 +97,18 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `label` | `string` | `''` | Accessible name when there is no visible text, maps to `aria-label` |
 | `id` | `string` | auto-generated | Id of the associated external label |
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| Several `<RadioButton v-model name :value>` | `<CaomeiRadioGroup v-model>` with `<CaomeiRadioButton :value>` children (the group holds the model, each child holds a value) |
+| `binary` | Not implemented: use a single `CaomeiSwitch` for a two-state case |
+| `inputId` (on children) | `id` (on children) |
+| `aria-label` | `label` (accessible name for the group and its items) |
+| — | `orientation` (defaults to `vertical`), `loop`, `required`, `invalid` and `dir` are provided by the group |
+
+**Not implemented / not exposed**: `variant`, `readonly`, `tabindex`, `input-class` / `input-style`, `formControl`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="radio-group" />

@@ -37,7 +37,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 24 个命名空间，对应 25 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 25 个命名空间，对应 26 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -50,6 +50,7 @@ import {
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
+| `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` | FileUpload |
 | `image` | `label` `preview` `close` | Image |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |

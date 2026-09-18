@@ -37,7 +37,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 24 namespaces by component area, covering 25 consuming components:
+`CaomeiLocaleMessages` is split into 25 namespaces by component area, covering 26 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -50,6 +50,7 @@ import {
 | `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
+| `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` | FileUpload |
 | `image` | `label` `preview` `close` | Image |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |

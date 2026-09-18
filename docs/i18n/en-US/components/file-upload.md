@@ -1,6 +1,6 @@
 # FileUpload
 
-The file upload component is built on the native `input[type=file]` and handles file selection (click / drag) and list management; it does not handle the actual transfer.
+The file upload component is built on the native `input[type=file]` and handles file selection (click / drag) and list management; it does not perform the transfer itself (with `customUpload` it emits `uploader` for the application to handle).
 
 ## Basic usage
 
@@ -8,6 +8,23 @@ Two-way bind the file list (`File[]`) with `v-model`; add files by clicking the 
 
 <demo
     vue="../examples/file-upload/basic.vue"
+    ssg="true"
+/>
+
+## Upload mode
+
+`mode` controls the UI: `advanced` (default) renders the dropzone + file list, while `basic` renders a compact choose button + chosen-file text, replaces the list on every selection and renders neither dropzone nor list. In both modes the choose affordance text can be overridden with `chooseLabel`; otherwise the built-in locale is used.
+
+## Size limit
+
+`maxFileSize` limits a single file in bytes: over-limit files never enter `v-model` and a message is shown inside the component (text from the built-in locale, overridable through `CaomeiConfigProvider`'s `messages`). The message is cleared on the next selection, and rejected files do not affect the existing list.
+
+## Auto and custom upload
+
+The component performs no transfer: with `customUpload` it emits `uploader({ files })` and the application takes over; `auto` requests the upload right after selection — **`uploader` is only produced under `customUpload`**, so `auto` without it creates no upload request. When `auto` is off, trigger it manually through the exposed `upload()` (equivalent to PrimeVue's `ref.upload()`). `mode="basic"` + `custom-upload` + `auto` is the equivalent combination for migrating PrimeVue's basic usage.
+
+<demo
+    vue="../examples/file-upload/custom-upload.vue"
     ssg="true"
 />
 
@@ -33,9 +50,10 @@ Two-way bind the file list (`File[]`) with `v-model`; add files by clicking the 
 
 ## Accessibility
 
-- The select area is a native `<button>`, focusable and activatable via keyboard; the built-in prompt text carries its own accessible name, so use `label` for the accessible name (mapped to `aria-label`) only when the default slot is replaced with content that has no visible text (such as an icon only). When `label` is omitted, a forwarded `aria-label` is preserved.
+- The select area is a native `<button>` (in `basic` mode the choose button), focusable and activatable via keyboard; the built-in prompt text carries its own accessible name, so use `label` for the accessible name (mapped to `aria-label`) only when the default slot is replaced with content that has no visible text (such as an icon only). When `label` is omitted, a forwarded `aria-label` is preserved.
 - The file input is visually hidden with `tabindex="-1"` / `aria-hidden="true"` to avoid duplicate focus and redundant announcements.
-- The remove button provides an accessible name that combines a removal prefix with the file name; the prefix is currently hard-coded and not localized.
+- The remove button provides an accessible name that combines a removal prefix with the file name; the prefix is currently hard-coded and not localized (`advanced` mode only).
+- The size-limit message is `role="alert"`, announced right after selection.
 
 ## Style customization
 
@@ -57,12 +75,17 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | PrimeVue | This component |
 | --- | --- |
 | `accept` / `multiple` | Same names |
-| `chooseLabel` | Customize the prompt through the default slot (no equivalent prop) |
-| `@select` / `@upload` / `@remove` / `@progress` | Not implemented: the picked files are the `File[]` bound to `v-model` |
+| `mode` | `mode` (defaults to `advanced`; `basic` renders a compact choose button + chosen-file text and replaces the list on every selection) |
+| `chooseLabel` | `chooseLabel` (the button text in `basic`, the dropzone prompt in `advanced`; defaults to the built-in locale) |
+| `maxFileSize` | `maxFileSize` (bytes; over-limit files never enter the list and a built-in message is shown) |
+| `auto` | `auto` (requests the upload right after selection) |
+| `customUpload` + `@uploader` | `customUpload` + `uploader` (the component performs no transfer; when `auto` is off, trigger it through the exposed `upload()`, equivalent to `ref.upload()`) |
+| `@select` / `@remove` | `select` / `remove` (same payload shapes: `{ originalEvent, files }` / `{ file, files }`; `select.files` is the full list after the selection, and the unchanged current list when everything was rejected) |
+| `@clear` | `clear` (emitted by the exposed `clear()`) |
 | `name` | Forwarded to the inner `<input type="file">` (native form submission works) |
 | — | `disabled`, `label` (accessible name) and the `#file` slot (custom list item) are new here |
 
-**Not implemented (registered as a follow-up; this section will be updated when it ships)**: `mode` (`basic` / `advanced`), `auto`, `maxFileSize` / `fileLimit`, `url` / `customUpload` / `withCredentials`, `uploadLabel` / `cancelLabel`, `showUploadButton` / `showCancelButton`, `invalidFileSizeMessage` / `invalidFileTypeMessage` / `invalidFileLimitMessage`, `previewWidth`.
+**Not implemented (registered as a follow-up; this section will be updated when it ships)**: `url` / `withCredentials` and the default XHR transfer, the `before-upload` / `progress` / `upload` / `before-send` / `error` events, `fileLimit` / `invalidFileLimitMessage` / `invalidFileTypeMessage` (the over-limit text always comes from the built-in locale, with no prop override), `uploadLabel` / `cancelLabel` / `showUploadButton` / `showCancelButton` (no upload / cancel buttons) and `previewWidth` (no image thumbnails).
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

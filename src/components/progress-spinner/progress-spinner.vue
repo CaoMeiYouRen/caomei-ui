@@ -20,6 +20,48 @@ const label = computed(
 
 const forwardedAttrs = useLabelAttrs(() => label.value)
 
+/**
+ * 轨道宽度归一化。
+ *
+ * - 数字：按 px（要求 `0 ≤ n ≤ 1000`）；
+ * - 纯数字字符串（PrimeVue 的 `strokeWidth` 默认就写作 `'2'`）：按 px 处理，与数字语义一致；
+ * - 其余字符串：**白名单**校验为合法 `border-width`（`<length>` 或 `thin` / `medium` / `thick`），
+ *   原样使用（`%` 对 `border-width` 非法，故不接受）；
+ * - 空串 / 负数 / 非有限数 / 非法长度 / 超长（> 32 字符）→ `undefined`，回退档位默认。
+ *
+ * 必须白名单而非黑名单：该变量在 `border` 简写中被消费，写入语义非法值会触发
+ * 「invalid at computed-value time」，整条 `border` 声明被丢弃、`border-style: none`，
+ * 圆环会**整体消失**而不是回退默认。
+ */
+const STROKE_WIDTH_RE = /^(?:\d*\.?\d+(?:px|rem|em|ch|ex|vw|vh|vmin|vmax|cm|mm|q|pt|pc|in)|thin|medium|thick)$/
+
+function normalizeStrokeWidth(value: number | string | undefined): string | undefined {
+    if (typeof value === 'number') {
+        return Number.isFinite(value) && value >= 0 && value <= 1000 ? `${value}px` : undefined
+    }
+    if (typeof value !== 'string') {
+        return undefined
+    }
+    const trimmed = value.trim().toLowerCase()
+    if (!trimmed || trimmed.length > 32) {
+        return undefined
+    }
+    if (/^\d*\.?\d+$/.test(trimmed)) {
+        const numeric = Number.parseFloat(trimmed)
+        return numeric <= 1000 ? `${numeric}px` : undefined
+    }
+    return STROKE_WIDTH_RE.test(trimmed) ? trimmed : undefined
+}
+
+const strokeWidth = computed(() => normalizeStrokeWidth(props.strokeWidth))
+
+/** 内联自定义属性在层叠中高于作者选择器声明（`:where()` 只是把档位选择器的特异性归零，不是内联生效的原因），故 prop 覆盖档位默认 */
+const rootStyle = computed(() =>
+    (strokeWidth.value
+        ? { '--caomei-progress-spinner-stroke': strokeWidth.value }
+        : undefined),
+)
+
 const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
 </script>
 
@@ -27,6 +69,7 @@ const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
     <ProgressRoot
         v-bind="forwardedAttrs"
         :model-value="null"
+        :style="rootStyle"
         as="span"
         class="caomei-progress-spinner"
         :class="rootClass"
@@ -42,6 +85,7 @@ const rootClass = computed(() => `caomei-progress-spinner--${props.size}`)
 /*
   `--caomei-progress-spinner-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
   尺寸档位选择器用 :where() 归零特异性，保证使用方单类覆盖生效。
+  `strokeWidth` prop 以内联样式写入同名变量，优先级高于此处的档位声明（故 prop 覆盖档位默认）。
 */
 .caomei-progress-spinner {
     display: inline-block;

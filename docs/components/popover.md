@@ -88,4 +88,19 @@
 | `CaomeiPopoverArrow` | `width`、`height` | 指向触发器的箭头 |
 | `CaomeiPopoverClose` | `label` | 点击关闭的按钮 |
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Popover>`（内容走**默认插槽**；另有 `#container` 插槽可替换整个容器） | `<CaomeiPopover>` + `<CaomeiPopoverTrigger>` / `<CaomeiPopoverContent>`（另有 `PopoverArrow` / `PopoverClose`） |
+| 显隐（受控或内部状态） | `v-model:open`（默认非受控，点击触发器开合） |
+| `dismissable`（默认 `true`） | 非模态浮层的默认行为（点击外部关闭）；`PopoverContent` 的 `disable-outside-pointer-events` 可解除 |
+| `append-to` / `base-z-index` / `auto-z-index` / `breakpoints` | 未实现（面板经 Portal 挂到 `body`、层级由库管理、不支持断点宽度）；`@show` / `@hide` 事件可改为监听 `v-model:open` |
+| `#container` 作用域内的 `closeCallback` / `keydownCallback` | `<CaomeiPopoverClose>`（可用 `as-child` 包裹自定义按钮） |
+| `close-on-escape`（默认 `true`） | 默认行为（Esc 关闭）；**未暴露关闭 Esc 的开关** |
+
+**未提供命令式锚点 API**：PrimeVue 可用 `ref.show(event)` / `toggle(event)` / `hide()` 以事件坐标为锚点打开；本库为声明式（`#trigger` 插槽），以事件坐标为锚点的命令式打开无等价入口，需要该形态时请改用触发器元素或另行包裹定位逻辑（**命令式或迁移写法指引已登记为后续补强项，交付后同步本节**）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="popover" />

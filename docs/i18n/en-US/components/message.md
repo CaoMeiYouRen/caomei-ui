@@ -70,4 +70,19 @@ Colors come from the global semantic tokens: `primary` / `success` / `warning` /
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `severity` | `tone` (`success` → `success`, `info` → `primary`, `error` → `danger`, `warn` → `warning`, `secondary` / `contrast` → `neutral`) |
+| `variant="outlined"` / `"simple"` | `variant="outline"` / `"simple"`; without `variant` the default is `soft` |
+| `size` (`small` / `large`) | `size` (`sm` / `md` / `lg`) |
+| Default slot | Default slot, plus `title` / `description` props |
+| `icon` (string icon class) | `icon` boolean (icon picked from `tone`) plus the `#icon` slot |
+| `closable` | `closable` (the `#actions` slot is available for custom actions) |
+
+**Not implemented**: `sticky` / `life` (use Toast for auto-dismissing feedback); `close-icon` / `close-button-props`. Message has no `text` variant (PrimeVue officially ships only `outlined` / `simple`).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="message" />

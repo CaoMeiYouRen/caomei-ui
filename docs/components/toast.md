@@ -122,4 +122,21 @@ toast.clear()
 - `foreground`（默认）提示以 `assertive` 播报，`background` 以 `polite` 播报。
 - Provider 的提示队列与自增序列随实例创建，不在模块级共享，因此 SSR 下不会跨请求泄漏状态；未入队时视口无可见内容。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Toast />` | `<CaomeiToastProvider>`（在应用根部放置一次） |
+| `useToast().add({ ... })` | `useToast().show({ ... })`；另有 `info` / `success` / `warning` / `danger` 语义方法与 `dismiss(id)` / `clear()` |
+| `severity` | `tone`（`success` → `success`、`info` → `primary`、`warn` → `warning`、`error` → `danger`、`secondary` / `contrast` → `neutral`） |
+| `summary` / `detail` | `title` / `description` |
+| `life` | `duration`（毫秒；Provider 默认 `5000`，逐条可覆盖） |
+| `closable` | `closable` |
+| `<Toast position>` / `group` | `position` 由 Provider 统一配置（非逐条）；`group`（多实例分组）未实现 |
+| `styleClass` / `contentStyleClass` / `breakpoints` | 未实现 |
+
+**本库新增**：`action`（内联操作按钮）、`type`（`foreground` / `background`）；Provider 级 `max` / `hotkey` / `swipeThreshold` / `disableSwipe`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="toast" />

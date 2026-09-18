@@ -88,4 +88,19 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `CaomeiPopoverArrow` | `width`, `height` | Arrow pointing at the trigger |
 | `CaomeiPopoverClose` | `label` | Button that closes on click |
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Popover>` (content goes in the **default slot**; a `#container` slot can replace the whole container) | `<CaomeiPopover>` + `<CaomeiPopoverTrigger>` / `<CaomeiPopoverContent>` (plus `PopoverArrow` / `PopoverClose`) |
+| Visibility (controlled or internal) | `v-model:open` (uncontrolled by default; the trigger toggles it) |
+| `dismissable` (default `true`) | Default behavior of a non-modal popover (closes on outside click); `PopoverContent`'s `disable-outside-pointer-events` can turn it off |
+| `append-to` / `base-z-index` / `auto-z-index` / `breakpoints` | Not implemented (the panel is portalled to `body`, layering is managed by the library, breakpoint widths are unsupported); listen to `v-model:open` instead of the `@show` / `@hide` events |
+| `closeCallback` / `keydownCallback` in the `#container` scope | `<CaomeiPopoverClose>` (wrap your own button with `as-child`) |
+| `close-on-escape` (default `true`) | Default behavior (Esc closes); **there is no switch to turn Esc off** |
+
+**No imperative anchor API**: PrimeVue can open at the event coordinates via `ref.show(event)` / `toggle(event)` / `hide()`; here the API is declarative (the `#trigger` slot), so there is no equivalent for event-coordinate imperative opening — use the trigger element or position it yourself (**the imperative API or a migration recipe is registered as a follow-up; this section will be updated when it ships**).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="popover" />

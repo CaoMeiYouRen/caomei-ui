@@ -70,4 +70,19 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `severity` | `tone`（`success` → `success`、`info` → `primary`、`error` → `danger`、`warn` → `warning`、`secondary` / `contrast` → `neutral`） |
+| `variant="outlined"` / `"simple"` | `variant="outline"` / `"simple"`；无 `variant` 时默认 `soft` |
+| `size`（`small` / `large`） | `size`（`sm` / `md` / `lg`） |
+| 默认插槽承载内容 | 默认插槽，另提供 `title` / `description` prop |
+| `icon`（字符串图标名） | `icon` 布尔（按 `tone` 自动取图标）＋ `#icon` 插槽 |
+| `closable` | `closable`（另有 `#actions` 插槽放自定义操作） |
+
+**未实现**：`sticky` / `life`（自动消失的提示请改用 Toast）；`close-icon` / `close-button-props`。Message 无 `text` 变体（PrimeVue 官方仅 `outlined` / `simple`）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="message" />

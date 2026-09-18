@@ -122,4 +122,21 @@ Toast styles are based on CSS variables and kept low-specificity for easy overri
 - `foreground` toasts (default) are announced as `assertive`; `background` toasts as `polite`.
 - The Provider's toast queue and auto-increment sequence are created per instance and not shared at module level, so no state leaks across requests during SSR; the viewport has no visible content until a toast is enqueued.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Toast />` | `<CaomeiToastProvider>` (place once at the app root) |
+| `useToast().add({ ... })` | `useToast().show({ ... })`; also `info` / `success` / `warning` / `danger` and `dismiss(id)` / `clear()` |
+| `severity` | `tone` (`success` → `success`, `info` → `primary`, `warn` → `warning`, `error` → `danger`, `secondary` / `contrast` → `neutral`) |
+| `summary` / `detail` | `title` / `description` |
+| `life` | `duration` (ms; provider default `5000`, overridable per toast) |
+| `closable` | `closable` |
+| `<Toast position>` / `group` | `position` is provider-level, not per toast; `group` (multiple instances) is not implemented |
+| `styleClass` / `contentStyleClass` / `breakpoints` | Not implemented |
+
+**New here**: `action` (inline action button) and `type` (`foreground` / `background`); provider-level `max` / `hotkey` / `swipeThreshold` / `disableSwipe`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="toast" />

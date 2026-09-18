@@ -22,7 +22,7 @@
 | 图标 | `icon="pi pi-x"` 字符串类名 | `#icon` 插槽 + `@lucide/vue` 组件 | 字符串类名不被识别，须换成组件；见[图标](../components/icons.md) |
 | 浮层标题 | `header` | `title` | Dialog / Drawer 等浮层同步改名 |
 | 校验态 | `class="p-invalid"` | `:invalid` | 由 class 改为受控 prop |
-| 全宽 | `fluid` | 默认 `width: 100%` | 迁移时删除 `fluid`；**选择器家族另有 `20rem` 宽度上限**，需要真正全宽时把对应上限 token 覆盖为 `none`（见 §7 与[主题与样式 §4.1](../design/theming.md)）。**例外**：`SplitButton` 未实现 `fluid`，按内容宽度 |
+| 全宽 | `fluid` | 默认 `width: 100%` | 迁移时删除 `fluid`；**选择器家族另有 `20rem` 宽度上限**，需要真正全宽时把对应上限 token 覆盖为 `none`（见 §7 与[主题与样式 §4.1](../design/theming.md)）。**例外**：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度） |
 | 选项字段 | `option-label` / `option-value` | `optionLabel` / `optionValue` | 语义一致，仅命名风格不同 |
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |
@@ -37,7 +37,7 @@
 
 | 分组 | 组件 |
 | --- | --- |
-| 基础与布局 | [Button](/components/button)、[Card](/components/card)（对应 PrimeVue `Panel`）、[SplitButton](/components/split-button)、[Tag](/components/tag) |
+| 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
 | 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[Switch](/components/switch)、[Textarea](/components/textarea) |
 | 选择器 | [Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
 | 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |

@@ -22,7 +22,7 @@ This page is for teams moving from PrimeVue (v4) to caomei-ui: a practical migra
 | Icons | `icon="pi pi-x"` string class | `#icon` slot + an `@lucide/vue` component | String classes are not recognized; pass a component instead — see [Icons](/en-US/components/icons) |
 | Overlay title | `header` | `title` | Rename on Dialog / Drawer and other overlays |
 | Validation state | `class="p-invalid"` | `:invalid` | Replace the class with the controlled prop |
-| Full width | `fluid` | `width: 100%` by default | Drop `fluid`; **the selector family also carries a `20rem` width cap** — set the matching cap token to `none` when you truly need full width (see §7 and [Theming and styles §4.1](/design/theming.md), Chinese). **Exception**: `SplitButton` does not implement `fluid` and sizes to its content |
+| Full width | `fluid` | `width: 100%` by default | Drop `fluid`; **the selector family also carries a `20rem` width cap** — set the matching cap token to `none` when you truly need full width (see §7 and [Theming and styles §4.1](/design/theming.md), Chinese). **Exception**: `Button` uses `block` (span the parent width) and `SplitButton` does not implement `fluid` (it sizes to its content) |
 | Option fields | `option-label` / `option-value` | `optionLabel` / `optionValue` | Same semantics, different naming style |
 | Searchable single select | `Select` + `filter` | Use `CaomeiAutoComplete` | Reka Select has no filter primitive (a search box inside the panel violates the ARIA structure); see §7 and [Backlog](/plan/backlog.md) (Chinese) |
 | Event payloads | e.g. `Switch` `change` passes the native event | passes the resulting boolean | Same event name, different payload — update the handler signature |
@@ -37,7 +37,7 @@ Every component in the table below has a registered mapping in [Design spec §7]
 
 | Group | Components |
 | --- | --- |
-| Basics & Layout | [Button](/en-US/components/button), [Card](/en-US/components/card) (PrimeVue `Panel`), [SplitButton](/en-US/components/split-button), [Tag](/en-US/components/tag) |
+| Basics & Layout | [Avatar](/en-US/components/avatar), [Badge](/en-US/components/badge), [Button](/en-US/components/button), [Card](/en-US/components/card) (PrimeVue `Panel`), [Divider](/en-US/components/divider), [Image](/en-US/components/image), [SplitButton](/en-US/components/split-button), [Tag](/en-US/components/tag) |
 | Form Inputs | [Checkbox](/en-US/components/checkbox) / [CheckboxGroup](/en-US/components/checkbox-group), [InputNumber](/en-US/components/input-number), [Password](/en-US/components/password), [Switch](/en-US/components/switch), [Textarea](/en-US/components/textarea) |
 | Selectors | [Calendar](/en-US/components/calendar) / [DatePicker](/en-US/components/date-picker), [ColorPicker](/en-US/components/color-picker), [MultiSelect](/en-US/components/multi-select), [Select](/en-US/components/select), [SelectButton](/en-US/components/select-button), [ToggleButton](/en-US/components/toggle-button) |
 | Feedback & Overlays | [ConfirmDialog](/en-US/components/confirm-dialog), [Dialog](/en-US/components/dialog), [Drawer](/en-US/components/drawer), [Message](/en-US/components/message), [Popover](/en-US/components/popover), [Toast](/en-US/components/toast) |

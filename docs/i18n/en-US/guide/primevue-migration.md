@@ -40,10 +40,10 @@ Every component in the table below has a registered mapping in [Design spec §7]
 | Basics & Layout | [Button](/en-US/components/button), [Card](/en-US/components/card) (PrimeVue `Panel`), [SplitButton](/en-US/components/split-button), [Tag](/en-US/components/tag) |
 | Form Inputs | [Checkbox](/en-US/components/checkbox) / [CheckboxGroup](/en-US/components/checkbox-group), [InputNumber](/en-US/components/input-number), [Password](/en-US/components/password), [Switch](/en-US/components/switch), [Textarea](/en-US/components/textarea) |
 | Selectors | [Calendar](/en-US/components/calendar) / [DatePicker](/en-US/components/date-picker), [ColorPicker](/en-US/components/color-picker), [MultiSelect](/en-US/components/multi-select), [Select](/en-US/components/select), [SelectButton](/en-US/components/select-button), [ToggleButton](/en-US/components/toggle-button) |
-| Feedback & Overlays | [Dialog](/en-US/components/dialog), [Drawer](/en-US/components/drawer), [Message](/en-US/components/message) |
-| Data Display | [DataTable](/en-US/components/data-table), [DataView](/en-US/components/data-view), [Paginator](/en-US/components/paginator) |
+| Feedback & Overlays | [ConfirmDialog](/en-US/components/confirm-dialog), [Dialog](/en-US/components/dialog), [Drawer](/en-US/components/drawer), [Message](/en-US/components/message), [Popover](/en-US/components/popover), [Toast](/en-US/components/toast) |
+| Data Display | [DataTable](/en-US/components/data-table), [DataView](/en-US/components/data-view), [Paginator](/en-US/components/paginator), [ProgressBar](/en-US/components/progress-bar), [ProgressSpinner](/en-US/components/progress-spinner), [Skeleton](/en-US/components/skeleton) |
 
-> This table follows §7's currently registered components and **does not claim to be exhaustive** — it grows as §7 does. A component that is not listed here (for example [AutoComplete](/en-US/components/auto-complete), the target of `Select filter`) is governed by §7 and by its own component page API / "Scope and conventions". The per-component "Migration from PrimeVue" sections are being filled in gradually.
+> Where a component page's "Migration from PrimeVue" section disagrees with §7, **§7 wins** (drift is treated as a documentation defect). This table follows §7's currently registered components and **does not claim to be exhaustive** — it grows as §7 does. A component that is not listed here (for example [AutoComplete](/en-US/components/auto-complete), the target of `Select filter`) is governed by §7 and by its own component page API / "Scope and conventions". The per-component "Migration from PrimeVue" sections are being filled in gradually.
 
 ## Post-migration checklist
 

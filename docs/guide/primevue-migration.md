@@ -40,10 +40,10 @@
 | 基础与布局 | [Button](/components/button)、[Card](/components/card)（对应 PrimeVue `Panel`）、[SplitButton](/components/split-button)、[Tag](/components/tag) |
 | 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[Switch](/components/switch)、[Textarea](/components/textarea) |
 | 选择器 | [Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
-| 反馈与浮层 | [Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message) |
-| 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator) |
+| 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |
+| 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator)、[ProgressBar](/components/progress-bar)、[ProgressSpinner](/components/progress-spinner)、[Skeleton](/components/skeleton) |
 
-> 上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件（如 `Select filter` 的目标组件 [AutoComplete](/components/auto-complete)）以 §7 与其组件页的 API / 「范围与约定」为准。组件页的「从 PrimeVue 迁移」节正在滚动补齐。
+> 组件页的「从 PrimeVue 迁移」节与 §7 不一致时**以 §7 为准**（漂移视为文档缺陷）。上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件（如 `Select filter` 的目标组件 [AutoComplete](/components/auto-complete)）以 §7 与其组件页的 API / 「范围与约定」为准。组件页的「从 PrimeVue 迁移」节正在滚动补齐。
 
 ## 迁移后自检
 

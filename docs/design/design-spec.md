@@ -210,13 +210,13 @@
 | 受控字段 | `v-model:visible` / `v-model:value` | `v-model:open` / `v-model` |
 | 浮层标题 | `header` | `title` |
 | 校验态 | `class="p-invalid"` | `:invalid` |
-| 全宽 | `fluid` | 默认 `width: 100%`（迁移时删除；例外：`SplitButton` 未实现 `fluid`，按内容宽度）。选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`）另带 `20rem` 宽度上限，需要真正全宽时把对应上限 token 覆盖为 `none`（`DatePicker` 为 `--caomei-date-picker-max-width`；见[主题与样式设计 §4.1](./theming.md)） |
+| 全宽 | `fluid` | 默认 `width: 100%`（迁移时删除；例外：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度））。选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`）另带 `20rem` 宽度上限，需要真正全宽时把对应上限 token 覆盖为 `none`（`DatePicker` 为 `--caomei-date-picker-max-width`；见[主题与样式设计 §4.1](./theming.md)） |
 | 选项字段映射 | `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数；值支持 `string` / `number`） |
 | 可搜索单选 | `Select filter` | 改用 `CaomeiAutoComplete`（Reka Select 无 filter primitive，面板内搜索框违反 `aria-required-children`；自由文本差异见 [Backlog](../plan/backlog.md)） |
 
-> Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`icon-pos` → `iconPosition`；`:badge` → `badge`（非空字符串渲染于右上角外扩、不参与布局），`badge-severity` → `badgeTone`（`secondary` → `neutral`（默认同为中性色级）、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`info` / `contrast` 为**有损近似**，统一落 `neutral`）；`badge-class` 未实现（角标元素带 `.caomei-button__badge` 类，可直接覆盖样式）。
+> Button 迁移映射（已实现）：`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`rounded` → `rounded`；`fluid` → `block`（撑满父容器）；`size` 的 `small` / `large` → `sm` / `lg`；`icon`（字符串图标名）→ `#icon` 插槽（`@lucide/vue` 组件）；`icon-pos` → `iconPosition`；`:badge` → `badge`（非空字符串渲染于右上角外扩、不参与布局），`badge-severity` → `badgeTone`（`secondary` → `neutral`（默认同为中性色级）、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`info` / `contrast` 为**有损近似**，统一落 `neutral`）；**未实现 / 未暴露**：`badge-class` / `icon-class`（角标与图标元素带固定类名，可直接覆盖样式）、`loading-icon`（加载指示内建，`loading` 时自动禁用）、`raised` / `plain` / `link` 与 `variant="outlined" | "text" | "link"`（用 `variant` / `tone` 表达）、`as` / `as-child`（无多态渲染，需语义标签时在组件外包裹）。
 >
-> SplitButton 迁移映射（已实现）：`label` → 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名**（`development.md §组件设计`），图标按钮场景改传 `label`。`icon` → `#icon` 插槽（传 `@lucide/vue` 组件，非字符串类名）；`model` → `model`（`MenuItem` 的 `label` / `icon` / `command` / `disabled` 支持，另有 `separator`；`icon` 改传组件）；`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`size` 的 `small` / `large` → `sm` / `lg`；`rounded` → `rounded`。**未实现 / 未暴露（下游零用量）**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向：**自建**（Button + DropdownMenu 组合），Reka 无 SplitButton 对应（`Splitter` 为分栏布局，语义不符）。
+> SplitButton 迁移映射（已实现）：`label` → 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名**（`development.md §组件设计`），图标按钮场景改传 `label`。`icon` → `#icon` 插槽（传 `@lucide/vue` 组件，非字符串类名）；`model` → `model`（`MenuItem` 的 `label` / `icon` / `command` / `disabled` 支持，另有 `separator`；`icon` 改传组件）；`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`size` 的 `small` / `large` → `sm` / `lg`；`rounded` → `rounded`。**未实现 / 未暴露（下游零用量）**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向：**自建**（Button + DropdownMenu 组合），Reka 无 SplitButton 对应（`Splitter` 为分栏布局，语义不符）；本库另有 `menuLabel` / `menuSide` / `menuAlign` 控制菜单。
 >
 > ColorPicker 迁移映射（已实现）：`format` → `format`（`hex` / `rgb` / `hsb` 取值一致）；`disabled` → `disabled`；`inline` → `inline`；`invalid` → `invalid`；`appendTo` / `overlayClass` / `panelClass` 未实现（面板经 Portal 挂载，层级与外观由库管理）。**已知行为差异**：PrimeVue `format="hex"` 的 `v-model` 为**不带 `#`** 的 6 位十六进制（下游现以 `replace('#', '')` / 补 `#` 适配），本库统一使用标准 CSS 颜色字符串 `#rrggbb`（迁移时可移除该适配）；PrimeVue `format="rgb"` / `"hsb"` 的 `v-model` 为 `{ r, g, b }` / `{ h, s, b }` **对象**，本库统一为**字符串**（`rgb(r, g, b)` / `hsb(h, s%, b%)`）；`alpha` 通道不支持（带 alpha 输入按 6 位十六进制归一）；模型仅接受 `#rgb` / `#rrggbb` / `#rrggbbaa`、`rgb()` / `rgba()`、`hsl()` / `hsla()`、`hsb()` / `hsba()`，具名色与 `oklch()` 等不支持（回退 `defaultColor`）。实现取向：封装 Reka ColorArea / ColorSlider / ColorField（Alpha）并按精确版本 `reka-ui@2.10.4` 锁版；**预设色板未采用 Reka `ColorSwatchPicker`**，改为自建 `role="group"` + `aria-pressed` 按钮组——其 `ColorSwatchPickerItem` 会强制注入 Reka 英文色名（`getColorName()`，且内层组件不转发 `aria-hidden`）、外部改色时经 Listbox 高亮链抢占焦点、且选中态无法用 attrs 覆盖（`ListboxItem` 把 `aria-selected` 写在 `$attrs` 之后），三条都直接影响可用性与可访问性。
 >
@@ -224,7 +224,7 @@
 >
 > Checkbox 分组与 CheckboxGroup（已实现）：PrimeVue 非 binary 的 `<Checkbox v-model="数组" :value="id">` → **同形**（`v-model` 传数组、`value` 作为成员标识，点击按 `value` 增删——经一方源码 `checkbox/index.mjs#onChange` 逐行核对）；PrimeVue `<CheckboxGroup v-model="数组" name>`（仅提供分组上下文、默认插槽渲染子项、不渲染选项、无全选）→ `CaomeiCheckboxGroup` 同形兼容，并**新增** `options`（按 `optionLabel` / `optionValue` 渲染子项）、`selectAll`（全选 / 半选，禁用项不参与）、`label`（分组可访问名）与 `rovingFocus`（默认 `false`，保持原生逐项 Tab 顺序）；`input-id` → `id`。**已知差异（有意）**：分组层不叠加禁用透明度（子项各自处理，避免双重变淡）；子项处于分组上下文时不生成自身隐藏控件（Reka `CheckboxRoot` 的 `isFormControl && name && !checkboxGroupContext` 条件），故分组 `name` 已覆盖整组提交，子项无需再传 `name`。
 >
-> Panel 迁移映射（不新建组件）：PrimeVue `<Panel :header>` → `CaomeiCard` 的 `title` prop（或 `#title` / `#header` 插槽）；`#header` → `#header`；`#footer` → `#footer`；`#icons` → `#extra`；需要可折叠的面板改用 `CaomeiAccordion`。
+> Panel 迁移映射（不新建组件）：PrimeVue `<Panel :header>` → `CaomeiCard` 的 `title` prop（或 `#title` / `#header` 插槽）；`#header` → `#header`；`#footer` → `#footer`；`#icons` → `#extra`；需要可折叠的面板改用 `CaomeiAccordion`。Card 自身（PrimeVue `Card` 无 props，具名插槽 `header` / `title` / `subtitle` / `content` / `footer`）→ `#header` / `#title`（或 `title` prop）/ `subtitle` prop（仅字符串，无插槽等价）/ 默认插槽 / `#footer`；本库新增 `variant`（`outlined` / `elevated` / `filled`）、`padding`、`hoverable`、`as` 与 `#extra`。
 >
 > Select 家族对象选项映射（已实现）：`option-label` / `option-value` → `optionLabel` / `optionValue`，字符串形态支持 `a.b` 点号路径；`optionValue` 解析结果非 `string` / `number` 的选项不渲染（Select / MultiSelect / SelectButton 一致）。
 >
@@ -242,7 +242,7 @@
 >
 > Message 迁移映射（已实现）：`severity` → `tone`（`error` → `danger`、`warn` / `warning` → `warning`、`info` → `primary`、`secondary` / `contrast` → `neutral`、`success` → `success`；`secondary` / `contrast` / `info` 为有损近似）；`variant="outlined"` → `variant="outline"`、`variant="simple"` → `variant="simple"`（PrimeVue Message 仅 `outlined` / `simple`，无 `text`；无 `variant` 的默认形态对应 `soft`）；`size` 取 `sm` / `md` / `lg`（对齐 `small` / `large`）。
 >
-> Tag 迁移映射（已实现）：`severity` → `tone`（`secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`secondary` / `contrast` / `info` 均为**有损近似**）。Tag 无 `error` 用量，通用语义色映射见 [momei 使用复核台账 §4.3](./governance/2026-09-14-momei-usage-audit.md)；`outlined` → `variant="outline"`；`rounded` → `rounded`；`value` → 默认插槽；字符串 `icon` → `#icon` 插槽。Tag **不新增** `outlined` / `severity` 布尔别名与 `value` prop（`variant` 已覆盖形态、映射走 `tone`、内容走插槽）。
+> Tag 迁移映射（已实现）：`severity` → `tone`（`secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`；`secondary` / `contrast` / `info` 均为**有损近似**）。Tag 无 `error` 用量，通用语义色映射见 [momei 使用复核台账 §4.3](./governance/2026-09-14-momei-usage-audit.md)；`rounded` → `rounded`；`value` → 默认插槽；字符串 `icon` → `#icon` 插槽。Tag **不新增** `severity` / `value` 别名与 prop（**PrimeVue Tag 无 `outlined` prop**——其功能 props 仅 `value` / `severity` / `rounded` / `icon`；`variant` 为本库新增的形态表达）。
 >
 > Textarea 迁移映射（已实现）：`auto-resize` → `autoResize`（默认 `false`，高度由包装层写入内联 `height`；开启时 `resize` 固定 `none`，`rows` 保留为初始最小高度；不设上限，封顶由消费方在使用层叠加 `max-height`）。
 >
@@ -267,6 +267,14 @@
 > ProgressSpinner 迁移映射（已实现）：尺寸经 `size` 档位（`sm` / `md` / `lg` ＝ 16 / 24 / 32px）或覆盖 `--caomei-progress-spinner-size`（对应 PrimeVue 经 `style` 传任意 px）；`strokeWidth` 未实现（当前经 CSS 变量 `--caomei-progress-spinner-stroke`，档位默认 2 / 2 / 3px；**该 prop 已登记为后续补强项，交付后同步本节**）；`fill` 未实现（轨道颜色经 `--caomei-progress-spinner-track`）；`animationDuration` 未实现（固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s`）；`label` 为本库新增可访问名（未提供时回退内建「加载中」文案）。
 
 > Skeleton 迁移映射（已实现）：`shape="circle"` / `"rectangle"` → `variant="circular"` / `"rectangular"`（另有本库默认 `text`）；`width` / `height` 同名；`animation` 的 `wave` / `none` 同名可选，**本库默认 `pulse`（PrimeVue 默认 `wave`）属有意差异**；`size` / `borderRadius` 未实现（分别以 `width` / `height` 与 CSS 覆盖表达）；`lines`（`variant="text"` 时渲染多行）为本库新增。
+
+> Avatar 迁移映射（已实现）：`image` → `src`；`label` → `fallback`（缺省时取 `alt` 首字母大写）；`icon`（字符串图标名）→ 未实现（改用 `#fallback` 插槽 + `@lucide/vue`）；`size`（`normal` / `large` / `xlarge`）→ `size`（`sm` / `md` / `lg`）；`shape`（`square` / `circle`）同名；`aria-label` / `aria-labelledby` 透传。**已知差异（有意）**：默认 `shape` 为 `circle`（PrimeVue 默认 `square`）、默认 `size` 为 `md`（PrimeVue `normal`）；`delayMs`（图片加载失败后的回退延迟）与 `#fallback` 插槽为本库新增。
+
+> Badge 迁移映射（已实现）：`value` → `value`（超过 `max` 截断为 `max+`；`null` / 空串不渲染）；`severity` → `tone`（`secondary` / `contrast` → `neutral`、`info` → `primary`、`success` → `success`、`warn` → `warning`、`danger` → `danger`；`info` / `contrast` 为有损近似）；`size`（`small` / `large` / `xlarge`）→ `size`（`sm` / `md` / `lg`）。**已知差异（有意）**：默认 `tone` 为 `danger`、`variant` 为 `solid`（PrimeVue 未传 `severity` 时走默认主色样式）；`variant`（`soft` / `solid` / `outline`）、`max`、`dot`、`label` 与「默认插槽作为叠加角标」为本库新增。
+
+> Divider 迁移映射（已实现）：`layout`（`horizontal` / `vertical`）→ `orientation`（同名取值）；`type`（`solid` / `dashed` / `dotted`）→ `variant`（同名取值）；`align` → `align`（本库仅 `left` / `center` / `right`，**垂直布局的 `top` / `bottom` 对齐未支持**）；内容经默认插槽（仅横向参与布局）。
+
+> Image 迁移映射（已实现）：`src` → `src`；`preview`（点击放大 + 遮罩）→ **未实现（已登记为后续补强项，交付后同步本节）**；`indicatorIcon` / `previewIcon` → 未实现（同上）；`imageStyle` / `imageClass` → 未实现（样式经组件根类与 CSS 变量覆盖；原生图片属性不透传到内层 `<img>`）；`zoomInDisabled` / `zoomOutDisabled` → 不适用（无预览）。**本库新增**：`alt`、`ratio`（按比例占位防抖动）、`fit`、`lazy`（进入视口再请求）与 `#loading` / `#error` 插槽。
 
 ## 8. 规范落实与可验证脚本（已实现）
 

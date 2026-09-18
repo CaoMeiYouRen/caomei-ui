@@ -59,7 +59,7 @@
 | Tabs（含 TabList/TabContent） | 封装 Tabs | Tabs |
 | Accordion | 封装 Accordion | Accordion |
 | Menu / DropdownMenu | 封装 DropdownMenu | DropdownMenu |
-| Image | 自建（img + 懒加载） | 无（可选 AspectRatio 比例容器） |
+| Image | 自建（img + 懒加载 + 点击预览） | Dialog（预览遮罩模态） |
 | SelectButton / SegmentedControl | 封装 ToggleGroup | ToggleGroup |
 | FileUpload | 自建 | 无 |
 

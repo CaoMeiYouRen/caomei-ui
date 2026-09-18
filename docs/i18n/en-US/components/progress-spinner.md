@@ -51,4 +51,16 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| width/height via `style` (any px) | `size` presets (`sm` / `md` / `lg` = 16 / 24 / 32px) or override `--caomei-progress-spinner-size` |
+| `strokeWidth` | Not implemented: use the `--caomei-progress-spinner-stroke` CSS variable (preset defaults 2 / 2 / 3px); **registered as a follow-up, this section will be updated when it ships** |
+| `fill` (circle background) | Not implemented: the track color comes from `--caomei-progress-spinner-track` |
+| `animationDuration` | Not implemented: fixed at `0.6s`, and `1.6s` under `prefers-reduced-motion` |
+| — | `label` (accessible name; falls back to the built-in "Loading" text) is new here |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="progress-spinner" />

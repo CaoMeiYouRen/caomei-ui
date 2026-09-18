@@ -56,4 +56,19 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `shape="circle"` | `variant="circular"` |
+| `shape="rectangle"` | `variant="rectangular"` |
+| 无 | `variant="text"`（本库默认） |
+| `width` / `height` | 同名 |
+| `animation`（`wave` / `none`） | 同名可选；**本库默认 `pulse`（PrimeVue 默认 `wave`）属有意差异** |
+| `size`（圆形 / 方形尺寸） | 未实现：用 `width` / `height` 表达 |
+| `borderRadius` | 未实现：经 CSS 覆盖 |
+| 无 | `lines`（`variant="text"` 时渲染多行）为本库新增 |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="skeleton" />

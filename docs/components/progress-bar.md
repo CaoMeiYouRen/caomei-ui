@@ -55,4 +55,16 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `value` | `value`（`null` / 非有限值 → **不确定态**） |
+| `mode="indeterminate"` | 未暴露：由 `value` 是否为 `null` / 非有限值推导 |
+| `mode="determinate"` | 默认：提供合法 `value` 即为确定态 |
+| `showValue`（默认 `true`，条上渲染百分比文本） | 未实现：本库不在条上渲染数值文本；可访问名经 `label` / `aria-label` / 语言兜底文案 |
+| 无 | `max`（默认 `100`，越界值收窄）与 `size`（`sm` / `md` / `lg`）为本库新增 |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="progress-bar" />

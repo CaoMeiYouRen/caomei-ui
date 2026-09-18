@@ -49,4 +49,17 @@
 - 空态文案默认本地化，`emptyText` 与 `#empty` 均可覆盖。
 - 布局切换属于使用方内容层的交互，请为其控件提供可访问名（示例中的 `label`）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `value` | `value`（`null` 与空数组均视为空态） |
+| `layout` | `layout`（默认同为 `list`） |
+| `#list` / `#grid` / `#empty` / `#header` / `#footer` | 同名插槽（`#list` / `#grid` 收到 `{ items }`，`#empty` 额外收到 `layout`） |
+| `:loading`（PrimeVue 无此 prop，传入不生效） | `loading` / `loadingText`（本库新增，加载时根标注 `aria-busy`） |
+
+**未实现**：分页（`paginator` / `rows` / `first` / `totalRecords` 及分页插槽）、排序（`sortField` / `sortOrder`）、`lazy`、`dataKey`；网格列定义由内容层承担（PrimeVue 同样不内置）；其余 prop / 插槽的完整口径见[设计规范 §7](../design/design-spec.md)。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="data-view" />

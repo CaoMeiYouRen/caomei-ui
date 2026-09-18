@@ -51,4 +51,16 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| 经 `style` 传宽高（任意 px） | `size` 档位（`sm` / `md` / `lg` ＝ 16 / 24 / 32px）或覆盖 `--caomei-progress-spinner-size` |
+| `strokeWidth` | 未实现：当前经 CSS 变量 `--caomei-progress-spinner-stroke`（档位默认 2 / 2 / 3px）；**该 prop 已登记为后续补强项，交付后同步本节** |
+| `fill`（圆背景色） | 未实现：轨道颜色经 `--caomei-progress-spinner-track` |
+| `animationDuration` | 未实现：固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s` |
+| 无 | `label`（可访问名；未提供时回退内建「加载中」文案）为本库新增 |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="progress-spinner" />

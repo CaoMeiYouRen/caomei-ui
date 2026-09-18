@@ -56,4 +56,19 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `shape="circle"` | `variant="circular"` |
+| `shape="rectangle"` | `variant="rectangular"` |
+| — | `variant="text"` (the default here) |
+| `width` / `height` | Same names |
+| `animation` (`wave` / `none`) | Same names optional; **this library defaults to `pulse` (PrimeVue defaults to `wave`) — an intentional difference** |
+| `size` (circle / square size) | Not implemented: express it with `width` / `height` |
+| `borderRadius` | Not implemented: override via CSS |
+| — | `lines` (renders multiple rows for `variant="text"`) is new here |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="skeleton" />

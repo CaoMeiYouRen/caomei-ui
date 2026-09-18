@@ -55,4 +55,16 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `value` | `value` (`null` / non-finite → **indeterminate**) |
+| `mode="indeterminate"` | Not exposed: derived from `value` being `null` or non-finite |
+| `mode="determinate"` | Default: any valid `value` is determinate |
+| `showValue` (default `true`, renders the percentage inside the bar) | Not implemented: no numeric text is rendered; the accessible name comes from `label` / `aria-label` / the locale fallback |
+| — | `max` (default `100`, out-of-range values clamped) and `size` (`sm` / `md` / `lg`) are new here |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="progress-bar" />

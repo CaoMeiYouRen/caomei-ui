@@ -102,6 +102,10 @@ chromium.launch({
 - **几何断言的容器口径**：容器的「可视区」取 client rect（`getBoundingClientRect()` + `clientLeft` / `clientTop` + `clientWidth` / `clientHeight`）；`boundingBox()` 是 border box，直接当可视区用会多出边框宽。
 - **真实页面验证与合成夹具互补**：夹具给可判定的几何数值，真实页面（文档站产物预览）额外暴露宿主侧效应（外壳最小宽、主题 / 表格重置）；两者数值有差时应逐项归因，再判是否为组件缺陷。
 - **判别「上游行为 vs 组件缺陷」**：用**无组件 CSS 的纯 HTML 夹具**复现同构几何，可把结论钉死在上游（如 Chromium 焦点滚动只在聚焦元素与滚动区完全不相交时介入）。
+- **一次性 V 夹具必须引入库样式入口**（如 `import '@/styles/index.css'`）：只 import 组件时 `var(--caomei-*)` 未定义，触发 invalid at computed-value time——遮罩底色算成 `rgba(0,0,0,0)`、`color` 回退继承，几何断言会全过而颜色断言失真。**新增 CSS import 后须重启 Vite dev server**（HMR 不加载新 import）。
+- **判定「既有问题 vs 本批回归」用未改动同类页对照**：新页 / 新档位命中某现象时，先看未改动的同类页是否同样命中（同根因即归入既有观察项并登记 Backlog，不判本批缺陷）。
+- **证据脚本要落盘可复现产物**：一次性探针除 `console.log` 外须 `writeFileSync` 落盘 JSON，并输出记录中引用的**原始数值**（rect 的 `x/right/width`、计数、布尔），而非只给布尔摘要；取整与记录的小数位对齐或注明。
+- **浏览器面板 / 视觉通道不可用时仍可取证**：把一次性 Playwright 脚本放进仓库内 **gitignored 目录**（如 `test-results/`，bare specifier 可解析到 `node_modules`），用 `getComputedStyle` / `getBoundingClientRect` 做几何与样式断言、本地 OCR 佐证文案渲染，并在记录中显式登记「未做像素级比对」。
 
 ## 8. 组件测试写法
 
@@ -116,6 +120,11 @@ chromium.launch({
 - happy-dom 事件需 `cancelable: true`，`preventDefault()` 才会置 `defaultPrevented`（Reka `DismissableLayer` 依该标志决定是否 dismiss）；`closeOnEsc` / `closeOnOverlay` 的行为断言要传 `cancelable: true` 并断言 `update:open`；`pointerdown` 外部点击监听在 `setTimeout(0)` 后注册，需先等一个宏任务再派发。
 - 颜色 / 几何类控件的断言须位置与数值敏感：在 0×0 元素上点击其 50% 等同于点在最左端（hue=0），「颜色变了」这类弱断言会给出假阳性；应断言 `aria-valuenow`、thumb 几何与程序值 / 播报值一致。
 - 需同时断言插槽内容与作用域参数时，插槽必须用渲染函数（如 `slots: { list: (props) => h('div', props.items.length) }`）；VTU 的字符串插槽拿不到作用域参数，写了也只会得到假阳性。
+- **焦点类用例需 `mount(..., { attachTo: document.body })`**：happy-dom 下未挂到 document 的元素无法成为 `document.activeElement`，`focus()` 断言恒为 `body`；挂载后「未聚焦打开 → 关闭回焦」这类路径才可判定。
+- **异步落位的 DOM / 焦点断言用条件轮询**（`await vi.waitFor(() => { expect(...).toBe(...) })`），不要猜 `nextTick` 数——固定等待在重负载下会 flake。
+- **不要用 `document.body.innerHTML = ''` 清理 teleport 内容**（组件 `attachTo: document.body` 时）：Vue 持有的锚点被移除会在卸载阶段抛 `Cannot read properties of null (reading 'nextSibling')`；Portal 清理交给 `enableAutoUnmount(afterEach)`，或 `unmount()` 后按选择器删具体节点。
+- **断言要挑「随实现变化而变」的量**：上游无条件输出的属性（如 `RovingFocusItem` 的 `tabindex="-1"`）恒真，应改为断言行为（聚焦后按键、`document.activeElement` 迁移路径）；集合类断言须先断言长度，`.every()` 在空集合上恒真。
+- **可访问名 / 不透明度等要断言「有效值」而非元素自身值**：`opacity` 沿祖先链连乘（`0.6 × 0.6 = 0.36`）、Reka 会把 `calendar-label` 合成为「日历, <月份>」；只断言属性字符串会漏检，须用 role+name 查询、`ariaSnapshot` 或 CDP AX 树取证。
 
 ## 9. 反模式
 
@@ -131,3 +140,4 @@ chromium.launch({
 - 由注册表派生的公开联合类型扩展后，d.ts 冒烟须带**负向对照**（`@ts-expect-error` 下未注册值应报错），否则「通过」无法区分「类型被放宽」与「类型正确」。
 - **几何类常驻用例必须守卫自己的前置条件**：先构造状态（如把容器滚到末尾）再硬断言该状态成立（`expect(wasFullyOutside).toBe(true)`），否则夹具一改用例即静默恒真；夹具几何要留可判定余量（内容总宽明显超出容器，而非刀刃值），无判别力的用例应删除并在注释写明机制同源。
 - 断言只覆盖一个轴会漏检另一轴：允许换行 / 滚动的容器除横向口径外必须同时断言 `scrollHeight <= clientHeight + 1` 与「成员 rect 落在容器 client rect 内」。
+- **清单 / 枚举类内容的断言覆盖全集而非抽样**：迁移节的「未实现清单」等应把关键词集合与清单条目一一对应并用 `.every()` 断言（只取 2 个词会被判粒度过窄、无法防回退）。

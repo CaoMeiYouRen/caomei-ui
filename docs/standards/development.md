@@ -92,6 +92,14 @@ test/                     # 单元与 E2E 测试
 - 时间类输入自建时：原生 `<input type="number">` + `change` 钳位、非法 / 空输入回滚 DOM 到模型值、`readonly` / `disabled` 在 handler 内二次守卫；`type="number"` 下 `Number('') === 0`，空串须单独判为「不改写」。
 - 组合 Reka Alpha primitive 时，包装层覆盖不到的动态可访问文案需逐一接管：`aria-valuetext`（thumb 拼英文通道名）、`aria-label`（色板项用英文色名，且内层不转发 `aria-hidden`，需自有包裹层遮罩）。
 - primitive 的 anatomy 不可改：如 `ColorAreaThumb` 必须嵌套在 `ColorAreaArea` 内，否则区域键盘（keydown 落在 area）与拖拽（pointer capture 落在 thumb）都会失效。
+- 封装 Reka Dialog 模态时 `DialogContent` **不自动输出 `aria-modal`**，须显式声明；自定义触发器必须包在 `<DialogTrigger>` 内——`DialogContentImpl` 仅在活动元素非 `body` 时才回退记录 `triggerElement`，而 `onCloseAutoFocus` 会抑制 FocusScope 的「回到先前焦点元素」兜底，Safari / 触摸下（按钮不获焦）关闭后焦点会落回 `body`。
+- `v-bind="attrs"` 之后并列 `:prop="可能为 undefined 的值"` 会经 `mergeProps` **删除**透传值（`undefined` 不被跳过）。凡「组件有意见才输出」的属性一律条件展开 `...(cond ? { x } : {})`。
+- 深层响应式数据里放 Vue 组件对象（如带 `icon: Component` 的选项表）会触发「made a reactive object」告警并被 Proxy 包裹；整体替换、从不原地变更的归档对象用 `shallowRef`（`markRaw` 只能拦新建代理）。
+- 包装型触发器 `as-child` 复用自定义按钮时，其硬编码外观类会合并到子元素并与子元素样式竞争；提供显式样式豁免 prop（`unstyled`）而不是在 `asChild` 时静默跳过类名。
+- 受控 / 非受控双模式：**props 变化 → 同步内部值**（显式来源），**其他依赖变化 → 只钳位内部现值**，不得用 props 覆写用户已改的内部状态；事件载荷里的派生值必须按本次载荷自身推算（把新值作为入参传给派生函数），不能用当前 props。
+- 组件间复用（如 Paginator 内嵌 Select）会把被复用组件的交互契约带进宿主：新控件默认不受宿主 `disabled` 等约束，必须显式透传并补对应用例，否则宿主的既有承诺出现用例覆盖不到的缝隙。
+- 组件默认值变更会连带证伪迁移台账里的既有结论，须回扫全部载体（中英组件页 / 主题 / 设计规范 / 评估与交接记录）并给受影响用量留可复现命令。
+- `useSlots()` 返回的是对 `instance.slots` 的**实时对象**（Vue 3.5 为内部原型链对象，`getCurrentInstance().slots` 等价），不是 setup 期快照；插槽存在性判断放在模板渲染期，不要据「setup 期读到空对象」写技术论断。
 
 ## 6. 组件 API 设计约定
 
@@ -120,6 +128,9 @@ test/                     # 单元与 E2E 测试
 - 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
 - 表格单元格内放 inline-flex 组件（如复选框）会因基线对齐产生约 1px 行高抖动，选中态指示器出现时更明显；用 `display: flex` 包裹容器承载可消除，单元格高度取 max 后与文本列一致。
 - 组件 scoped 规则不得为几何属性（`overflow-y` / `max-height` 等）声明样式：这会抬高特异性、挡住消费方覆盖，使使用层叠加的封顶 / 裁剪配方失效；能依赖原生默认行为时不在组件内声明。
+- CSS 变量被 `border` 等**简写**消费时，语义非法值会触发 invalid at computed-value time，令**整条声明被丢弃**（如圆环 `border` 消失、元素不可见），而非回退默认。接受这类 prop 的组件必须做**白名单**校验（合法长度 / 关键字）而非注入字符黑名单；负向取证除宽度外还须断言 `border-style`。
+- 存量 CSS 钩子提升为 prop 时，缺省路径必须逐值不变：仅「提供时」以内联同名变量覆盖（内联声明在层叠中高于作者选择器，与 `:where()` 归零特异性无关），未提供时仍由档位类给出与改造前一致的默认值；验收覆盖「不传 → 档位默认」与「传 → 覆盖档位」两条路径，文档写明非法值也回退。
+- 渲染正确性若依赖 **CSS 层叠 tie-break**（注入规则与 scoped 基线同特异性、靠源序取胜）：happy-dom 单测只能证明规则文本存在、不能证明渲染结果变了，必须改由真实浏览器取 computed style 作证据；承重假设（含「Portal 目标 / 样式注入位置变更须复核」）要写入设计文档与源码注释。
 
 ## 8. 构建与产物
 
@@ -144,7 +155,7 @@ test/                     # 单元与 E2E 测试
 - **落点**：组件间共享落 `src/components/_shared/`；对外公开的能力落 `src/composables/` 并从包根导出。两者均使用显式返回类型。
 - **行为不变**：抽取不得改变对外 props / emits / slots 与渲染结果（DOM 结构与可访问属性逐项不变）；需要调整行为时按独立条目处理。
 - **单点定义**：同一契约只在一处定义（如类名拼接顺序、ARIA 透传优先级、布尔假值处理），引用处不得重新内联。
-- **引用点同步**：抽取后清理全部内联副本，禁止新旧实现并存。
+- **引用点同步**：抽取后清理全部内联副本，禁止新旧实现并存；但**不同值档位不得顺手归并**（如 `0.5` 并入 `0.6`）——那是视觉 / 行为变更，须独立验收与用户裁决。
 - **测试**：抽取出的共享单元补针对性单测；既有组件行为断言沿用，不得为配合抽取而放宽。
 - **净收益判据**：表达式级重复（如 `x || undefined`、`props.x ?? locale.value.ns.key`）抽成 helper 往往使调用点更长，属负收益；有正收益的是「语义单点 + 类型收窄 + 多处同构块」。
 
@@ -166,3 +177,4 @@ test/                     # 单元与 E2E 测试
 - 块注释内写字面 glob 的 `*/`（如 `./.vitepress/**/*.ts`）会**提前闭合注释**，其后文本被当作代码（ESLint 报 `Parsing error`、vue-tsc 报 TS1443/TS1127）。`.d.ts` 声明不生效时，先看是否有解析错误，再怀疑 include / projectService 归属。
 - ESLint 的 type-aware 检查与 `vue-tsc` 的解析链不同：后者经 `@vue/language-core` 解析 SFC，前者走原生 TypeScript。项目未声明 `declare module '*.vue'` 时，组件导入会退化为 `any`，使 `mount()` 返回 `VueWrapper<any, any>` 并触发成片的 unsafe 族误报。
 - 通配 `*.vue` 声明是「以降低模块解析诊断换取类型链可用」的取舍：任何 `.vue` 结尾的说明符都会解析成功，路径拼错不再报 TS2307；前提是失败仍闭合（由 `pnpm build` 与 `pnpm test` 的模块解析兜底），且边界须写入声明注释。
+- ESLint 9 扁平配置**不自动读取 `.gitignore`**：构建产物目录（如 `docs/.vitepress/.temp`、`.nuxt`、`dist`）必须在 `ignores` 中显式列出，否则本地跑过一次构建后 lint 会把产物当源码扫（实测 12 万+ 报错）；CI 干净检出不会暴露，属「只在开发者本地复现」的假失败。

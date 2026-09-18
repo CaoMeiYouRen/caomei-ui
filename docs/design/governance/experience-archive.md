@@ -4,6 +4,104 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-19 阶段归档蒸馏（Phase 7 第二阶段 M5 / M6）
+
+> 本批活跃 **82 条全部处置**：分态 `migrate 82 / compress 0 / remove 0 / keep 0`（部分条目的落点在此前批次已存在于既有文档）。归档摘要 **82 行**（可复算：`awk '/^## 2026-09-19 阶段归档蒸馏/,/^## 2026-09-17 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`documentation-site §5/§13/§15`、`development §5/§7/§10/§12`、`testing §7/§8/§10`、`ai-collaboration §8`、`planning §3.7/§4/§9`、`design-spec §7`、`git §3`、`guide/development.md`；`wisdom.md` 活跃段清空并保留指针。
+
+### 迁移文档撰写（→ [文档与演示站设计 §15](../documentation-site.md)）
+
+- [2026-09-18] [pattern] 同一批次内「事实源登记」与「页面撰写」必须互校（未实现清单类字段尤甚） → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 「未实现清单」按三态判定（已实现 / 真未实现 / 已登记在途） → docs/design/documentation-site.md
+- [2026-09-18] [bug] 「与既有条目保持一致」不等于正确：旧条目可能本身是错的，须独立回源并同批修正引用点 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 通用行（跨组件表）的例外清单必须随组件级映射同步回扫 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 页面「多写」也是漂移的一种，须回补 §7 或声明细化口径 → docs/design/documentation-site.md
+- [2026-09-18] [bug] 迁移映射的 slot / props / emits 名必须回一方源码 `Slots` / `Props` / `Emits` 接口逐个核对 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 迁移文档事实源是三方（PrimeVue 源码 / 本库 API / §7），必须同时核对 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 同一映射双写时必须显式声明优先级（不一致以 §7 为准） → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 索引 / 入口类文档声明「不宣称穷尽」并尽量以集合差机检 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 「A 会导致 B」类因果断言取一方源码的条件分支，写成机制而非结论 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 「对齐 PrimeVue / 与 X 一致」类语义声明必须先取一方源码（并把「我实现了什么」与「上游怎么做」分两句） → docs/design/documentation-site.md
+- [2026-09-19] [bug] 「语义反转 / 默认相反」须并列两侧默认值支撑：默认一致只能写「形态变化」（布尔 flag → 枚举） → docs/design/documentation-site.md
+- [2026-09-19] [bug] 迁移映射表的「映射目标」与「本库新增」互斥，写完核对交集为空 → docs/design/documentation-site.md
+- [2026-09-19] [pattern] 收口类改动要回扫同段「存活句」的旧口径，让索引 / 脚注 / 治理记录三处一致 → docs/design/documentation-site.md
+- [2026-09-19] [process] 「不补节」的排除判据让位索引闭环；决策反转须在治理记录说明理由 → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 模板顺序约定要与有序列表自洽（迁移节与 FAQ 的相对位置一次写清） → docs/design/documentation-site.md
+- [2026-09-18] [pattern] 中英镜像的双写修复必须逐文件核对，不能只声明「中英同步」 → docs/design/documentation-site.md
+
+### 组件实现与样式（→ [开发规范 §5 / §7](../../standards/development.md)）
+
+- [2026-09-19] [bug] Reka `DialogContent` 不自动输出 `aria-modal`，封装模态须显式声明 → docs/standards/development.md
+- [2026-09-19] [bug] 自定义触发器封装 Reka Dialog 时须包进 `<DialogTrigger>`，否则未聚焦打开（Safari / 触摸）关闭后不回焦 → docs/standards/development.md
+- [2026-09-17] [bug] `v-bind="attrs"` 后并列 `:prop="可能 undefined"` 会经 `mergeProps` 删除透传值；「有意见才输出」一律条件展开 → docs/standards/development.md
+- [2026-09-18] [bug] 深层响应式数据里放 Vue 组件对象会触发代理告警；整体替换的归档对象用 `shallowRef` → docs/standards/development.md
+- [2026-09-18] [pattern] 包装型触发器 `as-child` 复用自定义按钮时外观类会合并，须提供 `unstyled` 样式豁免而非静默跳过 → docs/standards/development.md
+- [2026-09-18] [pattern] 受控 / 非受控：props 变化 → 同步内部；其他依赖变化 → 只钳位内部现值 → docs/standards/development.md
+- [2026-09-18] [pattern] 事件载荷的派生值按本次载荷自身推算，不能用当前 props → docs/standards/development.md
+- [2026-09-18] [pattern] 组件间复用会把被复用组件的交互契约带进宿主（`disabled` 须显式透传并补用例） → docs/standards/development.md
+- [2026-09-18] [pattern] 组件默认值变更会证伪迁移台账既有结论，须回扫全部载体 → docs/standards/development.md
+- [2026-09-18] [bug] CSS 变量被 `border` 简写消费时非法值会丢弃整条声明；prop 校验必须白名单，负向取证同时断言 `border-style` → docs/standards/development.md
+- [2026-09-18] [pattern] 存量 CSS 钩子提升为 prop 时缺省路径逐值不变，仅提供时内联覆盖 → docs/standards/development.md
+- [2026-09-17] [pattern] `useSlots()` 是实时对象（Vue 3.5 为内部原型链对象）而非 setup 期快照，插槽存在性判断放模板渲染期 → docs/standards/development.md
+- [2026-09-17] [bug] `inheritAttrs: false` 下 `mergeProps` 不跳过 `undefined`（与上条同源，已在文档单点覆盖） → docs/standards/development.md
+- [2026-09-17] [bug] Vue 模板同一元素只允许一个无参 `v-bind`，多个须脚本内合并 → docs/standards/development.md
+- [2026-09-17] [pattern] 有语言兜底的可访问名会吞掉透传 `aria-label`，优先级 `props.label ?? attrs['aria-label'] ?? locale` → docs/standards/development.md
+- [2026-09-17] [bug] 组合容器按「成员根元素」写的 `> *` 规则会因包装层静默失配（Select 圆角 / 宽度同时失效） → docs/design/design-spec.md §7
+- [2026-09-18] [bug] 文档站 `.vp-doc li + li` 会污染 demo 列表项，组件列表须显式重置 `margin` → docs/standards/development.md
+- [2026-09-17] [pattern] 渲染正确性依赖 CSS 层叠 tie-break 时，happy-dom 单测只能证明规则存在，必须在真实浏览器取 computed style → docs/standards/development.md
+- [2026-09-17] [pattern] 语义 token 抽取后清掉同值字面量，但不同值档位不得顺手归并 → docs/standards/development.md
+
+### 测试与浏览器验证（→ [测试规范 §7 / §8 / §10](../../standards/testing.md)）
+
+- [2026-09-19] [env] 一次性 V 夹具必须引入库样式入口（否则 token 未定义、颜色断言失真），新增 CSS import 后须重启 Vite dev server → docs/standards/testing.md
+- [2026-09-19] [pattern] 焦点类单测需 `mount(..., { attachTo: document.body })` → docs/standards/testing.md
+- [2026-09-19] [pattern] 脚本点击前要给 Reka「外部点击」监听一拍（同 `setTimeout(0)` 既有条目） → docs/standards/testing.md
+- [2026-09-18] [bug] `vitepress preview` 在 `docs:build` 重建 `dist` 后必须重启，端口先按 `ss -ltnp` 清场 → docs/guide/development.md
+- [2026-09-18] [pattern] 判定「既有问题 vs 本批回归」用未改动同类页对照 → docs/standards/testing.md
+- [2026-09-18] [bug] root 容器 Chromium zygote 致交互崩溃，`--no-zygote` 可恢复（已在 §7） → docs/standards/testing.md
+- [2026-09-18] [bug] 不要用 `document.body.innerHTML = ''` 清理 teleport 内容（交给 `enableAutoUnmount`） → docs/standards/testing.md
+- [2026-09-18] [pattern] 异步落位的 DOM / 焦点断言用 `vi.waitFor` 条件轮询而非猜 tick → docs/standards/testing.md
+- [2026-09-18] [pattern] 断言要挑「随实现变化而变」的量（`RovingFocusItem` 的 `tabindex="-1"` 恒真；`.every()` 空集合恒真） → docs/standards/testing.md
+- [2026-09-19] [process] 清单 / 枚举类内容断言覆盖全集关键词而非抽样 → docs/standards/testing.md
+- [2026-09-18] [process] V 记录数值须可复现：探针脚本同时落盘 JSON 并输出原始数值 → docs/standards/testing.md
+- [2026-09-18] [process] 浏览器面板 / 视觉通道不可用时，把一次性 Playwright 脚本放 gitignored 目录取证并声明「未做像素级比对」 → docs/standards/testing.md
+- [2026-09-18] [pattern] demo 断言前须核对 `.demo-row` 索引 → docs/design/documentation-site.md
+- [2026-09-17] [pattern] 可访问名 / 不透明度等「有效值」可能来自祖先链或 primitive 合成，须用 role+name / AX 树取证 → docs/standards/testing.md
+
+### 评估、审计与协作流程（→ [AI 协作规范 §8](../../standards/ai-collaboration.md) 及既有 §3 / §5）
+
+- [2026-09-18] [bug] 批量改文件脚本禁用 Python 字典字面量（重复键静默丢值），用列表 of tuples 并断言命中数 → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 片段替换长行 Markdown 必须覆盖完整行边界，改完立即 grep 校验行首 / 标题 → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 批量文本替换未命中会静默通过，须带 `assert old in s`（已在 §8） → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 引用源码行号会随同批改动静默失效，优先写选择器 / 规则名并同批回扫 → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 权威数值（轮次 / 时间盒 / 阈值）只在规范单点定义，其余载体链接引用 → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 机检规则形态由语料矩阵驱动，并补「受检范围未静默收窄」断言 → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 「某能力未实现」跨多载体时，改口径须回扫全部载体 → docs/standards/ai-collaboration.md
+- [2026-09-17] [process] 多轮审查收束靠「声明轮次 + 新增预算 + 范围冻结 + 时间盒」（已在 §3.4） → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 规划台账改轮次编号须全仓核对同一批次，且不预写尚未发生的 Gate 结论 → docs/standards/planning.md
+- [2026-09-18] [process] 代码注释与测试名不得出现规划编号（已在 planning §4） → docs/standards/planning.md
+- [2026-09-18] [process] 新增治理记录必须同批登记 `governance/index.md` → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 「无可映射对象」的验收判据不得由实现方自行改写（已在 planning §3.7） → docs/standards/planning.md
+- [2026-09-18] [process] 「命令式 API 是否补齐」的取证按调用点形态拆解，跨组件形态须单独给落点 → docs/design/design-spec.md §7
+- [2026-09-19] [process] 评估授权范围要追实际下游用量（「能力 + 事件」类措辞按调用点确定最小落地形态） → docs/standards/ai-collaboration.md
+- [2026-09-19] [process] 复审 prompt 引用上一轮编号须照抄原文 → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 登记规模偏差前须 grep 规范原文核对条款与阈值，统计用 `--numstat` + 未跟踪 `wc -l`（已在 §3.2.1 / §8） → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 交付面拆分可只按文件集合切分提交（已在 §3.2.1） → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 相邻 hunk 分属两条目时，拆 commit 成本高于合并（已在 git §3） → docs/standards/git.md
+- [2026-09-17] [process] 同根因未扫描面先登记为独立原子条目再修复 → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 可见 UI 改动的 V 面应在 D 阶段一并规划，纯事件 / 数据面显式声明跳过 → docs/standards/ai-collaboration.md
+- [2026-09-18] [pattern] 产物新鲜度：申报 Gate 证据前跑完整 `pnpm verify` → docs/standards/ai-collaboration.md
+- [2026-09-18] [process] 规划批次号与段标题必须自洽（补交沿用原批次号） → docs/standards/planning.md
+- [2026-09-18] [pattern] 规划状态段引用「某文档 §某节」时必须逐条回查实际改动位置（章节号是治理锚点） → docs/standards/planning.md
+- [2026-09-17] [bug] 治理记录指向 `docs/` 之外的 Markdown 链接会被 VitePress 判死链（已在文档站 §13） → docs/design/documentation-site.md
+- [2026-09-17] [pattern] 结论句全称判断须限定作用域（已在 §8） → docs/standards/ai-collaboration.md
+- [2026-09-18] [pattern] 语义变更的用例必须能区分新旧两种语义（已在 testing §10 判别力条目） → docs/standards/testing.md
+- [2026-09-17] [bug] 仓库内 `.md` 的成对花括号插值会被 VitePress 当 Vue 模板求值（已在文档站 §13） → docs/design/documentation-site.md
+- [2026-09-17] [bug] ESLint 9 扁平配置不读 `.gitignore`，构建产物目录须显式 `ignores` → docs/standards/development.md §12
+- [2026-09-18] [bug] 治理记录漏登记索引（规则见 §8 迁移条目） → docs/standards/ai-collaboration.md
+- [2026-09-17] [pattern] 同一契约重复实现会静默漂移，收敛前先做全库机械审计 → docs/standards/development.md
+- [2026-09-18] [pattern] 给「内容宽度」组件加分区插槽时示例须自行撑满容器 → docs/design/documentation-site.md
+- [2026-09-17] [pattern] 组件文档页「可渲染性」无门禁，须用 `<demo>` 才能被断言覆盖 → docs/design/documentation-site.md
+
 ## 2026-09-17 阶段归档蒸馏（Phase 10）
 
 > 阶段归档（2026-09-17）：活跃 **25 条全部迁移**（无删除、无保留），剩余活跃 0 条。本轮蒸馏同时把可复用规则外科式写入对应规范（`planning §3.8 / §7 / §9`、`ai-collaboration §8`、`testing §7 / §10`、`documentation §4`），下列条目即其来源与落点。

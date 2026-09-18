@@ -99,4 +99,19 @@ The dialog width is based on CSS variables and kept low-specificity for easy ove
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<ConfirmDialog />` | `<CaomeiConfirmDialog />` (place once at the app root) |
+| `useConfirm().require({ ... })` | `useConfirm().open({ ... })`; `confirm(content)` is the string shorthand |
+| `header` / `message` | `title` / `description` |
+| `acceptLabel` / `rejectLabel` | `confirmLabel` / `cancelLabel` (request > provider props > built-in text) |
+| `accept` / `reject` callbacks | **Use the returned `Promise<boolean>`** instead: `true` on confirm, `false` on cancel or close |
+| `acceptClass` / `rejectClass` | `tone` (`danger` renders the confirm button as destructive); arbitrary class injection is not offered |
+
+**Not implemented / not exposed**: `icon` (PrimeVue takes a string icon class; this library routes icons through `@lucide/vue` — **registered as a follow-up, this section will be updated when it ships**), `group` (multiple instances), `position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo` (placement, layering and scroll locking are managed by the library, and the dialog is always modal).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="confirm-dialog" />

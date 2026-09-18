@@ -54,4 +54,21 @@
 - 关闭按钮使用内建多语言标签，可通过 `closeLabel` 覆盖。
 - 模态抽屉由 primitives 负责焦点陷阱与滚动锁。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `v-model:visible` | `v-model:open` |
+| `header` | `title`（或 `#header` 插槽；插槽替换标题区域，关闭按钮保留） |
+| `position` | `position`（四向；**默认对齐 PrimeVue 的 `left`**） |
+| `dismissable` | `closeOnOverlay` |
+| `show-close-icon` | `closable` |
+| `close-on-escape` | `closeOnEsc` |
+| `modal` | `modal`（本库 `modal="true"` 同时锁定页面滚动，比 PrimeVue 更严格） |
+| 经 `style` 传宽度 | `size`（本库新增 `sm` / `md` / `lg` ＝ 320 / 420 / 560px，按视口收敛） |
+
+**未实现 / 未暴露**：`position="full"`；`show` / `before-hide` / `hide` / `after-show` / `after-hide` 事件；`#closebutton` / `#closeicon` / `#container` 插槽；`base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`；层级固定为遮罩 1000 / 面板 1001、关闭按钮形态固定（完整口径见[设计规范 §7](../design/design-spec.md)）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="drawer" />

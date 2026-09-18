@@ -99,4 +99,19 @@ confirmDialog.cancel() // 主动取消（解析为 false）
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<ConfirmDialog />` | `<CaomeiConfirmDialog />`（在应用根部放置一次） |
+| `useConfirm().require({ ... })` | `useConfirm().open({ ... })`；`confirm(content)` 为字符串简写 |
+| `header` / `message` | `title` / `description` |
+| `acceptLabel` / `rejectLabel` | `confirmLabel` / `cancelLabel`（请求级 > Provider props > 内建文案） |
+| `accept` / `reject` 回调 | **改用返回的 `Promise<boolean>`**：确认 `true`、取消或关闭 `false` |
+| `acceptClass` / `rejectClass` | `tone`（`danger` 为确认按钮危险态）；不提供任意 class 注入 |
+
+**未实现 / 未暴露**：`icon`（PrimeVue 传字符串图标名，本库图标统一走 `@lucide/vue`；**该能力已登记为后续补强项，交付后同步本节**）、`group`（多实例分组）、`position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo`（浮层位置、层级与滚动锁由库管理，且恒为模态）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="confirm-dialog" />

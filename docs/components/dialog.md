@@ -68,4 +68,22 @@
 - `title` 可省略：省略或 `showHeader="false"` 时标题（与描述）转为视觉隐藏仍留在 DOM 中，保证可访问名非空（回退内建「对话框」文案），不会产生空属性。
 - 模态打开时锁定页面滚动；Portal 内容仅客户端挂载，`open` 默认关闭时 SSR 无额外输出，可在文档站安全使用 `ssg`。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `v-model:visible` | `v-model:open` |
+| `header` | `title`（**可选**：缺省时以内建「对话框」文案作为不可见可访问名） |
+| `show-header` | `showHeader`（默认同为 `true`；为 `false` 时头部整体不渲染） |
+| `breakpoints` | `breakpoints`（键为视口最大宽度、值为面板宽度；命中多个时最窄档优先） |
+| `@hide` | `hide`（本组件无出场动画，契约为「`open` 由真转假」） |
+| `dismissable-mask` / `close-on-escape` | `closeOnOverlay` / `closeOnEsc` |
+| `block-scroll` | 未暴露：`modal="true"` 已锁定页面滚动（比 PrimeVue 默认更严格） |
+
+**已知差异（有意）**：断点规则写在面板自身的 `<style>` 上、依赖源序 tie-break（下游需以更高特异性或 `!important` 覆盖），且要求消费方 CSP `style-src` 允许内联样式；其余有意差异见[设计规范 §7](../design/design-spec.md)。
+
+**未实现 / 未暴露**：`maximizable` / `draggable` / `position` / `appendTo`，以及 `show` / `after-hide` 等生命周期事件。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="dialog" />

@@ -68,4 +68,22 @@ Besides the controlled `open`, you can pass a trigger element via the `trigger` 
 - `title` may be omitted: when omitted or with `showHeader="false"` the title (and description) become visually hidden but stay in the DOM, so the accessible name is never empty (it falls back to the built-in "Dialog" text) and no empty attributes are produced.
 - Page scroll is locked while a modal is open; Portal content mounts on the client only, and with `open` closed by default there is no extra SSR output, so `ssg` is safe to use on the docs site.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `v-model:visible` | `v-model:open` |
+| `header` | `title` (**optional**: when omitted, the built-in "Dialog" text becomes a visually hidden accessible name) |
+| `show-header` | `showHeader` (also defaults to `true`; `false` hides the whole header) |
+| `breakpoints` | `breakpoints` (keys are viewport max-widths, values are panel widths; the narrowest match wins) |
+| `@hide` | `hide` (there is no leave animation here, so the contract is "`open` goes from true to false") |
+| `dismissable-mask` / `close-on-escape` | `closeOnOverlay` / `closeOnEsc` |
+| `block-scroll` | Not exposed: `modal="true"` already locks page scroll (stricter than PrimeVue's default) |
+
+**Intentional differences**: the breakpoint rules live in a `<style>` element inside the panel and rely on source-order tie-breaking (downstream needs higher specificity or `!important` to override); they also require the consumer's CSP `style-src` to allow inline styles. See [Design spec §7](/design/design-spec.md) for the rest.
+
+**Not implemented / not exposed**: `maximizable` / `draggable` / `position` / `appendTo`, and lifecycle events such as `show` / `after-hide`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="dialog" />

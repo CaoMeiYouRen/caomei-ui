@@ -54,4 +54,21 @@ The `#header` slot replaces the content of the title area while the close button
 - The close button uses the built-in localized label, overridable via `closeLabel`.
 - Modal drawers get focus trapping and scroll locking from the primitives.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `v-model:visible` | `v-model:open` |
+| `header` | `title` (or the `#header` slot, which replaces the title area while keeping the close button) |
+| `position` | `position` (four sides; **defaults to PrimeVue's `left`**) |
+| `dismissable` | `closeOnOverlay` |
+| `show-close-icon` | `closable` |
+| `close-on-escape` | `closeOnEsc` |
+| `modal` | `modal` (here `modal="true"` also locks page scroll — stricter than PrimeVue) |
+| width via `style` | `size` (new here: `sm` / `md` / `lg` = 320 / 420 / 560px, converging on narrow viewports) |
+
+**Not implemented / not exposed**: `position="full"`; the `show` / `before-hide` / `hide` / `after-show` / `after-hide` events; the `#closebutton` / `#closeicon` / `#container` slots; `base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`; the overlay/panel layering is fixed at 1000 / 1001 and the close button form is fixed (see [Design spec §7](/design/design-spec.md) for the full list).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="drawer" />

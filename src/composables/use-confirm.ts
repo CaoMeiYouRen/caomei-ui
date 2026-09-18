@@ -1,4 +1,11 @@
-import { inject, provide, ref, type InjectionKey, type Ref } from 'vue'
+import {
+    inject,
+    provide,
+    shallowRef,
+    type Component,
+    type InjectionKey,
+    type Ref,
+} from 'vue'
 
 /** 确认对话框语气：neutral 用于常规确认，danger 用于破坏性操作 */
 export type ConfirmTone = 'neutral' | 'danger'
@@ -8,6 +15,12 @@ export interface ConfirmOptions {
     title: string
     /** 描述文本，用于补充说明操作后果 */
     description?: string
+    /**
+     * 标题旁的图标组件（如 `@lucide/vue` 导出的图标）。
+     * 缺省按 `tone` 回退内建图标：`neutral` 为 `Info`、`danger` 为 `TriangleAlert`。
+     * 不接受 PrimeVue 的字符串图标类名。
+     */
+    icon?: Component
     /** 确认按钮文案，缺省取 Provider 默认值 */
     confirmLabel?: string
     /** 取消按钮文案，缺省取 Provider 默认值 */
@@ -57,7 +70,8 @@ function normalizeConfirm(content: ConfirmContent): ConfirmOptions {
 
 /** 创建一个确认请求队列；每个 Provider 实例持有独立状态与自增序列，避免 SSR 下跨请求串扰 */
 export function createConfirmStore(): ConfirmStore {
-    const request = ref<ConfirmRequest | null>(null)
+    // 请求对象整体替换、不原地变更，用 shallowRef 避免把 `icon` 组件深代理（Vue 会告警且无谓开销）
+    const request = shallowRef<ConfirmRequest | null>(null)
     let seed = 0
     let pending: { id: number, resolve: (value: boolean) => void } | null = null
 

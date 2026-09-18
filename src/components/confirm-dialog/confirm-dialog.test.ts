@@ -1,6 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { computed, defineComponent, h, nextTick, ref } from 'vue'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useConfirm, type ConfirmApi } from '../../composables/use-confirm'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
@@ -53,6 +53,15 @@ function getCancelButton(): HTMLButtonElement {
 function getConfirmButton(): HTMLButtonElement {
     return getButtons()[1]
 }
+
+function getIcon(): SVGElement | null {
+    return document.querySelector('.caomei-confirm-dialog__icon svg')
+}
+
+const customIcon = defineComponent({
+    name: 'CustomConfirmIcon',
+    render: () => h('svg', { 'data-test': 'custom-icon' }),
+})
 
 afterEach(() => {
     api = undefined
@@ -225,6 +234,66 @@ describe('CaomeiConfirmDialog', () => {
         await flushPromises()
 
         expect(getConfirmButton().className).not.toContain('confirm--danger')
+    })
+
+    it('请求项传入 icon 时按传入图标渲染', async () => {
+        await mountHost()
+
+        void api?.open({ title: '删除', icon: customIcon })
+        await flushPromises()
+
+        expect(getDialog()?.querySelector('[data-test="custom-icon"]')).not.toBeNull()
+        expect(getIcon()?.getAttribute('class')).not.toContain('lucide-info')
+    })
+
+    it('未传 icon 时 neutral 语气回退内建 Info 图标', async () => {
+        await mountHost()
+
+        void api?.confirm('继续操作？')
+        await flushPromises()
+
+        const icon = getIcon()
+        expect(icon).not.toBeNull()
+        expect(icon?.getAttribute('class')).toContain('lucide-info')
+        expect(icon?.closest('.caomei-confirm-dialog__icon')?.getAttribute('aria-hidden')).toBe('true')
+    })
+
+    it('未传 icon 时 danger 语气回退内建 TriangleAlert 图标并附危险色', async () => {
+        await mountHost()
+
+        void api?.open({ title: '删除', tone: 'danger' })
+        await flushPromises()
+
+        expect(getIcon()?.getAttribute('class')).toContain('lucide-triangle-alert')
+        expect(
+            document.querySelector('.caomei-confirm-dialog__icon')?.classList
+                .contains('caomei-confirm-dialog__icon--danger'),
+        ).toBe(true)
+    })
+
+    it('danger 语气下传入 icon 优先于内建回退', async () => {
+        await mountHost()
+
+        void api?.open({ title: '删除', tone: 'danger', icon: customIcon })
+        await flushPromises()
+
+        expect(getDialog()?.querySelector('[data-test="custom-icon"]')).not.toBeNull()
+        expect(getIcon()?.getAttribute('class')).not.toContain('lucide-triangle-alert')
+    })
+
+    it('传入 icon 不触发 Vue「reactive object」告警（shallowRef 守卫）', async () => {
+        const warn = vi.spyOn(console, 'warn').mockReturnValue(undefined)
+        try {
+            await mountHost()
+
+            void api?.open({ title: '删除', icon: customIcon })
+            await flushPromises()
+
+            const messages = warn.mock.calls.map((args) => String(args[0]))
+            expect(messages.some((message) => message.includes('reactive object'))).toBe(false)
+        } finally {
+            warn.mockRestore()
+        }
     })
 
     it('透传原生属性到对话框内容', async () => {

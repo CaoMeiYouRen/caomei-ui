@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Info, TriangleAlert } from '@lucide/vue'
 import {
     AlertDialogAction,
     AlertDialogCancel,
@@ -9,13 +10,14 @@ import {
     AlertDialogRoot,
     AlertDialogTitle,
 } from 'reka-ui'
-import { computed, nextTick, onUnmounted } from 'vue'
+import { computed, nextTick, onUnmounted, type Component } from 'vue'
 import {
     createConfirmStore,
     provideConfirmStore,
     type ConfirmRequest,
 } from '../../composables/use-confirm'
 import { useLocale } from '../../composables/use-locale'
+import { CaomeiIcon } from '../../icons'
 import { CaomeiButton } from '../button'
 import type { ConfirmDialogProps } from './types'
 
@@ -39,6 +41,17 @@ const cancelLabel = computed(
 )
 const confirmClass = computed(() =>
     request.value?.tone === 'danger' ? 'caomei-confirm-dialog__confirm--danger' : undefined,
+)
+
+/*
+  图标为装饰性内容（可访问名由标题提供），缺省按语气回退：neutral → Info、danger → TriangleAlert。
+  语气映射复用 Message 的语义直觉，但不与 Message 的档位一一对应——确认对话框只区分「常规 / 破坏性」。
+*/
+const iconClass = computed(() =>
+    request.value?.tone === 'danger' ? 'caomei-confirm-dialog__icon--danger' : undefined,
+)
+const icon = computed<Component>(() =>
+    request.value?.icon ?? (request.value?.tone === 'danger' ? TriangleAlert : Info),
 )
 
 /*
@@ -102,12 +115,23 @@ onUnmounted(() => {
                 class="caomei-confirm-dialog__content"
                 aria-modal="true"
             >
-                <AlertDialogTitle class="caomei-confirm-dialog__title">
-                    {{ request?.title }}
-                </AlertDialogTitle>
-                <AlertDialogDescription class="caomei-confirm-dialog__description">
-                    {{ request?.description ?? '' }}
-                </AlertDialogDescription>
+                <div class="caomei-confirm-dialog__header">
+                    <span
+                        class="caomei-confirm-dialog__icon"
+                        :class="iconClass"
+                        aria-hidden="true"
+                    >
+                        <CaomeiIcon :icon="icon" />
+                    </span>
+                    <div class="caomei-confirm-dialog__heading">
+                        <AlertDialogTitle class="caomei-confirm-dialog__title">
+                            {{ request?.title }}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription class="caomei-confirm-dialog__description">
+                            {{ request?.description ?? '' }}
+                        </AlertDialogDescription>
+                    </div>
+                </div>
                 <div class="caomei-confirm-dialog__footer">
                     <AlertDialogCancel as-child>
                         <CaomeiButton variant="secondary" @click="onCancel">
@@ -154,6 +178,35 @@ onUnmounted(() => {
     font-family: var(--caomei-font-sans);
     box-shadow: var(--caomei-shadow-lg);
     transform: translate(-50%, -50%);
+}
+
+.caomei-confirm-dialog__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--caomei-space-3);
+}
+
+.caomei-confirm-dialog__icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-lg);
+}
+
+.caomei-confirm-dialog__icon--danger {
+    color: var(--caomei-color-danger);
+}
+
+/*
+  标题与描述成组（命名对齐 dialog.vue 的 `__heading`）；组内间距沿用改造前的
+  content 纵向间距 `space-3`，使本次改造除新增图标外不改变既有视觉节奏。
+*/
+.caomei-confirm-dialog__heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--caomei-space-3);
+    min-width: 0;
 }
 
 .caomei-confirm-dialog__title {

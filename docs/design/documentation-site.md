@@ -53,7 +53,7 @@ docs/
 7. 从 PrimeVue 迁移（按需，**页尾内容节**）；
 8. API（由 `<ComponentApi>` 自动呈现 props / events / slots / exposed）——始终位于页面最后。
 
-> **「从 PrimeVue 迁移」的定位与位置**（2026-09-18 用户裁定）：它不是能力章节，而是面向迁移读者的页尾附录，**固定放在 `<ComponentApi>` 之前的最后一个内容节**，不得插在能力章节之间；内容为映射表（PrimeVue → 本组件）、有意差异与未实现项，并链接[从 PrimeVue 迁移](../guide/primevue-migration.md)专题页。逐条映射的权威来源是[设计规范 §7](./design-spec.md)，组件页与专题页都只引用、不另立口径。
+> **「从 PrimeVue 迁移」的定位与位置**（2026-09-18 用户裁定）：它不是能力章节，而是面向迁移读者的页尾附录，**固定放在 `<ComponentApi>` 之前的最后一个内容节**，不得插在能力章节之间；内容为映射表（PrimeVue → 本组件）、有意差异与未实现项，并链接[从 PrimeVue 迁移](../guide/primevue-migration.md)专题页。逐条映射的权威来源是[设计规范 §7](./design-spec.md)，组件页与专题页都只引用、不另立口径；**组件页迁移节与 §7 不一致时以 §7 为准（漂移视为文档缺陷）**。
 
 ## 5. Demo 约定
 

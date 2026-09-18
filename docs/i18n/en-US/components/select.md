@@ -79,4 +79,23 @@ No events besides `update:modelValue`; the option list is passed in a controlled
 >
 > Scroll: the page scroll is not locked when expanded by default (`bodyLock` defaults to `false`) to avoid layout jumps from the disappearing scrollbar; on mobile the background may therefore scroll — pass `body-lock` to lock it.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `options` | Same name |
+| `option-label` / `option-value` | `optionLabel` / `optionValue` (field name or accessor function; `a.b` dotted paths supported; options whose resolved value is not a `string` / `number` are not rendered) |
+| `optionDisabled` | The `disabled` field on the option object |
+| `showClear` | `showClear` (clears the model to `null` and returns focus to the trigger) |
+| `fluid` | Drop it: a `20rem` cap applies by default; set `--caomei-select-max-width` to `none` for true full width |
+| `inputId` | `id`; `aria-label` → `label` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| — | The `#option` slot (receiving the raw option object and its selected state) is new here |
+
+**Searchable single select**: PrimeVue's `filter` is **not implemented** — Reka Select keeps `role="listbox"` on the panel element, so a search box inside it would become an owned child of the listbox and violate WAI-ARIA `aria-required-children`; use `CaomeiAutoComplete` for searchable single select (it **allows free text**, a difference from PrimeVue's "value must come from the options" — see the [AutoComplete page](./auto-complete.md) and the [Backlog](/plan/backlog), Chinese).
+
+**Not implemented**: `filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`, `editable`, `optionGroupLabel` / `optionGroupChildren`, `scrollHeight` / `dataKey`, `variant` (`outlined` / `filled`), `labelId` / `labelStyle` / `labelClass`, `appendTo` and panel style/class forwarding.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="select" />

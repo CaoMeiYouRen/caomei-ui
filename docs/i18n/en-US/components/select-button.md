@@ -96,4 +96,21 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `options` | Same name |
+| `option-label` / `option-value` | `optionLabel` / `optionValue` (field name or accessor function; `a.b` dotted paths supported; options whose resolved value is not a `string` / `number` are not rendered) |
+| `optionDisabled` | The `disabled` field on the option object |
+| `multiple` | Same name (single-select holds a single value, multiple holds an array) |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `invalid` / `disabled` | Same names |
+| `fluid` | Drop it: `width: 100%` by default (segments fill the container) |
+| `aria-labelledby` | Forwarded; `aria-label` → `label` |
+
+**Not implemented**: `allowEmpty` (deselecting everything is not supported; reset the model yourself when a clear action is needed), `dataKey`, `formControl`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="select-button" />

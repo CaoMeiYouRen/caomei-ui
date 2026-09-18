@@ -96,4 +96,21 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `options` | 同名 |
+| `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数，支持 `a.b` 点号路径；解析结果非 `string` / `number` 的选项不渲染） |
+| `optionDisabled` | 选项对象的 `disabled` 字段 |
+| `multiple` | 同名（单选取值为单值、多选取值为数组） |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `invalid` / `disabled` | 同名 |
+| `fluid` | 删除：默认 `width: 100%`（分段按容器铺满） |
+| `aria-labelledby` | 透传；`aria-label` → `label` |
+
+**未实现**：`allowEmpty`（不支持取消全部选择，需要清空时由使用方重置模型）、`dataKey`、`formControl`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="select-button" />

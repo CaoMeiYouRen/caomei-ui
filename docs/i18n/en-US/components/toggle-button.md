@@ -86,4 +86,20 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `on-label` / `off-label` | `onLabel` / `offLabel` (**both must be provided** to render the two states; otherwise the default slot is used) |
+| `aria-label` | `label` (visually hidden accessible name) |
+| `disabled` | Same name |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| — | The default slot carries the icon and content (express icons with `@lucide/vue` components) |
+
+**Intentional difference**: PrimeVue ships built-in `Yes` / `No` defaults for the two states, while this library **ships no default text**.
+
+**Not implemented**: `on-icon` / `off-icon` (string icon classes; express icons with `@lucide/vue` components in the default slot — no `#icon` slot is added).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="toggle-button" />

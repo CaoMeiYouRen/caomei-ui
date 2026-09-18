@@ -86,4 +86,20 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `on-label` / `off-label` | `onLabel` / `offLabel`（**需同时提供**才渲染两态文案，否则回退默认插槽） |
+| `aria-label` | `label`（不可见可访问名） |
+| `disabled` | 同名 |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| 无 | 默认插槽承载图标与内容（图标用 `@lucide/vue` 组件表达） |
+
+**已知差异（有意）**：PrimeVue 为两态文案内建 `Yes` / `No` 默认值，本库**不内建任何默认文案**。
+
+**未实现**：`on-icon` / `off-icon`（字符串图标名；图标请用默认插槽内的 `@lucide/vue` 组件表达，不新增 `#icon` 插槽）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="toggle-button" />

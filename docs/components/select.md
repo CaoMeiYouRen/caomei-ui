@@ -79,4 +79,23 @@
 >
 > 滚动：展开时默认不锁定页面滚动（`bodyLock` 默认 `false`），避免滚动条消失引起布局跳动；移动端因此可能出现背景可滚动，如需锁定可传入 `body-lock`。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `options` | 同名 |
+| `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数，支持 `a.b` 点号路径；解析结果非 `string` / `number` 的选项不渲染） |
+| `optionDisabled` | 选项对象的 `disabled` 字段 |
+| `showClear` | `showClear`（清除后模型置 `null`、焦点交回触发器） |
+| `fluid` | 删除：默认带 `20rem` 上限，需要真正全宽时覆盖 `--caomei-select-max-width` 为 `none` |
+| `inputId` | `id`；`aria-label` → `label` |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| 无 | `#option` 插槽（收原始选项对象与选中态）为本库新增 |
+
+**可搜索单选**：PrimeVue 的 `filter` **未实现**——Reka Select 把 `role="listbox"` 固定在面板元素上，面板内搜索框会使其成为 listbox 的 owned child、违反 WAI-ARIA `aria-required-children`；需要「可搜索单选」时改用 `CaomeiAutoComplete`（**允许自由文本**，与 PrimeVue「值须来自选项」有差异，见 [AutoComplete 页](./auto-complete.md) 与 [Backlog](../plan/backlog.md)）。
+
+**未实现**：`filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`、`editable`、`optionGroupLabel` / `optionGroupChildren`、`scrollHeight` / `dataKey`、`variant`（`outlined` / `filled`）、`labelId` / `labelStyle` / `labelClass`、`appendTo` 与面板样式 / 类名透传。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="select" />

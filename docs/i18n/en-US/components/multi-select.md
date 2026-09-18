@@ -79,4 +79,23 @@ The `#option` slot customizes the panel option content and receives `option` (th
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `options` | Same name |
+| `option-label` / `option-value` | `optionLabel` / `optionValue` (field name or accessor function; `a.b` dotted paths supported) |
+| `optionDisabled` | The `disabled` field on the option object |
+| `showClear` | `showClear` (shown when there is a selection and the field is not disabled; clearing sets the model to an **empty array** and returns focus to the search input) |
+| `fluid` | Drop it: a `20rem` cap applies by default; set `--caomei-select-max-width` to `none` for true full width |
+| `inputId` | `id`; `aria-label` → `label` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| — | The `#option` slot (receiving the raw option object and its selected state) is new here |
+
+**Three intentional differences from PrimeVue**: (1) the extra `index` PrimeVue provides to `#option` is not offered here (usages that only need `option` / `selected` migrate as-is); (2) the clear button is a regular flex member inside the field (this field can wrap onto multiple lines, where an absolutely positioned button would cover the label) rather than absolutely positioned; (3) the clear button's visibility is `showClear && has selection && not disabled`, without PrimeVue's "`options` non-empty" and `loading` conditions.
+
+**Not implemented**: `filter` (in-panel search), `display` (fixed to chip form) / `maxSelectedLabels` / `selectedItemsLabel`, `optionGroupLabel` / `optionGroupChildren`, `scrollHeight` / `dataKey`, `variant` (`outlined` / `filled`), `appendTo` and panel style/class forwarding.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="multi-select" />

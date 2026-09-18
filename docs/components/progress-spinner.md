@@ -18,6 +18,17 @@
     ssg="true"
 />
 
+## 轨道宽度
+
+`strokeWidth` 控制圆环粗细：数字按 px 处理（`4` → `4px`）；纯数字字符串同样按 px（`"4"` → `4px`，对齐 PrimeVue 的写法），两者均要求 `0 ≤ 值 ≤ 1000`；其余字符串须为合法 `border-width`（`<length>` 或 `thin` / `medium` / `thick`，`%` 与复合值非法）并原样使用。未提供或值非法时按 `size` 档位回退（`sm` / `md` 为 `2px`、`lg` 为 `3px`），提供后所有尺寸共用该值。
+
+<demo
+    vue="../examples/progress-spinner/stroke.vue"
+    ssg="true"
+/>
+
+> 与 PrimeVue 的语义差异：其 `strokeWidth` 是 **SVG 用户单位**（随渲染尺寸等比缩放），本库是**不随组件尺寸缩放**的 CSS 长度——迁移时按目标视觉粗细折算为 px / rem。`strokeWidth` 以内联变量实现，优先级高于 CSS 变量 `--caomei-progress-spinner-stroke`。
+
 ## 可访问名与颜色
 
 `label` 提供可访问名（默认取当前语言的「加载中」）；颜色与轨道可用 CSS 变量覆盖。
@@ -40,7 +51,7 @@
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `--caomei-progress-spinner-size` | 由 `size` 档位决定 | 尺寸（sm 16 / md 24 / lg 32） |
-| `--caomei-progress-spinner-stroke` | 由 `size` 档位决定 | 轨道宽度（sm / md 2px，lg 3px） |
+| `--caomei-progress-spinner-stroke` | 由 `size` 档位决定 | 轨道宽度（sm / md 2px，lg 3px）；`strokeWidth` prop 以内联同名变量覆盖，优先级更高 |
 | `--caomei-progress-spinner-color` | `--caomei-color-primary` | 指示色 |
 | `--caomei-progress-spinner-track` | `--caomei-color-border` | 轨道色 |
 
@@ -56,7 +67,7 @@
 | PrimeVue | 本组件 |
 | --- | --- |
 | 经 `style` 传宽高（任意 px） | `size` 档位（`sm` / `md` / `lg` ＝ 16 / 24 / 32px）或覆盖 `--caomei-progress-spinner-size` |
-| `strokeWidth` | 未实现：当前经 CSS 变量 `--caomei-progress-spinner-stroke`（档位默认 2 / 2 / 3px）；**该 prop 已登记为后续补强项，交付后同步本节** |
+| `strokeWidth` | `strokeWidth`（数字与纯数字字符串按 px，其余须为合法 `border-width`）；未提供或非法时按 `size` 档位回退 2 / 2 / 3px。**语义差异**：PrimeVue 为 SVG 用户单位（随尺寸缩放），本库为不随组件尺寸缩放的 CSS 长度 |
 | `fill`（圆背景色） | 未实现：轨道颜色经 `--caomei-progress-spinner-track` |
 | `animationDuration` | 未实现：固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s` |
 | 无 | `label`（可访问名；未提供时回退内建「加载中」文案）为本库新增 |

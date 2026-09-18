@@ -268,7 +268,7 @@
 
 > ProgressBar 迁移映射（已实现）：`value` → `value`（`null` / 非有限值即**不确定态**，对应 PrimeVue 的 `mode="indeterminate"`）；`mode` 未暴露（由 `value` 推导）；`showValue` 未实现（不在条上渲染数值文本，可访问名经 `label` / `aria-label` / 语言兜底文案）；`max`（默认 `100`，越界值收窄）与 `size`（`sm` / `md` / `lg`）为本库新增。
 
-> ProgressSpinner 迁移映射（已实现）：尺寸经 `size` 档位（`sm` / `md` / `lg` ＝ 16 / 24 / 32px）或覆盖 `--caomei-progress-spinner-size`（对应 PrimeVue 经 `style` 传任意 px）；`strokeWidth` 未实现（当前经 CSS 变量 `--caomei-progress-spinner-stroke`，档位默认 2 / 2 / 3px；**该 prop 已登记为后续补强项，交付后同步本节**）；`fill` 未实现（轨道颜色经 `--caomei-progress-spinner-track`）；`animationDuration` 未实现（固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s`）；`label` 为本库新增可访问名（未提供时回退内建「加载中」文案）。
+> ProgressSpinner 迁移映射（已实现）：尺寸经 `size` 档位（`sm` / `md` / `lg` ＝ 16 / 24 / 32px）或覆盖 `--caomei-progress-spinner-size`（对应 PrimeVue 经 `style` 传任意 px）；`strokeWidth` → `strokeWidth`（数字与**纯数字字符串**按 px（后者对齐 PrimeVue 的 `'2'` 写法），两者要求 `0 ≤ 值 ≤ 1000`，其余字符串须为合法 `border-width`（`<length>` 或 `thin` / `medium` / `thick`；`%` 与复合值非法）；未提供 / 空串 / 非法值时按 `size` 档位回退 2 / 2 / 3px，提供后所有尺寸共用该值；以**内联同名变量**实现，优先级高于 CSS 变量 `--caomei-progress-spinner-stroke`——白名单校验是必需的，写入语义非法值会因 invalid at computed-value time 令整条 `border` 声明被丢弃、圆环消失。**语义差异（有意）**：PrimeVue 的 `strokeWidth` 为 SVG 用户单位、随渲染尺寸等比缩放，本库为不随组件尺寸缩放的 CSS 长度——迁移时按目标视觉粗细折算）；`fill` 未实现（轨道颜色经 `--caomei-progress-spinner-track`）；`animationDuration` 未实现（固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s`）；`label` 为本库新增可访问名（未提供时回退内建「加载中」文案）。
 
 > Skeleton 迁移映射（已实现）：`shape="circle"` / `"rectangle"` → `variant="circular"` / `"rectangular"`（另有本库默认 `text`）；`width` / `height` 同名；`animation` 的 `wave` / `none` 同名可选，**本库默认 `pulse`（PrimeVue 默认 `wave`）属有意差异**；`size` / `borderRadius` 未实现（分别以 `width` / `height` 与 CSS 覆盖表达）；`lines`（`variant="text"` 时渲染多行）为本库新增。
 

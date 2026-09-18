@@ -18,6 +18,17 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+## Stroke width
+
+`strokeWidth` controls the ring thickness: a number is treated as px (`4` → `4px`) and so is a numeric string (`"4"` → `4px`, matching PrimeVue's style), both requiring `0 ≤ value ≤ 1000`; any other string must be a valid `border-width` (`<length>` or `thin` / `medium` / `thick`; `%` and compound values are invalid) and is used as-is. When omitted or invalid it follows the `size` step (`sm` / `md` → `2px`, `lg` → `3px`); once provided, all sizes share that value.
+
+<demo
+    vue="../../../examples/progress-spinner/stroke.vue"
+    ssg="true"
+/>
+
+> Semantic difference from PrimeVue: its `strokeWidth` is in **SVG user units** (scales with the rendered size), whereas this is a **CSS length that does not scale with the component size** — convert to px / rem for the visual thickness you want. `strokeWidth` is applied as an inline variable and takes precedence over the `--caomei-progress-spinner-stroke` CSS variable.
+
 ## Accessible name and color
 
 `label` provides the accessible name (defaults to the current locale's "Loading" text); the color and track are overridable via CSS variables.
@@ -40,7 +51,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | Variable | Default | Description |
 |------|------|------|
 | `--caomei-progress-spinner-size` | from the `size` step | Size (sm 16 / md 24 / lg 32) |
-| `--caomei-progress-spinner-stroke` | from the `size` step | Track width (sm / md 2px, lg 3px) |
+| `--caomei-progress-spinner-stroke` | from the `size` step | Track width (sm / md 2px, lg 3px); the `strokeWidth` prop overrides it through the same inline variable |
 | `--caomei-progress-spinner-color` | `--caomei-color-primary` | Indicator color |
 | `--caomei-progress-spinner-track` | `--caomei-color-border` | Track color |
 
@@ -56,7 +67,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | PrimeVue | This component |
 | --- | --- |
 | width/height via `style` (any px) | `size` presets (`sm` / `md` / `lg` = 16 / 24 / 32px) or override `--caomei-progress-spinner-size` |
-| `strokeWidth` | Not implemented: use the `--caomei-progress-spinner-stroke` CSS variable (preset defaults 2 / 2 / 3px); **registered as a follow-up, this section will be updated when it ships** |
+| `strokeWidth` | `strokeWidth` (numbers and numeric strings as px, anything else must be a valid `border-width`); when omitted or invalid it follows the `size` step (2 / 2 / 3px). **Semantic difference**: PrimeVue uses SVG user units (scales with size), this library uses a CSS length that does not scale with the component size |
 | `fill` (circle background) | Not implemented: the track color comes from `--caomei-progress-spinner-track` |
 | `animationDuration` | Not implemented: fixed at `0.6s`, and `1.6s` under `prefers-reduced-motion` |
 | — | `label` (accessible name; falls back to the built-in "Loading" text) is new here |

@@ -52,6 +52,7 @@ async function save(): Promise<void> {
 |------|------|------|------|
 | `title` | `string` | — | 标题，同时作为无障碍名称（必填） |
 | `description` | `string` | — | 描述文本，用于补充说明操作后果 |
+| `icon` | `Component` | 按 `tone` 回退：`neutral` → `Info`、`danger` → `TriangleAlert` | 标题旁的图标组件（如 `@lucide/vue` 导出的图标），**不接受字符串图标类名** |
 | `confirmLabel` | `string` | 缺省依次回退宿主 `confirmLabel`、当前语言的内建文案 | 确认按钮文案 |
 | `cancelLabel` | `string` | 缺省依次回退宿主 `cancelLabel`、当前语言的内建文案 | 取消按钮文案 |
 | `tone` | `'neutral' \| 'danger'` | `'neutral'` | 语气，决定确认按钮强调色 |
@@ -64,6 +65,24 @@ async function save(): Promise<void> {
     vue="../examples/confirm-dialog/tone.vue"
     ssg="true"
 />
+
+## 图标
+
+`icon` 接收**图标组件**（如 `@lucide/vue` 导出的图标），不接受 PrimeVue 的字符串图标类名。未传时按 `tone` 回退内建图标：`neutral` 为 `Info`、`danger` 为 `TriangleAlert`，因此破坏性操作无需额外传参即呈现警示图标。图标为装饰性内容并标记 `aria-hidden="true"`，可访问名始终由标题提供。
+
+<demo
+    vue="../examples/confirm-dialog/icon.vue"
+    ssg="true"
+/>
+
+```ts
+import { Rocket } from '@lucide/vue'
+
+const confirmed = await confirmDialog.open({
+  title: '发布新版本？',
+  icon: Rocket, // 缺省时按 tone 回退 Info / TriangleAlert
+})
+```
 
 ## Promise 语义
 
@@ -109,8 +128,9 @@ confirmDialog.cancel() // 主动取消（解析为 false）
 | `acceptLabel` / `rejectLabel` | `confirmLabel` / `cancelLabel`（请求级 > Provider props > 内建文案） |
 | `accept` / `reject` 回调 | **改用返回的 `Promise<boolean>`**：确认 `true`、取消或关闭 `false` |
 | `acceptClass` / `rejectClass` | `tone`（`danger` 为确认按钮危险态）；不提供任意 class 注入 |
+| `icon`（字符串图标类名） | `icon`（传 `@lucide/vue` 组件，非字符串类名）；缺省按 `tone` 回退内建图标（`neutral` → `Info`、`danger` → `TriangleAlert`） |
 
-**未实现 / 未暴露**：`icon`（PrimeVue 传字符串图标名，本库图标统一走 `@lucide/vue`；**该能力已登记为后续补强项，交付后同步本节**）、`group`（多实例分组）、`position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo`（浮层位置、层级与滚动锁由库管理，且恒为模态）。
+**未实现 / 未暴露**：`group`（多实例分组）、`position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo`（浮层位置、层级与滚动锁由库管理，且恒为模态）。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

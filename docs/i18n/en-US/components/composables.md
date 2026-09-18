@@ -118,7 +118,7 @@ async function remove(): Promise<void> {
 | `open(options)` | Same as above, options object only |
 | `cancel()` | Cancels the pending request |
 
-`content` accepts a string (shorthand for `{ title }`) or an options object (`title` / `description` / `confirmLabel` / `cancelLabel` / `tone`); see [ConfirmDialog](/en-US/components/confirm-dialog) for details.
+`content` accepts a string (shorthand for `{ title }`) or an options object (`title` / `description` / `icon` / `confirmLabel` / `cancelLabel` / `tone`); see [ConfirmDialog](/en-US/components/confirm-dialog) for details.
 
 ## useLocale and provideLocale
 

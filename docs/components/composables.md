@@ -118,7 +118,7 @@ async function remove(): Promise<void> {
 | `open(options)` | 同上，仅接受选项对象 |
 | `cancel()` | 取消当前待决请求 |
 
-`content` 支持字符串（等价 `{ title }`）或选项对象（`title` / `description` / `confirmLabel` / `cancelLabel` / `tone`），详见 [ConfirmDialog 确认对话框](/components/confirm-dialog)。
+`content` 支持字符串（等价 `{ title }`）或选项对象（`title` / `description` / `icon` / `confirmLabel` / `cancelLabel` / `tone`），详见 [ConfirmDialog 确认对话框](/components/confirm-dialog)。
 
 ## useLocale 与 provideLocale
 

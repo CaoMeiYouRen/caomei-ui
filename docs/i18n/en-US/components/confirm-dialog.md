@@ -52,6 +52,7 @@ async function save(): Promise<void> {
 |------|------|------|------|
 | `title` | `string` | — | Title, also the accessible name (required) |
 | `description` | `string` | — | Description text, for explaining the consequences of the action |
+| `icon` | `Component` | Falls back by `tone`: `neutral` → `Info`, `danger` → `TriangleAlert` | Icon component next to the title (e.g. one exported by `@lucide/vue`); **string icon classes are not accepted** |
 | `confirmLabel` | `string` | Falls back to the host's `confirmLabel`, then the current locale's built-in text | Confirm button text |
 | `cancelLabel` | `string` | Falls back to the host's `cancelLabel`, then the current locale's built-in text | Cancel button text |
 | `tone` | `'neutral' \| 'danger'` | `'neutral'` | Tone, determines the confirm button accent |
@@ -64,6 +65,24 @@ async function save(): Promise<void> {
     vue="../examples/confirm-dialog/tone.vue"
     ssg="true"
 />
+
+## Icon
+
+`icon` takes an **icon component** (e.g. one exported by `@lucide/vue`), never a PrimeVue string icon class. When omitted it falls back by `tone`: `Info` for `neutral` and `TriangleAlert` for `danger`, so destructive actions show a warning icon without extra props. The icon is decorative and marked `aria-hidden="true"`; the accessible name always comes from the title.
+
+<demo
+    vue="../examples/confirm-dialog/icon.vue"
+    ssg="true"
+/>
+
+```ts
+import { Rocket } from '@lucide/vue'
+
+const confirmed = await confirmDialog.open({
+  title: 'Publish a new version?',
+  icon: Rocket, // falls back to Info / TriangleAlert by tone when omitted
+})
+```
 
 ## Promise semantics
 
@@ -109,8 +128,9 @@ The dialog width is based on CSS variables and kept low-specificity for easy ove
 | `acceptLabel` / `rejectLabel` | `confirmLabel` / `cancelLabel` (request > provider props > built-in text) |
 | `accept` / `reject` callbacks | **Use the returned `Promise<boolean>`** instead: `true` on confirm, `false` on cancel or close |
 | `acceptClass` / `rejectClass` | `tone` (`danger` renders the confirm button as destructive); arbitrary class injection is not offered |
+| `icon` (string icon class) | `icon` (pass an `@lucide/vue` component, not a string class); when omitted, falls back by `tone` (`neutral` → `Info`, `danger` → `TriangleAlert`) |
 
-**Not implemented / not exposed**: `icon` (PrimeVue takes a string icon class; this library routes icons through `@lucide/vue` — **registered as a follow-up, this section will be updated when it ships**), `group` (multiple instances), `position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo` (placement, layering and scroll locking are managed by the library, and the dialog is always modal).
+**Not implemented / not exposed**: `group` (multiple instances), `position` / `draggable` / `breakpoints` / `blockScroll` / `appendTo` (placement, layering and scroll locking are managed by the library, and the dialog is always modal).
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

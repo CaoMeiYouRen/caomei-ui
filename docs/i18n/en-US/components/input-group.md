@@ -50,4 +50,15 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 |------|------|------|
 | `--caomei-input-group-radius` | `--caomei-radius-md` | Outer radius at the two ends of the group |
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<InputGroup>` (no props, only joins members) | `CaomeiInputGroup` (same no-prop joining semantics) |
+| — | `orientation` (`horizontal` / `vertical`) is new here |
+
+**Border-joining convention**: corner de-duplication and the "remaining width" rule apply to each **member's root element**; the selector family (`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`) keeps its own width cap instead of filling the group — override the matching cap token to make it fill (see "Border-joining convention" on the component page).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="input-group" />

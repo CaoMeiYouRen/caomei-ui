@@ -52,4 +52,19 @@
 - `type` 由组件内部管理（`password` / `text`），外部传入的 `type` 会被忽略以避免误关闭掩码；如需固定类型请使用 [Input](./input.md)。
 - 事件 `focus` / `blur` / `change` / `enter` / `clear` 与 `focus()` / `blur()` 方法透传，可用于表单校验。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `feedback` | `feedback`（**默认值分歧且为有意**：PrimeVue 默认 `true`，本库默认 `false`——momei 32 处用量中 24 处为外部服务凭据字段，强度条无实际意义；用户自设密码建议显式传 `:feedback="true"`） |
+| `prompt-label` / `weak-label` / `medium-label` / `strong-label` | `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel`（缺省取内建文案） |
+| `toggle-mask` | 内建切换按钮（无需 prop） |
+| `show-clear` | `clearable`（继承 `CaomeiInput`） |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `invalid` | 同名 |
+
+**未实现**：`medium-regex` / `strong-regex`（强度规则固定）、`mask-icon` / `unmask-icon`、`variant`、`append-to`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="password" />

@@ -60,4 +60,20 @@
 
 > 宽度：默认 `width: 100%` 以适配表单栅格；如需限制宽度，在使用层通过容器或 `max-width` 控制（详见[主题与样式设计 §4.1](../design/theming.md)）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<InputText>` | `<CaomeiInput>` |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `invalid` | 同名（映射 `aria-invalid`） |
+| `fluid` | 删除：默认 `width: 100%`，需要固定宽度时在使用层约束（见[主题与样式 §4.1](../design/theming.md)） |
+| `name` / `id` | 同名 |
+| `aria-label` | `label`（不可见可访问名） |
+| 无 | `clearable`（含清除按钮与 `clear` 事件）、`type`、`readonly`、`autocomplete` 与 `#prefix` / `#suffix` 插槽为本库新增 |
+
+**未实现**：`variant`（`outlined` / `filled`）、`formControl`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="input" />

@@ -73,4 +73,19 @@ Besides `update:modelValue` (committed on blur or Enter), it also provides `focu
 
 > Width: `width: 100%` by default, with an overridable `max-width` set by `--caomei-input-number-max-width` (see [Theming and styles §4.1](/design/theming), Chinese); set the variable to `none` to fill its column.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `use-grouping` | `useGrouping` (defaults to `true`) |
+| `min-fraction-digits` / `max-fraction-digits` | `minFractionDigits` / `maxFractionDigits` (integers 0–20; the former only pads the display, the latter also rounds the model) |
+| `precision` | `precision` (takes precedence over `maxFractionDigits`) |
+| `show-buttons` | `controls` |
+| `min` / `max` / `step` | Same names |
+| — | `increaseLabel` / `decreaseLabel` (button accessible names) are new here |
+
+**Not implemented**: `mode` (`decimal` / `currency`), `currency` / `currencyDisplay`, `prefix` / `suffix`, `format` / `locale` / `localeMatcher`, `buttonLayout`, icon customization such as `incrementIcon` / `decrementIcon`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="input-number" />

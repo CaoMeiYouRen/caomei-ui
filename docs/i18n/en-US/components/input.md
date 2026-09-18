@@ -60,4 +60,20 @@ Besides `update:modelValue`, it also provides `focus`, `blur`, `change`, `enter`
 
 > Width: `width: 100%` by default to fit form grids; to constrain the width, control it at the usage site with a container or `max-width` (see [Theming and styles §4.1](/design/theming), Chinese).
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<InputText>` | `<CaomeiInput>` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `invalid` | Same name (maps to `aria-invalid`) |
+| `fluid` | Drop it: `width: 100%` by default; constrain the width at the usage site when a fixed width is needed (see [Theming and styles §4.1](/design/theming), Chinese) |
+| `name` / `id` | Same names |
+| `aria-label` | `label` (visually hidden accessible name) |
+| — | `clearable` (clear button plus a `clear` event), `type`, `readonly`, `autocomplete` and the `#prefix` / `#suffix` slots are new here |
+
+**Not implemented**: `variant` (`outlined` / `filled`), `formControl`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="input" />

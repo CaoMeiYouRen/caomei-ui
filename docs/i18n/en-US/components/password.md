@@ -52,4 +52,19 @@ The toggle button uses built-in localized labels ("Show password" / "Hide passwo
 - `type` is managed internally (`password` / `text`); an externally passed `type` is ignored to avoid accidentally turning off the mask. Use [Input](/en-US/components/input) when a fixed type is needed.
 - Events `focus` / `blur` / `change` / `enter` / `clear` and the `focus()` / `blur()` methods are forwarded, usable for form validation.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `feedback` | `feedback` (**intentional default change**: PrimeVue defaults to `true`, this library to `false` — 24 of momei's 32 usages are external-service credential fields where a strength meter adds nothing; pass `:feedback="true"` explicitly for user-chosen passwords) |
+| `prompt-label` / `weak-label` / `medium-label` / `strong-label` | `promptLabel` / `weakLabel` / `mediumLabel` / `strongLabel` (built-in text by default) |
+| `toggle-mask` | Built-in toggle button (no prop needed) |
+| `show-clear` | `clearable` (inherited from `CaomeiInput`) |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `invalid` | Same name |
+
+**Not implemented**: `medium-regex` / `strong-regex` (fixed strength rules), `mask-icon` / `unmask-icon`, `variant`, `append-to`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="password" />

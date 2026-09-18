@@ -73,4 +73,19 @@
 
 > 宽度：默认 `width: 100%`，并由 `--caomei-input-number-max-width` 设可覆盖的 `max-width`（详见[主题与样式设计 §4.1](../design/theming.md)）；撑满所在列可覆盖该变量为 `none`。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `use-grouping` | `useGrouping`（默认 `true`） |
+| `min-fraction-digits` / `max-fraction-digits` | `minFractionDigits` / `maxFractionDigits`（0–20 整数；前者仅补零展示，后者同步取整模型） |
+| `precision` | `precision`（优先于 `maxFractionDigits`） |
+| `show-buttons` | `controls` |
+| `min` / `max` / `step` | 同名 |
+| 无 | `increaseLabel` / `decreaseLabel`（按钮可访问名）为本库新增 |
+
+**未实现**：`mode`（`decimal` / `currency`）、`currency` / `currencyDisplay`、`prefix` / `suffix`、`format` / `locale` / `localeMatcher`、`buttonLayout`、`incrementIcon` / `decrementIcon` 等图标定制。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="input-number" />

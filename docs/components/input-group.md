@@ -50,4 +50,15 @@
 |------|------|------|
 | `--caomei-input-group-radius` | `--caomei-radius-md` | 组合首尾外侧圆角 |
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<InputGroup>`（无 props，仅负责拼接成员） | `CaomeiInputGroup`（无 props 的拼接语义一致） |
+| 无 | `orientation`（`horizontal` / `vertical`）为本库新增 |
+
+**边框拼接约定**：圆角去重与「剩余宽度」规则按**成员根元素**生效；选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`）保留自身的宽度上限、不自动铺满，需要铺满时覆盖对应上限 token（见组件页「边框拼接约定」）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="input-group" />

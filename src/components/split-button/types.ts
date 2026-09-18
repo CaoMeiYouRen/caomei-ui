@@ -1,51 +1,22 @@
-import type { Component } from 'vue'
 import type { ComponentSize, ComponentTone, ComponentVariant } from '../../types'
-import type { DropdownMenuAlign, DropdownMenuSide } from '../dropdown-menu'
+import type {
+    DropdownMenuAlign,
+    DropdownMenuCommandEvent,
+    DropdownMenuModelItem,
+    DropdownMenuSide,
+} from '../dropdown-menu'
 
 /**
- * 触发菜单项 `command` 时传入的事件对象
- * @en Event object passed when a menu item's `command` is triggered
+ * 触发菜单项 `command` 时传入的事件对象（与 `DropdownMenuCommandEvent` 同形，为 SplitButton 保留具名导出）
+ * @en Event object passed when a menu item's `command` is triggered (same shape as `DropdownMenuCommandEvent`, kept as a named export for SplitButton)
  */
-export interface SplitButtonCommandEvent {
-    /**
-     * 对应的菜单项
-     * @en The menu item that was selected
-     */
-    item: SplitButtonMenuItem
-    /**
-     * 原始 DOM 事件
-     * @en The original DOM event
-     */
-    originalEvent: Event
-}
+export type SplitButtonCommandEvent = DropdownMenuCommandEvent
 
-export interface SplitButtonMenuItem {
-    /**
-     * 菜单项文本
-     * @en Menu item label
-     */
-    label?: string
-    /**
-     * 菜单项图标，传 `@lucide/vue` 图标组件（非 PrimeVue 的字符串类名）
-     * @en Menu item icon; pass a `@lucide/vue` icon component (not a PrimeVue class-name string)
-     */
-    icon?: Component
-    /**
-     * 选中菜单项时的回调
-     * @en Callback invoked when the item is selected
-     */
-    command?: (event: SplitButtonCommandEvent) => void
-    /**
-     * 是否禁用
-     * @en Whether the item is disabled
-     */
-    disabled?: boolean
-    /**
-     * 是否渲染为分隔线（此时忽略其余字段）
-     * @en Whether to render a separator (other fields are ignored)
-     */
-    separator?: boolean
-}
+/**
+ * 菜单项（与 `DropdownMenuModelItem` 同形，为 SplitButton 保留具名导出）
+ * @en Menu item (same shape as `DropdownMenuModelItem`, kept as a named export for SplitButton)
+ */
+export type SplitButtonMenuItem = DropdownMenuModelItem
 
 export interface SplitButtonProps {
     /**

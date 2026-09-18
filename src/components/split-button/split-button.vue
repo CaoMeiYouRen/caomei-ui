@@ -78,10 +78,10 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
 
         <CaomeiDropdownMenu>
             <!--
-              下拉触发器直接用 Reka DropdownMenuTrigger + as-child，而非 CaomeiDropdownMenuTrigger：
-              后者把 caomei-dropdown-menu__trigger 样式类固定在根上，as-child 会把其 padding / border /
-              background 一并合并到 CaomeiButton 上造成样式冲突（同类先例：date-picker.vue 用
-              PopoverTrigger as-child）。样式豁免方案见 Backlog。
+              下拉触发器沿用 Reka DropdownMenuTrigger + as-child：CaomeiDropdownMenuTrigger 已支持
+              `unstyled` 外观豁免，但收敛共用其 a11y 接线仍需复验 ButtonGroup 的拼接边框 / 圆角规则；
+              遗留收敛登记于 `docs/plan/backlog.md` 的「触发器 `unstyled` 遗留收敛」（同类先例：
+              date-picker.vue / color-picker.vue 的 PopoverTrigger）。
             -->
             <DropdownMenuTrigger
                 as-child
@@ -106,7 +106,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
             >
                 <template
                     v-for="(item, index) in items"
-                    :key="item.separator ? `separator-${index}` : (item.label ?? `item-${index}`)"
+                    :key="item.separator ? `separator-${index}` : `${item.label ?? 'item'}-${index}`"
                 >
                     <CaomeiDropdownMenuSeparator v-if="item.separator" />
                     <CaomeiDropdownMenuItem

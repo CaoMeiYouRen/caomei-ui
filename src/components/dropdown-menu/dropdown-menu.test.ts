@@ -1,6 +1,7 @@
 import { DOMWrapper, enableAutoUnmount, mount } from '@vue/test-utils'
-import { h, nextTick } from 'vue'
+import { defineComponent, h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { DropdownMenuCommandEvent, DropdownMenuModelItem } from './types'
 import {
     CaomeiDropdownMenu,
     CaomeiDropdownMenuCheckboxItem,
@@ -100,6 +101,48 @@ function menuItems() {
     return Array.from(document.body.querySelectorAll<HTMLElement>('.caomei-dropdown-menu__item'))
 }
 
+/** 数据驱动项模型：`model` 作为 prop 传入 Content */
+function mountModel(model: DropdownMenuModelItem[], slotContent?: () => unknown) {
+    return mount(CaomeiDropdownMenu, {
+        attachTo: document.body,
+        slots: {
+            default: () => [
+                h(CaomeiDropdownMenuTrigger, {}, { default: () => '操作' }),
+                h(CaomeiDropdownMenuContent, { model }, { default: slotContent }),
+            ],
+        },
+    })
+}
+
+/** 触发器外观豁免场景：`as-child` 复用带自身样式的自定义按钮 */
+function mountCustomTrigger(triggerProps: Record<string, unknown> = {}) {
+    return mount(CaomeiDropdownMenu, {
+        attachTo: document.body,
+        slots: {
+            default: () => [
+                h(CaomeiDropdownMenuTrigger, { asChild: true, ...triggerProps }, {
+                    default: () => h('button', { class: 'demo-custom-trigger' }, '自定义按钮'),
+                }),
+                h(CaomeiDropdownMenuContent, {}, { default: () => h('p', '内容') }),
+            ],
+        },
+    })
+}
+
+function getCustomTrigger(): HTMLButtonElement {
+    return document.body.querySelector('.demo-custom-trigger') as HTMLButtonElement
+}
+
+async function openModelMenu(wrapper: ReturnType<typeof mountModel>) {
+    await wrapper.get('.caomei-dropdown-menu__trigger').trigger('click')
+    await flush()
+}
+
+const modelIcon = defineComponent({
+    name: 'ModelIcon',
+    render: () => h('svg', { 'data-test': 'model-icon' }),
+})
+
 async function clickElement(element: Element) {
     await new DOMWrapper(element).trigger('click')
 }
@@ -190,6 +233,123 @@ describe('CaomeiDropdownMenu', () => {
         const wrapper = mountMenu({}, { slots: createSlots({ class: 'custom-trigger' }) })
 
         expect(getTrigger(wrapper).classes()).toContain('custom-trigger')
+    })
+
+    it('model 渲染条目并在选中时调用 command（载荷含条目与原始事件）', async () => {
+        const onEdit = vi.fn<(event: DropdownMenuCommandEvent) => void>()
+        const wrapper = mountModel([{ label: '编辑', command: onEdit }])
+        await openModelMenu(wrapper)
+
+        expect(menuItems()).toHaveLength(1)
+        expect(menuItems()[0].textContent).toContain('编辑')
+
+        await clickElement(menuItems()[0])
+        await flush()
+
+        expect(onEdit).toHaveBeenCalledTimes(1)
+        const payload = onEdit.mock.calls[0][0]
+        expect(payload.item.label).toBe('编辑')
+        expect(payload.originalEvent).toBeInstanceOf(Event)
+        // 选中后按既有语义关闭菜单
+        expect(getContent()).toBeNull()
+    })
+
+    it('model 的 separator 渲染为分隔线且不计入条目', async () => {
+        const wrapper = mountModel([{ label: 'A' }, { separator: true }, { label: 'B' }])
+        await openModelMenu(wrapper)
+
+        const content = getContent() as HTMLElement
+        expect(content.querySelectorAll('[role="separator"]')).toHaveLength(1)
+        expect(menuItems()).toHaveLength(2)
+        expect(menuItems().map((item) => item.textContent?.trim())).toEqual(['A', 'B'])
+    })
+
+    it('separator 忽略其余字段，同时给 command 也不触发', async () => {
+        const onCommand = vi.fn()
+        const wrapper = mountModel([
+            { separator: true, label: '不应渲染的文本', command: onCommand },
+            { label: '唯一条目' },
+        ])
+        await openModelMenu(wrapper)
+
+        expect(menuItems()).toHaveLength(1)
+        expect(getContent()?.textContent).not.toContain('不应渲染的文本')
+        expect(onCommand).not.toHaveBeenCalled()
+    })
+
+    it('model 的 disabled 条目不触发 command 且菜单保持打开', async () => {
+        const onDelete = vi.fn()
+        const wrapper = mountModel([{ label: '删除', disabled: true, command: onDelete }])
+        await openModelMenu(wrapper)
+
+        expect(menuItems()[0].getAttribute('data-disabled')).toBeDefined()
+        await clickElement(menuItems()[0])
+        await flush()
+
+        expect(onDelete).not.toHaveBeenCalled()
+        expect(getContent()).not.toBeNull()
+    })
+
+    it('model 的 icon 渲染为图标组件', async () => {
+        const wrapper = mountModel([{ label: '编辑', icon: modelIcon }])
+        await openModelMenu(wrapper)
+
+        expect(getContent()?.querySelector('[data-test="model-icon"]')).not.toBeNull()
+    })
+
+    it('model 与默认插槽共存且 model 渲染在前', async () => {
+        const wrapper = mountModel(
+            [{ label: '模型条目' }],
+            () => h(CaomeiDropdownMenuItem, {}, { default: () => '插槽条目' }),
+        )
+        await openModelMenu(wrapper)
+
+        expect(menuItems().map((item) => item.textContent?.trim())).toEqual(['模型条目', '插槽条目'])
+    })
+
+    it('未传 model 时仅渲染插槽内容', async () => {
+        const wrapper = mountMenu()
+        await wrapper.get('.caomei-dropdown-menu__trigger').trigger('click')
+        await flush()
+
+        expect(menuItems()).toHaveLength(0)
+        expect(getContent()?.textContent).toContain('条目')
+    })
+
+    it('弹出面板经 Portal 挂载于 body 并带锚点方向属性', async () => {
+        const wrapper = mountMenu()
+        const trigger = getTrigger(wrapper).element as HTMLElement
+        await getTrigger(wrapper).trigger('click')
+        await flush()
+
+        const content = getContent() as HTMLElement
+        expect(document.body.contains(content)).toBe(true)
+        // 面板不在触发器子树内，证明经 Portal 弹出而非就地渲染
+        expect(trigger.contains(content)).toBe(false)
+        expect(content.getAttribute('data-side')).toBe('bottom')
+    })
+
+    it('as-child 复用自定义按钮时默认会把内建触发器外观类合并到子元素', () => {
+        const wrapper = mountCustomTrigger()
+
+        expect(getCustomTrigger().classList.contains('caomei-dropdown-menu__trigger')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('unstyled 为 true 时不再合并内建触发器外观类且开合不受影响', async () => {
+        const wrapper = mountCustomTrigger({ unstyled: true })
+
+        const trigger = getCustomTrigger()
+        expect(trigger.classList.contains('caomei-dropdown-menu__trigger')).toBe(false)
+        expect(trigger.classList.contains('demo-custom-trigger')).toBe(true)
+        expect(trigger.getAttribute('aria-haspopup')).toBe('menu')
+
+        await new DOMWrapper(trigger).trigger('click')
+        await flush()
+        expect(getContent()).not.toBeNull()
+
+        wrapper.unmount()
     })
 
     it('渲染条目 / 分组 / 标签 / 分隔线与快捷键提示', async () => {
@@ -284,8 +444,10 @@ describe('CaomeiDropdownMenu', () => {
         expect(document.activeElement?.getAttribute('role')).toBe('menuitem')
 
         await new DOMWrapper(document.activeElement as Element).trigger('keydown', { key: 'ArrowDown' })
-        await nextTick()
 
-        expect(document.activeElement?.getAttribute('role')).toBe('menuitemcheckbox')
+        // 焦点移动经 Reka 的 roving focus 异步落位：用条件轮询替代固定 tick 数，不假设调度时序
+        await vi.waitFor(() => {
+            expect(document.activeElement?.getAttribute('role')).toBe('menuitemcheckbox')
+        })
     })
 })

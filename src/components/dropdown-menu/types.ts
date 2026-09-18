@@ -1,3 +1,5 @@
+import type { Component } from 'vue'
+
 /**
  * 菜单相对触发器的弹出方向
  * @en Dropdown direction relative to the trigger
@@ -15,6 +17,57 @@ export type DropdownMenuAlign = 'start' | 'center' | 'end'
  * @en Reading direction
  */
 export type DropdownMenuDirection = 'ltr' | 'rtl'
+
+/**
+ * 触发数据驱动菜单项 `command` 时传入的事件对象
+ * @en Event object passed when a data-driven item's `command` is triggered
+ */
+export interface DropdownMenuCommandEvent {
+    /**
+     * 对应的菜单项
+     * @en The menu item that was selected
+     */
+    item: DropdownMenuModelItem
+    /**
+     * 原始 DOM 事件
+     * @en The original DOM event
+     */
+    originalEvent: Event
+}
+
+/**
+ * 数据驱动菜单项，对应 PrimeVue `MenuItem` 的常用子集
+ * @en Data-driven menu item, the common subset of PrimeVue's `MenuItem`
+ */
+export interface DropdownMenuModelItem {
+    /**
+     * 条目文本
+     * @en Item label
+     */
+    label?: string
+    /**
+     * 条目图标，传 `@lucide/vue` 图标组件（非 PrimeVue 的字符串类名）
+     * @en Item icon; pass a `@lucide/vue` icon component (not a PrimeVue class-name string)
+     */
+    icon?: Component
+    /**
+     * 选中条目时的回调
+     * @en Callback invoked when the item is selected
+     */
+    command?: (event: DropdownMenuCommandEvent) => void
+    /**
+     * 是否禁用
+     * @default false
+     * @en Whether the item is disabled
+     */
+    disabled?: boolean
+    /**
+     * 是否渲染为分隔线（此时忽略其余字段）
+     * @default false
+     * @en Whether to render a separator (other fields are ignored)
+     */
+    separator?: boolean
+}
 
 export interface DropdownMenuProps {
     /**
@@ -40,6 +93,15 @@ export interface DropdownMenuTriggerProps {
      * @en Whether to disable the trigger
      */
     disabled?: boolean
+    /**
+     * 去掉内建触发器外观类，仅保留开合与无障碍接线。
+     *
+     * 配合 `as-child` 复用自定义按钮（如 `CaomeiButton`）时使用：外观类合并到子元素会与子元素自身
+     * 样式竞争（padding / border / background 等），`unstyled` 让复合层只借用行为、不继承默认皮肤。
+     * @default false
+     * @en Drop the built-in trigger appearance class, keeping only the open/close and a11y wiring. Use it with `as-child` when reusing a custom button so the default skin does not merge onto the child and compete with its own padding / border / background.
+     */
+    unstyled?: boolean
 }
 
 export interface DropdownMenuContentProps {
@@ -78,6 +140,13 @@ export interface DropdownMenuContentProps {
      * @en Force mount (for external animation control)
      */
     forceMount?: boolean
+    /**
+     * 数据驱动菜单项；渲染在默认插槽之前，可与插槽内容共存。
+     *
+     * `separator` 渲染为分隔线，其余条目渲染为普通条目并在选中时调用 `command`。
+     * @en Data-driven menu items, rendered before the default slot and able to coexist with it. `separator` renders a separator; other entries render as regular items and call `command` when selected.
+     */
+    model?: DropdownMenuModelItem[]
 }
 
 export interface DropdownMenuItemProps {

@@ -4,16 +4,17 @@ import type { DropdownMenuTriggerProps } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuTrigger', inheritAttrs: false })
 
-withDefaults(defineProps<DropdownMenuTriggerProps>(), {
+const props = withDefaults(defineProps<DropdownMenuTriggerProps>(), {
     disabled: false,
+    unstyled: false,
 })
 </script>
 
 <template>
     <DropdownMenuTrigger
         v-bind="$attrs"
-        :disabled="disabled"
-        class="caomei-dropdown-menu__trigger"
+        :disabled="props.disabled"
+        :class="props.unstyled ? undefined : 'caomei-dropdown-menu__trigger'"
     >
         <slot />
     </DropdownMenuTrigger>

@@ -11,9 +11,11 @@ export { default as CaomeiDropdownMenuSeparator } from './dropdown-menu-separato
 export type {
     DropdownMenuAlign,
     DropdownMenuCheckboxItemProps,
+    DropdownMenuCommandEvent,
     DropdownMenuContentProps,
     DropdownMenuDirection,
     DropdownMenuItemProps,
+    DropdownMenuModelItem,
     DropdownMenuProps,
     DropdownMenuRadioItemProps,
     DropdownMenuSide,

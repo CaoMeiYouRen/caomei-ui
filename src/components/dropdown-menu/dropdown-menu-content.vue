@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { DropdownMenuContent, DropdownMenuPortal } from 'reka-ui'
-import type { DropdownMenuContentProps } from './types'
+import { computed } from 'vue'
+import { CaomeiIcon } from '../../icons'
+import CaomeiDropdownMenuItem from './dropdown-menu-item.vue'
+import CaomeiDropdownMenuSeparator from './dropdown-menu-separator.vue'
+import type { DropdownMenuContentProps, DropdownMenuModelItem } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuContent', inheritAttrs: false })
 
-withDefaults(defineProps<DropdownMenuContentProps>(), {
+const props = withDefaults(defineProps<DropdownMenuContentProps>(), {
     side: 'bottom',
     sideOffset: 4,
     align: 'start',
@@ -12,6 +16,12 @@ withDefaults(defineProps<DropdownMenuContentProps>(), {
     loop: true,
     forceMount: false,
 })
+
+const items = computed(() => props.model ?? [])
+
+function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
+    item.command?.({ item, originalEvent: event })
+}
 </script>
 
 <template>
@@ -26,6 +36,26 @@ withDefaults(defineProps<DropdownMenuContentProps>(), {
             :force-mount="forceMount"
             class="caomei-dropdown-menu__content"
         >
+            <template
+                v-for="(item, index) in items"
+                :key="item.separator ? `separator-${index}` : `${item.label ?? 'item'}-${index}`"
+            >
+                <CaomeiDropdownMenuSeparator v-if="item.separator" />
+                <CaomeiDropdownMenuItem
+                    v-else
+                    :disabled="item.disabled"
+                    :text-value="item.label"
+                    @select="onModelSelect(item, $event)"
+                >
+                    <span class="caomei-dropdown-menu__model-item">
+                        <CaomeiIcon
+                            v-if="item.icon"
+                            :icon="item.icon"
+                        />
+                        <span v-if="item.label">{{ item.label }}</span>
+                    </span>
+                </CaomeiDropdownMenuItem>
+            </template>
             <slot />
         </DropdownMenuContent>
     </DropdownMenuPortal>
@@ -65,6 +95,12 @@ withDefaults(defineProps<DropdownMenuContentProps>(), {
 .caomei-dropdown-menu__group {
     display: flex;
     flex-direction: column;
+}
+
+.caomei-dropdown-menu__model-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--caomei-dropdown-menu-item-gap, var(--caomei-space-2));
 }
 
 .caomei-dropdown-menu__item {

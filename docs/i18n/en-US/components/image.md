@@ -4,7 +4,7 @@ The image component is built on the native `img` and provides ratio placeholders
 
 ## Basic usage
 
-Pass the image info via `src` / `alt`; `ratio` provides the aspect ratio (such as `16 / 9`) so the container reserves space by ratio; `fit` controls the fill mode (defaults to `cover`).
+Pass the image info via `src` / `alt`; `ratio` provides the aspect ratio (such as `16 / 9`) so the container reserves space by ratio; `fit` controls the fill mode (defaults to `cover`). The demo pairs a square source with a `16 / 9` container — only different ratios make the difference visible: `cover` crops to fill, while `contain` shows the whole image and lets the container background show through (the demo overrides `--caomei-image-bg` so the blank area is easy to see; the default is `--caomei-color-bg-elevated`).
 
 <demo
     vue="../examples/image/basic.vue"
@@ -13,7 +13,7 @@ Pass the image info via `src` / `alt`; `ratio` provides the aspect ratio (such a
 
 ## Lazy loading
 
-With `lazy`, `src` is requested only after the image enters the viewport. Providing `ratio` as well is recommended so the container keeps its placeholder before loading.
+With `lazy`, `src` is requested only after the image enters the viewport. Providing `ratio` as well is recommended so the container keeps its placeholder before loading. The demo deliberately uses an image URL that no other demo on the page reuses, plus a non-cacheable parameter offered by the image source, so a browser cache hit cannot hide the loading step.
 
 <demo
     vue="../examples/image/lazy.vue"

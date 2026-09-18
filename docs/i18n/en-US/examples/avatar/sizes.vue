@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { CaomeiAvatar } from '@/components/avatar'
 
-// 同一个头像用于对比尺寸与形状，便于看出差异
-// （示例照片来自 Lorem Picsum，源自 Unsplash，遵循 Unsplash License，可商用、免署名）
+// The same photo is used to compare sizes and shapes so the difference is visible
+// (photo from Lorem Picsum, by Unsplash, under the Unsplash License: free for commercial use)
 const portrait = 'https://picsum.photos/seed/caomei-avatar-sizes/96/96'
 </script>
 
@@ -11,29 +11,29 @@ const portrait = 'https://picsum.photos/seed/caomei-avatar-sizes/96/96'
         <div class="demo-row">
             <CaomeiAvatar
                 :src="portrait"
-                alt="小尺寸头像"
+                alt="Small avatar"
                 size="sm"
             />
             <CaomeiAvatar
                 :src="portrait"
-                alt="中尺寸头像"
+                alt="Medium avatar"
                 size="md"
             />
             <CaomeiAvatar
                 :src="portrait"
-                alt="大尺寸头像"
+                alt="Large avatar"
                 size="lg"
             />
         </div>
         <div class="demo-row">
             <CaomeiAvatar
                 :src="portrait"
-                alt="圆形头像"
+                alt="Circle avatar"
                 shape="circle"
             />
             <CaomeiAvatar
                 :src="portrait"
-                alt="方形头像"
+                alt="Square avatar"
                 shape="square"
             />
         </div>

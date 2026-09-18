@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { CaomeiImage } from '@/components/image'
 
-function placeholder(text: string): string {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="320" height="180" fill="#bbf7d0"/><text x="160" y="100" font-size="28" text-anchor="middle" fill="#166534">${text}</text></svg>`
-    return `data:image/svg+xml,${encodeURIComponent(svg)}`
-}
-
-const src = placeholder('进入视口后加载')
+/*
+ * 懒加载演示必须使用**本页其他示例没用过的图片地址**：
+ * 复用同一地址会直接命中浏览器缓存，图片进入视口时瞬间完成，看不出加载过程。
+ * 这里另用一张图，并加上图片源的 `random` 参数（该响应不可缓存、每次都会重新挑图），
+ * 保证重复访问时同样能看到「进入视口才开始加载」。
+ * 示例图片来自 Lorem Picsum（照片源自 Unsplash，遵循 Unsplash License，可商用、免署名）。
+ */
+const src = 'https://picsum.photos/1200/675?random=1'
 </script>
 
 <template>

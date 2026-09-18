@@ -16,7 +16,7 @@ Provide the image via `src` and the alternative text via `alt`; fallback content
 Switch the size with `size` (`sm` / `md` / `lg`) and the shape with `shape` (`circle` / `square`).
 
 <demo
-    vue="../../../examples/avatar/sizes.vue"
+    vue="../examples/avatar/sizes.vue"
     ssg="true"
 />
 

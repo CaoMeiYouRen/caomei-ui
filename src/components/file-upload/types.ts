@@ -1,3 +1,31 @@
+/**
+ * 上传界面形态
+ * @en Upload UI mode
+ */
+export type FileUploadMode = 'advanced' | 'basic'
+
+/** `select` 事件载荷 */
+export interface FileUploadSelectEvent {
+    /** 触发的原生事件（input change 或 drop） */
+    originalEvent: Event
+    /** 本次选择后的完整列表；全部文件被拒（类型 / 大小）时为当前未变化的列表 */
+    files: File[]
+}
+
+/** `remove` 事件载荷 */
+export interface FileUploadRemoveEvent {
+    /** 被移除的文件 */
+    file: File
+    /** 移除后的剩余列表 */
+    files: File[]
+}
+
+/** `uploader` 事件载荷 */
+export interface FileUploadUploaderEvent {
+    /** 待上传的文件列表 */
+    files: File[]
+}
+
 export interface FileUploadProps {
     /**
      * 接受的文件类型，使用原生 `accept` 语法（如 `image/*,.pdf`）；同时约束选择与拖拽。
@@ -19,6 +47,35 @@ export interface FileUploadProps {
      * @en Whether the upload is disabled
      */
     disabled?: boolean
+    /**
+     * 界面形态：`advanced` 为拖放区 + 文件列表，`basic` 为紧凑的选择按钮 + 已选文案
+     * @default 'advanced'
+     * @en UI mode: `advanced` renders the dropzone + file list, `basic` renders a compact choose button + chosen-file text
+     */
+    mode?: FileUploadMode
+    /**
+     * 自定义上传：组件不做传输，改为抛出 `uploader` 事件，由业务层上传（对齐 PrimeVue 的 `customUpload`）。
+     * 关闭时组件仅负责选择与列表管理，`uploader` 不触发。
+     * @default false
+     * @en Custom upload: the component performs no transfer and instead emits `uploader` for the application to handle (aligned with PrimeVue's `customUpload`). When off, the component only handles selection and list management and `uploader` never fires.
+     */
+    customUpload?: boolean
+    /**
+     * 选择完成后自动请求上传（`customUpload` 下即抛出 `uploader`）
+     * @default false
+     * @en Automatically request upload after selection completes (under `customUpload` this emits `uploader`)
+     */
+    auto?: boolean
+    /**
+     * 单个文件字节上限；超限文件不进入列表，并显示内建大小提示（可经 locale 覆盖）
+     * @en Per-file size limit in bytes; over-limit files are rejected and a built-in size message is shown (overridable via locale)
+     */
+    maxFileSize?: number
+    /**
+     * 选择按钮 / 拖放区的提示文案；缺省取内建 locale（`basic` 取「选择文件」、`advanced` 取拖放提示）
+     * @en Choose button / dropzone label; defaults to the built-in locale (the basic choose label or the advanced dropzone prompt)
+     */
+    chooseLabel?: string
     /**
      * 无可见提示文本时的可访问名，映射选择按钮的 `aria-label`。
      *

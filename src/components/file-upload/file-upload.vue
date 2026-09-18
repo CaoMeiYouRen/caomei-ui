@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { FileUp, X } from '@lucide/vue'
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
-import type { FileUploadProps } from './types'
+import type {
+    FileUploadProps,
+    FileUploadRemoveEvent,
+    FileUploadSelectEvent,
+    FileUploadUploaderEvent,
+} from './types'
 
 defineOptions({ name: 'CaomeiFileUpload', inheritAttrs: false })
 
@@ -16,12 +22,26 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
     accept: '',
     multiple: false,
     disabled: false,
+    mode: 'advanced',
+    customUpload: false,
+    auto: false,
 })
+
+const emit = defineEmits<{
+    select: [payload: FileUploadSelectEvent]
+    remove: [payload: FileUploadRemoveEvent]
+    clear: []
+    uploader: [payload: FileUploadUploaderEvent]
+}>()
 
 const model = defineModel<File[] | null>({ default: () => [] })
 
 const slots = useSlots()
+const locale = useLocale()
 const { rootAttrs, controlAttrs } = useAttrForwarding()
+
+/** 仅 `basic` 走紧凑形态，其余取值按 `advanced` 处理（缺省即 advanced） */
+const isBasic = computed(() => props.mode === 'basic')
 
 /** 表单语义属性透传到内层 input；其余（id / aria-* / data-*）透传到可聚焦的选择按钮 */
 const inputAttrs = computed<{ name?: string, form?: string, required?: boolean }>(() => {
@@ -43,8 +63,27 @@ const accessibleLabel = computed(() => (slots.default ? props.label : undefined)
 const dropzoneRef = ref<HTMLButtonElement>()
 const inputRef = ref<HTMLInputElement>()
 const isDragging = ref(false)
+/** 校验失败（大小超限）的内建提示；每次选择时重置 */
+const messages = ref<string[]>([])
 
 const files = computed(() => model.value ?? [])
+
+/** 选择入口文案：`chooseLabel` 优先，缺省按形态取内建 locale（basic 为选择、advanced 为拖放提示） */
+const chooseText = computed(() => props.chooseLabel || (isBasic.value
+    ? locale.value.fileUpload.choose
+    : locale.value.fileUpload.prompt))
+
+/** basic 形态的已选文案；`auto` 时不展示（对齐 PrimeVue） */
+const chosenLabel = computed(() => {
+    const count = files.value.length
+    if (!count) {
+        return locale.value.fileUpload.noFileChosen
+    }
+    if (count === 1) {
+        return files.value[0].name
+    }
+    return locale.value.fileUpload.fileChosen.replace('{count}', String(count))
+})
 
 /** 判断文件是否匹配原生 `accept` 语法（扩展名、`type/*` 或精确 MIME） */
 function matchesAccept(file: File, accept: string): boolean {
@@ -70,26 +109,79 @@ function fileKey(file: File): string {
     return `${file.name}:${file.size}:${file.lastModified}`
 }
 
-function commitFiles(incoming: File[]): void {
-    const accepted = incoming.filter((file) => matchesAccept(file, props.accept))
+/** 人类可读的文件大小 */
+function formatSize(bytes: number): string {
+    if (bytes < 1024) {
+        return `${bytes} B`
+    }
+    if (bytes < 1024 * 1024) {
+        return `${(bytes / 1024).toFixed(1)} KB`
+    }
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+/** 请求上传：组件不做传输，仅在 `customUpload` 下抛出 `uploader` 交由业务层处理 */
+function upload(): void {
+    if (!props.customUpload || !files.value.length) {
+        return
+    }
+    emit('uploader', { files: [...files.value] })
+}
+
+/** 清空列表与校验提示 */
+function clear(): void {
+    model.value = []
+    messages.value = []
+    emit('clear')
+}
+
+function commitFiles(incoming: File[], originalEvent: Event): void {
+    messages.value = []
+    const accepted: File[] = []
+    for (const file of incoming) {
+        if (!matchesAccept(file, props.accept)) {
+            continue
+        }
+        if (props.maxFileSize !== undefined && file.size > props.maxFileSize) {
+            messages.value.push(locale.value.fileUpload.sizeExceeded
+                .replace('{name}', file.name)
+                .replace('{max}', formatSize(props.maxFileSize)))
+            continue
+        }
+        accepted.push(file)
+    }
+
+    let next: File[]
+    if (isBasic.value) {
+        // basic 形态每次选择替换列表；无可接受文件时保留原列表（不因一次非法选择清空）
+        next = [...accepted]
+    } else if (!props.multiple) {
+        next = accepted.length ? [accepted[0]] : []
+    } else {
+        const seen = new Set(files.value.map(fileKey))
+        next = [...files.value]
+        for (const file of accepted) {
+            const key = fileKey(file)
+            if (seen.has(key)) {
+                continue
+            }
+            seen.add(key)
+            next.push(file)
+        }
+    }
+
+    // `select` 载荷为「本次选择后的完整列表」：全部被拒时列表未变化，仍与 v-model 保持一致
+    emit('select', { originalEvent, files: accepted.length ? next : [...files.value] })
+
     if (!accepted.length) {
         return
     }
-    if (!props.multiple) {
-        model.value = [accepted[0]]
-        return
-    }
-    const seen = new Set(files.value.map(fileKey))
-    const next = [...files.value]
-    for (const file of accepted) {
-        const key = fileKey(file)
-        if (seen.has(key)) {
-            continue
-        }
-        seen.add(key)
-        next.push(file)
-    }
+
     model.value = next
+
+    if (props.auto) {
+        upload()
+    }
 }
 
 function openPicker(): void {
@@ -102,7 +194,7 @@ function openPicker(): void {
 function handleInputChange(event: Event): void {
     const input = event.target as HTMLInputElement
     if (input.files?.length) {
-        commitFiles(Array.from(input.files))
+        commitFiles(Array.from(input.files), event)
     }
     // 复位以支持再次选择同一文件
     input.value = ''
@@ -129,7 +221,7 @@ function handleDrop(event: DragEvent): void {
     }
     const dropped = event.dataTransfer?.files
     if (dropped?.length) {
-        commitFiles(Array.from(dropped))
+        commitFiles(Array.from(dropped), event)
     }
 }
 
@@ -152,48 +244,112 @@ function remove(index: number): void {
     if (props.disabled) {
         return
     }
-    model.value = files.value.filter((_, current) => current !== index)
+    const removed = files.value[index]
+    const next = files.value.filter((_, current) => current !== index)
+    model.value = next
+    emit('remove', { file: removed, files: next })
 }
 
-/** 人类可读的文件大小 */
-function formatSize(bytes: number): string {
-    if (bytes < 1024) {
-        return `${bytes} B`
-    }
-    if (bytes < 1024 * 1024) {
-        return `${(bytes / 1024).toFixed(1)} KB`
-    }
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
+defineExpose({ upload, clear })
 </script>
 
 <template>
     <div
         v-bind="rootAttrs"
         class="caomei-file-upload"
-        :class="{'caomei-file-upload--disabled': disabled}"
+        :class="[`caomei-file-upload--${isBasic ? 'basic' : 'advanced'}`, {'caomei-file-upload--disabled': disabled}]"
     >
+        <ul
+            v-if="messages.length"
+            class="caomei-file-upload__messages"
+        >
+            <li
+                v-for="(message, index) in messages"
+                :key="`${message}-${index}`"
+                class="caomei-file-upload__message"
+                role="alert"
+            >
+                {{ message }}
+            </li>
+        </ul>
+
         <button
-            ref="dropzoneRef"
+            v-if="isBasic"
             v-bind="{...buttonAttrs, ...(accessibleLabel ? {'aria-label': accessibleLabel} : {})}"
             type="button"
-            class="caomei-file-upload__dropzone"
-            :class="{'caomei-file-upload__dropzone--dragging': isDragging}"
+            class="caomei-file-upload__button"
             :disabled="disabled"
             @click="openPicker"
-            @dragenter.prevent="handleDragEnter"
-            @dragover.prevent
-            @dragleave="handleDragLeave"
-            @drop.prevent="handleDrop"
         >
-            <slot :open="openPicker" :dragging="isDragging">
+            <slot :open="openPicker" :dragging="false">
                 <CaomeiIcon
                     :icon="FileUp"
                     class="caomei-file-upload__icon"
                 />
-                <span class="caomei-file-upload__text">点击选择文件，或将文件拖拽到此处</span>
+                <span class="caomei-file-upload__text">{{ chooseText }}</span>
             </slot>
         </button>
+
+        <template v-else>
+            <button
+                ref="dropzoneRef"
+                v-bind="{...buttonAttrs, ...(accessibleLabel ? {'aria-label': accessibleLabel} : {})}"
+                type="button"
+                class="caomei-file-upload__dropzone"
+                :class="{'caomei-file-upload__dropzone--dragging': isDragging}"
+                :disabled="disabled"
+                @click="openPicker"
+                @dragenter.prevent="handleDragEnter"
+                @dragover.prevent
+                @dragleave="handleDragLeave"
+                @drop.prevent="handleDrop"
+            >
+                <slot :open="openPicker" :dragging="isDragging">
+                    <CaomeiIcon
+                        :icon="FileUp"
+                        class="caomei-file-upload__icon"
+                    />
+                    <span class="caomei-file-upload__text">{{ chooseText }}</span>
+                </slot>
+            </button>
+
+            <ul
+                v-if="files.length"
+                class="caomei-file-upload__list"
+            >
+                <li
+                    v-for="(file, index) in files"
+                    :key="`${file.name}-${file.size}-${index}`"
+                    class="caomei-file-upload__item"
+                >
+                    <slot
+                        name="file"
+                        :file="file"
+                        :index="index"
+                        :remove="() => remove(index)"
+                    >
+                        <span class="caomei-file-upload__name">{{ file.name }}</span>
+                        <span class="caomei-file-upload__size">{{ formatSize(file.size) }}</span>
+                        <button
+                            type="button"
+                            class="caomei-file-upload__remove"
+                            :disabled="disabled"
+                            :aria-label="`移除 ${file.name}`"
+                            @click="remove(index)"
+                        >
+                            <CaomeiIcon :icon="X" />
+                        </button>
+                    </slot>
+                </li>
+            </ul>
+        </template>
+
+        <span
+            v-if="isBasic && !auto"
+            class="caomei-file-upload__chosen"
+        >
+            {{ chosenLabel }}
+        </span>
 
         <input
             ref="inputRef"
@@ -207,36 +363,6 @@ function formatSize(bytes: number): string {
             aria-hidden="true"
             @change="handleInputChange"
         >
-
-        <ul
-            v-if="files.length"
-            class="caomei-file-upload__list"
-        >
-            <li
-                v-for="(file, index) in files"
-                :key="`${file.name}-${file.size}-${index}`"
-                class="caomei-file-upload__item"
-            >
-                <slot
-                    name="file"
-                    :file="file"
-                    :index="index"
-                    :remove="() => remove(index)"
-                >
-                    <span class="caomei-file-upload__name">{{ file.name }}</span>
-                    <span class="caomei-file-upload__size">{{ formatSize(file.size) }}</span>
-                    <button
-                        type="button"
-                        class="caomei-file-upload__remove"
-                        :disabled="disabled"
-                        :aria-label="`移除 ${file.name}`"
-                        @click="remove(index)"
-                    >
-                        <CaomeiIcon :icon="X" />
-                    </button>
-                </slot>
-            </li>
-        </ul>
     </div>
 </template>
 
@@ -248,6 +374,25 @@ function formatSize(bytes: number): string {
     flex-direction: column;
     gap: var(--caomei-file-upload-gap, var(--caomei-space-2));
     font-family: var(--caomei-font-sans);
+}
+
+.caomei-file-upload--basic {
+    flex-flow: row wrap;
+    align-items: center;
+}
+
+.caomei-file-upload__messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.caomei-file-upload__message {
+    color: var(--caomei-color-danger);
+    font-size: var(--caomei-font-size-sm);
 }
 
 .caomei-file-upload__dropzone {
@@ -286,6 +431,45 @@ function formatSize(bytes: number): string {
 .caomei-file-upload__dropzone:disabled {
     cursor: not-allowed;
     opacity: var(--caomei-disabled-opacity);
+}
+
+.caomei-file-upload__button {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--caomei-space-2);
+    height: var(--caomei-control-height-md);
+    padding: 0 var(--caomei-space-3);
+    border: 1px solid var(--caomei-color-border);
+    border-radius: var(--caomei-radius-md);
+    background: var(--caomei-color-bg);
+    color: var(--caomei-color-text);
+    font: inherit;
+    font-size: var(--caomei-font-size-md);
+    cursor: pointer;
+}
+
+.caomei-file-upload__button:hover:not(:disabled) {
+    border-color: var(--caomei-color-primary);
+}
+
+.caomei-file-upload__button:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 2px;
+}
+
+.caomei-file-upload__button:disabled {
+    cursor: not-allowed;
+    opacity: var(--caomei-disabled-opacity);
+}
+
+.caomei-file-upload__chosen {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-md);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .caomei-file-upload__icon {

@@ -1,6 +1,8 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
-import { h, nextTick } from 'vue'
+import { computed, h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales } from '../../locale'
 import { CaomeiFileUpload } from './index'
 
 enableAutoUnmount(afterEach)
@@ -249,5 +251,204 @@ describe('CaomeiFileUpload', () => {
             attachTo: document.body,
         })
         expect(forwarded.get('.caomei-file-upload__dropzone').attributes('aria-label')).toBe('透传名')
+    })
+})
+
+interface UploadExposed {
+    upload: () => void
+    clear: () => void
+}
+
+describe('CaomeiFileUpload mode / chooseLabel / maxFileSize / auto', () => {
+    it('basic 形态渲染紧凑按钮与已选文案，不渲染拖放区与列表', async () => {
+        const wrapper = mountUpload({ mode: 'basic' })
+
+        expect(wrapper.find('.caomei-file-upload__dropzone').exists()).toBe(false)
+        expect(wrapper.get('.caomei-file-upload__button').element.tagName).toBe('BUTTON')
+        expect(wrapper.get('.caomei-file-upload__chosen').text()).toBe('未选择文件')
+
+        await setInputFiles(wrapper, [makeFile('a.png')])
+
+        expect(lastValue(wrapper).map((file) => file.name)).toEqual(['a.png'])
+        expect(wrapper.get('.caomei-file-upload__chosen').text()).toBe('a.png')
+        expect(wrapper.find('.caomei-file-upload__list').exists()).toBe(false)
+    })
+
+    it('basic 形态点击按钮触发 input.click', async () => {
+        const wrapper = mountUpload({ mode: 'basic' })
+        const spy = vi.spyOn(getInput(wrapper).element as HTMLInputElement, 'click')
+
+        await wrapper.get('.caomei-file-upload__button').trigger('click')
+
+        expect(spy).toHaveBeenCalledTimes(1)
+    })
+
+    it('basic 多选替换列表，并在多文件时显示计数文案', async () => {
+        const wrapper = mountUpload({ mode: 'basic', multiple: true, modelValue: [makeFile('old.png')] })
+
+        await setInputFiles(wrapper, [makeFile('a.png'), makeFile('b.png')])
+
+        expect(lastValue(wrapper).map((file) => file.name)).toEqual(['a.png', 'b.png'])
+        expect(wrapper.get('.caomei-file-upload__chosen').text()).toBe('已选择 2 个文件')
+    })
+
+    it('chooseLabel 覆盖 advanced 提示与 basic 按钮文案', () => {
+        const advanced = mountUpload({ chooseLabel: '上传附件' })
+        expect(advanced.get('.caomei-file-upload__dropzone').text()).toContain('上传附件')
+
+        const basic = mountUpload({ mode: 'basic', chooseLabel: '上传附件' })
+        expect(basic.get('.caomei-file-upload__button').text()).toContain('上传附件')
+    })
+
+    it('maxFileSize 拒绝超限文件且不写入列表，并显示内建提示', async () => {
+        const wrapper = mountUpload({ maxFileSize: 1024 })
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 2048)])
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png 超过大小上限 1.0 KB')
+        expect(wrapper.get('.caomei-file-upload__message').attributes('role')).toBe('alert')
+    })
+
+    it('maxFileSize 保留达标文件、仅拒绝超限文件', async () => {
+        const wrapper = mountUpload({ multiple: true, maxFileSize: 2048 })
+
+        await setInputFiles(wrapper, [makeFile('ok.png', 'image/png', 1024), makeFile('big.png', 'image/png', 4096)])
+
+        expect(lastValue(wrapper).map((file) => file.name)).toEqual(['ok.png'])
+        expect(wrapper.get('.caomei-file-upload__message').text()).toContain('big.png')
+    })
+
+    it('全部被拒时不改变既有列表，select 载荷与 v-model 一致', async () => {
+        const wrapper = mountUpload({ maxFileSize: 1024, modelValue: [makeFile('keep.png', 'image/png', 512)] })
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        expect(wrapper.get('.caomei-file-upload__name').text()).toBe('keep.png')
+        const payload = wrapper.emitted('select')?.[0]?.[0] as { files: File[] }
+        expect(payload.files.map((file) => file.name)).toEqual(['keep.png'])
+    })
+
+    it('basic 全部被拒时 select 载荷等于既有列表', async () => {
+        const wrapper = mountUpload({
+            mode: 'basic',
+            maxFileSize: 1024,
+            modelValue: [makeFile('keep.png', 'image/png', 512)],
+        })
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        const payload = wrapper.emitted('select')?.[0]?.[0] as { files: File[] }
+        expect(payload.files.map((file) => file.name)).toEqual(['keep.png'])
+    })
+
+    it('advanced 多选全部被拒时 select 载荷等于既有列表', async () => {
+        const wrapper = mountUpload({
+            multiple: true,
+            maxFileSize: 1024,
+            modelValue: [makeFile('keep.png', 'image/png', 512)],
+        })
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
+
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        const payload = wrapper.emitted('select')?.[0]?.[0] as { files: File[] }
+        expect(payload.files.map((file) => file.name)).toEqual(['keep.png'])
+    })
+
+    it('文件大小恰好等于上限时通过', async () => {
+        const wrapper = mountUpload({ maxFileSize: 2048 })
+
+        await setInputFiles(wrapper, [makeFile('exact.png', 'image/png', 2048)])
+
+        expect(lastValue(wrapper).map((file) => file.name)).toEqual(['exact.png'])
+        expect(wrapper.find('.caomei-file-upload__message').exists()).toBe(false)
+    })
+
+    it('新选择会清空上一次的超限提示', async () => {
+        const wrapper = mountUpload({ maxFileSize: 1024 })
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
+        expect(wrapper.find('.caomei-file-upload__message').exists()).toBe(true)
+
+        await setInputFiles(wrapper, [makeFile('ok.png', 'image/png', 512)])
+
+        expect(wrapper.find('.caomei-file-upload__message').exists()).toBe(false)
+    })
+
+    it('auto 且 customUpload 时选完文件抛出 uploader', async () => {
+        const wrapper = mountUpload({ auto: true, customUpload: true })
+
+        await setInputFiles(wrapper, [makeFile('a.png')])
+
+        const payload = wrapper.emitted('uploader')?.[0]?.[0] as { files: File[] }
+        expect(payload.files.map((file) => file.name)).toEqual(['a.png'])
+    })
+
+    it('auto 不带 customUpload 时不抛出 uploader', async () => {
+        const wrapper = mountUpload({ auto: true })
+
+        await setInputFiles(wrapper, [makeFile('a.png')])
+
+        expect(wrapper.emitted('uploader')).toBeUndefined()
+    })
+
+    it('customUpload 且非 auto 时由暴露的 upload() 抛出 uploader', () => {
+        const wrapper = mountUpload({ customUpload: true, modelValue: [makeFile('a.png')] })
+
+        expect(wrapper.emitted('uploader')).toBeUndefined()
+
+        ;(wrapper.vm as unknown as UploadExposed).upload()
+
+        const payload = wrapper.emitted('uploader')?.[0]?.[0] as { files: File[] }
+        expect(payload.files.map((file) => file.name)).toEqual(['a.png'])
+    })
+
+    it('未开启 customUpload 时 upload() 不抛出 uploader', () => {
+        const wrapper = mountUpload({ modelValue: [makeFile('a.png')] })
+
+        ;(wrapper.vm as unknown as UploadExposed).upload()
+
+        expect(wrapper.emitted('uploader')).toBeUndefined()
+    })
+
+    it('选择与移除分别抛出 select / remove，clear() 抛出 clear 并清空模型', async () => {
+        const wrapper = mountUpload({ multiple: true })
+
+        await setInputFiles(wrapper, [makeFile('a.png'), makeFile('b.png')])
+        const selectPayload = wrapper.emitted('select')?.[0]?.[0] as { files: File[], originalEvent: Event }
+        expect(selectPayload.files.map((file) => file.name)).toEqual(['a.png', 'b.png'])
+        expect(selectPayload.originalEvent).toBeInstanceOf(Event)
+
+        await wrapper.findAll('.caomei-file-upload__remove')[0].trigger('click')
+        const removePayload = wrapper.emitted('remove')?.[0]?.[0] as { file: File, files: File[] }
+        expect(removePayload.file.name).toBe('a.png')
+        expect(removePayload.files.map((file) => file.name)).toEqual(['b.png'])
+
+        ;(wrapper.vm as unknown as UploadExposed).clear()
+        expect(lastValue(wrapper)).toEqual([])
+        expect(wrapper.emitted('clear')).toEqual([[]])
+    })
+
+    it('basic 且 auto 时不渲染已选文案', () => {
+        const wrapper = mountUpload({ mode: 'basic', auto: true })
+
+        expect(wrapper.find('.caomei-file-upload__chosen').exists()).toBe(false)
+    })
+
+    it('内建文案与超限提示取自注入 locale', async () => {
+        const wrapper = mountUpload({ mode: 'basic', maxFileSize: 1024 }, {
+            global: {
+                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+            },
+        })
+
+        expect(wrapper.get('.caomei-file-upload__button').text()).toContain('Choose file')
+
+        await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
+
+        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png exceeds the maximum size of 1.0 KB')
     })
 })

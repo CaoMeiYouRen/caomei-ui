@@ -46,6 +46,13 @@ const zhTW: CaomeiLocaleMessages = {
         label: '抽屜',
         close: '關閉',
     },
+    fileUpload: {
+        choose: '選擇檔案',
+        prompt: '點擊選擇檔案，或將檔案拖曳到此處',
+        noFileChosen: '未選擇檔案',
+        fileChosen: '已選擇 {count} 個檔案',
+        sizeExceeded: '{name} 超過大小上限 {max}',
+    },
     image: {
         label: '圖片預覽',
         preview: '預覽圖片',

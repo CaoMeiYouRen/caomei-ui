@@ -46,6 +46,13 @@ const enUS: CaomeiLocaleMessages = {
         label: 'Drawer',
         close: 'Close',
     },
+    fileUpload: {
+        choose: 'Choose file',
+        prompt: 'Click to choose files, or drag and drop them here',
+        noFileChosen: 'No file chosen',
+        fileChosen: '{count} files chosen',
+        sizeExceeded: '{name} exceeds the maximum size of {max}',
+    },
     image: {
         label: 'Image preview',
         preview: 'Preview image',

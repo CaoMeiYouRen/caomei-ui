@@ -52,6 +52,13 @@ export interface CaomeiLocaleMessages {
         label: string
         close: string
     }
+    fileUpload: {
+        choose: string
+        prompt: string
+        noFileChosen: string
+        fileChosen: string
+        sizeExceeded: string
+    }
     image: {
         label: string
         preview: string

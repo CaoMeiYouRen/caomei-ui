@@ -46,6 +46,13 @@ const koKR: CaomeiLocaleMessages = {
         label: '드로어',
         close: '닫기',
     },
+    fileUpload: {
+        choose: '파일 선택',
+        prompt: '클릭하여 파일을 선택하거나 여기로 끌어다 놓으세요',
+        noFileChosen: '선택된 파일 없음',
+        fileChosen: '{count}개 파일 선택됨',
+        sizeExceeded: '{name}이(가) 최대 크기 {max}를 초과합니다',
+    },
     image: {
         label: '이미지 미리보기',
         preview: '이미지 미리보기',

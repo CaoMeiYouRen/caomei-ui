@@ -46,6 +46,13 @@ const jaJP: CaomeiLocaleMessages = {
         label: 'ドロワー',
         close: '閉じる',
     },
+    fileUpload: {
+        choose: 'ファイルを選択',
+        prompt: 'クリックしてファイルを選択、またはここにドラッグ＆ドロップ',
+        noFileChosen: 'ファイルが選択されていません',
+        fileChosen: '{count} 件のファイルを選択済み',
+        sizeExceeded: '{name} はサイズ上限 {max} を超えています',
+    },
     image: {
         label: '画像プレビュー',
         preview: '画像をプレビュー',

@@ -48,4 +48,17 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 > The component does not handle `srcset` or cross-origin; handle responsive images or cross-origin policy in the application layer when needed.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `src` | `src` |
+| `preview` (click to zoom with an overlay) | **Not implemented (registered as a follow-up; this section will be updated when it ships)** |
+| `indicatorIcon` / `previewIcon` | Not implemented (same follow-up) |
+| `imageStyle` / `imageClass` | Not implemented: style through the root class and CSS variables (native image attributes are not forwarded to the inner `<img>`) |
+| `zoomInDisabled` / `zoomOutDisabled` | Not applicable (no preview) |
+| — | `alt`, `ratio` (reserve space to avoid layout shift), `fit`, `lazy` (request on viewport entry) and the `#loading` / `#error` slots are new here |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="image" />

@@ -43,4 +43,20 @@
 - 主按钮的可访问名优先级为 `label` > 透传 `aria-label`（无内建兜底文案）；下拉按钮带内建可访问名（「更多操作」/ "More actions"），可通过 `menuLabel` 覆盖；仅图标时该名称即其可访问名。
 - 下拉按钮暴露 `aria-haspopup="menu"` 与 `aria-expanded`，菜单支持方向键导航与 Esc 关闭（由 Reka DropdownMenu 提供）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `label`（主按钮可见文本） | 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名** |
+| `model`（`MenuItem[]`） | `model`（`label` / `icon` / `command` / `disabled`，另有 `separator`；`icon` 改传 `@lucide/vue` 组件） |
+| `icon`（字符串图标名） | `#icon` 插槽 |
+| `severity` | `tone` |
+| `text` / `outlined` | `variant="ghost"` / `variant="secondary"` |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `rounded` | `rounded` |
+
+**未实现 / 未暴露**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向为**自建**（Button + DropdownMenu 组合），另有 `menuLabel` / `menuSide` / `menuAlign` 控制菜单。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="split-button" />

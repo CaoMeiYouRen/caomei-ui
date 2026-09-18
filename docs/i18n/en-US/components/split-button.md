@@ -43,4 +43,20 @@ The menu side is controlled by `menuSide` (default `bottom`) and `menuAlign` (de
 - The main button's accessible name resolves as `label` > forwarded `aria-label` (there is no built-in fallback text); the menu button's built-in accessible name ("More actions") is overridable via `menuLabel`.
 - The menu button exposes `aria-haspopup="menu"` and `aria-expanded`, and the menu supports arrow-key navigation and Esc to close (provided by Reka DropdownMenu).
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `label` (visible text of the main button) | Default slot (visible text); here `label` is always a **visually hidden accessible name** |
+| `model` (`MenuItem[]`) | `model` (`label` / `icon` / `command` / `disabled`, plus `separator`; pass `icon` as an `@lucide/vue` component) |
+| `icon` (string icon class) | `#icon` slot |
+| `severity` | `tone` |
+| `text` / `outlined` | `variant="ghost"` / `variant="secondary"` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `rounded` | `rounded` |
+
+**Not implemented / not exposed**: `MenuItem.items` submenus, `url` / `target` navigation, `menuButtonIcon` / `dropdownIcon`, `menuButtonProps` / `buttonProps`, `raised` / `plain`, `appendTo` / `baseZIndex` / `autoZIndex`, `fluid`. The implementation is home-grown (Button + DropdownMenu); `menuLabel` / `menuSide` / `menuAlign` control the menu.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="split-button" />

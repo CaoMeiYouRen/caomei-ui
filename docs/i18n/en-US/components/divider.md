@@ -44,4 +44,15 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-divider-vertical-margin` | `--caomei-space-2` | Inline margin of a vertical divider |
 | `--caomei-divider-gap` | `--caomei-space-3` | Gap between content and the lines on each side |
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `layout` (`horizontal` / `vertical`) | `orientation` (same values) |
+| `type` (`solid` / `dashed` / `dotted`) | `variant` (same values) |
+| `align` (`top` / `bottom` for vertical layout) | `align` (`left` / `center` / `right`); **`top` / `bottom` alignment in vertical layout is not supported** |
+| Content | Default slot (only participates in horizontal layout) |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="divider" />

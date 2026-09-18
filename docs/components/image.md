@@ -48,4 +48,17 @@
 
 > 组件不处理 `srcset` 与跨域；需要响应式图片或跨域策略时请在业务层自行处理。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `src` | `src` |
+| `preview`（点击放大 + 遮罩） | **未实现（已登记为后续补强项，交付后同步本节）** |
+| `indicatorIcon` / `previewIcon` | 未实现（同上） |
+| `imageStyle` / `imageClass` | 未实现：样式经组件根类与 CSS 变量覆盖（原生图片属性不透传到内层 `<img>`） |
+| `zoomInDisabled` / `zoomOutDisabled` | 不适用（无预览） |
+| 无 | `alt`、`ratio`（按比例占位防抖动）、`fit`、`lazy`（进入视口再请求）与 `#loading` / `#error` 插槽为本库新增 |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="image" />

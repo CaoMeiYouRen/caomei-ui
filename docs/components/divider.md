@@ -44,4 +44,15 @@
 | `--caomei-divider-vertical-margin` | `--caomei-space-2` | 垂直分隔线左右外边距 |
 | `--caomei-divider-gap` | `--caomei-space-3` | 带内容时内容与两侧线条的间距 |
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `layout`（`horizontal` / `vertical`） | `orientation`（同名取值） |
+| `type`（`solid` / `dashed` / `dotted`） | `variant`（同名取值） |
+| `align`（垂直布局用 `top` / `bottom`） | `align`（`left` / `center` / `right`）；**垂直布局的 `top` / `bottom` 对齐未支持** |
+| 内容 | 默认插槽（仅横向时参与布局） |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="divider" />

@@ -80,7 +80,7 @@ Besides the controlled `open`, you can pass a trigger element via the `trigger` 
 | `dismissable-mask` / `close-on-escape` | `closeOnOverlay` / `closeOnEsc` |
 | `block-scroll` | Not exposed: `modal="true"` already locks page scroll (stricter than PrimeVue's default) |
 
-**Intentional differences**: the breakpoint rules live in a `<style>` element inside the panel and rely on source-order tie-breaking (downstream needs higher specificity or `!important` to override); they also require the consumer's CSP `style-src` to allow inline styles. See [Design spec §7](/design/design-spec.md) for the rest.
+**Intentional differences**: the breakpoint rules live in a `<style>` element inside the panel and rely on source-order tie-breaking (downstream needs higher specificity or `!important` to override); they also require the consumer's CSP `style-src` to allow inline styles. See [Design spec §7](/design/design-spec) for the rest.
 
 **Not implemented / not exposed**: `maximizable` / `draggable` / `position` / `appendTo`, and lifecycle events such as `show` / `after-hide`.
 

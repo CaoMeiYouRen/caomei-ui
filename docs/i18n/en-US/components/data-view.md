@@ -58,7 +58,7 @@ When `loading` is true the component shows the loading text and marks the root w
 | `#list` / `#grid` / `#empty` / `#header` / `#footer` | Same-named slots (`#list` / `#grid` receive `{ items }`, `#empty` also receives `layout`) |
 | `:loading` (PrimeVue has no such prop, passing it has no effect) | `loading` / `loadingText` (new here; the root gets `aria-busy` while loading) |
 
-**Not implemented**: pagination (`paginator` / `rows` / `first` / `totalRecords` and the paginator slots), sorting (`sortField` / `sortOrder`), `lazy`, `dataKey`; grid columns are up to the content layer (PrimeVue does not ship them either); see [Design spec §7](/design/design-spec.md) for the full prop / slot list.
+**Not implemented**: pagination (`paginator` / `rows` / `first` / `totalRecords` and the paginator slots), sorting (`sortField` / `sortOrder`), `lazy`, `dataKey`; grid columns are up to the content layer (PrimeVue does not ship them either); see [Design spec §7](/design/design-spec) for the full prop / slot list.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

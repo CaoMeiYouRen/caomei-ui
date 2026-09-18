@@ -67,7 +67,7 @@ The `#header` slot replaces the content of the title area while the close button
 | `modal` | `modal` (here `modal="true"` also locks page scroll — stricter than PrimeVue) |
 | width via `style` | `size` (new here: `sm` / `md` / `lg` = 320 / 420 / 560px, converging on narrow viewports) |
 
-**Not implemented / not exposed**: `position="full"`; the `show` / `before-hide` / `hide` / `after-show` / `after-hide` events; the `#closebutton` / `#closeicon` / `#container` slots; `base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`; the overlay/panel layering is fixed at 1000 / 1001 and the close button form is fixed (see [Design spec §7](/design/design-spec.md) for the full list).
+**Not implemented / not exposed**: `position="full"`; the `show` / `before-hide` / `hide` / `after-show` / `after-hide` events; the `#closebutton` / `#closeicon` / `#container` slots; `base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`; the overlay/panel layering is fixed at 1000 / 1001 and the close button form is fixed (see [Design spec §7](/design/design-spec) for the full list).
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

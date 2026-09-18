@@ -33,4 +33,19 @@
 
 按钮组不提供组级圆角变量：外侧圆角沿用各成员自身的圆角（默认 `--caomei-radius-md`，`Button` 的 `rounded` 则为 `--caomei-radius-full`），组仅负责去除成员内侧圆角与边框。
 
+## 从 PrimeVue 迁移
+
+PrimeVue 的 `ButtonGroup` 与本组件同为**拼接容器**（PrimeVue 侧 props 仅 `dt` / `pt` / `ptOptions` / `unstyled`，无功能 props；本组件另有布局 prop `orientation`），成员即普通按钮：
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<ButtonGroup>` | `<CaomeiButtonGroup>`（同为无 props 拼接容器） |
+| `<Button>` 成员 | `CaomeiButton`；拼接规则按成员根元素去内侧圆角与边框 |
+| 无 | `orientation`（`horizontal` / `vertical`）为本库新增；PrimeVue 无纵向组合支持 |
+| `pt` / `dt` / `ptOptions` / `unstyled` | 未实现 / 未暴露（主题透传机制未暴露，样式经 CSS 变量与类名覆盖） |
+
+> 迁移时把 `<ButtonGroup>` 与其中的 `<Button>` 换成 `Caomei` 前缀即可；`pt` / `dt` / `unstyled` 无等价物，主题定制改走 CSS 变量。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="button-group" />

@@ -38,14 +38,14 @@
 
 | 分组 | 组件 |
 | --- | --- |
-| 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
+| 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[ButtonGroup](/components/button-group)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
 | 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[FileUpload](/components/file-upload)、[FloatLabel](/components/float-label)、[Input](/components/input)、[InputGroup](/components/input-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[RadioGroup](/components/radio-group)、[Slider](/components/slider)、[Switch](/components/switch)、[Textarea](/components/textarea) |
 | 选择器 | [AutoComplete](/components/auto-complete)、[Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
 | 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |
 | 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator)、[ProgressBar](/components/progress-bar)、[ProgressSpinner](/components/progress-spinner)、[Skeleton](/components/skeleton) |
-| 导航与操作 | [Accordion](/components/accordion)、[DropdownMenu](/components/dropdown-menu)、[Tabs](/components/tabs)、[Toolbar](/components/toolbar) |
+| 导航与操作 | [Accordion](/components/accordion)、[DropdownMenu](/components/dropdown-menu)、[Stepper](/components/stepper)、[Tabs](/components/tabs)、[Toolbar](/components/toolbar) |
 
-> 组件页的「从 PrimeVue 迁移」节与 §7 不一致时**以 §7 为准**（漂移视为文档缺陷）。上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件（如 [Stepper](/components/stepper)、[ButtonGroup](/components/button-group)）以组件页的 API / 「范围与约定」为准（§7 有登记时以 §7 为准）。组件页的「从 PrimeVue 迁移」节正在滚动补齐。
+> 组件页的「从 PrimeVue 迁移」节与 §7 不一致时**以 §7 为准**（漂移视为文档缺陷）。上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件以其组件页的 API / 「范围与约定」为准（§7 有登记时以 §7 为准）。组件页的「从 PrimeVue 迁移」节已覆盖全部组件页。
 
 ## 迁移后自检
 

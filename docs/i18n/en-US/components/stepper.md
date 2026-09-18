@@ -100,4 +100,27 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+PrimeVue v4 composes the Stepper from a root plus several helper components; this library keeps the same responsibility split under `Caomei` names (PrimeVue's `Step` merges the trigger with the number and title, while this library splits them into named parts):
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Stepper v-model:value>` | `<CaomeiStepper v-model>` |
+| `<StepList>` | `<CaomeiStepperList>` |
+| `<StepItem :value>` | `<CaomeiStepperItem :step>` (`value` → `step`) |
+| `<Step :value :disabled>` | `<CaomeiStepperTrigger>` + `<CaomeiStepperIndicator>` / `<CaomeiStepperTitle>` / `<CaomeiStepperDescription>` |
+| `<StepPanels>` + `<StepPanel :value>` | Not implemented: there is no step-panel container here, so render panel content yourself for the current step |
+| `v-model:value` (`string \| number`, no starting convention) | `v-model` (`number`, **1-based**; migration must switch to 1-based step numbers) |
+| `linear` (default `false`) | `linear` (default `true`; **same direction, opposite default** — pass `:linear="false"` for free navigation) |
+| `#start` / `#end` slots | Not implemented: express them with the root default slot's context plus your own buttons |
+| `as` / `asChild` | `asChild` is forwarded to Reka by every helper except `Item`; `as` polymorphic rendering is not exposed |
+| — | `orientation`, `dir`, `label`, `defaultValue`, the item `completed` flag, `CaomeiStepperSeparator` and the exposed `goToStep` / `nextStep` / `prevStep` are new here |
+
+> **Intentional differences**: ① `linear` defaults to `true` here (PrimeVue defaults to `false`), so skipping steps is disallowed by default after migration; ② there is no `<StepPanels>` / `<StepPanel>` equivalent — render panel content yourself for the current step (the root default slot's context can drive it).
+
+**Not implemented (registered as a follow-up; this section will be updated when it ships)**: the `start` / `end` slots, the `as` polymorphic rendering of `Step` / `StepPanel` (`asChild` still works through every helper except `Item`), and `pt` / `dt` / `ptOptions` / `unstyled`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="stepper" />

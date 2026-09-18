@@ -100,4 +100,27 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+PrimeVue v4 的 Stepper 由根容器与多个组合件构成，本库采用同名的职责拆分（PrimeVue 的 `Step` 把触发器与序号 / 标题合并，本库拆为多个具名件）：
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Stepper v-model:value>` | `<CaomeiStepper v-model>` |
+| `<StepList>` | `<CaomeiStepperList>` |
+| `<StepItem :value>` | `<CaomeiStepperItem :step>`（`value` → `step`） |
+| `<Step :value :disabled>` | `<CaomeiStepperTrigger>` + `<CaomeiStepperIndicator>` / `<CaomeiStepperTitle>` / `<CaomeiStepperDescription>` |
+| `<StepPanels>` + `<StepPanel :value>` | 未实现：本库不提供步骤面板容器，面板内容由使用方按当前步骤自行渲染 |
+| `v-model:value`（`string \| number`，无起始约定） | `v-model`（`number`，**从 1 开始**；迁移需改为 1 基序号） |
+| `linear`（默认 `false`） | `linear`（默认 `true`；**同向、默认相反**，需要自由跳转时传 `:linear="false"`） |
+| `#start` / `#end` 插槽 | 未实现：以根默认插槽上下文 + 自定义按钮表达 |
+| `as` / `asChild` | `asChild` 经除 `Item` 外的组合件透传 Reka；`as` 多态渲染未暴露 |
+| 无 | `orientation`、`dir`、`label`、`defaultValue`、条目 `completed`、`CaomeiStepperSeparator` 与暴露的 `goToStep` / `nextStep` / `prevStep` 为本库新增 |
+
+> **已知差异（有意）**：① 本库 `linear` 默认 `true`（PrimeVue 默认 `false`），迁移后默认禁止跳步；② 本库不提供 `<StepPanels>` / `<StepPanel>` 等价件，面板内容由使用方按当前步骤渲染（可经根默认插槽的上下文驱动）。
+
+**未实现（已登记为后续补强项，交付后同步本节）**：`start` / `end` 插槽、`Step` / `StepPanel` 的 `as` 多态渲染（`asChild` 仍可经除 `Item` 外的组合件使用），以及 `pt` / `dt` / `ptOptions` / `unstyled`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="stepper" />

@@ -33,4 +33,19 @@ A button group joins multiple buttons into a single control: adjacent borders ar
 
 A button group exposes no group-level radius variable: the outer corners follow each member's own radius (default `--caomei-radius-md`, or `--caomei-radius-full` for a `rounded` Button). The group only removes inner corners and borders.
 
+## Migration from PrimeVue
+
+PrimeVue's `ButtonGroup` and this component are both **concatenation containers** (PrimeVue's props are only `dt` / `pt` / `ptOptions` / `unstyled`, with no functional props; this component additionally has the layout prop `orientation`); the members are ordinary buttons:
+
+| PrimeVue | This component |
+| --- | --- |
+| `<ButtonGroup>` | `<CaomeiButtonGroup>` (also a prop-less concatenation container) |
+| `<Button>` members | `CaomeiButton`; the concatenation rules strip inner corners and borders by each member's root element |
+| — | `orientation` (`horizontal` / `vertical`) is new here; PrimeVue has no vertical grouping |
+| `pt` / `dt` / `ptOptions` / `unstyled` | Not implemented / not exposed (the theme passthrough mechanism is not exposed; style through CSS variables and class names) |
+
+> To migrate, add the `Caomei` prefix to `<ButtonGroup>` and its `<Button>` members; `pt` / `dt` / `unstyled` have no equivalent, so use CSS variables for theming.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="button-group" />

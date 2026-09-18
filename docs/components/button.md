@@ -74,4 +74,22 @@
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
 - 加载态通过 `aria-busy` 标注，并沿用原生 `disabled` 阻止交互。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `severity` | `tone` |
+| `text` | `variant="ghost"` |
+| `outlined` | `variant="secondary"` |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| `rounded` | `rounded` |
+| `icon` / `iconPos`（`left` / `right`） | `#icon` 插槽（传 `@lucide/vue` 组件）/ `iconPosition`（`start` / `end`）；PrimeVue 另有 `top` / `bottom`，**本库未支持** |
+| `:badge` / `badgeSeverity` | `badge`（非空字符串渲染于右上角外扩、不参与布局）/ `badgeTone`（`secondary` → `neutral` 等；`info` / `contrast` 为有损近似） |
+| `fluid`（撑满父容器宽度） | `block`（撑满父容器宽度） |
+| `loading` | `loading`（加载时自动禁用并显示内建指示） |
+
+**未实现 / 未暴露**：`loadingIcon`（内建加载指示）、`badgeClass` / `iconClass`（角标与图标元素带固定类名，可直接覆盖样式）、`raised` / `plain` / `link` 与 `variant="outlined" | "text" | "link"`（用 `variant` / `tone` 表达）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="button" />

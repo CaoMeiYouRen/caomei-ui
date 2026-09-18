@@ -56,4 +56,19 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `image` | `src` |
+| `label` | `fallback`（缺省时取 `alt` 首字母大写） |
+| `icon`（字符串图标名） | 未实现：改用 `#fallback` 插槽 + `@lucide/vue` |
+| `size`（`normal` / `large` / `xlarge`） | `size`（`sm` / `md` / `lg`） |
+| `shape`（`square` / `circle`） | 同名（`circle` / `square`） |
+| `aria-label` / `aria-labelledby` | 透传；图片替代文本用 `alt` |
+
+**已知差异（有意）**：默认 `shape` 为 `circle`（PrimeVue 默认 `square`）、默认 `size` 为 `md`（PrimeVue `normal`）；`delayMs`（回退内容延迟显示的毫秒数，Reka 语义）与 `#fallback` 插槽为本库新增。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="avatar" />

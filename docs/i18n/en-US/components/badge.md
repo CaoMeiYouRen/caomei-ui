@@ -45,4 +45,17 @@ Providing the default slot switches to overlay mode, positioning the badge at th
 - In numeric mode, `label` overrides the spoken content of the visible value, so it is usually unnecessary.
 - Overlay mode keeps the slot content semantics, with the badge as a sibling node; forwarded attributes such as `class` land on the wrapper `.caomei-badge-wrapper` (the badge's own accessible name comes from `label`).
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `value` | `value` (truncated to `max+` beyond `max`; `null` / empty string renders nothing) |
+| `severity` | `tone` (`secondary` / `contrast` → `neutral`, `info` → `primary`, `success` → `success`, `warn` → `warning`, `danger` → `danger`; `info` / `contrast` among them are lossy approximations) |
+| `size` (`small` / `large` / `xlarge`) | `size` (`sm` / `md` / `lg`) |
+| — | `variant` (`soft` / `solid` / `outline`) is new here |
+
+**Intentional differences**: the default `tone` is `danger` and `variant` is `solid` (PrimeVue falls back to its default primary styling when `severity` is absent); `max` (numeric cap), `dot` (a dot with no value), `label` (accessible name) and the default slot as an overlay badge are new here.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="badge" />

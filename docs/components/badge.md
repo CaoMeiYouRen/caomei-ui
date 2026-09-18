@@ -45,4 +45,17 @@
 - 数值模式下 `label` 会覆盖可见文本的朗读内容，一般无需设置。
 - 叠加模式保留插槽内容语义，徽标为兄弟节点；`class` 等透传属性落在包裹容器 `.caomei-badge-wrapper` 上（徽标自身的可访问名取 `label`）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `value` | `value`（超过 `max` 时截断为 `max+`；`null` / 空串不渲染） |
+| `severity` | `tone`（`secondary` / `contrast` → `neutral`、`info` → `primary`、`success` → `success`、`warn` → `warning`、`danger` → `danger`；其中 `info` / `contrast` 为有损近似） |
+| `size`（`small` / `large` / `xlarge`） | `size`（`sm` / `md` / `lg`） |
+| 无 | `variant`（`soft` / `solid` / `outline`）为本库新增 |
+
+**已知差异（有意）**：默认 `tone` 为 `danger`、`variant` 为 `solid`（PrimeVue 未传 `severity` 时走默认主色样式）；`max`（数值上限）、`dot`（仅圆点不显示数值）、`label`（可访问名）与「默认插槽作为叠加角标」为本库新增。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="badge" />

@@ -78,4 +78,22 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 - The card is a generic container and does not bake in a `role` or heading level; the `title` prop renders as a plain `div`, so pass a real heading element such as `<h3>` through the `title` slot when heading semantics are needed. That prop also intercepts the native HTML `title` tooltip attribute; use another approach when a native tooltip is required.
 - For clickable cards, prefer wrapping a native interactive element rather than binding a click handler to the container; when using `as="a"`, include an `href` for keyboard focus, or wrap with a native `button` instead.
 
+## Migration from PrimeVue
+
+Both PrimeVue's `Panel` and `Card` map to this library's `CaomeiCard`:
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Panel :header="…">` | `<CaomeiCard :title="…">` (or the `#title` / `#header` slot) |
+| Panel `#header` / Card `#header` | `#header` |
+| Card `#title` | `#title` (or the `title` prop) |
+| Card `#subtitle` | `subtitle` prop (string only, **no slot equivalent**) |
+| Card default content | Default slot |
+| Panel / Card `#footer` | `#footer` |
+| Panel `#icons` | `#extra` |
+| Panel collapsible (`toggleable` / `collapsed`) | Not implemented: use `CaomeiAccordion` |
+| — | `variant` (`outlined` / `elevated` / `filled`), `padding`, `hoverable` and `as` are new here |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="card" />

@@ -74,4 +74,22 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).
 - The loading state is marked with `aria-busy` and still uses native `disabled` to block interaction.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `severity` | `tone` |
+| `text` | `variant="ghost"` |
+| `outlined` | `variant="secondary"` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| `rounded` | `rounded` |
+| `icon` / `iconPos` (`left` / `right`) | `#icon` slot (pass an `@lucide/vue` component) / `iconPosition` (`start` / `end`); PrimeVue also has `top` / `bottom`, **not supported here** |
+| `:badge` / `badgeSeverity` | `badge` (a non-empty string renders outside the top-right corner without affecting layout) / `badgeTone` (`secondary` → `neutral` and so on; `info` / `contrast` are lossy) |
+| `fluid` (span the parent width) | `block` (span the parent width) |
+| `loading` | `loading` (disables the button automatically and shows the built-in indicator) |
+
+**Not implemented / not exposed**: `loadingIcon` (built-in indicator), `badgeClass` / `iconClass` (the badge and icon elements carry fixed class names you can override), `raised` / `plain` / `link` and `variant="outlined" | "text" | "link"` (express these with `variant` / `tone`).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="button" />

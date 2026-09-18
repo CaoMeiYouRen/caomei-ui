@@ -56,4 +56,19 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `image` | `src` |
+| `label` | `fallback` (falls back to the first letter of `alt`, uppercased) |
+| `icon` (string icon class) | Not implemented: use the `#fallback` slot with `@lucide/vue` |
+| `size` (`normal` / `large` / `xlarge`) | `size` (`sm` / `md` / `lg`) |
+| `shape` (`square` / `circle`) | Same names (`circle` / `square`) |
+| `aria-label` / `aria-labelledby` | Forwarded as-is; use `alt` for the image alternative text |
+
+**Intentional differences**: the default `shape` is `circle` (PrimeVue defaults to `square`) and the default `size` is `md` (PrimeVue `normal`); `delayMs` (delay in milliseconds before the fallback content renders — Reka semantics) and the `#fallback` slot are new here.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="avatar" />

@@ -78,4 +78,22 @@
 - 卡片为通用容器，不内置 `role` 与标题层级；`title` 属性渲染为普通 `div`，需要标题语义时请通过 `title` 插槽传入 `<h3>` 等真实标题元素。该属性同时会拦截原生 HTML `title` 提示，需要原生 tooltip 时请改用其他方式。
 - 可点击卡片建议通过包裹原生可交互元素实现，而非给容器绑定点击事件；使用 `as="a"` 时需带 `href` 才能键盘聚焦，或改用原生 `button` 包裹。
 
+## 从 PrimeVue 迁移
+
+PrimeVue 的 `Panel` 与 `Card` 均由本库的 `CaomeiCard` 承载：
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Panel :header="…">` | `<CaomeiCard :title="…">`（或 `#title` / `#header` 插槽） |
+| Panel `#header` / Card `#header` | `#header` |
+| Card `#title` | `#title`（或用 `title` prop） |
+| Card `#subtitle` | `subtitle` prop（仅字符串，**无插槽等价**） |
+| Card 默认内容 | 默认插槽 |
+| Panel / Card `#footer` | `#footer` |
+| Panel `#icons` | `#extra` |
+| Panel 可折叠（`toggleable` / `collapsed`） | 未实现：改用 `CaomeiAccordion` |
+| 无 | `variant`（`outlined` / `elevated` / `filled`）、`padding`、`hoverable`、`as` 为本库新增 |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="card" />

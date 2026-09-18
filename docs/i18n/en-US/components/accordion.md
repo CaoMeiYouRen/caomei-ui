@@ -73,4 +73,28 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+PrimeVue v4 composes the accordion from four components; this library merges them into two:
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Accordion v-model:value>` + `<AccordionPanel :value>` + `<AccordionHeader>` + `<AccordionContent>` | `<CaomeiAccordion v-model>` + `<CaomeiAccordionItem :value :title>` |
+| `v-model:value` | `v-model` (the value domain is `string \| string[]`; `number` must be converted to a string) |
+| `multiple` (default `false`) | `type="multiple"` (default `single`; the attribute changes from the boolean `multiple` to the `type` enum, with the same default semantics) |
+| `lazy` (default `false`; with `true` hidden panels are not rendered) | `unmountOnHide` (default `true`; same direction, opposite default — see below) |
+| `<AccordionHeader>` text | `title` (use the `#trigger` slot for rich content) |
+| `<AccordionContent>` | Default slot |
+| Panel-level `disabled` | Item `disabled` (a root-level `disabled` is also available) |
+| v3 `activeIndex` (deprecated in v4) / `header` | The string value of `v-model` / `title` |
+| — | `collapsible`, `defaultValue` (uncontrolled initial expansion), root-level `disabled` and the `#trigger` slot are new here |
+
+> `lazy` and `unmountOnHide` point the same way but default opposite: `lazy` defaults to `false` (DOM kept), `unmountOnHide` defaults to `true` (unmounted). After migration `:lazy="true"` needs no change (unmounting is the default); pass `:unmount-on-hide="false"` when the DOM must be kept.
+
+> **Intentional differences**: ① PrimeVue's single mode is **always collapsible** (clicking the expanded item again clears it), while this library defaults to `collapsible=false`; pass `collapsible` explicitly for the same behaviour; ② the trigger is a native `<button>` wrapped in `<h3>` (as recommended by the WAI-ARIA Accordion pattern), whereas PrimeVue v4 renders a bare `<button>`; ③ the indicator arrow is the built-in `ChevronDown` (rotated 180° when expanded), with no `expandIcon` / `collapseIcon`.
+
+**Not implemented (registered as a follow-up; this section will be updated when it ships)**: `expandIcon` / `collapseIcon` and the `#expandicon` / `#collapseicon` slots (custom indicator icons; a rich trigger can carry its own icon through `#trigger`, while the built-in arrow is kept and is not removed by `#trigger`), `tabindex` (root-level; triggers are individually focusable), `selectOnFocus` (expand on focus), the `as` / `asChild` polymorphic rendering of `AccordionPanel` and `AccordionHeader`, the `#toggleicon` slot of `AccordionHeader`, and the v4-deprecated `update:activeIndex` / `tab-open` / `tab-close` / `tab-click` events (use `v-model` instead).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="accordion" />

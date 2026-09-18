@@ -73,4 +73,28 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+PrimeVue v4 的 Accordion 为四件组合，本库合并为两件：
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Accordion v-model:value>` + `<AccordionPanel :value>` + `<AccordionHeader>` + `<AccordionContent>` | `<CaomeiAccordion v-model>` + `<CaomeiAccordionItem :value :title>` |
+| `v-model:value` | `v-model`（值域为 `string \| string[]`；`number` 需转字符串） |
+| `multiple`（默认 `false`） | `type="multiple"`（默认 `single`；属性形态由布尔 `multiple` 改为枚举 `type`，默认语义一致） |
+| `lazy`（默认 `false`；`true` 时隐藏面板不渲染） | `unmountOnHide`（默认 `true`；同向、默认相反，见下） |
+| `<AccordionHeader>` 文本 | `title`（富内容改用 `#trigger` 插槽） |
+| `<AccordionContent>` | 默认插槽 |
+| panel 级 `disabled` | 条目 `disabled`（另有根级 `disabled`） |
+| v3 `activeIndex`（v4 已弃用）/ `header` | `v-model` 的字符串值 / `title` |
+| 无 | `collapsible`、`defaultValue`（非受控初始展开）、根级 `disabled` 与 `#trigger` 插槽为本库新增 |
+
+> `lazy` 与 `unmountOnHide` 语义同向、默认相反：`lazy` 默认 `false`（保留 DOM），`unmountOnHide` 默认 `true`（卸载）。`:lazy="true"` 迁移后无需改动（默认即卸载）；需要保留 DOM 时改传 `:unmount-on-hide="false"`。
+
+> **已知差异（有意）**：① PrimeVue single 模式**恒可收起**（再点已展开项即置空），本库默认 `collapsible=false`，需要一致时显式传 `collapsible`；② 触发器为 `<h3>` 包裹原生 `<button>`（WAI-ARIA Accordion 推荐），PrimeVue v4 直接渲染 `<button>`；③ 指示箭头为内置 `ChevronDown`（展开旋转 180°），不提供 `expandIcon` / `collapseIcon`。
+
+**未实现（已登记为后续补强项，交付后同步本节）**：`expandIcon` / `collapseIcon` 与 `#expandicon` / `#collapseicon` 插槽（自定义指示图标；富内容可经 `#trigger` 自带图标，内置箭头仍保留、不随 `#trigger` 移除）、`tabindex`（根级；触发器各自可聚焦）、`selectOnFocus`（聚焦即切换）、`AccordionPanel` 与 `AccordionHeader` 的 `as` / `asChild` 多态渲染、`AccordionHeader` 的 `#toggleicon` 插槽，以及 v4 已弃用的 `update:activeIndex` / `tab-open` / `tab-close` / `tab-click` 事件（改用 `v-model`）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="accordion" />

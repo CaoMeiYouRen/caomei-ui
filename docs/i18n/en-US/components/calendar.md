@@ -33,4 +33,20 @@ Two-way bind with `v-model`; the value is `null` when nothing is selected.
 - The previous / next buttons take their accessible names from the current locale ("Previous month" / "Next month"), switchable via locale injection.
 - The calendar container's accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Calendar" text; when no explicit name is given, Reka's synthesized month context is kept (`Calendar, <month>`).
 
+## Migration from PrimeVue
+
+PrimeVue v4's `Calendar` (a historical alias of `DatePicker` — the same component) covers both the inline calendar and the "input + panel" form; this library splits them: use `CaomeiCalendar` for the inline form and `CaomeiDatePicker` for the input form.
+
+| PrimeVue | This component |
+| --- | --- |
+| `inline` (inline calendar) | Use `CaomeiCalendar` (this component is the inline form) |
+| `minDate` / `maxDate` | `minValue` / `maxValue` |
+| `disabled` / `readonly` | Same names |
+| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; controls the date/calendar language only) |
+| — | `weekStartsOn` / `weekdayFormat` / `fixedWeeks` / `preventDeselect`, `pagedNavigation`, `initialFocus` and `label` (accessible name) are new here |
+
+**Not implemented**: `selectionMode`'s `multiple` / `range` (multi-select and range; see §7 and the [Backlog](/plan/backlog), Chinese), `showOtherMonths` / `selectOtherMonths`, `numberOfMonths`, `disabledDates` / `disabledDays` / `maxDateCount`, `view` (month/year views), `showButtonBar`, `responsiveOptions` / `breakpoint`, `showOnFocus` and so on.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="calendar" />

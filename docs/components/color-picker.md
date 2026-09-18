@@ -38,4 +38,19 @@
 - 键盘操作：区域 / 色相用方向键调整；输入框回车或失焦提交。
 - **已知限制**：色板按钮不支持方向键 roving 导航（用 Tab 遍历）；色相 thumb 的 `aria-valuetext` 仍为 Reka 生成的裸数值（无本地化需求）。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `format`（`hex` / `rgb` / `hsb`） | 同名（取值一致） |
+| `inline` / `disabled` / `invalid` | 同名 |
+| `defaultColor` | 同名 |
+| 无 | `showInput`（输入框显示 / 隐藏）、`swatches`（自定义预设色板）与 `label` 为本库新增 |
+
+**已知行为差异（有意）**：PrimeVue `format="hex"` 的 `v-model` 是**不带 `#`** 的 6 位十六进制，本库统一为标准 CSS 颜色字符串 `#rrggbb`（迁移时可移除补 `#` / 去 `#` 的适配）；`format="rgb"` / `"hsb"` 在 PrimeVue 为 `{ r, g, b }` / `{ h, s, b }` **对象**，本库统一为**字符串**（`rgb(r, g, b)` / `hsb(h, s%, b%)`）；alpha 通道不支持。
+
+**未实现**：`appendTo`、`overlayClass` / `panelClass`（面板经 Portal 挂载，层级与外观由库管理）、`formControl`、`tabindex`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="color-picker" />

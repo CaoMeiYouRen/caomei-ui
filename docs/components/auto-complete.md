@@ -66,4 +66,24 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `suggestions` | `options`（`string` 或 `{ label, value, disabled }`；**字段名固定**，不提供 `optionLabel` / `optionValue`） |
+| `optionDisabled` | 选项对象的 `disabled` 字段 |
+| `dropdown` / `multiple` | 同名 |
+| `showClear` | `clearable`（清除后模型置空并抛 `clear` 事件） |
+| `delay` | `debounce`（输入停顿该毫秒数后才触发 `complete` 事件；本地过滤本身即时进行，可用 `ignoreFilter` 关闭） |
+| `minLength` | `ignoreFilter`：本库默认在输入时本地过滤，传 `ignoreFilter` 由使用方自行处理过滤 |
+| `inputId` | `id`；`aria-label` → `label` |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| 无 | `loading`、`emptyLabel`、`bodyLock` 为本库新增 |
+
+**未实现 / 未暴露**：`forceSelection`——本库**允许自由文本**（回车 / 失焦提交输入值），需要「值必须来自选项列表」时请自行校验（评估见 [Backlog](../plan/backlog.md)）；`optionGroupLabel` / `optionGroupChildren` 选项分组、`completeOnFocus`、`typeahead`、`scrollHeight`、`dataKey`、`variant`（`outlined` / `filled`）、`appendTo` 与面板样式 / 类名透传。
+
+**事件**：`complete`（查询词）与 `select`（选中值）对应 PrimeVue 的同名事件；另有 `focus` / `blur` / `clear`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="auto-complete" />

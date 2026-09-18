@@ -33,4 +33,20 @@
 - 翻页按钮的可访问名取当前语言的「上个月 / 下个月」，可经 locale 注入切换。
 - 日历容器的可访问名优先级为 `label` > 透传 `aria-label` > 当前语言的「日历」；未显式提供时保留 Reka 合成的月份上下文（`日历, <月份>`）。
 
+## 从 PrimeVue 迁移
+
+PrimeVue v4 的 `Calendar`（`DatePicker` 的历史别名，两者为同一组件）同时承担「内联日历」与「输入 + 面板」两种形态；本库拆为两个组件：内联用 `CaomeiCalendar`，输入形态用 `CaomeiDatePicker`。
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `inline`（内联日历） | 改用 `CaomeiCalendar`（本组件即内联形态） |
+| `minDate` / `maxDate` | `minValue` / `maxValue` |
+| `disabled` / `readonly` | 同名 |
+| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop，仅控制日期 / 日历语言） |
+| 无 | `weekStartsOn` / `weekdayFormat` / `fixedWeeks` / `preventDeselect`、`pagedNavigation`、`initialFocus`、`label`（可访问名）为本库新增 |
+
+**未实现**：`selectionMode` 的 `multiple` / `range`（多选与范围选择，见 §7 与 [Backlog](../plan/backlog.md)）、`showOtherMonths` / `selectOtherMonths`、`numberOfMonths`、`disabledDates` / `disabledDays` / `maxDateCount`、`view`（月 / 年视图）、`showButtonBar`、`responsiveOptions` / `breakpoint`、`showOnFocus` 等。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="calendar" />

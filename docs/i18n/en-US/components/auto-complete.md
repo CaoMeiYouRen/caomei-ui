@@ -66,4 +66,24 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `suggestions` | `options` (`string` or `{ label, value, disabled }`; **field names are fixed** — there is no `optionLabel` / `optionValue`) |
+| `optionDisabled` | The `disabled` field on the option object |
+| `dropdown` / `multiple` | Same names |
+| `showClear` | `clearable` (clears the model and emits `clear`) |
+| `delay` | `debounce` (waits this many ms after typing stops before emitting `complete`; local filtering itself is immediate and can be turned off with `ignoreFilter`) |
+| `minLength` | `ignoreFilter`: this library filters locally while typing by default; pass `ignoreFilter` to filter yourself |
+| `inputId` | `id`; `aria-label` → `label` |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| — | `loading`, `emptyLabel` and `bodyLock` are new here |
+
+**Not implemented / not exposed**: `forceSelection` — this library **allows free text** (Enter / blur commits the typed value); validate yourself when the value must come from the option list (evaluation in the [Backlog](/plan/backlog), Chinese); `optionGroupLabel` / `optionGroupChildren` option groups, `completeOnFocus`, `typeahead`, `scrollHeight`, `dataKey`, `variant` (`outlined` / `filled`), `appendTo` and panel style/class forwarding.
+
+**Events**: `complete` (query) and `select` (picked value) mirror PrimeVue; `focus` / `blur` / `clear` are also available.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="auto-complete" />

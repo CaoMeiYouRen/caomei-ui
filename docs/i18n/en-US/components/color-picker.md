@@ -38,4 +38,19 @@ The model accepts `#rgb` / `#rrggbb` / `#rrggbbaa`, `rgb()` / `rgba()`, `hsl()` 
 - Keyboard: arrow keys adjust the area / hue; Enter or blur commits the input.
 - **Known limitations**: the swatch buttons do not support arrow-key roving navigation (use Tab); the hue thumb's `aria-valuetext` remains Reka's raw number (no localization needed).
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `format` (`hex` / `rgb` / `hsb`) | Same names (identical values) |
+| `inline` / `disabled` / `invalid` | Same names |
+| `defaultColor` | Same name |
+| — | `showInput` (show/hide the text field), `swatches` (custom preset palette) and `label` are new here |
+
+**Intentional behaviour differences**: with `format="hex"` PrimeVue's `v-model` is a 6-digit hex string **without `#`**, while this library always uses a standard CSS color string `#rrggbb` (drop the `#` add/remove shim when migrating); for `format="rgb"` / `"hsb"` PrimeVue uses `{ r, g, b }` / `{ h, s, b }` **objects**, while this library uses **strings** (`rgb(r, g, b)` / `hsb(h, s%, b%)`); the alpha channel is not supported.
+
+**Not implemented**: `appendTo`, `overlayClass` / `panelClass` (the panel is portalled and its layering/appearance are managed by the library), `formControl`, `tabindex`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="color-picker" />

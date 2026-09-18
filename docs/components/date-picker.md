@@ -58,4 +58,26 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承载内联与输入形态；本库输入形态为 `CaomeiDatePicker`（触发器 + 面板），内联日历见 `CaomeiCalendar`。
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `modelValue`（`Date`） | `v-model`（原生 `Date`，语义一致） |
+| `minDate` / `maxDate` | `minValue` / `maxValue` |
+| `dateFormat` | `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期） |
+| `showIcon` / `iconDisplay="input"` | `showIcon`（本组件默认即「触发按钮 + 面板」形态） |
+| `showTime` / `hourFormat` / `showSeconds` | 同名 |
+| `disabled` / `readonly` / `invalid` / `placeholder` | 同名 |
+| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop，仅控制日期 / 日历语言） |
+| `fluid` | 删除：默认带 `20rem` 上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width` 为 `none`（见[主题与样式 §4.1](../design/theming.md)） |
+| `inputId` | `id`；`aria-label` → `label` |
+
+**已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入。
+
+**未实现**：`selectionMode`（`multiple` / `range` 多选与范围，见 §7 与 [Backlog](../plan/backlog.md)）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="date-picker" />

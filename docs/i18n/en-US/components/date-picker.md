@@ -58,4 +58,26 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 }
 ```
 
+## Migration from PrimeVue
+
+PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) for both the inline and input forms; here the input form is `CaomeiDatePicker` (trigger + panel), and the inline calendar is `CaomeiCalendar`.
+
+| PrimeVue | This component |
+| --- | --- |
+| `modelValue` (`Date`) | `v-model` (native `Date`, same semantics) |
+| `minDate` / `maxDate` | `minValue` / `maxValue` |
+| `dateFormat` | `dateFormat` (PrimeVue-style tokens; defaults to a localized short date from `locale`) |
+| `showIcon` / `iconDisplay="input"` | `showIcon` (this component is a "trigger button + panel" by default) |
+| `showTime` / `hourFormat` / `showSeconds` | Same names |
+| `disabled` / `readonly` / `invalid` / `placeholder` | Same names |
+| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; controls the date/calendar language only) |
+| `fluid` | Drop it: a `20rem` cap applies by default; set `--caomei-date-picker-max-width` to `none` for true full width (see [Theming and styles §4.1](/design/theming), Chinese) |
+| `inputId` | `id`; `aria-label` → `label` |
+
+**Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` only controls the date/calendar language and is independent of the built-in text language — pass it explicitly when they must match.
+
+**Not implemented**: `selectionMode` (`multiple` / `range`; see §7 and the [Backlog](/plan/backlog), Chinese), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="date-picker" />

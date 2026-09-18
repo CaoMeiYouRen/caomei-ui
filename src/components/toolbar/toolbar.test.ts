@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { DOMWrapper, mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import {
@@ -198,5 +198,119 @@ describe('CaomeiToolbarToggleGroup', () => {
         const wrapper = mountToolbarWithToggleGroup()
 
         expect(wrapper.get('.caomei-toolbar__toggle-group').attributes('aria-label')).toBe('格式')
+    })
+
+    it('未使用分区插槽时保持默认单区渲染', () => {
+        const wrapper = mountToolbar()
+
+        expect(wrapper.find('.caomei-toolbar__start').exists()).toBe(false)
+        expect(wrapper.find('.caomei-toolbar__center').exists()).toBe(false)
+        expect(wrapper.find('.caomei-toolbar__end').exists()).toBe(false)
+        // 成员仍是根元素的直接子节点，DOM 与改造前一致
+        const root = wrapper.get('.caomei-toolbar').element
+        expect(root.children).toHaveLength(5)
+        expect(Array.from(root.children).every((child) => child.classList.contains('caomei-toolbar__button')
+            || child.classList.contains('caomei-toolbar__separator')
+            || child.tagName === 'A')).toBe(true)
+    })
+
+    it('同时传默认插槽与分区插槽时默认内容不渲染', () => {
+        const wrapper = mount(CaomeiToolbar, {
+            slots: {
+                default: () => h(CaomeiToolbarButton, { label: '默认' }, { default: () => '默认内容' }),
+                center: () => h(CaomeiToolbarButton, { label: '中' }, { default: () => '中区内容' }),
+            },
+        })
+
+        expect(wrapper.get('.caomei-toolbar__center').text()).toBe('中区内容')
+        // 三分区容器齐备，但默认插槽内容被丢弃
+        expect(wrapper.find('.caomei-toolbar__start').exists()).toBe(true)
+        expect(wrapper.find('.caomei-toolbar__end').exists()).toBe(true)
+        expect(wrapper.text()).not.toContain('默认内容')
+        expect(wrapper.findAll('.caomei-toolbar__button')).toHaveLength(1)
+    })
+
+    it('使用任一分区插槽时渲染 start / center / end 三分区', () => {
+        const wrapper = mount(CaomeiToolbar, {
+            slots: {
+                start: () => h(CaomeiToolbarButton, { label: '左' }, { default: () => '左' }),
+                center: () => h(CaomeiToolbarButton, { label: '中' }, { default: () => '中' }),
+                end: () => h(CaomeiToolbarButton, { label: '右' }, { default: () => '右' }),
+            },
+        })
+
+        const start = wrapper.get('.caomei-toolbar__start')
+        const center = wrapper.get('.caomei-toolbar__center')
+        const end = wrapper.get('.caomei-toolbar__end')
+
+        expect(start.text()).toBe('左')
+        expect(center.text()).toBe('中')
+        expect(end.text()).toBe('右')
+        // 三分区容器在根内按 start → center → end 顺序渲染
+        expect(
+            Array.from(wrapper.get('.caomei-toolbar').element.children).map((child) => child.className),
+        ).toEqual(['caomei-toolbar__start', 'caomei-toolbar__center', 'caomei-toolbar__end'])
+    })
+
+    it('仅使用 #start 时仍渲染三分区容器且内容落在 start 区', () => {
+        const wrapper = mount(CaomeiToolbar, {
+            slots: {
+                start: () => h(CaomeiToolbarButton, { label: '仅左' }, { default: () => '仅左' }),
+            },
+        })
+
+        expect(wrapper.get('.caomei-toolbar__start').text()).toBe('仅左')
+        expect(wrapper.get('.caomei-toolbar__center').text()).toBe('')
+        expect(wrapper.get('.caomei-toolbar__end').text()).toBe('')
+    })
+
+    it('分区包裹层不改变方向键漫游顺序（可跨分区移动）', async () => {
+        const wrapper = mount(CaomeiToolbar, {
+            attachTo: document.body,
+            slots: {
+                start: () => [
+                    h(CaomeiToolbarButton, { label: 'A' }, { default: () => 'A' }),
+                    h(CaomeiToolbarButton, { label: 'B' }, { default: () => 'B' }),
+                ],
+                end: () => h(CaomeiToolbarButton, { label: 'C' }, { default: () => 'C' }),
+            },
+        })
+        await nextTick()
+
+        const controls = wrapper.findAll('.caomei-toolbar__button')
+        expect(controls).toHaveLength(3)
+        expect(wrapper.get('.caomei-toolbar').attributes('tabindex')).toBe('0')
+
+        try {
+            ;(controls[0].element as HTMLElement).focus()
+            await nextTick()
+            expect(document.activeElement).toBe(controls[0].element)
+
+            // start 区内右移
+            await controls[0].trigger('keydown', { key: 'ArrowRight' })
+            await nextTick()
+            expect(document.activeElement).toBe(controls[1].element)
+
+            // 跨越 end 分区包裹层继续右移：顺序仍按 DOM，未被包裹层打断
+            await new DOMWrapper(document.activeElement as Element).trigger('keydown', { key: 'ArrowRight' })
+            await nextTick()
+            expect(document.activeElement).toBe(controls[2].element)
+        } finally {
+            wrapper.unmount()
+        }
+    })
+
+    it('垂直工具条渲染分区容器并携带垂直方向类（布局由浏览器验证）', () => {
+        const wrapper = mount(CaomeiToolbar, {
+            props: { orientation: 'vertical' },
+            slots: {
+                start: () => h(CaomeiToolbarButton, { label: '上' }, { default: () => '上' }),
+                end: () => h(CaomeiToolbarButton, { label: '下' }, { default: () => '下' }),
+            },
+        })
+
+        expect(wrapper.get('.caomei-toolbar').classes()).toContain('caomei-toolbar--vertical')
+        expect(wrapper.get('.caomei-toolbar__start').text()).toBe('上')
+        expect(wrapper.get('.caomei-toolbar__end').text()).toBe('下')
     })
 })

@@ -11,6 +11,13 @@ const props = withDefaults(defineProps<ToolbarProps>(), {
     label: '',
 })
 
+defineSlots<{
+    default?: () => unknown
+    start?: () => unknown
+    center?: () => unknown
+    end?: () => unknown
+}>()
+
 /** label 属性优先于透传的 aria-label；二者都缺省时由容器语义推导 */
 const forwardedAttrs = useLabelAttrs(() => props.label)
 </script>
@@ -25,7 +32,23 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
         class="caomei-toolbar"
         :class="`caomei-toolbar--${orientation}`"
     >
-        <slot />
+        <!--
+          使用任一分区插槽时切到三分区布局（对齐 PrimeVue Toolbar 的 start / center / end）；
+          全部缺省时保持默认插槽的既有单区渲染，DOM 与样式与改造前一致。
+          分区包裹层不破坏 roving focus：Reka 的集合按 DOM 顺序排序，成员仍是集合子树的后代。
+        -->
+        <template v-if="$slots.start || $slots.center || $slots.end">
+            <div class="caomei-toolbar__start">
+                <slot name="start" />
+            </div>
+            <div class="caomei-toolbar__center">
+                <slot name="center" />
+            </div>
+            <div class="caomei-toolbar__end">
+                <slot name="end" />
+            </div>
+        </template>
+        <slot v-else />
     </ToolbarRoot>
 </template>
 
@@ -52,6 +75,33 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 }
 
 /*
+  三分区（`#start` / `#center` / `#end`）：两侧按内容宽度贴左 / 贴右，中区以 `flex: 1` 吸收
+  剩余空间并居中其内容（中区即使为空也占位，因此 `#end` 恒贴右）。工具条仍为内容宽度
+  （`inline-flex`），需要三区铺满容器时由使用方设置宽度（如 `width: 100%`）。
+*/
+.caomei-toolbar__start,
+.caomei-toolbar__center,
+.caomei-toolbar__end {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--caomei-toolbar-gap, var(--caomei-space-1));
+    min-width: 0;
+}
+
+.caomei-toolbar__center {
+    flex: 1;
+    justify-content: center;
+}
+
+.caomei-toolbar--vertical .caomei-toolbar__start,
+.caomei-toolbar--vertical .caomei-toolbar__center,
+.caomei-toolbar--vertical .caomei-toolbar__end {
+    flex-direction: column;
+    align-self: stretch;
+    align-items: stretch;
+}
+
+/*
   窄屏允许横向形态换行：成员为 `flex-shrink: 0`，不加换行时整条工具栏会被压出容器；成员总宽
   可超过平板可用宽，故按响应式设计 §2 的 md 档（≤768px）收敛。仅在实际放不下时生效，桌面不变。
   纵向形态（`--vertical`）不参与：其换行由使用方的高度约束决定，本组件不预设。
@@ -59,6 +109,14 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 */
 @media (width <= 768px) {
     .caomei-toolbar--horizontal {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+
+    /* 三类区各自内部同样允许换行，避免单个分区先撑出容器 */
+    .caomei-toolbar--horizontal .caomei-toolbar__start,
+    .caomei-toolbar--horizontal .caomei-toolbar__center,
+    .caomei-toolbar--horizontal .caomei-toolbar__end {
         flex-wrap: wrap;
         max-width: 100%;
     }

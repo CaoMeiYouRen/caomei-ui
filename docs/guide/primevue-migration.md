@@ -38,7 +38,7 @@
 | 分组 | 组件 |
 | --- | --- |
 | 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
-| 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[Switch](/components/switch)、[Textarea](/components/textarea) |
+| 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[FileUpload](/components/file-upload)、[FloatLabel](/components/float-label)、[Input](/components/input)、[InputGroup](/components/input-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[RadioGroup](/components/radio-group)、[Slider](/components/slider)、[Switch](/components/switch)、[Textarea](/components/textarea) |
 | 选择器 | [Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
 | 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |
 | 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator)、[ProgressBar](/components/progress-bar)、[ProgressSpinner](/components/progress-spinner)、[Skeleton](/components/skeleton) |

@@ -2,7 +2,7 @@
 
 > 用途：承接 `.session/wisdom.md` 中**已蒸馏条目**（知识点已迁移到 `docs/` 后的摘要与链接），使跨 session 发现可跨机器、跨分支留存。
 >
-> 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
+> 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
 ## 2026-09-19 阶段归档蒸馏（Phase 7 第二阶段 M5 / M6）
 

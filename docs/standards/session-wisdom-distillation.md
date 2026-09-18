@@ -3,7 +3,7 @@
 > 将 `.session/wisdom.md` 中的临时知识点定期提纯为永久文档，解决跨机器丢失、内容膨胀与过时残留问题。
 > 参照 momei / dependfix 的同类机制，按 caomei-ui 的单包结构适配。
 
-## 1. 背景
+## 1. 载体与目标
 
 `.session/` 是 **git-ignored** 的任务态目录，用于跨 session 恢复上下文：
 
@@ -17,7 +17,7 @@
 
 `todo.md` 负责阶段跨度（周），`.session/current-task.yaml` 负责 session 跨度（小时），两者同步不替代。相关流程见 `todo-manager` skill 与 `@full-stack-master` agent。
 
-问题：wisdom 仅本地存储、随 session 膨胀、部分条目过时；有价值的发现应沉淀到 `docs/` 以便所有分支与机器可查。
+目标：有价值的跨 session 发现统一沉淀到 `docs/`，避免仅本地留存、随 session 膨胀与过时残留，使其在所有分支与机器可查。
 
 ## 2. 蒸馏触发条件
 
@@ -45,7 +45,7 @@
 
 每条获得结论之一：`migrate`（迁移并保留摘要+链接）/ `keep`（保留）/ `remove`（删除）/ `compress`（压缩为一行）。
 
-**条目格式（权威定义）**：活跃条目为顶层 bullet `- [YYYY-MM-DD] [type] 摘要`；迁移后的摘要行为 `- [YYYY-MM-DD] [type] 摘要 → docs/path`，统一汇集到 [Session 经验归档](./experience-archive.md)（永久、可提交），`wisdom.md` 仅保留指向归档的指针。缩进的子 bullet 视为上一条目的内容，不计入条目数。`scripts/governance/distill-wisdom.mjs` 据此计数，并额外兼容无 bullet 的 `[YYYY-MM-DD] ...` 摘要行。
+**条目格式（权威定义）**：活跃条目为顶层 bullet `- [YYYY-MM-DD] [type] 摘要`；迁移后的摘要行为 `- [YYYY-MM-DD] [type] 摘要 → docs/path`，统一汇集到 [experience-archive.md](../design/governance/experience-archive.md)（永久、可提交），`wisdom.md` 仅保留指向归档的指针。缩进的子 bullet 视为上一条目的内容，不计入条目数。`scripts/governance/distill-wisdom.mjs` 据此计数，并额外兼容无 bullet 的 `[YYYY-MM-DD] ...` 摘要行。
 
 **计数口径**：活跃段（`## 当前条目 (Active)`）内**任意**顶层 bullet 均视为一条条目（不额外校验标签形态）；无 bullet 的 `[YYYY-MM-DD] ...` 摘要行同样计入；缩进子 bullet 与 `###` 小标题不计入。
 
@@ -53,7 +53,7 @@
 
 1. 读取 `.session/wisdom.md` 中「当前条目 (Active)」段的全部条目，逐条按 §3 判断结论。
 2. 执行 `migrate`（写入对应 `docs/` 目标并做外科式增量）、`remove`、`compress`、`keep`。
-3. 压缩 `wisdom.md`：迁移条目摘要行写入 [Session 经验归档](./experience-archive.md) 并从活跃段移除；过时条目直接删除，不保留「半过时」条目。
+3. 压缩 `wisdom.md`：迁移条目摘要行写入 [experience-archive.md](../design/governance/experience-archive.md) 并从活跃段移除；过时条目直接删除，不保留「半过时」条目。
 4. 记录蒸馏日志（迁移 N 条、删除 M 条、更新文档、剩余活跃条目数）。
 
 ## 5. 脚本辅助

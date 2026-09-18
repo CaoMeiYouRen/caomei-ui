@@ -14,6 +14,7 @@
 | 规划规范 | [planning.md](./planning.md) | backlog / roadmap / todo / 长期任务制度与新需求准入流程 |
 | AI 协作规范 | [ai-collaboration.md](./ai-collaboration.md) | PDTFC+ 工作流、搜索优先、交接与验证矩阵 |
 | AI 资产治理 | [ai-governance.md](./ai-governance.md) | agents / skills 库存、镜像、外部资产准入与治理 |
+| 会话机制 | [session-wisdom-distillation.md](./session-wisdom-distillation.md) | `.session/` 任务态、蒸馏触发条件、条目格式、工作流与脚本契约 |
 
 ## 使用约定
 

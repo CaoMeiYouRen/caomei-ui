@@ -3,7 +3,7 @@
 /**
  * distill-wisdom：统计 `.session/wisdom.md` 活跃条目数，辅助 Session Wisdom 蒸馏决策。
  *
- * 活跃条目格式（权威定义见 docs/design/governance/session-wisdom-distillation.md）：
+ * 活跃条目格式（权威定义见 docs/standards/session-wisdom-distillation.md）：
  * - 顶层 bullet：`- [YYYY-MM-DD] [type] 摘要`（缩进的子 bullet 不计入）；
  * - 兼容无 bullet 的迁移摘要行：`[YYYY-MM-DD] [type] 摘要 → docs/path`。
  *

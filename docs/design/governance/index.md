@@ -55,4 +55,3 @@
 - [2026-09-19-m6-8-closure-ui-validation.md](./2026-09-19-m6-8-closure-ui-validation.md)：M6-8 收口「ButtonGroup + Stepper 页迁移节」（工作区未提交 diff）**真实浏览器验证**（V 阶段，`docs:build` 产物 + `vitepress preview`）。结论：**通过**——脚本 **18 / 18** 项通过、失败 0、console / pageerror / HTTP ≥ 400 均为 0；ButtonGroup（无功能 props 的拼接容器 + `orientation` 本库新增 + `pt`/`dt`/`unstyled` 未暴露）与 Stepper（`v-model:value` 值域收窄为 1 基 `number`、`linear` 默认 `true`、`<StepPanels>`/`<StepPanel>` 面板容器未实现）的 zh / en 迁移节均为其后仅剩 `API` 的末节并链到专题页；专题页「基础与布局」/「导航与操作」两行补链接，未穷尽脚注示例清单清空。**M6-8 主线收口**：全部组件页具备中英迁移节。本批零 `src/**` 改动，未做三档视口复测。
 
 - [experience-archive.md](./experience-archive.md)：Session 经验归档（已蒸馏条目的摘要与链接，跨机器留存）。
-- [session-wisdom-distillation.md](./session-wisdom-distillation.md)：Session Wisdom 蒸馏机制（`.session/` 任务态与知识沉淀）。

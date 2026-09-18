@@ -98,7 +98,7 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 5. **T (Test)**: 补齐并运行相关测试。
 6. **F (Finish)**: 文档与规划收口、通过 `conventional-committer` 单次提交。
 
-详细流程见 [AI 协作规范](./docs/standards/ai-collaboration.md)。每个 session 遵循 `.session/` 任务态协议（开局恢复 / 收尾更新），见 [todo-manager skill](./.github/skills/todo-manager/SKILL.md) 与 [Session Wisdom 蒸馏机制](./docs/design/governance/session-wisdom-distillation.md)。
+详细流程见 [AI 协作规范](./docs/standards/ai-collaboration.md)。每个 session 遵循 `.session/` 任务态协议（开局恢复 / 收尾更新），见 [todo-manager skill](./.github/skills/todo-manager/SKILL.md) 与 [Session Wisdom 蒸馏机制](./docs/standards/session-wisdom-distillation.md)。
 
 ## 8. AI 智能体体系 (AI Agents Matrix)
 
@@ -168,6 +168,6 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 - **规划**: [路线图](./docs/plan/roadmap.md) | [待办事项](./docs/plan/todo.md) | [Backlog](./docs/plan/backlog.md)
 - **规范**: [规范索引](./docs/standards/index.md) | [开发](./docs/standards/development.md) | [测试](./docs/standards/testing.md) | [文档](./docs/standards/documentation.md) | [Git](./docs/standards/git.md) | [安全](./docs/standards/security.md) | [规划](./docs/standards/planning.md) | [AI 协作](./docs/standards/ai-collaboration.md) | [AI 资产治理](./docs/standards/ai-governance.md)
 - **设计**: [设计索引](./docs/design/index.md) | [架构](./docs/design/architecture.md) | [主题](./docs/design/theming.md) | [组件](./docs/design/components.md)
-- **会话机制**: [Session Wisdom 蒸馏](./docs/design/governance/session-wisdom-distillation.md)
+- **会话机制**: [Session Wisdom 蒸馏](./docs/standards/session-wisdom-distillation.md)
 - **指南**: [上手](./docs/guide/getting-started.md) | [开发](./docs/guide/development.md) | [发布](./docs/guide/release.md) | [AI 协同](./docs/guide/ai-development.md)
 - **适配与入口**: [Claude 适配](./CLAUDE.md) | [README](./README.md)

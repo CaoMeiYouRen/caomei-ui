@@ -61,7 +61,7 @@
 
 - 开发前：对齐 `roadmap.md` 与 `todo.md`。
 - 开发后：同步更新 `todo.md` 状态与验收结果，阶段完成后迁入 `todo-archive.md`。
-- 阶段归档时检查 `.session/wisdom.md` 活跃条目：达到阈值（>= 20）则执行蒸馏（`pnpm distill:wisdom --check`，详见 [Session Wisdom 蒸馏机制](../design/governance/session-wisdom-distillation.md)）。
+- 阶段归档时检查 `.session/wisdom.md` 活跃条目：达到阈值（>= 20）则执行蒸馏（`pnpm distill:wisdom --check`，详见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)）。
 - **归档清理**（2026-09-17 起）：阶段归档时，**已完成 / 已归档的条目不得在 `todo.md` 与 `backlog.md` 保留任何内容**（`todo.md` 的「未完成项汇总」仅为状态指针，不构成条目登记或启动授权）——包括交付摘要、归档指针与「闭环整理」段落；已交付内容的唯一去处是 [待办归档](../plan/todo-archive.md) 与 git 历史。`todo.md` 归档后只保留「当前阶段状态（可为无进行中阶段）+ 未完成项汇总」；`backlog.md` 只保留**尚未交付**的条目（含待决策与「已决策、范围已登记待启动」两类，见 §3.8）；已交付 / 已归档一律不保留。
 - **长期任务台账**（[recurring.md](../plan/recurring.md)）只承载**可多阶段反复执行**的任务（判定门槛 + 触发时机 + 可追加批次 + 执行记录）：已完成批次的**待执行条目行**不进入待执行批次清单（执行轮次记录仍按 §8 保留），一次性条目与非任务内容不进入该表。
 - 阶段归档与发布前检查 [长期任务](../plan/recurring.md) 的强制触发：确认已执行且留下记录；无记录不得宣称该轮已完成。

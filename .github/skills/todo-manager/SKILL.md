@@ -28,7 +28,7 @@ metadata:
 - [ ] Step 3: Session 收尾更新 ⚠️ REQUIRED
   - [ ] 3.1 更新 `.session/current-task.yaml` 的 `progress` / `next_steps` / `cognitive` / `session.updated_at`。
   - [ ] 3.2 追加可复用发现到 `.session/wisdom.md`。
-  - [ ] 3.3 若活跃条目 >= 20，提醒执行蒸馏（见 [Session Wisdom 蒸馏机制](../../../docs/design/governance/session-wisdom-distillation.md)）。
+  - [ ] 3.3 若活跃条目 >= 20，提醒执行蒸馏（见 [Session Wisdom 蒸馏机制](../../../docs/standards/session-wisdom-distillation.md)）。
   - [ ] 3.4 更新 `.session/runtime-state.json` 的 `last_verification`。
 
 ## 常见检查

@@ -29,6 +29,27 @@ The menu closes after clicking an item by default; calling `event.preventDefault
     ssg="true"
 />
 
+## Data-driven item model
+
+`CaomeiDropdownMenuContent`'s `model` takes a `DropdownMenuModelItem[]`, which suits migration from PrimeVue's `MenuItem`: items render in array order, `separator: true` renders a separator (other fields are ignored), and every other entry calls `command` when selected. `model` renders before the default slot and the two can coexist (use the slot for more complex structures).
+
+<demo
+    vue="../examples/dropdown-menu/model.vue"
+    ssg="true"
+/>
+
+| Field | Type | Default | Description |
+|------|------|------|------|
+| `label` | `string` | — | Item label |
+| `icon` | `Component` | — | Item icon; pass a `@lucide/vue` component (**string classes are not accepted**) |
+| `command` | `(event: DropdownMenuCommandEvent) => void` | — | Selection callback; the payload is `{ item, originalEvent }` |
+| `disabled` | `boolean` | `false` | Whether the item is disabled (excluded from keyboard navigation and never calls `command`) |
+| `separator` | `boolean` | `false` | Render a separator (other fields are ignored) |
+
+> When you need a per-item class or a nested submenu, use declarative items instead (`v-for` + `CaomeiDropdownMenuItem`); see the migration section for the unimplemented entries.
+>
+> `label` doubles as the item's accessible name and its typeahead text; icon-only entries should still provide one.
+
 ## Disabled
 
 A trigger's `disabled` disables the whole menu; an item's `disabled` disables only that item (it is excluded from keyboard navigation and does not emit `select`).
@@ -52,8 +73,8 @@ The default `modal: false` is non-modal: it does not lock page scroll, does not 
 | Component | Key props | Description |
 |------|-----------|------|
 | `CaomeiDropdownMenu` | `v-model:open`, `modal` (default `false`), `dir` | Logical root container, no DOM |
-| `CaomeiDropdownMenuTrigger` | `disabled` | Trigger, renders `<button>` |
-| `CaomeiDropdownMenuContent` | `side` (`bottom`), `sideOffset` (`4`), `align` (`start`), `alignOffset` (`0`), `loop` (`true`), `forceMount` | Popup panel, contains a Portal |
+| `CaomeiDropdownMenuTrigger` | `disabled`, `unstyled` | Trigger, renders `<button>`; `as-child` + `unstyled` reuses a custom button without inheriting the built-in skin |
+| `CaomeiDropdownMenuContent` | `model`, `side` (`bottom`), `sideOffset` (`4`), `align` (`start`), `alignOffset` (`0`), `loop` (`true`), `forceMount` | Popup panel, contains a Portal; `model` provides data-driven items |
 | `CaomeiDropdownMenuItem` | `disabled`, `shortcut`, `textValue` | Regular item, emits `select` |
 | `CaomeiDropdownMenuCheckboxItem` | `v-model`, `disabled`, `shortcut`, `textValue` | Checkbox item, emits `select` |
 | `CaomeiDropdownMenuRadioGroup` | `v-model` | Radio group container |
@@ -99,5 +120,48 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
     --caomei-dropdown-menu-item-highlighted-bg: #f1f5f9;
 }
 ```
+
+## Migration from PrimeVue
+
+PrimeVue's `<Menu :model :popup>` + `ref.toggle(event)` is an imperative popup anchored to an external element; here the API is declarative: **the original trigger button is itself the trigger** (the anchor is that button, equivalent to `toggle(event)`'s event-coordinate anchoring) and the panel always portals out. The per-point landing is in the table below.
+
+```vue
+<!-- PrimeVue: imperative, anchored to the event coordinates -->
+<Button icon="pi pi-ellipsis-h" @click="toggle" />
+<Menu ref="menu" :model="items" :popup="true" />
+```
+
+```ts
+const menu = ref()
+const toggle = (event: Event): void => menu.value.toggle(event)
+```
+
+```vue
+<!-- caomei-ui: the original button is the trigger, same anchor -->
+<CaomeiDropdownMenu>
+  <CaomeiDropdownMenuTrigger as-child unstyled>
+    <CaomeiButton variant="secondary" label="Actions">
+      <template #icon><CaomeiIcon :icon="Ellipsis" /></template>
+    </CaomeiButton>
+  </CaomeiDropdownMenuTrigger>
+  <CaomeiDropdownMenuContent :model="items" />
+</CaomeiDropdownMenu>
+```
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Menu :model="items" :popup="true" />` | `<CaomeiDropdownMenu>` + `<CaomeiDropdownMenuTrigger>` + `<CaomeiDropdownMenuContent :model="items" />` |
+| `:popup` (popup mode) | No equivalent prop: the panel always portals out here, so drop it during migration |
+| `ref.toggle(event)` / `show(event)` (anchored to event coordinates) | Make the original trigger button itself the `CaomeiDropdownMenuTrigger` (the anchor is that button); add `unstyled` when reusing a custom button with `as-child`, otherwise the built-in skin merges onto the child |
+| `hide()` | Controlled `v-model:open` (on the root) |
+| `model`'s `label` / `icon` / `command` / `disabled` / `separator` | Same field names on `model`; `icon` changes from a string class to an `@lucide/vue` component; the `command` payload `{ originalEvent, item }` → `{ item, originalEvent }` (same shape) |
+| `#item` / `#itemicon` slots | Default slot + `model.icon`; use declarative items when you need full control |
+| `append-to` / `auto-z-index` / `base-z-index` | Not implemented (the panel is always attached to `body`; layering goes through `--caomei-dropdown-menu-z-index`) |
+| `show` / `hide` events | Listen to `v-model:open` |
+| `aria-label` / `aria-labelledby` | The panel's accessible name is forwarded as attributes to `CaomeiDropdownMenuContent` |
+
+**Not implemented / not exposed**: `MenuItem.items` (nested submenus; migrate to flat groups via `CaomeiDropdownMenuGroup` + `CaomeiDropdownMenuLabel`), `MenuItem.class` / `style` / `key` (per-item class and inline style; use declarative items with native attributes instead), `MenuItem.url` / `target` (navigation; navigate inside `command`), `MenuItem.visible` (filter the array in the caller) and the function forms of `label` / `disabled` (pass a boolean for `disabled`); the `#start` / `#end` / `#submenulabel` slots, `tabindex`, and PrimeVue's `unstyled` (which strips theme styles — different from the Trigger's `unstyled`, which drops the trigger skin).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 
 <ComponentApi name="dropdown-menu" />

@@ -61,4 +61,16 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 > The size-derived variable (font size) is declared by the component on its own element and must be overridden on `.caomei-checkbox-group` itself; setting it on an ancestor such as `:root` has no effect.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `<CheckboxGroup v-model="array" name>` (group context plus default slot only) | `CaomeiCheckboxGroup` is shape-compatible (put children in the default slot; `name` covers the whole group's submission) |
+| — | `options` (renders children via `optionLabel` / `optionValue`), `selectAll` (select-all / mixed, disabled items excluded), `selectAllText`, `label` (group accessible name) and `rovingFocus` (defaults to `false`, keeping native per-item Tab order) are new here |
+| `inputId` (on children) | `id` |
+
+**Intentional differences**: the group layer adds no disabled opacity (children handle it, avoiding a double fade); while inside a group, a child does **not** render its own hidden control — `name` lives on the group, so children need not pass `name`. **Not implemented**: PrimeVue `CheckboxGroup`'s `formControl` is not exposed (`invalid` is covered by this component's `invalid`).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="checkbox-group" />

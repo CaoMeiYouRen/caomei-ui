@@ -83,4 +83,20 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `v-model` + `:value` (array model, non-binary) | Same shape: bind an array to `v-model`, use `value` as the member id; clicking adds or removes by `value` |
+| `v-model` (`binary`, boolean) | Boolean `v-model`; use the model value `'indeterminate'` for the mixed state |
+| `indeterminate` (separate boolean prop) | Not exposed as a prop: express the mixed state with the model value `'indeterminate'` |
+| `inputId` | `id` |
+| `aria-label` | `label` (visually hidden accessible name, takes precedence over a forwarded `aria-label`) |
+| `size` (`small` / `large`) | `size` (`sm` / `lg`) |
+| — | `text` (visible label text, or use the default slot) is new here |
+
+**Not implemented / not exposed**: `true-value` / `false-value` (the model is already a boolean or an array), `variant` (`outlined` / `filled`), `readonly`, `tabindex`, `input-class` / `input-style`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="checkbox" />

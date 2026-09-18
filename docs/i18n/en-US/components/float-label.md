@@ -69,4 +69,13 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-float-label-in-padding-bottom` | `--caomei-space-1` | Field bottom padding (`in`) |
 | `--caomei-float-label-transition-duration` | `0.15s` | Transition duration |
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `variant` (`over` / `in` / `on`) | `variant` (`over` / `in`); **`on` is not supported** |
+| Wrapped child | Same usage: wrap a supported input control, and the child needs a `placeholder` |
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="float-label" />

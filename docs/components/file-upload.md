@@ -52,4 +52,18 @@
 
 > 组件只负责选择与列表管理；分片、断点续传、进度与服务端错误由业务层实现。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `accept` / `multiple` | 同名 |
+| `chooseLabel` | 默认插槽自定义提示文案（无等价 prop） |
+| `@select` / `@upload` / `@remove` / `@progress` | 未实现：选择结果即 `v-model` 的 `File[]` |
+| `name` | 透传到内层 `<input type="file">`（原生表单提交可用） |
+| 无 | `disabled`、`label`（可访问名）与 `#file` 插槽（自定义文件列表项）为本库新增 |
+
+**未实现（已登记为后续补强项，交付后同步本节）**：`mode`（`basic` / `advanced`）、`auto`、`maxFileSize` / `fileLimit`、`url` / `customUpload` / `withCredentials`、`uploadLabel` / `cancelLabel`、`showUploadButton` / `showCancelButton`、`invalidFileSizeMessage` / `invalidFileTypeMessage` / `invalidFileLimitMessage`、`previewWidth`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="file-upload" />

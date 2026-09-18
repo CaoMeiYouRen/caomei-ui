@@ -61,4 +61,16 @@
 
 > 档位派生变量（字号）由组件在自身元素上声明，需在 `.caomei-checkbox-group` 元素本身上覆盖，写在 `:root` 等祖先层不会生效。
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<CheckboxGroup v-model="数组" name>`（仅提供分组上下文与默认插槽） | `CaomeiCheckboxGroup` 同形兼容（默认插槽放子项，`name` 覆盖整组提交） |
+| 无 | `options`（按 `optionLabel` / `optionValue` 渲染子项）、`selectAll`（全选 / 半选，禁用项不参与）、`selectAllText`、`label`（分组可访问名）、`rovingFocus`（默认 `false`，保持原生逐项 Tab 顺序）为本库新增 |
+| `inputId`（子项） | `id` |
+
+**已知差异（有意）**：分组层不叠加禁用透明度（子项各自处理，避免双重变淡）；子项处于分组上下文时**不生成自身隐藏控件**，`name` 由分组统一承载，子项无需再传 `name`。**未实现**：PrimeVue `CheckboxGroup` 的 `formControl` 未暴露（`invalid` 已由本组件 `invalid` 覆盖）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="checkbox-group" />

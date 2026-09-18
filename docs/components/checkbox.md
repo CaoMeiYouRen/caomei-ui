@@ -83,4 +83,20 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `v-model` + `:value`（数组模型，非 binary） | 同形：`v-model` 传数组、`value` 作成员标识，点击按 `value` 增删 |
+| `v-model`（`binary`，布尔） | `v-model` 布尔；半选用模型值 `'indeterminate'` |
+| `indeterminate`（独立布尔 prop） | 未暴露为独立 prop：以模型值 `'indeterminate'` 表达半选 |
+| `inputId` | `id` |
+| `aria-label` | `label`（不可见可访问名，优先级高于透传 `aria-label`） |
+| `size`（`small` / `large`） | `size`（`sm` / `lg`） |
+| 无 | `text`（可见标签文本，或改用默认插槽）为本库新增 |
+
+**未实现 / 未暴露**：`true-value` / `false-value`（模型即布尔或数组）、`variant`（`outlined` / `filled`）、`readonly`、`tabindex`、`input-class` / `input-style`。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="checkbox" />

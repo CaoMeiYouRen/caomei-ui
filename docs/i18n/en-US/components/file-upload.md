@@ -52,4 +52,18 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 > The component only handles selection and list management; chunking, resumable upload, progress and server errors are implemented in the application layer.
 
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+| --- | --- |
+| `accept` / `multiple` | Same names |
+| `chooseLabel` | Customize the prompt through the default slot (no equivalent prop) |
+| `@select` / `@upload` / `@remove` / `@progress` | Not implemented: the picked files are the `File[]` bound to `v-model` |
+| `name` | Forwarded to the inner `<input type="file">` (native form submission works) |
+| — | `disabled`, `label` (accessible name) and the `#file` slot (custom list item) are new here |
+
+**Not implemented (registered as a follow-up; this section will be updated when it ships)**: `mode` (`basic` / `advanced`), `auto`, `maxFileSize` / `fileLimit`, `url` / `customUpload` / `withCredentials`, `uploadLabel` / `cancelLabel`, `showUploadButton` / `showCancelButton`, `invalidFileSizeMessage` / `invalidFileTypeMessage` / `invalidFileLimitMessage`, `previewWidth`.
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="file-upload" />

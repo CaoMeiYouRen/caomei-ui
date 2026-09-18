@@ -69,4 +69,13 @@
 | `--caomei-float-label-in-padding-bottom` | `--caomei-space-1` | `in` 变体字段底部内边距 |
 | `--caomei-float-label-transition-duration` | `0.15s` | 过渡时长 |
 
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `variant`（`over` / `in` / `on`） | `variant`（`over` / `in`）；**`on` 未支持** |
+| 组合子项 | 同用法：包裹受支持的输入类组件，子项需带 `placeholder` |
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="float-label" />

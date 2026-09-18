@@ -40,17 +40,6 @@ When `rowsPerPageOptions` is provided, a rows-per-page selector is rendered at t
 
 > Without `rowsPerPageOptions` no selector is rendered and behavior matches the previous release; `itemsPerPage` stays a controlled prop, so bind `v-model:items-per-page` to receive the new value.
 
-## Migration from PrimeVue
-
-| PrimeVue | caomei-ui |
-| --- | --- |
-| `v-model:first` (0-based offset) | `v-model:page` (1-based page number) |
-| `:rows` | `:items-per-page` |
-| `:total-records` | `:total` |
-| `@page="({ page, rows, first }) => ..."` | Listen to `update:page` / `update:itemsPerPage`; compute an offset as `(page - 1) * itemsPerPage` when needed |
-| `:rows-per-page-options` | `rowsPerPageOptions` (listen to `update:itemsPerPage` for changes) |
-| `template` (including `CurrentPageReport`) | **Not implemented**: the paginator offers no template slots or "page x of y" report; render your own report beside the paginator from `page` / `itemsPerPage` / `total` (see the range text in the example above) |
-
 ## Accessibility
 
 - The root is a `<nav>` whose accessible name resolves as `label` > forwarded `aria-label` > the current locale's pagination label (Chinese by default); a forwarded `aria-label` applies when `label` is absent (or empty). When a page has several paginators, it is best to name them individually so landmark navigation can distinguish them.
@@ -82,5 +71,18 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
     --caomei-paginator-control-size: 36px;
 }
 ```
+
+## Migration from PrimeVue
+
+| PrimeVue | caomei-ui |
+| --- | --- |
+| `v-model:first` (0-based offset) | `v-model:page` (1-based page number) |
+| `:rows` | `:items-per-page` |
+| `:total-records` | `:total` |
+| `@page="({ page, rows, first }) => ..."` | Listen to `update:page` / `update:itemsPerPage`; compute an offset as `(page - 1) * itemsPerPage` when needed |
+| `:rows-per-page-options` | `rowsPerPageOptions` (listen to `update:itemsPerPage` for changes) |
+| `template` (including `CurrentPageReport`) | **Not implemented**: the paginator offers no template slots or "page x of y" report; render your own report beside the paginator from `page` / `itemsPerPage` / `total` (see the range text in the example above) |
+
+> For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 
 <ComponentApi name="paginator" />

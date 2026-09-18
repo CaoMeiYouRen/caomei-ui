@@ -54,19 +54,6 @@ Besides the `cell` function in a column definition, you can customize cells and 
 >
 > For sortable columns the `#header-{key}` slot renders inside the sort `<button>`, so **avoid placing buttons or links** in it (nested interactive controls break keyboard semantics).
 
-## Migration from PrimeVue
-
-| PrimeVue | This component |
-|----------|----------------|
-| `<Column field="x" :header="…">` | An entry in the `columns` array: `{ key: 'x', header: … }` (`key` also serves as the default value field) |
-| `<template #body="{ data }">` / `#body="slotProps"` | `<template #cell-{key}="{ row, value, index }">` (`data` maps to `row`; `slotProps.data` likewise) |
-| Column-level `<template #header>` | `<template #header-{key}="{ column }">` |
-| Table-level `<template #header>` / `#footer` | No table-level header / footer slot; use `caption` for the title and place the action area outside the table container |
-| `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'` (one field expresses both frozen state and docking side) |
-| `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
-| `rows-per-page-options` | The same-named `rowsPerPageOptions`; switching emits `update:rows` and derives the page by preserving the first-row offset |
-| `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"` (same field shape, plus `pageCount`) |
-
 ## Sorting
 
 Click the header of a `sortable` column to sort (ascending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Adding or removing `sortField` at runtime switches between controlled and component-managed modes; when uncontrolled the `sort` event is still emitted for observation.
@@ -152,5 +139,20 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | Striped row background color |
 | `--caomei-data-table-row-hover-bg` | 4% text color mix | Row hover background color |
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
+
+## Migration from PrimeVue
+
+| PrimeVue | This component |
+|----------|----------------|
+| `<Column field="x" :header="…">` | An entry in the `columns` array: `{ key: 'x', header: … }` (`key` also serves as the default value field) |
+| `<template #body="{ data }">` / `#body="slotProps"` | `<template #cell-{key}="{ row, value, index }">` (`data` maps to `row`; `slotProps.data` likewise) |
+| Column-level `<template #header>` | `<template #header-{key}="{ column }">` |
+| Table-level `<template #header>` / `#footer` | No table-level header / footer slot; use `caption` for the title and place the action area outside the table container |
+| `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'` (one field expresses both frozen state and docking side) |
+| `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
+| `rows-per-page-options` | The same-named `rowsPerPageOptions`; switching emits `update:rows` and derives the page by preserving the first-row offset |
+| `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"` (same field shape, plus `pageCount`) |
+
+> For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 
 <ComponentApi name="data-table" />

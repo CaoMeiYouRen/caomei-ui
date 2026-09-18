@@ -83,7 +83,7 @@
 | 组件 | 关键属性 | 说明 |
 |------|----------|------|
 | `CaomeiPopover` | `modal`（默认 `false`），`v-model:open` | 根容器，控制开合与模态 |
-| `CaomeiPopoverTrigger` | `disabled` | 触发器，渲染为原生 `<button>` |
+| `CaomeiPopoverTrigger` | `disabled`、`unstyled` | 触发器，渲染为原生 `<button>`；`as-child` + `unstyled` 可复用自定义按钮而不继承内建外观 |
 | `CaomeiPopoverContent` | `side`、`sideOffset`、`align`、`alignOffset`、`avoidCollisions`、`forceMount`、`disableOutsidePointerEvents` | 浮层面板，经 Portal 挂载 |
 | `CaomeiPopoverArrow` | `width`、`height` | 指向触发器的箭头 |
 | `CaomeiPopoverClose` | `label` | 点击关闭的按钮 |
@@ -99,7 +99,39 @@
 | `#container` 作用域内的 `closeCallback` / `keydownCallback` | `<CaomeiPopoverClose>`（可用 `as-child` 包裹自定义按钮） |
 | `close-on-escape`（默认 `true`） | 默认行为（Esc 关闭）；**未暴露关闭 Esc 的开关** |
 
-**未提供命令式锚点 API**：PrimeVue 可用 `ref.show(event)` / `toggle(event)` / `hide()` 以事件坐标为锚点打开；本库为声明式（`#trigger` 插槽），以事件坐标为锚点的命令式打开无等价入口，需要该形态时请改用触发器元素或另行包裹定位逻辑（**命令式或迁移写法指引已登记为后续补强项，交付后同步本节**）。
+**命令式锚点改为声明式触发器（已定案，不提供命令式入口）**：PrimeVue 的 `ref.show(event)` / `toggle(event)` / `hide()` 以**事件坐标**为锚点打开面板；本库无命令式入口，等价写法是把**原来的触发按钮本身作为 `CaomeiPopoverTrigger`**——事件目标就是按钮，锚点与 `toggle(event)` 完全一致。`as-child` 复用自定义按钮时必须加 `unstyled`，否则内建触发器外观类（`caomei-popover__trigger`）会合并到子元素，与按钮自身的 padding / border / background 竞争。
+
+```vue
+<!-- PrimeVue：命令式，以事件坐标为锚点 -->
+<Button icon="pi pi-bell" @click="toggle" />
+<Popover ref="op"><!-- 内容 --></Popover>
+```
+
+```ts
+const op = ref()
+const toggle = (event: Event): void => op.value.toggle(event)
+```
+
+```vue
+<!-- caomei-ui：原按钮即触发器，锚点一致 -->
+<CaomeiPopover>
+  <CaomeiPopoverTrigger as-child unstyled>
+    <CaomeiButton variant="ghost" label="通知">
+      <template #icon><CaomeiIcon :icon="Bell" /></template>
+    </CaomeiButton>
+  </CaomeiPopoverTrigger>
+  <CaomeiPopoverContent><!-- 内容 --></CaomeiPopoverContent>
+</CaomeiPopover>
+```
+
+逐方法落点：`toggle(event)` / `show(event)` → 该触发按钮作为 `CaomeiPopoverTrigger`；`hide()` → 关闭受控的 `v-model:open`，或用 `<CaomeiPopoverClose>`。需要由外部逻辑控制开合时仍保留触发器元素（面板位置取自触发器），用 `v-model:open` 接管开合即可。
+
+**跨组件形态无法机械等价**：若浮层与触发按钮分别位于两个组件（典型写法是 `defineExpose({ show })` 后在调用处 `show(event)`），因 `CaomeiPopoverTrigger` 必须是 `CaomeiPopover` 的后代，需先做结构改写——把 `CaomeiPopover` 上移到两者的公共父级（或把触发按钮移入 Popover 子树），再用 `v-model:open` 控制开合。
+
+<demo
+    vue="../examples/popover/anchor.vue"
+    ssg="true"
+/>
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

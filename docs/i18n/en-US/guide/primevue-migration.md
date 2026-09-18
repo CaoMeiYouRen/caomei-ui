@@ -27,6 +27,7 @@ This page is for teams moving from PrimeVue (v4) to caomei-ui: a practical migra
 | Searchable single select | `Select` + `filter` | Use `CaomeiAutoComplete` | Reka Select has no filter primitive (a search box inside the panel violates the ARIA structure); see §7 and [Backlog](/plan/backlog) (Chinese) |
 | Event payloads | e.g. `Switch` `change` passes the native event | passes the resulting boolean | Same event name, different payload — update the handler signature |
 | Slot naming | column-level `#body` / `#header` | `#cell-{key}` / `#header-{key}` | Named by column `key`; scope fields are documented on the component page |
+| Imperative overlays | `ref.toggle(event)` / `show(event)` / `hide()` (anchored to the event coordinates) | Declarative trigger | Make the original trigger button itself the `CaomeiPopoverTrigger` (the anchor is that button); add `unstyled` when reusing a custom button with `as-child`, and replace `hide()` with a controlled `v-model:open` or `<CaomeiPopoverClose>`; see [Popover](/en-US/components/popover) |
 | Not implemented | — | see the "not implemented / not exposed" line of each component in §7 | Read that line first so you do not follow a PrimeVue API that has no effect here |
 
 > The table above lists **shared** reminders. Whether a given component supports something, and whether a difference is intentional, is always decided by that component's entry in [Design spec §7](/design/design-spec) (Chinese).

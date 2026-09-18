@@ -27,6 +27,7 @@
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |
 | 插槽命名 | 列级 `#body` / `#header` | `#cell-{key}` / `#header-{key}` | 按列 `key` 命名，作用域字段口径见组件页 |
+| 命令式浮层 | `ref.toggle(event)` / `show(event)` / `hide()`（以事件坐标为锚点） | 声明式触发器 | 把原触发按钮本身作为 `CaomeiPopoverTrigger`（锚点即该按钮）；`as-child` 复用自定义按钮时加 `unstyled`，`hide()` 改受控 `v-model:open` 或 `<CaomeiPopoverClose>`；见 [Popover](../components/popover.md) |
 | 未实现项 | — | 见 §7 各组件行的「未实现 / 未暴露」 | 迁移前先读该行，避免按 PrimeVue 文档写了不生效的 prop |
 
 > 上表是**通用**提醒；某个组件是否有对应能力、差异是否属有意，一律以[设计规范 §7](../design/design-spec.md) 该组件的行为准。

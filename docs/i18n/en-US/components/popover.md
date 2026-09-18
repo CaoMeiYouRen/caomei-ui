@@ -83,7 +83,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | Component | Key props | Description |
 |------|----------|------|
 | `CaomeiPopover` | `modal` (default `false`), `v-model:open` | Root container, controls open state and modality |
-| `CaomeiPopoverTrigger` | `disabled` | Trigger, renders a native `<button>` |
+| `CaomeiPopoverTrigger` | `disabled`, `unstyled` | Trigger, renders a native `<button>`; `as-child` + `unstyled` reuses a custom button without inheriting the built-in skin |
 | `CaomeiPopoverContent` | `side`, `sideOffset`, `align`, `alignOffset`, `avoidCollisions`, `forceMount`, `disableOutsidePointerEvents` | Popover panel, mounted via Portal |
 | `CaomeiPopoverArrow` | `width`, `height` | Arrow pointing at the trigger |
 | `CaomeiPopoverClose` | `label` | Button that closes on click |
@@ -99,7 +99,39 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `closeCallback` / `keydownCallback` in the `#container` scope | `<CaomeiPopoverClose>` (wrap your own button with `as-child`) |
 | `close-on-escape` (default `true`) | Default behavior (Esc closes); **there is no switch to turn Esc off** |
 
-**No imperative anchor API**: PrimeVue can open at the event coordinates via `ref.show(event)` / `toggle(event)` / `hide()`; here the API is declarative (the `#trigger` slot), so there is no equivalent for event-coordinate imperative opening — use the trigger element or position it yourself (**the imperative API or a migration recipe is registered as a follow-up; this section will be updated when it ships**).
+**Imperative anchoring becomes a declarative trigger (decided; no imperative entry point)**: PrimeVue's `ref.show(event)` / `toggle(event)` / `hide()` open the panel anchored to the **event coordinates**; this library offers no imperative entry, so the equivalent is to make **the original trigger button itself the `CaomeiPopoverTrigger`** — the event target *is* that button, so the anchor matches `toggle(event)` exactly. When reusing a custom button with `as-child` you must add `unstyled`, otherwise the built-in trigger class (`caomei-popover__trigger`) merges onto the child and competes with its own padding / border / background.
+
+```vue
+<!-- PrimeVue: imperative, anchored to the event coordinates -->
+<Button icon="pi pi-bell" @click="toggle" />
+<Popover ref="op"><!-- content --></Popover>
+```
+
+```ts
+const op = ref()
+const toggle = (event: Event): void => op.value.toggle(event)
+```
+
+```vue
+<!-- caomei-ui: the original button is the trigger, same anchor -->
+<CaomeiPopover>
+  <CaomeiPopoverTrigger as-child unstyled>
+    <CaomeiButton variant="ghost" label="Notifications">
+      <template #icon><CaomeiIcon :icon="Bell" /></template>
+    </CaomeiButton>
+  </CaomeiPopoverTrigger>
+  <CaomeiPopoverContent><!-- content --></CaomeiPopoverContent>
+</CaomeiPopover>
+```
+
+Per-method landing: `toggle(event)` / `show(event)` → make that trigger button a `CaomeiPopoverTrigger`; `hide()` → close the controlled `v-model:open`, or use `<CaomeiPopoverClose>`. When external logic must control open state, keep the trigger element (the panel position comes from it) and let `v-model:open` own the state.
+
+**The cross-component shape cannot be mapped mechanically**: if the popover and the trigger button live in two different components (typically `defineExpose({ show })` then `show(event)` at the call site), the `CaomeiPopoverTrigger` must still be a descendant of `CaomeiPopover`, so restructure first — move `CaomeiPopover` up to their common parent (or move the trigger button into the popover subtree), then drive it with `v-model:open`.
+
+<demo
+    vue="../examples/popover/anchor.vue"
+    ssg="true"
+/>
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

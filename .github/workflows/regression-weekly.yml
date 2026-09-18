@@ -1,0 +1,149 @@
+name: Weekly Regression
+
+on:
+  schedule:
+    # UTC+0 每周五中午 12 点触发（UTC+8 每周五晚上 20 点触发）
+    - cron: "0 12 * * 5"
+  workflow_dispatch: # 支持手动触发
+
+permissions:
+  contents: read
+  security-events: read
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  说明
+# ═══════════════════════════════════════════════════════════════════════════════
+#  本工作流执行周级深度健康检查，覆盖 test.yml（快速反馈环）未覆盖的维度：
+#  依赖安全、文档完整性、治理脚本债等。
+#
+#  与 test.yml 的定位区别：
+#    - test.yml: 每次 push/PR，快速反馈（~15-30min），阻断合并
+#    - 本工作流: 每周定时，深度检查（~60-90min），不阻断合并，监测趋势
+#
+#  超时配置说明：
+#    核心回归（verify）约 30min，补充检查约 15min，整体设为 60min 弹性余量。
+
+jobs:
+  # ═════════════════════════════════════════════════════════════════════════════
+#  Core Regression — runs verify + supplementary checks
+# ═════════════════════════════════════════════════════════════════════════════
+  regression:
+    name: Core Regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # 必须拉取完整 git 历史：governance 脚本可能需要 git log
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js@lts environment
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - run: pnpm i --frozen-lockfile
+      - name: Setup AI mirrors
+        run: pnpm setup:ai
+
+      # ── Phase 1: 核心回归（verify 脚本） ─────────────────
+      #  包含：lint + typecheck + test + build + docs + governance
+      - name: Run core regression gate
+        run: pnpm run verify
+        env:
+          # governance 脚本可能需要 GitHub API
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Phase 2: 补充检查（verify 未覆盖的维度） ─────────
+      - name: Test with coverage
+        if: always()
+        run: pnpm run test:coverage
+
+      - name: Build docs
+        if: always()
+        run: pnpm run docs:build
+
+      - name: Check docs integrity
+        if: always()
+        run: pnpm run docs:check
+
+      # ── Phase 3: 证据与报告 ──────────────────────────────
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      # ── Phase 4: Job Summary ─────────────────────────────
+      - name: Write job summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 📊 周级回归完成" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 步骤 | 状态 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "| 核心回归 (verify) | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "详见各步骤日志。" >> $GITHUB_STEP_SUMMARY
+
+  # ═════════════════════════════════════════════════════════════════════════════
+#  Security Audit — dependency security check
+# ═════════════════════════════════════════════════════════════════════════════
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js@lts environment
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - run: pnpm i --frozen-lockfile
+
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Check licenses
+        run: pnpm run check:licenses
+
+  # ═════════════════════════════════════════════════════════════════════════════
+#  E2E Test — Playwright end-to-end tests
+# ═════════════════════════════════════════════════════════════════════════════
+  e2e:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js@lts environment
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - run: pnpm i --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+        continue-on-error: true
+
+      - name: Upload E2E report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: test-results/
+          if-no-files-found: warn

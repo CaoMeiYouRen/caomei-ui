@@ -31,6 +31,19 @@
     ssg="true"
 />
 
+## 三分区布局
+
+`#start` / `#center` / `#end` 三个插槽把工具条划分为左 / 中 / 右三区，与 PrimeVue Toolbar 的同名插槽一一对应：两侧按内容宽度贴主轴两端，中区落在两者之间的剩余空间中部（本库以中区 `flex: 1` 吸收剩余空间实现该排布）。
+
+<demo
+    vue="../examples/toolbar/zones.vue"
+    ssg="true"
+/>
+
+> 只要使用任一分区插槽即切换到三分区渲染，此时**默认插槽不再渲染**；三个分区插槽全部缺省时保持默认插槽的既有单区渲染（DOM 与样式与改造前一致）。分区容器不改变键盘行为——成员仍共享工具条的唯一 Tab 停靠点。
+>
+> 位置语义：`start` / `end` 按**主轴与阅读方向**解析——水平 LTR 下为左 / 右，水平 RTL 下互换，`orientation="vertical"` 时为上 / 下；中区落在两侧之间的剩余空间中部（中区即使为空也以 `flex: 1` 占位，故 `end` 恒贴主轴末端）。工具条本身是**内容宽度**（`inline-flex`，与 PrimeVue 的块级工具条不同），需要三区铺满容器时给工具条设置 `width: 100%`。
+
 ## 无障碍
 
 - 容器渲染为 `role="toolbar"`，输出 `aria-orientation`；`label` 映射 `aria-label`。
@@ -43,6 +56,7 @@
 
 | 组件 | 关键属性 | 说明 |
 |------|----------|------|
+| `CaomeiToolbar` | `orientation`（`horizontal` / `vertical`）、`dir`、`loop`、`label`、`id`；插槽 `#start` / `#center` / `#end` 与默认插槽 | 工具条容器，`role="toolbar"`；使用分区插槽时切换为三分区布局 |
 | `CaomeiToolbarButton` | `disabled`、`label` | 操作按钮，渲染为原生 `<button>`，默认插槽为内容 |
 | `CaomeiToolbarLink` | `label`（`href` 等经属性透传） | 链接，渲染为锚点，默认插槽为内容 |
 | `CaomeiToolbarSeparator` | — | 功能组之间的分隔线，方向自动 |
@@ -75,5 +89,20 @@
     --caomei-toolbar-button-size: 32px;
 }
 ```
+
+## 从 PrimeVue 迁移
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Toolbar>` | `<CaomeiToolbar>`（同为 `role="toolbar"` 容器） |
+| `#start` / `#center` / `#end` | 同名插槽（两侧按内容宽度贴主轴两端、中区落在两者之间的剩余空间中部；本库以中区 `flex: 1` 实现） |
+| `ariaLabelledby` | `label`（映射 `aria-label`）；`aria-labelledby` 也可经属性透传 |
+| 无其他 props | **本库新增** `orientation`（`horizontal` / `vertical`）、`dir`、`loop`、`id` |
+| 块级工具条（撑满容器） | 内容宽度（`inline-flex`）；需要铺满时设 `width: 100%` |
+| `pt` / `dt` / `ptOptions` / `unstyled` | 未实现（未暴露主题透传机制；样式经 CSS variables 覆盖） |
+
+**已知差异（有意）**：本库的成员组件（`CaomeiToolbarButton` / `CaomeiToolbarLink` / `CaomeiToolbarToggleItem`）共享一个 Tab 停靠点并用方向键漫游（roving focus）；PrimeVue Toolbar 无键盘漫游，成员各自形成 Tab 停靠点。迁移时若依赖逐个 Tab 遍历，需按此调整。
+
+> 成员请使用上述工具条专用组件（普通按钮不参与 roving focus）。迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 
 <ComponentApi name="toolbar" />

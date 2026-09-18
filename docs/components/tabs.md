@@ -84,4 +84,28 @@
 }
 ```
 
+## 从 PrimeVue 迁移
+
+PrimeVue v4 的 Tabs 为五件组合，本库合并为四件：
+
+| PrimeVue | 本组件 |
+| --- | --- |
+| `<Tabs v-model:value>` | `<CaomeiTabs v-model>` |
+| `<TabList>` | `<CaomeiTabList>` |
+| `<Tab :value :disabled>` | `<CaomeiTabTrigger :value :disabled>` |
+| `<TabPanels>` + `<TabPanel :value>` | `<CaomeiTabContent :value>`（`TabPanels` 容器层合并进面板件） |
+| `v-model:value` | `v-model`（值域同为 `string \| number`） |
+| `lazy`（默认 `false`；`true` 时隐藏面板不渲染） | `unmountOnHide`（默认 `true`；同向、默认相反，见下） |
+| `selectOnFocus`（默认 `false`） | `activationMode`（`automatic` / `manual`；同向、默认相反，见下） |
+| v3 `<TabView v-model:activeIndex>` + `<TabPanel :header>` | `<CaomeiTabs v-model>` + `<CaomeiTabTrigger>` / `<CaomeiTabContent>`；索引改为显式 `value` 标识 |
+| 无 | `orientation`、`dir`、`CaomeiTabList` 的 `loop`、`CaomeiTabContent` 的 `forceMount` 为本库新增 |
+
+> 两个「同向、默认相反」的字段，迁移时需显式取值：`lazy` 默认 `false`（保留 DOM）对应 `unmountOnHide` 默认 `true`（卸载）——保留 DOM 需传 `:unmount-on-hide="false"`；`selectOnFocus` 默认 `false`（聚焦不激活）对应 `activationMode` 默认 `automatic`（聚焦即激活）——聚焦不激活需传 `activation-mode="manual"`。
+
+> **已知差异（有意）**：① `activationMode` 在初始化时生效，运行期切换不改变已建立的激活行为（Reka 内部实现限制）；② `unmountOnHide` 默认卸载内容，PrimeVue `lazy` 默认保留 DOM。
+
+**未实现（已登记为后续补强项，交付后同步本节）**：`scrollable` / `showNavigators` 与 `#previcon` / `#nexticon` 插槽（滚动导航按钮；本库列表溢出为原生横向滚动）、`tabindex`（根级；触发器各自可聚焦）、`Tab` 与 `TabPanel` 的 `as` / `asChild` 多态渲染（含 `TabPanel` 默认插槽的 `asChild` 作用域），以及 v4 已弃用且仅 `TabView` 支持的 `TabPanel` 字段（`header` / `disabled` / `headerStyle` / `headerClass` / `headerProps` / `headerActionProps` / `contentStyle` / `contentClass` / `contentProps` 与 `#header` 插槽——header 文本走 `CaomeiTabTrigger` 默认插槽、禁用走 trigger 的 `disabled`、面板样式经类名与 CSS 变量覆盖）。
+
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+
 <ComponentApi name="tabs" />

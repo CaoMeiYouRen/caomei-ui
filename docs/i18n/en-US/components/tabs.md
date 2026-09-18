@@ -84,4 +84,28 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Migration from PrimeVue
+
+PrimeVue v4 composes tabs from five components; this library merges them into four:
+
+| PrimeVue | This component |
+| --- | --- |
+| `<Tabs v-model:value>` | `<CaomeiTabs v-model>` |
+| `<TabList>` | `<CaomeiTabList>` |
+| `<Tab :value :disabled>` | `<CaomeiTabTrigger :value :disabled>` |
+| `<TabPanels>` + `<TabPanel :value>` | `<CaomeiTabContent :value>` (the `TabPanels` container layer is merged into the panel component) |
+| `v-model:value` | `v-model` (the value domain is the same `string \| number`) |
+| `lazy` (default `false`; with `true` hidden panels are not rendered) | `unmountOnHide` (default `true`; same direction, opposite default — see below) |
+| `selectOnFocus` (default `false`) | `activationMode` (`automatic` / `manual`; same direction, opposite default — see below) |
+| v3 `<TabView v-model:activeIndex>` + `<TabPanel :header>` | `<CaomeiTabs v-model>` + `<CaomeiTabTrigger>` / `<CaomeiTabContent>`; the index becomes an explicit `value` identifier |
+| — | `orientation`, `dir`, `CaomeiTabList`'s `loop` and `CaomeiTabContent`'s `forceMount` are new here |
+
+> Two fields point the same way but default opposite, so set them explicitly when migrating: `lazy` defaults to `false` (DOM kept) against `unmountOnHide`'s `true` (unmounted) — pass `:unmount-on-hide="false"` to keep the DOM; `selectOnFocus` defaults to `false` (no activation on focus) against `activationMode`'s `automatic` (activate on focus) — pass `activation-mode="manual"` to keep focus-only navigation.
+
+> **Intentional differences**: ① `activationMode` takes effect at initialization; switching it at runtime does not change the established activation behaviour (a Reka implementation limitation); ② `unmountOnHide` unmounts content by default, whereas PrimeVue's `lazy` keeps the DOM by default.
+
+**Not implemented (registered as a follow-up; this section will be updated when it ships)**: `scrollable` / `showNavigators` and the `#previcon` / `#nexticon` slots (scroll navigation buttons; the list scrolls natively here when it overflows), `tabindex` (root-level; triggers are individually focusable), the `as` / `asChild` polymorphic rendering of `Tab` and `TabPanel` (including the `asChild` scope of `TabPanel`'s default slot), and the v4-deprecated `TabPanel` fields supported only by `TabView` (`header` / `disabled` / `headerStyle` / `headerClass` / `headerProps` / `headerActionProps` / `contentStyle` / `contentClass` / `contentProps` and the `#header` slot — the header text uses `CaomeiTabTrigger`'s default slot, disabling uses the trigger's `disabled`, and panel styling goes through class names and CSS variables).
+
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+
 <ComponentApi name="tabs" />

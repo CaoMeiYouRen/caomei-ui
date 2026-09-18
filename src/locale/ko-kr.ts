@@ -46,6 +46,11 @@ const koKR: CaomeiLocaleMessages = {
         label: '드로어',
         close: '닫기',
     },
+    image: {
+        label: '이미지 미리보기',
+        preview: '이미지 미리보기',
+        close: '닫기',
+    },
     input: {
         clear: '지우기',
     },

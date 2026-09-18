@@ -1,3 +1,5 @@
+import type { Component } from 'vue'
+
 /**
  * 图片填充方式
  * @en Image object-fit
@@ -43,4 +45,15 @@ export interface ImageProps {
      * @en Whether to lazy-load: request `src` only after entering the viewport (pair with `ratio` to reserve space)
      */
     lazy?: boolean
+    /**
+     * 是否启用点击放大预览：加载成功后图片可点击，弹出遮罩并展示放大图
+     * @default false
+     * @en Whether to enable click-to-enlarge preview: the loaded image becomes clickable and opens an overlay with the enlarged image
+     */
+    preview?: boolean
+    /**
+     * 预览指示器图标（`@lucide/vue` 组件）；缺省为 `Eye`，也可用 `#indicatoricon` 插槽整体替换
+     * @en Preview indicator icon (a `@lucide/vue` component); defaults to `Eye`, or replace it entirely with the `#indicatoricon` slot
+     */
+    previewIcon?: Component
 }

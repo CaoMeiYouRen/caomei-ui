@@ -46,6 +46,11 @@ const jaJP: CaomeiLocaleMessages = {
         label: 'ドロワー',
         close: '閉じる',
     },
+    image: {
+        label: '画像プレビュー',
+        preview: '画像をプレビュー',
+        close: '閉じる',
+    },
     input: {
         clear: 'クリア',
     },

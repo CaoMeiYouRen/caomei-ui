@@ -46,6 +46,11 @@ const zhTW: CaomeiLocaleMessages = {
         label: '抽屜',
         close: '關閉',
     },
+    image: {
+        label: '圖片預覽',
+        preview: '預覽圖片',
+        close: '關閉',
+    },
     input: {
         clear: '清除',
     },

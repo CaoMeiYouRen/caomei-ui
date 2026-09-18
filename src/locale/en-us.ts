@@ -46,6 +46,11 @@ const enUS: CaomeiLocaleMessages = {
         label: 'Drawer',
         close: 'Close',
     },
+    image: {
+        label: 'Image preview',
+        preview: 'Preview image',
+        close: 'Close',
+    },
     input: {
         clear: 'Clear',
     },

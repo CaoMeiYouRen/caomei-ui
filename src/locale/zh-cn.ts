@@ -46,6 +46,11 @@ const zhCN: CaomeiLocaleMessages = {
         label: '抽屉',
         close: '关闭',
     },
+    image: {
+        label: '图片预览',
+        preview: '预览图片',
+        close: '关闭',
+    },
     input: {
         clear: '清除',
     },

@@ -52,6 +52,11 @@ export interface CaomeiLocaleMessages {
         label: string
         close: string
     }
+    image: {
+        label: string
+        preview: string
+        close: string
+    }
     input: {
         clear: string
     }

@@ -249,6 +249,21 @@
   - **规模偏差**：单一验收条目含「组件 + locale + 中英文档 + 示例 + 测试」导致多次超粒度约束，均按既有先例在条目与提交信息登记（M5 B1 合计 30 文件 / 新增 897 行、最大单提交 12 文件 / 400 行）。
   - **已登记 Backlog 的后续候选**：迁移口径一致性守卫、en-US 文档页 768 档横向溢出、常驻 E2E 规格 follow-up、组件覆盖率门禁、a11y 自动化回归、测试隔离与偶发失败等，见 [Backlog](./backlog.md)。
 
+## Phase 5 第二阶段：首版发布（本地手动发布，0.x）
+
+- 时间：2026-09-19（用户授权启动；同日完成首发并收口归档）
+- 授权与范围（用户决策 2026-09-19）：首版版本号取 **0.x**；发布方式为**本地手动发布**、暂不启动 CI 自动发布；下游接入验证**后置**为发布后由下游实际迁移反馈驱动；测试偶发失败按「多次出现再处理」跟踪。范围与就绪度评估见 [Phase 5 第二阶段发版评估记录](../design/governance/2026-09-19-phase5-second-stage-release-evaluation.md)。
+- 交付（4 条原子条目全部完成）：
+  - **F5-1 首版发布指南（本地手动 0.x）**：改写 [发布指南](../guide/release.md) 为本地手动发布 runbook（0.x 首发步骤与命令、annotated 基线 tag、凭据要求、CI 自动发布暂缓、版本推断、许可、回滚 / deprecate、包形态与兼容性、下游回归后置）；`release.yml` 发布步骤保持关闭并澄清。提交 `9513505`。
+  - **F5-2 0.1.0 版本基线与发布说明**：`package.json` 版本置 `0.1.0`；`CHANGELOG.md` 由 `pnpm changelog`（`scripts/release/generate-changelog.mjs`，基于 `conventional-changelog@7.2.0` + `conventional-changelog-cmyr-config@3.0.0` 预设）生成并含 BREAKING CHANGES；建 annotated 基线 tag `v0.1.0`。提交 `f26388e`（登记 `757789d`）。F5-2 复审 follow-up（生成器健壮性）已转 [Backlog](./backlog.md)。
+  - **F5-3 首发执行与发布后校验**：本地手动 `npm publish` 首发成功——npm `latest` 指向 `0.1.0`；tarball 11 文件与 `files` 一致；干净目录安装与子路径导入（`caomei-ui` / `caomei-ui/resolver` / `styles.css` / `THIRD-PARTY-LICENSES`）冒烟通过。发布结论见 [0.1.0 首发执行与发布后校验记录](../design/governance/2026-09-19-phase5-first-release-execution.md)。提交 `5ebc789`。
+  - **F5-4 发布后状态同步与占位处置**：README（项目状态精简 + 外链、安装栏更新为已发布事实、License 补 `THIRD-PARTY-LICENSES` 链接）、中英（含 en-US 镜像）getting-started / local-linking、roadmap 与发版评估记录状态同步，无「未发布」残留；npm `0.0.0` 占位经用户决策 **不 deprecate**（已发布版本不再改动，作为同作者历史占位保留在线）。提交 `5ebc789` + 归口提交。
+- 质量门：`pnpm lint:md:check` / `pnpm docs:check`（integrity / links / line-count）/ `pnpm docs:check:i18n-routing` / `pnpm governance:check` 通过；[0.1.0 首发执行与发布后校验记录](../design/governance/2026-09-19-phase5-first-release-execution.md) 载 registry 取证与安装冒烟结果。
+- 审计：F5-1 / F5-2 各自经 `@code-reviewer` Review Gate 放行（F5-2 三轮：R1 / R2 Reject → R3 Pass）；发布后状态同步与首发执行记录经 Review Gate 放行；阶段归档与规划状态同步批次 R1 Reject（2 blocker）→ R2 Pass（范围冻结复审）。
+- 阶段归档蒸馏：`.session/wisdom.md` 活跃 0 条（< 阈值 20），无需蒸馏。
+- 长期任务：阶段收口前触发一轮门槛复核（[长期任务](./recurring.md) §3 第 9 轮，2026-09-19，零代码改动域；两组任务待执行批次 0 项、条件触发 2 项维持）。
+- 遗留与后续候选：下游接入验证后置（Phase 8 / 下游反馈驱动）；npm `0.0.0` 占位保留不 deprecate；[发布后阶段规划落地复核](../design/governance/2026-09-19-post-release-phase-implementation-audit.md) 未发现静默遗漏；其余候选见 [Backlog](./backlog.md)。
+
 ## 跨阶段预落地条目
 
 ### Switch（Phase 2 预落地，用户授权；随 Phase 2 归档）

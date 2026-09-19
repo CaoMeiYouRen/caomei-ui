@@ -4,23 +4,9 @@
 
 ## 当前阶段
 
-### Phase 5 第二阶段：首版发布（本地手动发布，0.x）
+**无进行中阶段。**
 
-- **授权**：2026-09-19 用户授权启动并登记为本仓当前阶段；属 Phase 5 已授权阶段内的分段，**不新增阶段编号**（见[规划规范 §4](../standards/planning.md)）。范围与就绪度评估见[Phase 5 第二阶段发版评估记录](../design/governance/2026-09-19-phase5-second-stage-release-evaluation.md)。
-- **定位**：以 0.x 首个版本完成 npm 首发，并建立可持续的本地手动发布流程；暂不启用 CI 自动发布。
-- **目标**：① 首发机制与版本基线（0.1.0 与 `v0.1.0` 基线 tag、本地手动发布指南）；② 首发前收口与首发执行；③ 发布后校验与状态同步。
-- **非目标**：不启用 CI 自动发布（`release.yml` 发布步骤保持关闭）；不把下游接入验证作为本阶段准入（后置为发布后由下游实际迁移反馈驱动）；不做文档站版本化（依赖后续版本基线）；不追求 1.0.0。
-- **用户决策（2026-09-19）**：首版版本号取 0.x（后续再议 1.0.0）；发布方式为本地手动发布、暂不启动 CI 自动发布；下游接入验证等待发布后下游实际迁移反馈；测试偶发失败按「多次出现再处理」跟踪。
-- **技术约束（取证）**：semantic-release 首版恒为 `1.0.0`（`FIRST_RELEASE` 常量、无 `initialVersion` 选项），故 0.x 首版采用「手工发布 + 建基线 tag」；本地运行 semantic-release 需 `--no-ci` 且需 npm / GitHub 凭据。
-
-| 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
-| :-: | --- | --- | --- | :-: |
-| F5-1 | 首版发布指南（本地手动 0.x） | 改写 `docs/guide/release.md`：0.x 首发步骤（预检 / 版本基线 / 提交 / tag / 发布 / 推送 / 校验）、semantic-release 与手动发布的边界、凭据要求、回滚 / deprecate 口径、ESM-only 与许可说明；`release.yml` 发布步骤保持关闭并澄清 | 指南含可执行命令与前置检查；明确「CI 自动发布暂缓」；与 `release.yml` 现状一致 | — |
-| F5-2 | 0.1.0 版本基线与发布说明 | `package.json` 版本置 `0.1.0`；`CHANGELOG.md` 由 `pnpm changelog`（`conventional-changelog` + `conventional-changelog-cmyr-config` 预设）生成；新增生成脚本与定向单测、两个精确钉定的 devDependencies；建 `v0.1.0` annotated 基线 tag | 版本字段与 tag 一致；CHANGELOG 含首版条目且分组完整（含 BREAKING CHANGES）；`pnpm verify` 通过 | F5-1 |
-| F5-3 | 首发执行与发布后校验 | 本地执行质量门 → `npm publish` → 校验 registry `dist-tags` / tarball 内容 / 新目录安装冒烟 | `latest` 指向 0.1.0；安装后组件与子路径导出可用；发布结论落可提交位置 | F5-2 + 有效 npm 凭据 |
-| F5-4 | 发布后状态同步与占位处置 | README / roadmap / 项目状态同步；npm `0.0.0` 占位（可选 deprecate）结论 | 状态无「未发布」残留；占位处置有结论 | F5-3 |
-
-状态：F5-1 已交付（2026-09-19，首版发布指南与 CI 注释澄清）；F5-2 已交付（2026-09-19，commit `f26388e` / annotated tag `v0.1.0`：版本置 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 生成、生成脚本与单测、两个 devDependencies、`release.md` 生成口径）；F5-3 已交付（2026-09-19，本地手动 `npm publish` 首发成功：`latest` 指向 `0.1.0`、tarball 11 文件与 `files` 一致、干净目录安装与子路径导入冒烟通过，结论见[首发执行记录](../design/governance/2026-09-19-phase5-first-release-execution.md)）；F5-4 主体已交付（2026-09-19，README / roadmap / guides 及 en-US 镜像状态同步，无「未发布」残留；npm `0.0.0` 占位 deprecate 处置待决策）。F5-2 复审 follow-up（生成器健壮性）已登记 [Backlog](./backlog.md)，未占本阶段条目。
+下一阶段范围在未经需求评估与用户明确决策前不登记（见[规划规范 §3](../standards/planning.md)）。
 
 ## 未完成项汇总
 

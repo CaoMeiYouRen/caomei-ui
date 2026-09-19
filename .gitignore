@@ -43,3 +43,6 @@ docs/.vitepress/data
 
 # AI 审查记录（临时态，不进入版本库）
 /artifacts
+
+# dependfix 安全报告（临时态，不进入版本库）
+/dependfix-reports

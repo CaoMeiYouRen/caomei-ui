@@ -25,7 +25,7 @@ describe('resolveThemeVariables', () => {
     })
 
     it('未知别名抛出明确错误', () => {
-        expect(() => resolveThemeVariables({ nope: '1' })).toThrowError(/未知的主题 token：nope/)
+        expect(() => resolveThemeVariables({ nope: '1' })).toThrow(/未知的主题 token：nope/)
     })
 
     it('空配置返回空数组', () => {

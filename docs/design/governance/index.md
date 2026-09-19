@@ -18,7 +18,8 @@
 
 ## 当前条目
 
-- [2026-09-19-phase5-second-stage-release-evaluation.md](./2026-09-19-phase5-second-stage-release-evaluation.md)：Phase 5 第二阶段发版评估（首版发布：本地手动发布，0.x）。**结论**：技术质量面已就绪（`pnpm verify` 全链路通过、`npm pack` 内容完整、子路径导出与许可合规），发布链路未就绪（npm 凭据缺失、semantic-release 首版恒 1.0.0）。含发版就绪度取证（HEAD `d3b85c8`）、0.x 首发机制（手工发布 + annotated 基线 tag `v0.1.0`；轻量 tag + `--follow-tags` 不会推送）、用户 4 项决策（授权启动 / 首版 0.x / 本地手动发布且 CI 自动发布暂缓 / 下游接入验证后置）、范围与非目标、风险与后续；条目登记见[待办事项](../../plan/todo.md) 当前阶段。
+- [2026-09-19-phase5-first-release-execution.md](./2026-09-19-phase5-first-release-execution.md)：0.1.0 首发执行与发布后校验（Phase 5 第二阶段 F5-3 / F5-4）。**结论**：首发成功——npm `latest = 0.1.0`、tarball 11 文件与 `files` 一致、干净目录安装与子路径导入（`caomei-ui` / `caomei-ui/resolver` / `styles.css` / `THIRD-PARTY-LICENSES`）冒烟通过；F5-3 达成，F5-4 主体（README / roadmap / guides 状态同步，无「未发布」残留）达成，npm `0.0.0` 占位处置待决策。含 registry 取证口径、发布后同步清单与未覆盖边界。
+- [2026-09-19-phase5-second-stage-release-evaluation.md](./2026-09-19-phase5-second-stage-release-evaluation.md)：Phase 5 第二阶段发版评估（首版发布：本地手动发布，0.x）。**结论**：技术质量面已就绪（`pnpm verify` 全链路通过、`npm pack` 内容完整、子路径导出与许可合规），发布链路未就绪（npm 凭据缺失、semantic-release 首版恒 1.0.0）；**该结论为发布前评估快照，首版已于 2026-09-19 完成本地手动发布，见[首发执行记录](./2026-09-19-phase5-first-release-execution.md)**。含发版就绪度取证（HEAD `d3b85c8`）、0.x 首发机制（手工发布 + annotated 基线 tag `v0.1.0`；轻量 tag + `--follow-tags` 不会推送）、用户 4 项决策（授权启动 / 首版 0.x / 本地手动发布且 CI 自动发布暂缓 / 下游接入验证后置）、范围与非目标、风险与后续；条目登记见[待办事项](../../plan/todo.md) 当前阶段。
 - [2026-09-14-momei-usage-audit.md](./2026-09-14-momei-usage-audit.md)：momei 组件使用复核台账（Phase 6 M1 交付物，需求 2 输入）。
 - [2026-09-14-phase7-first-stage-evaluation.md](./2026-09-14-phase7-first-stage-evaluation.md)：Phase 7 第一阶段评估记录（迁移就绪范围、缺口优先级、i18n 注入机制与用户决策；该阶段已于 2026-09-16 完成并归档，交付见 [待办归档](../../plan/todo-archive.md)）。
 - [2026-09-16-new-requirements-evaluation.md](./2026-09-16-new-requirements-evaluation.md)：2026-09-16 新需求评估记录（文档站信息架构 / 默认主色 / 站点观感 / Drawer 动画诊断 / 复用抽取 / 类型与 ESLint 严格化）。

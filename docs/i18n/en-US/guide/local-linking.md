@@ -1,8 +1,8 @@
-# Local Linking (Unpublished Package)
+# Local Linking
 
-The first caomei-ui release is not published to npm yet. Downstream projects can consume the local build as a local dependency before formal integration; this guide lists copy-ready steps and common issues.
+Besides installing from npm, downstream projects can also consume the local build as a local dependency; this guide lists copy-ready steps and common issues.
 
-> The first release belongs to Phase 5 stage two, see the [release guide](/en-US/guide/release); for usage after linking see [Getting Started](/en-US/guide/getting-started).
+> See the [release guide](/en-US/guide/release) for the release process; for usage after installing from npm see [Getting Started](/en-US/guide/getting-started).
 
 ## 1. Prerequisite: build the artifacts
 

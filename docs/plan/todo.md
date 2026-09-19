@@ -20,7 +20,7 @@
 | F5-3 | 首发执行与发布后校验 | 本地执行质量门 → `npm publish` → 校验 registry `dist-tags` / tarball 内容 / 新目录安装冒烟 | `latest` 指向 0.1.0；安装后组件与子路径导出可用；发布结论落可提交位置 | F5-2 + 有效 npm 凭据 |
 | F5-4 | 发布后状态同步与占位处置 | README / roadmap / 项目状态同步；npm `0.0.0` 占位（可选 deprecate）结论 | 状态无「未发布」残留；占位处置有结论 | F5-3 |
 
-状态：F5-1 已交付（2026-09-19，首版发布指南与 CI 注释澄清）；F5-2 已交付（2026-09-19，commit `f26388e` / annotated tag `v0.1.0`：版本置 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 生成、生成脚本与单测、两个 devDependencies、`release.md` 生成口径）；F5-3 ~ F5-4 为**已登记（范围授权）**，尚未交付。F5-2 复审 follow-up（生成器健壮性）已登记 [Backlog](./backlog.md)，未占本阶段条目。首发执行前须确认有效 npm 凭据（本机当前凭据不可用）。
+状态：F5-1 已交付（2026-09-19，首版发布指南与 CI 注释澄清）；F5-2 已交付（2026-09-19，commit `f26388e` / annotated tag `v0.1.0`：版本置 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 生成、生成脚本与单测、两个 devDependencies、`release.md` 生成口径）；F5-3 已交付（2026-09-19，本地手动 `npm publish` 首发成功：`latest` 指向 `0.1.0`、tarball 11 文件与 `files` 一致、干净目录安装与子路径导入冒烟通过，结论见[首发执行记录](../design/governance/2026-09-19-phase5-first-release-execution.md)）；F5-4 主体已交付（2026-09-19，README / roadmap / guides 及 en-US 镜像状态同步，无「未发布」残留；npm `0.0.0` 占位 deprecate 处置待决策）。F5-2 复审 follow-up（生成器健壮性）已登记 [Backlog](./backlog.md)，未占本阶段条目。
 
 ## 未完成项汇总
 

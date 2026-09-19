@@ -6,9 +6,9 @@
 pnpm add caomei-ui
 ```
 
-> The first release is not published yet (Tier 0 / Tier 1 / Tier 2 / Tier 3 components are implemented and archived; see the [roadmap](/plan/roadmap)). The snippets below show the target integration shape.
+> The latest version is `0.1.0` (0.x, so the API and directory layout may still change before 1.0); Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
 
-Before the first release, downstream projects can consume the local build through [local linking](/en-US/guide/local-linking).
+For local development, downstream projects can also consume the local build through [local linking](/en-US/guide/local-linking).
 
 ## Import styles
 

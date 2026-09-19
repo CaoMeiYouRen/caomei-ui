@@ -23,13 +23,12 @@
 
 ## 📌 项目状态
 
-Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）、组件库补全与规范化（Phase 6，面向 momei 迁移就绪）、迁移就绪第一阶段（Phase 7 第一阶段：消费路径与 Nuxt 接入、组件 i18n 注入机制、P0 高频增强与 5 个延后组件）、发布前收口（Phase 9：文档站信息架构、默认主色、演示动画、公共逻辑抽取、ESLint 严格化）、国际化与移动端适配（Phase 10：语言矩阵中期与移动端 / 响应式）与库侧迁移就绪与交接计划（Phase 7 第二阶段：DataTable 列插槽、B1 类增强、B0a 交接资产、迁移计划与验收标准）均已完成并归档。**当前进行中阶段为 Phase 5 第二阶段（首版发布，2026-09-19 授权启动）**：采用本地手动发布、首版停在 0.x，CI 自动发布暂缓，下游接入验证后置为发布后由下游实际迁移反馈驱动；momei 侧迁移由 momei 项目在其仓库执行、本仓等待反馈。下一步方向见[路线图](./docs/plan/roadmap.md)与 [Backlog](./docs/plan/backlog.md)。首发前组件库尚未发布正式版本（npm 现存同作者 `0.0.0` 占位），API 与目录结构在 1.0 前可能调整。
+组件库已完成 Tier 0 ~ Tier 3 稳定批组件与各阶段补全，首个正式版本 **0.1.0** 已于 2026-09-19 发布到 npm。当前处于 Phase 5 第二阶段（首版发布）的发布后校验与状态同步阶段：采用本地手动发布，CI 自动发布暂缓，下游接入验证由发布后的实际迁移反馈驱动。0.x 期间 API 与目录结构仍可能调整。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
-- 目标组件集：Tier 0（9 个，已完成）+ Tier 1（8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（6 个，已完成）+ Phase 7 补全（DatePicker / Calendar、Drawer、SplitButton、ColorPicker、DataView，已完成）。
-- 规划与进展见 [路线图](./docs/plan/roadmap.md) 与 [待办事项](./docs/plan/todo.md)。
+- 阶段进展、组件清单与下一步方向见[路线图](./docs/plan/roadmap.md)、[待办事项](./docs/plan/todo.md) 与 [Backlog](./docs/plan/backlog.md)。
 
-## ✨ 特性（目标形态）
+## ✨ 特性
 
 - **组件与样式解耦**：默认极简样式，可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
 - **主题与暗色模式**：CSS variables + 语义化 token；支持 `.dark` / `[data-theme="dark"]` 与两套品牌预设（`data-preset`）；系统跟随需显式开启（`data-scheme="auto"`）。
@@ -48,11 +47,11 @@ Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0
 pnpm add caomei-ui
 ```
 
-> 尚未发布首个版本，以上为接入目标形态。
+当前最新版本为 `0.1.0`，组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。0.x 阶段 API 与目录结构在 1.0 前可能调整。
 
-首版发布前，可在下游项目通过本地依赖（`file:` / `link:`）消费构建产物，步骤见[本地联调](./docs/guide/local-linking.md)。
+需要参与开发或本地联调时，也可通过本地依赖（`file:` / `link:`）消费构建产物，步骤见[本地联调](./docs/guide/local-linking.md)。
 
-## 📖 使用（目标形态）
+## 📖 使用
 
 ### 按需引入（推荐）
 
@@ -124,7 +123,7 @@ pnpm docs:dev       # 文档站开发
 pnpm verify         # 运行全部质量门
 ```
 
-## 🧱 技术栈（目标形态）
+## 🧱 技术栈
 
 | 类别 | 选型 |
 |------|------|
@@ -137,11 +136,11 @@ pnpm verify         # 运行全部质量门
 | 图标 | @lucide/vue |
 | 测试 | Vitest + Playwright |
 | 文档 | VitePress |
-| 发布 | semantic-release |
+| 发布 | 本地手动 npm publish（semantic-release / CI 自动发布暂缓） |
 
-> Reka UI、tsdown、`@lucide/vue` 等已在 Phase 0 接入；`@iconify/vue` 作为字符串图标名的可选扩展后续按需引入。
+> 图标默认使用 `@lucide/vue`；`@iconify/vue` 作为字符串图标名的可选扩展按需引入。
 
-## 📁 目录结构（目标形态）
+## 📁 目录结构
 
 ```
 src/
@@ -190,4 +189,4 @@ test/             # 单元与 E2E 测试
 ## 📝 License
 
 Copyright © 2026 [CaoMeiYouRen](https://github.com/CaoMeiYouRen).<br />
-This project is [MIT](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/LICENSE) licensed. 第三方依赖许可见 [THIRD-PARTY-LICENSES](./THIRD-PARTY-LICENSES)。

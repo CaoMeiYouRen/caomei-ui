@@ -6,7 +6,7 @@
 
 ## 1. 结论
 
-首版发布**技术质量面已就绪、发布链路未就绪**：质量门全链路通过、npm 打包内容完整；但存在硬前置（npm 凭据）与发布机制缺口（semantic-release 首版恒 1.0.0）。经用户 2026-09-19 决策（授权启动 Phase 5 第二阶段、首版 0.x、本地手动发布、CI 自动发布暂缓、下游接入验证后置），范围收敛为「0.x 首个版本 + 本地手动发布流程」。
+首版发布**技术质量面已就绪、发布链路未就绪**：质量门全链路通过、npm 打包内容完整；但存在硬前置（npm 凭据）与发布机制缺口（semantic-release 首版恒 1.0.0）。**该结论为 2026-09-19 评估时快照；首版已于同日完成本地手动发布，最新状态见 §6 / §7 与[首发执行记录](./2026-09-19-phase5-first-release-execution.md)。** 经用户 2026-09-19 决策（授权启动 Phase 5 第二阶段、首版 0.x、本地手动发布、CI 自动发布暂缓、下游接入验证后置），范围收敛为「0.x 首个版本 + 本地手动发布流程」。
 
 ## 2. 发版就绪度取证（2026-09-19，HEAD `d3b85c8`）
 
@@ -38,11 +38,11 @@
 
 ## 6. 风险与后续
 
-- 凭据：首发执行前须确认有效 npm 凭据（本机当前不可用）。
+- 凭据：首发已使用有效 npm 凭据完成 `npm publish`（结论见[首发执行记录](./2026-09-19-phase5-first-release-execution.md)）；CI 自动发布凭据仍未配置（`release.yml` 发布步骤保持关闭）。
 - 偶发失败：release job 会执行 `pnpm verify`，已知全量偶发失败（隔离即过）；按用户决策「多次出现再处理」，暂不单列条目。
 - 对比度遗留项（[Backlog](../../plan/backlog.md)，中）：默认主题亮色 soft primary 文本 4.37:1 未达 AA，建议在发布说明披露。
 - 下游接入验证：后置为发布后由下游实际迁移反馈驱动，归属[路线图 Phase 8](../../plan/roadmap.md)。
 
 ## 7. 状态
 
-2026-09-19：用户授权启动并登记为当前阶段（授权范围 F5-1 ~ F5-4）；F5-1 随首版发布指南交付；**F5-2 已交付**（commit `f26388e`、annotated tag `v0.1.0`——版本基线 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 基于 `conventional-changelog` + `conventional-changelog-cmyr-config` 预设生成）；F5-3 ~ F5-4 待执行（F5-3 首发需有效 npm 凭据）。F5-2 复审 follow-up（生成器健壮性：无 remote 降级、语言源自 `root`）超出原授权范围，**已登记 [Backlog](../../plan/backlog.md)**、未登记为本阶段条目。
+2026-09-19：用户授权启动并登记为当前阶段（授权范围 F5-1 ~ F5-4）；F5-1 随首版发布指南交付；**F5-2 已交付**（commit `f26388e`、annotated tag `v0.1.0`——版本基线 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 基于 `conventional-changelog` + `conventional-changelog-cmyr-config` 预设生成）；**F5-3 已交付**（本地手动 `npm publish` 首发成功：`latest = 0.1.0`、tarball 与 `files` 一致、安装与子路径导入冒烟通过，见[首发执行记录](./2026-09-19-phase5-first-release-execution.md)）；**F5-4 主体已交付**（README / roadmap / guides 及 en-US 镜像状态同步，无「未发布」残留；npm `0.0.0` 占位 deprecate 处置待决策）。F5-2 复审 follow-up（生成器健壮性：无 remote 降级、语言源自 `root`）超出原授权范围，**已登记 [Backlog](../../plan/backlog.md)**、未登记为本阶段条目。

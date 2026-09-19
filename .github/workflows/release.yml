@@ -32,7 +32,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Verify quality gates
         run: pnpm verify
-      # 发布前需配置 npm 凭据（NPM_TOKEN secret 或 npm Trusted Publisher / OIDC）；配置后再启用：
+      # 发布步骤保持注释：首版采用本地手动发布，流程见 docs/guide/release.md。
+      # 启用 CI 自动发布前需配置 npm 凭据（NPM_TOKEN secret 或 npm Trusted Publisher / OIDC）：
       # - env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

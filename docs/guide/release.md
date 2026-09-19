@@ -16,13 +16,15 @@
 ## 3. 首个版本发布流程（0.1.0）
 
 1. **预检**：工作区干净；`master` 与 `origin/master` 同步；`pnpm verify` 全链路通过。
-2. **版本基线与发布说明**：把 `package.json` 的 `version` 置为 `0.1.0`；落 `CHANGELOG.md` 首版条目。
+2. **版本基线与发布说明**：把 `package.json` 的 `version` 置为目标版本；运行 `pnpm changelog` 生成 / 重写 `CHANGELOG.md`。`--version=` 仅在尚未 bump `package.json` 时使用（默认取 `package.json` 的 version），`--date=` 可固定发布日期。
 3. **提交**：版本基线变更后复跑 `pnpm verify`，再经 `conventional-committer` 提交（例如 `chore(release): 0.1.0`）。
 4. **打 tag**：`git tag -a v0.1.0 -m "0.1.0"`（**annotated** tag，与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
 5. **发布**：配置有效 npm 凭据后执行 `npm publish`；`prepublishOnly` 会自动复跑许可校验。
 6. **推送**：`git push origin master --follow-tags`（`--follow-tags` **只推送 annotated tag**；若用轻量 tag 须显式 `git push origin v0.1.0`）。按 [Git 规范](/standards/git) 须用户明确授权，不自动 push。
 7. **校验**：`npm view caomei-ui versions dist-tags`；`npm pack caomei-ui --dry-run` 或安装到临时目录做冒烟。
 8. **记录**：把发布结论与关键实测值落到可提交位置（规划文档或提交信息）。
+
+**CHANGELOG 生成口径**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）基于 `conventional-changelog` 与 `conventional-changelog-cmyr-config` 预设生成 / 重写 `CHANGELOG.md`；分组标题、commit 链接与模板均来自该预设（`package.json` 的 `changelog.language` 为 `zh`），生成口径与 semantic-release 一致。脚本对预设做两处定向补丁：① 预置 `headerPattern` 不识别 `type(scope)!: …`，会整条丢弃 `BREAKING CHANGE` 提交（semantic-release 走同一预设，行为相同），补 `!?` 后恢复；② 本仓提交正文含 Vue 插槽名（`#option`）与十六进制色值（`#60a5fa`），会被 GitHub 的 issue 前缀规则误判为引用，故关闭引用抽取。已知残留：预设 writer 仍会把**提交标题**中的 `#<数字>` 渲染为 issue 链接（当前历史 0 命中，出现时需补丁或改用其他标题写法）。另注意：**tag 建立后不可再用同名 `--version=` 重生成该段**——与已存在 tag 同名时会触发 `Unreleased` 置换（如需修复历史发布说明，应改名或改期另发）。依赖 `conventional-changelog@7.2.0` 与 `conventional-changelog-cmyr-config@3.0.0` 精确钉定：预设的字符串模板配套 `conventional-changelog-writer@8`，升到内置 writer@9 的 `conventional-changelog@8` 会在运行期抛 `headerPartial is not a function`。
 
 ## 4. 凭据与本地运行
 

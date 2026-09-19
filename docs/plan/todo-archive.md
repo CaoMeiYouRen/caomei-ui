@@ -212,7 +212,42 @@
   - 语言矩阵的后续语种（俄 / 法 / 德 / 西 / 葡）、RTL、locale 注册治理、file-upload 内建文案本地化 → Backlog §1.4
   - M2 未纳入项（DataTable 卡片化 / Dialog 转全屏 / 页面级栅格 / Stepper 方向转换 / 触摸目标）与已知边界（内联日历内容宽 198px 等）→ [响应式设计](../design/responsive.md) §1 / §3 / §5
   - 常驻 E2E 尚未接入 `pnpm verify` / CI、浮层交互规格、reduced-motion 的默认动效路径无覆盖 → Backlog §1.6
-  - momei 迁移的执行范围与 5 项决策 → 待启动的 Phase 7 第二阶段（见 [路线图](./roadmap.md) 与[可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md)）
+  - momei 迁移的执行范围与 5 项决策 → 已由 Phase 7 第二阶段承接并归档（见本文件 Phase 7 第二阶段块与[可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md)）
+
+## Phase 7 第二阶段：库侧迁移就绪与交接计划（momei 优先）
+
+- 时间：2026-09-17 ~ 2026-09-19（2026-09-17 用户授权启动；2026-09-19 收口归档）
+- 范围来源与授权：[momei 迁移可行性评估](../design/governance/2026-09-17-momei-migration-feasibility.md) §6（B0~B4）与 §7 的 5 项用户决策（C3 分批全量执行 / B1 库侧补齐先行 / B 级 14 项全部纳入执行 / 接受 16 条有意差异 / 回归强度由每周回归任务承载）。**momei 侧实际迁移由 momei 项目在自己的仓库执行、本仓不触碰 momei 文件**；本仓只承担库侧能力面补齐、B0a 交接资产与迁移计划 / 验收标准。
+- 交付（6 条主线 / 33 条原子条目全部完成）：
+  - **M1 迁移计划与验收标准**（1 条）：[迁移计划与验收标准](../design/governance/2026-09-17-momei-migration-handover-plan.md)——批次划分（逐行标注执行主体）、前置条件、开工顺序、每批出口条件、16 条有意差异逐条核对清单、视觉基线采集方法与判定口径、回归口径、包体对比要求、逐批「文件 → 改动点」清单产出要求。
+  - **M2 B0a 交接资产**（3 条）：[momei 迁移 B0a 库侧资产](../design/governance/2026-09-17-momei-migration-assets.md)——`--p-*` → `--caomei-*` token 对照表（114 个唯一 token / 1403 处）、`pi pi-*` → `@lucide/vue` 映射表（128 个唯一图标 / 629 处 / 145 文件）、双库并存隔离策略与包体监控口径。**口径裁定（2026-09-17 用户决策）**：本主线验收以本仓扫描口径与实际结果为准。
+  - **M3 DataTable 列插槽**（3 条，A 级唯一结构性差距）：按列 `key` 命名的 `#cell-{key}` / `#header-{key}` 作用域插槽 + 单测 + 中英迁移示例；`align-frozen` 与列级 `selection-mode` 经 PrimeVue 一方源码取证后**收敛为迁移映射、不新增 API**。
+  - **M4 B1 增强·数据与表单类**（8 条）：MultiSelect `#option` / `showClear`、Paginator 每页条数（保留首行偏移）、Button `badge` / `badgeTone`、Checkbox 数组模型 + `CaomeiCheckboxGroup`、Switch `change`、ToggleButton `onLabel` / `offLabel`、DataTable `rowsPerPageOptions` + `update:rows`（2026-09-18 用户追加）。
+  - **M5 B1 增强·浮层与展示类**（10 条）：Dialog `showHeader` / `title` 可选化 / `@hide` / `breakpoints`、ConfirmDialog `icon`、Popover 命令式收敛为声明式迁移写法 + `CaomeiPopoverTrigger` 的 `unstyled`、DropdownMenu `model` 项模型 + 声明式锚点、Toolbar `#start` / `#center` / `#end`、Image `preview`、ProgressSpinner `strokeWidth`、FileUpload `mode` / `maxFileSize` / `auto` / `chooseLabel` + `customUpload` / `uploader`。分 B1~B5 交付。
+  - **M6 等待期组件缺口复盘与优化**（8 条）：InputGroup × Select 拼接圆角与成员宽度修复、图标页 live demo、图标一览卡片排版、`DatePicker` 触发按钮默认宽度上限、组件页迁移节后置与文档约定、中英《从 PrimeVue 迁移》专题页、组件页迁移节按侧栏分组滚动补齐（5 组，收口时**全部 45 个组件页具备中英迁移节**）。本主线由用户缺陷报告与用户指令授权驱动（不要求 Backlog 出处）。
+- 关键提交（98 枚，`8924924` ~ `0e58c65`）：
+  - 规划与资产：`8924924`（阶段登记 + 交接计划）/ `5a43d53`（B0a 资产）
+  - M3：`ef6dd48` / `521d52f` / `f10aa8b` / `7a62e10`
+  - 治理：`b8170c4` / `43b7b53`（审查改进协议与协议守卫）/ `caa2338`
+  - M6 第一批：`b681a4a` / `b85ec7a` / `4fe7433` / `a5588c8` / `5201b49`；第二批：`d34385a` / `45765eb` / `07394a5` / `cbf5787`
+  - M4：`29044c1` / `45fa047` / `f14d49b` / `b13a465` / `ee989c3` / `d3ddf84` / `b0776fb` / `446695a` / `38860b8` / `32639cf` / `55e6897` / `d6826a9` / `f15dacc` / `37da558`
+  - M5 B1：`13cd91e` / `daf09ce` / `0dd7e4e` / `a08d493` / `14278f6` / `16cbbd0`
+  - M6-6 / M6-7：`281df66` / `485b5c5` / `42c43e2` / `2c732df`
+  - M6-8 第一批：`1d6cf39` / `c818adc` / `1e3d90f` / `0ecf829` / `43faf00` / `11c1f13`；第二批：`0998d55` / `0f7b62e` / `f075f58` / `5713775` / `8dd05a3` / `89f7545` / `43d02aa`；第三批：`8d4557d` / `f31f406` / `c4fd236` / `d42496e` / `8d46390` / `85de760` / `928ca30` / `1c9f202`；第四批：`44e7b0a` / `a22140c` / `109b519` / `d4bede0` / `a86f24b` / `c2ecfd8`
+  - M5 B2：`58cf0d7` / `f334d86` / `71ff417` / `c66e398` / `cbb1219` / `1623c20` / `a94e6c3` / `34ecf0f`；B3：`b3b9b1a` / `4d56445` / `77fbf66` / `ec03b48`；B4：`ba1de50` / `3389133` / `89e9f3e`；M5-9：`2b6cab0` / `17bc18e` / `9f73d88`
+  - M5-8：`62672dd` / `ad2080e` / `c9de3ef`；M5-10：`9714107` / `89cf207` / `6ed15fa`
+  - M6-8 剩余页收口：`6662e30` / `8af830f` / `cb4a58f`；阶段归档蒸馏：`eb52186` / `0e58c65`
+- 质量门：阶段内各批次 `pnpm verify` 全链路通过，最后一次全量为 M5-10 的 71 文件 / 1368 例；M6-8 文档滚动批次为零 `src/**` 改动，按最小充分口径跑 `lint:md:check` / `docs:check`（收口 integrity 213 / links 214 / line-count）/ `docs:build`。新增 `.github/workflows/regression-weekly.yml`（周级深度健康检查，`a94e6c3`）。
+- 浏览器验证：各可见改动均经 `@ui-validator` 实机验证并落 `docs/design/governance/` 记录——列插槽（48 + 复验 25）、M4 两批（119 / 130）、M5 B1 常驻 E2E 54 / 54 + 一次性 45 + 基线 54 项零差异、M5 B2~B5 逐批、M5-8（33 / 33）、M5-10（23 / 23）、M6-1~M6-3（68 / 68）、M6-4 / M6-5（125 / 125）、M6-6 / M6-7（75 / 75）、M6-8 五批（305 / 493 / 769 / 953 / 13 / 13 / 18）。统一观察项为 en-US 文档页 @768 既有 79px 横向溢出（未改动同类页同样命中，登记 [Backlog §1.6](./backlog.md)）。
+- 审计：各条目均经 `@code-reviewer` Review Gate；治理侧新增审查调用协议（`audit-depth` 声明、并发分区、轮次上限、复审范围冻结）与「3 轮未过的审查改进协议」，并新增 `check:audit-protocol` 单点声明守卫接入 `governance:check`。
+- 阶段归档蒸馏：`eb52186` 处置活跃 82 条（migrate 82 / compress 0 / remove 0 / keep 0），摘要落 [经验归档](../design/governance/experience-archive.md) 的「2026-09-19 阶段归档蒸馏（Phase 7 第二阶段 M5 / M6）」；阶段收口再迁移 1 条 `[process]`（standards 目录关键词守卫）至 [文档规范 §4](../standards/documentation.md)。
+- 交付与遗留偏差清单：
+  - **未承载（按规划归属）**：首版发布链路 → Phase 5 第二阶段（待外部 npm 凭据）；下游兼容性回归机制（跨仓 CI）→ Phase 8（未启动）。
+  - **外部依赖（等待反馈）**：momei 侧迁移（B0b 视觉基线 / B2 / B3 / B4）由 momei 项目在其仓库执行，本仓等待其反馈后再决定下一轮动作。
+  - **范围收敛（用户决策）**：`align-frozen` / 列级 `selection-mode` 收敛为迁移映射不新增 API；Popover / DropdownMenu 命令式收敛为声明式迁移写法、不新增命令式入口；`template` / `CurrentPageReport`、菜单嵌套 / 逐条目类名、FileUpload 默认 XHR 传输等未实现项均登记 [设计规范 §7](../design/design-spec.md)。
+  - **有意行为差异与未实现项**：逐条登记 [设计规范 §7](../design/design-spec.md) 与各组件页迁移节，本阶段不重复抄写。
+  - **规模偏差**：单一验收条目含「组件 + locale + 中英文档 + 示例 + 测试」导致多次超粒度约束，均按既有先例在条目与提交信息登记（M5 B1 合计 30 文件 / 新增 897 行、最大单提交 12 文件 / 400 行）。
+  - **已登记 Backlog 的后续候选**：迁移口径一致性守卫、en-US 文档页 768 档横向溢出、常驻 E2E 规格 follow-up、组件覆盖率门禁、a11y 自动化回归、测试隔离与偶发失败等，见 [Backlog](./backlog.md)。
 
 ## 跨阶段预落地条目
 

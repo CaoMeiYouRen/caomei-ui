@@ -127,7 +127,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | 3 | DatePicker 无 `selection-mode`（范围选择） | momei 无用法 → 无影响 |
 | 4 | Drawer 缺 `position="full"` / 生命周期事件 / `#closebutton` 等 | momei 3 处均为 `position="right"` → 需逐处核对是否有事件依赖 |
 | 5 | Drawer `modal=true` 即锁滚动（PrimeVue `blockScroll` 默认 false） | 迁移后行为更严格，需 UI 复核 |
-| 6 | Dialog `title` 必填、窄屏不转全屏 | 35 处 `header` → `title`；窄屏形态**已由用户决策**（Phase 10 M2：「Dialog 转全屏不作为默认行为」，见 [待办事项](../../plan/todo.md)），迁移按现决策执行 |
+| 6 | Dialog `title` 必填、窄屏不转全屏 | 35 处 `header` → `title`；窄屏形态**已由用户决策**（Phase 10 M2：「Dialog 转全屏不作为默认行为」，见 [待办归档](../../plan/todo-archive.md) 的 Phase 10 段与[响应式设计](../responsive.md)），迁移按现决策执行 |
 | 7 | Message 无 `text` 变体（PrimeVue 亦无，属台账误记） | 无影响 |
 | 8 | Tag 不提供 `outlined` / `severity` / `value` 别名 | 125 处 `severity` → `tone`（语义映射需确认 `secondary` / `contrast` / `info`） |
 | 9 | Select / MultiSelect `fluid` 需删除 | 37 + 5 处；**同类 `DatePicker` `fluid` 2 处 / 2 文件**（快照 `cb663aee` 只读统计，命令见表下注），`DatePicker` 默认带 `20rem` 宽度上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width: none` |
@@ -194,9 +194,11 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | [路线图](../../plan/roadmap.md) | Phase 7 第二阶段行与说明块的范围口径改为「库侧就绪 + 迁移计划 / 验收标准；momei 侧执行由 momei 项目负责」；状态行同步；§5 归档索引补列 Phase 10（原漏列缺陷） |
 | [治理索引](./index.md) | 本记录条目范围指针随本表更新；新增交接文档条目 |
 
+> **后续**：Phase 7 第二阶段已于 2026-09-17 授权启动、2026-09-19 完成并归档；上表为启动时登记去向的快照，现行状态以[路线图](../../plan/roadmap.md)与[待办归档](../../plan/todo-archive.md) 为准。
+
 **未决 / 待办（执行前）**：
 
-- **原子条目拆分已完成（2026-09-17）**：M1 ~ M5 已按[规划规范 §4](../../standards/planning.md) 拆为原子条目并登记于[待办事项](../../plan/todo.md)；M3（DataTable 列插槽）优先于 M4 / M5，主线内按该表自上而下；开工顺序见[交接计划 §4](./2026-09-17-momei-migration-handover-plan.md)。
+- **原子条目拆分已完成（2026-09-17）**：M1 ~ M5 已按[规划规范 §4](../../standards/planning.md) 拆为原子条目；M3（DataTable 列插槽）优先于 M4 / M5，主线内按该表自上而下；开工顺序见[交接计划 §4](./2026-09-17-momei-migration-handover-plan.md)。**Phase 7 第二阶段已于 2026-09-19 全部交付并归档**，登记、交付与遗留偏差清单见[待办归档](../../plan/todo-archive.md)。
 - **视觉基线采集归 momei 侧**：本仓只提供采集方法与判定口径（[交接计划 §7](./2026-09-17-momei-migration-handover-plan.md)），不代为执行、不代为产出基线。
 - **B2 ~ B4 由 momei 项目执行**（在其仓库）：本仓等待其反馈后再决定下一轮动作；本阶段不启用「caomei-ui 变更即验证 momei」的跨仓触发（属 Phase 8）。
 - ~~Phase 10 收口~~（**已完成 2026-09-17**）：M1 三语文案复核已完成（三语无明显错误、2 处 zh-TW 措辞修正、标注已移除，结论见[语言矩阵评估记录 §9.1](./2026-09-16-language-matrix-midterm-evaluation.md)）；阶段已归档（见[待办归档](../../plan/todo-archive.md)），长期任务触发义务已按[长期任务](../../plan/recurring.md)第 3 轮执行并留痕。

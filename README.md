@@ -23,7 +23,7 @@
 
 ## 📌 项目状态
 
-Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）、组件库补全与规范化（Phase 6，面向 momei 迁移就绪）与迁移就绪第一阶段（Phase 7 第一阶段：消费路径与 Nuxt 接入、组件 i18n 注入机制、P0 高频增强与 5 个延后组件）与发布前收口（Phase 9：文档站信息架构、默认主色、演示动画、公共逻辑抽取、ESLint 严格化）亦已完成并归档。**Phase 10（国际化与移动端适配：语言矩阵中期与移动端 / 响应式）亦已完成并归档**，当前无进行中阶段；下一步方向见[路线图](./docs/plan/roadmap.md)与 [Backlog](./docs/plan/backlog.md)。首版发布（Phase 5 第二阶段）待外部前置与阶段决策后推进。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
+Tier 0 / Tier 1 / Tier 2 / Tier 3 稳定批组件均已完成并归档（Phase 0~4），文档站增强（Phase 5 第一阶段）、组件库补全与规范化（Phase 6，面向 momei 迁移就绪）、迁移就绪第一阶段（Phase 7 第一阶段：消费路径与 Nuxt 接入、组件 i18n 注入机制、P0 高频增强与 5 个延后组件）、发布前收口（Phase 9：文档站信息架构、默认主色、演示动画、公共逻辑抽取、ESLint 严格化）、国际化与移动端适配（Phase 10：语言矩阵中期与移动端 / 响应式）与库侧迁移就绪与交接计划（Phase 7 第二阶段：DataTable 列插槽、B1 类增强、B0a 交接资产、迁移计划与验收标准）均已完成并归档。**当前无进行中阶段**；momei 侧迁移由 momei 项目在其仓库执行、本仓等待反馈。下一步方向见[路线图](./docs/plan/roadmap.md)与 [Backlog](./docs/plan/backlog.md)。首版发布（Phase 5 第二阶段）待外部前置与阶段决策后推进。组件库尚未发布首个版本，API 与目录结构在 1.0 前可能调整。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
 - 目标组件集：Tier 0（9 个，已完成）+ Tier 1（8 个，已完成）+ Tier 2（6 个，已完成）+ Tier 3 稳定批（7 个，已完成）+ Phase 6 补全（6 个，已完成）+ Phase 7 补全（DatePicker / Calendar、Drawer、SplitButton、ColorPicker、DataView，已完成）。

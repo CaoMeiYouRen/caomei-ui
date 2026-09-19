@@ -118,4 +118,4 @@
 
 - 其他下游（caomei-auth / rss-impact-next / afdian-linker / dependfix/apps/platform）的迁移面未评估：按既定顺序在 momei 闭环后评估。
 - B0b 的具体页面清单由 momei 侧在采集时确定；本仓只提供方法与判定口径。
-- 本计划的原子条目登记见[待办事项](../../plan/todo.md) 当前阶段；B1 能力项拆分与顺序见该文档 M3 ~ M5。
+- 本计划的原子条目登记见[待办归档](../../plan/todo-archive.md)（Phase 7 第二阶段，2026-09-19 归档）；B1 能力项拆分与顺序见该阶段 M3 ~ M5。

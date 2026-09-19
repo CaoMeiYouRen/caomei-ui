@@ -6,7 +6,7 @@
 
 ## 2026-09-19 阶段归档蒸馏（Phase 7 第二阶段 M5 / M6）
 
-> 本批活跃 **82 条全部处置**：分态 `migrate 82 / compress 0 / remove 0 / keep 0`（部分条目的落点在此前批次已存在于既有文档）。归档摘要 **82 行**（可复算：`awk '/^## 2026-09-19 阶段归档蒸馏/,/^## 2026-09-17 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`documentation-site §5/§13/§15`、`development §5/§7/§10/§12`、`testing §7/§8/§10`、`ai-collaboration §8`、`planning §3.7/§4/§9`、`design-spec §7`、`git §3`、`guide/development.md`；`wisdom.md` 活跃段清空并保留指针。
+> 本批活跃 **83 条全部处置**：分态 `migrate 83 / compress 0 / remove 0 / keep 0`（其中 82 条于 M5 / M6 蒸馏，1 条于阶段收口补蒸馏；部分条目的落点在此前批次已存在于既有文档）。归档摘要 **83 行**（可复算：`awk '/^## 2026-09-19 阶段归档蒸馏/,/^## 2026-09-17 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`documentation-site §5/§13/§15`、`development §5/§7/§10/§12`、`testing §7/§8/§10`、`ai-collaboration §8`、`planning §3.7/§4/§9`、`design-spec §7`、`git §3`、`documentation §4`、`guide/development.md`；`wisdom.md` 活跃段清空并保留指针。
 
 ### 迁移文档撰写（→ [文档与演示站设计 §15](../documentation-site.md)）
 
@@ -101,6 +101,10 @@
 - [2026-09-17] [pattern] 同一契约重复实现会静默漂移，收敛前先做全库机械审计 → docs/standards/development.md
 - [2026-09-18] [pattern] 给「内容宽度」组件加分区插槽时示例须自行撑满容器 → docs/design/documentation-site.md
 - [2026-09-17] [pattern] 组件文档页「可渲染性」无门禁，须用 `<demo>` 才能被断言覆盖 → docs/design/documentation-site.md
+
+### 治理与流程（→ [文档规范 §4](../../standards/documentation.md)）
+
+- [2026-09-19] [process] 向 `docs/standards/` 迁入内容前必须过 `pnpm check:standards-redundant:strict`：去行内代码后正文与链接文字（含链接 label）不得含 `教训` / `经验` / `实证` / `实战` / `背景` 五类关键词；「为什么」类说明改写成「载体与目标 / 现有做法」，案例数据留在 `docs/design/governance/` 并以文件名作链接 label → docs/standards/documentation.md
 
 ## 2026-09-17 阶段归档蒸馏（Phase 10）
 

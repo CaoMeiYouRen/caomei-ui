@@ -24,8 +24,6 @@
 | AutoComplete 严格选项模式 | M3 条目 2 迁移评估 | AutoComplete 在回车 / 失焦时会提交自由文本（`commitFreeText`），与 PrimeVue `Select filter`「值必须来自选项列表」的语义有差；候选补 `strict` / 限制自由文本的开关，或按 Reka `Listbox` 另立可搜索单选形态。触发条件：下游迁移实测出现「取值必须受限于选项列表」的受控字段用例 | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛（用户决策延后） | 候选补 `selectionMode="range"`（Reka `RangeCalendar`）或独立 RangePicker：起止值模型（`Date[]` / `{ start, end }`）、区间展示与校验、与现有 `dateFormat` / `showTime` / `minValue` / `maxValue` 的组合。触发条件：下游出现日期区间筛选 / 区间录入真实用例（momei 快照 `selection-mode` 零用量） | 低 |
 
-> 下列组件增强项已**并入下游迁移的 B1 清单**（决策见 §1.8，此处不重复定义）：Button `:badge`、Image `preview`、ProgressSpinner `strokeWidth`、Toolbar 分区插槽、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Popover / DropdownMenu 命令式、FileUpload 上传能力、ToggleButton 状态文案。
-
 ### 1.2 长尾组件候选（Tier 3）
 
 | 候选 | 来源 | 优先级 |
@@ -45,7 +43,6 @@
 | 语言矩阵 - 长期 | 用户需求 | 追加俄语、法语、德语、西班牙语、葡萄牙语；视情况追加希腊语、意大利语、印地语、孟加拉语、印度尼西亚语等 | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 从右往左排版涉及逻辑属性、图标镜像、浮层定位与滑动手势镜像，风险高，单独立项谨慎评估，不与其他语言捆绑 | 低 |
 | locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载与类型约束；可参考 momei `i18n/config` registry 机制 | 低 |
-| file-upload 用户可见文案本地化 | 迁移评估发现 | file-upload 的默认插槽与 `file` 插槽已可由下游自定义，但库内建文案（默认提示与移除 `aria-label`）仍为中文，不在「消费 `useLocale` 的组件目录」范围内；需评估补 `fileUpload` locale 命名空间 | 低 |
 
 ### 1.5 移动端与响应式候选（需求 6）
 
@@ -80,6 +77,7 @@
 | 触发器 `unstyled` 遗留收敛 | 触发器外观豁免已在 Popover（M5-4）与 DropdownMenu（M5-6）落地；仍有三处直接使用 Reka primitive 绕过：`date-picker.vue` / `color-picker.vue` 的 `PopoverTrigger as-child`、`split-button.vue` 的 `DropdownMenuTrigger as-child`。候选收敛为 `Caomei*Trigger` + `unstyled`，须复验 a11y 接线、拼接边框 / 圆角与焦点环（SplitButton 的 `as-child` 拼接依赖 ButtonGroup 规则） | 低 |
 | 代码注释 / 测试名的规划编号守卫 | [规划规范 §4](../standards/planning.md) 禁止在代码注释与测试名中写入规划编号（例外仅真实常量与带文档路径的导航指针），但当前只靠人工 Review Gate 拦截（本批新增注释曾因写入 `（M5-6）` 被判 blocker）。候选：在 `scripts/governance/` 增机检规则，扫描 `src/**` 的注释与 `*.test.ts` 用例名，命中 `T\d+` / `P\d+-\d+` / `M\d+-\d+` / `RG-[BWS]\d+` 即失败并接入 `governance:check`（须带语料矩阵正例与「受检范围未被静默收窄」断言，防误报） | 低 |
 | 治理记录索引完整性 | `docs/design/governance/index.md` 需人工维护，本批发现 M5 B2 记录漏登记（B3 同批回补）；`governance:check` 无覆盖。候选：加脚本比对 `docs/design/governance/*.md` 与索引中的链接集合差，接入 `governance:check` | 低 |
+| 治理记录的历史规划指针失效 | Phase 7 第二阶段归档后，`docs/design/governance/**` 多处验证记录与评估记录的「批次 / 执行源」指针仍写向 `todo.md` 的 M5 / M6 段（该段已随归档清空，链接可解析但内容不存在）。按 [文档规范 §4](../standards/documentation.md) 的「存量在下次触碰该文件时收敛、不强制全库回溯」，候选为分批改指 [待办归档](./todo-archive.md) 或把历史批次标注改为快照措辞（不强制一次性全库回溯） | 低 |
 | DropdownMenu 项模型的嵌套与逐条目类名 | `model`（M5-5）只覆盖 `label` / `icon` / `command` / `disabled` / `separator`；momei 实测用量另有 **`MenuItem.items`（嵌套子菜单）** 与 **`MenuItem.class`（逐条目类名）**，两者当前无等价入口（迁移指引给出的是「平铺为 `CaomeiDropdownMenuGroup` + `Label`」与「改用声明式条目 + 原生 `class`」的绕行写法）。取证（momei HEAD `179f186f`，2026-09-18）：`rg -n "items: \[" /root/projects/momei/composables/use-admin-menu-items.ts` → 2 处（广告分组 / 设置分组）；`rg -n "class:" /root/projects/momei/components/language-switcher.vue` → 1 处（`is-active-locale`）。候选：① 为 `model` 增 `items` 递归渲染（需引入 Reka `DropdownMenuSub*` 组合件）；② 为 `model` 增 `class` / `extraAttrs`。两者均为**模型契约扩展**，须用户授权后再实施 | 中 |
 | 分组按钮可访问语义 | ButtonGroup / SplitButton 的根目前仅作布局容器，无障碍树中是多个独立按钮；候选为根补 `role="group"` 与可选的分组可访问名 | 低 |
 | ui-validator 资产 follow-up | ① `AGENTS.md` 智能体矩阵 `@ui-validator` 行「组件在真实页面」宜扩为「组件与文档站」——该文件受保护，须用户明确指示后随一次授权变更执行；② `SKILL.md` 缺独立「确认门」小节（职能现由 Step 1.3 / 2.5 / 6.4 分担），下次改动时可成节；③ `.github/agents/ui-validator.agent.md` 的「窄屏降级行为」宜与[响应式设计 §3](../design/responsive.md) 矩阵口径对齐（改为「按矩阵核对窄屏响应式行为，卡片化 / 转全屏不作默认预期」） | 低 |
@@ -105,15 +103,12 @@
 
 ### 1.8 下游协同候选
 
-> **momei 迁移可行性评估（2026-09-17）**：结论「**可行（有条件）**」，记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)。**用户决策 5 项**：按 **C3 分批全量**执行、**B1 库侧补齐先行**、B 级 **14 项全部纳入执行**（**范围登记，非「已交付」**）、**接受** 16 条有意差异、回归强度由**每周回归任务跑 momei 的测试**承载。范围与批次（B0~B4）见[路线图 Phase 7 第二阶段](./roadmap.md)与评估记录 §6。**2026-09-17 用户授权启动 Phase 7 第二阶段**：范围已拆分为原子条目并登记于[待办事项](./todo.md)；**momei 侧迁移由 momei 项目在自己的仓库执行、本仓不触碰 momei 文件**；本仓承担迁移计划与验收标准（M1）、B0 交接资产（M2）与库侧能力面补齐（M3 / M4 / M5）。
+> momei 迁移可行性评估结论「**可行（有条件）**」（记录见 [2026-09-17-momei-migration-feasibility](../design/governance/2026-09-17-momei-migration-feasibility.md)）：按 C3 分批全量执行、接受 16 条有意差异、回归强度由每周回归任务承载。**momei 侧迁移（B0b 视觉基线 / B2 / B3 / B4）由 momei 项目在其仓库执行、本仓不触碰 momei 文件**；本仓等待其反馈。阶段与执行状态见[路线图](./roadmap.md)。
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 迁移执行 | **已决策：按 C3 分批全量执行**；**执行主体为 momei 项目**（在其仓库执行，本仓不触碰 momei 文件）。B0b 视觉基线 → B2 数据类页面（20 个 `<Column>` 文件）→ B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载。本仓等待其反馈后再决定下一轮动作 | → Phase 7 第二阶段（本仓已启动；momei 侧执行由 momei 项目负责，本仓等待反馈） |
-| 库侧增强清单（迁移先决，B1） | [评估记录](../design/governance/2026-09-17-momei-migration-feasibility.md) §3.2 的 A/B 级缺口：**A 级** DataTable 列插槽（`#cell-{key}` / `#header-{key}`，**2026-09-17 已交付**）；列级 `selection-mode` 与 `align-frozen` 经用户决策（2026-09-17）**收敛为迁移映射、不新增 API**；**B 级 14 项**：Image `preview`、ProgressSpinner `strokeWidth`、Toolbar `#start/#center/#end`、Dialog `showHeader` / `breakpoints` / `@hide`、ConfirmDialog `icon`、CheckboxGroup、Switch `change`、Paginator 每页条数、MultiSelect `#option` / `showClear`、Button `badge`、Popover 命令式（或迁移写法指引）、DropdownMenu `:model` / `:popup` / `toggle(event)`、FileUpload `mode` / `maxFileSize` / `auto` / `chooseLabel`、ToggleButton `onLabel` / `offLabel`。**已决策：全部纳入 B1 执行（范围登记，非「已交付」），不再分批取舍**；**已登记为 Phase 7 第二阶段 M3 / M4 / M5 原子条目（本仓执行）**；与 §1.1 / §1.2 的同类候选合并实现。**2026-09-18 交付（M4 批次）**：MultiSelect `#option` / `showClear`、Paginator 每页条数、Button `badge`、Checkbox 数组模型 + CheckboxGroup、Switch `change`、ToggleButton `onLabel` / `offLabel`；另经**用户当次追加**交付 DataTable `rowsPerPageOptions`（登记为 M4-8）。**2026-09-18 交付（M5 B2）**：ConfirmDialog `icon`（请求项支持图标组件，缺省按 `tone` 回退 `Info` / `TriangleAlert`）、Popover 命令式收敛为声明式迁移写法并新增 `CaomeiPopoverTrigger` 的 `unstyled` 外观豁免 | → Phase 7 第二阶段 M3 / M4 / M5（本仓执行，已启动） |
-| 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用；**本阶段不启用跨仓触发**，回归由 momei 每周回归任务承载 | 延迟 |
-
-> **M6 的去向（等待期滚动执行）**：Phase 7 第二阶段 M6 在等待 momei 侧反馈期间，从 §1.1 组件增强候选、§1.2 长尾组件候选与 §1.6 基建与治理候选中按门槛重新取证后逐批追加为原子条目；本节各行保持原状，追加时不改变候选状态。
+| momei 侧迁移执行 | **执行主体为 momei 项目**（在其仓库执行，本仓不触碰 momei 文件）：B0b 视觉基线 → B2 数据类页面 → B3 表单与设置页 → B4 展示 / 浮层 / 收尾（卸载 PrimeVue）；回归强度由每周回归任务跑 momei 测试承载。本仓等待其反馈后再决定下一轮动作 | 等待外部反馈 |
+| 下游兼容性回归机制 | 见 [路线图 Phase 8](./roadmap.md)，稳定使用后启用；**当前不启用跨仓触发**，回归由 momei 每周回归任务承载 | 延迟 |
 
 ## 2. 维护约定
 

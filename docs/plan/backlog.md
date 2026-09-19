@@ -94,6 +94,7 @@
 | 样式档位死声明回归守护 | 组件中 `:where()` 档位块直接声明属性（padding / font-size 等）会被更高特异性规则覆盖而静默失效，ToggleButton / Checkbox / RadioGroup 已各出现一次；建议对构建产物 CSS 加断言或补计算样式 E2E，并统一「档位只声明 CSS 变量」约定 | 低 |
 | wisdom 蒸馏的机检完备性 | 蒸馏以「迁移 N 条 + 删除 M 条」自报，无脚本核验（`.session/wisdom.md` 为 gitignored）；候选在蒸馏机制增加「清空前活跃段快照 + 条目数对账」步骤（2026-09-17 蒸馏已按「原文摘要逐条入归档 + 计数对账」执行，但仍是人工步骤） | 低 |
 | 文档站观感与展示力 | **待后续评估**（用户决策：候选先留在 Backlog）。候选：组件画廊 / 首页视觉 / demo 外壳升级（标题、代码折叠与复制）/ 全局视觉细节；约束为服务「更好展示组件」且不引入 Tailwind。现状：首页为 VitePress 默认 hero；已有自定义 `layout.vue`（主题预设切换器）与 `component-api.vue`，缺总览页 / 画廊 / demo 外壳。见 [评估记录 §4](../design/governance/2026-09-16-new-requirements-evaluation.md) | 中 |
+| CHANGELOG 生成器健壮性收口 | F5-2 复审 follow-up（2026-09-19）：① `generate-changelog.mjs` 对无 `remote.origin` 仓库的降级无效——`readRepository()` 同步返回 `this`、异步拒绝无法被同步 `try/catch` 捕获；② 预设按 `process.cwd()` 读 `changelog.language`，fixture 内语言配置不生效（单测仅因 cwd 为仓库根而通过）。候选：先探测 remote 存在性再调用，并让生成语言源自 `root`；补「无 remote」「非仓库根 cwd」两条定向用例 | 低 |
 
 ### 1.7 服务层候选（composables）
 

@@ -45,4 +45,4 @@
 
 ## 7. 状态
 
-2026-09-19：用户授权启动并登记为当前阶段；F5-1 随本批交付；F5-2 ~ F5-4 待执行。
+2026-09-19：用户授权启动并登记为当前阶段（授权范围 F5-1 ~ F5-4）；F5-1 随首版发布指南交付；**F5-2 已交付**（commit `f26388e`、annotated tag `v0.1.0`——版本基线 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 基于 `conventional-changelog` + `conventional-changelog-cmyr-config` 预设生成）；F5-3 ~ F5-4 待执行（F5-3 首发需有效 npm 凭据）。F5-2 复审 follow-up（生成器健壮性：无 remote 降级、语言源自 `root`）超出原授权范围，**已登记 [Backlog](../../plan/backlog.md)**、未登记为本阶段条目。

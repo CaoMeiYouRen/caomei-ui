@@ -16,11 +16,11 @@
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
 | F5-1 | 首版发布指南（本地手动 0.x） | 改写 `docs/guide/release.md`：0.x 首发步骤（预检 / 版本基线 / 提交 / tag / 发布 / 推送 / 校验）、semantic-release 与手动发布的边界、凭据要求、回滚 / deprecate 口径、ESM-only 与许可说明；`release.yml` 发布步骤保持关闭并澄清 | 指南含可执行命令与前置检查；明确「CI 自动发布暂缓」；与 `release.yml` 现状一致 | — |
-| F5-2 | 0.1.0 版本基线与发布说明 | `package.json` 版本置 `0.1.0`；落 `CHANGELOG.md` 首版条目；建 `v0.1.0` annotated 基线 tag | 版本字段与 tag 一致；CHANGELOG 含首版条目；`pnpm verify` 通过 | F5-1 |
+| F5-2 | 0.1.0 版本基线与发布说明 | `package.json` 版本置 `0.1.0`；`CHANGELOG.md` 由 `pnpm changelog`（`conventional-changelog` + `conventional-changelog-cmyr-config` 预设）生成；新增生成脚本与定向单测、两个精确钉定的 devDependencies；建 `v0.1.0` annotated 基线 tag | 版本字段与 tag 一致；CHANGELOG 含首版条目且分组完整（含 BREAKING CHANGES）；`pnpm verify` 通过 | F5-1 |
 | F5-3 | 首发执行与发布后校验 | 本地执行质量门 → `npm publish` → 校验 registry `dist-tags` / tarball 内容 / 新目录安装冒烟 | `latest` 指向 0.1.0；安装后组件与子路径导出可用；发布结论落可提交位置 | F5-2 + 有效 npm 凭据 |
 | F5-4 | 发布后状态同步与占位处置 | README / roadmap / 项目状态同步；npm `0.0.0` 占位（可选 deprecate）结论 | 状态无「未发布」残留；占位处置有结论 | F5-3 |
 
-状态：F5-1 已交付（2026-09-19，本批：首版发布指南与 CI 注释澄清）；F5-2 ~ F5-4 为**已登记（范围授权）**，尚未交付。首发执行前须确认有效 npm 凭据（本机当前凭据不可用）。
+状态：F5-1 已交付（2026-09-19，首版发布指南与 CI 注释澄清）；F5-2 已交付（2026-09-19，commit `f26388e` / annotated tag `v0.1.0`：版本置 `0.1.0`、`CHANGELOG.md` 由 `pnpm changelog` 生成、生成脚本与单测、两个 devDependencies、`release.md` 生成口径）；F5-3 ~ F5-4 为**已登记（范围授权）**，尚未交付。F5-2 复审 follow-up（生成器健壮性）已登记 [Backlog](./backlog.md)，未占本阶段条目。首发执行前须确认有效 npm 凭据（本机当前凭据不可用）。
 
 ## 未完成项汇总
 

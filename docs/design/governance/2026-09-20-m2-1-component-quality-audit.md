@@ -118,3 +118,5 @@ git grep -niE "keydown|keyup|keypress" -- ':!node_modules' ':!.nuxt' ':!dist' ':
 | B | 严格只改登记面（G1 仅 auto-complete / multi-select / message；G2 仅 button / message / badge / tag / toast / drawer；G4 仅浮层 10 处字面量），G1 / G2 / G4 降级为 warning 通道 + 基线计数 | 与 M2-2 验收「`check:design` 扩展后可**阻断**回流」冲突（需用户同意修改该验收措辞）；且存在**残留不一致**：select / select-button / dialog / confirm-dialog / radio-group 与登记面同缺陷却留存，局部层叠 5 处不入 token 词表 |
 
 **建议：选 A** —— G1 / G2 规则一旦落地，预算 0 是唯一可维护形态（warning 通道会被忽略）；且 dialog / confirm-dialog 与 drawer 是同型缺陷，只修一半会留下「同缺陷两套写法」。
+
+**用户裁定（2026-09-20）**：① **选 A（全面收敛）**——G1 / G2 / G4 按 §3.5 的扩张面执行，并将局部层叠 token 补登[设计规范 §2.5](../design-spec.md)；已在 [待办事项 M2](../../plan/todo.md) 登记范围扩张。② **AutoComplete 严格选项模式：纳入**——登记为 [待办事项](../../plan/todo.md) **M3-5**（组件能力增强，非 M2 范围：M2 非目标明确「不改组件公开 props」），Backlog 对应候选已迁出。

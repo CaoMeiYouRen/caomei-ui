@@ -28,9 +28,11 @@
 
 > **M1-4（依赖闭包批次）已取消**（2026-09-20 用户确认）：POC 实测 `unbundle` 保留完整模块图，依赖组件样式随图带入（`button.js` 仍 `import badge.js`），闭包问题不存在。依据见 [M1-1 记录 §3.2 / §7 A2](../design/governance/2026-09-20-m1-1-build-path-poc.md)。
 
-状态（M2-1）：**已产出（2026-09-20）**——盘点记录落 [M2-1 重量级组件质量盘点](../design/governance/2026-09-20-m2-1-component-quality-audit.md)，**待 `@code-reviewer` Review Gate 放行**。结论：7 组件下游用量取证完成；**ColorPicker 色板导航不达标**（留 Backlog）、**AutoComplete 严格选项模式部分达标待用户裁定**（建议暂不纳入）；发现 D1~D4 缺陷与 Z1~Z2 待收敛项，已形成 M2-2 / M2-3 实施清单。
+状态（M2-1）：**已交付（2026-09-20，commit `bd954c5`）**——盘点记录落 [M2-1 重量级组件质量盘点](../design/governance/2026-09-20-m2-1-component-quality-audit.md)，经 `@code-reviewer` Review Gate 四轮（R1~R3 Reject → R4 Pass；修正在于取证计数口径、行号笔误与规则面收束）。结论：7 组件下游用量取证完成；**ColorPicker 色板导航不达标**（留 Backlog）；**AutoComplete 严格选项模式经用户裁定纳入 → 登记为 M3-5**；发现 D1~D4 缺陷与 Z1~Z2 待收敛项，已形成 M2-2 / M2-3 实施清单（范围扩张经用户 2026-09-20 裁定「全面收敛」）。
 
-状态（M1-3）：**已产出（2026-09-20）**——落地记录落 [M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)，**待 `@code-reviewer` Review Gate 放行**。形态已落地（`unbundle + css.inject`、`exports` 的 `./theme.css`、resolver / Nuxt 模块注入基础层、`check:build` / `check:nuxt` 断言、文档口径含架构 §4 决策反转留痕，D6 已纳入）；`pnpm verify` exit 0（1384 tests）；`npm pack` 341 文件 / 750.5 kB；消费侧真实包布局实测基础层「需显式引入且只注入一份」。**自纠**：M1-1 / M1-2 关于「根导入携带 tokens」的表述已更正。
+状态（M2-2 / M2-3）：**已产出（2026-09-20）**——落地记录落 [M2-2 / M2-3 样式治理落地](../design/governance/2026-09-20-m2-2-m2-3-style-governance-landing.md)，**待 `@code-reviewer` Review Gate 放行**。范围：G2（`button` / `drawer` / `dialog` / `confirm-dialog` 基类预声明改消费处 fallback；`message` / `badge` / `tag` / `toast` / `radio-group` 变体类改 `:where()`）；G1（`auto-complete` / `multi-select` / `message` / `select` / `select-button` 档位块改「只声明 CSS 变量」）；D1 死声明 4 处清理；G4 新增 9 个 `--caomei-z-*` 并收敛 21 处；`check:design` 新增 G1~G4 四类机检（预算 0，27 条单测）。**门禁**：`pnpm verify` exit 0（1403 tests，含 G1~G4 守卫单测 30 条）/ `pnpm test:e2e` exit 0（54 passed）。**等价证据**：226 项真实浏览器计算样式逐属性比对 **0 差异**（含负向对照）。**残余风险已登记**：28 条非 `:where()` 尺寸档位块（8 组件）不在 G1 / G2 拦截面内且当前生效，属独立候选（见 [Backlog §1.6](./backlog.md)），待用户裁定是否另立批次。
+
+状态（M1-3）：**已产出（2026-09-20）**——落地记录落 [M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)，**待 `@code-reviewer` Review Gate 放行**。形态已落地（`unbundle + css.inject`、`exports` 的 `./theme.css`、resolver / Nuxt 模块注入基础层、`check:build` / `check:nuxt` 断言、文档口径含架构 §4 决策反转留痕，D6 已纳入）；`pnpm verify` exit 0（**交付时** 1384 tests）；`npm pack` 341 文件 / 750.5 kB；消费侧真实包布局实测基础层「需显式引入且只注入一份」。**自纠**：M1-1 / M1-2 关于「根导入携带 tokens」的表述已更正。
 
 状态（M1-2）：**已产出（2026-09-20）**——记录落 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)，**待 `@code-reviewer` Review Gate 放行**。① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**；`check:nuxt` 的断言面缺口只在双通道形态下暴露，补断言属范围增量，见记录 §6 **D6**）。**② 的入口语义（D1~D5）与 D6 已获用户确认（2026-09-20 指令「提交后继续推进」按建议值采纳）**，已写入[架构设计 §3 / §4 / §5](../design/architecture.md) 并由 M1-3 落地。
 
@@ -39,6 +41,7 @@
 #### M2 重量级组件优化与样式治理
 
 - 执行范围：对**重量级组件固定清单**（auto-complete / drawer / multi-select / stepper / toolbar / file-upload / color-picker，依 [CSS 按需引入评估 §7.2](../design/governance/2026-09-20-css-on-demand-evaluation.md) 批次 2 的门槛「逐个 ≥ 4.5 KB 且不在 §2.6 依赖图中」）做质量盘点与优化；收敛与其同源的样式治理项（scoped 变量声明 / 档位死声明 / 禁用态字面量 / z-index 字面量）。
+- **范围扩张（2026-09-20 用户裁定「全面收敛」）**：G1 / G2 的机检预算为 0，须连带收敛**同一缺陷类的全部消费点**——G1 另含 `select` / `select-button`；G2 另含 `dialog` / `confirm-dialog` / `radio-group`；G4 覆盖**全部 21 处**（浮层层 10 处字面量 + 6 处变量 / 回退沿用[设计规范 §2.5](../design/design-spec.md) 词表；局部层叠 5 处另立 `--caomei-z-raise` / `--caomei-z-pinned` 一类 token 并**补登 §2.5 词表**）。依据见 [M2-1 盘点记录 §3.5 / §7](../design/governance/2026-09-20-m2-1-component-quality-audit.md)。
 - 非目标：不改组件公开 props；不做与样式治理无关的重构；不顺手归并不同值档位（视觉变更须独立验收）。
 - 最小验收标准：盘点产出条目化清单（含门槛判定与可复现证据）；守卫类改动可阻断回流且带正反例语料；视觉类改动经计算样式对照或真实浏览器验证。
 - **M2-1 门槛（可复验）**：候选须**同时**满足 ① 有**下游实测用量 ≥ 1 处**（给出命令与快照日期，命中 0 处即不达标）；② **不引入未登记的对外契约变更**（新增 props 走受控枚举并登记[设计规范 §7](../design/design-spec.md)）。两条均满足者提交用户确认后纳入；任一条不满足者留 [Backlog](./backlog.md)。
@@ -46,13 +49,13 @@
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
 | M2-1 | 重量级组件质量盘点 | 对**上方固定清单的 7 个组件**（门槛依据见 M2 执行范围）做「样式 + 交互」盘点，并按**下方门槛**判定既有候选（Backlog 的 ColorPicker 色板导航增强、AutoComplete 严格选项模式） | 产出条目化候选清单（逐项含门槛判定与可复现取证命令，判定可复算）；**达标项须提交用户确认后才纳入实施**，未达标项留 Backlog 原行并附结论 | — |
-| M2-2 | scoped 变量声明治理 + 档位死声明守护 | 收敛 `button` 基类预声明与 `message` / `badge` / `tag` / `toast` 档位类未用 `:where()` 的偏差；为「档位块直接声明属性」补机检规则 | `check:design` 扩展后可阻断回流（带正反例语料矩阵）；组件计算样式零漂移 | — |
-| M2-3 | 禁用态字面量守卫 + z-index token | 为 `opacity: 0.5` / `0.6` 补预算守卫；浮层 z-index 字面量收敛为 `--caomei-z-*` | 守卫可阻断回流；逐浮层 z-index 计算值等价 | — |
+| M2-2 | scoped 变量声明治理 + 档位死声明守护 | ① **G2**：`--caomei-<comp>-*` 声明一律 `:where()` 归零特异性——收敛 `button` / `drawer` / `dialog` / `confirm-dialog` 的基类预声明（改消费处 `var(--x, fallback)`）与 `message` / `badge` / `tag` / `toast` / `radio-group` 的变体类；② **G1**：档位块改为「只声明 CSS 变量」——收敛 `auto-complete` / `multi-select` / `message` / `select` / `select-button`；③ `check:design` 新增 G1 / G2 两类机检 | `check:design` 扩展后可阻断回流（带正反例语料矩阵）；组件计算样式**零漂移**（等价重构，经真实浏览器计算样式对照） | — |
+| M2-3 | 禁用态字面量守卫 + z-index token | ① 删 D1 死声明 4 处（同规则内被后写覆盖的 `box-shadow`）；② 新增 `--caomei-z-*` **共 9 个**——浮层层沿用设计规范 §2.5 词表 `--caomei-z-sticky` / `-overlay` / `-modal` / `-dropdown` / `-tooltip` / `-toast`，局部层叠补登 `--caomei-z-raise` / `--caomei-z-pinned` / `--caomei-z-pinned-header`——并收敛全部 21 处；③ `check:design` 新增 `opacity`（G3，跳过 `@keyframes`）与 `z-index`（G4）预算守卫 | 守卫可阻断回流；逐层 z-index 计算值等价；设计规范 §2.5 词表已补登 | — |
 
 #### M3 组件能力增强
 
-- 执行范围：按 Backlog 既有取证（2026-09-20 用户裁定不等 momei 反馈）补齐 4 项能力：Select 分组、Tag / Badge 增强、DropdownMenu `model` 扩展、分组按钮可访问语义。
-- 非目标：不在 Select 上实现 `filter`（2026-09-15 用户决策维持）；不实现 `AutoComplete` 严格选项模式（属 M2-1 门槛判定）；不新增散落布尔别名。
+- 执行范围：按 Backlog 既有取证（2026-09-20 用户裁定不等 momei 反馈）补齐 5 项能力：Select 分组、Tag / Badge 增强、DropdownMenu `model` 扩展、分组按钮可访问语义、**AutoComplete 严格选项模式**（2026-09-20 用户裁定纳入；原 M2-1 候选经门槛判定「用量达标 / 契约待定」后确认，登记为 M3-5）。
+- 非目标：不在 Select 上实现 `filter`（2026-09-15 用户决策维持）；不新增散落布尔别名；AutoComplete 严格选项模式**不改变默认行为**（默认可自由文本，严格模式为显式开启）。
 - 最小验收标准：新增能力走受控枚举 props；单测覆盖主路径与失败路径；中英组件页与[设计规范 §7](../design/design-spec.md) 登记一致；视觉 / 交互类经 `@ui-validator` 验证。
 
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
@@ -61,6 +64,7 @@
 | M3-2 | Tag / Badge 增强 | Tag 可选中筛选 / 可编辑；Badge 叠加位置偏移与宽度过渡 | 各能力带单测与中英示例；视觉与交互经真实浏览器验证 | — |
 | M3-3 | DropdownMenu `model` 扩展 | `model` 支持 `items` 嵌套子菜单（递归渲染）与逐条目 `class`（momei 实测 2 处 / 1 处）。契约扩展授权来源：用户原话「M3 按现有情况直接做」（2026-09-20），本阶段启动授权覆盖该项 | 递归渲染深度与逐条目类名单测；中英迁移指引同步；模型契约为新增字段（不破坏既有 `model` 形态） | — |
 | M3-4 | 分组按钮可访问语义 | ButtonGroup / SplitButton 根补 `role="group"` 与可选分组可访问名 | 无障碍断言（role + 名）；中英文档登记；既有拼接样式零回归 | — |
+| M3-5 | AutoComplete 严格选项模式 | 新增受控枚举 props（如 `strict`），开启后取值必须来自选项列表：自由文本在提交 / 失焦时按未命中处理（不写入模型），并提供明确的失败反馈；关闭时保持现状（自由文本可提交）。依据：M2-1 门槛判定（momei `translationId` 受控字段，[盘点记录 §2.1](../design/governance/2026-09-20-m2-1-component-quality-audit.md)）| 单测覆盖「开启后自由文本不写入模型 / 命中选项可写入 / 关闭时行为不变 / 与对象选项 `optionValue` 组合」；中英组件页补「严格模式」与「从 PrimeVue 迁移（`forceSelection`）」两节；[设计规范 §7](../design/design-spec.md) 登记迁移映射；交互经 `@ui-validator` 验证 | — |
 
 #### M4 质量门与文档守卫
 

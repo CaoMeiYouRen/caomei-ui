@@ -83,7 +83,7 @@ describe('caomeiUiNuxtModule setup', () => {
     })
 
     it('injectStyles 默认注入样式，关闭后不注入', () => {
-        expect(runModule().options.css).toEqual(['caomei-ui/styles.css'])
+        expect(runModule().options.css).toEqual(['caomei-ui/theme.css'])
 
         vi.clearAllMocks()
         expect(runModule({ injectStyles: false }).options.css).toEqual([])
@@ -96,10 +96,10 @@ describe('caomeiUiNuxtModule setup', () => {
             filename: 'caomei-theme.css',
             getContents: expect.any(Function) as () => string,
         })
-        expect(nuxt.options.css).toEqual(['caomei-ui/styles.css', '/virtual/caomei-theme.css'])
+        expect(nuxt.options.css).toEqual(['caomei-ui/theme.css', '/virtual/caomei-theme.css'])
 
         vi.clearAllMocks()
-        expect(runModule().options.css).toEqual(['caomei-ui/styles.css'])
+        expect(runModule().options.css).toEqual(['caomei-ui/theme.css'])
         expect(addTemplate).not.toHaveBeenCalled()
     })
 

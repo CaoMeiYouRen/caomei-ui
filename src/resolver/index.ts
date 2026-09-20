@@ -16,8 +16,12 @@ export interface CaomeiUiResolverInstance {
 }
 
 /**
- * unplugin-vue-components resolver 的占位实现。
- * 后续将按组件映射到子路径导出，避免整包引入。
+ * unplugin-vue-components resolver：把组件名映射到包根（命名导入），并注入基础层样式入口。
+ *
+ * 组件样式随各自模块自带（构建产物保留逐模块 CSS import），消费方按需引入时
+ * 由打包器 tree-shaking 丢弃未使用组件的 CSS；此处只负责补齐**基础层**
+ * （tokens + 暗色 + `.caomei-root` + 品牌预设），它与包根入口引用同一模块，
+ * 打包器会去重，不会重复注入。
  */
 export function CaomeiUiResolver(options: CaomeiUiResolverOptions = {}): CaomeiUiResolverInstance {
     const prefix = options.prefix ?? 'Caomei'
@@ -31,7 +35,7 @@ export function CaomeiUiResolver(options: CaomeiUiResolverOptions = {}): CaomeiU
             return {
                 name,
                 from: 'caomei-ui',
-                sideEffects: 'caomei-ui/styles.css',
+                sideEffects: 'caomei-ui/theme.css',
             }
         },
     }

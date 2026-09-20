@@ -39,7 +39,7 @@ try {
     const nuxtModule = await importDist('dist/nuxt.js')
     result.nuxtModuleFactory = typeof nuxtModule.caomeiUiNuxtModule === 'function'
 
-    const stylesPath = join(root, 'dist/styles.css')
+    const stylesPath = join(root, 'dist/styles/index.css')
     if (existsSync(stylesPath)) {
         const styles = readFileSync(stylesPath, 'utf8')
         result.stylesOk = styles.includes('--caomei-color-primary:') && styles.includes('.caomei-root')

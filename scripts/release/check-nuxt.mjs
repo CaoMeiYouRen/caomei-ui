@@ -38,6 +38,18 @@ export const HTML_MARKERS = [
 /** 打包 CSS 必须包含的关键标记。 */
 export const CSS_MARKERS = [
     { label: '组件样式已注入', test: (css) => css.includes('.caomei-button') },
+    { label: '基础层 token 已注入', test: (css) => css.includes('--caomei-color-bg:') },
+    { label: '基础层根类已注入', test: (css) => css.includes('.caomei-root') },
+    {
+        label: '主题覆盖晚于基础层',
+        // 覆盖依赖层叠顺序（后写生效）：虚拟 theme 覆盖必须排在基础层之后。
+        test: (css) => {
+            const compact = css.replace(/\s+/g, '')
+            const baseIndex = compact.indexOf('--caomei-color-bg:')
+            const overrideIndex = compact.indexOf('--caomei-color-primary:#123456')
+            return baseIndex !== -1 && overrideIndex !== -1 && overrideIndex > baseIndex
+        },
+    },
     { label: 'theme 覆盖生效', test: (css) => /--caomei-color-primary:\s*#123456/i.test(css) },
     { label: 'primary-foreground 别名覆盖生效', test: (css) => /--caomei-color-primary-foreground:\s*#fefefe/i.test(css) },
 ]

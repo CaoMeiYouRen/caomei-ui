@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
-import { collectExportFiles, findInvalidFiles, findMissingExports } from './check-build.mjs'
+import { collectExportFiles, findInvalidFiles, findMissingCssImports, findMissingExports } from './check-build.mjs'
 
 const tempDirs = []
 
@@ -29,7 +29,7 @@ describe('collectExportFiles', () => {
     it('收集字符串、条件对象与数组中的文件路径并排序去重', () => {
         const files = collectExportFiles({
             '.': { types: './dist/index.d.ts', import: './dist/index.js' },
-            './styles.css': './dist/styles.css',
+            './theme.css': './dist/styles/index.css',
             './fallback': ['./dist/a.js', './dist/b.js'],
             './package.json': './package.json',
         })
@@ -39,7 +39,7 @@ describe('collectExportFiles', () => {
             './dist/b.js',
             './dist/index.d.ts',
             './dist/index.js',
-            './dist/styles.css',
+            './dist/styles/index.css',
             './package.json',
         ])
     })
@@ -49,6 +49,36 @@ describe('collectExportFiles', () => {
             './dist/index.js',
         ])
         expect(collectExportFiles(undefined)).toEqual([])
+    })
+})
+
+describe('findMissingCssImports', () => {
+    it('产物 JS 保留 CSS import 时通过', () => {
+        const root = createFixture({
+            'dist/index.js': 'import "./styles/index.css";\nexport {}\n',
+            'dist/components/button/button.js': 'import "./button.css";\nexport default {}\n',
+        })
+
+        expect(findMissingCssImports(root)).toEqual([])
+    })
+
+    it('入口丢失 CSS import 时报错（css.inject 失效）', () => {
+        const root = createFixture({
+            'dist/index.js': 'export {}\n',
+            'dist/components/button/button.js': 'import "./button.css";\nexport default {}\n',
+        })
+
+        expect(findMissingCssImports(root)).toContain('dist/index.js 未保留 CSS import（css.inject 未生效？）')
+    })
+
+    it('组件级 CSS import 数量不足时报错', () => {
+        const root = createFixture({
+            'dist/index.js': 'import "./styles/index.css";\nexport {}\n',
+            'dist/components/button/button.js': 'export default {}\n',
+        })
+
+        const problems = findMissingCssImports(root)
+        expect(problems.some((item) => item.startsWith('组件级 CSS import 数量不足'))).toBe(true)
     })
 })
 

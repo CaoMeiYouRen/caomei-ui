@@ -9,7 +9,7 @@ export interface CaomeiUiNuxtOptions {
     prefix?: string
     /** 暗色模式策略：`class` 由应用切换 `.dark`；`media` 由模块写入 `data-scheme="auto"` 跟随系统；`false` 不处理 */
     darkMode?: 'class' | 'media' | false
-    /** 是否自动注入 `caomei-ui/styles.css`，默认 `true` */
+    /** 是否自动注入基础层 `caomei-ui/theme.css`（tokens + 暗色 + `.caomei-root` + 品牌预设），默认 `true` */
     injectStyles?: boolean
     /** 覆盖主题 token：语义别名（如 `primary` / `radius`）或 `--caomei-*` 变量名 */
     theme?: Record<string, string>
@@ -22,7 +22,8 @@ export const CAOMEI_UI_PACKAGE_NAME = 'caomei-ui'
  * caomei-ui 的 Nuxt 模块。
  *
  * 职责：组件自动导入、composables 自动导入、样式注入、主题 token 覆盖、暗色策略。
- * 组件与样式均由包内 `caomei-ui` / `caomei-ui/styles.css` 提供，模块不复制运行时文件。
+ * 组件与组件样式来自包内 `caomei-ui`（产物自带逐模块 CSS）；基础层样式来自 `caomei-ui/theme.css`，
+ * 因组件自动导入不会携带基础层，故默认注入。模块不复制运行时文件。
  */
 export const caomeiUiNuxtModule: NuxtModule<CaomeiUiNuxtOptions> = defineNuxtModule<CaomeiUiNuxtOptions>({
     meta: {
@@ -58,7 +59,8 @@ export const caomeiUiNuxtModule: NuxtModule<CaomeiUiNuxtOptions> = defineNuxtMod
         ])
 
         if (options.injectStyles) {
-            nuxt.options.css.push(`${CAOMEI_UI_PACKAGE_NAME}/styles.css`)
+            // 基础层先于 theme 覆盖注入：覆盖依赖层叠顺序（后写生效）。
+            nuxt.options.css.push(`${CAOMEI_UI_PACKAGE_NAME}/theme.css`)
         }
 
         const themeCss = renderThemeCss(options.theme)

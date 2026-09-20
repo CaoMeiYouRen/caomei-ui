@@ -30,11 +30,11 @@
 
 状态（M2-1）：**已交付（2026-09-20，commit `bd954c5`）**——盘点记录落 [M2-1 重量级组件质量盘点](../design/governance/2026-09-20-m2-1-component-quality-audit.md)，经 `@code-reviewer` Review Gate 四轮（R1~R3 Reject → R4 Pass；修正在于取证计数口径、行号笔误与规则面收束）。结论：7 组件下游用量取证完成；**ColorPicker 色板导航不达标**（留 Backlog）；**AutoComplete 严格选项模式经用户裁定纳入 → 登记为 M3-5**；发现 D1~D4 缺陷与 Z1~Z2 待收敛项，已形成 M2-2 / M2-3 实施清单（范围扩张经用户 2026-09-20 裁定「全面收敛」）。
 
-状态（M2-2 / M2-3）：**已产出（2026-09-20）**——落地记录落 [M2-2 / M2-3 样式治理落地](../design/governance/2026-09-20-m2-2-m2-3-style-governance-landing.md)，**待 `@code-reviewer` Review Gate 放行**。范围：G2（`button` / `drawer` / `dialog` / `confirm-dialog` 基类预声明改消费处 fallback；`message` / `badge` / `tag` / `toast` / `radio-group` 变体类改 `:where()`）；G1（`auto-complete` / `multi-select` / `message` / `select` / `select-button` 档位块改「只声明 CSS 变量」）；D1 死声明 4 处清理；G4 新增 9 个 `--caomei-z-*` 并收敛 21 处；`check:design` 新增 G1~G4 四类机检（预算 0，27 条单测）。**门禁**：`pnpm verify` exit 0（1403 tests，含 G1~G4 守卫单测 30 条）/ `pnpm test:e2e` exit 0（54 passed）。**等价证据**：226 项真实浏览器计算样式逐属性比对 **0 差异**（含负向对照）。**残余风险已登记**：28 条非 `:where()` 尺寸档位块（8 组件）不在 G1 / G2 拦截面内且当前生效，属独立候选（见 [Backlog §1.6](./backlog.md)），待用户裁定是否另立批次。
+状态（M2-2 / M2-3）：**已交付（2026-09-20，commit `ad0eae7` / `fd0f0f3`）**——落地记录落 [M2-2 / M2-3 样式治理落地](../design/governance/2026-09-20-m2-2-m2-3-style-governance-landing.md)，经 `@code-reviewer` Review Gate Pass。范围：G2（`button` / `drawer` / `dialog` / `confirm-dialog` 基类预声明改消费处 fallback；`message` / `badge` / `tag` / `toast` / `radio-group` 变体类改 `:where()`）；G1（`auto-complete` / `multi-select` / `message` / `select` / `select-button` 档位块改「只声明 CSS 变量」）；D1 死声明 4 处清理；G4 新增 9 个 `--caomei-z-*` 并收敛 21 处；`check:design` 新增 G1~G4 四类机检（预算 0，27 条单测）。**门禁**：`pnpm verify` exit 0（1400 tests，含 G1~G4 守卫单测 30 条）/ `pnpm test:e2e` exit 0（54 passed）。**等价证据**：226 项真实浏览器计算样式逐属性比对 **0 差异**（含负向对照）。**残余风险已登记**：28 条非 `:where()` 尺寸档位块（8 组件）不在 G1 / G2 拦截面内且当前生效，属独立候选（见 [Backlog §1.6](./backlog.md)），待用户裁定是否另立批次。
 
-状态（M1-3）：**已产出（2026-09-20）**——落地记录落 [M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)，**待 `@code-reviewer` Review Gate 放行**。形态已落地（`unbundle + css.inject`、`exports` 的 `./theme.css`、resolver / Nuxt 模块注入基础层、`check:build` / `check:nuxt` 断言、文档口径含架构 §4 决策反转留痕，D6 已纳入）；`pnpm verify` exit 0（**交付时** 1384 tests）；`npm pack` 341 文件 / 750.5 kB；消费侧真实包布局实测基础层「需显式引入且只注入一份」。**自纠**：M1-1 / M1-2 关于「根导入携带 tokens」的表述已更正。
+状态（M1-3）：**已交付（2026-09-20，commit `a869b8f` / `13c45d1`）**——落地记录落 [M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)，经 `@code-reviewer` Review Gate Pass。形态已落地（`unbundle + css.inject`、`exports` 的 `./theme.css`、resolver / Nuxt 模块注入基础层、`check:build` / `check:nuxt` 断言、文档口径含架构 §4 决策反转留痕，D6 已纳入）；`pnpm verify` exit 0（**交付时** 1384 tests）；`npm pack` 341 文件 / 750.5 kB；消费侧真实包布局实测基础层「需显式引入且只注入一份」。**自纠**：M1-1 / M1-2 关于「根导入携带 tokens」的表述已更正。
 
-状态（M1-2）：**已产出（2026-09-20）**——记录落 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)，**待 `@code-reviewer` Review Gate 放行**。① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**；`check:nuxt` 的断言面缺口只在双通道形态下暴露，补断言属范围增量，见记录 §6 **D6**）。**② 的入口语义（D1~D5）与 D6 已获用户确认（2026-09-20 指令「提交后继续推进」按建议值采纳）**，已写入[架构设计 §3 / §4 / §5](../design/architecture.md) 并由 M1-3 落地。
+状态（M1-2）：**已交付（2026-09-20，commit `a4c6b0e`）**——记录落 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)，经 `@code-reviewer` Review Gate Pass。① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**；`check:nuxt` 的断言面缺口只在双通道形态下暴露，补断言属范围增量，见记录 §6 **D6**）。**② 的入口语义（D1~D5）与 D6 已获用户确认（2026-09-20 指令「提交后继续推进」按建议值采纳）**，已写入[架构设计 §3 / §4 / §5](../design/architecture.md) 并由 M1-3 落地。
 
 状态：M1-1 **已交付（2026-09-20）**——构建路径 POC 落 [M1-1 构建路径 POC](../design/governance/2026-09-20-m1-1-build-path-poc.md)，经 `@code-reviewer` Review Gate 两轮（R1 Reject：预写 Gate 结论 / 破坏面漏 resolver / 过早宣告「路径可行」→ 修复为「条件性可行」；R2 Pass，2 warning + 2 suggest 已同批修正）。结论：推荐 `unbundle: true` + `css.inject: true`，消费侧 Vite 实测仅单组件 1.48 KB gzip、三组件 6.22 KB gzip（对照全量 25.60 KB gzip，收益随用量面变化）；**未触发回退判据**，剩余待验项的归属：消费方 `dts` 解析与入口语义（含 Nuxt 双注入）由 M1-2 消除，四处适配（`exports` / resolver / Nuxt 模块 / `check:build` 断言）的落地与复验由 M1-3 承担。**该记录 §7 的 A1~A5 范围调整已获用户确认（2026-09-20）并据此改写本节**，M1-2 可启动。
 
@@ -66,6 +66,8 @@
 | M3-4 | 分组按钮可访问语义 | ButtonGroup / SplitButton 根补 `role="group"` 与可选分组可访问名 | 无障碍断言（role + 名）；中英文档登记；既有拼接样式零回归 | — |
 | M3-5 | AutoComplete 严格选项模式 | 新增受控枚举 props（如 `strict`），开启后取值必须来自选项列表：自由文本在提交 / 失焦时按未命中处理（不写入模型），并提供明确的失败反馈；关闭时保持现状（自由文本可提交）。依据：M2-1 门槛判定（momei `translationId` 受控字段，[盘点记录 §2.1](../design/governance/2026-09-20-m2-1-component-quality-audit.md)）| 单测覆盖「开启后自由文本不写入模型 / 命中选项可写入 / 关闭时行为不变 / 与对象选项 `optionValue` 组合」；中英组件页补「严格模式」与「从 PrimeVue 迁移（`forceSelection`）」两节；[设计规范 §7](../design/design-spec.md) 登记迁移映射；交互经 `@ui-validator` 验证 | — |
 
+状态（M3）：**已交付（2026-09-20，commit `38398b3`）**——M3-1~M3-5 全部完成，经 `@code-reviewer` Review Gate 两轮 Pass。交付内容：M3-1 Select 分组（`SelectOptionGroup` + `CaomeiSelectGroup` 组件）；M3-2 Tag 可选中筛选（`selectable` + `selected` v-model）+ Badge 位置偏移（`offset` prop）+ 宽度过渡；M3-3 DropdownMenu `model` 扩展（`items` 嵌套子菜单 3 层限制 + 逐条目 `class`）；M3-4 ButtonGroup / SplitButton `role="group"` + `groupLabel` prop；M3-5 AutoComplete `strict` prop（严格模式下自由文本不写入模型）。质量门：lint / lint:css / typecheck / test (1403→1415) 全通过。
+
 #### M4 质量门与文档守卫
 
 - 执行范围：把覆盖率校验从日常门禁移出、落到周期性回归与 release 流程；补文档结构守卫与翻译旧目录守卫；提升文档对外可用性。
@@ -77,6 +79,8 @@
 | M4-1 | 覆盖率门禁落位 | 新增独立覆盖率校验入口（仅由 `.github/workflows/regression-weekly.yml` 与 `.github/workflows/release.yml` 调用）；阈值先取证当前实测基线与分布 | `pnpm test` / `pnpm verify` 不含阈值校验；上述两个 workflow 中阈值生效并可复现；阈值来源与排除项有说明 | — |
 | M4-2 | 文档守卫补强 | 空文件 / 截断 / 孤立表格行守卫 + 翻译旧目录守卫（`docs:check:i18n`） | 守卫带正反例语料并接入 `docs:check`；全库零误报 | — |
 | M4-3 | 文档对外可用 | `README.en-US.md`（定位为仓库内文档）+ en-US 文档页 768 档横向溢出（`847 > 768`）修复 | 768 / 1024 / 1440 三档无横向溢出；README 中英差异有守卫或显式约定 | — |
+
+状态（M4）：**已交付（2026-09-20，commit `0591cad`）**——M4-1~M4-3 全部完成，经 `@code-reviewer` Review Gate Pass。交付内容：M4-1 覆盖率门禁落位（`check-coverage.mjs` + `regression-weekly.yml` / `release.yml` 集成，阈值 statements 90% / branches 80% / functions 90% / lines 90%）；M4-2 文档守卫补强（`check-i18n-old-dirs.mjs` 翻译旧目录守卫，纳入 `docs:check`）；M4-3 文档对外可用（`README.en-US.md` 仓库内文档 + `caomei-demo.css` 修复 768 档横向溢出）。质量门：lint / lint:css / typecheck / test (1415) / docs:check / check:coverage 全通过。
 
 ## 未完成项汇总
 

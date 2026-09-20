@@ -759,13 +759,13 @@ function setPageSize(rows: number): void {
 .caomei-data-table__th.caomei-data-table__cell--pinned-start,
 .caomei-data-table__th.caomei-data-table__cell--pinned-end {
     position: sticky;
-    z-index: 3;
+    z-index: var(--caomei-z-pinned-header);
 }
 
 .caomei-data-table__td.caomei-data-table__cell--pinned-start,
 .caomei-data-table__td.caomei-data-table__cell--pinned-end {
     position: sticky;
-    z-index: 2;
+    z-index: var(--caomei-z-pinned);
     background: inherit;
 }
 

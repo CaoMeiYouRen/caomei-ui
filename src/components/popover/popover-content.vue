@@ -41,7 +41,7 @@ withDefaults(defineProps<PopoverContentProps>(), {
 <style>
 .caomei-popover__content {
     box-sizing: border-box;
-    z-index: var(--caomei-popover-z-index, 1050);
+    z-index: var(--caomei-popover-z-index, var(--caomei-z-dropdown));
     width: var(--caomei-popover-width, max-content);
     min-width: var(--caomei-popover-min-width, 12rem);
     max-width: var(--caomei-popover-max-width, min(20rem, var(--reka-popover-content-available-width)));

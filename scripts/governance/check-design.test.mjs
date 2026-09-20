@@ -3,14 +3,22 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
+    OPACITY_BUDGET,
     RGB_BUDGET,
+    Z_INDEX_BUDGET,
     collectGlobalTokens,
     collectLocalTokens,
+    declarationsOf,
     findLegacyNaming,
+    findOpacityLiterals,
     findRawColors,
+    findScopedVariableDeclarations,
+    findTierBlockPropertyDeclarations,
     findTokenIssues,
     findTypeScaleIssues,
+    findZIndexLiterals,
     runChecks,
+    scanRules,
 } from './check-design.mjs'
 
 const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
@@ -24,7 +32,13 @@ describe('check-design 仓库不变量', () => {
         expect(result.typeIssues).toEqual([])
         expect(result.legacyNaming).toEqual([])
         expect(result.rawColors.warnings).toEqual([])
+        expect(result.tierBlockDeclarations).toEqual([])
+        expect(result.scopedVariableDeclarations).toEqual([])
+        expect(result.opacityLiterals).toEqual([])
+        expect(result.zIndexLiterals).toEqual([])
         expect(RGB_BUDGET).toBe(0)
+        expect(OPACITY_BUDGET).toBe(0)
+        expect(Z_INDEX_BUDGET).toBe(0)
     })
 
     it('全局 token 覆盖基础与两套预设', () => {
@@ -91,5 +105,122 @@ describe('check-design 负向用例', () => {
 
     it('识别 PrimeVue 旧尺寸命名', () => {
         expect(findLegacyNaming([{ file: '/tmp/opencode/x.ts', text: 'size?: \'small\'' }])).toHaveLength(1)
+    })
+})
+
+const vue = (css) => [{ file: '/tmp/opencode/x.vue', text: `<style>${css}</style>` }]
+
+describe('check-design 档位块属性守卫（G1）', () => {
+    it('反例：档位 :where() 块内直接声明属性', () => {
+        expect(findTierBlockPropertyDeclarations(vue(':where(.caomei-message--sm) { padding: 0; }'))).toHaveLength(1)
+    })
+
+    it('反例：元素修饰符与后代限定形态同样命中', () => {
+        const rules = ':where(.caomei-select-button--sm) .caomei-select-button__item { padding: 0; font-size: 12px; }'
+        expect(findTierBlockPropertyDeclarations(vue(rules))).toHaveLength(2)
+    })
+
+    it('正例：档位块只声明 CSS 变量', () => {
+        const rules = ':where(.caomei-message--sm) { --caomei-message-font-size: 12px; }'
+        expect(findTierBlockPropertyDeclarations(vue(rules))).toEqual([])
+    })
+
+    it('正例：结构型 :where() 覆盖（非受控枚举修饰符）不误报', () => {
+        const rules = ':where(.caomei-skeleton--circular) .caomei-skeleton__line { border-radius: 50%; }'
+        expect(findTierBlockPropertyDeclarations(vue(rules))).toEqual([])
+    })
+})
+
+describe('check-design scoped 变量声明守卫（G2）', () => {
+    const globalTokens = new Set(['--caomei-color-primary'])
+
+    it('反例：基类预声明组件命名空间变量', () => {
+        expect(findScopedVariableDeclarations(vue('.caomei-button { --caomei-button-bg: red; }'), globalTokens)).toHaveLength(1)
+    })
+
+    it('正例：:where() 选择器内声明', () => {
+        const rules = ':where(.caomei-button--tone-danger) { --caomei-button-bg: red; }'
+        expect(findScopedVariableDeclarations(vue(rules), globalTokens)).toEqual([])
+    })
+
+    it('正例：全局 token 覆写与消费处回退不纳入', () => {
+        const rules = '.caomei-confirm-dialog__confirm--danger { --caomei-color-primary: red; }'
+        expect(findScopedVariableDeclarations(vue(rules), globalTokens)).toEqual([])
+    })
+})
+
+describe('check-design 禁用态 opacity 守卫（G3）', () => {
+    it('反例：规则内出现 0.5 / 0.6 字面量', () => {
+        expect(findOpacityLiterals(vue('.caomei-foo { opacity: 0.6; }'))).toHaveLength(1)
+        expect(findOpacityLiterals(vue('.caomei-foo { opacity: 0.5; }'))).toHaveLength(1)
+    })
+
+    it('正例：其它不透明度值不报（视觉档位不得顺手归并）', () => {
+        expect(findOpacityLiterals(vue('.caomei-foo { opacity: 0.7; }'))).toEqual([])
+    })
+
+    it('正例：@keyframes 块被跳过', () => {
+        const keyframes = '@keyframes x { from { opacity: 0.5; } to { opacity: 1; } }'
+        expect(findOpacityLiterals(vue(keyframes))).toEqual([])
+    })
+})
+
+describe('check-design 层级字面量守卫（G4）', () => {
+    it('反例：数字 z-index', () => {
+        expect(findZIndexLiterals(vue('.caomei-foo { z-index: 1000; }'))).toHaveLength(1)
+    })
+
+    it('正例：token 与 calc 包装放行', () => {
+        expect(findZIndexLiterals(vue('.caomei-foo { z-index: var(--caomei-z-modal); }'))).toEqual([])
+        expect(findZIndexLiterals(vue('.caomei-foo { z-index: calc(var(--caomei-z-toast) + 1); }'))).toEqual([])
+    })
+
+    it('正例：关键字放行', () => {
+        expect(findZIndexLiterals(vue('.caomei-foo { z-index: auto; }'))).toEqual([])
+    })
+})
+
+describe('check-design 语句型 at-rule 切分（scanRules）', () => {
+    it('反例：@import 语句不吞掉后续规则', () => {
+        const rules = scanRules('@import "x.css"; .caomei-a--sm { z-index: 1 }')
+        expect(rules.map((r) => r.selector)).toEqual(['.caomei-a--sm'])
+        expect(declarationsOf(rules[0].body)).toEqual([{ property: 'z-index', value: '1' }])
+        expect(findZIndexLiterals(vue('@import "x.css"; .caomei-a--sm { z-index: 1 }'))).toHaveLength(1)
+    })
+
+    it('正例：@charset / @layer 语句与带块 @media 混排仍逐条扫描', () => {
+        const css = [
+            '@charset "utf-8";',
+            '@layer reset;',
+            '@media (min-width: 640px) { .caomei-b--sm { z-index: 1 } }',
+        ].join('\n')
+        expect(scanRules(css).map((r) => r.selector)).toEqual(['.caomei-b--sm'])
+    })
+
+    it('正例：字符串内的分号不作语句边界', () => {
+        const rules = scanRules('@import "a;b.css"; .caomei-c--sm { z-index: 1 }')
+        expect(rules.map((r) => r.selector)).toEqual(['.caomei-c--sm'])
+    })
+})
+
+describe('scanRules 边界（W3：注释与字符串中的花括号不得破坏配平）', () => {
+    it('字符串字面量内的 } 不结束当前块', () => {
+        const rules = scanRules('.caomei-a { content: "}"; color: red } .caomei-b { z-index: 1 }')
+
+        expect(rules.map((rule) => rule.selector)).toEqual(['.caomei-a', '.caomei-b'])
+        expect(rules[1].body).toContain('z-index: 1')
+    })
+
+    it('规则体内注释含 } 时后续声明与规则仍被扫描', () => {
+        const rules = scanRules('.caomei-a { /* } */ color: red } .caomei-b { z-index: 1 }')
+
+        expect(rules.map((rule) => rule.selector)).toEqual(['.caomei-a', '.caomei-b'])
+        expect(rules[0].body).toContain('color: red')
+    })
+
+    it('@starting-style 等新 at-rule 内的规则参与扫描', () => {
+        const rules = scanRules('@starting-style { .caomei-a--sm { z-index: 1 } }')
+
+        expect(rules.map((rule) => rule.selector)).toEqual(['.caomei-a--sm'])
     })
 })

@@ -68,7 +68,7 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
 <style>
 .caomei-dropdown-menu__content {
     box-sizing: border-box;
-    z-index: var(--caomei-dropdown-menu-z-index, 1050);
+    z-index: var(--caomei-dropdown-menu-z-index, var(--caomei-z-dropdown));
     display: flex;
     flex-direction: column;
 

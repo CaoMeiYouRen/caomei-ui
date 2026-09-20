@@ -284,11 +284,11 @@ function handleError(event: Event): void {
     opacity: 1;
 }
 
-/* 预览为最高层模态：默认 1100 高于 Dialog / Drawer（1000 / 1001）与浮层（1050），
-   内容再 +1；与 Toast（1100）同层，由挂载顺序决定，可按需覆盖该变量。 */
+/* 预览为最高层模态：默认取 Toast 同层（1100），高于 Dialog / Drawer（1000 / 1001）与浮层（1050），
+   内容再 +1；可按需覆盖该变量。 */
 .caomei-image__preview-overlay {
     position: fixed;
-    z-index: var(--caomei-image-preview-z-index, 1100);
+    z-index: var(--caomei-image-preview-z-index, var(--caomei-z-toast));
     inset: 0;
     background: var(--caomei-color-mask);
 }
@@ -297,7 +297,7 @@ function handleError(event: Event): void {
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: calc(var(--caomei-image-preview-z-index, 1100) + 1);
+    z-index: calc(var(--caomei-image-preview-z-index, var(--caomei-z-toast)) + 1);
     display: flex;
     align-items: center;
     justify-content: center;

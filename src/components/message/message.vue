@@ -94,7 +94,8 @@ const rootClass = computed(() => [
 
 <style scoped>
 /*
-  `--caomei-message-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值。
+  `--caomei-message-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  档位选择器用 :where() 归零特异性，只声明 CSS 变量。
 */
 .caomei-message {
     box-sizing: border-box;
@@ -102,49 +103,47 @@ const rootClass = computed(() => [
     align-items: flex-start;
     gap: var(--caomei-space-2);
     width: 100%;
+    padding: var(--caomei-message-padding-block, var(--caomei-space-3)) var(--caomei-message-padding-inline, var(--caomei-space-4));
     border: 1px solid transparent;
     border-radius: var(--caomei-message-radius, var(--caomei-radius-md));
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-message-font-size, var(--caomei-font-size-md));
     line-height: 1.5;
 }
 
-/* 档位类用 :where() 归零特异性；内边距与字号只在档位类声明 */
 :where(.caomei-message--sm) {
-    padding: var(--caomei-space-2) var(--caomei-space-3);
-    font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-message--md) {
-    padding: var(--caomei-space-3) var(--caomei-space-4);
-    font-size: var(--caomei-font-size-md);
+    --caomei-message-padding-block: var(--caomei-space-2);
+    --caomei-message-padding-inline: var(--caomei-space-3);
+    --caomei-message-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-message--lg) {
-    padding: var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+    --caomei-message-padding-block: var(--caomei-space-4);
+    --caomei-message-padding-inline: var(--caomei-space-4);
+    --caomei-message-font-size: var(--caomei-font-size-lg);
 }
 
-.caomei-message--primary {
+:where(.caomei-message--primary) {
     --caomei-message-tone: var(--caomei-color-primary);
     --caomei-message-solid: var(--caomei-color-primary-solid);
 }
 
-.caomei-message--success {
+:where(.caomei-message--success) {
     --caomei-message-tone: var(--caomei-color-success);
     --caomei-message-solid: var(--caomei-color-success-solid);
 }
 
-.caomei-message--warning {
+:where(.caomei-message--warning) {
     --caomei-message-tone: var(--caomei-color-warning);
     --caomei-message-solid: var(--caomei-color-warning-solid);
 }
 
-.caomei-message--danger {
+:where(.caomei-message--danger) {
     --caomei-message-tone: var(--caomei-color-danger);
     --caomei-message-solid: var(--caomei-color-danger-solid);
 }
 
-.caomei-message--neutral {
+:where(.caomei-message--neutral) {
     --caomei-message-tone: var(--caomei-color-text-muted);
     --caomei-message-solid: var(--caomei-color-neutral-solid);
 }

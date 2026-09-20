@@ -98,7 +98,7 @@ const rootClass = computed(() => [
     --caomei-radio-font-size: var(--caomei-font-size-lg);
 }
 
-.caomei-radio-group--invalid {
+:where(.caomei-radio-group--invalid) {
     --caomei-radio-border: var(--caomei-color-danger);
     --caomei-radio-focus: var(--caomei-color-danger);
 }

@@ -381,6 +381,10 @@ watch(normalizedOptions, () => {
 </template>
 
 <style scoped>
+/*
+  `--caomei-auto-complete-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+*/
 .caomei-auto-complete {
     box-sizing: border-box;
     display: flex;
@@ -389,18 +393,20 @@ watch(normalizedOptions, () => {
     gap: var(--caomei-space-1);
     width: 100%;
     max-width: var(--caomei-auto-complete-max-width, var(--caomei-select-max-width));
+    min-height: var(--caomei-auto-complete-min-height, var(--caomei-control-height-md));
+    padding: var(--caomei-auto-complete-padding-block, var(--caomei-space-1)) var(--caomei-auto-complete-padding-inline, var(--caomei-space-3));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-auto-complete-font-size, var(--caomei-font-size-md));
     cursor: text;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .caomei-auto-complete:focus-within {
     border-color: var(--caomei-color-primary);
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
 }
 
@@ -410,7 +416,6 @@ watch(normalizedOptions, () => {
 
 .caomei-auto-complete--invalid:focus-within {
     border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
 }
 
@@ -421,21 +426,17 @@ watch(normalizedOptions, () => {
 }
 
 :where(.caomei-auto-complete--sm) {
-    min-height: var(--caomei-control-height-sm);
-    padding: var(--caomei-space-1) var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-auto-complete--md) {
-    min-height: var(--caomei-control-height-md);
-    padding: var(--caomei-space-1) var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+    --caomei-auto-complete-min-height: var(--caomei-control-height-sm);
+    --caomei-auto-complete-padding-block: var(--caomei-space-1);
+    --caomei-auto-complete-padding-inline: var(--caomei-space-2);
+    --caomei-auto-complete-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-auto-complete--lg) {
-    min-height: var(--caomei-control-height-lg);
-    padding: var(--caomei-space-2) var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+    --caomei-auto-complete-min-height: var(--caomei-control-height-lg);
+    --caomei-auto-complete-padding-block: var(--caomei-space-2);
+    --caomei-auto-complete-padding-inline: var(--caomei-space-4);
+    --caomei-auto-complete-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-auto-complete__tag {
@@ -559,7 +560,7 @@ watch(normalizedOptions, () => {
 <style>
 .caomei-auto-complete__content {
     box-sizing: border-box;
-    z-index: 1000;
+    z-index: var(--caomei-z-overlay);
     overflow: hidden;
 
     /*

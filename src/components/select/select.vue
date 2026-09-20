@@ -250,28 +250,25 @@ function clearValue(): void {
     display: inline-flex;
     width: 100%;
     max-width: var(--caomei-select-max-width);
+    font-size: var(--caomei-select-field-font-size, var(--caomei-font-size-md));
 }
 
-/* 尺寸档位把右内边距 / 字号 / 图标尺寸暴露为变量，供触发器与兄弟节点清除按钮共同消费 */
+/* 尺寸档位只声明变量：右内边距 / 图标尺寸供触发器与兄弟节点清除按钮共同消费，字号由基类回退消费 */
 :where(.caomei-select__field--sm) {
     --caomei-select-padding-end: var(--caomei-space-2);
     --caomei-select-icon-size: var(--caomei-font-size-sm);
-
-    font-size: var(--caomei-font-size-sm);
+    --caomei-select-field-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-select__field--md) {
     --caomei-select-padding-end: var(--caomei-space-3);
     --caomei-select-icon-size: var(--caomei-font-size-md);
-
-    font-size: var(--caomei-font-size-md);
 }
 
 :where(.caomei-select__field--lg) {
     --caomei-select-padding-end: var(--caomei-space-4);
     --caomei-select-icon-size: var(--caomei-font-size-lg);
-
-    font-size: var(--caomei-font-size-lg);
+    --caomei-select-field-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-select__clear {
@@ -353,7 +350,7 @@ function clearValue(): void {
 <style>
 .caomei-select__content {
     box-sizing: border-box;
-    z-index: 1000;
+    z-index: var(--caomei-z-overlay);
     overflow: hidden;
 
     /*

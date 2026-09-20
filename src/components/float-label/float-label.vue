@@ -36,7 +36,7 @@ const rootClass = computed(() => `caomei-float-label--${props.variant}`)
 */
 .caomei-float-label :deep(> label) {
     position: absolute;
-    z-index: 1;
+    z-index: var(--caomei-z-raise);
     inset-inline-start: var(--caomei-float-label-inset, var(--caomei-space-3));
     margin: 0;
     color: var(--caomei-float-label-color, var(--caomei-color-text-muted));

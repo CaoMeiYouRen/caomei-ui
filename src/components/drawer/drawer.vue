@@ -111,21 +111,20 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 </template>
 
 <style scoped>
+/*
+  `--caomei-drawer-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+*/
 .caomei-drawer__overlay {
-    --caomei-drawer-duration: 200ms;
-
     position: fixed;
-    z-index: 1000;
+    z-index: var(--caomei-z-overlay);
     inset: 0;
     background: var(--caomei-color-mask);
 }
 
 .caomei-drawer__content {
-    --caomei-drawer-size: 420px;
-    --caomei-drawer-duration: 200ms;
-
     position: fixed;
-    z-index: 1001;
+    z-index: var(--caomei-z-modal);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -137,15 +136,15 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     box-shadow: var(--caomei-shadow-lg);
 }
 
-.caomei-drawer__content--sm {
+:where(.caomei-drawer__content--sm) {
     --caomei-drawer-size: 320px;
 }
 
-.caomei-drawer__content--md {
+:where(.caomei-drawer__content--md) {
     --caomei-drawer-size: 420px;
 }
 
-.caomei-drawer__content--lg {
+:where(.caomei-drawer__content--lg) {
     --caomei-drawer-size: 560px;
 }
 
@@ -153,7 +152,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 .caomei-drawer__content--right {
     top: 0;
     bottom: 0;
-    width: min(90vw, var(--caomei-drawer-size));
+    width: min(90vw, var(--caomei-drawer-size, 420px));
 }
 
 .caomei-drawer__content--right {
@@ -168,7 +167,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 .caomei-drawer__content--bottom {
     right: 0;
     left: 0;
-    height: min(90vh, var(--caomei-drawer-size));
+    height: min(90vh, var(--caomei-drawer-size, 420px));
 }
 
 .caomei-drawer__content--top {
@@ -354,43 +353,43 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 }
 
 .caomei-drawer__overlay[data-state='open'] {
-    animation: caomei-drawer-fade-in var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-fade-in var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__overlay[data-state='closed'] {
-    animation: caomei-drawer-fade-out var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-fade-out var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--right[data-state='open'] {
-    animation: caomei-drawer-in-right var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-in-right var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--right[data-state='closed'] {
-    animation: caomei-drawer-out-right var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-out-right var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--left[data-state='open'] {
-    animation: caomei-drawer-in-left var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-in-left var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--left[data-state='closed'] {
-    animation: caomei-drawer-out-left var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-out-left var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--top[data-state='open'] {
-    animation: caomei-drawer-in-top var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-in-top var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--top[data-state='closed'] {
-    animation: caomei-drawer-out-top var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-out-top var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--bottom[data-state='open'] {
-    animation: caomei-drawer-in-bottom var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-in-bottom var(--caomei-drawer-duration, 200ms) ease;
 }
 
 .caomei-drawer__content--bottom[data-state='closed'] {
-    animation: caomei-drawer-out-bottom var(--caomei-drawer-duration) ease;
+    animation: caomei-drawer-out-bottom var(--caomei-drawer-duration, 200ms) ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

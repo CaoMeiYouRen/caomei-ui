@@ -53,6 +53,19 @@
     --caomei-font-size-sm: 12px;
     --caomei-font-size-md: 14px;
     --caomei-font-size-lg: 16px;
+
+    /* 局部层叠：同一容器内的相对抬升（焦点成员 / 冻结列），不参与浮层层级 */
+    --caomei-z-raise: 1;
+    --caomei-z-pinned: 2;
+    --caomei-z-pinned-header: 3;
+
+    /* 浮层层级：全局统一，替代 z-index 字面量（sticky / tooltip 为词表预留，暂无消费点） */
+    --caomei-z-sticky: 10;
+    --caomei-z-overlay: 1000;
+    --caomei-z-modal: 1001;
+    --caomei-z-dropdown: 1050;
+    --caomei-z-tooltip: 1060;
+    --caomei-z-toast: 1100;
 }
 
 :is(.dark, [data-theme='dark']) {

@@ -64,13 +64,34 @@
 | --- | --- |
 | `--caomei-font-sans` | `system-ui, -apple-system, sans-serif` |
 
-### 2.5 规划新增 token（待实现）
+### 2.5 层级 token（已实现）与规划新增 token
 
-为落实「层级」「图标尺寸」「焦点环」等细节，规划新增以下 token（实现归入后续组件增强）：
+#### 层级 token（已实现）
+
+统一承载浮层层级与局部层叠，替代组件内 `z-index` 字面量；`check:design` 的 `z-index` 预算为 0（数字即失败）。
+
+| token | 值 | 说明 |
+| --- | --- | --- |
+| `--caomei-z-raise` | `1` | 局部层叠：同容器内焦点成员 / 浮动标签的相对抬升（ButtonGroup / InputGroup / FloatLabel） |
+| `--caomei-z-pinned` | `2` | 局部层叠：DataTable 冻结列数据单元格 |
+| `--caomei-z-pinned-header` | `3` | 局部层叠：DataTable 冻结列表头（高于数据单元格） |
+| `--caomei-z-sticky` | `10` | 浮层层级词表预留（暂无消费点） |
+| `--caomei-z-overlay` | `1000` | 遮罩层（Dialog / ConfirmDialog / Drawer）与同值浮层面板（Select / MultiSelect / AutoComplete） |
+| `--caomei-z-modal` | `1001` | 模态内容（Dialog / ConfirmDialog / Drawer / ColorPicker 面板） |
+| `--caomei-z-dropdown` | `1050` | 锚定浮层面板（DropdownMenu / Popover / DatePicker） |
+| `--caomei-z-tooltip` | `1060` | 浮层层级词表预留（暂无消费点） |
+| `--caomei-z-toast` | `1100` | Toast 视口 / Image 预览遮罩 |
+
+- 浮层组件保留 `--caomei-<comp>-z-index` 覆盖钩子，未覆盖时回退到上表 token（如 `var(--caomei-popover-z-index, var(--caomei-z-dropdown))`）。
+- Image 放大内容取 `calc(var(--caomei-image-preview-z-index, var(--caomei-z-toast)) + 1)`。
+- 局部层叠 token（`raise` / `pinned` / `pinned-header`）只用于同一容器内的相对抬升，不与浮层层级混用。
+
+#### 规划新增 token（待实现）
+
+为落实「图标尺寸」「焦点环」等细节，规划新增以下 token（实现归入后续组件增强）：
 
 | 类别 | 规划 token | 说明 |
 | --- | --- | --- |
-| 层级 | `--caomei-z-dropdown` / `-sticky` / `-overlay` / `-modal` / `-toast` / `-tooltip` | 替代 `z-index` 字面量 |
 | 图标 | `--caomei-icon-size-sm` / `-md` / `-lg` | 统一 `@lucide/vue` 图标尺寸 |
 | 交互 | `--caomei-color-focus-ring` | 焦点环（`--caomei-color-mask` 见 §2.6） |
 | 字体 | `--caomei-font-mono` | 代码 / 密钥等场景 |

@@ -152,25 +152,27 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 </template>
 
 <style scoped>
+/*
+  `--caomei-dialog-width` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+*/
 .caomei-dialog__overlay {
     position: fixed;
-    z-index: 1000;
+    z-index: var(--caomei-z-overlay);
     inset: 0;
     background: var(--caomei-color-mask);
 }
 
 .caomei-dialog__content {
-    --caomei-dialog-width: 480px;
-
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 1001;
+    z-index: var(--caomei-z-modal);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
-    width: min(90vw, var(--caomei-dialog-width));
+    width: min(90vw, var(--caomei-dialog-width, 480px));
     max-height: 85vh;
     overflow: hidden;
     padding: var(--caomei-space-4);
@@ -182,15 +184,15 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     transform: translate(-50%, -50%);
 }
 
-.caomei-dialog__content--sm {
+:where(.caomei-dialog__content--sm) {
     --caomei-dialog-width: 360px;
 }
 
-.caomei-dialog__content--md {
+:where(.caomei-dialog__content--md) {
     --caomei-dialog-width: 480px;
 }
 
-.caomei-dialog__content--lg {
+:where(.caomei-dialog__content--lg) {
     --caomei-dialog-width: 640px;
 }
 

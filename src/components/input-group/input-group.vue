@@ -129,6 +129,6 @@ const rootClass = computed(() => `caomei-input-group--${props.orientation}`)
 /* 聚焦成员抬升，保证自身边框压在重叠的相邻边框之上（:focus-within 自身聚焦或含聚焦均匹配） */
 .caomei-input-group :deep(> *:focus-within) {
     position: relative;
-    z-index: 1;
+    z-index: var(--caomei-z-raise);
 }
 </style>

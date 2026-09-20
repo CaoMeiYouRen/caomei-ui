@@ -92,13 +92,11 @@ function onClick(event: MouseEvent): void {
 </template>
 
 <style scoped>
+/*
+  `--caomei-button-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  语气档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+*/
 .caomei-button {
-    --caomei-button-bg: var(--caomei-color-primary);
-    --caomei-button-fg: var(--caomei-color-primary-foreground);
-    --caomei-button-border: var(--caomei-color-border);
-    --caomei-button-text: var(--caomei-color-text);
-    --caomei-button-focus: var(--caomei-color-primary);
-
     position: relative;
     box-sizing: border-box;
     display: inline-flex;
@@ -120,7 +118,7 @@ function onClick(event: MouseEvent): void {
 }
 
 .caomei-button:focus-visible {
-    outline: 2px solid var(--caomei-button-focus);
+    outline: 2px solid var(--caomei-button-focus, var(--caomei-color-primary));
     outline-offset: 2px;
 }
 
@@ -133,22 +131,22 @@ function onClick(event: MouseEvent): void {
 }
 
 .caomei-button--primary {
-    background: var(--caomei-button-bg);
-    color: var(--caomei-button-fg);
+    background: var(--caomei-button-bg, var(--caomei-color-primary));
+    color: var(--caomei-button-fg, var(--caomei-color-primary-foreground));
 }
 
 .caomei-button--secondary {
     background: var(--caomei-color-bg);
-    border-color: var(--caomei-button-border);
-    color: var(--caomei-button-text);
+    border-color: var(--caomei-button-border, var(--caomei-color-border));
+    color: var(--caomei-button-text, var(--caomei-color-text));
 }
 
 .caomei-button--ghost {
     background: transparent;
-    color: var(--caomei-button-text);
+    color: var(--caomei-button-text, var(--caomei-color-text));
 }
 
-.caomei-button--tone-neutral {
+:where(.caomei-button--tone-neutral) {
     --caomei-button-bg: var(--caomei-color-neutral-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
     --caomei-button-border: var(--caomei-color-border);
@@ -156,7 +154,7 @@ function onClick(event: MouseEvent): void {
     --caomei-button-focus: var(--caomei-color-text);
 }
 
-.caomei-button--tone-primary {
+:where(.caomei-button--tone-primary) {
     --caomei-button-bg: var(--caomei-color-primary-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
     --caomei-button-border: var(--caomei-color-primary);
@@ -164,7 +162,7 @@ function onClick(event: MouseEvent): void {
     --caomei-button-focus: var(--caomei-color-primary);
 }
 
-.caomei-button--tone-success {
+:where(.caomei-button--tone-success) {
     --caomei-button-bg: var(--caomei-color-success-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
     --caomei-button-border: var(--caomei-color-success);
@@ -172,7 +170,7 @@ function onClick(event: MouseEvent): void {
     --caomei-button-focus: var(--caomei-color-success);
 }
 
-.caomei-button--tone-warning {
+:where(.caomei-button--tone-warning) {
     --caomei-button-bg: var(--caomei-color-warning-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
     --caomei-button-border: var(--caomei-color-warning);
@@ -180,7 +178,7 @@ function onClick(event: MouseEvent): void {
     --caomei-button-focus: var(--caomei-color-warning);
 }
 
-.caomei-button--tone-danger {
+:where(.caomei-button--tone-danger) {
     --caomei-button-bg: var(--caomei-color-danger-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
     --caomei-button-border: var(--caomei-color-danger);

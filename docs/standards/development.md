@@ -119,6 +119,10 @@ test/                     # 单元与 E2E 测试
 - 响应式由组件内部媒体查询处理，断点约定为 640 / 768 / 1024px（`@media` 不支持 CSS 变量，不使用 token）；断点语义、窄屏行为矩阵与验收标准见[响应式设计](../design/responsive.md)。
 - 禁止引入 Tailwind / UnoCSS；如需 Tailwind 用户适配，另提供可选 preset 文档（不内置依赖）。
 - CSS 变量默认值不声明在 scoped 根选择器（`.comp[data-v]` 特异性高于消费方 `.comp`）：基类不预声明默认值、消费处 `var(--x, fallback)`，档位类用 `:where()` 归零特异性；自建布局容器同样遵守。
+- 组件自身命名空间的 `--caomei-<comp>-*` 声明必须落在含 `:where(` 的选择器内（档位 / 变体块），基类只以 `var(--x, fallback)` 消费；全局 token 覆写（如 ConfirmDialog 覆写 `--caomei-color-*`）与跨组件传参不在此限。`check:design` 的 scoped 变量声明守卫为预算 0。
+- `:where()` 档位 / 变体块只声明 CSS 变量，不得直接声明属性；`check:design` 的档位块属性守卫为预算 0。规则面取 `src/types.ts` 的受控枚举修饰符（尺寸 / 变体 / 语气）；`skeleton` / `tabs` / `data-table` 等结构型低特异性布局覆盖不在其列。
+- 浮层层级与局部层叠统一走 `--caomei-z-*`（清单见[设计规范 §2.5](../design/design-spec.md)）：组件内禁止数字 `z-index`（含 DataTable 冻结列、焦点成员抬升），`check:design` 的 `z-index` 预算为 0。
+- 禁用态不透明度只走 `--caomei-disabled-opacity`：组件内禁止 `opacity: 0.5 / 0.6` 字面量（`@keyframes` 的动画中间态除外，不同值档位不得顺手归并），`check:design` 的不透明度守卫为预算 0。
 - 区块间距压缩须覆盖全部合法邻接组合（`header+body` / `body+footer` / `header+footer`）；条件渲染会产生直邻组合，避免仅依赖 `+` 选择器漏判而出现双倍间距。
 - 同特异性规则由源码顺序决定胜负：`striped` 与 `hover` 同时命中时，`hover` 必须声明在 `striped` 之后。
 - portal / popper 挂载的子组件 scoped `data-v` 落在包裹层，`.comp__content[data-v-x]` 不命中；改用命名空间化的非 scoped 规则。Reka 嵌套子组件（如 `CheckboxIndicator`）不回传父级 scoped `data-v`，可在父级默认插槽内自绘（代价：丢失 `Presence` / `forceMount` 动画）。浮层子部件的共享样式宜集中到 Content 的非 scoped 命名空间块。

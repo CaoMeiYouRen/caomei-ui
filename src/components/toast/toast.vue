@@ -139,19 +139,19 @@ function onOpenChange(id: string, open: boolean): void {
   非 scoped 规则，特异性低、便于使用方覆盖。
 -->
 <style>
+/*
+  `--caomei-toast-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
+  语气选择器用 :where() 归零特异性，只声明 CSS 变量。
+*/
 .caomei-toast-viewport {
-    --caomei-toast-offset: var(--caomei-space-4);
-    --caomei-toast-width: min(24rem, calc(100% - 2 * var(--caomei-toast-offset)));
-    --caomei-toast-z-index: 1100;
-
     position: fixed;
-    z-index: var(--caomei-toast-z-index);
+    z-index: var(--caomei-toast-z-index, var(--caomei-z-toast));
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-2);
     box-sizing: border-box;
-    width: var(--caomei-toast-width);
-    max-height: calc(100vh - 2 * var(--caomei-toast-offset));
+    width: var(--caomei-toast-width, min(24rem, calc(100% - 2 * var(--caomei-toast-offset, var(--caomei-space-4)))));
+    max-height: calc(100vh - 2 * var(--caomei-toast-offset, var(--caomei-space-4)));
     overflow-y: auto;
     font-family: var(--caomei-font-sans);
     pointer-events: none;
@@ -168,50 +168,48 @@ function onOpenChange(id: string, open: boolean): void {
 }
 
 .caomei-toast-viewport--top-left {
-    top: var(--caomei-toast-offset);
-    left: var(--caomei-toast-offset);
+    top: var(--caomei-toast-offset, var(--caomei-space-4));
+    left: var(--caomei-toast-offset, var(--caomei-space-4));
     flex-direction: column-reverse;
 }
 
 .caomei-toast-viewport--top-center {
-    top: var(--caomei-toast-offset);
+    top: var(--caomei-toast-offset, var(--caomei-space-4));
     left: 50%;
     flex-direction: column-reverse;
     transform: translateX(-50%);
 }
 
 .caomei-toast-viewport--top-right {
-    top: var(--caomei-toast-offset);
-    right: var(--caomei-toast-offset);
+    top: var(--caomei-toast-offset, var(--caomei-space-4));
+    right: var(--caomei-toast-offset, var(--caomei-space-4));
     flex-direction: column-reverse;
 }
 
 .caomei-toast-viewport--bottom-left {
-    bottom: var(--caomei-toast-offset);
-    left: var(--caomei-toast-offset);
+    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
+    left: var(--caomei-toast-offset, var(--caomei-space-4));
 }
 
 .caomei-toast-viewport--bottom-center {
-    bottom: var(--caomei-toast-offset);
+    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
     left: 50%;
     transform: translateX(-50%);
 }
 
 .caomei-toast-viewport--bottom-right {
-    right: var(--caomei-toast-offset);
-    bottom: var(--caomei-toast-offset);
+    right: var(--caomei-toast-offset, var(--caomei-space-4));
+    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
 }
 
 .caomei-toast {
-    --caomei-toast-accent: var(--caomei-color-neutral-solid);
-
     display: flex;
     align-items: flex-start;
     gap: var(--caomei-space-2);
     box-sizing: border-box;
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
-    border-left: 3px solid var(--caomei-toast-accent);
+    border-left: 3px solid var(--caomei-toast-accent, var(--caomei-color-neutral-solid));
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
@@ -219,19 +217,19 @@ function onOpenChange(id: string, open: boolean): void {
     pointer-events: auto;
 }
 
-.caomei-toast--primary {
+:where(.caomei-toast--primary) {
     --caomei-toast-accent: var(--caomei-color-primary);
 }
 
-.caomei-toast--success {
+:where(.caomei-toast--success) {
     --caomei-toast-accent: var(--caomei-color-success);
 }
 
-.caomei-toast--warning {
+:where(.caomei-toast--warning) {
     --caomei-toast-accent: var(--caomei-color-warning);
 }
 
-.caomei-toast--danger {
+:where(.caomei-toast--danger) {
     --caomei-toast-accent: var(--caomei-color-danger);
 }
 

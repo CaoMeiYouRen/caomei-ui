@@ -111,27 +111,27 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     transform: translate(50%, -50%);
 }
 
-.caomei-badge--primary {
+:where(.caomei-badge--primary) {
     --caomei-badge-tone: var(--caomei-color-primary);
     --caomei-badge-solid: var(--caomei-color-primary-solid);
 }
 
-.caomei-badge--success {
+:where(.caomei-badge--success) {
     --caomei-badge-tone: var(--caomei-color-success);
     --caomei-badge-solid: var(--caomei-color-success-solid);
 }
 
-.caomei-badge--warning {
+:where(.caomei-badge--warning) {
     --caomei-badge-tone: var(--caomei-color-warning);
     --caomei-badge-solid: var(--caomei-color-warning-solid);
 }
 
-.caomei-badge--danger {
+:where(.caomei-badge--danger) {
     --caomei-badge-tone: var(--caomei-color-danger);
     --caomei-badge-solid: var(--caomei-color-danger-solid);
 }
 
-.caomei-badge--neutral {
+:where(.caomei-badge--neutral) {
     --caomei-badge-tone: var(--caomei-color-text-muted);
     --caomei-badge-solid: var(--caomei-color-neutral-solid);
 }

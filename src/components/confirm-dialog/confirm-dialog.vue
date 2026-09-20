@@ -150,25 +150,26 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/*
+  `--caomei-confirm-dialog-width` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值。
+*/
 .caomei-confirm-dialog__overlay {
     position: fixed;
-    z-index: 1000;
+    z-index: var(--caomei-z-overlay);
     inset: 0;
     background: var(--caomei-color-mask);
 }
 
 .caomei-confirm-dialog__content {
-    --caomei-confirm-dialog-width: 400px;
-
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 1001;
+    z-index: var(--caomei-z-modal);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
-    width: min(90vw, var(--caomei-confirm-dialog-width));
+    width: min(90vw, var(--caomei-confirm-dialog-width, 400px));
     max-height: 85vh;
     overflow: auto;
     padding: var(--caomei-space-4);

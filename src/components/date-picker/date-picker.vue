@@ -265,7 +265,7 @@ function onTimeUpdate(value: TimeParts): void {
 <style>
 .caomei-date-picker__content {
     box-sizing: border-box;
-    z-index: var(--caomei-date-picker-z-index, 1050);
+    z-index: var(--caomei-date-picker-z-index, var(--caomei-z-dropdown));
     width: max-content;
 
     /*

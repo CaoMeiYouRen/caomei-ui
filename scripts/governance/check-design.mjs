@@ -7,7 +7,11 @@
  * 1. token 引用存在性：`var(--caomei-*)` 若既非全局 token（`src/styles/**`）、也非同文件局部定义、又无 fallback，视为错误；
  * 2. 组件原始色值：`src/components/**` 的样式块出现 `#hex` 为错误；`rgb()/rgba()/hsl()` 受预算约束（超出预算为错误）；
  * 3. 档位常量：`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone` 必须与设计规范一致；
- * 4. 旧命名泄漏：组件类型中的 `'small'` / `'large'` 尺寸命名为错误。
+ * 4. 旧命名泄漏：组件类型中的 `'small'` / `'large'` 尺寸命名为错误；
+ * 5. 档位块直接声明属性（G1）：`:where(.caomei-<comp>[__<el>]--<档位/变体>)` 规则内出现非自定义属性为错误；
+ * 6. scoped 变量声明（G2）：组件样式块内声明**非全局 token** 的 `--caomei-*` 时选择器必须含 `:where(`（基类不预声明默认值）；
+ * 7. 禁用态字面量（G3）：`opacity: 0.5 / 0.6` 字面量为错误（跳过 `@keyframes` 块）；
+ * 8. 层级字面量（G4）：数字 `z-index` 为错误，必须走 `var(--caomei-z-*)` 或关键字。
  *
  * 用法：
  *   node scripts/governance/check-design.mjs            # 有错误 exit 1
@@ -26,6 +30,29 @@ const TYPES_FILE = join(SRC, 'types.ts')
 
 /** 已知遗留的原始 rgb/hsl 字面量预算：0 = 预算覆盖的原始色值字面量已清零（`color-mix()` 组合不在其扫描面），任何原始色值即回归。 */
 export const RGB_BUDGET = 0
+
+/** 禁用态 `opacity` 字面量预算（G3）：0 = 禁用态一律走 `--caomei-disabled-opacity`。 */
+export const OPACITY_BUDGET = 0
+
+/** 数字 `z-index` 预算（G4）：0 = 一律走 `var(--caomei-z-*)`。 */
+export const Z_INDEX_BUDGET = 0
+
+/**
+ * 档位 / 变体选择器允许的修饰符集合（G1 的规则面）：
+ * 取 `src/types.ts` 的受控枚举——尺寸 `sm|md|lg`、变体 `primary|secondary|ghost`、语气 `neutral|primary|success|warning|danger`。
+ * 组件自有的结构型修饰符（如 `circular` / `vertical` / `striped` / `hoverable` / `padding-*`）不在此列，
+ * 属「低特异性布局覆盖」而非档位变量块，故不纳入 G1（依据见 docs/design/governance/2026-09-20-m2-1-component-quality-audit.md §3.5）。
+ */
+const NON_CUSTOM_MODIFIERS = [
+    'sm', 'md', 'lg',
+    'primary', 'secondary', 'ghost',
+    'neutral', 'success', 'warning', 'danger',
+].join('|')
+
+/** 匹配 `:where(.caomei-<comp>[__<el>]--<档位/变体>)` 开头的规则。 */
+const TIER_BLOCK_RE = new RegExp(
+    `^:where\\(\\s*\\.caomei-[a-z0-9-]+(?:__[a-z0-9-]+)?--(?:${NON_CUSTOM_MODIFIERS})\\s*\\)`,
+)
 
 const EXPECTED_UNIONS = {
     ComponentSize: ['sm', 'md', 'lg'],
@@ -178,16 +205,249 @@ export function findLegacyNaming(entries) {
     return files
 }
 
+/** 跳过空白与注释。 */
+function skipTrivia(text, i) {
+    while (i < text.length) {
+        if (/\s/.test(text[i])) {
+            i += 1
+            continue
+        }
+        if (text[i] === '/' && text[i + 1] === '*') {
+            const end = text.indexOf('*/', i + 2)
+            i = end === -1 ? text.length : end + 2
+            continue
+        }
+        break
+    }
+    return i
+}
+
+/**
+ * 从 `i` 起查找下一个**顶层定界符**（`{` / `;` / `}`），途中跳过注释与字符串字面量。
+ * 用于区分「带块规则」（`{` 先到）与「语句型 at-rule」（`;` 先到，如 `@import` / `@charset` / `@use`）。
+ */
+function nextDelimiter(text, i) {
+    while (i < text.length) {
+        const ch = text[i]
+        if (ch === '/' && text[i + 1] === '*') {
+            const end = text.indexOf('*/', i + 2)
+            i = end === -1 ? text.length : end + 2
+            continue
+        }
+        if (ch === '"' || ch === '\'') {
+            const quote = ch
+            i += 1
+            while (i < text.length && text[i] !== quote) {
+                i += text[i] === '\\' ? 2 : 1
+            }
+            i += 1
+            continue
+        }
+        if (ch === '{' || ch === ';' || ch === '}') {
+            return { index: i, char: ch }
+        }
+        i += 1
+    }
+    return { index: -1, char: null }
+}
+
+/**
+ * 扫描 CSS 文本为声明规则列表（递归展开 `@media` / `@supports` / `@layer` / `@container`，
+ * 标记 `@keyframes` 内部块）。返回 `{ selector, body, inKeyframes }`。
+ *
+ * 语句型 at-rule（`@import "x.css";` / `@charset "utf-8";` / `@use ...;` 等无块形式）以 `;` 切分并跳过，
+ * 避免「下一个 `{`」把后续规则并入 prelude 而整条吞掉。
+ */
+export function scanRules(text, inKeyframes = false, acc = []) {
+    let i = 0
+    const length = text.length
+    while (i < length) {
+        i = skipTrivia(text, i)
+        if (i >= length) {
+            break
+        }
+        const delimiter = nextDelimiter(text, i)
+        if (delimiter.index === -1) {
+            break
+        }
+        if (delimiter.char === ';' || delimiter.char === '}') {
+            // 语句型 at-rule / 游离分隔符：跳过，不吞掉后续规则
+            i = delimiter.index + 1
+            continue
+        }
+        const brace = delimiter.index
+        const prelude = text.slice(i, brace).trim()
+        let depth = 1
+        let j = brace + 1
+        while (j < length && depth > 0) {
+            const ch = text[j]
+            // 与 nextDelimiter 同口径：跳过注释与字符串字面量，避免 `content: "}"` 或注释里的
+            // 花括号提前结束配平（那会把后续规则并入本块而静默漏检）。
+            if (ch === '/' && text[j + 1] === '*') {
+                const end = text.indexOf('*/', j + 2)
+                j = end === -1 ? length : end + 2
+                continue
+            }
+            if (ch === '"' || ch === '\'') {
+                const quote = ch
+                j += 1
+                while (j < length && text[j] !== quote) {
+                    j += text[j] === '\\' ? 2 : 1
+                }
+                j += 1
+                continue
+            }
+            if (ch === '{') {
+                depth += 1
+            } else if (ch === '}') {
+                depth -= 1
+            }
+            j += 1
+        }
+        const body = text.slice(brace + 1, j - 1)
+        if (prelude.startsWith('@')) {
+            const at = prelude.slice(1).split(/[\s(]/, 1)[0].toLowerCase()
+            if (at === 'keyframes' || at === '-webkit-keyframes') {
+                scanRules(body, true, acc)
+            } else if (['media', 'supports', 'layer', 'container', 'scope', 'starting-style', 'page', 'property'].includes(at)) {
+                scanRules(body, inKeyframes, acc)
+            }
+        } else if (prelude.length > 0) {
+            acc.push({ selector: prelude, body, inKeyframes })
+        }
+        i = j
+    }
+    return acc
+}
+
+/** 将规则体解析为声明列表（剥离注释，按首个冒号切分）。 */
+export function declarationsOf(body) {
+    const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '')
+    const declarations = []
+    for (const raw of withoutComments.split(';')) {
+        const item = raw.trim()
+        if (!item) {
+            continue
+        }
+        const colon = item.indexOf(':')
+        if (colon === -1) {
+            continue
+        }
+        declarations.push({
+            property: item.slice(0, colon).trim(),
+            value: item.slice(colon + 1).trim(),
+        })
+    }
+    return declarations
+}
+
+/** 遍历组件样式块的规则（用于 G1~G4）。 */
+function collectRuleEntries(entries) {
+    const rules = []
+    for (const { file, text } of entries) {
+        for (const block of extractStyleBlocks(file, text)) {
+            for (const rule of scanRules(block.text)) {
+                rules.push({ file: rel(file), ...rule })
+            }
+        }
+    }
+    return rules
+}
+
+/**
+ * G1：档位 / 变体块内不得直接声明属性。
+ * 规则面：首个复合选择器为 `:where(.caomei-<comp>[__<el>]--<受控枚举修饰符>)` 的规则；
+ * 应只声明 CSS 变量（基类以 `var(--x, fallback)` 消费）。
+ */
+export function findTierBlockPropertyDeclarations(entries) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        if (!TIER_BLOCK_RE.test(rule.selector.trim())) {
+            continue
+        }
+        for (const decl of declarationsOf(rule.body)) {
+            if (!decl.property.startsWith('--')) {
+                issues.push({ file: rule.file, selector: rule.selector, property: decl.property, value: decl.value })
+            }
+        }
+    }
+    return issues
+}
+
+/**
+ * G2：组件样式块内声明 `--caomei-*` 时选择器必须含 `:where(`。
+ * 排除全局 token 层（`src/styles/**`，如 confirm-dialog 覆写 `--caomei-color-*`）与跨组件传参
+ * （如 paginator 传 `--caomei-select-max-width`，其名在全局 token 层），二者均非组件自身命名空间。
+ */
+export function findScopedVariableDeclarations(entries, globalTokens) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        if (rule.selector.includes(':where(')) {
+            continue
+        }
+        for (const decl of declarationsOf(rule.body)) {
+            if (!/^--caomei-[a-z0-9-]+$/.test(decl.property) || globalTokens.has(decl.property)) {
+                continue
+            }
+            issues.push({ file: rule.file, selector: rule.selector, property: decl.property })
+        }
+    }
+    return issues
+}
+
+/** G3：禁用态 `opacity` 字面量（0.5 / 0.6），跳过 `@keyframes` 块。 */
+export function findOpacityLiterals(entries) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        if (rule.inKeyframes) {
+            continue
+        }
+        for (const decl of declarationsOf(rule.body)) {
+            if (decl.property !== 'opacity') {
+                continue
+            }
+            const value = decl.value.replace(/!important$/i, '').trim()
+            const numeric = Number(value)
+            if (value !== '' && Number.isFinite(numeric) && (numeric === 0.5 || numeric === 0.6)) {
+                issues.push({ file: rule.file, selector: rule.selector, value: decl.value })
+            }
+        }
+    }
+    return issues
+}
+
+/** G4：数字 `z-index` 字面量；允许 `var(--caomei-z-*)`（含 `calc()` 包装）与关键字。 */
+export function findZIndexLiterals(entries) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        for (const decl of declarationsOf(rule.body)) {
+            if (decl.property !== 'z-index') {
+                continue
+            }
+            const value = decl.value.replace(/!important$/i, '').trim()
+            if (/^-?\d+(?:\.\d+)?$/.test(value)) {
+                issues.push({ file: rule.file, selector: rule.selector, value: decl.value })
+            }
+        }
+    }
+    return issues
+}
+
 /** 汇总所有检查结果。 */
 export function runChecks() {
     const componentEntries = collectEntries(COMPONENTS, (f) => /\.(css|vue)$/.test(f))
     const sourceEntries = collectEntries(SRC, (f) => /\.(css|vue)$/.test(f) && !/\.test\./.test(f))
     const typeEntries = collectEntries(COMPONENTS, (f) => f.endsWith('.ts') && !/\.test\./.test(f))
+    const globalTokens = collectGlobalTokens()
     return {
-        tokenIssues: findTokenIssues(sourceEntries, collectGlobalTokens()),
+        tokenIssues: findTokenIssues(sourceEntries, globalTokens),
         rawColors: findRawColors(componentEntries),
         typeIssues: findTypeScaleIssues(readFileSync(TYPES_FILE, 'utf8')),
         legacyNaming: findLegacyNaming(typeEntries),
+        tierBlockDeclarations: findTierBlockPropertyDeclarations(componentEntries),
+        scopedVariableDeclarations: findScopedVariableDeclarations(componentEntries, globalTokens),
+        opacityLiterals: findOpacityLiterals(componentEntries),
+        zIndexLiterals: findZIndexLiterals(componentEntries),
     }
 }
 
@@ -208,6 +468,18 @@ function main() {
     }
     for (const file of result.legacyNaming) {
         problems.push(`[naming] ${file}: 出现 PrimeVue 旧尺寸命名 'small' / 'large'`)
+    }
+    for (const issue of result.tierBlockDeclarations) {
+        problems.push(`[tier] ${issue.file}: ${issue.selector} 内直接声明属性 ${issue.property}: ${issue.value}（档位块只应声明 CSS 变量）`)
+    }
+    for (const issue of result.scopedVariableDeclarations) {
+        problems.push(`[scope] ${issue.file}: ${issue.selector} 声明 ${issue.property} 但选择器不含 :where(（基类不预声明默认值）`)
+    }
+    for (const issue of result.opacityLiterals) {
+        problems.push(`[opacity] ${issue.file}: ${issue.selector} 出现禁用态字面量 opacity: ${issue.value}（预算 ${OPACITY_BUDGET}）`)
+    }
+    for (const issue of result.zIndexLiterals) {
+        problems.push(`[z-index] ${issue.file}: ${issue.selector} 出现数字 z-index: ${issue.value}（预算 ${Z_INDEX_BUDGET}，请用 var(--caomei-z-*)）`)
     }
     for (const issue of result.rawColors.warnings) {
         notes.push(`[color:warn] ${issue.file}:${issue.line}: 组件内原始 rgb/hsl 字面量（预算 ${RGB_BUDGET} 处，超出即失败）：${issue.text}`)
@@ -230,7 +502,11 @@ function main() {
         process.exit(1)
     }
 
-    console.info(`[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致（rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`)
+    console.info(
+        `[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致、`
+        + `档位块仅声明变量、scoped 变量声明合规、无禁用态 opacity 字面量、无数字 z-index`
+        + `（rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`,
+    )
 }
 
 if (isDirectExecution(import.meta.url)) {

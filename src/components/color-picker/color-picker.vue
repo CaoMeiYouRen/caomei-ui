@@ -188,7 +188,7 @@ function onUpdate(value: string): void {
 -->
 <style>
 .caomei-color-picker__panel {
-    z-index: 1001;
+    z-index: var(--caomei-z-modal);
     box-sizing: border-box;
 
     /* 窄屏收敛：面板宽度取 `min(260px, popper 可用宽)`，避免固定宽度越出视口（回退保持既有 260px） */

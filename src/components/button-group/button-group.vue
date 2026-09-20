@@ -115,6 +115,6 @@ const rootClass = computed(() => `caomei-button-group--${props.orientation}`)
 /* 聚焦成员抬升，保证自身边框压在相邻成员之上 */
 .caomei-button-group :deep(> *:focus-within) {
     position: relative;
-    z-index: 1;
+    z-index: var(--caomei-z-raise);
 }
 </style>

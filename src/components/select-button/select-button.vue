@@ -134,6 +134,7 @@ function handleUpdate(value: unknown): void {
     box-sizing: border-box;
     display: inline-flex;
     overflow: hidden;
+    height: var(--caomei-select-button-height, var(--caomei-control-height-md));
     border: 1px solid var(--caomei-select-button-border, var(--caomei-color-border));
     border-radius: var(--caomei-select-button-radius, var(--caomei-radius-md));
     background: var(--caomei-select-button-bg, var(--caomei-color-bg));
@@ -151,11 +152,13 @@ function handleUpdate(value: unknown): void {
     align-items: center;
     justify-content: center;
     gap: var(--caomei-select-button-gap, var(--caomei-space-1));
+    padding: 0 var(--caomei-select-button-item-padding-inline, var(--caomei-space-3));
     border: none;
     border-left: 1px solid var(--caomei-select-button-border, var(--caomei-color-border));
     background: transparent;
     color: var(--caomei-select-button-color, var(--caomei-color-text));
     font: inherit;
+    font-size: var(--caomei-select-button-item-font-size, var(--caomei-font-size-md));
     white-space: nowrap;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -183,18 +186,7 @@ function handleUpdate(value: unknown): void {
 
     .caomei-select-button__item {
         flex: 1 1 auto;
-    }
-
-    :where(.caomei-select-button--sm) .caomei-select-button__item {
-        min-height: calc(var(--caomei-control-height-sm) - 2px);
-    }
-
-    :where(.caomei-select-button--md) .caomei-select-button__item {
-        min-height: calc(var(--caomei-control-height-md) - 2px);
-    }
-
-    :where(.caomei-select-button--lg) .caomei-select-button__item {
-        min-height: calc(var(--caomei-control-height-lg) - 2px);
+        min-height: var(--caomei-select-button-item-min-height, calc(var(--caomei-control-height-md) - 2px));
     }
 }
 
@@ -218,30 +210,17 @@ function handleUpdate(value: unknown): void {
 }
 
 :where(.caomei-select-button--sm) {
-    height: var(--caomei-control-height-sm);
-}
-
-:where(.caomei-select-button--sm) .caomei-select-button__item {
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-select-button--md) {
-    height: var(--caomei-control-height-md);
-}
-
-:where(.caomei-select-button--md) .caomei-select-button__item {
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+    --caomei-select-button-height: var(--caomei-control-height-sm);
+    --caomei-select-button-item-padding-inline: var(--caomei-space-2);
+    --caomei-select-button-item-font-size: var(--caomei-font-size-sm);
+    --caomei-select-button-item-min-height: calc(var(--caomei-control-height-sm) - 2px);
 }
 
 :where(.caomei-select-button--lg) {
-    height: var(--caomei-control-height-lg);
-}
-
-:where(.caomei-select-button--lg) .caomei-select-button__item {
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+    --caomei-select-button-height: var(--caomei-control-height-lg);
+    --caomei-select-button-item-padding-inline: var(--caomei-space-4);
+    --caomei-select-button-item-font-size: var(--caomei-font-size-lg);
+    --caomei-select-button-item-min-height: calc(var(--caomei-control-height-lg) - 2px);
 }
 
 @media (prefers-reduced-motion: reduce) {

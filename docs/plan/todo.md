@@ -28,6 +28,8 @@
 
 > **M1-4（依赖闭包批次）已取消**（2026-09-20 用户确认）：POC 实测 `unbundle` 保留完整模块图，依赖组件样式随图带入（`button.js` 仍 `import badge.js`），闭包问题不存在。依据见 [M1-1 记录 §3.2 / §7 A2](../design/governance/2026-09-20-m1-1-build-path-poc.md)。
 
+状态（M2-1）：**已产出（2026-09-20）**——盘点记录落 [M2-1 重量级组件质量盘点](../design/governance/2026-09-20-m2-1-component-quality-audit.md)，**待 `@code-reviewer` Review Gate 放行**。结论：7 组件下游用量取证完成；**ColorPicker 色板导航不达标**（留 Backlog）、**AutoComplete 严格选项模式部分达标待用户裁定**（建议暂不纳入）；发现 D1~D4 缺陷与 Z1~Z2 待收敛项，已形成 M2-2 / M2-3 实施清单。
+
 状态（M1-3）：**已产出（2026-09-20）**——落地记录落 [M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)，**待 `@code-reviewer` Review Gate 放行**。形态已落地（`unbundle + css.inject`、`exports` 的 `./theme.css`、resolver / Nuxt 模块注入基础层、`check:build` / `check:nuxt` 断言、文档口径含架构 §4 决策反转留痕，D6 已纳入）；`pnpm verify` exit 0（1384 tests）；`npm pack` 341 文件 / 750.5 kB；消费侧真实包布局实测基础层「需显式引入且只注入一份」。**自纠**：M1-1 / M1-2 关于「根导入携带 tokens」的表述已更正。
 
 状态（M1-2）：**已产出（2026-09-20）**——记录落 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)，**待 `@code-reviewer` Review Gate 放行**。① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**；`check:nuxt` 的断言面缺口只在双通道形态下暴露，补断言属范围增量，见记录 §6 **D6**）。**② 的入口语义（D1~D5）与 D6 已获用户确认（2026-09-20 指令「提交后继续推进」按建议值采纳）**，已写入[架构设计 §3 / §4 / §5](../design/architecture.md) 并由 M1-3 落地。

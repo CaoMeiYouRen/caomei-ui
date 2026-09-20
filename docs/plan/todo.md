@@ -28,6 +28,8 @@
 
 > **M1-4（依赖闭包批次）已取消**（2026-09-20 用户确认）：POC 实测 `unbundle` 保留完整模块图，依赖组件样式随图带入（`button.js` 仍 `import badge.js`），闭包问题不存在。依据见 [M1-1 记录 §3.2 / §7 A2](../design/governance/2026-09-20-m1-1-build-path-poc.md)。
 
+状态（M1-2）：**已产出（2026-09-20）**——记录落 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)，**待 `@code-reviewer` Review Gate 放行**。① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**；`check:nuxt` 的断言面缺口只在双通道形态下暴露，补断言属范围增量，见记录 §6 **D6**）。**② 的入口语义（D1~D5）与 D6 待用户确认后**才写入[架构设计 §3 / §4 / §5](../design/architecture.md)，确认前不启动 M1-3 的对应适配。
+
 状态：M1-1 **已交付（2026-09-20）**——构建路径 POC 落 [M1-1 构建路径 POC](../design/governance/2026-09-20-m1-1-build-path-poc.md)，经 `@code-reviewer` Review Gate 两轮（R1 Reject：预写 Gate 结论 / 破坏面漏 resolver / 过早宣告「路径可行」→ 修复为「条件性可行」；R2 Pass，2 warning + 2 suggest 已同批修正）。结论：推荐 `unbundle: true` + `css.inject: true`，消费侧 Vite 实测仅单组件 1.48 KB gzip、三组件 6.22 KB gzip（对照全量 25.60 KB gzip，收益随用量面变化）；**未触发回退判据**，剩余待验项的归属：消费方 `dts` 解析与入口语义（含 Nuxt 双注入）由 M1-2 消除，四处适配（`exports` / resolver / Nuxt 模块 / `check:build` 断言）的落地与复验由 M1-3 承担。**该记录 §7 的 A1~A5 范围调整已获用户确认（2026-09-20）并据此改写本节**，M1-2 可启动。
 
 #### M2 重量级组件优化与样式治理

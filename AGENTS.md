@@ -54,7 +54,7 @@
 - **组件与样式解耦**：默认提供极简可用样式，支持通过 CSS variables 100% 覆盖。
 - **主题切换与暗色模式**开箱即用。
 - **单包发布**：全部能力（组件、样式、composables、resolver、Nuxt 模块）通过子路径导出承载，不拆分子包。
-- 下游项目通过 `caomei-ui`、`caomei-ui/styles.css`、`caomei-ui/resolver`、`caomei-ui/nuxt` 接入。
+- 下游项目通过 `caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt` 接入（消费方经打包器接入；组件样式随模块按需自带，`theme.css` 为基础层、需显式引入或由 resolver / Nuxt 模块注入）。
 
 ## 5. 技术栈偏好
 

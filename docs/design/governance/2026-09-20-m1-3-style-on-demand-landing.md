@@ -72,7 +72,7 @@ Review Gate 独立复测发现：**esbuild** 下基础层**仍被保留**（`--c
 | --- | --- |
 | 裸 Node ESM 不能直接加载产物 | 产物携带 CSS import，Node 无法加载 `.css`；不经打包器的 Node 脚本 / 裸 SSR 不可用（Vue 应用与 Nuxt 经打包器，不受影响）。冒烟用 loader 适配，并在快速上手（中英）披露 |
 | 基础层必须显式提供 | 组件样式随模块自带，但 tokens / 暗色 / 预设不会随 JS 图携带（Vite / rolldown 系）。已由 resolver（默认注入 `theme.css`）与 Nuxt 模块（`injectStyles: true`）覆盖推荐路径；**手写导入须自行 `import 'caomei-ui/theme.css'`** |
-| `AGENTS.md` 残留旧入口 | `AGENTS.md` 第 57 行仍列 `caomei-ui/styles.css`；该文件受保护（其 §9.1 要求用户明确指示方可修改），**本轮未改**。需用户授权同步为 `caomei-ui/theme.css`（或保留并另行登记） |
+| `AGENTS.md` 残留旧入口 | **已闭环**：`AGENTS.md` 第 57 行原列 `caomei-ui/styles.css`，经用户授权（2026-09-20 指令「AGENTS.md 应当修正」）已同步为 `caomei-ui/theme.css` 并补基础层说明；该文件受其 §9.1 保护，本次为授权变更 |
 | 发布体积结构 | tarball 文件数 11 → **341**、解包 676 → **750.5 kB**；主体为逐模块 JS/DTS 与 **74 个含 SFC scope hash 的 CSS**（M1-1 §3.1 已说明该类文件名属包内相对导入、非 `exports` 目标） |
 | 未覆盖 | webpack / rspack 未实测；未验证「CSS-only」纯 `<link>` 场景（方案 A 已放弃单体聚合）；`presets/*.css` 未拆分（依 D4） |
 | 负向判别力未固化 | `check:resolver` 的「清空 `sideEffects` → 重建 → 报错」目前为人工重演（本次已实测）；建议后续固化为可重复脚本或 CI 手检项（follow-up） |

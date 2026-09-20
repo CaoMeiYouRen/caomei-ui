@@ -19,7 +19,7 @@
 
 **工作量画像**（不是工期，是可复现的规模口径）：迁移面 **1515 个组件开标签 / 148 个 `.vue`**（占 momei 应用页面 179 个的 83%）；图标 **598 处 / 134 文件 / 128 个唯一图标**；样式耦合 **token 1394 处 + SCSS 20 文件 + class 190 处**；命令式 API **43 个 `.vue`（useToast 33 / useConfirm 10）**；测试耦合 **21 个文件**。
 
-**关键正面事实**：① caomei-ui 侧台账 §4.1「需新组件 11 项」**已 11/11 交付**（其中 Panel 按阶段决策由 `CaomeiCard` 承载）；② §4.2「需增强」条目**受检 24 项：完全交付 8 / 部分交付 16 / 完全未交付 0**（口径见 §3.2）；③ momei 自 2026-09-12 起无提交，**用量与 2026-09-14 台账逐项一致**（59 组件 / 1515 用法，Δ 全为 0）——评估结论不会因样本漂移而失效；④ caomei-ui 已具备迁移所需基础设施：`caomei-ui/nuxt` 模块、`caomei-ui/resolver`、`caomei-ui/styles.css`、主题预设（含 `momei` 预设）、`CaomeiConfigProvider` i18n 注入、`check:nuxt` 消费冒烟；⑤ 运行时依赖仅 4 个（`reka-ui@2.10.4` 精确锁定 / `@tanstack/vue-table` / `@internationalized/date` / `@lucide/vue`）。
+**关键正面事实**：① caomei-ui 侧台账 §4.1「需新组件 11 项」**已 11/11 交付**（其中 Panel 按阶段决策由 `CaomeiCard` 承载）；② §4.2「需增强」条目**受检 24 项：完全交付 8 / 部分交付 16 / 完全未交付 0**（口径见 §3.2）；③ momei 自 2026-09-12 起无提交，**用量与 2026-09-14 台账逐项一致**（59 组件 / 1515 用法，Δ 全为 0）——评估结论不会因样本漂移而失效；④ caomei-ui 已具备迁移所需基础设施：`caomei-ui/nuxt` 模块、`caomei-ui/resolver`、`caomei-ui/styles.css`（**后续更新：2026-09-20 Phase 11 M1-3 起基础层入口改为 `caomei-ui/theme.css`，组件样式随模块自带**）、主题预设（含 `momei` 预设）、`CaomeiConfigProvider` i18n 注入、`check:nuxt` 消费冒烟；⑤ 运行时依赖仅 4 个（`reka-ui@2.10.4` 精确锁定 / `@tanstack/vue-table` / `@internationalized/date` / `@lucide/vue`）。
 
 ## 2. momei 侧现状快照（2026-09-17）
 
@@ -112,7 +112,7 @@ Divider（37）、Drawer（3）、Stepper 系列（1 处 / 6 个 StepPanel）、
 | --- | --- |
 | Nuxt 模块（组件 + composables 自动导入、样式注入、theme token 覆盖、darkMode 策略） | `src/nuxt/module.ts`（组件清单 77 项） |
 | 自动导入 resolver | `src/resolver/index.ts`（子路径 `caomei-ui/resolver`） |
-| 样式与主题 | `src/styles/index.css`（`styles.css` 154 KB）；预设 `caomei` / `momei`（含暗色与 `auto`）；`theme.css` 支持 `.dark` / `[data-theme=dark]` / `prefers-color-scheme` |
+| 样式与主题 | `src/styles/index.css`（`styles.css` 154 KB）；预设 `caomei` / `momei`（含暗色与 `auto`）；`theme.css` 支持 `.dark` / `[data-theme=dark]` / `prefers-color-scheme`。**后续更新（2026-09-20 Phase 11 M1-3）**：产物改 `unbundle + css.inject`，单体 `styles.css` 不再产出，基础层入口为 `caomei-ui/theme.css`，组件样式随模块自带 |
 | i18n 注入 | `CaomeiConfigProvider` + `provideLocale` / `useLocale`；内建 5 语种（zh-CN / en-US / zh-TW / ja-JP / ko-KR） |
 | 消费冒烟 | `pnpm test:nuxt-smoke`（构建 + `check:nuxt`：软链 fixture → `nuxt generate` → SSR / CSS 断言），已纳入 `verify` |
 

@@ -42,4 +42,9 @@ export interface BadgeProps {
      * @en Accessible name; recommended in dot mode, and in numeric mode it overrides the spoken text of the visible value
      */
     label?: string
+    /**
+     * 叠加位置偏移 `[x, y]`（单位 px）；仅在叠加模式（有默认插槽）下生效
+     * @en Overlay position offset `[x, y]` (in px); only effective in overlay mode (with default slot)
+     */
+    offset?: [number, number]
 }

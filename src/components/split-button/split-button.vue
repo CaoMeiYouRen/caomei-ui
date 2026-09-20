@@ -53,6 +53,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
     <CaomeiButtonGroup
         v-bind="$attrs"
         class="caomei-split-button"
+        :group-label="groupLabel"
     >
         <CaomeiButton
             class="caomei-split-button__main"

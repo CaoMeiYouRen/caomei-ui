@@ -33,8 +33,8 @@ export interface TagProps {
      */
     closable?: boolean
     /**
-     * 是否禁用（同时禁用关闭按钮）
-     * @en Whether it is disabled (also disables the close button)
+     * 是否禁用（同时禁用关闭按钮与选中切换）
+     * @en Whether it is disabled (also disables close button and selection toggle)
      */
     disabled?: boolean
     /**
@@ -42,4 +42,9 @@ export interface TagProps {
      * @en Accessible label of the close button; defaults to the current locale's "Remove" text
      */
     closeLabel?: string
+    /**
+     * 是否可选中筛选；默认 false
+     * @en Whether it is selectable for filtering; defaults to false
+     */
+    selectable?: boolean
 }

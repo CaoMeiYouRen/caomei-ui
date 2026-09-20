@@ -121,4 +121,9 @@ export interface AutoCompleteProps extends FieldProps, FieldIdentityProps {
      * @en Whether to skip client-side filtering of suggestions by label. Enable it for async / fuzzy search so suggestions returned by the server but not containing the query are not filtered out
      */
     ignoreFilter?: boolean
+    /**
+     * 严格选项模式：开启后取值必须来自选项列表，自由文本在提交/失焦时按未命中处理（不写入模型）；默认 false
+     * @en Strict option mode: when enabled, values must come from the options list; free text is treated as uncommitted on submit/blur (not written to model); defaults to false
+     */
+    strict?: boolean
 }

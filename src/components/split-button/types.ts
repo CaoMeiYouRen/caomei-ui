@@ -26,6 +26,11 @@ export interface SplitButtonProps {
      */
     label?: string
     /**
+     * 分组可访问名（映射到根元素 `aria-label`）；默认不设置，由使用方根据上下文提供
+     * @en Group accessible name (mapped to root element's `aria-label`); not set by default, provided by the consumer based on context
+     */
+    groupLabel?: string
+    /**
      * 下拉菜单项
      * @en Dropdown menu items
      */

@@ -6,6 +6,8 @@ import {
     SelectItem,
     SelectItemIndicator,
     SelectItemText,
+    SelectLabel,
+    SelectGroup,
     SelectPortal,
     SelectRoot,
     SelectTrigger,
@@ -17,7 +19,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
-import type { SelectProps } from './types'
+import type { SelectOptionGroup, SelectProps } from './types'
 
 defineOptions({ name: 'CaomeiSelect', inheritAttrs: false })
 
@@ -58,10 +60,19 @@ interface NormalizedOption {
     selected: boolean
 }
 
+/** 判断是否为分组形态 */
+function isOptionGroup(option: T | SelectOptionGroup<T>): option is SelectOptionGroup<T> {
+    return 'options' in option && Array.isArray(option.options)
+}
+
 /** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
 const normalizedOptions = computed<NormalizedOption[]>(() => {
     const result: NormalizedOption[] = []
     for (const option of props.options) {
+        // 跳过分组项，由模板单独处理
+        if (isOptionGroup(option)) {
+            continue
+        }
         const value = resolveOptionValue(option, props.optionValue, 'value')
         if (value === undefined) {
             continue
@@ -77,6 +88,35 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
     return result
 })
 
+/** 归一化分组列表 */
+const normalizedGroups = computed(() => {
+    const result: { label: string, options: NormalizedOption[] }[] = []
+    for (const option of props.options) {
+        if (!isOptionGroup(option)) {
+            continue
+        }
+        const groupOptions: NormalizedOption[] = []
+        for (const item of option.options) {
+            const value = resolveOptionValue(item, props.optionValue, 'value')
+            if (value === undefined) {
+                continue
+            }
+            groupOptions.push({
+                raw: item,
+                value,
+                label: resolveOptionField(item, props.optionLabel, 'label'),
+                disabled: resolveOptionDisabled(item),
+                selected: value === model.value,
+            })
+        }
+        result.push({ label: option.label, options: groupOptions })
+    }
+    return result
+})
+
+/** 是否包含分组 */
+const hasGroups = computed(() => props.options.some(isOptionGroup))
+
 /** 有选中值（用于 data-filled；不依赖选项 label，空 label 也视为有值） */
 const hasValue = computed(
     () => model.value !== undefined && model.value !== null && model.value !== '',
@@ -88,7 +128,19 @@ const selectedLabel = computed(() => {
     if (!hasValue.value) {
         return undefined
     }
-    return normalizedOptions.value.find((option) => option.value === model.value)?.label
+    // 先从扁平选项中查找
+    const flatMatch = normalizedOptions.value.find((option) => option.value === model.value)
+    if (flatMatch) {
+        return flatMatch.label
+    }
+    // 再从分组中查找
+    for (const group of normalizedGroups.value) {
+        const match = group.options.find((option) => option.value === model.value)
+        if (match) {
+            return match.label
+        }
+    }
+    return undefined
 })
 
 const rootClass = computed(() => [
@@ -164,26 +216,83 @@ function clearValue(): void {
                 :body-lock="bodyLock"
             >
                 <SelectViewport class="caomei-select__viewport">
-                    <SelectItem
-                        v-for="option in normalizedOptions"
-                        :key="option.value"
-                        class="caomei-select__item"
-                        :value="option.value"
-                        :disabled="option.disabled"
-                    >
-                        <SelectItemText class="caomei-select__item-text">
-                            <slot
-                                name="option"
-                                :option="option.raw"
-                                :selected="option.selected"
+                    <!-- 扁平选项 -->
+                    <template v-if="!hasGroups">
+                        <SelectItem
+                            v-for="option in normalizedOptions"
+                            :key="option.value"
+                            class="caomei-select__item"
+                            :value="option.value"
+                            :disabled="option.disabled"
+                        >
+                            <SelectItemText class="caomei-select__item-text">
+                                <slot
+                                    name="option"
+                                    :option="option.raw"
+                                    :selected="option.selected"
+                                >
+                                    {{ option.label }}
+                                </slot>
+                            </SelectItemText>
+                            <SelectItemIndicator class="caomei-select__indicator">
+                                <CaomeiIcon :icon="Check" />
+                            </SelectItemIndicator>
+                        </SelectItem>
+                    </template>
+                    <!-- 分组选项 -->
+                    <template v-else>
+                        <!-- 顶层扁平选项 -->
+                        <SelectItem
+                            v-for="option in normalizedOptions"
+                            :key="option.value"
+                            class="caomei-select__item"
+                            :value="option.value"
+                            :disabled="option.disabled"
+                        >
+                            <SelectItemText class="caomei-select__item-text">
+                                <slot
+                                    name="option"
+                                    :option="option.raw"
+                                    :selected="option.selected"
+                                >
+                                    {{ option.label }}
+                                </slot>
+                            </SelectItemText>
+                            <SelectItemIndicator class="caomei-select__indicator">
+                                <CaomeiIcon :icon="Check" />
+                            </SelectItemIndicator>
+                        </SelectItem>
+                        <!-- 分组 -->
+                        <SelectGroup
+                            v-for="(group, groupIndex) in normalizedGroups"
+                            :key="`group-${group.label}-${groupIndex}`"
+                            class="caomei-select-group"
+                        >
+                            <SelectLabel class="caomei-select-group__label">
+                                {{ group.label }}
+                            </SelectLabel>
+                            <SelectItem
+                                v-for="option in group.options"
+                                :key="option.value"
+                                class="caomei-select__item"
+                                :value="option.value"
+                                :disabled="option.disabled"
                             >
-                                {{ option.label }}
-                            </slot>
-                        </SelectItemText>
-                        <SelectItemIndicator class="caomei-select__indicator">
-                            <CaomeiIcon :icon="Check" />
-                        </SelectItemIndicator>
-                    </SelectItem>
+                                <SelectItemText class="caomei-select__item-text">
+                                    <slot
+                                        name="option"
+                                        :option="option.raw"
+                                        :selected="option.selected"
+                                    >
+                                        {{ option.label }}
+                                    </slot>
+                                </SelectItemText>
+                                <SelectItemIndicator class="caomei-select__indicator">
+                                    <CaomeiIcon :icon="Check" />
+                                </SelectItemIndicator>
+                            </SelectItem>
+                        </SelectGroup>
+                    </template>
                 </SelectViewport>
             </SelectContent>
         </SelectPortal>
@@ -407,5 +516,18 @@ function clearValue(): void {
     display: inline-flex;
     flex-shrink: 0;
     color: var(--caomei-color-primary);
+}
+
+.caomei-select-group {
+    padding-block: var(--caomei-space-1);
+}
+
+.caomei-select-group__label {
+    display: block;
+    padding: var(--caomei-space-1) var(--caomei-space-2);
+    font-size: var(--caomei-font-size-sm);
+    font-weight: 600;
+    color: var(--caomei-color-text-muted);
+    user-select: none;
 }
 </style>

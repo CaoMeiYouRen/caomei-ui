@@ -45,6 +45,17 @@ const rootClass = computed(() => [
     { 'caomei-badge--dot': props.dot },
 ])
 
+/** 叠加模式下的偏移样式 */
+const offsetStyle = computed(() => {
+    if (!overlay.value || !props.offset) {
+        return undefined
+    }
+    const [x, y] = props.offset
+    return {
+        transform: `translate(calc(50% + ${x}px), calc(-50% + ${y}px))`,
+    }
+})
+
 const ariaHidden = computed(() => (props.dot && !props.label ? 'true' : undefined))
 
 const ariaRole = computed(() => (props.dot && props.label ? 'img' : undefined))
@@ -67,6 +78,7 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
             v-if="visible"
             class="caomei-badge"
             :class="rootClass"
+            :style="offsetStyle"
             v-bind="{...labelAttrs(label), ...ariaAttrs}"
         >
             {{ displayValue }}
@@ -101,7 +113,7 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     line-height: 1;
     white-space: nowrap;
     vertical-align: middle;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease, min-width 0.15s ease;
 }
 
 .caomei-badge-wrapper > .caomei-badge {

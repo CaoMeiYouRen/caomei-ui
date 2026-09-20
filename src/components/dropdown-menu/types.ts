@@ -67,6 +67,16 @@ export interface DropdownMenuModelItem {
      * @en Whether to render a separator (other fields are ignored)
      */
     separator?: boolean
+    /**
+     * 嵌套子菜单项；设置后渲染为子菜单触发器，点击展开下一级菜单
+     * @en Nested submenu items; when set, renders as a submenu trigger that expands the next level on click
+     */
+    items?: DropdownMenuModelItem[]
+    /**
+     * 自定义 CSS 类名（字符串或对象/数组形态，与 Vue `:class` 绑定一致）
+     * @en Custom CSS class name (string or object/array shape, consistent with Vue `:class` binding)
+     */
+    class?: string | Record<string, boolean> | (string | Record<string, boolean>)[]
 }
 
 export interface DropdownMenuProps {

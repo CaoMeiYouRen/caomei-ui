@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<AutoCompleteProps>(), {
     debounce: 300,
     clearable: true,
     ignoreFilter: false,
+    strict: false,
 })
 
 const emit = defineEmits<AutoCompleteEmits>()
@@ -91,6 +92,7 @@ const rootClass = computed(() => [
     {
         'caomei-auto-complete--invalid': props.invalid,
         'caomei-auto-complete--disabled': props.disabled,
+        'caomei-auto-complete--strict': props.strict,
     },
 ])
 
@@ -189,6 +191,10 @@ function onInput(event: Event): void {
 
 function commitFreeText(): void {
     if (props.disabled || props.multiple) {
+        return
+    }
+    // 严格选项模式：自由文本不写入模型
+    if (props.strict) {
         return
     }
     const text = inputValue.value
@@ -423,6 +429,11 @@ watch(normalizedOptions, () => {
     cursor: not-allowed;
     background: var(--caomei-color-bg-elevated);
     opacity: var(--caomei-disabled-opacity);
+}
+
+/* 严格选项模式：仅作视觉标识，无额外样式 */
+.caomei-auto-complete--strict {
+    /* 保持默认样式，strict 模式通过逻辑控制而非视觉差异 */
 }
 
 :where(.caomei-auto-complete--sm) {

@@ -62,6 +62,7 @@ export const caomeiComponents = [
     'CaomeiRadioGroup',
     'CaomeiSelect',
     'CaomeiSelectButton',
+    'CaomeiSelectGroup',
     'CaomeiSkeleton',
     'CaomeiSlider',
     'CaomeiSplitButton',

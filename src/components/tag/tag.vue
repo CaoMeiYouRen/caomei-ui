@@ -14,7 +14,10 @@ const props = withDefaults(defineProps<TagProps>(), {
     rounded: false,
     closable: false,
     disabled: false,
+    selectable: false,
 })
+
+const selected = defineModel<boolean>('selected', { default: false })
 
 const emit = defineEmits<{
     close: []
@@ -35,6 +38,8 @@ const rootClass = computed(() => [
     {
         'caomei-tag--rounded': props.rounded,
         'caomei-tag--disabled': props.disabled,
+        'caomei-tag--selectable': props.selectable,
+        'caomei-tag--selected': props.selectable && selected.value,
     },
 ])
 
@@ -44,10 +49,26 @@ function onClose(): void {
     }
     emit('close')
 }
+
+function onToggle(): void {
+    if (props.disabled || !props.selectable) {
+        return
+    }
+    selected.value = !selected.value
+}
 </script>
 
 <template>
-    <span class="caomei-tag" :class="rootClass">
+    <span
+        class="caomei-tag"
+        :class="rootClass"
+        :role="selectable ? 'button' : undefined"
+        :tabindex="selectable && !disabled ? 0 : undefined"
+        :aria-pressed="selectable ? selected : undefined"
+        @click="onToggle"
+        @keydown.enter="onToggle"
+        @keydown.space.prevent="onToggle"
+    >
         <span v-if="$slots.icon" class="caomei-tag__icon">
             <slot name="icon" />
         </span>
@@ -60,7 +81,7 @@ function onClose(): void {
             class="caomei-tag__close"
             :disabled="disabled"
             :aria-label="closeLabel"
-            @click="onClose"
+            @click.stop="onClose"
         >
             <CaomeiIcon :icon="X" />
         </button>
@@ -172,5 +193,22 @@ function onClose(): void {
     outline: 2px solid var(--caomei-color-primary);
     outline-offset: 1px;
     border-radius: var(--caomei-radius-sm);
+}
+
+/* 可选中态 */
+.caomei-tag--selectable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.caomei-tag--selectable:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
+}
+
+/* 选中态：边框 + 背景加深 */
+.caomei-tag--selected {
+    border-color: var(--caomei-tag-tone);
+    background: color-mix(in srgb, var(--caomei-tag-tone) 24%, transparent);
 }
 </style>

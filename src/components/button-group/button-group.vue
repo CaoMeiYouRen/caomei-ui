@@ -12,7 +12,12 @@ const rootClass = computed(() => `caomei-button-group--${props.orientation}`)
 </script>
 
 <template>
-    <div class="caomei-button-group" :class="rootClass">
+    <div
+        class="caomei-button-group"
+        :class="rootClass"
+        role="group"
+        :aria-label="props.groupLabel"
+    >
         <slot />
     </div>
 </template>

@@ -60,6 +60,10 @@ jobs:
         if: always()
         run: pnpm run test:coverage
 
+      - name: Check coverage thresholds
+        if: always()
+        run: pnpm run check:coverage
+
       - name: Build docs
         if: always()
         run: pnpm run docs:build

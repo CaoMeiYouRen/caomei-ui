@@ -8,3 +8,24 @@
 .vp-doc .caomei-data-table__table {
     display: table;
 }
+
+/*
+  修复 en-US 文档页 768 档横向溢出。
+
+  问题：en-US 页面在 768px 视口下 `scrollWidth 847 > clientWidth 768`（79px），
+  溢出元素为 VitePress 内容列 `.content`。
+  原因：en-US 文本较长，`.content` 的 `min-width` 在窄屏下撑破容器。
+
+  修复：在 768px 及以下视口，强制 `.content` 的 `min-width` 为 0，
+  允许内容自然收缩。同时确保 `overflow-wrap` 正确断行。
+*/
+@media (max-width: 768px) {
+    .vp-doc .content {
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    .vp-doc .content-container {
+        min-width: 0;
+    }
+}

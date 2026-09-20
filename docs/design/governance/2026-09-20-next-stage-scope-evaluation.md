@@ -114,7 +114,7 @@
 ## 4. 容量、排序与准入边界
 
 - **容量**：三组合均为 3–4 条主线，符合 [规划规范 §6](../../standards/planning.md) 的 3–6 条要求；每条主线须在登记时补齐「执行范围 / 非目标 / 最小验收标准」。
-- **顺序依赖**：CSS 分层拆分必须先交付构建路径 POC；依赖闭包类拆分（select / button / input / calendar 家族）须等批次 2 结论后再定。
+- **顺序依赖**：构建路径 POC 已交付（[M1-1 记录](./2026-09-20-m1-1-build-path-poc.md)，2026-09-20）；**依赖闭包类拆分已随 POC 结论取消**（§6 的 1.3 / 1.4 形态已让渡给 M1-1 记录与 [待办事项](../../plan/todo.md) 的 M1 节）。
 - **不纳入本阶段的项**：Phase 8（须单独评估且无已接入下游）、momei 侧迁移（外部执行）、RTL、`useDialog`、语言矩阵长期、@iconify/vue / Tailwind preset / Storybook（均为条件触发或已决定不做）。
 - **决策落定后的动作**：按 [规划规范 §3.8](../../standards/planning.md) 同步全部受影响载体——分配阶段编号 → 登记 `todo.md` 当前阶段 → `roadmap.md` 阶段表与状态行 → `backlog.md` 标注迁出（`→ Mx（阶段 …）`）→ 长期任务触发义务检查。
 
@@ -142,6 +142,8 @@
 
 ### M1 CSS 分层拆分（先行，含 POC）
 
+> **实现形态更新（2026-09-20，POC 后）**：下方 1.3（逐组件样式入口）与 1.4（依赖闭包批次）已失效——M1-1 POC 实测 `unbundle + css.inject` 即可让消费方 tree-shaking 达成按需，用户已确认取消逐组件入口与闭包批次。本小节保留为决策时点快照，**现行范围以 [待办事项](../../plan/todo.md) 的 M1 节为准**，依据见 [M1-1 构建路径 POC §7](./2026-09-20-m1-1-build-path-poc.md)。
+
 | 条目 | 执行范围 | 最小验收标准 |
 | --- | --- | --- |
 | 1.1 构建路径 POC | 判定 `unbundle: true` 与「多入口 + `css.splitting: true`」哪条能产出所需 CSS 入口且不破坏 `dts` / `exports` / `check:build` / `check:nuxt` / `docs:build` | 产出 `dist` 清单与体积对照；**POC 不过则终止 M1 全部后续条目**并回退「方案 A 仅文档声明」；此时 2.1 的盘点对象（由 1.3 定义）同步终止，若要保留盘点须改为独立范围并**经用户确认** |
@@ -149,7 +151,7 @@
 | 1.3 重量级组件拆分（批次 2） | auto-complete / drawer / multi-select / stepper / toolbar / file-upload / color-picker 各自入口并从 `styles.css` 移出；resolver 与 Nuxt 模块按需注入 | [评估记录 §7.3](./2026-09-20-css-on-demand-evaluation.md) 六条（集合不变量机检、降幅一致、独立加载渲染对照、依赖闭包、门禁全绿、文档明示） |
 | 1.4 依赖闭包批次（可选） | select（+paginator+data-table）、button（+badge 及上游 confirm-dialog / split-button）、input（+password）、calendar（+date-picker） | 同上；**默认不执行**——是否纳入须由 1.3 结论提出候选并**经用户确认**后登记（AI 不得自行升级，见 [规划规范 §3.2](../../standards/planning.md)） |
 
-### M2 重量级组件优化与样式治理（与 M1 同批改同一批文件，避免二次验证）
+### M2 重量级组件优化与样式治理（文件域与 M1 不重叠，可并行；`theme.css` 落点冲突时与 M1-2 串行）
 
 | 条目 | 执行范围 | 最小验收标准 |
 | --- | --- | --- |

@@ -50,7 +50,7 @@
 
 > **Phase 5 第二阶段已授权启动并于 2026-09-19 完成归档**（以下为启动时的授权留痕；2026-09-19 用户决策 4 项）：首版版本号取 **0.x**（后续再议 1.0.0）；发布方式为**本地手动发布**、**暂不启动 CI 自动发布流程**；**下游接入验证**等待发布后下游实际迁移反馈；测试偶发失败按「多次出现再处理」跟踪。**技术约束（取证）**：semantic-release 首版恒为 `1.0.0`（`FIRST_RELEASE` 常量、无 `initialVersion` 选项），故 0.x 首版采用「手工发布 + 建基线 tag」；本地运行 semantic-release 需 `--no-ci` 且需 npm / GitHub 凭据。条目见[待办归档](./todo-archive.md)，发布指南见[发布指南](../guide/release.md)，范围与就绪度评估见[Phase 5 第二阶段发版评估记录](../design/governance/2026-09-19-phase5-second-stage-release-evaluation.md)。
 
-> 状态：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6、Phase 7 第一阶段、Phase 9、Phase 10 与 **Phase 7 第二阶段** 已完成并归档（见 [待办归档](./todo-archive.md)）；**Phase 5 第二阶段（首版发布，2026-09-19 授权启动）已完成并归档**；**当前进行中阶段：Phase 11（组件样式按需化与能力增强，2026-09-20 授权启动）**。**Phase 7 第二阶段（库侧迁移就绪与交接计划）的 momei 侧迁移由 momei 项目执行、本仓等待反馈**；Phase 8 未启动。
+> 状态：Phase 0 ~ Phase 4、Phase 5 第一阶段、Phase 6、Phase 7 第一阶段、Phase 9、Phase 10、Phase 7 第二阶段、Phase 5 第二阶段与 **Phase 11** 已完成并归档（见 [待办归档](./todo-archive.md)）；**无进行中阶段**。**Phase 7 第二阶段（库侧迁移就绪与交接计划）的 momei 侧迁移由 momei 项目执行、本仓等待反馈**；Phase 8 未启动。
 
 ## 3. 设计依据
 
@@ -69,4 +69,4 @@
 
 ## 5. 归档索引
 
-已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件，含预落地的 Switch）、Phase 3（Tier 2 组件）、Phase 4（Tier 3 稳定批组件）、Phase 5 第一阶段（文档站增强）、Phase 6（组件库补全与规范化）、Phase 7 第一阶段（迁移就绪，momei 优先）、Phase 9（发布前收口）、Phase 10（国际化与移动端适配）、Phase 7 第二阶段（库侧迁移就绪与交接计划）与 Phase 5 第二阶段（首版发布）均已归档。
+已完成阶段记录迁入 [todo-archive.md](./todo-archive.md)：Phase 0（立项与 POC）、Phase 1（Tier 0 组件）、Phase 2（Tier 1 组件，含预落地的 Switch）、Phase 3（Tier 2 组件）、Phase 4（Tier 3 稳定批组件）、Phase 5 第一阶段（文档站增强）、Phase 6（组件库补全与规范化）、Phase 7 第一阶段（迁移就绪，momei 优先）、Phase 9（发布前收口）、Phase 10（国际化与移动端适配）、Phase 7 第二阶段（库侧迁移就绪与交接计划）、Phase 5 第二阶段（首版发布）与 **Phase 11（组件样式按需化与能力增强）** 均已归档。

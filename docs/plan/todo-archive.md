@@ -274,3 +274,46 @@
 - 质量门：`pnpm verify` 通过；单元测试 16 例
 - 审计：`@code-reviewer` Review Gate Pass（RG-SW-01 ~ 06）；浏览器验证 59/59 通过
 - 遗留：真实 `<form>` 提交链路与 SSR 水合未纳入浏览器验证覆盖
+
+---
+
+## Phase 11：组件样式按需化与能力增强
+
+- 时间：2026-09-20（用户授权启动；同日完成全部 4 主线 / 15 条原子条目）
+- 授权与范围（用户决策 2026-09-20）：取向取候选组合 **X + Y 混合**（不取 Z）；**覆盖率不进入日常门禁**——现状约 90%，改为仅在周期性回归任务或 release 门禁中校验；**功能开发优先**，样式分层拆分与相应组件优化先行；M3 用量**按现有取证直接做**（不等 momei 反馈）；样式拆分**兼容性不作要求**，下游自行修复。范围依据见[下一阶段范围评估](../design/governance/2026-09-20-next-stage-scope-evaluation.md) §6；样式拆分方案与批次见[CSS 按需引入评估](../design/governance/2026-09-20-css-on-demand-evaluation.md) §7。
+
+### M1 样式按需化（4 条，1 条取消）
+
+- **M1-1 构建路径 POC**：三条路径全部实测——A `unbundle`（337 文件 / 714,154 B）；B `unbundle + css.inject`（**推荐**：JS 保留逐模块 CSS import；消费侧 Vite 实测仅单组件 1.48 KB gzip、三组件 6.22 KB gzip，对照全量 25.60 KB gzip）；C 多入口 + `css.splitting`（18 文件 / 655,640 B，不推荐）。**关键发现：推翻已登记的「逐组件样式入口」假设**——模块图 + `sideEffects: ["**/*.css"]` 即可让消费方 tree-shaking 达成按需。结论定为**条件性可行**。提交 `21c1df7` / `2f08e46` / `6ca869c`。Review Gate 两轮（R1 Reject → R2 Pass）。
+- **M1-2 待验项消除 + 入口语义落定**：① `dts` 消费方解析通过（`bundler` / `node16` 双模式，含负向对照）；② 入口语义方案成形（D1~D5）；③ Nuxt 双注入结论落档（**Nuxt 侧不得依赖 JS 图携带 tokens**）。提交 `a4c6b0e`。Review Gate Pass。
+- **M1-3 `unbundle + css.inject` 落地与适配**：落地构建配置；四处适配——`exports` 重写（`./theme.css`）、resolver `sideEffects` 目标改写、Nuxt 模块注入目标、`check-build` 断言目标；文档口径同步。`pnpm verify` exit 0；`npm pack` 341 文件 / 750.5 kB。提交 `a869b8f` / `13c45d1`。Review Gate Pass。
+- **M1-4（依赖闭包批次）已取消**：POC 实测 `unbundle` 保留完整模块图，依赖组件样式随图带入，闭包问题不存在。
+- 关键记录：[M1-1 构建路径 POC](../design/governance/2026-09-20-m1-1-build-path-poc.md)、[M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)、[M1-3 样式按需形态落地与适配](../design/governance/2026-09-20-m1-3-style-on-demand-landing.md)
+
+### M2 重量级组件优化与样式治理（3 条）
+
+- **M2-1 重量级组件质量盘点**：7 组件下游用量取证完成；ColorPicker 色板导航不达标（留 Backlog）；AutoComplete 严格选项模式经用户裁定纳入 → 登记为 M3-5。提交 `bd954c5`。Review Gate 四轮（R1~R3 Reject → R4 Pass）。
+- **M2-2 / M2-3 样式治理落地**：G2（`button` / `drawer` / `dialog` / `confirm-dialog` 基类预声明改消费处 fallback；`message` / `badge` / `tag` / `toast` / `radio-group` 变体类改 `:where()`）；G1（`auto-complete` / `multi-select` / `message` / `select` / `select-button` 档位块改「只声明 CSS 变量」）；D1 死声明 4 处清理；G4 新增 9 个 `--caomei-z-*` 并收敛 21 处；`check:design` 新增 G1~G4 四类机检。**等价证据**：226 项真实浏览器计算样式逐属性比对 **0 差异**。提交 `ad0eae7` / `fd0f0f3`。Review Gate Pass。
+- 关键记录：[M2-1 重量级组件质量盘点](../design/governance/2026-09-20-m2-1-component-quality-audit.md)、[M2-2 / M2-3 样式治理落地](../design/governance/2026-09-20-m2-2-m2-3-style-governance-landing.md)
+
+### M3 组件能力增强（5 条）
+
+- **M3-1 Select 分组**：新增 `SelectOptionGroup` 类型与 `CaomeiSelectGroup` 组件，支持分组渲染与键盘遍历。
+- **M3-2 Tag / Badge 增强**：Tag 新增 `selectable` + `selected` v-model（可选中筛选）；Badge 新增 `offset` prop（叠加位置偏移）+ 宽度过渡。
+- **M3-3 DropdownMenu `model` 扩展**：支持 `items` 嵌套子菜单（递归渲染，3 层限制）+ 逐条目 `class`。
+- **M3-4 分组按钮可访问语义**：ButtonGroup / SplitButton 根补 `role="group"` + `groupLabel` prop。
+- **M3-5 AutoComplete 严格选项模式**：新增 `strict` prop，严格模式下自由文本不写入模型。
+- 提交 `38398b3`。Review Gate 两轮（R1 含 1 warning / 3 suggest → R2 Pass）。
+
+### M4 质量门与文档守卫（3 条）
+
+- **M4-1 覆盖率门禁落位**：新增 `check-coverage.mjs`（阈值 statements 90% / branches 80% / functions 90% / lines 90%），在 `regression-weekly.yml` 与 `release.yml` 中调用。
+- **M4-2 文档守卫补强**：新增 `check-i18n-old-dirs.mjs` 翻译旧目录守卫，纳入 `docs:check`。
+- **M4-3 文档对外可用**：新增 `README.en-US.md`（仓库内文档定位）；修复 en-US 文档页 768 档横向溢出（`caomei-demo.css` 添加 `@media (max-width: 768px)` 规则）。
+- 提交 `0591cad`。Review Gate Pass。
+
+### 阶段总结
+
+- **质量门**：`pnpm verify` exit 0（lint / lint:css / lint:md / typecheck / typecheck:docs / test 1415 passed / build / check:build / check:resolver / check:nuxt / docs:build / i18n-routing / governance:check）；`pnpm test:e2e` exit 0（54 passed）。
+- **长期任务**：阶段收口前触发一轮门槛复核（[长期任务](./recurring.md) §3 第 10 轮，2026-09-20，零代码改动域；两组任务待执行批次 0 项、条件触发 2 项维持）。
+- **遗留与后续候选**：28 条非 `:where()` 尺寸档位块（8 组件）待用户裁定；对比度遗留项盘点；a11y 自动化回归；测试隔离与偶发失败；文档站观感与版本化；其余候选见 [Backlog](./backlog.md)。

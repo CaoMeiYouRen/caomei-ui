@@ -72,7 +72,7 @@ pnpm remove caomei-ui
 | Symptom | Cause and fix |
 | --- | --- |
 | Components or styles are stale | Forgot to run `pnpm build` in caomei-ui; with `file:` also reinstall downstream |
-| `caomei-ui/styles.css` cannot be resolved | The package was not built, or the downstream install did not create the local dependency |
+| `caomei-ui/theme.css` cannot be resolved | The package was not built, or the downstream install did not create the local dependency |
 | Types point at an old version | The downstream cache holds an old dependency; remove `node_modules/.pnpm` and reinstall |
 | Duplicate Vue instance warnings or failed injections | `link:` does not resolve peer dependencies; switch to `file:` |
 | New dependencies missing after linking | Declare and install them in caomei-ui, rebuild, then reinstall downstream |

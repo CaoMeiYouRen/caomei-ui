@@ -68,8 +68,9 @@ export default defineConfig({
 
 ```ts
 import { CaomeiButton } from 'caomei-ui'
-import 'caomei-ui/styles.css'
 ```
+
+> 组件样式随包自带（打包器按组件丢弃未使用的 CSS）；**基础层（tokens / 暗色 / 品牌预设）需显式引入** `import 'caomei-ui/theme.css'`，或走上面的按需引入（resolver 会自动注入）。
 
 ```vue
 <template>

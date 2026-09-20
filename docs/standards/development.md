@@ -134,10 +134,10 @@ test/                     # 单元与 E2E 测试
 
 ## 8. 构建与产物
 
-- 使用 tsdown 构建：单 ESM bundle + 类型声明 + CSS 抽取（按组件独立 chunk 暂缓，见 [架构设计 §4.1](../design/architecture.md)）。
+- 使用 tsdown 构建：`unbundle` 逐模块 ESM + 逐模块 `.d.ts` + `css.inject`（产物 JS 保留 CSS import，供消费方按需 tree-shaking；见 [架构设计 §4](../design/architecture.md)）。
 - `vue` 与 `reka-ui` 必须 external，不打包进产物。
 - `package.json` 声明 `sideEffects`（`**/*.css`）以支持 tree-shaking。
-- 子路径导出：`caomei-ui`、`caomei-ui/styles.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`（tokens 并入 `styles.css`，暂不单列 `theme.css`）。
+- 子路径导出：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`；`theme.css` 是基础层（tokens + 暗色 + `.caomei-root` + 品牌预设）唯一入口，**不提供单体全量样式**。
 - `rolldown-dts` 可能在 `dist/index.d.ts` 留下裸副作用导入；只要该包可解析且列于 `dependencies` 即可接受，不得据此宣称「公开类型面零第三方引用」。
 
 ## 9. 代码生成准则

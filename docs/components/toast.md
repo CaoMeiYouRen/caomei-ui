@@ -44,7 +44,7 @@ function save(): void {
 </template>
 ```
 
-> 使用前需引入组件库样式（`import 'caomei-ui/styles.css'`），否则提示与视口缺少基础样式。
+> 组件样式随包自带；基础层由 resolver 或 `caomei-ui/nuxt` 模块注入（均默认开启），否则提示与视口缺少基础样式。
 >
 > `useToast()` 必须在 `CaomeiToastProvider` 的后代组件中调用。Provider 与调用方同层时会抛出明确错误；文档站示例由布局根部的 Provider 提供上下文。
 

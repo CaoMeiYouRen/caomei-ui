@@ -12,9 +12,15 @@ pnpm add caomei-ui
 
 ## 引入样式
 
+组件样式随包自带（打包器按组件按需取用），但**基础层（tokens / 暗色 / 品牌预设）需要显式提供**：
+
 ```ts
-import 'caomei-ui/styles.css'
+import 'caomei-ui/theme.css'
 ```
+
+用按需引入（`CaomeiUiResolver`）或 Nuxt 模块时，基础层会自动注入，无需手写这一行。
+
+> 产物以打包器消费为前提（Vue 应用 / Nuxt 均满足）：产物 JS 保留 CSS import，故**不经打包器的裸 Node ESM 不能直接 `import 'caomei-ui'`**。
 
 ## 基本用法
 

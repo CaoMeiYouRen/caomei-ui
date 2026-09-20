@@ -11,8 +11,8 @@
 | 待验项 | 结论 |
 | --- | --- |
 | ① 消费方 `tsc` 解析 unbundled `dts` | **通过**（`moduleResolution: bundler` 与 `node16` 双模式 exit 0；含负向对照证明类型真被校验；与基线 bundled 产物对照同为通过） |
-| ② `theme.css` 与全量入口语义 | **提出方案**（§3，推荐方案 A：稳定 `theme.css` 入口 + 不提供单体全量聚合）——**待用户确认后**才写入[架构设计 §3 / §4](../architecture.md) |
-| ③ Nuxt 双注入与样式顺序 | **发现关键约束**：Nuxt 侧不得依赖 JS 图携带 tokens，模块须注入 theme 入口；顺序敏感（覆盖须后置）；`check:nuxt` 现有标记缺「基础 token 存在」断言——该缺口**只在 M1-3 的双通道形态下才暴露**（基线形态下 token 与组件类名同源注入，不会被漏判），见 §4 |
+| ② `theme.css` 与全量入口语义 | **提出方案**（§3，推荐方案 A：稳定 `theme.css` 入口 + 不提供单体全量聚合）——**已获用户确认（2026-09-20）**，已写入[架构设计 §3 / §4 / §5](../architecture.md) |
+| ③ Nuxt 双注入与样式顺序 | **发现关键约束**：**基础层不随 JS 图携带**（Nuxt 与打包器侧一致，见 §3 更正），故模块须注入 theme 入口；顺序敏感（覆盖须后置）；`check:nuxt` 现有标记缺「基础 token 存在」断言——该缺口**只在 M1-3 的双通道形态下才暴露**（基线形态下 token 与组件类名同源注入，不会被漏判），见 §4 |
 
 ## 2. ① 消费方 `tsc` 解析验证
 
@@ -30,13 +30,13 @@
 - 早期以 tsconfig `paths` 映射（而非真实 `node_modules` 布局）跑 `node16` 时失败（`TS1479` / `TS2307`）——那是 **fixture 构造方式的假象**（paths + node16 不按包布局解析），不是产物缺陷；改用真实软链布局后通过。
 - 验证使用 `skipLibCheck: true`（消费方常规设置）；`dist/**` 自身未被完整 lib 检查。
 
-## 3. ② 入口语义方案（待用户确认）
+## 3. ② 入口语义方案（已获用户确认 2026-09-20）
 
 **已确立的事实**（M1-1 + 本次实测）：
 
 1. `unbundle` 下产物镜像 `src/`，`dist/styles/index.css`（5,640 字节 = tokens + 暗色 + `.caomei-root` + 两个品牌预设）**路径稳定**，可直接作为 `exports` 目标；
-2. `dist/index.js` 保留 `import './styles/index.css'`；**是否随图生效取决于消费管线**——Vite 消费者从包根命名导入时生效（[M1-1 §3.2](./2026-09-20-m1-1-build-path-poc.md) 实测产物含 tokens / 预设），Nuxt 组件自动导入**同样走包根**（`.nuxt/components.d.ts` 内为 `typeof import("caomei-ui")['CaomeiButton']`）却**未携带**（§4 场景 A）；
-3. 因此 Nuxt 侧不得依赖该 import 携带 tokens（本 fixture 实测；机制未定位，见 §5 第 1 条）；
+2. `dist/index.js` 保留 `import './styles/index.css'`，但**该 import 不会随消费方 tree-shaking 存活**——**更正（2026-09-20，M1-3 期以真实包布局复测）**：本行原写「Vite 消费者从包根命名导入时生效」，实测为**误**。真实包布局下仅根导入（`import { CaomeiButton } from 'caomei-ui'`）的产物 CSS = 7,536 B，`--caomei-color-bg:` **0 命中**；补 `import 'caomei-ui/theme.css'` 后 = 13,176 B = 7,536（组件样式）+ 5,640（基础层，**只有一份**）。即：基础层在该管线同样不被 JS 图携带。**范围限定（2026-09-20 复审补充）**：该现象**依赖打包器**——Vite / rolldown 系实测不携带（`--caomei-color-bg:` 0 命中），而 **esbuild 实测仍保留**（9 命中）；故上文「打包器侧一致」应读作「实测 Vite / rolldown 系与 Nuxt 侧一致」，不得推广到所有打包器（机制未定位，见 §5 第 1 条）；
+3. 因此**两端都不得依赖该 import 携带 tokens**：须由 resolver 注入 `caomei-ui/theme.css`（非 Nuxt）或由 Nuxt 模块注入（默认 `injectStyles: true`），手写导入场景需自行 `import 'caomei-ui/theme.css'`；
 4. `unbundle` 不再产出单体聚合 CSS（无 `dist/styles.css`）。
 
 | 方案 | 内容 | 评价 |
@@ -63,10 +63,10 @@
 
 **结论（③）**：
 
-1. `injectStyles` 语义应改为「注入 **theme 入口**（tokens + 预设）」，默认 `true`；不再注入全量样式；
+1. `injectStyles` 语义应改为「注入 **theme 入口**（tokens + 预设）」，默认 `true`；不再注入全量样式。**范围更正（2026-09-20，M1-3 期复测）**：该注入不仅为 Nuxt 必要——打包器侧同样不携带基础层（§3 第 2 条更正），故 **resolver 也必须注入** `caomei-ui/theme.css`（已落地），手写导入场景需自行引入；
 2. 注入点必须**唯一**，且模块的虚拟 theme 覆盖须排在 theme 之后（覆盖依赖层叠顺序，须由断言固定）；
 3. **`check:nuxt` 的断言面在双通道形态下存在缺口**——场景 A 缺全部基础 token 仍然 exit 0（其 `CSS_MARKERS` 只断言组件类名与两个覆盖值）。**限定**：基线形态（模块注入全量样式）下 token 与组件类名同源注入，该缺口不成立；它只在 M1-3 的「JS 图带组件 CSS + 模块注入 theme」双通道形态下才真实暴露。
-4. **建议**（非既定）：M1-3 补「基础 token 存在（如 `--caomei-color-bg`）」与「覆盖晚于 theme（依据：CSS 层叠原理 + 场景 B 佐证，后者为 fixture 构造、非同源证据）」两条断言；该断言增强**属 M1-3 已登记范围之外**，见 §6 D6，**须用户确认**。
+4. **建议**（非既定）：M1-3 补「基础 token 存在（如 `--caomei-color-bg`）」与「覆盖晚于 theme（依据：CSS 层叠原理 + 场景 B 佐证，后者为 fixture 构造、非同源证据）」两条断言；该断言增强**属 M1-3 已登记范围之外**，见 §6 D6，**已获用户确认（2026-09-20）并已在 M1-3 落地**。
 
 ## 5. 未覆盖边界
 
@@ -78,7 +78,7 @@
 6. **CJS 消费不可用属既有行为**：`module: Node16` 且无 `"type": "module"` 时 `TS1541`（type-only import 需 `resolution-mode`）——在基线 bundled 产物上同样失败，**非本次形态引入的回归**；
 7. `skipLibCheck: false`（bundler 模式）复测通过；但**未测其它 Vue 版本**与更严格的 lib 检查组合。
 
-## 6. 待用户确认（入口语义）
+## 6. 入口语义决策（已获用户确认 2026-09-20）
 
 | # | 决策项 | 选项 |
 | :-: | --- | --- |
@@ -89,11 +89,13 @@
 | D5 | `injectStyles` 语义 | 改为「注入 theme 入口」，默认 `true`（建议）／保留 boolean 但改注入目标 |
 | D6 | M1-3 是否纳入 **`check:nuxt` 断言增强**（补「基础 token 存在」与「覆盖晚于 theme」） | 纳入（建议——否则双通道形态的 token 缺失不会被门禁拦下）／不纳入（留 follow-up） |
 
+> **用户确认（2026-09-20）**：用户指令「提交后继续推进」——按上表**建议值**整体采纳 D1~D6；D6 的两条断言均已在 M1-3 落地（含「主题覆盖晚于基础层」的顺序断言）。
+
 **确认后动作**：把 D1~D6 结论写入[架构设计](../architecture.md) **§3（包导出）/ §4（构建方案）/ §5（Nuxt 模块选项表，`injectStyles` 语义）**，并在 M1-3 落地实现与四处适配（D6 纳入时另补 `check:nuxt` 断言）。
 
 ## 7. 状态
 
-2026-09-20：M1-2 **已产出**本记录——① `dts` 解析验证通过（含负向对照与基线对照）；② 入口语义方案成形（§3）与 ③ Nuxt 双注入 / 顺序结论（§4）落档，并识别出 `check:nuxt` 的**覆盖漏洞**。**②③ 的方案与语义待用户确认（§6）**，确认前不写入架构设计、不启动 M1-3 的对应适配。实验期间对 `tsdown.config.ts` 与 `playground/nuxt/**` 的临时改动已还原（`git diff` 为空），`dist/` 已重建为基线态且 `pnpm check:build` 通过。
+2026-09-20：M1-2 **已产出**本记录——① `dts` 解析验证通过（含负向对照与基线对照）；② 入口语义方案成形（§3）与 ③ Nuxt 双注入 / 顺序结论（§4）落档，并识别出 `check:nuxt` 的**覆盖漏洞**。**②③ 的方案与语义已获确认（2026-09-20，见 §6 的确认说明）**，已写入[架构设计 §3 / §4 / §5](../architecture.md) 并由 M1-3 落地实现与适配。实验期间对 `tsdown.config.ts` 与 `playground/nuxt/**` 的临时改动已还原（`git diff` 为空），`dist/` 已重建为基线态且 `pnpm check:build` 通过。
 
 ## 附录 A：可复现材料
 

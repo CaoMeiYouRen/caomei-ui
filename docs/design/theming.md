@@ -78,7 +78,7 @@
 
 优先级由低到高：
 
-1. 引入 `caomei-ui/styles.css` 获得默认样式；
+1. 样式随包自带（需要单独引入基础层时用 `caomei-ui/theme.css`）；
 2. 选择品牌预设（根元素 `data-preset="caomei"` / `"momei"`）；
 3. 覆盖 `--caomei-*` CSS variables 调整视觉；
 4. 通过组件 `class` / 样式透传做局部覆盖。

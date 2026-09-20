@@ -91,7 +91,7 @@
 - 组件层覆盖钩子 `--caomei-card-shadow` / `--caomei-card-shadow-hover` / `--caomei-slider-thumb-shadow` 保留，默认回退到上表档位（`sm` / `md` / `xs`）。
 - 阴影档位独立于控件尺寸阶梯（§2.3 的 `control-height-*` 等）：`xs` 专供滑块拇指等微元素，不随控件尺寸缩放。
 - 原始字面量不得回到组件样式：`check:design` 的 rgb/hsl 预算已收紧为 0（覆盖 `#hex` / `rgb()` / `rgba()` / `hsl()` / `hsla()`，`color-mix()` 构成的阴影不在其扫描面）。
-- 上述 token 由样式入口（`caomei-ui/styles.css` → `theme.css`）统一提供，属硬依赖：组件不再保留末位字面量兜底，未引样式入口时相关声明不生效。
+- 上述 token 由基础层样式入口（`caomei-ui/theme.css`）统一提供，属硬依赖：组件不再保留末位字面量兜底，未引样式入口时相关声明不生效。
 
 ## 3. 颜色规范
 
@@ -121,7 +121,7 @@
 
 ## 5. 主题预设（已实现）
 
-实现位置：`src/styles/theme.css`（基础）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随 `caomei-ui/styles.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
+实现位置：`src/styles/theme.css`（基础）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随基础层 `caomei-ui/theme.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
 
 ### 5.1 caomei 预设（源：caomei-auth）
 
@@ -323,4 +323,4 @@
 
 - caomei-auth 暗色双轨（PrimeVue zinc vs SCSS `#121212`）：预设已取 PrimeVue 轨（见 §5.1）；如后续需要 SCSS 轨可另设变体。
 - 是否新增 `--caomei-color-accent` 与 `info` tone，需评估组件使用面。
-- 预设承载形式已定稿为「随 `styles.css` 分发 + 根元素 `data-preset` 属性」；是否额外提供独立 CSS 入口或 Nuxt 配置项，待下游接入反馈后评估。
+- 预设承载形式已定稿为「随基础层 `theme.css` 分发 + 根元素 `data-preset` 属性」；是否额外提供独立 CSS 入口或 Nuxt 配置项，待下游接入反馈后评估。

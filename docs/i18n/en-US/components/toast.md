@@ -44,7 +44,7 @@ function save(): void {
 </template>
 ```
 
-> The component library styles must be imported (`import 'caomei-ui/styles.css'`), otherwise the toast and viewport lack base styles.
+> Component styles ship with the package; the base layer is injected by the resolver or the `caomei-ui/nuxt` module (both on by default), otherwise the toast and viewport lack base styles.
 >
 > `useToast()` must be called in a descendant of `CaomeiToastProvider`. Calling it at the same level as the Provider throws a clear error; the docs examples get their context from the Provider at the layout root.
 

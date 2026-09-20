@@ -12,9 +12,15 @@ For local development, downstream projects can also consume the local build thro
 
 ## Import styles
 
+Component styles ship with the package (bundlers keep only the components you use), but the **base layer (tokens / dark mode / brand presets) must be provided explicitly**:
+
 ```ts
-import 'caomei-ui/styles.css'
+import 'caomei-ui/theme.css'
 ```
+
+With the on-demand resolver (`CaomeiUiResolver`) or the Nuxt module the base layer is injected automatically, so this line is not needed.
+
+> The build targets bundler consumption (Vue apps / Nuxt): the emitted JS keeps CSS imports, so a **plain Node ESM process cannot `import 'caomei-ui'` directly**.
 
 ## Basic usage
 

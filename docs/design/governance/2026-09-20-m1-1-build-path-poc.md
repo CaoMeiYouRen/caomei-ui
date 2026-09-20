@@ -50,7 +50,7 @@
 | `import { CaomeiButton, CaomeiDataTable, CaomeiDatePicker }` | 33,616 B | **6.22 KB** | −79.9% | **−75.7%** |
 | 全量（基线 `styles.css`） | 167,585 B | 25.60 KB | — | — |
 
-- 说明：仅 Button 一项即含 `badge`（Button 的依赖）样式与 tokens/预设，符合「依赖随图带入」的预期；**未出现样式缺失**（判定依据为产物 CSS 内容中包含对应选择器，未做真实渲染对照）。
+- 说明：仅 Button 一项即含 `badge`（Button 的依赖）样式，符合「依赖随图带入」的预期。**更正（2026-09-20，M1-3 期复测）**：本行原写「与 tokens/预设」有误——该 7,536 B **不含基础层**（`:root` 0 命中、`--caomei-color-bg:` 0 命中）；基础层需显式 `import 'caomei-ui/theme.css'` 或由 resolver / Nuxt 模块注入。复测数据见 [M1-2 §3 的更正说明](./2026-09-20-m1-2-entry-semantics-and-dts-verification.md)与 [M1-3 记录](./2026-09-20-m1-3-style-on-demand-landing.md) §4。**未出现样式缺失**（判定依据为产物 CSS 内容中包含对应选择器，未做真实渲染对照）。
 - 收益的用量面限定见 §1 第 6 条。
 
 ### 3.3 实验 C：多入口 + `css.splitting`（不推荐）

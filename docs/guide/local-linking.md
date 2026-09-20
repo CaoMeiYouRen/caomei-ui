@@ -72,7 +72,7 @@ pnpm remove caomei-ui
 | 现象 | 原因与处理 |
 | --- | --- |
 | 组件或样式没有更新 | 忘记在 caomei-ui 重新 `pnpm build`；使用 `file:` 时还需在下游重新 `pnpm install` |
-| 解析不到 `caomei-ui/styles.css` | 未先构建，或下游未执行 `pnpm install` 建立本地依赖 |
+| 解析不到 `caomei-ui/theme.css` | 未先构建，或下游未执行 `pnpm install` 建立本地依赖 |
 | 类型报错指向旧版本 | 下游缓存了旧依赖，删除 `node_modules/.pnpm` 后重装 |
 | 出现重复的 Vue 实例警告或注入失败 | `link:` 不解析 peer 依赖；改用 `file:` |
 | 链接后缺少新增依赖 | caomei-ui 声明并安装依赖后重新构建，再在下游重装 |

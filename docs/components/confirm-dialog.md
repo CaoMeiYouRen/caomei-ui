@@ -40,7 +40,7 @@ async function save(): Promise<void> {
 </script>
 ```
 
-> 使用前需引入组件库样式（`import 'caomei-ui/styles.css'`）。
+> 组件样式随包自带；基础层由 resolver 或 `caomei-ui/nuxt` 模块注入（均默认开启），手写导入时需自行引 `caomei-ui/theme.css`。
 >
 > `useConfirm()` 必须在 `CaomeiConfirmDialog` 的后代组件中调用；与宿主同层时会抛出明确错误。文档站示例由布局根部的宿主提供上下文。
 

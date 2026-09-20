@@ -40,7 +40,7 @@ async function save(): Promise<void> {
 </script>
 ```
 
-> The component library styles must be imported (`import 'caomei-ui/styles.css'`).
+> Component styles ship with the package; the base layer is injected by the resolver or the `caomei-ui/nuxt` module (both on by default) — import `caomei-ui/theme.css` yourself when wiring imports manually.
 >
 > `useConfirm()` must be called in a descendant of `CaomeiConfirmDialog`; calling it at the same level as the host throws a clear error. The docs examples get their context from the host at the layout root.
 

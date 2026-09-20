@@ -7,7 +7,7 @@
 ## 迁移流程
 
 1. **并存接入**：本库与 PrimeVue 可共存——组件前缀 `Caomei`、类名前缀 `caomei-`、设计 token 前缀 `--caomei-`，与 PrimeVue 的 `p-*` / `--p-*` 命名空间不冲突。并存期建议按**路由 / 页面白名单**逐页切换，避免一次性替换带来的回归面失控。
-2. **主题与 token**：先把 PrimeVue 主题变量映射到本库 token（`--p-*` → `--caomei-*`），再替换组件；token 语义与覆盖配方见[主题与样式设计 §4](../design/theming.md)。`caomei-ui/styles.css` 提供默认主题与暗色，`data-preset` 可切换预设。
+2. **主题与 token**：先把 PrimeVue 主题变量映射到本库 token（`--p-*` → `--caomei-*`），再替换组件；token 语义与覆盖配方见[主题与样式设计 §4](../design/theming.md)。默认主题与暗色随包自带（基础层为 `caomei-ui/theme.css`），`data-preset` 可切换预设。
 3. **组件替换**：按[设计规范 §7](../design/design-spec.md) 的映射表逐组件替换；影响面最大的三类差异优先处理——受控字段命名、图标形态、语义色/尺寸档位（见下节）。
 4. **文案与语言**：组件内建文案（关闭 / 清除 / 分页 / 加载中等）通过 `CaomeiConfigProvider` 注入语言与自定义文案，未注入时回退简体中文；见[内建文案与语言](../components/locale.md)。
 5. **逐页验证**：每页切换后核对交互、可访问名、窄屏形态与暗色表现；窄屏验收口径见[响应式设计 §4](../design/responsive.md)。

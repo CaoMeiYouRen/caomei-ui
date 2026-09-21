@@ -330,7 +330,6 @@ function clearValue(): void {
 .caomei-select:focus-visible {
     border-color: var(--caomei-color-primary);
     outline: none;
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
 }
 
@@ -340,7 +339,6 @@ function clearValue(): void {
 
 .caomei-select--invalid:focus-visible {
     border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
 }
 

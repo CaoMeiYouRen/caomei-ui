@@ -133,7 +133,6 @@ defineExpose({ focus, blur, inputRef })
 
 .caomei-input:focus-within {
     border-color: var(--caomei-color-primary);
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
 }
 
@@ -143,7 +142,6 @@ defineExpose({ focus, blur, inputRef })
 
 .caomei-input--invalid:focus-within {
     border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px var(--caomei-color-border);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
 }
 

@@ -9,6 +9,7 @@ import {
     collectGlobalTokens,
     collectLocalTokens,
     declarationsOf,
+    findDuplicateDeclarations,
     findLegacyNaming,
     findOpacityLiterals,
     findRawColors,
@@ -36,6 +37,7 @@ describe('check-design 仓库不变量', () => {
         expect(result.tierBlockDeclarations).toEqual([])
         expect(result.scopedVariableDeclarations).toEqual([])
         expect(result.nonWhereSizeSelectors).toEqual([])
+        expect(result.duplicateDeclarations).toEqual([])
         expect(result.opacityLiterals).toEqual([])
         expect(result.zIndexLiterals).toEqual([])
         expect(RGB_BUDGET).toBe(0)
@@ -220,6 +222,38 @@ describe('check-design 尺寸档位选择器归一守卫（G5）', () => {
     it('正例：媒体查询内的 :where() 档位块放行', () => {
         const rules = '@media (max-width: 640px) { :where(.caomei-select-button-item--md) { --caomei-select-button-item-min-height: 32px; } }'
         expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+})
+
+describe('check-design 同规则重复声明守卫（G6）', () => {
+    it('反例：同名属性重复声明（后写覆盖先写）', () => {
+        const rules = '.caomei-input:focus-within { box-shadow: 0 0 0 2px var(--caomei-color-border); box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent); }'
+        expect(findDuplicateDeclarations(vue(rules))).toHaveLength(1)
+    })
+
+    it('反例：同名属性出现三次逐次命中', () => {
+        const rules = '.caomei-foo { color: red; color: blue; color: green; }'
+        expect(findDuplicateDeclarations(vue(rules))).toHaveLength(2)
+    })
+
+    it('反例：自定义属性重复声明同样命中', () => {
+        const rules = ':where(.caomei-foo--sm) { --caomei-foo-height: 24px; --caomei-foo-height: 32px; }'
+        expect(findDuplicateDeclarations(vue(rules))).toHaveLength(1)
+    })
+
+    it('正例：简写与长写并存不算重复', () => {
+        const rules = '.caomei-foo { padding: 0 8px; padding-top: 4px; border: 1px solid; border-color: red; }'
+        expect(findDuplicateDeclarations(vue(rules))).toEqual([])
+    })
+
+    it('正例：不同规则内同名属性不算重复（含 @keyframes 的不同步骤）', () => {
+        const rules = '.caomei-foo { color: red; } .caomei-foo:hover { color: blue; } @keyframes spin { from { opacity: 0; } to { opacity: 1; } }'
+        expect(findDuplicateDeclarations(vue(rules))).toEqual([])
+    })
+
+    it('正例：注释中的同名属性不计入', () => {
+        const rules = '.caomei-foo { /* color: red; */ color: blue; }'
+        expect(findDuplicateDeclarations(vue(rules))).toEqual([])
     })
 })
 

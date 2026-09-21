@@ -13,7 +13,9 @@
  * 7. 禁用态字面量（G3）：`opacity: 0.5 / 0.6` 字面量为错误（跳过 `@keyframes` 块）；
  * 8. 层级字面量（G4）：数字 `z-index` 为错误，必须走 `var(--caomei-z-*)` 或关键字；
  * 9. 尺寸档位选择器归一（G5）：`.caomei-<comp>[__<el>]--(sm|md|lg)` 未被 `:where(...)` 包裹为错误
- *    （G1 / G2 只检查「已用 `:where()`」的块，本项拦的是「根本没用 `:where()`」的形态）。
+ *    （G1 / G2 只检查「已用 `:where()`」的块，本项拦的是「根本没用 `:where()`」的形态）；
+ * 10. 同规则内同名属性重复声明（G6）：后写覆盖先写、前者恒为死代码，为错误
+ *    （含自定义属性；本项目组件样式层已统一依赖 `color-mix()`，故不保留渐进增强回退分支）。
  *
  * 用法：
  *   node scripts/governance/check-design.mjs            # 有错误 exit 1
@@ -453,6 +455,33 @@ function isWrappedInWhere(selector, index) {
     return false
 }
 
+/**
+ * G6：同规则内同名属性重复声明（死声明，预算 0）。
+ * 后写覆盖先写，先写者恒为死代码（调色 / 改值时易误改被覆盖的那条）；覆盖自定义属性。
+ * 「先写安全值、后写 color-mix()」不构成回退：后写声明含 `var()` 时不会被解析期丢弃，
+ * 而是级联选中后在计算值期非法 → `unset`（invalid at computed-value time），先写值在任何引擎都不生效。
+ * 规则面为平铺规则（scanRules 不展开 CSS 嵌套内部），依据见 docs/standards/development.md §7。
+ */
+export function findDuplicateDeclarations(entries) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        const seen = new Map()
+        for (const decl of declarationsOf(rule.body)) {
+            if (seen.has(decl.property)) {
+                issues.push({
+                    file: rule.file,
+                    selector: rule.selector,
+                    property: decl.property,
+                    previous: seen.get(decl.property),
+                    value: decl.value,
+                })
+            }
+            seen.set(decl.property, decl.value)
+        }
+    }
+    return issues
+}
+
 /** G3：禁用态 `opacity` 字面量（0.5 / 0.6），跳过 `@keyframes` 块。 */
 export function findOpacityLiterals(entries) {
     const issues = []
@@ -505,6 +534,7 @@ export function runChecks() {
         tierBlockDeclarations: findTierBlockPropertyDeclarations(componentEntries),
         scopedVariableDeclarations: findScopedVariableDeclarations(componentEntries, globalTokens),
         nonWhereSizeSelectors: findNonWhereSizeSelectors(componentEntries),
+        duplicateDeclarations: findDuplicateDeclarations(componentEntries),
         opacityLiterals: findOpacityLiterals(componentEntries),
         zIndexLiterals: findZIndexLiterals(componentEntries),
     }
@@ -537,6 +567,9 @@ function main() {
     for (const issue of result.nonWhereSizeSelectors) {
         problems.push(`[tier-where] ${issue.file}: ${issue.selector} 中的 ${issue.className} 未用 :where() 归零特异性（尺寸档位只应以 :where(...) 出现）`)
     }
+    for (const issue of result.duplicateDeclarations) {
+        problems.push(`[dup-decl] ${issue.file}: ${issue.selector} 内 ${issue.property} 重复声明（前值 ${issue.previous} 恒被覆盖）`)
+    }
     for (const issue of result.opacityLiterals) {
         problems.push(`[opacity] ${issue.file}: ${issue.selector} 出现禁用态字面量 opacity: ${issue.value}（预算 ${OPACITY_BUDGET}）`)
     }
@@ -567,7 +600,7 @@ function main() {
     console.info(
         `[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致、`
         + `档位块仅声明变量、scoped 变量声明合规、尺寸档位选择器均经 :where() 归一、`
-        + `无禁用态 opacity 字面量、无数字 z-index`
+        + `无同规则重复声明、无禁用态 opacity 字面量、无数字 z-index`
         + `（rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`,
     )
 }

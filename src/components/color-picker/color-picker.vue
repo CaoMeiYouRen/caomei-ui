@@ -3,7 +3,6 @@ import {
     PopoverContent,
     PopoverPortal,
     PopoverRoot,
-    PopoverTrigger,
     colorToString,
     parseColor,
 } from 'reka-ui'
@@ -11,6 +10,7 @@ import { computed, ref, useAttrs, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { toHex6 } from '../_shared/color'
 import { resolveLabelName } from '../_shared/use-label-attrs'
+import { CaomeiPopoverTrigger } from '../popover'
 import CaomeiColorPickerPanel from './color-picker-panel.vue'
 import type { ColorPickerProps } from './types'
 
@@ -68,7 +68,14 @@ function onUpdate(value: string): void {
             v-if="!inline"
             v-model:open="open"
         >
-            <PopoverTrigger as-child>
+            <!--
+              触发器经本库 CaomeiPopoverTrigger（as-child + unstyled）：由本库触发器统一承载开合与无障碍接线（内部委托 Reka primitive），
+              外观仍由下方自持 button 提供（`unstyled` 保证不合并内建触发器外观类）。
+            -->
+            <CaomeiPopoverTrigger
+                as-child
+                unstyled
+            >
                 <button
                     type="button"
                     class="caomei-color-picker__trigger"
@@ -82,7 +89,7 @@ function onUpdate(value: string): void {
                         :style="{backgroundColor: hex}"
                     />
                 </button>
-            </PopoverTrigger>
+            </CaomeiPopoverTrigger>
             <PopoverPortal>
                 <PopoverContent
                     class="caomei-color-picker__panel"

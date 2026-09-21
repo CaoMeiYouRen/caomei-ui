@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { Calendar as CalendarIcon } from '@lucide/vue'
-import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
+import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocale } from '../../locale'
 import { formatDate, formatTime } from '../_shared/date-format'
 import { resolveLabelName } from '../_shared/use-label-attrs'
+import { CaomeiPopoverTrigger } from '../popover'
 import CalendarPanel from '../calendar/calendar-panel.vue'
 import TimeInput from './time-input.vue'
 import type { DatePickerProps, TimeParts } from './types'
@@ -120,7 +121,14 @@ function onTimeUpdate(value: TimeParts): void {
 
 <template>
     <PopoverRoot v-model:open="open">
-        <PopoverTrigger as-child>
+        <!--
+          触发器经本库 CaomeiPopoverTrigger（as-child + unstyled）：由本库触发器统一承载开合与无障碍接线（内部委托 Reka primitive），
+          外观仍由下方自持 button 提供（`unstyled` 保证不合并内建触发器外观类）。
+        -->
+        <CaomeiPopoverTrigger
+            as-child
+            unstyled
+        >
             <button
                 :id="id"
                 v-bind="$attrs"
@@ -141,7 +149,7 @@ function onTimeUpdate(value: TimeParts): void {
                     class="caomei-date-picker__icon"
                 />
             </button>
-        </PopoverTrigger>
+        </CaomeiPopoverTrigger>
         <PopoverPortal>
             <PopoverContent
                 class="caomei-date-picker__content"

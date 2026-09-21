@@ -27,6 +27,9 @@ describe('CaomeiDatePicker', () => {
         expect(trigger.text()).toContain('请选择日期')
         expect(trigger.find('.caomei-date-picker__icon').exists()).toBe(true)
         expect(trigger.attributes('aria-expanded')).toBe('false')
+        // 触发器经本库 CaomeiPopoverTrigger + `unstyled`：内建外观类不得合并到自持 button
+        // （开合接线由其它用例的 aria-expanded 断言覆盖）
+        expect(trigger.classes()).not.toContain('caomei-popover__trigger')
 
         wrapper.unmount()
     })

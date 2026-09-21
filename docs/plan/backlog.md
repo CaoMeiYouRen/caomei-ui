@@ -63,7 +63,9 @@
 | 文档站版本化 | 依赖版本基线，`v0.1.0` 已建（可切 ≥1 历史版本）；选型未定 → M2-1（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
-| 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过 → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
+| 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过；**2026-09-21 已收敛**（三处改用本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` + `unstyled`，触发结构 A/B 逐项等价） → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
+| 触发器 `disabled` 透传与包装层归一化 | ① date-picker / color-picker 未向触发器透传 `disabled`（现由原生 `<button :disabled>` 兜住）；② 两个薄包装对 `disabled=false` 归一化不一致（popover `props.disabled \|\| undefined` vs dropdown 直传），未来 Reka 若区分 `false` / `undefined` 会单边漂移。候选：补透传 + 用例，并对齐归一化 | 低 |
+| 直连 Reka 触发器的机检守卫 | 存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警；否则「单点生效」收益只能靠人工记忆维持（2026-09-21 触发器收敛后新增） | 低 |
 | 代码注释 / 测试名的规划编号守卫 | 机检规则拦截规划编号 → M5-1（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 治理记录索引完整性 | `docs/design/governance/index.md` 需人工维护 → M5-2（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 治理记录的历史规划指针失效 | 归档后指针指向已清空段落 → M5-2（Phase 12 发布就绪、文档对外与一致性收官） | 低 |

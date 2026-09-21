@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ChevronDown } from '@lucide/vue'
-import { DropdownMenuTrigger } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
@@ -13,6 +12,7 @@ import {
     CaomeiDropdownMenuContent,
     CaomeiDropdownMenuItem,
     CaomeiDropdownMenuSeparator,
+    CaomeiDropdownMenuTrigger,
 } from '../dropdown-menu'
 import type { SplitButtonMenuItem, SplitButtonProps } from './types'
 
@@ -79,13 +79,13 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
 
         <CaomeiDropdownMenu>
             <!--
-              下拉触发器沿用 Reka DropdownMenuTrigger + as-child：CaomeiDropdownMenuTrigger 已支持
-              `unstyled` 外观豁免，但收敛共用其 a11y 接线仍需复验 ButtonGroup 的拼接边框 / 圆角规则；
-              遗留收敛登记于 `docs/plan/backlog.md` 的「触发器 `unstyled` 遗留收敛」（同类先例：
-              date-picker.vue / color-picker.vue 的 PopoverTrigger）。
+              下拉触发器经本库 CaomeiDropdownMenuTrigger（as-child + unstyled）：由本库触发器统一承载
+              开合、禁用与无障碍接线（内部委托 Reka primitive）；`unstyled` 保证内建触发器外观类不合并到拼接按钮上（否则会与 ButtonGroup
+              的内侧边框 / 圆角规则竞争）。
             -->
-            <DropdownMenuTrigger
+            <CaomeiDropdownMenuTrigger
                 as-child
+                unstyled
                 :disabled="disabled"
             >
                 <CaomeiButton
@@ -100,7 +100,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
                         <CaomeiIcon :icon="ChevronDown" />
                     </template>
                 </CaomeiButton>
-            </DropdownMenuTrigger>
+            </CaomeiDropdownMenuTrigger>
             <CaomeiDropdownMenuContent
                 :side="menuSide"
                 :align="menuAlign"

@@ -54,6 +54,9 @@ describe('CaomeiSplitButton', () => {
         expect(wrapper.findAll('button')).toHaveLength(2)
         expect(mainButton(wrapper).element.tagName).toBe('BUTTON')
         expect(menuButton(wrapper).element.tagName).toBe('BUTTON')
+        // 触发器经本库 CaomeiDropdownMenuTrigger + `unstyled`：内建外观类不得合并（否则会与
+        // ButtonGroup 的拼接边框 / 圆角规则竞争）
+        expect(menuButton(wrapper).classes()).not.toContain('caomei-dropdown-menu__trigger')
     })
 
     it('默认插槽渲染为主按钮可见文本', () => {
@@ -141,6 +144,7 @@ describe('CaomeiSplitButton', () => {
 
         await openMenu(wrapper)
 
+        expect(menuButton(wrapper).attributes('aria-expanded')).toBe('true')
         const items = menuItems()
         expect(items).toHaveLength(2)
         expect(items[0]?.textContent).toContain('另存为')

@@ -48,6 +48,9 @@ describe('CaomeiColorPicker', () => {
 
         expect(trigger(wrapper).element.tagName).toBe('BUTTON')
         expect(swatchColor(wrapper)).toContain('#00ff00')
+        // 触发器经本库 CaomeiPopoverTrigger + `unstyled`：内建外观类不得合并到自持 button
+        expect(trigger(wrapper).classes()).not.toContain('caomei-popover__trigger')
+        expect(trigger(wrapper).attributes('aria-expanded')).toBe('false')
     })
 
     it('触发按钮默认可访问名取内建文案', () => {
@@ -100,6 +103,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
+        expect(trigger(wrapper).attributes('aria-expanded')).toBe('true')
         expect(panel()).not.toBeNull()
         expect(panel()?.querySelector('.caomei-color-picker__area')).not.toBeNull()
         expect(panel()?.querySelector('.caomei-color-picker__hue')).not.toBeNull()

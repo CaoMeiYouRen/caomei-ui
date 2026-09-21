@@ -12,6 +12,7 @@ import {
     findLegacyNaming,
     findOpacityLiterals,
     findRawColors,
+    findNonWhereSizeSelectors,
     findScopedVariableDeclarations,
     findTierBlockPropertyDeclarations,
     findTokenIssues,
@@ -34,6 +35,7 @@ describe('check-design 仓库不变量', () => {
         expect(result.rawColors.warnings).toEqual([])
         expect(result.tierBlockDeclarations).toEqual([])
         expect(result.scopedVariableDeclarations).toEqual([])
+        expect(result.nonWhereSizeSelectors).toEqual([])
         expect(result.opacityLiterals).toEqual([])
         expect(result.zIndexLiterals).toEqual([])
         expect(RGB_BUDGET).toBe(0)
@@ -146,6 +148,78 @@ describe('check-design scoped 变量声明守卫（G2）', () => {
     it('正例：全局 token 覆写与消费处回退不纳入', () => {
         const rules = '.caomei-confirm-dialog__confirm--danger { --caomei-color-primary: red; }'
         expect(findScopedVariableDeclarations(vue(rules), globalTokens)).toEqual([])
+    })
+})
+
+describe('check-design 尺寸档位选择器归一守卫（G5）', () => {
+    it('反例：档位类直接作为选择器主体（归一化收敛前的真实形态）', () => {
+        const rules = '.caomei-input--sm { height: 24px; padding: 0 8px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toHaveLength(1)
+    })
+
+    it('反例：后代限定形态（归一化收敛前的 textarea / input-number 形态）', () => {
+        const rules = '.caomei-textarea--sm .caomei-textarea__control { padding: 4px 8px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toHaveLength(1)
+    })
+
+    it('反例：复合块中尺寸部分未包裹', () => {
+        const rules = '.caomei-badge--dot.caomei-badge--lg { width: 10px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toHaveLength(1)
+    })
+
+    it('反例：同一选择器内多处未包裹逐处命中', () => {
+        const rules = '.caomei-tag--md, .caomei-tag--lg { height: 32px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toHaveLength(2)
+    })
+
+    it('正例：` :where()` 包裹（含空白）放行', () => {
+        const rules = ':where(.caomei-input--sm) { --caomei-input-height: 24px; } :where( .caomei-tag--lg ) { --caomei-tag-height: 40px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('正例：结构修饰符保持常规特异性、尺寸部分经 :where() 归零（badge 复合块现行写法）', () => {
+        const rules = '.caomei-badge--dot:where(.caomei-badge--lg) { width: 10px; height: 10px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('正例：`:where()` 内分组写法放行', () => {
+        const rules = ':where(.caomei-button--sm, .caomei-button--lg) { --caomei-button-height: 36px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('正例：`:not(:where(...))` 归零写法放行；裸 `:not(...)` 命中', () => {
+        expect(findNonWhereSizeSelectors(vue(':not(:where(.caomei-input--sm)) { opacity: 0.6; }'))).toEqual([])
+        expect(findNonWhereSizeSelectors(vue('.caomei-input:not(.caomei-input--sm) { opacity: 1; }'))).toHaveLength(1)
+    })
+
+    it('正例：`:where()` 内再嵌 `:not()` / `:is()` 仍属已归零', () => {
+        expect(findNonWhereSizeSelectors(vue(':where(:not(.caomei-input--sm)) { opacity: 0.6; }'))).toEqual([])
+        expect(findNonWhereSizeSelectors(vue(':where(:is(.caomei-input--sm, .caomei-input--lg)) { --caomei-input-height: 24px; }'))).toEqual([])
+    })
+
+    it('正例：变体 / 语气档位块不在规则面（其档位块本就声明属性）', () => {
+        const rules = '.caomei-button--primary { background: var(--caomei-color-primary); } :where(.caomei-button--tone-danger) { --caomei-button-bg: red; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('反例：媒体查询内的裸用档位类同样命中', () => {
+        const rules = '@media (max-width: 640px) { .caomei-select-button__item--md { min-height: 32px; } }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toHaveLength(1)
+    })
+
+    it('正例：属性选择器取值中的 `where(` / 类名形态不干扰判定', () => {
+        const rules = ':where(.caomei-input--sm) [data-x="where("] { color: red; } [data-y=".caomei-input--md"] { color: blue; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('正例：非受控枚举修饰符（结构型）不属于规则面', () => {
+        const rules = '.caomei-skeleton--circular { border-radius: 50%; } .caomei-badge--dot { width: 8px; }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
+    })
+
+    it('正例：媒体查询内的 :where() 档位块放行', () => {
+        const rules = '@media (max-width: 640px) { :where(.caomei-select-button-item--md) { --caomei-select-button-item-min-height: 32px; } }'
+        expect(findNonWhereSizeSelectors(vue(rules))).toEqual([])
     })
 })
 

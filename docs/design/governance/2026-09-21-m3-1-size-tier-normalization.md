@@ -6,7 +6,7 @@
 
 ## 1. 结论
 
-- **改动面**：8 个组件的 28 条非 `:where()` 尺寸档位块全部归一——基类改为 `var(--caomei-<comp>-<prop>, <默认回退>)` 消费，档位块改为 `:where(...)` 内只声明 CSS 变量；`check:design` 的 G1 / G2 在扩围后可阻断回流（本次未改规则面，属 M3-2）。
+- **改动面**：8 个组件的 28 条非 `:where()` 尺寸档位块全部归一——基类改为 `var(--caomei-<comp>-<prop>, <默认回退>)` 消费，档位块改为 `:where(...)` 内只声明 CSS 变量；`check:design` 的尺寸档位选择器守卫在扩围后可阻断回流（本次未改规则面，属 M3-2）。
 - **归零核验**：`rg -n "\.caomei-[a-z-]+(__[a-z-]+)?--(sm|md|lg)" -g '*.vue' src/components/ | rg -v ":where\("` → **0 命中**。
 - **等价证据**：真实 Chromium 计算样式矩阵 **242 项逐属性 0 差异**，8 个改动组件全部落在对照面内，由两组构成：
   - 本次新增的 **`m31` 段 26 项**覆盖 **6 个组件**的尺寸几何——input、textarea（另含 `__control` 的 padding / font-size）、input-number（另含 `__button` 的 width / height）、date-picker、tag、badge，badge 另含 `dot` 的 md / lg；
@@ -26,13 +26,13 @@
 | date-picker | 3 | `.caomei-date-picker`（height / padding-x / font-size） |
 | input-number | 6（根 3 + `__button` 3） | 根 `.caomei-input-number`（height / font-size）+ `.caomei-input-number__button`（width，经档位变量驱动） |
 
-**badge 复合选择器的特异性处理**：`.caomei-badge--dot.caomei-badge--lg`（结构修饰符 × 尺寸档位）改为 `.caomei-badge--dot:where(.caomei-badge--lg)`——`--dot` 保持常规特异性以确保仍胜过 `.caomei-badge--dot` 的 8px，尺寸部分经 `:where()` 归零；这是 28 条中唯一不能整体 `:where()` 的复合块。实测 `dot + lg` 仍为 `10px × 10px`（见 §4）。该复合块与 `.caomei-badge--dot` 同特异性、由**源序**决胜，顺序契约已写入源码注释；其可执行证据为计算样式矩阵的 `m31.badge-dot.*` 两项（happy-dom 单测无法证明层叠/源序结果，故不以其替代浏览器证据），M3-2 入库冻结基线后该契约变为可回归。
+**badge 复合选择器的特异性处理**：`.caomei-badge--dot.caomei-badge--lg`（结构修饰符 × 尺寸档位）改为 `.caomei-badge--dot:where(.caomei-badge--lg)`——`--dot` 保持常规特异性以确保仍胜过 `.caomei-badge--dot` 的 8px，尺寸部分经 `:where()` 归零；这是 28 条中唯一不能整体 `:where()` 的复合块。实测 `dot + lg` 仍为 `10px × 10px`（见 §4）。该复合块与 `.caomei-badge--dot` 同特异性、由**源序**决胜，顺序契约已写入源码注释；其可执行证据为计算样式矩阵的 `m31.badge-dot.*` 两项（happy-dom 单测无法证明层叠/源序结果，故不以其替代浏览器证据），M3-5 入库冻结基线后该契约变为可回归。
 
 **默认值回退口径**：各组件 md 档位的几何值即基类 fallback（badge 的 md 字号为 `--caomei-font-size-sm`，与其它组件不同，已按原值保留）。新增的 `--caomei-<comp>-height / -padding-x / -font-size / -button-width` 与既有 `--caomei-<comp>-*` 钩子同形，属**新增覆盖能力**（消费方可在不改选择器特异性的前提下覆盖几何）。
 
 ## 3. 取证方法与可复现材料
 
-夹具与脚本沿用 M2-2 的一次性采集装置（位于 `.temp/capture/`，**gitignored、不入库**；入库由 M3-2 承担）：
+夹具与脚本沿用 M2-2 的一次性采集装置（位于 `.temp/capture/`，**gitignored、不入库**；入库由 M3-5 承担，执行期自 M3-2 拆出）：
 
 - **夹具**：`.temp/capture/app.vue` 新增「尺寸档位归一化矩阵」段（`m31:*` 标记），覆盖 input / textarea / input-number（`controls` prop）/ date-picker / tag / badge 的 sm / md / lg，以及 badge `dot` 的 md / lg。
 - **采集**：`.temp/capture/capture.mjs` 新增对应读取（`SIZE_PROPS` + textarea `__control` 的 padding / font-size + input-number `__button` 的 width / height）。
@@ -61,15 +61,16 @@ node .temp/capture/diff.mjs .temp/capture/m3-baseline.json .temp/capture/m3-afte
 
 - 未做**像素级截图比对**（本条目验收口径为「计算样式逐项等价」，与 M2-2 同口径）；视觉面的回归由既有常驻 E2E（54 项，多视口）与上述几何 / 排版属性等价共同覆盖。
 - M2-2 的 **10 项独立几何探针**（toast 视口 6 / drawer 四向 4）本次**未重跑**，故 242 项 = 本次新增 26 + 既有主矩阵 216，不含该 10 项（M2-2 的「226 项」= 216 + 10）。这些探针所属组件不在本次 8 个改动组件面内，其相关对照项已在 216 中零漂移。
-- 采集依赖 `.temp/` 中的一次性装置，**当前无法从仓库直接复算**——该缺口即 M3-2 的交付范围（采样脚本 + 冻结基线入库）。
+- 采集依赖 `.temp/` 中的一次性装置，**当前无法从仓库直接复算**——该缺口即 M3-5 的交付范围（采样脚本 + 冻结基线入库）。
 - 归一化使档位几何成为可覆盖变量，属能力新增而非行为变更：**受控枚举内**的默认路径逐值不变已由 242 项等价证明。
 - **枚举外取值的边界变化（已知、预期降级）**：基类现带 md 兜底，运行时传入受控枚举外的 `size`（可绕过 TS 校验）由原先的「无几何声明（高度塌陷为内容高）」变为「md 几何」。该路径不在采样面内，记录于此以免被读作零变化。
 
 ## 6. 后续（登记范围）
 
-- **M3-2**：`check:design` 的 G1 / G2 规则面按本次收敛面扩围 + 采集脚本与冻结基线入库（消除 §5 的复算缺口）。
+- **M3-2**：`check:design` 的尺寸档位选择器守卫扩围（M3-2 变更实现；交付以 Review Gate 放行与提交为准）。
 - **M3-3**：重复声明（死声明）机检守卫与同类残留清理（残留面须重新取证）。
 - **M3-4**：触发器 `unstyled` 遗留收敛。
+- **M3-5**：采集脚本与冻结基线入库（自 M3-2 拆出；消除 §5 的复算缺口）。
 
 ## 7. 状态
 

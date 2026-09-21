@@ -329,7 +329,12 @@
   1. token 引用存在性（`var(--caomei-*)` 未定义且无 fallback 为错误）；
   2. 组件原始色值（`#hex` 与 `rgb()` / `rgba()` / `hsl()` / `hsla()` 均为错误，rgb/hsl 预算 0）；
   3. 档位常量一致性（`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone`）；
-  4. 旧命名泄漏（组件类型中的 `'small'` / `'large'`）。
+  4. 旧命名泄漏（组件类型中的 `'small'` / `'large'`）；
+  5. 档位块属性（G1）：`:where(.caomei-<comp>[__<el>]--<档位/变体>)` 规则内直接声明属性为错误；
+  6. scoped 变量声明（G2）：组件命名空间的 `--caomei-*` 声明必须落在含 `:where(` 的选择器内；
+  7. 禁用态字面量（G3）：`opacity: 0.5` / `0.6` 字面量为错误（跳过 `@keyframes`）；
+  8. 层级字面量（G4）：数字 `z-index` 为错误，须走 `var(--caomei-z-*)` 或关键字；
+  9. 尺寸档位选择器归一（G5，`[tier-where]`）：`.caomei-<comp>[__<el>]--(sm|md|lg)` 未被 `:where(...)` 归零为错误（规则面只含尺寸档位，不含变体 / 语气）。
 - **单测**：`scripts/governance/check-design.test.mjs` 将上述不变量固化为断言。
 - **新组件自检清单**：新增组件按下列顺序核对，全部满足方可进入 Review Gate。
   1. 命名与结构：`Caomei` + `PascalCase`；目录 `src/components/<kebab>/`，含同名 `.vue`、`types.ts`、`index.ts` 与 `.test.ts`；在 `src/index.ts` 导出。

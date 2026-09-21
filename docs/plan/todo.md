@@ -48,12 +48,13 @@
 
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
-| M3-1 | 尺寸档位 `:where()` 归一化 | 28 条（27 单一 + 1 复合）非 `:where()` 尺寸档位块改 `:where()` 并把默认值落基类 fallback；按组件面取证（input-number 6 / textarea 3 / tag 3 / select 3 / input 3 / date-picker 3 / button 3 / badge 4）。**本条目只含 8 个组件样式文件的归一化改动**（守卫与工具另列 M3-2，以满足[规划规范 §5](../standards/planning.md) 的粒度约束） | 计算样式逐项等价（226 项口径）；非 `:where()` 档位块归零；零视觉回归（`@ui-validator`） | 用户裁定 D6 |
-| M3-2 | `check:design` 规则面扩围与取证入库 | G1 / G2 规则面同步扩围以覆盖 M3-1 的收敛面；采样脚本 + 冻结基线入库（使等价取证可从仓库复算，替代 Phase 11 的 gitignored 临时产物） | 守卫扩围后可阻断回流（带正反例语料）；等价取证可复现（脚本 + 基线入库，可从仓库重跑） | M3-1 |
+| M3-1 | 尺寸档位 `:where()` 归一化 | 28 条（27 单一 + 1 复合）非 `:where()` 尺寸档位块改 `:where()` 并把默认值落基类 fallback；按组件面取证（input-number 6 / textarea 3 / tag 3 / select 3 / input 3 / date-picker 3 / button 3 / badge 4）。**本条目只含 8 个组件样式文件的归一化改动**（守卫与取证装置分别另列 M3-2 / M3-5，以满足[规划规范 §5](../standards/planning.md) 的粒度约束） | 计算样式逐项等价（226 项口径）；非 `:where()` 档位块归零；零视觉回归（`@ui-validator`） | 用户裁定 D6 |
+| M3-2 | `check:design` 规则面扩围 | 新增「尺寸档位类必须以 `:where(...)` 出现」的守卫（G1 只审查已用 `:where()` 的块、G2 只管变量声明，二者都无法拦截「档位类直接作为选择器主体」的形态——M3-1 收敛的 28 条正是此类）；接入 `runChecks` 与开发规范 §7 | 守卫可阻断回流（带正反例语料：档位类裸用 / 后代限定 / 复合块未包裹命中，`:where()` 包裹 / `:where()` 内分组 / `:not(:where(...))` 放行）；全库零误报 | M3-1 |
 | M3-3 | 重复声明（死声明）守卫 + 同类残留清理 | 先重新取证残留面（Phase 11 M2-2 已删 4 处，原登记 8 处 / 4 组件）；新增同类属性重复覆盖机检规则并清理残留 | 守卫带正反例语料并接入 `check:design`；残留归零或逐条登记例外 | — |
 | M3-4 | 触发器 `unstyled` 遗留收敛 | 收敛 date-picker / color-picker / split-button 的 `as-child` 绕过（Reka primitive `unstyled` 遗留） | 触发结构与可访问性断言 / 浏览器验证通过；零视觉回归 | — |
+| M3-5 | 计算样式取证装置入库 | **自 M3-2 拆出**（[规划规范 §5](../standards/planning.md) 的 10 文件 / 800 行阈值：守卫与取证装置合计超阈值；**交付时回填实测文件数 / 行数，生成物基线按 §5 不计入**）：把 M2-2 / M3-1 使用的一次性夹具与脚本（`.temp/capture/`，gitignored）迁入仓库，含聚焦化后的 fixture、`capture` / `diff` 运行器与**冻结基线**；接入周期回归调用 | 等价取证可从仓库复算（脚本 + 冻结基线入库，一条命令重跑并与基线比对）；冻结基线由 `--freeze` 生成并随脚本同提交；周期回归中生效 | M3-2 |
 
-状态（M3）：**M3-1 已交付（2026-09-21）**——8 个组件的 28 条非 `:where()` 尺寸档位块归一化（基类 `var(…, fallback)` 消费 + 档位块只声明变量），真实浏览器计算样式 **242 项逐属性 0 差异**（新增 26 项 + 既有主矩阵 216 项）、`rg` 归零核验 0 命中；`pnpm verify` exit 0（1415 tests）、`pnpm test:e2e` exit 0（54 passed）；Review Gate 两轮（R1 Reject：记录覆盖构成错述 → R2 Pass）。证据见 [M3-1 记录](../design/governance/2026-09-21-m3-1-size-tier-normalization.md)。**M3-2 ~ M3-4 待执行。**
+状态（M3）：**M3-1 已交付（2026-09-21）**——8 个组件的 28 条非 `:where()` 尺寸档位块归一化（基类 `var(…, fallback)` 消费 + 档位块只声明变量），真实浏览器计算样式 **242 项逐属性 0 差异**（新增 26 项 + 既有主矩阵 216 项）、`rg` 归零核验 0 命中；`pnpm verify` exit 0（1415 tests）、`pnpm test:e2e` exit 0（54 passed）；Review Gate 两轮（R1 Reject：记录覆盖构成错述 → R2 Pass）。证据见 [M3-1 记录](../design/governance/2026-09-21-m3-1-size-tier-normalization.md)。**M3-2 已交付（2026-09-21）**——`check:design` 新增尺寸档位选择器守卫 `[tier-where]`（拦「档位类直接作为选择器主体」——G1 / G2 均无法覆盖的 28 条收敛面形态），正反例语料 14 条（该守卫单测文件 44 tests 全过）、全库零误报、负向对照（注入裸档位块 → exit 1）确认可阻断；同步开发规范 §7 与设计规范 §8 检查项清单（补 5~9 = G1~G5）；Review Gate 三轮（R1 Reject：规划编号写入测试名与注释 + 执行期拆分后指针失效 4 处 → R2 Reject：预写 M3-2 交付结论 → R3 Pass，blocker 归零）。**M3-3 ~ M3-5 待执行。**
 
 #### M4 可访问性自动化回归
 
@@ -89,7 +90,7 @@
 | momei 侧迁移（B0b / B2 / B3 / B4） | 执行主体为 momei 仓库（外部） |
 | E2E 常驻 / 浮层规格入门禁、视觉回归基线、flaky 治理 | 容量所限，留 [Backlog](./backlog.md) |
 | 对比度遗留项盘点、实底前景 token 配对复核 | 涉改色 / 跨主题配对，须另行裁定，留 [Backlog](./backlog.md) |
-| 迁移口径一致性守卫、等价验证产物入库 | 未纳入本阶段（后者已折入 M3-2 的取证入库） |
+| 迁移口径一致性守卫、等价验证产物入库 | 未纳入本阶段（后者已折入 M3-5 的取证装置入库） |
 | 组件长尾与能力（Sidebar / DatePicker 范围选择 / ColorPicker 色板导航等） | 条件触发，留 [Backlog](./backlog.md) |
 | 文档站演示动画遗留项、示例外部图片依赖、首页 hydration mismatch | 未纳入本阶段，留 [Backlog](./backlog.md) |
 | 覆盖率进入日常 `test` / `verify` | 用户 2026-09-20 既有裁定维持 |

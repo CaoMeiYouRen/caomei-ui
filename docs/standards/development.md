@@ -120,7 +120,7 @@ test/                     # 单元与 E2E 测试
 - 禁止引入 Tailwind / UnoCSS；如需 Tailwind 用户适配，另提供可选 preset 文档（不内置依赖）。
 - CSS 变量默认值不声明在 scoped 根选择器（`.comp[data-v]` 特异性高于消费方 `.comp`）：基类不预声明默认值、消费处 `var(--x, fallback)`，档位类用 `:where()` 归零特异性；自建布局容器同样遵守。
 - 组件自身命名空间的 `--caomei-<comp>-*` 声明必须落在含 `:where(` 的选择器内（档位 / 变体块），基类只以 `var(--x, fallback)` 消费；全局 token 覆写（如 ConfirmDialog 覆写 `--caomei-color-*`）与跨组件传参不在此限。`check:design` 的 scoped 变量声明守卫为预算 0。
-- `:where()` 档位 / 变体块只声明 CSS 变量，不得直接声明属性；`check:design` 的档位块属性守卫为预算 0。规则面取 `src/types.ts` 的受控枚举修饰符（尺寸 / 变体 / 语气）；`skeleton` / `tabs` / `data-table` 等结构型低特异性布局覆盖不在其列。
+- `:where()` 档位 / 变体块只声明 CSS 变量，不得直接声明属性；`check:design` 的档位块属性守卫为预算 0。规则面取 `src/types.ts` 的受控枚举修饰符（尺寸 / 变体 / 语气）；`skeleton` / `tabs` / `data-table` 等结构型低特异性布局覆盖不在其列。**尺寸档位类本身必须以 `:where(...)` 出现**（`check:design` 的尺寸档位选择器守卫 `[tier-where]` 为预算 0；判定口径为「任一层包围括号是 `:where(`」，故 `:where(:not(.x--sm))` 与 `:not(:where(.x--sm))` 均放行；属性选择器取值内的引号内容不计入规则面）——「档位块属性守卫」只审查已用 `:where()` 的块，无法拦截「档位类直接作为选择器主体」的形态。本守卫规则面**只含尺寸档位**（`sm` / `md` / `lg`），不含变体 / 语气（后者的档位块本就声明属性，由 G2 兜住变量声明）；结构修饰符可与尺寸档位复合而保持常规特异性（如 `.caomei-badge--dot:where(.caomei-badge--lg)`）。
 - 浮层层级与局部层叠统一走 `--caomei-z-*`（清单见[设计规范 §2.5](../design/design-spec.md)）：组件内禁止数字 `z-index`（含 DataTable 冻结列、焦点成员抬升），`check:design` 的 `z-index` 预算为 0。
 - 禁用态不透明度只走 `--caomei-disabled-opacity`：组件内禁止 `opacity: 0.5 / 0.6` 字面量（`@keyframes` 的动画中间态除外，不同值档位不得顺手归并），`check:design` 的不透明度守卫为预算 0。
 - 区块间距压缩须覆盖全部合法邻接组合（`header+body` / `body+footer` / `header+footer`）；条件渲染会产生直邻组合，避免仅依赖 `+` 选择器漏判而出现双倍间距。

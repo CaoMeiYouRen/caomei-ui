@@ -11,7 +11,9 @@
  * 5. 档位块直接声明属性（G1）：`:where(.caomei-<comp>[__<el>]--<档位/变体>)` 规则内出现非自定义属性为错误；
  * 6. scoped 变量声明（G2）：组件样式块内声明**非全局 token** 的 `--caomei-*` 时选择器必须含 `:where(`（基类不预声明默认值）；
  * 7. 禁用态字面量（G3）：`opacity: 0.5 / 0.6` 字面量为错误（跳过 `@keyframes` 块）；
- * 8. 层级字面量（G4）：数字 `z-index` 为错误，必须走 `var(--caomei-z-*)` 或关键字。
+ * 8. 层级字面量（G4）：数字 `z-index` 为错误，必须走 `var(--caomei-z-*)` 或关键字；
+ * 9. 尺寸档位选择器归一（G5）：`.caomei-<comp>[__<el>]--(sm|md|lg)` 未被 `:where(...)` 包裹为错误
+ *    （G1 / G2 只检查「已用 `:where()`」的块，本项拦的是「根本没用 `:where()`」的形态）。
  *
  * 用法：
  *   node scripts/governance/check-design.mjs            # 有错误 exit 1
@@ -395,6 +397,62 @@ export function findScopedVariableDeclarations(entries, globalTokens) {
     return issues
 }
 
+/**
+ * G5：尺寸档位选择器必须 `:where()` 归一（预算 0）。
+ * 规则面：选择器中的 `.caomei-<comp>[__<el>]--(sm|md|lg)` 出现点，其前方须紧邻 `:where(`（允许空白）。
+ * 依据：以 `^:where(` 为规则面的档位块属性守卫与只覆盖变量声明的 scoped 变量守卫，
+ * 都无法拦截「档位类直接作为选择器主体」的形态（该形态在归一化收敛前累计 28 条 / 8 组件）。
+ * 规范与收敛记录见 docs/standards/development.md §7、
+ * docs/design/governance/2026-09-21-m3-1-size-tier-normalization.md。
+ * 允许形态：`:where(.x--sm)`、`:where(.x--sm, .y--md)`、`.x--dot:where(.x--lg)`（结构修饰符保持常规特异性）、
+ * `:where(:not(.x--sm))`（任一外层括号为 `:where(` 即视为已归零）。
+ */
+export function findNonWhereSizeSelectors(entries) {
+    const issues = []
+    const SIZE_CLASS_RE = /\.caomei-[a-z0-9-]+(?:__[a-z0-9-]+)?--(?:sm|md|lg)(?![a-z0-9-])/g
+    for (const rule of collectRuleEntries(entries)) {
+        // 属性选择器的取值可能含 `where(` 或类名形态，先剥离引号内容再分析
+        const selector = rule.selector.replace(/"[^"]*"|'[^']*'/g, '""')
+        for (const m of selector.matchAll(SIZE_CLASS_RE)) {
+            if (!isWrappedInWhere(selector, m.index)) {
+                issues.push({ file: rule.file, selector: rule.selector, className: m[0] })
+            }
+        }
+    }
+    return issues
+}
+
+/**
+ * 判断 `selector[index]` 处的类名是否被 `:where(...)` 归零——沿括号祖先链上溯，
+ * 只要任一层包围括号是 `:where(` 即视为已归零（故 `:where(:not(.x--sm))` 与 `:not(:where(.x--sm))` 均放行，
+ * 而裸 `:not(.x--sm)` 命中）。
+ */
+function isWrappedInWhere(selector, index) {
+    let depth = 0
+    for (let i = index - 1; i >= 0; i--) {
+        const ch = selector[i]
+        if (ch === ')') {
+            depth++
+            continue
+        }
+        if (ch !== '(') {
+            continue
+        }
+        if (depth > 0) {
+            depth--
+            continue
+        }
+        const name = selector.slice(0, i).match(/([a-z-]+)$/)
+        if (name === null) {
+            return false
+        }
+        if (name[1].toLowerCase() === 'where') {
+            return true
+        }
+    }
+    return false
+}
+
 /** G3：禁用态 `opacity` 字面量（0.5 / 0.6），跳过 `@keyframes` 块。 */
 export function findOpacityLiterals(entries) {
     const issues = []
@@ -446,6 +504,7 @@ export function runChecks() {
         legacyNaming: findLegacyNaming(typeEntries),
         tierBlockDeclarations: findTierBlockPropertyDeclarations(componentEntries),
         scopedVariableDeclarations: findScopedVariableDeclarations(componentEntries, globalTokens),
+        nonWhereSizeSelectors: findNonWhereSizeSelectors(componentEntries),
         opacityLiterals: findOpacityLiterals(componentEntries),
         zIndexLiterals: findZIndexLiterals(componentEntries),
     }
@@ -474,6 +533,9 @@ function main() {
     }
     for (const issue of result.scopedVariableDeclarations) {
         problems.push(`[scope] ${issue.file}: ${issue.selector} 声明 ${issue.property} 但选择器不含 :where(（基类不预声明默认值）`)
+    }
+    for (const issue of result.nonWhereSizeSelectors) {
+        problems.push(`[tier-where] ${issue.file}: ${issue.selector} 中的 ${issue.className} 未用 :where() 归零特异性（尺寸档位只应以 :where(...) 出现）`)
     }
     for (const issue of result.opacityLiterals) {
         problems.push(`[opacity] ${issue.file}: ${issue.selector} 出现禁用态字面量 opacity: ${issue.value}（预算 ${OPACITY_BUDGET}）`)
@@ -504,7 +566,8 @@ function main() {
 
     console.info(
         `[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致、`
-        + `档位块仅声明变量、scoped 变量声明合规、无禁用态 opacity 字面量、无数字 z-index`
+        + `档位块仅声明变量、scoped 变量声明合规、尺寸档位选择器均经 :where() 归一、`
+        + `无禁用态 opacity 字面量、无数字 z-index`
         + `（rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`,
     )
 }

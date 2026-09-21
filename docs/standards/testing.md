@@ -8,7 +8,7 @@
 |------|------|------|
 | 单元测试 | Vitest + @vue/test-utils | 组件 props / emits / slots 行为、composables 逻辑、纯函数 |
 | 组件交互 | Vitest（必要时 browser mode） | Dialog / Select 等真实 DOM 交互 |
-| 可访问性 | axe-core（happy-dom） | 组件级 a11y 断言（受检面 = 组件族根组件，对外导出穷尽登记；见 [M4-1 记录](../design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md)） |
+| 可访问性 | axe-core（happy-dom） | 组件级 a11y 断言（受检面 = 组件族根组件，对外导出穷尽登记；**已裁定的例外清单外零违规**，随全量单测进入合并门禁；见 [M4-1 记录](../design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md) / [M4-2 记录](../design/governance/2026-09-22-m4-2-a11y-gate-wiring.md)） |
 | E2E | Playwright | `examples/` 示例应用中的关键路径与主题切换 |
 | 类型 | vue-tsc | 构建产物与公共 API 类型正确性 |
 
@@ -75,6 +75,7 @@
 - 单文件：`pnpm exec vitest run <path>`
 - 覆盖率：`pnpm test:coverage`
 - E2E：`pnpm test:e2e`
+- 可访问性：`pnpm test:a11y`（组件级 axe 审计与例外清单断言；全量 `pnpm test` 已自动包含）
 - 计算样式等价：`pnpm capture:styles`（采样并与冻结基线比对，有差异 exit 1）；`pnpm capture:styles:freeze`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面）
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。

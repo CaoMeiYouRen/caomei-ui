@@ -106,9 +106,13 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-width: var(--caomei-badge-min-width, 20px);
+    height: var(--caomei-badge-height, 20px);
+    padding: 0 var(--caomei-badge-padding-x, var(--caomei-space-1));
     border: 1px solid transparent;
     border-radius: 999px;
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-badge-font-size, var(--caomei-font-size-sm));
     font-variant-numeric: tabular-nums;
     line-height: 1;
     white-space: nowrap;
@@ -163,25 +167,25 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     color: var(--caomei-badge-tone);
 }
 
-.caomei-badge--sm {
-    min-width: 16px;
-    height: 16px;
-    padding: 0 2px;
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-badge--sm) {
+    --caomei-badge-min-width: 16px;
+    --caomei-badge-height: 16px;
+    --caomei-badge-padding-x: 2px;
+    --caomei-badge-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-badge--md {
-    min-width: 20px;
-    height: 20px;
-    padding: 0 var(--caomei-space-1);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-badge--md) {
+    --caomei-badge-min-width: 20px;
+    --caomei-badge-height: 20px;
+    --caomei-badge-padding-x: var(--caomei-space-1);
+    --caomei-badge-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-badge--lg {
-    min-width: var(--caomei-control-height-sm);
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-badge--lg) {
+    --caomei-badge-min-width: var(--caomei-control-height-sm);
+    --caomei-badge-height: var(--caomei-control-height-sm);
+    --caomei-badge-padding-x: var(--caomei-space-2);
+    --caomei-badge-font-size: var(--caomei-font-size-md);
 }
 
 .caomei-badge--dot {
@@ -191,7 +195,11 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     padding: 0;
 }
 
-.caomei-badge--dot.caomei-badge--lg {
+/*
+  结构修饰符 `--dot` 保留常规特异性：本复合块须胜过 `.caomei-badge--dot` 自身的 8px；
+  尺寸档位部分经 :where() 归零。**本规则依赖源码顺序**——必须排在 `.caomei-badge--dot` 之后（同特异性由源序决胜负）。
+*/
+.caomei-badge--dot:where(.caomei-badge--lg) {
     width: 10px;
     height: 10px;
 }

@@ -257,11 +257,13 @@ defineExpose({ focus, blur, inputRef })
     align-items: center;
     width: 100%;
     max-width: var(--caomei-input-number-max-width);
+    height: var(--caomei-input-number-height, var(--caomei-control-height-md));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-input-number-font-size, var(--caomei-font-size-md));
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -291,31 +293,22 @@ defineExpose({ focus, blur, inputRef })
     background: var(--caomei-color-bg-elevated);
 }
 
-.caomei-input-number--sm {
-    height: var(--caomei-control-height-sm);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-input-number--sm) {
+    --caomei-input-number-height: var(--caomei-control-height-sm);
+    --caomei-input-number-font-size: var(--caomei-font-size-sm);
+    --caomei-input-number-button-width: var(--caomei-control-height-sm);
 }
 
-.caomei-input-number--md {
-    height: var(--caomei-control-height-md);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-input-number--md) {
+    --caomei-input-number-height: var(--caomei-control-height-md);
+    --caomei-input-number-font-size: var(--caomei-font-size-md);
+    --caomei-input-number-button-width: var(--caomei-control-height-md);
 }
 
-.caomei-input-number--lg {
-    height: var(--caomei-control-height-lg);
-    font-size: var(--caomei-font-size-lg);
-}
-
-.caomei-input-number--sm .caomei-input-number__button {
-    width: var(--caomei-control-height-sm);
-}
-
-.caomei-input-number--md .caomei-input-number__button {
-    width: var(--caomei-control-height-md);
-}
-
-.caomei-input-number--lg .caomei-input-number__button {
-    width: var(--caomei-control-height-lg);
+:where(.caomei-input-number--lg) {
+    --caomei-input-number-height: var(--caomei-control-height-lg);
+    --caomei-input-number-font-size: var(--caomei-font-size-lg);
+    --caomei-input-number-button-width: var(--caomei-control-height-lg);
 }
 
 .caomei-input-number__control {
@@ -344,6 +337,7 @@ defineExpose({ focus, blur, inputRef })
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
+    width: var(--caomei-input-number-button-width, var(--caomei-control-height-md));
     height: 100%;
     padding: 0;
     border: 0;

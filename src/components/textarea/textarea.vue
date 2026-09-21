@@ -234,6 +234,8 @@ defineExpose({ focus, blur, textareaRef })
     background: transparent;
     color: inherit;
     font: inherit;
+    padding: var(--caomei-textarea-padding-y, var(--caomei-space-2)) var(--caomei-textarea-padding-x, var(--caomei-space-3));
+    font-size: var(--caomei-textarea-font-size, var(--caomei-font-size-md));
 }
 
 .caomei-textarea__control:disabled {
@@ -244,18 +246,21 @@ defineExpose({ focus, blur, textareaRef })
     color: var(--caomei-color-text-muted);
 }
 
-.caomei-textarea--sm .caomei-textarea__control {
-    padding: var(--caomei-space-1) var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-textarea--sm) {
+    --caomei-textarea-padding-y: var(--caomei-space-1);
+    --caomei-textarea-padding-x: var(--caomei-space-2);
+    --caomei-textarea-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-textarea--md .caomei-textarea__control {
-    padding: var(--caomei-space-2) var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-textarea--md) {
+    --caomei-textarea-padding-y: var(--caomei-space-2);
+    --caomei-textarea-padding-x: var(--caomei-space-3);
+    --caomei-textarea-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-textarea--lg .caomei-textarea__control {
-    padding: var(--caomei-space-3) var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-textarea--lg) {
+    --caomei-textarea-padding-y: var(--caomei-space-3);
+    --caomei-textarea-padding-x: var(--caomei-space-4);
+    --caomei-textarea-font-size: var(--caomei-font-size-lg);
 }
 </style>

@@ -195,11 +195,14 @@ function onTimeUpdate(value: TimeParts): void {
     gap: var(--caomei-space-2);
     width: 100%;
     max-width: var(--caomei-date-picker-max-width, var(--caomei-select-max-width));
+    height: var(--caomei-date-picker-height, var(--caomei-control-height-md));
+    padding: 0 var(--caomei-date-picker-padding-x, var(--caomei-space-3));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-date-picker-font-size, var(--caomei-font-size-md));
     text-align: start;
     cursor: pointer;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -211,22 +214,22 @@ function onTimeUpdate(value: TimeParts): void {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
 }
 
-.caomei-date-picker--sm {
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-date-picker--sm) {
+    --caomei-date-picker-height: var(--caomei-control-height-sm);
+    --caomei-date-picker-padding-x: var(--caomei-space-2);
+    --caomei-date-picker-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-date-picker--md {
-    height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-date-picker--md) {
+    --caomei-date-picker-height: var(--caomei-control-height-md);
+    --caomei-date-picker-padding-x: var(--caomei-space-3);
+    --caomei-date-picker-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-date-picker--lg {
-    height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-date-picker--lg) {
+    --caomei-date-picker-height: var(--caomei-control-height-lg);
+    --caomei-date-picker-padding-x: var(--caomei-space-4);
+    --caomei-date-picker-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-date-picker--invalid {

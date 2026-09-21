@@ -94,7 +94,7 @@ function onClick(event: MouseEvent): void {
 <style scoped>
 /*
   `--caomei-button-*` 只作为覆盖钩子（消费处带默认回退值），基类不预声明默认值；
-  语气档位选择器用 :where() 归零特异性，只声明 CSS 变量。
+  尺寸与语气档位选择器用 :where() 归零特异性，只声明 CSS 变量。
 */
 .caomei-button {
     position: relative;
@@ -105,7 +105,10 @@ function onClick(event: MouseEvent): void {
     gap: var(--caomei-space-1);
     border: 1px solid transparent;
     border-radius: var(--caomei-radius-md);
+    height: var(--caomei-button-height, var(--caomei-control-height-md));
+    padding: 0 var(--caomei-button-padding-x, var(--caomei-space-3));
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-button-font-size, var(--caomei-font-size-md));
     line-height: 1;
     cursor: pointer;
     user-select: none;
@@ -186,22 +189,22 @@ function onClick(event: MouseEvent): void {
     --caomei-button-focus: var(--caomei-color-danger);
 }
 
-.caomei-button--sm {
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-button--sm) {
+    --caomei-button-height: var(--caomei-control-height-sm);
+    --caomei-button-padding-x: var(--caomei-space-2);
+    --caomei-button-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-button--md {
-    height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-button--md) {
+    --caomei-button-height: var(--caomei-control-height-md);
+    --caomei-button-padding-x: var(--caomei-space-3);
+    --caomei-button-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-button--lg {
-    height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-button--lg) {
+    --caomei-button-height: var(--caomei-control-height-lg);
+    --caomei-button-padding-x: var(--caomei-space-4);
+    --caomei-button-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-button__icon,

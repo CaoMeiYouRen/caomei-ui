@@ -94,9 +94,12 @@ function onToggle(): void {
     display: inline-flex;
     align-items: center;
     gap: var(--caomei-space-1);
+    height: var(--caomei-tag-height, var(--caomei-control-height-md));
+    padding: 0 var(--caomei-tag-padding-x, var(--caomei-space-3));
     border: 1px solid transparent;
     border-radius: var(--caomei-radius-sm);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-tag-font-size, var(--caomei-font-size-md));
     line-height: 1;
     white-space: nowrap;
     vertical-align: middle;
@@ -142,22 +145,22 @@ function onToggle(): void {
     color: var(--caomei-tag-tone);
 }
 
-.caomei-tag--sm {
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-tag--sm) {
+    --caomei-tag-height: var(--caomei-control-height-sm);
+    --caomei-tag-padding-x: var(--caomei-space-2);
+    --caomei-tag-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-tag--md {
-    height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-tag--md) {
+    --caomei-tag-height: var(--caomei-control-height-md);
+    --caomei-tag-padding-x: var(--caomei-space-3);
+    --caomei-tag-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-tag--lg {
-    height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-tag--lg) {
+    --caomei-tag-height: var(--caomei-control-height-lg);
+    --caomei-tag-padding-x: var(--caomei-space-4);
+    --caomei-tag-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-tag--disabled {

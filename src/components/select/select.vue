@@ -307,12 +307,14 @@ function clearValue(): void {
     justify-content: space-between;
     gap: var(--caomei-space-1);
     width: 100%;
+    height: var(--caomei-select-height, var(--caomei-control-height-md));
     padding: 0 var(--caomei-select-padding-end, var(--caomei-space-3));
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-select-font-size, var(--caomei-font-size-md));
     cursor: pointer;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -408,19 +410,19 @@ function clearValue(): void {
     outline-offset: 1px;
 }
 
-.caomei-select--sm {
-    height: var(--caomei-control-height-sm);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-select--sm) {
+    --caomei-select-height: var(--caomei-control-height-sm);
+    --caomei-select-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-select--md {
-    height: var(--caomei-control-height-md);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-select--md) {
+    --caomei-select-height: var(--caomei-control-height-md);
+    --caomei-select-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-select--lg {
-    height: var(--caomei-control-height-lg);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-select--lg) {
+    --caomei-select-height: var(--caomei-control-height-lg);
+    --caomei-select-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-select__value {

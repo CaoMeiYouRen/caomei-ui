@@ -122,9 +122,12 @@ defineExpose({ focus, blur, inputRef })
     width: 100%;
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
+    height: var(--caomei-input-height, var(--caomei-control-height-md));
+    padding: 0 var(--caomei-input-padding-x, var(--caomei-space-3));
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-input-font-size, var(--caomei-font-size-md));
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -154,22 +157,22 @@ defineExpose({ focus, blur, inputRef })
     background: var(--caomei-color-bg-elevated);
 }
 
-.caomei-input--sm {
-    height: var(--caomei-control-height-sm);
-    padding: 0 var(--caomei-space-2);
-    font-size: var(--caomei-font-size-sm);
+:where(.caomei-input--sm) {
+    --caomei-input-height: var(--caomei-control-height-sm);
+    --caomei-input-padding-x: var(--caomei-space-2);
+    --caomei-input-font-size: var(--caomei-font-size-sm);
 }
 
-.caomei-input--md {
-    height: var(--caomei-control-height-md);
-    padding: 0 var(--caomei-space-3);
-    font-size: var(--caomei-font-size-md);
+:where(.caomei-input--md) {
+    --caomei-input-height: var(--caomei-control-height-md);
+    --caomei-input-padding-x: var(--caomei-space-3);
+    --caomei-input-font-size: var(--caomei-font-size-md);
 }
 
-.caomei-input--lg {
-    height: var(--caomei-control-height-lg);
-    padding: 0 var(--caomei-space-4);
-    font-size: var(--caomei-font-size-lg);
+:where(.caomei-input--lg) {
+    --caomei-input-height: var(--caomei-control-height-lg);
+    --caomei-input-padding-x: var(--caomei-space-4);
+    --caomei-input-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-input__control {

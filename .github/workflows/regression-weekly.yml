@@ -144,6 +144,11 @@ jobs:
         run: pnpm run test:e2e
         continue-on-error: true
 
+      # 计算样式等价回归：与仓库内冻结基线逐属性比对，检出样式治理改动的非预期漂移
+      # （单测跑在 happy-dom 上，看不到 scoped CSS 与层叠结果）。沿用本 job 已装好的 Chromium。
+      - name: Check computed styles against frozen baseline
+        run: pnpm run capture:styles
+
       - name: Upload E2E report
         if: always()
         uses: actions/upload-artifact@v7

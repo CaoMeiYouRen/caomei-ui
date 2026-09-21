@@ -58,6 +58,8 @@
     "check:build": "node scripts/release/check-build.mjs",
     "check:nuxt": "node scripts/release/check-nuxt.mjs",
     "check:coverage": "node scripts/governance/check-coverage.mjs",
+    "capture:styles": "node test/capture/capture.mjs",
+    "capture:styles:freeze": "node test/capture/capture.mjs --freeze",
     "test:nuxt-smoke": "pnpm build && pnpm check:nuxt",
     "distill:wisdom": "node scripts/governance/distill-wisdom.mjs",
     "ai:check": "node scripts/ai/check-governance.mjs",

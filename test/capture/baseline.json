@@ -1,0 +1,1806 @@
+{
+    "capturedAt": "2026-09-21T17:02:55.520Z",
+    "chromiumVersion": "153.0.8010.12",
+    "viewport": "1280x800",
+    "entries": {
+        "size.auto-complete.sm": {
+            "min-height": "28px",
+            "height": "28px",
+            "padding-top": "4px",
+            "padding-right": "8px",
+            "padding-bottom": "4px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "size.multi-select.sm": {
+            "min-height": "28px",
+            "height": "29.3281px",
+            "padding-top": "4px",
+            "padding-right": "8px",
+            "padding-bottom": "4px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "size.message.sm": {
+            "min-height": "auto",
+            "height": "56px",
+            "padding-top": "8px",
+            "padding-right": "12px",
+            "padding-bottom": "8px",
+            "padding-left": "12px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select.sm": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "8px",
+            "padding-bottom": "0px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-field.sm": {
+            "font-size": "12px"
+        },
+        "size.select-button.sm": {
+            "height": "28px",
+            "min-height": "auto",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-button-item.sm": {
+            "padding-left": "8px",
+            "padding-right": "8px",
+            "font-size": "12px",
+            "min-height": "auto"
+        },
+        "size.auto-complete.md": {
+            "min-height": "36px",
+            "height": "36px",
+            "padding-top": "4px",
+            "padding-right": "12px",
+            "padding-bottom": "4px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "size.multi-select.md": {
+            "min-height": "36px",
+            "height": "36px",
+            "padding-top": "4px",
+            "padding-right": "12px",
+            "padding-bottom": "4px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "size.message.md": {
+            "min-height": "auto",
+            "height": "70px",
+            "padding-top": "12px",
+            "padding-right": "16px",
+            "padding-bottom": "12px",
+            "padding-left": "16px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select.md": {
+            "min-height": "auto",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "12px",
+            "padding-bottom": "0px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-field.md": {
+            "font-size": "14px"
+        },
+        "size.select-button.md": {
+            "height": "36px",
+            "min-height": "auto",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-button-item.md": {
+            "padding-left": "12px",
+            "padding-right": "12px",
+            "font-size": "14px",
+            "min-height": "auto"
+        },
+        "size.auto-complete.lg": {
+            "min-height": "44px",
+            "height": "44px",
+            "padding-top": "8px",
+            "padding-right": "16px",
+            "padding-bottom": "8px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "size.multi-select.lg": {
+            "min-height": "44px",
+            "height": "44px",
+            "padding-top": "8px",
+            "padding-right": "16px",
+            "padding-bottom": "8px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "size.message.lg": {
+            "min-height": "auto",
+            "height": "84px",
+            "padding-top": "16px",
+            "padding-right": "16px",
+            "padding-bottom": "16px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select.lg": {
+            "min-height": "auto",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "16px",
+            "padding-bottom": "0px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-field.lg": {
+            "font-size": "16px"
+        },
+        "size.select-button.lg": {
+            "height": "44px",
+            "min-height": "auto",
+            "border-top-left-radius": "8px"
+        },
+        "size.select-button-item.lg": {
+            "padding-left": "16px",
+            "padding-right": "16px",
+            "font-size": "16px",
+            "min-height": "auto"
+        },
+        "tier.input.sm": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "8px",
+            "padding-bottom": "0px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea.sm": {
+            "min-height": "auto",
+            "height": "38px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.sm": {
+            "padding-top": "4px",
+            "padding-right": "8px",
+            "padding-bottom": "4px",
+            "padding-left": "8px",
+            "font-size": "12px"
+        },
+        "tier.input-number.sm": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.input-number-button.sm": {
+            "width": "28px",
+            "height": "26px"
+        },
+        "tier.date-picker.sm": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "8px",
+            "padding-bottom": "0px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.tag.sm": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "8px",
+            "padding-bottom": "0px",
+            "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "4px"
+        },
+        "tier.badge.sm": {
+            "min-height": "auto",
+            "height": "16px",
+            "padding-top": "0px",
+            "padding-right": "2px",
+            "padding-bottom": "0px",
+            "padding-left": "2px",
+            "font-size": "12px",
+            "border-top-left-radius": "999px"
+        },
+        "tier.input.md": {
+            "min-height": "auto",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "12px",
+            "padding-bottom": "0px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea.md": {
+            "min-height": "auto",
+            "height": "50px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.md": {
+            "padding-top": "8px",
+            "padding-right": "12px",
+            "padding-bottom": "8px",
+            "padding-left": "12px",
+            "font-size": "14px"
+        },
+        "tier.input-number.md": {
+            "min-height": "auto",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.input-number-button.md": {
+            "width": "36px",
+            "height": "34px"
+        },
+        "tier.date-picker.md": {
+            "min-height": "auto",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "12px",
+            "padding-bottom": "0px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.tag.md": {
+            "min-height": "auto",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "12px",
+            "padding-bottom": "0px",
+            "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "4px"
+        },
+        "tier.badge.md": {
+            "min-height": "auto",
+            "height": "20px",
+            "padding-top": "0px",
+            "padding-right": "4px",
+            "padding-bottom": "0px",
+            "padding-left": "4px",
+            "font-size": "12px",
+            "border-top-left-radius": "999px"
+        },
+        "tier.input.lg": {
+            "min-height": "auto",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "16px",
+            "padding-bottom": "0px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea.lg": {
+            "min-height": "auto",
+            "height": "64px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.lg": {
+            "padding-top": "12px",
+            "padding-right": "16px",
+            "padding-bottom": "12px",
+            "padding-left": "16px",
+            "font-size": "16px"
+        },
+        "tier.input-number.lg": {
+            "min-height": "auto",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.input-number-button.lg": {
+            "width": "44px",
+            "height": "42px"
+        },
+        "tier.date-picker.lg": {
+            "min-height": "auto",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "16px",
+            "padding-bottom": "0px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.tag.lg": {
+            "min-height": "auto",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "16px",
+            "padding-bottom": "0px",
+            "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "4px"
+        },
+        "tier.badge.lg": {
+            "min-height": "auto",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "8px",
+            "padding-bottom": "0px",
+            "padding-left": "8px",
+            "font-size": "14px",
+            "border-top-left-radius": "999px"
+        },
+        "tier.badge-dot.md": {
+            "width": "8px",
+            "height": "8px",
+            "min-width": "0px",
+            "padding-left": "0px",
+            "padding-right": "0px"
+        },
+        "tier.badge-dot.lg": {
+            "width": "10px",
+            "height": "10px",
+            "min-width": "0px",
+            "padding-left": "0px",
+            "padding-right": "0px"
+        },
+        "variant.message.neutral.soft": {
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.neutral.solid": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.neutral.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgb(107, 114, 128)",
+            "border-left-color": "rgb(107, 114, 128)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.neutral.simple": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.neutral.soft": {
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.neutral.soft": {
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.neutral.solid": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.neutral.solid": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.neutral.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgb(107, 114, 128)",
+            "border-left-color": "rgb(107, 114, 128)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.neutral.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(107, 114, 128)",
+            "border-top-color": "rgb(107, 114, 128)",
+            "border-left-color": "rgb(107, 114, 128)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.primary.soft": {
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.primary.solid": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.primary.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "border-left-color": "rgb(37, 99, 235)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.primary.simple": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.primary.soft": {
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.primary.soft": {
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.primary.solid": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.primary.solid": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.primary.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "border-left-color": "rgb(37, 99, 235)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.primary.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "border-left-color": "rgb(37, 99, 235)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.success.soft": {
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.success.solid": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.success.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "border-left-color": "rgb(21, 128, 61)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.success.simple": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.success.soft": {
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.success.soft": {
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.success.solid": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.success.solid": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.success.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "border-left-color": "rgb(21, 128, 61)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.success.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "border-left-color": "rgb(21, 128, 61)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.warning.soft": {
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.warning.solid": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.warning.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "border-left-color": "rgb(180, 83, 9)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.warning.simple": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.warning.soft": {
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.warning.soft": {
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.warning.solid": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.warning.solid": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.warning.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "border-left-color": "rgb(180, 83, 9)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.warning.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "border-left-color": "rgb(180, 83, 9)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.danger.soft": {
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.danger.solid": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.danger.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "border-left-color": "rgb(220, 38, 38)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.message.danger.simple": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.danger.soft": {
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.danger.soft": {
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.danger.solid": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.danger.solid": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.badge.danger.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "border-left-color": "rgb(220, 38, 38)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "variant.tag.danger.outline": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "border-left-color": "rgb(220, 38, 38)",
+            "border-top-width": "1px",
+            "border-left-width": "1px"
+        },
+        "button.primary.none.sm": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.none.md": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.none.lg": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.neutral.sm": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.neutral.md": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.neutral.lg": {
+            "background-color": "rgb(82, 82, 91)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.primary.sm": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.primary.md": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.primary.lg": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.success.sm": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.success.md": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.success.lg": {
+            "background-color": "rgb(21, 128, 61)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.warning.sm": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.warning.md": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.warning.lg": {
+            "background-color": "rgb(180, 83, 9)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.danger.sm": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.danger.md": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.primary.danger.lg": {
+            "background-color": "rgb(220, 38, 38)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(255, 255, 255)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.none.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.none.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.none.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.neutral.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.neutral.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.neutral.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.primary.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.primary.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.primary.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.success.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.success.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.success.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgb(21, 128, 61)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.warning.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.warning.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.warning.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgb(180, 83, 9)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.danger.sm": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.danger.md": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.secondary.danger.lg": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgb(220, 38, 38)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.none.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.none.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.none.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.neutral.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.neutral.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.neutral.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.primary.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.primary.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.primary.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(37, 99, 235)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.success.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.success.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.success.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(21, 128, 61)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.warning.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.warning.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.warning.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(180, 83, 9)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.danger.sm": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "12px",
+            "height": "28px",
+            "padding-left": "8px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.danger.md": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "14px",
+            "height": "36px",
+            "padding-left": "12px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "button.ghost.danger.lg": {
+            "background-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(220, 38, 38)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "font-size": "16px",
+            "height": "44px",
+            "padding-left": "16px",
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "none",
+            "outline-width": "3px"
+        },
+        "radio-group-invalid.indicator": {
+            "border-top-color": "rgb(220, 38, 38)"
+        },
+        "z.float-label.label": {
+            "z-index": "1"
+        },
+        "z.data-table.th-pinned-start": {
+            "z-index": "3"
+        },
+        "z.data-table.td-pinned-start": {
+            "z-index": "2"
+        },
+        "trigger.date-picker.attrs": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
+        },
+        "trigger.date-picker.style": {
+            "height": "36px",
+            "padding-left": "12px",
+            "border-top-width": "1px",
+            "border-top-left-radius": "8px",
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "font-size": "14px"
+        },
+        "trigger.color-picker.attrs": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
+        },
+        "trigger.color-picker.style": {
+            "height": "36px",
+            "padding-left": "4px",
+            "border-top-width": "1px",
+            "border-top-left-radius": "8px",
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(0, 0, 0)",
+            "font-size": "13.3333px"
+        },
+        "trigger.split-button-menu.attrs": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+        },
+        "trigger.split-button-menu.style": {
+            "height": "36px",
+            "padding-left": "12px",
+            "border-top-width": "1px",
+            "border-top-left-radius": "0px",
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)",
+            "font-size": "14px"
+        },
+        "button-focus.primary.none.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.none.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.none.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.neutral.sm": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.neutral.md": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.neutral.lg": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.primary.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.primary.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.primary.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.success.sm": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.success.md": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.success.lg": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.warning.sm": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.warning.md": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.warning.lg": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.danger.sm": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.danger.md": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.primary.danger.lg": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.none.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.none.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.none.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.neutral.sm": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.neutral.md": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.neutral.lg": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.primary.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.primary.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.primary.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.success.sm": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.success.md": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.success.lg": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.warning.sm": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.warning.md": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.warning.lg": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.danger.sm": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.danger.md": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.secondary.danger.lg": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.none.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.none.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.none.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.neutral.sm": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.neutral.md": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.neutral.lg": {
+            "outline-color": "rgb(26, 26, 26)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.primary.sm": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.primary.md": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.primary.lg": {
+            "outline-color": "rgb(37, 99, 235)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.success.sm": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.success.md": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.success.lg": {
+            "outline-color": "rgb(21, 128, 61)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.warning.sm": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.warning.md": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.warning.lg": {
+            "outline-color": "rgb(180, 83, 9)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.danger.sm": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.danger.md": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "button-focus.ghost.danger.lg": {
+            "outline-color": "rgb(220, 38, 38)",
+            "outline-style": "solid",
+            "outline-width": "2px"
+        },
+        "state.input.focus": {
+            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(37, 99, 235)"
+        },
+        "state.input.invalid": {
+            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(220, 38, 38)"
+        },
+        "state.textarea.focus": {
+            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(37, 99, 235)"
+        },
+        "state.textarea.invalid": {
+            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(220, 38, 38)"
+        },
+        "state.input-number.focus": {
+            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(37, 99, 235)"
+        },
+        "state.input-number.invalid": {
+            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(220, 38, 38)"
+        },
+        "state.select.focus": {
+            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(37, 99, 235)"
+        },
+        "state.select.invalid": {
+            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(220, 38, 38)"
+        },
+        "z.button-group.focus-within": {
+            "z-index": "1"
+        },
+        "z.input-group.focus-within": {
+            "z-index": "1"
+        },
+        "trigger.date-picker.open": {
+            "dump": "BUTTON aria-controls=\"reka-popover-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"open\" type=\"button\""
+        },
+        "trigger.date-picker.closed": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
+        },
+        "trigger.color-picker.open": {
+            "dump": "BUTTON aria-controls=\"reka-popover-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"open\" id=\"reka-popover-trigger-v-*\" type=\"button\""
+        },
+        "trigger.color-picker.closed": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
+        },
+        "trigger.split-button-menu.open": {
+            "dump": "BUTTON aria-controls=\"reka-dropdown-menu-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"open\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+        },
+        "trigger.split-button-menu.closed": {
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+        },
+        "drawer.sm.content": {
+            "width": "320px",
+            "height": "800px",
+            "animation-duration": "0.2s",
+            "transition-duration": "0s",
+            "z-index": "1001"
+        },
+        "drawer.md.content": {
+            "width": "420px",
+            "height": "800px",
+            "animation-duration": "0.2s",
+            "transition-duration": "0s",
+            "z-index": "1001"
+        },
+        "drawer.lg.content": {
+            "width": "560px",
+            "height": "800px",
+            "animation-duration": "0.2s",
+            "transition-duration": "0s",
+            "z-index": "1001"
+        },
+        "drawer.overlay": {
+            "animation-duration": "0.2s",
+            "transition-duration": "0s",
+            "z-index": "1000"
+        },
+        "dialog.sm.content": {
+            "width": "360px",
+            "z-index": "1001"
+        },
+        "dialog.md.content": {
+            "width": "480px",
+            "z-index": "1001"
+        },
+        "dialog.lg.content": {
+            "width": "640px",
+            "z-index": "1001"
+        },
+        "dialog.overlay": {
+            "z-index": "1000"
+        }
+    },
+    "errors": []
+}

@@ -26,6 +26,7 @@
 ### 2.1 纯样式修复的回归验证
 
 涉及 CSS 级联 / 特异性的修复（如 `:focus-within` 覆盖状态边框色），jsdom / happy-dom 不计算 scoped CSS，无法在单元测试中复现。此类修复以 `@ui-validator` 浏览器验证作为回归证据，必须记录关键 computed style 的实测值（如 `border-top-color`）；证据须可追溯（落盘到仓库内可提交的位置，或在提交信息中内联实测值），不得仅指向会被清理或被忽略的临时目录。
+- **样式治理类改动**（档位 `:where()` 归一化、同规则声明去重、触发器结构收敛、token 归并）的计算样式等价由 `test/capture/` 的采集装置举证：`pnpm capture:styles` 一条命令重跑并与仓库内冻结基线逐属性比对，取代一次性脚本。装置只覆盖**声明式样式面**（采样面与未纳入面的登记见治理记录），不替代 §5.1 的浮层稳定性断言与常驻 E2E 的几何断言。
 
 ## 3. 覆盖率
 
@@ -37,6 +38,7 @@
 - 测试文件与被测源码同目录或集中在 `test/`，命名 `*.test.ts` / `*.spec.ts`。
 - 组件测试命名：`<component>.test.ts`。
 - E2E 集中在 `test/e2e/`，命名 `*.e2e.ts`。
+- 计算样式等价装置集中在 `test/capture/`：`fixture/` 是独立 Vite 应用（被测对象为 `src/` 源码，端口 `4521`），`capture.mjs` / `diff.mjs` 为采集与比对运行器，`baseline.json` 为**冻结基线**（生成物，随装置同提交）。夹具的 `data-cap` 标记与运行器的采样面声明一一对应，采集结束按声明自检受检面（缺失 / 选择器未命中即失败），避免受检范围被静默收窄。
 - E2E 夹具（`test/e2e/fixtures/`）是独立 Vite 应用，被测对象为 `src/` 源码（而非构建产物或文档站）；由 `playwright.config.ts` 的 `webServer` 拉起（`127.0.0.1:4501`，端口固定），三个 project 对应[响应式设计 §4](../design/responsive.md) 的验收视口，几何断言基座在 `test/e2e/helpers/`。
 
 ## 5. 验证矩阵
@@ -73,6 +75,7 @@
 - 单文件：`pnpm exec vitest run <path>`
 - 覆盖率：`pnpm test:coverage`
 - E2E：`pnpm test:e2e`
+- 计算样式等价：`pnpm capture:styles`（采样并与冻结基线比对，有差异 exit 1）；`pnpm capture:styles:freeze`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面）
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。
 

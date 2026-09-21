@@ -8,7 +8,7 @@
 |------|------|------|
 | 单元测试 | Vitest + @vue/test-utils | 组件 props / emits / slots 行为、composables 逻辑、纯函数 |
 | 组件交互 | Vitest（必要时 browser mode） | Dialog / Select 等真实 DOM 交互 |
-| 可访问性 | axe-core（可选） | 关键组件 a11y 断言 |
+| 可访问性 | axe-core（happy-dom） | 组件级 a11y 断言（受检面 = 组件族根组件，对外导出穷尽登记；见 [M4-1 记录](../design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md)） |
 | E2E | Playwright | `examples/` 示例应用中的关键路径与主题切换 |
 | 类型 | vue-tsc | 构建产物与公共 API 类型正确性 |
 

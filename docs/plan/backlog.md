@@ -56,7 +56,9 @@
 | 文档站锚点校验与侧栏不变式 | VitePress slug 不匹配检测 + 侧栏不变量脚本 → M2-2（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
 | 迁移口径一致性守卫 | 入口表 / 组件页节 ↔ §7 一致性机检 | 低 |
 | 英文文档同步治理 | parity / freshness 校验与未翻译页回链策略 → M2-3（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
-| a11y 自动化回归 | 引入 axe-core 对关键组件做可访问性断言 → M4-1 / M4-2（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
+| a11y 自动化回归 | 引入 axe-core 做组件级可访问性断言（受检面 = 组件族根组件，对外导出穷尽登记）→ M4-1 / M4-2（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
+| 浮层展开态的 a11y 断言 | M4-1 受检状态为默认（关闭）态：12 个面板内导出（`DropdownMenu*` / `PopoverContent` / `PopoverArrow` / `PopoverClose` / `SelectGroup`）需交互展开才渲染，未纳入受检面 | 低 |
+| a11y 既有例外的修复候选 | M4-1 清单产出 3 条例外：Reka `Toast/FocusProxy` 焦点哨兵与 `aria-hidden-focus` 规则冲突（上游反馈 / `inert` 可行性）；`MultiSelect` 关闭态输出空 `aria-controls`；`Calendar` 根容器 `aria-label` 落在 `role=generic` 上（补显式 role 或改标签落点）；无 `CaomeiStepperDescription` 的步骤产生悬空 `aria-describedby`（按有无描述决定是否输出该属性） | 低 |
 | 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪 | 中 |
 | 文档完整性守卫的阶段归档误报 | `check-docs-integrity.mjs` 归档后常驻告警 → M5-3（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | Review Gate 证据留存 | 评审结论与截图归档到 `artifacts/review-gate/` | 低 |

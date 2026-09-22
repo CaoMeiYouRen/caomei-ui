@@ -6,8 +6,8 @@ import Vue from 'unplugin-vue/rolldown'
  * 逐模块产出 ESM 与 CSS（`css.inject` 保留 CSS import，供消费方按需 tree-shaking）、
  * 生成类型声明，并输出 index/resolver/nuxt 多入口。
  *
- * 形态依据：Phase 11 M1-1 构建路径 POC 与 M1-2 入口语义验证
- * （见 docs/design/governance/2026-09-20-m1-1-build-path-poc.md / 2026-09-20-m1-2-entry-semantics-and-dts-verification.md）。
+ * 形态依据见 docs/design/governance/2026-09-20-m1-1-build-path-poc.md 与
+ * 2026-09-20-m1-2-entry-semantics-and-dts-verification.md（构建路径 POC 与入口语义验证）。
  */
 export default defineConfig({
     entry: {

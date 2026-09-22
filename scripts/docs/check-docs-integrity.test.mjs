@@ -1,12 +1,31 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
+    STRUCTURAL_HEADING_MAX_LEVEL,
     countHeadings,
+    countStructuralHeadings,
     inspectMarkdownContent,
     SHRINK_EXEMPT_FILES,
     SHRINK_MIN_HEAD_LINES,
-    shouldWarnHeadingLoss,
     shouldWarnShrink,
+    shouldWarnStructuralHeadingLoss,
 } from './check-docs-integrity.mjs'
+
+/** 自工作目录向上定位仓库根（以 `.github/skills` 为锚点）。 */
+function resolveRepoRoot() {
+    let dir = process.cwd()
+    while (!existsSync(join(dir, '.github/skills'))) {
+        const parent = dirname(dir)
+        if (parent === dir) {
+            throw new Error('未能定位仓库根目录')
+        }
+        dir = parent
+    }
+    return dir
+}
+
+const PROJECT_ROOT = resolveRepoRoot()
 
 describe('inspectMarkdownContent', () => {
     it('放行正常文档', () => {
@@ -76,25 +95,51 @@ describe('shouldWarnShrink', () => {
     })
 })
 
-describe('shouldWarnHeadingLoss（豁免文件的标题数结构下界）', () => {
-    it('标题数减少时告警', () => {
-        const head = '# 标题\n\n## 1\n\n## 2\n\n## 3\n'
-        const current = '# 标题\n\n## 1\n'
-        expect(shouldWarnHeadingLoss(head, current)).toBe(true)
+describe('shouldWarnStructuralHeadingLoss（豁免文件的 H1/H2 骨架下界）', () => {
+    it('阶段 / 条目标题（H3/H4）移除不告警（归档形态）', () => {
+        const head = '# 待办事项\n\n## 当前阶段\n\n### Phase 11：说明\n\n#### M1 主线\n\n#### M2 主线\n'
+        const current = '# 待办事项\n\n## 当前阶段\n\n无进行中阶段。\n'
+        // 收紧前后的差别即本守卫的「有意收窄」：全标题数确实减少，但骨架未受损
+        expect(countHeadings(current)).toBeLessThan(countHeadings(head))
+        expect(shouldWarnStructuralHeadingLoss(head, current)).toBe(false)
     })
 
-    it('标题数不变或增长时不告警（允许删减正文）', () => {
-        const head = '# 标题\n\n## 1\n\n## 2\n'
-        expect(shouldWarnHeadingLoss(head, '# 标题\n\n## 1\n\n## 2\n')).toBe(false)
-        expect(shouldWarnHeadingLoss(head, '# 标题\n\n## 1\n\n## 2\n\n## 3\n')).toBe(false)
-        // 归档清理的典型形态：正文大幅缩减但章节骨架不变
-        const longBody = `${Array.from({ length: 86 }, (_, i) => `- 行 ${i}`).join('\n')}\n## 1\n## 2\n`
-        expect(shouldWarnHeadingLoss(longBody, '## 1\n## 2\n')).toBe(false)
+    it('骨架标题（H2）缺失时告警（截断形态）', () => {
+        const head = '# 待办事项\n\n## 当前阶段\n\n## 未完成项汇总\n'
+        const current = '# 待办事项\n\n## 当前阶段\n'
+        expect(shouldWarnStructuralHeadingLoss(head, current)).toBe(true)
+    })
+
+    it('一级标题（H1）缺失时告警', () => {
+        expect(shouldWarnStructuralHeadingLoss('# 标题\n\n## 一节\n', '## 一节\n')).toBe(true)
+    })
+
+    it('骨架标题数不变或增长时不告警', () => {
+        const head = '# 标题\n\n## 一节\n'
+        expect(shouldWarnStructuralHeadingLoss(head, '# 标题\n\n## 一节\n')).toBe(false)
+        expect(shouldWarnStructuralHeadingLoss(head, '# 标题\n\n## 一节\n\n## 二节\n')).toBe(false)
     })
 
     it('HEAD 缺失（新文件）或空内容时不告警', () => {
-        expect(shouldWarnHeadingLoss(null, '## 1\n')).toBe(false)
-        expect(shouldWarnHeadingLoss('', '## 1\n')).toBe(false)
+        expect(shouldWarnStructuralHeadingLoss(null, '## 一节\n')).toBe(false)
+        expect(shouldWarnStructuralHeadingLoss('', '## 一节\n')).toBe(false)
+    })
+})
+
+describe('countStructuralHeadings', () => {
+    it('只统计围栏外的 H1/H2', () => {
+        const content = ['# 一级', '## 二级', '### 三级', '#### 四级', '```md', '# 围栏内不算', '```'].join('\n')
+        expect(countStructuralHeadings(content)).toBe(2)
+        expect(countHeadings(content)).toBe(4)
+    })
+
+    it('骨架层级由 STRUCTURAL_HEADING_MAX_LEVEL 单点派生', () => {
+        const content = '# 一级\n## 二级\n### 三级\n'
+        expect(STRUCTURAL_HEADING_MAX_LEVEL).toBe(2)
+        expect(countHeadings(content, STRUCTURAL_HEADING_MAX_LEVEL)).toBe(2)
+        expect(countStructuralHeadings(content)).toBe(2)
+        expect(countHeadings(content, 3)).toBe(3)
+        expect(countHeadings(content)).toBe(3)
     })
 })
 
@@ -108,5 +153,14 @@ describe('countHeadings', () => {
 describe('SHRINK_EXEMPT_FILES', () => {
     it('当前仅豁免按设计越清理越短的载体', () => {
         expect(SHRINK_EXEMPT_FILES).toEqual(['docs/plan/todo.md'])
+    })
+})
+
+describe('仓库不变量（结构下界）', () => {
+    it('豁免文件的骨架标题仍在，且收窄口径已声明', () => {
+        expect(STRUCTURAL_HEADING_MAX_LEVEL).toBe(2)
+        const content = readFileSync(join(PROJECT_ROOT, 'docs/plan/todo.md'), 'utf8')
+        // 有意的仓库状态断言：豁免文件须保留骨架标题（归档会合并 H2 时须同步改本行）
+        expect(countStructuralHeadings(content)).toBeGreaterThanOrEqual(3)
     })
 })

@@ -18,15 +18,18 @@
  * 检查项（warning，不影响退出码）：
  * 4. **相对 HEAD 的结构性缩减**：受版本控制且 HEAD 版本 ≥ `SHRINK_MIN_HEAD_LINES` 行的文档，工作区行数
  *    低于 HEAD 的 `SHRINK_RATIO` 比例；对 `SHRINK_EXEMPT_FILES`（按设计会越清理越短的载体）改为
- *    **标题数不得减少**的结构下界。注意：该检查依赖「工作区 vs HEAD」，**洁净检出（CI）天然不触发**，
- *    只服务于提交前的本地复核；已提交的损坏须靠 1~3 项（它们不依赖 HEAD）。
+ *    **结构标题（H1/H2）不得减少**的结构下界：阶段 / 条目标题写在 H3/H4，属归档清理的正常移除面
+ *    （「归档移除阶段标题」），而骨架标题（H1/H2）的缺失才是「正文被截断」的信号。注意：该检查依赖
+ *    「工作区 vs HEAD」，**洁净检出（CI）天然不触发**，只服务于提交前的本地复核；已提交的损坏须靠
+ *    1~3 项（它们不依赖 HEAD）。
  *
  * 已知不覆盖（有意）：
  * - 引用块内的孤立表格行、无首尾 `|` 的 GFM 表格行——它们不是本仓库已发生过的损坏形态，纳入会带来误报面；
  * - 缩进代码块（4 空格 / Tab）内出现孤立围栏会误报 `unbalanced-code-fence`：收紧 `matchFence` 会破坏本仓
  *   列表项内 4 空格缩进的合法围栏（如 `CONTRIBUTING.md`），故按「有源码阅读经验的维护者一眼可辨」处理；
- * - `SHRINK_EXEMPT_FILES` 中的文件只做「标题数不得减少」的结构下界：**保留全部标题但大段删除正文**时
- *   无缩减信号（空文档检查仍生效）——这是为「归档后本就该变短」的载体让出的已知盲区。
+ * - `SHRINK_EXEMPT_FILES` 中的文件只做「结构标题不得减少」的结构下界：**保留 H1/H2 但大段删除 H3/H4
+ *   正文**时无缩减信号（空文档检查仍生效）——这是为「归档后本就该整块移除阶段段」的载体让出的已知盲区；
+ *   下界按标题**数**比较：同名标题的交换 / 重命名不另判（数不变即放行）。
  *
  * 用法：
  *   node scripts/docs/check-docs-integrity.mjs
@@ -51,9 +54,16 @@ export const SHRINK_RATIO = 0.3
 export const IGNORED_PATH_SEGMENTS = ['node_modules', 'dist', '.vitepress/cache', '.vitepress/dist', 'coverage']
 /**
  * 「结构性缩减」豁免清单：这些载体按设计会在阶段归档 / 清理后大幅变短（例如 `todo.md` 归档后只剩
- * 状态与未完成项汇总），行数比对会持续误报；改为**标题数不得减少**的结构下界（空文档检查同样生效）。
+ * 状态与未完成项汇总），行数比对会持续误报；改为**结构标题（H1/H2）不得减少**的结构下界
+ * （空文档检查同样生效）。
  */
 export const SHRINK_EXEMPT_FILES = ['docs/plan/todo.md']
+
+/**
+ * 结构标题的最大层级：H1/H2 视为文档骨架，其缺失才是「正文被截断」信号；
+ * H3/H4 是阶段 / 条目标题，属归档清理的正常移除面。
+ */
+export const STRUCTURAL_HEADING_MAX_LEVEL = 2
 
 export function parseArgs(argv = process.argv) {
     return parseCliOptions(argv, {
@@ -150,18 +160,31 @@ export function shouldWarnShrink(headLines, currentLines) {
     return currentLines < headLines * SHRINK_RATIO
 }
 
-/** 纯函数：豁免文件的**结构下界**——标题数不得减少 */
-export function shouldWarnHeadingLoss(headContent, currentContent) {
+/** 纯函数：豁免文件的**结构下界**——H1/H2 骨架标题数不得减少 */
+export function shouldWarnStructuralHeadingLoss(headContent, currentContent) {
     if (typeof headContent !== 'string' || headContent.length === 0) {
         return false
     }
-    return countHeadings(currentContent) < countHeadings(headContent)
+    return countStructuralHeadings(currentContent) < countStructuralHeadings(headContent)
 }
 
-export function countHeadings(content) {
+/** 纯函数：统计围栏外的 **H1/H2 骨架标题**数（层级由 `STRUCTURAL_HEADING_MAX_LEVEL` 单点派生） */
+export function countStructuralHeadings(content) {
+    return countHeadings(content, STRUCTURAL_HEADING_MAX_LEVEL)
+}
+
+/**
+ * 纯函数：统计围栏外的标题数。
+ *
+ * @param {string} content 文件内容
+ * @param {number} maxLevel 计入的最大标题层级（默认 6 = 全层级；2 即 H1/H2 骨架）
+ * @returns {number} 标题数
+ */
+export function countHeadings(content, maxLevel = 6) {
     const lines = content.split(/\r?\n/u)
     const { inCodeByLine } = detectFenceState(lines)
-    return lines.filter((line, index) => !inCodeByLine[index] && /^#{1,6}\s/u.test(line)).length
+    const headingRe = new RegExp(`^#{1,${maxLevel}}\\s`, 'u')
+    return lines.filter((line, index) => !inCodeByLine[index] && headingRe.test(line)).length
 }
 
 export function collectTrackedMarkdownFiles() {
@@ -200,8 +223,12 @@ export function inspectMarkdownFile(file) {
 
     const shrinkWarnings = []
     if (isExempt) {
-        if (shouldWarnHeadingLoss(headContent, content)) {
-            shrinkWarnings.push({ file, type: 'heading-loss', message: `标题数少于 HEAD 版本（疑似内容被截断；该文件豁免行数比对）` })
+        if (shouldWarnStructuralHeadingLoss(headContent, content)) {
+            shrinkWarnings.push({
+                file,
+                type: 'structural-heading-loss',
+                message: `H1/H2 结构标题由 HEAD 的 ${countStructuralHeadings(headContent)} 个降为 ${countStructuralHeadings(content)} 个（疑似骨架被破坏 / 正文被截断；阶段 / 条目标题在 H3/H4，属归档正常移除面）`,
+            })
         }
     } else if (shouldWarnShrink(headContent === null ? 0 : countLines(headContent), countLines(content))) {
         shrinkWarnings.push({

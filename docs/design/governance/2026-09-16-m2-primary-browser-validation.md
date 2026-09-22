@@ -72,7 +72,7 @@ node test-results/m2-primary/pixdiff.mjs && node test-results/m2-primary/colorpr
 
 ### F1（blocker，本次回归；**已修复并复验通过**）暗色 ConfirmDialog `tone="danger"` 确认按钮文本 4.07:1 < 4.5
 
-- **状态**：2026-09-16 复验通过（见 [§6 复验](#6-f1-复验f1-修复后2026-09-16)）。修复方式为在 `.caomei-confirm-dialog__confirm--danger` 同规则并行覆写 `--caomei-color-primary-foreground: var(--caomei-color-on-solid)` 并更正注释；暗色 4.07 → **4.83:1**。
+- **状态**：2026-09-16 复验通过（见 [§6 复验](#_6-f1-复验-f1-修复后-2026-09-16)）。修复方式为在 `.caomei-confirm-dialog__confirm--danger` 同规则并行覆写 `--caomei-color-primary-foreground: var(--caomei-color-on-solid)` 并更正注释；暗色 4.07 → **4.83:1**。
 - **现象（Reject 轮）**：`.caomei-confirm-dialog__confirm--danger` 暗色 computed `color = rgb(11,11,13)`（`--caomei-color-primary-foreground`）落在 `background = rgb(220,38,38)`（`--caomei-color-danger-solid`）→ **4.07:1**；改前 4.83:1。
 - **复现**：`/components/confirm-dialog` → 切暗色 → 点「删除文件」→ 读该按钮 computed `color` / `background-color`。
 - **根因**：`src/components/confirm-dialog/confirm-dialog.vue`（danger 语气规则）只覆写 `--caomei-color-primary: var(--caomei-color-danger-solid)`，前景仍取 Button 默认 `--caomei-button-fg: var(--caomei-color-primary-foreground)`；本次暗色将该 token 改为 `#0b0b0d` 后即等价于 `-solid` 实底与 `primary-foreground` 配对，违反本次新增的配对约定；文件内「主色前景 token 保持全局白色」注释已失效。

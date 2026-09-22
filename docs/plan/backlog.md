@@ -69,6 +69,7 @@
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**本行（多版本托管）仍留 Backlog、未取用**；仅轻量形态（版本信息与兼容策略）拆出至 M2-1。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：多版本托管因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
+| 组件总览页与侧栏的成员对账 | [文档与演示站 §11](../design/documentation-site.md) 要求「组件总览页（`/components/index.md`）的分组顺序与侧栏一致」，但中英总览页缺 `CheckboxGroup`（侧栏与 §11 登记表均已含；2026-09-22 侧栏不变式守卫发现）。候选：把总览页的分组与成员纳入该守卫的受检面 | 低 |
 | 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过；**2026-09-21 已收敛**（三处改用本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` + `unstyled`，触发结构 A/B 逐项等价） → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 触发器 `disabled` 透传与包装层归一化 | ① date-picker / color-picker 未向触发器透传 `disabled`（现由原生 `<button :disabled>` 兜住）；② 两个薄包装对 `disabled=false` 归一化不一致（popover `props.disabled \|\| undefined` vs dropdown 直传），未来 Reka 若区分 `false` / `undefined` 会单边漂移。候选：补透传 + 用例，并对齐归一化 | 低 |
 | 直连 Reka 触发器的机检守卫 | 存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警；否则「单点生效」收益只能靠人工记忆维持（2026-09-21 触发器收敛后新增） | 低 |

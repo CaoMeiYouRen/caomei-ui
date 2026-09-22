@@ -4,7 +4,7 @@
 - 触发：Phase 11 M1-1 条目「判定 `unbundle: true` 与『显式多入口 + `css.splitting: true`』哪条能产出所需 CSS 入口，且不破坏 `dts` / `exports` / `check:build` / `check:nuxt` / `docs:build`」
 - 关联：[待办事项 M1-1](../../plan/todo.md) ｜ [CSS 按需引入评估 §7](./2026-09-20-css-on-demand-evaluation.md) ｜ [下一阶段范围评估 §6](./2026-09-20-next-stage-scope-evaluation.md) ｜ [架构设计 §4](../architecture.md)
 - 环境：tsdown 0.23.0 + @tsdown/css 0.23.0 + rolldown 1.2.5 + vite 8.2.2；快照日期 2026-09-20，代码快照 HEAD `3baa482`（工作区无源码改动；`tsdown.config.ts` 实验后已还原，`dist/` 已重建为基线态）
-- 复现材料：实验配置差异与消费侧测量脚本见[附录 A](#附录-a可复现材料)
+- 复现材料：实验配置差异与消费侧测量脚本见[附录 A](#附录-a-可复现材料)
 
 ## 1. 结论
 
@@ -27,7 +27,7 @@
 | B | 同 A + `css.inject: true` |
 | C | 不启用 `unbundle`；`entry` 增加 `components/button/index`、`components/data-table/index`；`css.splitting: true` + `css.inject: true` |
 
-消费侧测量：以仓库根为 Vite root 构建单个入口（`cssCodeSplit: false`、`minify: false`、`resolve.alias['caomei-ui']` 指向仓库根），入口仅做**命名导入**（不使用组件子路径），统计产物 CSS 字节。脚本与入口内容见[附录 A](#附录-a可复现材料)。
+消费侧测量：以仓库根为 Vite root 构建单个入口（`cssCodeSplit: false`、`minify: false`、`resolve.alias['caomei-ui']` 指向仓库根），入口仅做**命名导入**（不使用组件子路径），统计产物 CSS 字节。脚本与入口内容见[附录 A](#附录-a-可复现材料)。
 
 ## 3. 实验结果
 

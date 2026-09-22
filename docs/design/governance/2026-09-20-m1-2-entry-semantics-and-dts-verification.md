@@ -4,7 +4,7 @@
 - 触发：Phase 11 M1-2 条目——① 消费方 `tsc` 验证 unbundled `dts` 可解析；② 确定 `theme.css` 与全量入口语义；③ 评估 Nuxt 双注入去重与样式顺序
 - 关联：[待办事项 M1-2](../../plan/todo.md) ｜ [M1-1 构建路径 POC](./2026-09-20-m1-1-build-path-poc.md) ｜ [架构设计 §3 / §4](../architecture.md) ｜ [CSS 按需引入评估 §7](./2026-09-20-css-on-demand-evaluation.md)
 - 环境：tsdown 0.23.0 + @tsdown/css 0.23.0 + vite 8.2.2 + nuxt 4；快照 2026-09-20，代码快照 HEAD `6ca869c`（实验期间对 `tsdown.config.ts`、`playground/nuxt/nuxt.config.ts` 的临时改动已还原，`git diff` 为空；`dist/` 已重建为基线态）
-- 复现材料：见[附录 A](#附录-a可复现材料)
+- 复现材料：见[附录 A](#附录-a-可复现材料)
 
 ## 1. 结论速览
 

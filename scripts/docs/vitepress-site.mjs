@@ -206,22 +206,24 @@ export function resolveSitePath(raw, root = docsRoot) {
  * 会把「受检范围」静默收窄成「正则能匹配到的那些链接」。
  *
  * @param {string} root 文档站根
- * @returns {Promise<{ locales: string[], nav: Record<string, unknown[]>, sidebar: Record<string, unknown>, markdown: Record<string, unknown> }>} 站点导航配置与 markdown 选项
+ * @returns {Promise<{ locales: string[], nav: Record<string, unknown[]>, sidebar: Record<string, unknown>, markdown: Record<string, unknown>, themeConfig: Record<string, unknown>, localeThemeConfigs: Record<string, Record<string, unknown>> }>} 站点导航配置、markdown 选项、已解析 `themeConfig` 与各 locale 的已解析 `themeConfig`
  */
 export async function loadSiteNavigation(root = docsRoot) {
     const config = await resolveConfig(root, {}, 'build')
     const site = config.site
     const nav = { root: site.themeConfig?.nav ?? [] }
     const sidebar = normalizeSidebar(site.themeConfig?.sidebar, 'root')
+    const localeThemeConfigs = {}
     for (const locale of SITE_LOCALES) {
         if (locale === 'root') {
             continue
         }
         const localeConfig = site.locales?.[locale]?.themeConfig ?? {}
+        localeThemeConfigs[locale] = localeConfig
         nav[locale] = localeConfig.nav ?? []
         Object.assign(sidebar, normalizeSidebar(localeConfig.sidebar, locale))
     }
-    return { locales: [...SITE_LOCALES], nav, sidebar, markdown: config.markdown ?? {} }
+    return { locales: [...SITE_LOCALES], nav, sidebar, markdown: config.markdown ?? {}, themeConfig: site.themeConfig ?? {}, localeThemeConfigs }
 }
 
 /**

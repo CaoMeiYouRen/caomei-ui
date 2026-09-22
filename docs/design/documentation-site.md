@@ -155,6 +155,7 @@ docs/
 - 该守卫（`docs:check:structure`）的受检面**不含**：reference-style 链接（`[文字][ref]`）、裸 HTML `<a href>`、以及 nav / sidebar 配置内链接——后者由 `pnpm docs:check:config-links` 单独覆盖（用 VitePress 已解析配置取 nav / sidebar，链接须为站点绝对路径且指向存在的页面、锚点按实算 slug 有效；外部链接跳过）。站点若自定义 `markdown.anchor.slugify`，两条守卫都会以 `slug-source-diverged` 显式失败（避免实算 slug 与站点静默分叉）。
 - `pnpm docs:check:links` 的 `looseNorm` 会剥离 `-` / `_` / 标点，**「链接检查通过」不能证明锚点有效**；跨节引用优先只链页面。
 - `docs:check:links` 也不能替代 VitePress 的 dead-link 校验：前者按文件系统解析，指向 `docs/` 之外的仓库文件（如 `.github/skills/**`）会被判有效，而 VitePress 因目标不在 `srcDir` 内报 dead link 使 `docs:build` 失败。跨出 `docs/` 的引用一律写成 code span，**doc 类改动必须把 `pnpm docs:build` 纳入门禁**。
+- **版本展示的单一来源**：站点展示的当前版本派生自仓库根 `package.json`（配置经 `themeConfig.version` 暴露，页面用 `useData()` 的 `theme.version` 插值展示）。页面里的插值写法是**有意**的 Vue 插值（`.md` 按 Vue 模板编译），与本条末项「不要写双花括号」的告诫不冲突——后者针对「描述插值语法」而非「消费站点数据」；**描述该写法时不要写字面双花括号**（与本节末项同理，写成字面量会让描述页自身抛渲染错误）。版本展示面由 `pnpm docs:check:version` 看守：已解析配置的版本必须等于 `package.json`，且展示面不得出现三段式版本字面量（派生即可，发版无需手改站点文档）。**边界**：仓库根 `README.md` / `README.en-US.md` 由 GitHub / npm 渲染、无插值能力，版本表述仍需人工同步（不在该守卫受检面内）。
 - `.md`（含治理记录）里出现**双花括号插值**时——即使在行内代码内——会被 VitePress 当 Vue 模板求值，渲染该页时抛 `TypeError`（**构建仍 exit 0**，只在渲染日志可见）。描述插值语法时用文字（如「只解构单个花括号占位并直接输出字段值」），不要写出双花括号。
 
 ## 14. API 表与公共 props 继承

@@ -155,6 +155,7 @@ docs/
 - 该守卫（`docs:check:structure`）的受检面**不含**：reference-style 链接（`[文字][ref]`）、裸 HTML `<a href>`、以及 nav / sidebar 配置内链接——后者由 `pnpm docs:check:config-links` 单独覆盖（用 VitePress 已解析配置取 nav / sidebar，链接须为站点绝对路径且指向存在的页面、锚点按实算 slug 有效；外部链接跳过）。站点若自定义 `markdown.anchor.slugify`，两条守卫都会以 `slug-source-diverged` 显式失败（避免实算 slug 与站点静默分叉）。
 - `pnpm docs:check:links` 的 `looseNorm` 会剥离 `-` / `_` / 标点，**「链接检查通过」不能证明锚点有效**；跨节引用优先只链页面。
 - `docs:check:links` 也不能替代 VitePress 的 dead-link 校验：前者按文件系统解析，指向 `docs/` 之外的仓库文件（如 `.github/skills/**`）会被判有效，而 VitePress 因目标不在 `srcDir` 内报 dead link 使 `docs:build` 失败。跨出 `docs/` 的引用一律写成 code span，**doc 类改动必须把 `pnpm docs:build` 纳入门禁**。
+- **登记表驱动的页面另需专项对账**：组件画廊页只写 `<ShowcaseGrid />` 挂载点、卡片由[§16](#_16-组件画廊)的登记表生成，故「登记项 ↔ 组件页 / 示例 / 分组」不受链接检查与 dead-link 校验覆盖（登记项写错只会少一张卡或预览退化为空）。该面由 `pnpm docs:check:showcase` 覆盖：按同一文档 §11 的登记表对账分组、组件页与中英示例的存在性、以及登记顺序，并对项数 / 覆盖分组数设下界（防受检面被静默收窄）；挂载点与空扫描拒绝的完整规则见 §16。
 - **版本展示的单一来源**：站点展示的当前版本派生自仓库根 `package.json`（配置经 `themeConfig.version` 暴露，页面用 `useData()` 的 `theme.version` 插值展示）。页面里的插值写法是**有意**的 Vue 插值（`.md` 按 Vue 模板编译），与本条末项「不要写双花括号」的告诫不冲突——后者针对「描述插值语法」而非「消费站点数据」；**描述该写法时不要写字面双花括号**（与本节末项同理，写成字面量会让描述页自身抛渲染错误）。版本展示面由 `pnpm docs:check:version` 看守：已解析配置的版本必须等于 `package.json`，且展示面不得出现三段式版本字面量（派生即可，发版无需手改站点文档）。**边界**：仓库根 `README.md` / `README.en-US.md` 由 GitHub / npm 渲染、无插值能力，版本表述仍需人工同步（不在该守卫受检面内）。
 - `.md`（含治理记录）里出现**双花括号插值**时——即使在行内代码内——会被 VitePress 当 Vue 模板求值，渲染该页时抛 `TypeError`（**构建仍 exit 0**，只在渲染日志可见）。描述插值语法时用文字（如「只解构单个花括号占位并直接输出字段值」），不要写出双花括号。
 
@@ -182,3 +183,15 @@ docs/
 - **语义对齐声明先取一方源码**：「对齐 PrimeVue / 与 X 一致」必须能指到上游源码具体行；把「我实现了什么」与「上游怎么做」分成两句写。
 - **模板顺序约定与有序列表自洽**：定序类约定（如迁移节与 FAQ 的相对位置）要一次写清并让实测样例与文本一致，不能出现两种读法。
 - **中英镜像逐文件核对**：中英双写修复须按「文件 × 改动」逐条列出并断言，收尾用关键词成对（如 `global config` / `全局 config`）grep 校验；不得只写「中英同步」。
+
+## 16. 组件画廊
+
+- **定位**：`/components/showcase`（中）与 `/en-US/components/showcase`（英）是组件总览的**策展子集**，只放「代表性组件的真实渲染预览」；它不是组件页的替代品，也不承诺覆盖全部组件——覆盖项数由登记表决定，只设下界、不设上限。
+- **登记表是单一事实源**：`docs/.vitepress/showcase-registry.json` 逐项声明 `name`（英文组件名，须存在于 §11 登记表）、`group`（中英分组名，须与 §11 同名分组一致）、`example`（示例相对路径，中英各自取根）与 `description`（中英各一条）。卡片链接由 `name` 按 `kebab-case` 推导（经 `withBase` 处理，兼容非根 base）；中英示例根分别为 `docs/examples/` 与 `docs/i18n/en-US/examples/`。**中英示例须齐备**——构建期由 `docs:check:showcase` 强制（缺任一侧即失败）；渲染层对缺示例只做兜底（该卡片预览为空、不阻断整页），不构成「可以只写单侧」的许可。
+- **顺序**：登记表按 §11 的**分组顺序**排列，组内按**英文组件名字母序**；页面渲染顺序即登记顺序，不在渲染层另行排序（与 §11 的侧栏定序同口径）。
+- **入口**：组件总览页（中英）正文给出画廊链接；指南侧栏（中英）末项「组件画廊 / Component Gallery」给出入口。
+- **不进组件侧栏**：组件侧栏的分组结构（总览 + 6 个组件分组 + 能力说明）是 §11 的机器校验面（`docs:check:structure` 的侧栏不变式），画廊页作为**非组件页**混入会破坏该不变式，故入口只走总览页与指南侧栏，不改组件侧栏。
+- **对账守卫**：`pnpm docs:check:showcase`（`scripts/docs/check-showcase-registry.mjs`）以登记表 + 本节 §11 为事实源逐项对账——结构合法性、分组归属（`group.zh` 属 §11 登记分组、`group.en` 与之一致、`name` 属该分组组件清单）、中英组件页与中英示例存在性、`example` 形态（两级 `.vue`、目录等于组件名 kebab-case、无 `..`）、登记顺序、中英画廊页的 `<ShowcaseGrid />` 挂载点；另设项数与覆盖分组数下界、空扫描拒绝（防登记表被清空 / 整组丢失被静默通过）。
+- **分组标题不进 outline**：分组标题由渲染组件输出（`<h3>`），而站点右侧 outline 取自 markdown 标题，故画廊页的目录只有页内 H2，6 个分组不可锚点跳转。这是「登记表驱动、不在页面里逐条写标题」的已知取舍；若将来需要分组锚点，须改为在页面 markdown 中显式书写分组标题。
+- **与演示动效层的关系**：画廊预览是 §12「demo 面」的延伸。当前策展集中唯一带入场动效的是经 Portal 挂载的 DatePicker 面板，已由 `motion.css` 的**组件选择器**层恢复；容器内可达的 opt-in 规则（Accordion / Image / Button spinner / AutoComplete spinner）暂未被画廊触发。若后续策展项在预览容器内产生动画，须同步扩展 `motion.css` 的容器作用域（口径见 §12），不留「reduced-motion 下动画被静默压平」的缺口。
+

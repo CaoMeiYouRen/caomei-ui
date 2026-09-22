@@ -1,8 +1,23 @@
-import { mkdtempSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { checkPage, collectHrefsForLabel } from './check-i18n-routing.mjs'
+import { ROUTING_CASES, checkPage, collectHrefsForLabel } from './check-i18n-routing.mjs'
+
+/** 自工作目录向上定位仓库根（以 `.github/skills` 为锚点）。 */
+function resolveRepoRoot() {
+    let dir = process.cwd()
+    while (!existsSync(join(dir, '.github/skills'))) {
+        const parent = dirname(dir)
+        if (parent === dir) {
+            throw new Error('未能定位仓库根目录')
+        }
+        dir = parent
+    }
+    return dir
+}
+
+const PROJECT_ROOT = resolveRepoRoot()
 
 const desktopAnchor =
     '<a class="VPLink link" href="/en-US/components/locale"><!--[--><span>English</span><!--]--></a>'
@@ -72,5 +87,26 @@ describe('checkPage', () => {
 
         expect(errors).toHaveLength(1)
         expect(errors[0]).toContain('链接为 /en-US/')
+    })
+})
+
+describe('仓库不变量（回链策略受检面）', () => {
+    /** 受检页面 → 仓库内源 markdown 路径。 */
+    const sourceOf = (page) => {
+        const md = page.replace(/\.html$/u, '.md')
+        return md.startsWith('en-US/')
+            ? join(PROJECT_ROOT, 'docs/i18n/en-US', md.replace(/^en-US\//u, ''))
+            : join(PROJECT_ROOT, 'docs', md)
+    }
+
+    it('三类覆盖规则均有受检用例，且受检页面的源文件存在', () => {
+        const reasons = ROUTING_CASES.map((entry) => entry.reason)
+        expect(reasons.some((reason) => reason.includes('已翻译'))).toBe(true)
+        expect(reasons.some((reason) => reason.includes('未翻译'))).toBe(true)
+        expect(reasons.some((reason) => reason.includes('反向'))).toBe(true)
+        expect(ROUTING_CASES.length).toBeGreaterThanOrEqual(5)
+        for (const entry of ROUTING_CASES) {
+            expect(existsSync(sourceOf(entry.page))).toBe(true)
+        }
     })
 })

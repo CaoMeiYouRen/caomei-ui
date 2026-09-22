@@ -153,4 +153,4 @@
 
 ## 9. 状态
 
-2026-09-20：M2-2 / M2-3 **已产出**——G1 / G2 / G4 / D1 按用户裁定的扩张面落地，新增 G1~G4 守卫与语句型 at-rule 切分，等价矩阵 226 项 0 差异（含 worktree 基线负向对照），质量门全绿。W2 的 28 条（27 单一 + 1 复合）非 `:where()` 档位块未收敛（待用户裁定）；D1 同类残留 8 处 / 4 组件与 scanner 漏检路径已登记 Backlog；W1 已闭环。收口复跑：`pnpm lint:md:check` exit 0、`pnpm governance:check` exit 0。
+2026-09-20：M2-2 / M2-3 **已产出**——G1 / G2 / G4 / D1 按用户裁定的扩张面落地，新增 G1~G4 守卫与语句型 at-rule 切分，等价矩阵 226 项 0 差异（含 worktree 基线负向对照），质量门全绿。W2 的 28 条（27 单一 + 1 复合）非 `:where()` 档位块未收敛（待用户裁定）；D1 同类残留 8 处 / 4 组件以「重新取证」口径登记 [Backlog](../../plan/backlog.md)（后续已由重复声明守卫条目清理并落地机检，见该行迁出标注）；`scanRules` 语句型 at-rule 的漏检路径**已在 M2-2 内修复**（见 §3.5 的 S2 收口），**非 Backlog 载体**；W1 已闭环。收口复跑：`pnpm lint:md:check` exit 0、`pnpm governance:check` exit 0。

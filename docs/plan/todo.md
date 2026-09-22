@@ -35,10 +35,12 @@
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
 | M2-1 | 版本信息与兼容策略（**轻量形态，2026-09-22 改写自「文档站版本化」**） | 中英「版本与兼容策略」页（当前版本 + 获取渠道 npm / GitHub releases / CHANGELOG + 0.x 破坏性变更策略与下游 pin 建议）；站点内可见的当前版本展示；版本号单一来源（`package.json`）并机检。**不做多版本托管**（依据见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md)） | 中英页面齐备三项（当前版本 / 获取渠道 / 0.x 策略）且中英同步；站点内可见位置展示当前版本（经 `@ui-validator` 验证）；版本号与 `package.json` 一致由机检覆盖（带正反例语料、全库零误报、「受检范围未被静默收窄」可断言）；`docs:build` 通过 | M1-1 |
-| M2-2 | 锚点校验与侧栏不变式 | VitePress slug 不匹配检测 + 侧栏不变量脚本，并修复既有 7 处断锚 | 守卫带正反例语料、全库零误报、接入 `docs:check` | — |
+| M2-2 | 锚点校验与侧栏不变式 | VitePress slug 不匹配检测 + 侧栏不变量脚本，并修复既有断锚（**2026-09-22 重新取证为 11 处**，原登记「7 处」只计数字开头类） | 守卫带正反例语料、全库零误报、接入 `docs:check` | — |
 | M2-3 | 英文文档同步治理 | parity / freshness 校验与未翻译页回链策略 | 规则可判定且机检落地；「受检范围未被静默收窄」可断言 | — |
 | M2-4 | nav / sidebar 链接校验 | 把 `themeConfig.nav` / `sidebar` 链接纳入链接校验覆盖面 | 校验覆盖面含 nav / sidebar 且零误报 | — |
 | M2-5 | 文档站观感与展示力（**条件条目**） | 画廊 / demo 外壳等展示力提升。**启动门槛（可判定）**：M1、M3、M4、M5 与 M2-1 ~ M2-4 **全部验收通过后**，由用户确认是否启动；开工前须先给出可判定的验收口径 | 门槛满足且用户确认后才开工；口径可判定；视觉改动经 `@ui-validator` 真机验证；门槛不满足则不启动、留 [Backlog](./backlog.md) | M1 / M3 / M4 / M5 / M2-1 ~ M2-4 全部通过 + 用户裁定 D7 |
+
+状态（M2）：**M2-2 已交付（2026-09-22）**——新增 `docs:check:structure`（`scripts/docs/check-docs-structure.mjs` + 共享解析器 `scripts/docs/vitepress-site.mjs`），两类规则：① **锚点按 VitePress 实算 slug 校验**（用 `createMarkdownRenderer` 实算，不复刻算法以免版本漂移；受检面为 `docs/` 内链接，源不在 `docs/` 或目标越出 `docs/` 者与行号锚点跳过）；② **组件区侧栏分区不变式**（以[文档与演示站 §11](../design/documentation-site.md) 登记表为单一事实源，对账中英 sidebar 的分组顺序 / 组内成员与字母序 / 「总览 · 能力说明」首尾位次）。**首跑命中并全部修复**：11 处真实断锚（**7 处涉及数字开头标题缺 `_` 前缀，其中 1 处兼含标点归一；4 处标点归一缺 `-`**，总数 11 两桶不严格互斥，涉及 `ai-collaboration` 与 4 份记录；原登记口径「全库 7 处」只计数字开头类，本次重新取证为 11 处并已披露差异）+ §11 登记表漏登 `CheckboxGroup`（侧栏已含该组件，表与实现分叉）。正反例语料 **26 tests**（含 `kebabCase` 映射、§11 表解析边界、侧栏偏差注入、实算 slug 的锚点对账、nav/sidebar 展平、slug 来源分叉检测）；仓库不变量断言页面数 ≥150 / 锚点链接 ≥20 / 分组数 = 6 / 组件条目 ≥45。**遗留 follow-up（已登记 Backlog）**：中英组件总览页缺 `CheckboxGroup`（§11 要求与侧栏一致）。规模：12 文件（3 新增 + 9 修改），按粒度阈值拆两次提交（先修正既有断锚与登记缺口，再落守卫与接线）。**Review Gate R1 Pass（0 blocker / 2 warning / 4 suggest）→ R2 Pass（0 blocker / 2 warning / 2 suggest）**；R2 后的修复点（`createSlugResolver` JSDoc 与单例约束口径、§13 关于 nav / sidebar 覆盖面的不实括注、记录份数 3→4、`slug-source-diverged` 集成负例）已同批修正，记为「已修复未复审」。
 
 #### M3 样式一致性收官
 

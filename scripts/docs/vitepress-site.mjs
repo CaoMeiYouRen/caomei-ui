@@ -27,6 +27,9 @@ export const docsRoot = join(docsProjectRoot, 'docs')
 /** 文档翻译的物理路径根：`docs/i18n/<locale>/`。 */
 export const i18nRoot = join(docsRoot, 'i18n')
 
+/** 外部链接谓词（含协议相对 `//host`）；站内锚点/页面链接的判定不复用本常量。 */
+export const EXTERNAL_LINK_RE = /^(?:https?:|mailto:|tel:|\/\/)/
+
 /** 非文档页的目录（站点产物 / 依赖）。 */
 export const DOCS_EXCLUDED_DIRS = new Set(['.vitepress', 'node_modules'])
 
@@ -103,6 +106,45 @@ export async function createSlugResolver(root = docsRoot) {
 }
 
 /**
+ * 站点绝对路径的页面候选（含翻译物理路径 `docs/i18n/<locale>/`）。
+ *
+ * @param {string} root 文档站根
+ * @param {string} sitePath 去掉前导 `/` 的站点路径
+ * @returns {string[]} 候选绝对路径
+ */
+function buildSitePageCandidates(root, sitePath) {
+    const i18nDir = join(root, 'i18n')
+    return [
+        join(root, sitePath),
+        join(root, `${sitePath}.md`),
+        join(root, sitePath, 'index.md'),
+        join(i18nDir, sitePath),
+        join(i18nDir, `${sitePath}.md`),
+        join(i18nDir, sitePath, 'index.md'),
+    ]
+}
+
+/**
+ * 取候选中的第一个**存在且未越出站点根**的页面文件（越界候选一律跳过，防 `docs/` 外的路径被放行）。
+ *
+ * @param {string} root 文档站根
+ * @param {string[]} candidates 候选绝对路径
+ * @returns {string | null} 目标文件绝对路径
+ */
+function firstExistingPage(root, candidates) {
+    for (const candidate of candidates) {
+        if (!existsSync(candidate) || !statSync(candidate).isFile()) {
+            continue
+        }
+        if (relative(root, candidate).startsWith('..')) {
+            continue
+        }
+        return candidate
+    }
+    return null
+}
+
+/**
  * 把 markdown 链接目标解析为**站点页面**的绝对路径。
  *
  * 口径与 `check-links.mjs` 一致：兼容相对路径、省略 `.md`、站点根路径（`/xxx`）
@@ -115,45 +157,46 @@ export async function createSlugResolver(root = docsRoot) {
  * @returns {string | null} 目标文件绝对路径
  */
 export function resolveDocsPageTarget(fromFile, raw, root = docsRoot) {
-    if (/^(?:https?:|mailto:|tel:|#|\/\/)/.test(raw)) {
+    if (raw.startsWith('#') || EXTERNAL_LINK_RE.test(raw)) {
         return null
     }
     const pathPart = raw.split('#')[0].trim().split(/\s+/)[0]
     if (!pathPart) {
         return null
     }
-    const i18nDir = join(root, 'i18n')
-    const candidates = []
     if (pathPart.startsWith('/')) {
         if (relative(root, fromFile).startsWith('..')) {
             return null
         }
-        const sitePath = pathPart.replace(/^\//, '')
-        candidates.push(
-            join(root, sitePath),
-            join(root, `${sitePath}.md`),
-            join(root, sitePath, 'index.md'),
-            join(i18nDir, sitePath),
-            join(i18nDir, `${sitePath}.md`),
-            join(i18nDir, sitePath, 'index.md'),
-        )
-    } else {
-        if (isAbsolute(pathPart)) {
-            return null
-        }
-        const absolute = resolve(dirname(fromFile), pathPart)
-        candidates.push(absolute, `${absolute}.md`, join(absolute, 'index.md'))
+        return firstExistingPage(root, buildSitePageCandidates(root, pathPart.replace(/^\//, '')))
     }
-    for (const candidate of candidates) {
-        if (!existsSync(candidate) || !statSync(candidate).isFile()) {
-            continue
-        }
-        if (relative(root, candidate).startsWith('..')) {
-            return null
-        }
-        return candidate
+    if (isAbsolute(pathPart)) {
+        return null
     }
-    return null
+    const absolute = resolve(dirname(fromFile), pathPart)
+    return firstExistingPage(root, [absolute, `${absolute}.md`, join(absolute, 'index.md')])
+}
+
+/**
+ * 把**站点绝对路径**（`/xxx`，配置内 nav / sidebar 的链接形态）解析为站点页面的绝对路径。
+ *
+ * 与 `resolveDocsPageTarget` 的差别：没有「来源文件」，故不接受相对路径与 `.md` 省略以外的
+ * 省略写法（配置链接按 VitePress 约定必须是站点绝对路径）；解析面同样含翻译物理路径，
+ * 并同样做越界收敛。
+ *
+ * @param {string} raw 原始链接目标
+ * @param {string} root 文档站根
+ * @returns {string | null} 目标文件绝对路径
+ */
+export function resolveSitePath(raw, root = docsRoot) {
+    if (raw.startsWith('#') || EXTERNAL_LINK_RE.test(raw)) {
+        return null
+    }
+    const pathPart = raw.split('#')[0].trim().split(/\s+/)[0]
+    if (!pathPart || !pathPart.startsWith('/') || pathPart.startsWith('//')) {
+        return null
+    }
+    return firstExistingPage(root, buildSitePageCandidates(root, pathPart.replace(/^\//, '')))
 }
 
 /**
@@ -169,16 +212,35 @@ export async function loadSiteNavigation(root = docsRoot) {
     const config = await resolveConfig(root, {}, 'build')
     const site = config.site
     const nav = { root: site.themeConfig?.nav ?? [] }
-    const sidebar = { ...(site.themeConfig?.sidebar ?? {}) }
+    const sidebar = normalizeSidebar(site.themeConfig?.sidebar, 'root')
     for (const locale of SITE_LOCALES) {
         if (locale === 'root') {
             continue
         }
         const localeConfig = site.locales?.[locale]?.themeConfig ?? {}
         nav[locale] = localeConfig.nav ?? []
-        Object.assign(sidebar, localeConfig.sidebar ?? {})
+        Object.assign(sidebar, normalizeSidebar(localeConfig.sidebar, locale))
     }
     return { locales: [...SITE_LOCALES], nav, sidebar, markdown: config.markdown ?? {} }
+}
+
+/**
+ * 归一化侧栏形态：VitePress 支持**对象形态**（`SidebarMulti`：路径前缀 → 条目数组）与
+ * **数组形态**（单一侧栏，顶层或 locale 级）。数组若不归一会被后续展平逻辑当成伪分组，
+ * 其顶层 `link` 会被静默吞掉（受检面静默收窄）。
+ *
+ * @param {unknown} sidebar 站点配置中的 sidebar
+ * @param {string} locale locale 标识（`root` 或语言标签）
+ * @returns {Record<string, unknown>} 归一化后的对象形态侧栏
+ */
+export function normalizeSidebar(sidebar, locale = 'root') {
+    if (!sidebar || typeof sidebar !== 'object') {
+        return {}
+    }
+    if (Array.isArray(sidebar)) {
+        return { [locale === 'root' ? '/' : `/${locale}/`]: sidebar }
+    }
+    return { ...sidebar }
 }
 
 /**

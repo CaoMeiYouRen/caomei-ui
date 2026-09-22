@@ -151,7 +151,7 @@ docs/
 
 - 站内跨节锚点必须按 VitePress 的 slugify 实算，不能凭标题字面拼：数字开头的标题会补 `_` 前缀（`## 11. 组件分区与排序` → `#_11-组件分区与排序`），全角标点被归一。
 - `pnpm docs:check:structure` 用 VitePress 自带的 `createMarkdownRenderer` **实算**每页标题 slug 并对账站内锚点（`docs/` 内的链接；源不在 `docs/` 或目标越出 `docs/` 者不在受检面）。该守卫同时校验**组件区侧栏分区不变式**：以本节 §11 的登记表为单一事实源对账中英两侧 sidebar 的分组顺序、组内成员与字母序、以及「总览 / 能力说明」的首尾位次。
-- 该守卫的受检面**不含**：reference-style 链接（`[文字][ref]`）、裸 HTML `<a href>`、以及 nav / sidebar 配置内链接（其存在性校验见[待办事项](../plan/todo.md) 的 M2-4，**当前未覆盖**）。站点若自定义 `markdown.anchor.slugify`，守卫会以 `slug-source-diverged` 显式失败（避免实算 slug 与站点静默分叉）。
+- 该守卫（`docs:check:structure`）的受检面**不含**：reference-style 链接（`[文字][ref]`）、裸 HTML `<a href>`、以及 nav / sidebar 配置内链接——后者由 `pnpm docs:check:config-links` 单独覆盖（用 VitePress 已解析配置取 nav / sidebar，链接须为站点绝对路径且指向存在的页面、锚点按实算 slug 有效；外部链接跳过）。站点若自定义 `markdown.anchor.slugify`，两条守卫都会以 `slug-source-diverged` 显式失败（避免实算 slug 与站点静默分叉）。
 - `pnpm docs:check:links` 的 `looseNorm` 会剥离 `-` / `_` / 标点，**「链接检查通过」不能证明锚点有效**；跨节引用优先只链页面。
 - `docs:check:links` 也不能替代 VitePress 的 dead-link 校验：前者按文件系统解析，指向 `docs/` 之外的仓库文件（如 `.github/skills/**`）会被判有效，而 VitePress 因目标不在 `srcDir` 内报 dead link 使 `docs:build` 失败。跨出 `docs/` 的引用一律写成 code span，**doc 类改动必须把 `pnpm docs:build` 纳入门禁**。
 - `.md`（含治理记录）里出现**双花括号插值**时——即使在行内代码内——会被 VitePress 当 Vue 模板求值，渲染该页时抛 `TypeError`（**构建仍 exit 0**，只在渲染日志可见）。描述插值语法时用文字（如「只解构单个花括号占位并直接输出字段值」），不要写出双花括号。

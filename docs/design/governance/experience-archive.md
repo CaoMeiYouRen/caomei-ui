@@ -4,6 +4,45 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-23 阶段归档蒸馏（Phase 12）
+
+> 本批活跃 **20 条全部处置**：分态 `migrate 20 / compress 0 / remove 0 / keep 0`。归档摘要 **20 行**（可复算：`awk '/^## 2026-09-23 阶段归档蒸馏/,/^## 2026-09-19 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`planning §3.8/§4/§9`、`ai-collaboration §8`、`testing §7/§10`、`development §7/§12`、`session-wisdom-distillation §1`；其中 **5 条**（编号规则 / 不得预写 Gate 结论 / 死声明机制 / 注释内 glob / 守卫生效性证据）的落点此前已存在——最后一条此前仅为 `ai-collaboration §3.5` 的通用要求，本批另向 `testing §10` 补专门化条款；其余 **15 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。
+
+### 规则与规范书写（→ [规划规范 §4 / §9](../../standards/planning.md)）
+
+- [2026-09-21] [pattern] 候选盘点类文档最易漏「静默范围豁免」：盘点 N 条候选必须逐条给出落点（含「不纳入」的排除项），否则按 planning §9 判 warning。可判定写法：盘点节末尾加「候选覆盖声明」（逐小节计数 + 明示「逐条均有落点，无静默豁免」）。 → docs/standards/planning.md §9
+- [2026-09-21] [failure] 条目重编号会连带打断所有「迁出标注」指针：中间插入新条目后 `backlog.md` 的 `→ M3-x` 仍按旧号书写 → Review Gate 判 blocker（映射错指会让后续 session 把工具 / 基线入库算进采样条目）。重编号后必须回查所有 `→ Mxx` 标注并逐条比对 todo 权威条目。 → docs/standards/planning.md §4
+- [2026-09-21] [failure] 执行期拆分条目后必须回扫「原编号的全部引用」：拆分后漏改 4 处（todo「未纳入」表、M3 状态行区间、治理索引摘要、roadmap 阶段行括注）→ 同文件两套口径判 blocker。回扫命令 `rg -n "<原编号>" docs/`，并核对「状态词」在两载体是否互斥。 → docs/standards/planning.md §4
+- [2026-09-21] [failure] 不得预写尚未发生的 Gate 结论：记录里写「已交付」而 todo 状态行仍写「待执行」→ 判 blocker。记录里描述变更应写「本次变更实现；交付以 Review Gate 放行与提交为准」。 → docs/standards/planning.md §9
+- [2026-09-21] [failure] 证据记录里的「覆盖构成」等式必须按 JSON 键集合枚举写，不能按意图分组写：`m31` 段 26 项被写成「8 组件 × 3 档位」，实际是「6 组件 + 2 子部件 + badge dot ×2」，数字巧合掩盖了真实覆盖构成 → 判 blocker。写覆盖声明时逐组列出键数并对账总数。 → docs/standards/planning.md §9
+- [2026-09-21] [pattern] 历史治理记录的「已登记 X」断言必须回查载体：记录称某漏检路径已登记 Backlog，实际 `docs/plan/` 下无对应载体。复核类盘点应把「断言 ↔ 载体」不一致记为待复核项，而不是照抄。 → docs/standards/planning.md §9
+
+### 取数与门禁（→ [AI 协作规范 §8](../../standards/ai-collaboration.md)）
+
+- [2026-09-21] [failure] `rg 'a\|b'` 里的 `\|` 是字面量管道，不是「或」：据此宣称「0 命中」不构成证明（判 warning）。多模式检索用 `rg -e a -e b`，或分别写明每条单模式命令的独立结果。 → docs/standards/ai-collaboration.md §8
+- [2026-09-21] [gotcha] `docs:check:integrity` 以 `git ls-files` 枚举受检面，提交前的未跟踪新 md 不在其扫描面（计数 = 已跟踪数）。新页的兜底证据是 `lint-md` 的 glob、`docs:check:links` 与 `docs:build` 的死链校验；申报门禁前须先 `git add` 或显式声明该边界。 → docs/standards/ai-collaboration.md §8
+- [2026-09-21] [pattern] 守卫类改动的生效性证据：注入一条反例 → 守卫 exit 1；还原后 `git diff --stat` 零输出并重新 exit 0。选择器 / 括号分析类守卫须先剥离属性选择器引号内容，否则 `[data-x="where("]` 会干扰括号判定。 → docs/standards/testing.md §10
+- [2026-09-21] [failure] 规划编号不得写入代码注释与测试名（planning §4）：新增守卫时在测试名与 docstring 写「M3-1」→ 判 blocker。测试名用语义描述，注释只保留文档路径作导航指针（文件名里的编号为小写、不触发规则）。 → docs/standards/planning.md §4
+- [2026-09-21] [pattern] 计算样式等价 A/B 的夹具复用：夹具 `vite.config.ts` 支持 `CAOMEI_SRC` 指向 `HEAD` worktree，可在同一夹具下采集改动前 / 改动后；worktree 缺 `node_modules` 时页面空白、`waitForSelector` 超时（软链 `<repo>/node_modules` 即可）。「0 差异」必须配负向对照。 → docs/standards/testing.md §7
+
+### 测试与浏览器验证（→ [测试规范 §7](../../standards/testing.md)）
+
+- [2026-09-21] [gotcha] 计算样式采集里插入交互会「偷走」瞬时元素的采样窗口：面板开合采样插在采集前段 → toast 在默认时长内消失、6 项静默缺失，两次采集同缺 → diff 仍报 0 差异（假通过）。瞬时元素须排在交互型采样之前，采集结束检查 `errors` 为空。 → docs/standards/testing.md §7
+- [2026-09-21] [pattern] DOM 快照对比须先剔除无语义易变属性：`data-v-*` 跨构建必然变化，不过滤会把差异误报为回归；diff 工具须按属性名逐项比较，值序列化为**单属性对象**（字符串会被按字符索引展开成上百条假差异）。 → docs/standards/testing.md §7
+- [2026-09-21] [gotcha] 探针读取参与 transition 的属性（`box-shadow` / `background-color`）必须等过渡结束：聚焦后立即读会取到插值中间态，基线 / 后测「双错同形」得到 0 差异的假证据。做法：`sleep(250)` 或注入 `transition: none !important` 再读，并配负向对照证明探针灵敏。 → docs/standards/testing.md §7
+- [2026-09-22] [gotcha] DOM 属性快照的「易变属性」不止 `data-v-*`：Reka / 上游 `useId` 的实例计数器会随夹具中组件数量与挂载顺序漂移，使 `aria-controls` / `id` 被报成差异。过滤口径：归一计数、保留名称（`-v-\d+` → `-v-*`），使「指向哪一类面板」仍可断言。 → docs/standards/testing.md §7
+- [2026-09-22] [failure] 聚焦态采样必须把 `focus()` 打在真实可聚焦元素上：落在包装层不会触发 `:focus-within`，采样静默拿到「未聚焦」值；基线与后测同法写错会出现双错同形的假通过。状态类采样须逐条核对「触发元素」而非只核对「读取元素」。 → docs/standards/testing.md §7
+
+### 实现与样式（→ [开发规范 §7 / §12](../../standards/development.md)）
+
+- [2026-09-21] [fact] 「先写安全值、后写 `color-mix()`」不是渐进增强回退，而是死声明：后写声明含 `var()` 时不在解析期被丢弃，级联选中后在计算值期非法 → 置 `unset`（IACVT），先写值在任何引擎都不生效。判断双声明是否真回退，关键看后写值是否含 `var()`。 → docs/standards/development.md §7
+- [2026-09-23] [gotcha] 块注释里写 glob 通配 `*/*` 会提前闭合注释：在 Node 脚本 JSDoc 中描述示例 glob 时，`*/*` 内含的 `*/` 终止块注释 → `node --check` 报 `Unexpected token '*'`、vitest 报 import-analysis 解析失败（报错行指向注释之后的代码，易误判为模板字符串问题）。描述 glob 时改写为「两级目录通配」或拆开星号。 → docs/standards/development.md §12
+
+### 会话与规划载体（→ [Session Wisdom 蒸馏机制 §1](../../standards/session-wisdom-distillation.md)）
+
+- [2026-09-21] [gotcha] `.session/current-task.yaml` 曾出现两个顶层 `progress:` 键（YAML 后者覆盖前者，先写的阶段摘要被静默丢弃）；改动后按 `rg -n "^[a-z_]+:" .session/current-task.yaml` 核对顶层键无重复。 → docs/standards/session-wisdom-distillation.md §1
+- [2026-09-21] [gotcha] 规划回扫（planning §3.8）的「全部受影响载体」包含 gitignored 的 `.session/`：`runtime-state.json` / `current-task.yaml` 会在下一个 session 开局被读取，仍以现在时写「无进行中阶段 / 未登记」会造成错误恢复起点（不进提交物，按 warning 处理）。 → docs/standards/planning.md §3.8
+
 ## 2026-09-19 阶段归档蒸馏（Phase 7 第二阶段 M5 / M6）
 
 > 本批活跃 **83 条全部处置**：分态 `migrate 83 / compress 0 / remove 0 / keep 0`（其中 82 条于 M5 / M6 蒸馏，1 条于阶段收口补蒸馏；部分条目的落点在此前批次已存在于既有文档）。归档摘要 **83 行**（可复算：`awk '/^## 2026-09-19 阶段归档蒸馏/,/^## 2026-09-17 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`documentation-site §5/§13/§15`、`development §5/§7/§10/§12`、`testing §7/§8/§10`、`ai-collaboration §8`、`planning §3.7/§4/§9`、`design-spec §7`、`git §3`、`documentation §4`、`guide/development.md`；`wisdom.md` 活跃段清空并保留指针。

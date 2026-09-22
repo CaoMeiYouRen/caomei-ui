@@ -110,6 +110,11 @@ chromium.launch({
 - **判定「既有问题 vs 本批回归」用未改动同类页对照**：新页 / 新档位命中某现象时，先看未改动的同类页是否同样命中（同根因即归入既有观察项并登记 Backlog，不判本批缺陷）。
 - **证据脚本要落盘可复现产物**：一次性探针除 `console.log` 外须 `writeFileSync` 落盘 JSON，并输出记录中引用的**原始数值**（rect 的 `x/right/width`、计数、布尔），而非只给布尔摘要；取整与记录的小数位对齐或注明。
 - **浏览器面板 / 视觉通道不可用时仍可取证**：把一次性 Playwright 脚本放进仓库内 **gitignored 目录**（如 `test-results/`，bare specifier 可解析到 `node_modules`），用 `getComputedStyle` / `getBoundingClientRect` 做几何与样式断言、本地 OCR 佐证文案渲染，并在记录中显式登记「未做像素级比对」。
+- **探针读取参与 `transition` 的属性（`box-shadow` / `background-color`）必须等过渡结束**：聚焦后立即读会取到插值中间态（如 `oklab(0 0 0 / 0) 0px 0px 0px 0px`）；基线 / 后测「双错同形」会得到 **0 差异的假证据**。做法：聚焦后 `sleep(250)`（或注入 `transition: none !important`）再读，并用负向对照（改一个取值 → 必须报差异）证明探针灵敏。
+- **聚焦态采样必须把 `focus()` 打在真实可聚焦元素上**：落在包装层（如 `.caomei-input-group > *`）不会触发 `:focus-within`，采样会静默拿到「未聚焦」值。状态类采样须逐条核对「触发元素」，而非只核对「读取元素」。
+- **DOM 属性快照须剔除无语义易变属性**：`data-v-*`（Vue scoped 哈希）跨构建必然变化；Reka / 上游 `useId` 的实例计数器（如 `reka-dropdown-menu-content-v-42`）会随夹具中组件数量与挂载顺序漂移，使 `aria-controls` / `id` 被报成差异。过滤口径：**归一计数、保留名称**（`-v-\d+` → `-v-*`），这样「`aria-controls` 指向哪一类面板」仍可断言。diff 工具须按属性名逐项比较，值序列化为**单属性对象**（字符串会被按字符索引展开成上百条假差异）。
+- **瞬时元素的采样必须排在交互型采样之前**：面板开合等交互会「偷走」自动消失元素的采样窗口（toast 默认时长内消失 → `waitForFunction(length >= N)` 超时、该项静默缺失，且两次采集同缺 → diff 仍报 0 差异，属**假通过**）。做法：瞬时元素先采，或交互后重新触发；采集结束须检查 `errors` 为空。
+- **计算样式 A/B 复用同一夹具**：夹具的 `test/capture/fixture/vite.config.mjs` 支持以 `CAOMEI_SRC` 指向 `HEAD` worktree，可在同一夹具下采集改动前 / 改动后。**worktree 没有 `node_modules` 时页面空白、`waitForSelector` 超时**（解析不到 `reka-ui` 等依赖）——`ln -s <repo>/node_modules <worktree>/node_modules` 即可。
 
 ## 8. 组件测试写法
 
@@ -145,3 +150,4 @@ chromium.launch({
 - **几何类常驻用例必须守卫自己的前置条件**：先构造状态（如把容器滚到末尾）再硬断言该状态成立（`expect(wasFullyOutside).toBe(true)`），否则夹具一改用例即静默恒真；夹具几何要留可判定余量（内容总宽明显超出容器，而非刀刃值），无判别力的用例应删除并在注释写明机制同源。
 - 断言只覆盖一个轴会漏检另一轴：允许换行 / 滚动的容器除横向口径外必须同时断言 `scrollHeight <= clientHeight + 1` 与「成员 rect 落在容器 client rect 内」。
 - **清单 / 枚举类内容的断言覆盖全集而非抽样**：迁移节的「未实现清单」等应把关键词集合与清单条目一一对应并用 `.every()` 断言（只取 2 个词会被判粒度过窄、无法防回退）。
+- **选择器 / 括号分析类守卫须先剥离属性选择器引号内容**（`replace(/"[^"]*"|'[^']*'/g, '""')`），否则 `[data-x="where("]` 会干扰括号配对判定；生效性证据的固定形态是「注入一条反例 → 守卫 exit 1；还原后 `git diff --stat` 零输出且重新 exit 0」（负向验证的一般要求见 [AI 协作规范 §3.5](./ai-collaboration.md#_3-5-3-轮未过的改进协议-先缩面、再防复发、缺信息先取证)，本节只承载测试面细化）。

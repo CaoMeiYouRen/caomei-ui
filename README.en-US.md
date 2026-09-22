@@ -42,7 +42,7 @@
 pnpm add caomei-ui
 ```
 
-Current version is `0.1.0`. The library requires Vue 3.5+ as a peer dependency. API and directory structure may change before 1.0.
+Current version is `0.2.0` (style entry: `caomei-ui/theme.css`; 0.2.0 introduced a breaking package-format change from `caomei-ui/styles.css`). The library requires Vue 3.5+ as a peer dependency. API and directory structure may change before 1.0.
 
 ## 📖 Usage
 

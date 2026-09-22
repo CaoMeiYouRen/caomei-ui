@@ -30,7 +30,9 @@
 
 - 本地运行 semantic-release 需 `--no-ci`（跳过 CI 环境校验），并设置 `NPM_TOKEN` 与 `GH_TOKEN`。
 - **本阶段首发使用 `npm publish`**（见 §3）；本地 semantic-release 仅作机制说明与后续备选——它会额外触发 `@semantic-release/git`（提交 `package.json` / `CHANGELOG.md`）与 `@semantic-release/github`（创建 GitHub Release），与「本地手动发布」的当前决策不同，未经决策不要执行 `pnpm release`。
-- 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`。
+- 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。
+- **版本已发布过**时 `npm publish` 会以 `403`（`You cannot publish over the previously published versions: <version>`）失败——npm 不允许覆盖同名版本。处理：确认 `package.json` 的 `version` 是否已递增；确需修复已发布版本时**改发新 patch 版本**（不要尝试 unpublish，见 §8）。
+- `prepublishOnly` 失败（如许可声明过期）会中止发布且不产生 tarball——按报错补齐后重跑即可，无需处理 registry 状态。
 - 当前为本地手动发布，故**无需**配置 CI secret。
 
 ## 5. CI 自动发布（暂缓）
@@ -65,6 +67,9 @@
 - 单包 ESM：`package.json` 为 `"type": "module"`，`exports` 仅提供 `import` 条件，无 `require` 入口；下游按 ESM 使用（Nuxt 4 / Vite 场景）。
 - 子路径导出：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`。
 - `files` 仅分发 `dist` 与 `THIRD-PARTY-LICENSES`；发布前以 `check:build` 确认产物齐全。
+- **0.2.0 起为破坏性形态变更**：移除 `caomei-ui/styles.css`（旧单体全量样式）子路径导出，改为 `caomei-ui/theme.css`（基础层：tokens + 暗色 + `.caomei-root` + 品牌预设）。产物不再提供单体全量样式，组件样式随模块自带（`sideEffects: ["**/*.css"]`，由打包器按需 tree-shaking）。
+- **下游修复指引**：把 `import 'caomei-ui/styles.css'` 改为 `import 'caomei-ui/theme.css'`；若此前依赖单体样式覆盖全部组件，改为「显式引入 `theme.css` + 按需引入组件」。resolver 与 Nuxt 模块会自动注入基础层，**注入点须唯一**以免重复注入与覆盖丢失。
+- **消费前提**：产物 JS 保留逐模块 CSS import，故**裸 Node ESM 不能直接 `import` 包根**（`ERR_UNKNOWN_FILE_EXTENSION: .css`），须经打包器（Vite / rolldown 系实测）或等效 CSS stub 加载器；本仓 `check:build` 的产物冒烟即使用 stub loader。
 
 ## 10. 下游兼容性回归（后置）
 

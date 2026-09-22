@@ -6,7 +6,7 @@
 pnpm add caomei-ui
 ```
 
-> The latest version is `0.1.0` (0.x, so the API and directory layout may still change before 1.0); Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
+> The latest version is `0.2.0` (style entry: `caomei-ui/theme.css`; 0.2.0 removed the `caomei-ui/styles.css` subpath export). 0.x, so the API and directory layout may still change before 1.0; Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
 
 For local development, downstream projects can also consume the local build through [local linking](/en-US/guide/local-linking).
 

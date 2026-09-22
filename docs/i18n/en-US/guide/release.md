@@ -41,6 +41,14 @@
 - Keep the declaration in sync: add a `## <name>@<version>` entry for a new dependency, and update both the entry heading and the full license text when upgrading (copy from `node_modules/<pkg>/LICENSE`).
 - `prepublishOnly` runs the same check automatically before publishing, aborting the release if the declaration is missing or stale.
 
+## Package format and the 0.2.0 breaking change
+
+- Single ESM package: `exports` provides the `import` condition only (no `require`); consume it from ESM (Nuxt 4 / Vite).
+- Subpath exports: `caomei-ui`, `caomei-ui/theme.css`, `caomei-ui/resolver`, `caomei-ui/nuxt`.
+- **Breaking change since 0.2.0**: the `caomei-ui/styles.css` subpath export (old monolithic stylesheet) was removed in favour of `caomei-ui/theme.css` (base layer: tokens, dark mode, `.caomei-root`, brand presets). Component styles ship with their modules (`sideEffects: ["**/*.css"]`) and are tree-shaken by the bundler.
+- **Downstream fix**: replace `import 'caomei-ui/styles.css'` with `import 'caomei-ui/theme.css'`. The resolver and the Nuxt module inject the base layer automatically — keep a single injection point to avoid duplicate injection.
+- **Consumer requirement**: the shipped JS keeps per-module CSS imports, so plain Node ESM cannot import the package root (`ERR_UNKNOWN_FILE_EXTENSION: .css`). Use a bundler (Vite / rolldown tested) or an equivalent CSS stub loader (what our own `check:build` smoke uses).
+
 ## Downstream compatibility regression (deferred)
 
 When a component library change may affect downstream projects, run the CI of the onboarded downstream projects as well to check for compatibility issues.

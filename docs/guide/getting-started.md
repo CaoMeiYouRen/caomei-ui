@@ -6,7 +6,7 @@
 pnpm add caomei-ui
 ```
 
-> 当前最新版本为 `0.1.0`（0.x 阶段，API 与目录结构在 1.0 前可能调整）；组件库以 Vue 3.5+ 作为 peer 依赖。规划与进展见 [路线图](../plan/roadmap.md)。
+> 当前最新版本为 `0.2.0`（样式入口为 `caomei-ui/theme.css`；0.2.0 起移除 `caomei-ui/styles.css`，下游修复指引见[发布指南](./release.md) §9）。0.x 阶段 API 与目录结构在 1.0 前可能调整；组件库以 Vue 3.5+ 作为 peer 依赖。规划与进展见 [路线图](../plan/roadmap.md)。
 
 需要本地联调时，下游项目也可通过[本地联调](./local-linking.md)消费本地构建产物。
 

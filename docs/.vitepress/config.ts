@@ -285,6 +285,8 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Release', link: '/en-US/guide/release' },
                                 { text: 'AI Development', link: '/en-US/guide/ai-development' },
                                 { text: 'Migration from PrimeVue', link: '/en-US/guide/primevue-migration' },
+                                // 组件画廊入口：画廊页属组件区（不进组件侧栏，见 documentation-site §11 / §16）
+                                { text: 'Component Gallery', link: '/en-US/components/showcase' },
                             ],
                         },
                     ],
@@ -467,6 +469,8 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: '发布指南', link: '/guide/release' },
                         { text: 'AI 协同开发', link: '/guide/ai-development' },
                         { text: '从 PrimeVue 迁移', link: '/guide/primevue-migration' },
+                        // 组件画廊入口：画廊页属组件区（不进组件侧栏，见 documentation-site §11 / §16）
+                        { text: '组件画廊', link: '/components/showcase' },
                     ],
                 },
             ],

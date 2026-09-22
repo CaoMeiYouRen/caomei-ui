@@ -1,6 +1,6 @@
 # Components
 
-caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](https://reka-ui.com/). Every component ships minimal default styles and exposes CSS variables for full overrides.
+caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](https://reka-ui.com/). Every component ships minimal default styles and exposes CSS variables for full overrides. Prefer to look first? Browse the [Component Gallery](/en-US/components/showcase) for live previews.
 
 ## Translated component pages
 

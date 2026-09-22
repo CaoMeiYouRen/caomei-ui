@@ -69,6 +69,7 @@
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**本行（多版本托管）仍留 Backlog、未取用**；仅轻量形态（版本信息与兼容策略）拆出至 M2-1。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：多版本托管因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
+| 文档站双花括号插值的机检守卫 | [文档与演示站 §13](../design/documentation-site.md) 规定「描述插值语法时不要写出双花括号」，但违规只在**渲染日志**可见（`docs:build` 仍 exit 0）；2026-09-22 M2-1 落地时两次踩中（`design/documentation-site.md` 与 `guide/release.md` 的行内代码里写字面量 → 目标页抛 `TypeError: Cannot read properties of undefined (reading 'version')`）。候选：把 `docs/**/*.md` 中**围栏外**出现的双花括号纳入守卫，并登记允许插值的页面（`guide/version-policy.md` / `guide/getting-started.md` 与其英文页） | 中 |
 | 组件总览页与侧栏的成员对账 | [文档与演示站 §11](../design/documentation-site.md) 要求「组件总览页（`/components/index.md`）的分组顺序与侧栏一致」，但中英总览页缺 `CheckboxGroup`（侧栏与 §11 登记表均已含；2026-09-22 侧栏不变式守卫发现）。候选：把总览页的分组与成员纳入该守卫的受检面 | 低 |
 | 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过；**2026-09-21 已收敛**（三处改用本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` + `unstyled`，触发结构 A/B 逐项等价） → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 触发器 `disabled` 透传与包装层归一化 | ① date-picker / color-picker 未向触发器透传 `disabled`（现由原生 `<button :disabled>` 兜住）；② 两个薄包装对 `disabled=false` 归一化不一致（popover `props.disabled \|\| undefined` vs dropdown 直传），未来 Reka 若区分 `false` / `undefined` 会单边漂移。候选：补透传 + 用例，并对齐归一化 | 低 |
@@ -79,6 +80,8 @@
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
+| README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
+| 文档站导航栏 768–959px 横向溢出（en） | **既有隐患**：2026-09-22 M2-1 的 V 阶段实测——768px 下 `/en-US/**` 页面 `documentElement.scrollWidth 914 vs clientWidth 768`（溢出 146px）；DOM 隔离：移除 M2-1 新增导航版本项后仍溢出 79px（既有英文导航 + `ThemePresetSwitcher`），两者都移除则为 768 → **既有 79px + M2-1 放大 67px**。候选修法（含权衡，须用户裁定）：① `<960px` 把 `ThemePresetSwitcher` 收进汉堡菜单（但默认主题 768–959px 无汉堡，会导致该档不可用）；② 窄档隐藏切换器标签并收紧导航项内边距（需迭代实测）；③ 窄档隐藏导航版本项（站点内版本展示仍由版本页 / 快速上手承担）；④ 允许导航栏内部横向滚动（`overflow-x: auto`，避开页面级溢出但 UX 一般）。**M2 主线「四档视口无横向溢出」在 768 档（en）尚未满足** | 中 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig, type Plugin } from 'vitepress'
+import { defineConfigWithTheme, type DefaultTheme, type Plugin } from 'vitepress'
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin/markdown'
 import { normalizePath } from 'vite'
 
@@ -67,6 +67,27 @@ type MetaWatchServer = Parameters<Extract<NonNullable<Plugin['configureServer']>
 // GitHub Pages 项目站点部署在 /<repo>/ 子路径下，需要设置 base；
 // 本地开发与自定义域名部署保持默认 '/'。由 VITEPRESS_BASE 环境变量控制。
 const base = process.env.VITEPRESS_BASE ?? '/'
+
+/**
+ * 站点展示的版本号：**单一来源**为仓库根 `package.json` 的 `version`。
+ *
+ * 页面与导航一律经 `themeConfig.version` 消费（模板里写 `v{{ theme.version }}`），
+ * **不得手写版本字面量**——`pnpm docs:check:version` 会校验已解析配置的版本与
+ * `package.json` 一致，并禁止版本展示面出现三段式版本字面量。
+ */
+const packageVersion = (JSON.parse(readFileSync(path.resolve(dirname, '../../package.json'), 'utf8')) as { version: string }).version
+
+/**
+ * 本站自定义 themeConfig：在默认主题配置上扩展站点级字段。
+ *
+ * `version` **每个 locale 都须显式声明**（顶层与 `locales.root` / `locales['en-US']` 三处），
+ * **不依赖 VitePress 的 locale 浅合并语义**——否则合并行为一旦变化，英文页会静默展示空版本；
+ * 类型上标为可选只是不强制类型层，运行期由 `pnpm docs:check:version` 的逐 locale 断言强制。
+ */
+interface CaomeiThemeConfig extends DefaultTheme.Config {
+    /** 站点展示的当前版本（单一来源：仓库根 `package.json` 的 `version`） */
+    version?: string
+}
 
 /**
  * 站内搜索分词：用 `Intl.Segmenter` 补齐 minisearch 默认分词对中文的不足。
@@ -198,7 +219,7 @@ function componentMetaWatch(): Plugin {
     }
 }
 
-export default defineConfig({
+export default defineConfigWithTheme<CaomeiThemeConfig>({
     title: 'caomei-ui',
     description: '基于 Vue 3 + Reka UI 的自建组件库',
     lang: 'zh-CN',
@@ -232,6 +253,8 @@ export default defineConfig({
             themeConfig: {
                 // 顶层为共享项；语言切换按钮标签仅中文 locale 需要，英文走默认 Change language
                 langMenuLabel: '切换语言',
+                // 显式声明（不依赖 locale 合并语义）：站点版本来自单一来源
+                version: packageVersion,
             },
         },
         'en-US': {
@@ -240,12 +263,15 @@ export default defineConfig({
             link: '/en-US/',
             description: 'A Vue 3 component library built on Reka UI',
             themeConfig: {
+                // 显式声明（不依赖 locale 合并语义）：站点版本来自单一来源
+                version: packageVersion,
                 nav: [
                     { text: 'Guide', link: '/en-US/guide/getting-started' },
                     { text: 'Components', link: '/en-US/components/' },
                     { text: 'Design', link: '/en-US/design/' },
                     { text: 'Standards', link: '/en-US/standards/' },
                     { text: 'Plan', link: '/en-US/plan/' },
+                    { text: `v${packageVersion}`, link: '/en-US/guide/version-policy' },
                 ],
                 sidebar: {
                     '/en-US/guide/': [
@@ -253,6 +279,7 @@ export default defineConfig({
                             text: 'Guide',
                             items: [
                                 { text: 'Getting Started', link: '/en-US/guide/getting-started' },
+                                { text: 'Versioning & Compatibility', link: '/en-US/guide/version-policy' },
                                 { text: 'Local Linking', link: '/en-US/guide/local-linking' },
                                 { text: 'Development', link: '/en-US/guide/development' },
                                 { text: 'Release', link: '/en-US/guide/release' },
@@ -418,12 +445,15 @@ export default defineConfig({
         i18nRouting: false,
         // 已翻译路由表，供 theme/composables/langs.ts（语言菜单）判断目标页是否存在
         routingPages,
+        // 站点展示的当前版本（单一来源：仓库根 package.json；见文件顶部的 packageVersion）
+        version: packageVersion,
         nav: [
             { text: '指南', link: '/guide/getting-started' },
             { text: '组件', link: '/components/' },
             { text: '设计', link: '/design/architecture' },
             { text: '规范', link: '/standards/index' },
             { text: '规划', link: '/plan/roadmap' },
+            { text: `v${packageVersion}`, link: '/guide/version-policy' },
         ],
         sidebar: {
             '/guide/': [
@@ -431,6 +461,7 @@ export default defineConfig({
                     text: '指南',
                     items: [
                         { text: '快速上手', link: '/guide/getting-started' },
+                        { text: '版本与兼容策略', link: '/guide/version-policy' },
                         { text: '本地联调', link: '/guide/local-linking' },
                         { text: '开发指南', link: '/guide/development' },
                         { text: '发布指南', link: '/guide/release' },

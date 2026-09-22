@@ -1,12 +1,12 @@
 <script setup lang="ts" generic="T extends object">
-import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
+import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableSortEvent } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -42,6 +42,11 @@ defineSlots<{
     [name: `cell-${string}`]: (props: DataTableCellSlotProps<T>) => unknown
     /** 表头插槽，按列 key 命名（`#header-{key}`）；渲染在排序按钮内部 */
     [name: `header-${string}`]: (props: DataTableHeaderSlotProps<T>) => unknown
+    /**
+     * 分组标题行内容，仅在 `rowGroupMode="subheader"` 时渲染；
+     * 未提供时回退渲染分组键取值
+     */
+    groupheader?: (props: DataTableRowGroupSlotProps<T>) => unknown
 }>()
 
 const slots = useSlots()
@@ -257,6 +262,72 @@ const table = useTable({
 const headerGroups = computed(() => table.getHeaderGroups())
 const tableRows = computed(() => table.getRowModel().rows)
 const isEmpty = computed(() => props.data.length === 0)
+
+/** 行分组（subheader）是否生效 */
+const isSubheaderGrouped = computed(() => props.rowGroupMode === 'subheader' && Boolean(props.groupRowsBy))
+
+/*
+ * 分组字段同名列：该列在**数据行**中渲染为空白占位单元格（不重复显示分组值），
+ * 但仍占用列宽，保证其余数据列与表头对齐。
+ *
+ * 有意偏离 PrimeVue：PrimeVue 在 subheader 模式下直接不渲染该单元格，
+ * 使数据行整体左移一列、与表头错位（primefaces/primevue#6496）；
+ * 本库保留占位单元格以维持列对齐。
+ */
+const hiddenGroupColumnKey = computed(() => {
+    if (!isSubheaderGrouped.value) {
+        return undefined
+    }
+    const field = props.groupRowsBy
+    return props.columns.some((column) => column.key === field) ? field : undefined
+})
+
+type DataTableRow = Row<typeof dataTableFeatures, T>
+
+/** 渲染条目：分组标题行与数据行交错排列 */
+type DataTableDisplayEntry
+    = | { kind: 'group', id: string, value: unknown, firstRow: T, index: number }
+        | { kind: 'row', id: string, row: DataTableRow }
+
+/*
+ * 分组按「连续同值」切分（对齐 PrimeVue）：只在当前渲染行序上计算，
+ * 故分组以排序 + 分页后的切片为准，跨页的同值行会各自出现分组标题行。
+ */
+const displayEntries = computed<DataTableDisplayEntry[]>(() => {
+    const rows = tableRows.value
+    if (!isSubheaderGrouped.value) {
+        return rows.map((row) => ({ kind: 'row', id: row.id, row }))
+    }
+    const field = props.groupRowsBy ?? ''
+    const entries: DataTableDisplayEntry[] = []
+    let previous: unknown
+    let hasPrevious = false
+    for (const [index, row] of rows.entries()) {
+        const value = getByPath(row.original, field)
+        if (!hasPrevious || value !== previous) {
+            entries.push({ kind: 'group', id: `group:${row.id}`, value, firstRow: row.original, index })
+            previous = value
+            hasPrevious = true
+        }
+        entries.push({ kind: 'row', id: row.id, row })
+    }
+    return entries
+})
+
+/** 该列是否为分组字段同名列（数据行渲染为空白占位单元格） */
+function isGroupColumn(key: string): boolean {
+    return key === hiddenGroupColumnKey.value
+}
+
+/** 分组标题缺省文案；仅当未提供 `#groupheader` 槽时使用 */
+function formatGroupValue(value: unknown): string {
+    if (value === null || value === undefined) {
+        return ''
+    }
+    // 与默认单元格口径一致：按 JS 默认字符串化输出（对象 → [object Object]）
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    return String(value)
+}
 
 const rootClass = computed(() => ({
     'caomei-data-table--hoverable': props.hoverable,
@@ -578,45 +649,65 @@ function setPageSize(rows: number): void {
                     </td>
                 </tr>
                 <template v-else>
-                    <tr
-                        v-for="row in tableRows"
-                        :key="row.id"
-                        class="caomei-data-table__row"
-                        :class="row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
-                    >
-                        <td
-                            v-if="selectionMode"
-                            class="caomei-data-table__select-cell caomei-data-table__td"
+                    <template v-for="entry in displayEntries" :key="entry.id">
+                        <tr
+                            v-if="entry.kind === 'group'"
+                            class="caomei-data-table__row-group"
+                            role="row"
                         >
-                            <div class="caomei-data-table__select-cell-inner">
-                                <CaomeiCheckbox
-                                    :model-value="row.getIsSelected()"
-                                    :label="`${selectRowLabel} ${row.id}`"
-                                    @update:model-value="toggleRow(row)"
+                            <td
+                                :colspan="bodyColspan"
+                                class="caomei-data-table__row-group-cell"
+                            >
+                                <slot
+                                    name="groupheader"
+                                    :data="entry.firstRow"
+                                    :index="entry.index"
+                                    :group-value="entry.value"
+                                >
+                                    {{ formatGroupValue(entry.value) }}
+                                </slot>
+                            </td>
+                        </tr>
+                        <tr
+                            v-else
+                            class="caomei-data-table__row"
+                            :class="entry.row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
+                        >
+                            <td
+                                v-if="selectionMode"
+                                class="caomei-data-table__select-cell caomei-data-table__td"
+                            >
+                                <div class="caomei-data-table__select-cell-inner">
+                                    <CaomeiCheckbox
+                                        :model-value="entry.row.getIsSelected()"
+                                        :label="`${selectRowLabel} ${entry.row.id}`"
+                                        @update:model-value="toggleRow(entry.row)"
+                                    />
+                                </div>
+                            </td>
+                            <td
+                                v-for="cell in entry.row.getAllCells()"
+                                :key="cell.id"
+                                class="caomei-data-table__td"
+                                :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
+                                :style="cellStyle(cell.column.id)"
+                            >
+                                <slot
+                                    v-if="!isGroupColumn(cell.column.id) && hasColumnSlot('cell', cell.column.id)"
+                                    :name="`cell-${cell.column.id}`"
+                                    :row="entry.row.original"
+                                    :value="cell.getValue()"
+                                    :index="entry.row.index"
+                                    :column="columnDef(cell.column.id)"
                                 />
-                            </div>
-                        </td>
-                        <td
-                            v-for="cell in row.getAllCells()"
-                            :key="cell.id"
-                            class="caomei-data-table__td"
-                            :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
-                            :style="cellStyle(cell.column.id)"
-                        >
-                            <slot
-                                v-if="hasColumnSlot('cell', cell.column.id)"
-                                :name="`cell-${cell.column.id}`"
-                                :row="row.original"
-                                :value="cell.getValue()"
-                                :index="row.index"
-                                :column="columnDef(cell.column.id)"
-                            />
-                            <FlexRender
-                                v-else
-                                :cell="cell"
-                            />
-                        </td>
-                    </tr>
+                                <FlexRender
+                                    v-else-if="!isGroupColumn(cell.column.id)"
+                                    :cell="cell"
+                                />
+                            </td>
+                        </tr>
+                    </template>
                 </template>
             </tbody>
         </table>
@@ -740,6 +831,16 @@ function setPageSize(rows: number): void {
 .caomei-data-table__row--selected,
 :where(.caomei-data-table--hoverable) .caomei-data-table__row--selected:hover {
     background: var(--caomei-data-table-selected-bg, color-mix(in srgb, var(--caomei-color-primary) 8%, var(--caomei-color-bg)));
+}
+
+/* 分组标题行：横跨全部数据列；不参与冻结列吸边（单一跨列单元格无法逐列吸附） */
+.caomei-data-table__row-group > .caomei-data-table__row-group-cell {
+    padding: var(--caomei-space-2) var(--caomei-space-3);
+    border-bottom: 1px solid var(--caomei-data-table-border, var(--caomei-color-border));
+    background: var(--caomei-data-table-group-bg, var(--caomei-color-bg-elevated));
+    color: var(--caomei-color-text);
+    font-weight: 600;
+    text-align: left;
 }
 
 .caomei-data-table__empty,

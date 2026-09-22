@@ -11,6 +11,9 @@ export type DataTableSortFn = 'alphanumeric' | 'text' | 'basic'
 /** 行选择模式 */
 export type DataTableSelectionMode = 'single' | 'multiple'
 
+/** 行分组模式；`subheader` 在每个分组前渲染分组标题行（对齐 PrimeVue 命名） */
+export type DataTableRowGroupMode = 'subheader'
+
 export interface DataTableCellContext<T> {
     /** 当前行数据 */
     row: T
@@ -89,6 +92,24 @@ export interface DataTableCellSlotProps<T> extends DataTableCellContext<T> {
 export interface DataTableHeaderSlotProps<T> {
     /** 当前列定义 */
     column: DataTableColumn<T>
+}
+
+/**
+ * `#groupheader` 插槽作用域（仅在 `rowGroupMode="subheader"` 时渲染）
+ * @en `#groupheader` slot scope (only rendered when `rowGroupMode="subheader"`)
+ */
+export interface DataTableRowGroupSlotProps<T> {
+    /** 分组首行数据 */
+    data: T
+    /**
+     * 分组首行在当前渲染行序中的索引（排序 / 分页后的显示序号，0 基）；
+     * 与 `#cell-{key}` 的数据源索引语义不同
+     * @en Index of the group's first row in the current rendered row order (display index after
+     * sorting/pagination, 0-based); differs from the source index semantics of `#cell-{key}`
+     */
+    index: number
+    /** 分组键取值 */
+    groupValue: unknown
 }
 
 export interface DataTableProps<T> {
@@ -198,4 +219,18 @@ export interface DataTableProps<T> {
      * @en Current page (1-based); providing it enables controlled pagination
      */
     page?: number
+    /**
+     * 行分组模式；`subheader` 在每个分组前渲染分组标题行（需同时提供 `groupRowsBy`）
+     * @en Row group mode; `subheader` renders a group header row before each group
+     * (requires `groupRowsBy`)
+     */
+    rowGroupMode?: DataTableRowGroupMode
+    /**
+     * 分组字段名，支持 `a.b` 点号嵌套路径；与同名 `key` 的列配合时该列的数据单元格渲染为**空白占位**
+     * （保留列宽，避免数据列与表头错位；有意不沿用 PrimeVue 的不渲染做法）
+     * @en Group field name, supports `a.b` dot-path nesting; a column with the same `key` renders
+     * blank placeholder body cells (keeping the column width so data columns stay aligned with the
+     * header; deliberately does not follow PrimeVue's "do not render" approach)
+     */
+    groupRowsBy?: string
 }

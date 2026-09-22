@@ -7,6 +7,8 @@ export type {
     DataTableHeaderSlotProps,
     DataTablePageEvent,
     DataTableProps,
+    DataTableRowGroupMode,
+    DataTableRowGroupSlotProps,
     DataTableSelectionMode,
     DataTableSortEvent,
     DataTableSortFn,

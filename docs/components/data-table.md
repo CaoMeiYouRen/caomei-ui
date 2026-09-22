@@ -63,6 +63,31 @@
     ssg="true"
 />
 
+## 行分组
+
+设置 `rowGroupMode="subheader"` 与 `groupRowsBy` 后，表格按分组键把**连续同值**的行聚成一组，并在每组前渲染一行分组标题。`groupRowsBy` 支持 `a.b` 点号嵌套路径，取值口径与列定义的 `accessor` **点号路径形态**一致（`accessor` 为函数时不参与分组取值）。
+
+- 分组以**当前渲染行序**（排序 + 分页后的切片）为准：跨页的同值行会各自出现分组标题行。
+- 存在同名 `key` 的列时，该列在数据行中渲染为**空白占位单元格**（不重复显示分组值），表头仍保留该列；占位单元格保留列宽，使其余数据列与表头保持对齐。
+- 未同时提供 `rowGroupMode` 与 `groupRowsBy` 时不分组，渲染结果与既有行为一致。
+
+`#groupheader` 插槽可自定义分组标题内容；未提供时回退渲染分组键取值（按 JS 默认字符串化）。
+
+| 插槽 | 作用域 | 说明 |
+|------|--------|------|
+| `#groupheader` | `{ data, index, groupValue }` | `data` 为分组首行、`index` 为该行在当前渲染行序中的索引（0 基，与 `#cell-{key}` 的数据源索引不同）、`groupValue` 为分组键取值 |
+
+<demo
+    vue="../examples/data-table/grouping.vue"
+    ssg="true"
+/>
+
+> 分组标题行横跨全部数据列，因此**不参与冻结列吸边**；同时使用冻结列与行分组时请评估这一限制。
+>
+> 同时开启 `striped` 时，斑马纹按 `<tbody>` 子节点顺序（`nth-child`）计算，分组标题行会占用一个序号、使数据行的条纹相位相对未分组时发生偏移。
+>
+> **与 PrimeVue 的有意差异**：PrimeVue 在 subheader 模式下直接不渲染分组字段列的数据单元格，会让数据行整体左移一列、与表头错位（[primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)）；本库改为渲染空白占位单元格以保持列对齐，分组值的展示仍以分组标题行为准。
+
 ## 行选择
 
 `selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框；运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 需在挂载时确定。非受控时同样抛出 `update:selection`（供观察）。
@@ -120,7 +145,7 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义与列插槽、排序、行选择、分页、冻结列与加载态。
+- 当前已支持列定义与列插槽、排序、行分组、行选择、分页、冻结列与加载态。
 
 ## 无障碍
 
@@ -139,6 +164,7 @@
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | 斑马纹背景色 |
 | `--caomei-data-table-row-hover-bg` | 文字色 4% 混合 | 行悬浮背景色 |
 | `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |
+| `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | 分组标题行背景色 |
 
 ## 从 PrimeVue 迁移
 
@@ -152,6 +178,9 @@
 | `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，**其宽度与样式不可配置**（内建 `1%` 宽 + 内边距） |
 | `rows-per-page-options` | 同名 `rowsPerPageOptions`，切换抛出 `update:rows` 并按偏移保持语义重新推导页码 |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"`（字段口径一致，另带 `pageCount`） |
+| `rowGroupMode="subheader"` + `groupRowsBy` | 同名 `rowGroupMode` + `groupRowsBy`；按连续同值切分，分组列在数据行渲染为空白占位（不重复取值） |
+| `#groupheader="slotProps"` | `#groupheader="{ data, index, groupValue }"`（`data` / `index` 与 PrimeVue 一致，另提供 `groupValue`）；未提供插槽时回退渲染分组键取值 |
+| `#groupfooter` | **不支持**（分组页脚未纳入本轮范围，见[设计规范 §7](../design/design-spec.md)） |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

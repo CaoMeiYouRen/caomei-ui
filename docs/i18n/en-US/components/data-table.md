@@ -63,6 +63,31 @@ Click the header of a `sortable` column to sort (ascending first). Pass `sortFie
     ssg="true"
 />
 
+## Row grouping
+
+With `rowGroupMode="subheader"` and `groupRowsBy`, rows sharing the same group key are **collapsed into contiguous runs** and a group header row is rendered before each run. `groupRowsBy` supports `a.b` dot-path nesting and resolves values the same way as a column's `accessor` **dot-path form** (a function `accessor` does not take part in grouping).
+
+- Grouping is computed on the **current rendered row order** (the slice after sorting and pagination): equal values split across pages each get their own group header row.
+- When a column with the same `key` exists, its data cells become **blank placeholder cells** (the group value is not repeated) while the header cell is kept; the placeholder keeps the column width so the remaining data columns stay aligned with the header.
+- When `rowGroupMode` and `groupRowsBy` are not both provided, no grouping happens and rendering is identical to the previous behavior.
+
+The `#groupheader` slot customizes the group header content; without it the group key value is rendered as a fallback (using default JS stringification).
+
+| Slot | Scope | Description |
+|------|-------|-------------|
+| `#groupheader` | `{ data, index, groupValue }` | `data` is the group's first row, `index` is that row's index in the current rendered row order (0-based, unlike the source index of `#cell-{key}`), and `groupValue` is the group key value |
+
+<demo
+    vue="../examples/data-table/grouping.vue"
+    ssg="true"
+/>
+
+> The group header row spans all data columns, so it **does not take part in frozen-column pinning**; evaluate this limitation when combining frozen columns with row grouping.
+>
+> With `striped` enabled as well, striping is computed on the `<tbody>` child order (`nth-child`), so a group header row consumes an index and shifts the data rows' stripe phase relative to the ungrouped case.
+>
+> **Intentional difference from PrimeVue**: in subheader mode PrimeVue does not render the group field's data cells at all, which shifts the whole data row one column left and misaligns it with the header ([primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)); this library renders a blank placeholder cell instead to keep the columns aligned, while the group value is still shown in the group header row.
+
 ## Row selection
 
 When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header. Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled.
@@ -120,7 +145,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions and column slots, sorting, row selection, pagination, frozen columns and loading state are all supported.
+- Currently column definitions and column slots, sorting, row grouping, row selection, pagination, frozen columns and loading state are all supported.
 
 ## Accessibility
 
@@ -139,6 +164,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-striped-bg` | `--caomei-color-bg-elevated` | Striped row background color |
 | `--caomei-data-table-row-hover-bg` | 4% text color mix | Row hover background color |
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
+| `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | Group header row background color |
 
 ## Migration from PrimeVue
 
@@ -152,6 +178,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
 | `rows-per-page-options` | The same-named `rowsPerPageOptions`; switching emits `update:rows` and derives the page by preserving the first-row offset |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"` (same field shape, plus `pageCount`) |
+| `rowGroupMode="subheader"` + `groupRowsBy` | The same-named `rowGroupMode` + `groupRowsBy`; splits on contiguous equal values and renders the group column as a blank placeholder in data rows (the value is not repeated) |
+| `#groupheader="slotProps"` | `#groupheader="{ data, index, groupValue }"` (`data` / `index` match PrimeVue, plus `groupValue`); without the slot the group key value is rendered as a fallback |
+| `#groupfooter` | **Not supported** (group footers are out of scope for this round, see [Design spec §7](/design/design-spec)) |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

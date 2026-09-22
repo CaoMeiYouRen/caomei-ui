@@ -62,8 +62,8 @@ CHANGELOG 的破坏性变更原文（摘）：移除 `caomei-ui/styles.css` 子�
 
 | 载体 | 同步内容 |
 | --- | --- |
-| [README](../../../README.md) | 项目状态段：0.1.0（2026-09-19）→ 当前 0.2.0（2026-09-22，含破坏性形态变更与修复指引链接）；「当前最新版本」句改 `0.2.0` 并注明样式入口 |
-| [README.en-US](../../../README.en-US.md) | 同上（英文） |
+| 仓库根 `README.md`（VitePress 站外文件，按文档与演示站 §13 写成 code span） | 项目状态段：0.1.0（2026-09-19）→ 当前 0.2.0（2026-09-22，含破坏性形态变更与修复指引链接）；「当前最新版本」句改 `0.2.0` 并注明样式入口 |
+| 仓库根 `README.en-US.md`（同上） | 同上（英文） |
 | [快速上手](../../guide/getting-started.md) / [Getting Started](/en-US/guide/getting-started) | 版本号与样式入口口径同步（中英） |
 | [发布指南 §4 / §9](../../guide/release.md) / [Release guide](/en-US/guide/release) | §4 补失败路径（403 版本已存在）；§9 补 0.2.0 破坏性变更、下游修复指引与消费前提（英文侧新增等价小节） |
 | [路线图 §1](../../plan/roadmap.md) | 现状句：0.1.0 与 0.2.0 的发布事实与 `latest` 口径 |

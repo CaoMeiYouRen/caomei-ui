@@ -62,7 +62,7 @@
 | 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪 | 中 |
 | 文档完整性守卫的阶段归档误报 | `check-docs-integrity.mjs` 归档后常驻告警 → M5-3（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | Review Gate 证据留存 | 评审结论与截图归档到 `artifacts/review-gate/` | 低 |
-| 文档站版本化 | 依赖版本基线，`v0.1.0` 已建（可切 ≥1 历史版本）；选型未定 → M2-1（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
+| 文档站多版本托管 | 历史版本站点 / 版本切换器。**本行（多版本托管）仍留 Backlog、未取用**；仅轻量形态（版本信息与兼容策略）拆出至 M2-1。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：多版本托管因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
 | 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过；**2026-09-21 已收敛**（三处改用本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` + `unstyled`，触发结构 A/B 逐项等价） → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |

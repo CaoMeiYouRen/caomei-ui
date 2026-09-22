@@ -1,6 +1,6 @@
 # 2026-09-16 语言矩阵 - 中期评估记录（zh-TW / ja-JP / ko-KR）
 
-> 状态：评估记录（2026-09-16）；**已获用户决策并登记为 [Phase 10](../../plan/todo.md) M1（2026-09-16 授权启动）**。决策记录见 §9，包体评估见 §8。
+> 状态：评估记录（2026-09-16）；**已获用户决策并登记为 [Phase 10](../../plan/todo-archive.md) M1（2026-09-16 授权启动）**。决策记录见 §9，包体评估见 §8。
 >
 > 关联：[Backlog §1.4](../../plan/backlog.md) ｜ [规划规范](../../standards/planning.md) ｜ [内建文案与语言](../../components/locale.md) ｜ [Phase 9 收口与遗留清单](./2026-09-16-phase9-closure.md)
 
@@ -49,7 +49,7 @@
 2. **注册与类型扩展 + 测试调整**：`src/locale/index.ts` 的 `caomeiLocales` 增补三语（`CaomeiLocale` 随之扩展）；`use-locale.test.ts` 的「未知语言回退」用例由 `'ja-JP'` 改为未注册语种（如 `'fr-FR'`），并补「新语种可解析」断言。
 3. **文档同步**：`docs/components/locale.md` 与 `docs/i18n/en-US/components/locale.md`（各 13 处语种表述：`CaomeiLocale` 表、基准回退说明、momei 示例的映射、注释）；`README.md:150` 与 `docs/standards/development.md:27` 的目录树说明。
 
-> 登记说明：本节 3 条为逻辑拆分，登记到 [Phase 10](../../plan/todo.md) 时按提交粒度细分为 5 条（三语文案各一条 + 注册与守卫一条 + 文档一条）。
+> 登记说明：本节 3 条为逻辑拆分，登记到 [Phase 10](../../plan/todo-archive.md) 时按提交粒度细分为 5 条（三语文案各一条 + 注册与守卫一条 + 文档一条）。
 
 > **非目标**：文档站新增 zh-TW / ja-JP / ko-KR 三语页面（站点翻译属独立决策）；RTL；语言矩阵 - 长期（俄 / 法 / 德 / 西 / 葡）。
 
@@ -126,4 +126,4 @@
 - **验证**：`pnpm check:locale-keys` 通过；`pnpm test`（含 `use-locale.test.ts` 的三语解析断言）通过；`pnpm build` 产物无标注（标注已不存在于源码）。
 - **前瞻**：若将来新增语种重新引入「待人工复核」一类标注，须重新登记对应机检候选（原候选已随本次标注移除而作废）。
 
-> 依 [规划规范](../../standards/planning.md)，阶段范围须在**授权启动时**分配编号并登记条目。**本阶段已于 2026-09-16 授权启动并登记为 [Phase 10](../../plan/todo.md) M1**；实施条目与拆分见 §4（三语文案按语种拆为三个提交）。
+> 依 [规划规范](../../standards/planning.md)，阶段范围须在**授权启动时**分配编号并登记条目。**本阶段已于 2026-09-16 授权启动并登记为 [Phase 10](../../plan/todo-archive.md) M1**；实施条目与拆分见 §4（三语文案按语种拆为三个提交）。

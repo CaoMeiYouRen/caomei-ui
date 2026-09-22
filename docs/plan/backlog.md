@@ -18,12 +18,16 @@
 | 实底前景 token 配对复核 | M3 复核 | 复核其余实底消费点的 `-solid` × `-foreground` 配对，避免跨主题配对冲突（2026-09-21：本阶段未取，须另行裁定） | 中 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
+| DataTable 行分组与行展开 | dependfix 迁移反馈 | 补行分组（`rowGroupMode` / `groupRowsBy` / 可折叠 `expandableRowGroups` + `#groupheader`）与行展开（`expandedRows` / `expander` / `#expansion`）。**现状（取证 2026-09-22，dependfix `1a73abc` 静态统计）**：`src/` 对上述标识 0 命中（改动前 Backlog 无登记）；下游 `alerts.vue`（分组 + 折叠 + 多列排序）与 `batch-runs.vue`（行展开）不可直接迁移。触发条件：`dependfix/apps/platform` 迁移获用户启动授权，且裁定走「库侧补齐」而非页面侧改写 | 中 |
+| DataTable 多列排序与默认排序方向 | dependfix 迁移反馈 | 补多列排序模型（对齐 `sort-mode="multiple"` + `multi-sort-meta`）并暴露首次点击方向。**现状（取证 2026-09-22，dependfix `1a73abc` 静态统计）**：`sortingState` 仅由单个 `sortField` 构造、`onSortingChange` 只回传 `next[0]`，内部固定 `sortDescFirst: false`；下游 `alerts.vue` / `pr-checks.vue` 共 2 处用多列排序，另全库 6 处用 `:default-sort-order="-1"`（分布 `users` / `alerts` / `env-events` / `batch-runs` / `repos/[id]/runs`）。触发条件：与「DataTable 行分组与行展开」同（迁移获用户启动授权 + 裁定库侧补齐） | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
-| 候选 | 来源 | 优先级 |
-|------|------|:-:|
-| Sidebar | momei 使用面（标签级统计未命中，待复核） | 低 |
+| 候选 | 来源 | 说明 | 优先级 |
+|------|------|------|:-:|
+| Sidebar | momei 使用面（标签级统计未命中，待复核） | — | 低 |
+| TagsInput（标签录入） | dependfix 迁移反馈 | 对应 PrimeVue `Chips`（下游 `repos.vue` 1 处：自由文本多值标签，取证 2026-09-22）。**现状**：无对应组件与导出；[组件设计 §5](../design/components.md) 已把 Reka `TagsInput` 列入「未纳入本清单、可作为后续候选」的 primitive 清单。替代：`CaomeiAutoComplete` + `multiple`（允许自由文本，需使用方自行校验值域） | 低 |
+| ScrollPanel 型滚动面板 | dependfix 迁移反馈 | **评估结论：不自研**。下游 2 处（`repo-history-dialog.vue` / `run-detail-dialog.vue`，取证 2026-09-22）均为 `height: 200px` 固定高度日志区，原生滚动容器 + CSS 足以覆盖。触发条件：出现视口检测 / 滚动条定制 / 虚拟滚动等原生无法覆盖的用例。采纳「不自研」时须同步 [组件设计 §5](../design/components.md) 的 `ScrollArea` 候选行，避免两处口径并存 | 低 |
 
 ### 1.3 不纳入自研的能力（外购建议）
 

@@ -3,7 +3,7 @@
 - 类型：实现落地与验证记录
 - 触发：Phase 11 M1-3 条目——落地 `unbundle + css.inject`，完成四处适配（`exports` / resolver / Nuxt 模块 / `check:build` 断言）+ 文档口径同步 + `npm pack` 冒烟；并入 M1-2 §6 **D6**（`check:nuxt` 断言增强）
 - 授权：D1~D6 的确认锚点为用户 2026-09-20 指令「提交后继续推进」（按 M1-2 §3 / §6 的建议值整体采纳；见 M1-2 §6 的确认说明）
-- 关联：[待办事项 M1-3](../../plan/todo.md) ｜ [M1-1 构建路径 POC](./2026-09-20-m1-1-build-path-poc.md) ｜ [M1-2 入口语义与 dts 验证](./2026-09-20-m1-2-entry-semantics-and-dts-verification.md) ｜ [架构设计 §3 / §4 / §5](../architecture.md)
+- 关联：[待办事项归档 M1-3](../../plan/todo-archive.md) ｜ [M1-1 构建路径 POC](./2026-09-20-m1-1-build-path-poc.md) ｜ [M1-2 入口语义与 dts 验证](./2026-09-20-m1-2-entry-semantics-and-dts-verification.md) ｜ [架构设计 §3 / §4 / §5](../architecture.md)
 - 环境：tsdown 0.23.0 + @tsdown/css 0.23.0 + vite 8.2.2 + nuxt 4；快照 2026-09-20
 - 规模：**38 文件 / +599 −65 行**（超 [规划规范 §5](../../standards/planning.md) 的 10 文件建议阈值，行数未超）；依据：同一入口语义需在构建 / `exports` / resolver / Nuxt 模块 / 断言 / 文档 / 记录间同步落地，拆批会出现「文档与产物口径相反」的中间态——Review Gate 已裁定**豁免成立**
 

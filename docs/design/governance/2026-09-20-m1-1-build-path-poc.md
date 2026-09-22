@@ -2,7 +2,7 @@
 
 - 类型：技术可行性 POC（构建路径判定）
 - 触发：Phase 11 M1-1 条目「判定 `unbundle: true` 与『显式多入口 + `css.splitting: true`』哪条能产出所需 CSS 入口，且不破坏 `dts` / `exports` / `check:build` / `check:nuxt` / `docs:build`」
-- 关联：[待办事项 M1-1](../../plan/todo.md) ｜ [CSS 按需引入评估 §7](./2026-09-20-css-on-demand-evaluation.md) ｜ [下一阶段范围评估 §6](./2026-09-20-next-stage-scope-evaluation.md) ｜ [架构设计 §4](../architecture.md)
+- 关联：[待办事项归档 M1-1](../../plan/todo-archive.md) ｜ [CSS 按需引入评估 §7](./2026-09-20-css-on-demand-evaluation.md) ｜ [下一阶段范围评估 §6](./2026-09-20-next-stage-scope-evaluation.md) ｜ [架构设计 §4](../architecture.md)
 - 环境：tsdown 0.23.0 + @tsdown/css 0.23.0 + rolldown 1.2.5 + vite 8.2.2；快照日期 2026-09-20，代码快照 HEAD `3baa482`（工作区无源码改动；`tsdown.config.ts` 实验后已还原，`dist/` 已重建为基线态）
 - 复现材料：实验配置差异与消费侧测量脚本见[附录 A](#附录-a-可复现材料)
 

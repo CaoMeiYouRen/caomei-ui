@@ -3,7 +3,7 @@
 - 类型：实现落地与等价验证记录
 - 触发：Phase 11 M2-2「scoped 变量声明治理 + 档位死声明守护」与 M2-3「禁用态字面量守卫 + z-index token」
 - 授权链：M2-1 门槛判定（[M2-1 盘点记录 §3.5 / §7](./2026-09-20-m2-1-component-quality-audit.md)）→ 用户 2026-09-20 裁定「**全面收敛**」→ [待办事项](../../plan/todo.md) M2-2 / M2-3 条目登记范围
-- 关联：[待办事项 M2](../../plan/todo.md) ｜ [M2-1 盘点记录](./2026-09-20-m2-1-component-quality-audit.md) ｜ [设计规范 §2.5](../design-spec.md) ｜ [开发规范 §7](../../standards/development.md) ｜ [长期任务 §2.2](../../plan/recurring.md)
+- 关联：[待办事项归档 M2](../../plan/todo-archive.md) ｜ [M2-1 盘点记录](./2026-09-20-m2-1-component-quality-audit.md) ｜ [设计规范 §2.5](../design-spec.md) ｜ [开发规范 §7](../../standards/development.md) ｜ [长期任务 §2.2](../../plan/recurring.md)
 - 环境：Vue 3.5.x + Reka UI 2.10.4 + Vite 8.2.2（fixture 计算样式）；快照 2026-09-20
 - 规模：工作区 27 文件（22 组件 + `theme.css` + `design-spec` / `development` / 两个守卫测试脚本）；另 5 个登记文档已暂存；本轮收口新增本记录 + 3 处小修（守卫注释路径化、`todo.md` token 词表补全、`scanRules` 语句型 at-rule + 3 条单测）
 
@@ -24,7 +24,7 @@
 
 1. **M2-1 盘点判定**：M2-1 在实施前枚举发现同一缺陷类远超记录 §3 的登记消费点，给出 A（全面收敛）/ B（只改登记面）两选项与推荐（见 [M2-1 §3.5 / §7](./2026-09-20-m2-1-component-quality-audit.md)）。
 2. **用户裁定（2026-09-20）**：选 **A（全面收敛）**——G1 含 `select` / `select-button`；G2 含 `dialog` / `confirm-dialog` / `radio-group`；G4 覆盖全部 21 处，并把局部层叠 token（`--caomei-z-raise` / `-pinned` / `-pinned-header`）补登[设计规范 §2.5](../design-spec.md)。
-3. **登记落点**：[todo.md](../../plan/todo.md) M2 执行范围的「范围扩张（2026-09-20 用户裁定『全面收敛』）」段 + M2-2 / M2-3 条目表；[governance index](./index.md) 与 [M2-1 记录 §7](./2026-09-20-m2-1-component-quality-audit.md) 同步用户裁定。
+3. **登记落点**：[todo-archive.md](../../plan/todo-archive.md) M2 执行范围的「范围扩张（2026-09-20 用户裁定『全面收敛』）」段 + M2-2 / M2-3 条目表；[governance index](./index.md) 与 [M2-1 记录 §7](./2026-09-20-m2-1-component-quality-audit.md) 同步用户裁定。
 
 ## 3. 改动清单（按治理面）
 
@@ -72,7 +72,7 @@
 
 - [设计规范 §2.5](../design-spec.md)：层级 token 由「规划新增（待实现）」改为「已实现」表（9 token），并保留图标 / 焦点环等规划项。
 - [开发规范 §7](../../standards/development.md)：新增 4 条规则（G2 `:where()` 声明、G1 档位块只声明变量、`--caomei-z-*` 层级、禁用态 `opacity`）。
-- [todo.md](../../plan/todo.md)：M2-2 / M2-3 条目改写为扩张面 + 本轮补全 M2-3 的 9 个 token 清单；M2 执行范围补「范围扩张」段。
+- [todo-archive.md](../../plan/todo-archive.md)：M2-2 / M2-3 条目改写为扩张面 + 本轮补全 M2-3 的 9 个 token 清单；M2 执行范围补「范围扩张」段。
 - [roadmap.md](../../plan/roadmap.md) / [backlog.md](../../plan/backlog.md) / [M2-1 记录 §7](./2026-09-20-m2-1-component-quality-audit.md) / [governance index](./index.md)：状态与用户裁定同步。
 
 ## 4. 等价证据（计算样式矩阵）

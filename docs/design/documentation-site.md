@@ -88,7 +88,7 @@ docs/
 
 1. 先用 **Button** 做样板页，验证「demo 渲染 + 源码展示 + API 自动生成 + 侧边栏」链路；
 2. 通过后按 Tier 0 组件逐步补齐组件页；
-3. 其余增强中，搜索与 i18n 已完成并归档（见 [待办归档](../plan/todo-archive.md) 的 Phase 5 第一阶段）；**版本信息与兼容策略**已登记为 Phase 12 M2-1（轻量形态）；**多版本托管**（历史版本站点 / 版本切换器）经[形态再评估](./governance/2026-09-22-docs-versioning-reevaluation.md)判定在当前阶段不成立（文档站与工作区源码强绑定），退回 [Backlog](../plan/backlog.md) 并附触发条件；Playground 链接按需评估。
+3. 其余增强中，搜索与 i18n 已完成并归档（见 [待办归档](../plan/todo-archive.md) 的 Phase 5 第一阶段）；**版本信息与兼容策略**（轻量形态）已交付并随 Phase 12 归档（见[待办归档](../plan/todo-archive.md)）；**多版本托管**（历史版本站点 / 版本切换器）经[形态再评估](./governance/2026-09-22-docs-versioning-reevaluation.md)判定在 0.x 开发期不成立（文档站与工作区源码强绑定），退回 [Backlog](../plan/backlog.md) 并附触发条件；Playground 链接按需评估。
 
 ## 9. 已知取舍
 

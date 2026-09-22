@@ -2,7 +2,7 @@
 
 - 类型：质量盘点和门槛判定（只读取证 + 优化候选清单）
 - 触发：Phase 11 M2-1 条目——对重量级组件固定清单做「样式 + 交互」盘点，并按门槛判定既有候选（ColorPicker 色板导航增强 / AutoComplete 严格选项模式）
-- 关联：[待办事项 M2](../../plan/todo.md) ｜ [CSS 按需引入评估 §7.2](./2026-09-20-css-on-demand-evaluation.md)（固定清单门槛来源）｜ [开发规范 §7](../../standards/development.md) ｜ [设计规范](../design-spec.md)
+- 关联：[待办事项归档 M2](../../plan/todo-archive.md) ｜ [CSS 按需引入评估 §7.2](./2026-09-20-css-on-demand-evaluation.md)（固定清单门槛来源）｜ [开发规范 §7](../../standards/development.md) ｜ [设计规范](../design-spec.md)
 - 取证环境：主库 caomei-ui @ `5111b90`（工作区干净）；下游快照 momei @ `47cad194`（只读）；日期 2026-09-20
 - 固定清单（依 [CSS 评估 §7.2](./2026-09-20-css-on-demand-evaluation.md) 批次 2 门槛「逐个 ≥ 4.5 KB 且不在 §2.6 依赖图中」）：auto-complete / drawer / multi-select / stepper / toolbar / file-upload / color-picker
 
@@ -88,7 +88,7 @@ git grep -niE "keydown|keyup|keypress" -- ':!node_modules' ':!.nuxt' ':!dist' ':
 
 **规则面收窄建议（避免误报）**：G1 只针对「**首个复合选择器**为 `:where(.caomei-<comp>[__<el>]--<variant>)`」的档位 / 变体块——**既含 BEM 块修饰符**（`:where(.caomei-select-button--sm)`）**也含元素修饰符**（`:where(.caomei-select__field--sm)`，`select.vue:256/263/270`）**与后代限定形态**（如 `:where(.caomei-select-button--sm) .caomei-select-button__item`，`select-button.vue:224-226 / 233-235 / 242-244`），否则会漏检已登记消费点——`data-table` / `tabs` / `stepper` / `skeleton` 的 `:where()` 属**结构型低特异性布局覆盖**，不属档位变量块；G2 只针对**组件自身命名空间**的变量，排除跨组件传参（paginator 传 `--caomei-select-max-width`）与全局 token 覆写（confirm-dialog 的 `--caomei-color-*`）。
 
-> 范围影响：G1 / G2 全量收敛将连带改动 **select、select-button、dialog、confirm-dialog、radio-group 共 5 个组件**，超出 [待办事项](../../plan/todo.md) M2-2 的行文枚举（其验收要求「`check:design` 扩展后可阻断回流」，预算 0 下无法只改登记面）。**属范围扩张，须用户裁定**（选项见 §7）。
+> 范围影响：G1 / G2 全量收敛将连带改动 **select、select-button、dialog、confirm-dialog、radio-group 共 5 个组件**，超出 [待办事项归档](../../plan/todo-archive.md) M2-2 的行文枚举（其验收要求「`check:design` 扩展后可阻断回流」，预算 0 下无法只改登记面）。**属范围扩张，须用户裁定**（选项见 §7）。
 
 ## 4. 由盘点产生的实施清单（移交 M2-2 / M2-3）
 
@@ -119,4 +119,4 @@ git grep -niE "keydown|keyup|keypress" -- ':!node_modules' ':!.nuxt' ':!dist' ':
 
 **建议：选 A** —— G1 / G2 规则一旦落地，预算 0 是唯一可维护形态（warning 通道会被忽略）；且 dialog / confirm-dialog 与 drawer 是同型缺陷，只修一半会留下「同缺陷两套写法」。
 
-**用户裁定（2026-09-20）**：① **选 A（全面收敛）**——G1 / G2 / G4 按 §3.5 的扩张面执行，并将局部层叠 token 补登[设计规范 §2.5](../design-spec.md)；已在 [待办事项 M2](../../plan/todo.md) 登记范围扩张。② **AutoComplete 严格选项模式：纳入**——登记为 [待办事项](../../plan/todo.md) **M3-5**（组件能力增强，非 M2 范围：M2 非目标明确「不改组件公开 props」），Backlog 对应候选已迁出。
+**用户裁定（2026-09-20）**：① **选 A（全面收敛）**——G1 / G2 / G4 按 §3.5 的扩张面执行，并将局部层叠 token 补登[设计规范 §2.5](../design-spec.md)；已在 [待办事项归档 M2](../../plan/todo-archive.md) 登记范围扩张。② **AutoComplete 严格选项模式：纳入**——登记为 [待办事项归档](../../plan/todo-archive.md) **M3-5**（组件能力增强，非 M2 范围：M2 非目标明确「不改组件公开 props」），Backlog 对应候选已迁出。

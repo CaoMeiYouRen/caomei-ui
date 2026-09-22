@@ -8,7 +8,7 @@
 >
 > **第 3 轮（末轮）结论（现行）：Pass。P2 已闭环。** Accordion 规则改为「`animation-name` 以更高特异性（多一层 `.caomei-accordion`）声明、仅 duration/timing/iteration 用 `!important`」后，Reka 的测量窗口内联 `animation-name: none` 重新生效，变量在 `animationstart` **之前**写入自然高度；**两条路径共 12 次过渡全部逐帧插值**（起始展开 item 4 轮 8 次 + 起始折叠 item 首次展开及后续 3 次，`distinctHeights` 13~14）。P1 与其余恢复项未回归，CSSOM 逐规则归属与优先级断言成立 → **核对项 18 / 失败 0 / 观察项 6 / console 0**，详见 §9。
 >
-> 关联：[待办事项 M3](../../plan/todo.md) ｜ [文档与演示站设计 §9](../documentation-site.md) ｜ [主题与样式设计](../theming.md) ｜ [测试规范 §2.1 / §5.1](../../standards/testing.md) ｜ UI 验证 skill（`.github/skills/ui-validator/SKILL.md`）
+> 关联：[待办事项归档 M3](../../plan/todo-archive.md) ｜ [文档与演示站设计 §9](../documentation-site.md) ｜ [主题与样式设计](../theming.md) ｜ [测试规范 §2.1 / §5.1](../../standards/testing.md) ｜ UI 验证 skill（`.github/skills/ui-validator/SKILL.md`）
 
 ## 1. 结论摘要（可回写评审记录）
 

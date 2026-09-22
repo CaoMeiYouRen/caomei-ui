@@ -56,31 +56,22 @@
 |------|------|--------|
 | AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
 | 对比度遗留项盘点 | 亮色 soft 变体 primary 文本 4.37:1 等 4 项；预设品牌色既有例外长期跟踪（2026-09-21：本阶段未取，须另行裁定）。**2026-09-22 新增观察**：亮色 `--caomei-color-text-muted`（#6b7280）落在站点 `--vp-c-bg-soft`（#f6f6f7）上为 **4.48:1**（同色在纯白上 5.1）——M2-5 组件画廊 V 阶段实测，归因库 token × 站点 soft 底，非画廊引入 | 中 |
-| nav/sidebar 链接校验 | `themeConfig.nav/sidebar` 链接不在 `check-links` 覆盖内 → M2-4（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
-| 文档站锚点校验与侧栏不变式 | VitePress slug 不匹配检测 + 侧栏不变量脚本 → M2-2（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
 | 迁移口径一致性守卫 | 入口表 / 组件页节 ↔ §7 一致性机检 | 低 |
-| 英文文档同步治理 | parity / freshness 校验与未翻译页回链策略 → M2-3（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
-| a11y 自动化回归 | 引入 axe-core 做组件级可访问性断言（受检面 = 组件族根组件，对外导出穷尽登记）→ M4-1 / M4-2（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
 | 浮层展开态的 a11y 断言 | M4-1 受检状态为默认（关闭）态：12 个面板内导出（`DropdownMenu*` / `PopoverContent` / `PopoverArrow` / `PopoverClose` / `SelectGroup`）需交互展开才渲染，未纳入受检面 | 低 |
 | a11y 既有例外的修复候选 | M4-1 清单产出 3 条例外：Reka `Toast/FocusProxy` 焦点哨兵与 `aria-hidden-focus` 规则冲突（上游反馈 / `inert` 可行性）；`MultiSelect` 关闭态输出空 `aria-controls`；`Calendar` 根容器 `aria-label` 落在 `role=generic` 上（补显式 role 或改标签落点）；无 `CaomeiStepperDescription` 的步骤产生悬空 `aria-describedby`（按有无描述决定是否输出该属性） | 低 |
 | 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪 | 中 |
-| 文档完整性守卫的阶段归档误报 | `check-docs-integrity.mjs` 归档后常驻告警 → M5-3（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | Review Gate 证据留存 | 评审结论与截图归档到 `artifacts/review-gate/` | 低 |
-| 文档站多版本托管 | 历史版本站点 / 版本切换器。**本行（多版本托管）仍留 Backlog、未取用**；仅轻量形态（版本信息与兼容策略）拆出至 M2-1。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：多版本托管因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
+| 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
 | 文档站双花括号插值的机检守卫 | [文档与演示站 §13](../design/documentation-site.md) 规定「描述插值语法时不要写出双花括号」，但违规只在**渲染日志**可见（`docs:build` 仍 exit 0）；2026-09-22 M2-1 落地时两次踩中（`design/documentation-site.md` 与 `guide/release.md` 的行内代码里写字面量 → 目标页抛 `TypeError: Cannot read properties of undefined (reading 'version')`）。候选：把 `docs/**/*.md` 中**围栏外**出现的双花括号纳入守卫，并登记允许插值的页面（`guide/version-policy.md` / `guide/getting-started.md` 与其英文页） | 中 |
 | 组件总览页与侧栏的成员对账 | [文档与演示站 §11](../design/documentation-site.md) 要求「组件总览页（`/components/index.md`）的分组顺序与侧栏一致」，但中英总览页缺 `CheckboxGroup`（侧栏与 §11 登记表均已含；2026-09-22 侧栏不变式守卫发现）。候选：把总览页的分组与成员纳入该守卫的受检面 | 低 |
-| 触发器 `unstyled` 遗留收敛 | date-picker / color-picker / split-button 的 `as-child` 绕过；**2026-09-21 已收敛**（三处改用本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` + `unstyled`，触发结构 A/B 逐项等价） → M3-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 触发器 `disabled` 透传与包装层归一化 | ① date-picker / color-picker 未向触发器透传 `disabled`（现由原生 `<button :disabled>` 兜住）；② 两个薄包装对 `disabled=false` 归一化不一致（popover `props.disabled \|\| undefined` vs dropdown 直传），未来 Reka 若区分 `false` / `undefined` 会单边漂移。候选：补透传 + 用例，并对齐归一化 | 低 |
 | 直连 Reka 触发器的机检守卫 | 存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警；否则「单点生效」收益只能靠人工记忆维持（2026-09-21 触发器收敛后新增） | 低 |
-| 代码注释 / 测试名的规划编号守卫 | 机检规则拦截规划编号 → M5-1（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
-| 治理记录索引完整性 | `docs/design/governance/index.md` 需人工维护 → M5-2（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
-| 治理记录的历史规划指针失效 | 归档后指针指向已清空段落 → M5-2（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
-| 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 M2 窄档收敛规则实测依赖人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
+| 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 实测：文档站窄档收敛规则只能靠人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
 | README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
@@ -89,10 +80,6 @@
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
-| 重复声明（死声明）守卫 + 同类残留清理 | 同名属性重复覆盖（Phase 11 M2-2 已删 4 处）；**2026-09-21 重新取证为 8 处 / 4 组件**（input / input-number / select / textarea 各 2，均为「先写 token 色、后写 `color-mix()`」的死声明），已全部清理并落地 `[dup-decl]` 守卫 → M3-3（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
-| 等价验证产物入库 | 采样脚本 + 冻结基线入库 → M3-5（Phase 12 发布就绪、文档对外与一致性收官）（取证入库） | 低 |
-| 尺寸档位类未 `:where()` 归一化 | 28 条（27 单一 + 1 复合）/ 8 组件；**2026-09-21 用户裁定收敛** → M3-1（Phase 12 发布就绪、文档对外与一致性收官） | 中 |
-| wisdom 蒸馏的机检完备性 | 蒸馏计数对账脚本化 → M5-4（Phase 12 发布就绪、文档对外与一致性收官） | 低 |
 | 组件画廊浏览器回归断言 | M2-5 V 阶段产出的断言清单（12/12 stage 非空、11 个组件根类名存在、四档 `scrollWidth === clientWidth` 与列数 2/2/2/1、12×2 链接 200 且 locale 前缀正确、Dialog 初始 0 → 点击后 1 且 Portal 到 body、两页 console / pageerror 0）尚未沉淀为常驻用例；触发条件：需要画廊回归保护（与「视觉回归基线」同族，当前不做） | 低 |
 | 文档站示例的可访问名补强 | M2-5 V 阶段实测：`docs/examples/input/basic.vue`（中英）仅以 placeholder 提供可访问名，无 `label` / `aria-label`；属示例层问题（组件本身由使用方决定标签落点），非画廊引入 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 发布会后实测） | 低 |

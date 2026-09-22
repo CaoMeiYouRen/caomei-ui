@@ -317,3 +317,61 @@
 - **质量门**：`pnpm verify` exit 0（lint / lint:css / lint:md / typecheck / typecheck:docs / test 1415 passed / build / check:build / check:resolver / check:nuxt / docs:build / i18n-routing / governance:check）；`pnpm test:e2e` exit 0（54 passed）。
 - **长期任务**：阶段收口前触发一轮门槛复核（[长期任务](./recurring.md) §3 第 10 轮，2026-09-20，零代码改动域；两组任务待执行批次 0 项、条件触发 2 项维持）。
 - **遗留与后续候选**：28 条非 `:where()` 尺寸档位块（8 组件）待用户裁定；对比度遗留项盘点；a11y 自动化回归；测试隔离与偶发失败；文档站观感与版本化；其余候选见 [Backlog](./backlog.md)。
+
+---
+
+## Phase 12：发布就绪、文档对外与一致性收官
+
+- 时间：2026-09-21 用户授权启动 ~ 2026-09-23 完成并归档（5 条主线 / 20 条原子条目全部交付）
+- 授权与范围（用户决策 2026-09-21，评估记录 D1~D8）：取向取组合 **P / Q / R 混合**；主线收敛为 3~6 条；**不启用 CI 自动发布**（保持手动发布）；执行一次发布、版本号 **0.2.0**；**28 条尺寸档位块收敛**；文档站观感与展示力「如有空间可以纳入」（登记为条件条目 M2-5）；Phase 8 **等待下游完成接入**。范围依据见[下一阶段范围评估](../design/governance/2026-09-21-next-stage-scope-evaluation.md) §6 / §9。
+- 非目标：不启用 CI 自动发布；不启动 Phase 8；不执行 momei 侧迁移（外部执行）；不做 E2E 常驻 / 浮层入门禁、视觉回归基线与 flaky 治理；**不改任何 token 色值**（对比度遗留项与实底前景配对复核留 Backlog）；不新增组件能力（条件触发项留 Backlog）；不修改 `AGENTS.md`（受保护文件）。
+
+### M1 手动发布与版本基线（3 条）
+
+- **M1-1 0.2.0 版本基线与发布说明**：`package.json` 置 0.2.0；`CHANGELOG.md` 含 `# [0.2.0]` 段并在 `💥 BREAKING CHANGES` 明示包形态变更（`styles.css` → `theme.css`）；**annotated** tag `v0.2.0` 指向发布提交。提交 `80df3b4` / `3ef4182`。Review Gate Pass（2 warning / 1 suggest 同批修正）。
+- **M1-2 手动发布执行**：用户本地手动 `npm publish`（**未启用 CI 自动发布**）；发布指南 §4 补失败路径（401 / 403 版本已存在 / prepublishOnly 中止）。**该条目为发布执行动作、无代码改动，Review Gate 不适用**。
+- **M1-3 发布后校验与状态同步**：registry `latest = 0.2.0`（发布时间 2026-09-22T12:21:29Z）；从 registry 下载的 tarball 含 `dist/styles/index.css`、不含旧单体 `dist/styles.css`（345 文件 / unpacked 779,993 B / shasum `d29c75bd…`）；干净目录安装 + 四项子路径冒烟（根 88 导出 / resolver / nuxt（需可选 peer `@nuxt/kit`）/ theme.css 5,880 B）+ Vite 消费方构建冒烟均通过；`exports` 键无 `./styles.css`。**破坏性变更披露**：CHANGELOG 破坏性段 + 发布指南 §9（下游修复指引：`styles.css` → `theme.css`、注入点唯一、裸 Node ESM 须经打包器）。**状态同步**：README（中英）/ 快速上手（中英）/ 路线图 / 发布指南 §4·§9（英文侧新增等价小节）/ Backlog。提交 `fb0ac04` / `70c8e1f` / `d4c2753`。**偏差登记**：tag 视图不含 0.2.0 的 CHANGELOG 段（tag 指向版本提交、CHANGELOG 提交在其后；指南 §3 已规定正确次序，已发布 tag 不重写）。
+- **M1 批次 Review Gate**：R1 Pass（0 blocker / 2 warning / 1 suggest），修复点（状态行错位、章节引用 §3→§4）已同批修正，记为「已修复未复审」；M1-3 的 3 个文档提交同批受审。结论来源见[发布执行记录](../design/governance/2026-09-22-phase12-m1-release-execution.md)。
+- 关键记录：[0.2.0 发布执行与发布后校验](../design/governance/2026-09-22-phase12-m1-release-execution.md)
+
+### M2 文档对外可用性（5 条）
+
+- **M2-1 版本信息与兼容策略（轻量形态，2026-09-22 改写自「文档站版本化」）**：新增中英「版本与兼容策略」页（当前版本 / 获取渠道 / 0.x 兼容策略与下游 pin 建议）；**版本单一来源 = 仓库根 `package.json`**（`config.ts` 读取并经 `themeConfig.version` 暴露，顶层与两个 locale 均显式声明；`defineConfigWithTheme` 声明自定义字段），中英导航新增 `v0.2.0` 条目、指南侧栏加入口，`getting-started`（中英）顶部提示改派生值（**发版不再需要手改站点文档**）。新增 `docs:check:version`：已解析版本 = `package.json`、**逐 locale 断言**、展示面禁三段式版本字面量、展示面须按类型接线、抗静默收窄；正反例语料 13 tests，仓库级负向对照 exit 1。**V 阶段 9 项核对 8 项通过**；未通过项为 768px 下 `/en-US/**` 横向溢出 146px（既有 79px + 本条目放大 67px）→ **用户裁定方案 b 修复并复验通过**（仅 <960px 收敛切换器标签与导航项内边距，两处展示保留，768px 溢出 **146px → 0**，其余三档与 959/960 断点无回归）。**多版本托管经再评估后不做**，退回 Backlog（依据：文档站与工作区源码强绑定，同一构建内托管旧版文档会让其 demo / API 绑到当前源码）。提交 `df6070c` / `5643447` / `d486747` / `3213a01`。Review Gate R1 Pass（0 blocker / 2 warning / 3 suggest）→ R2 Pass。
+- **M2-2 锚点校验与侧栏不变式**：新增 `docs:check:structure`（`scripts/docs/check-docs-structure.mjs` + 共享解析器 `scripts/docs/vitepress-site.mjs`）——① 锚点按 VitePress `createMarkdownRenderer` **实算 slug** 校验（不复刻算法以免版本漂移）；② 组件区侧栏分区不变式（以[文档与演示站 §11](../design/documentation-site.md) 登记表为单一事实源对账中英 sidebar 分组顺序 / 组内字母序 / 「总览 · 能力说明」首尾位次）。**首跑命中并全部修复 11 处真实断锚**（原登记「全库 7 处」只计数字开头类，本次重新取证为 11 处并披露差异）+ §11 表漏登 `CheckboxGroup`。正反例语料 26 tests；仓库不变量断言（页面数 ≥150 / 锚点链接 ≥20 / 分组数 = 6 / 组件条目 ≥45）。提交 `9167eaf` / `158a1ea`。Review Gate R1 Pass → R2 Pass。
+- **M2-3 英文文档同步治理**：新增 `docs:check:i18n-parity`，以[文档与演示站 §10](../design/documentation-site.md)「同步范围」（指南 / 组件介绍）为单一事实源，三类规则**全部两向断言**（`missing-translation` ↔ `stale-exemption`；`orphan-translation` ↔ `stale-en-only`；`structure-drift` ↔ `stale-structure-exemption`），另设范围页数下界与逐前缀下限、空扫描拒绝。**新鲜度口径**：内容级（git 时间戳）不入门禁（浅克隆 CI 下静默失效），门禁面取「章节数」代理。受检面 56 页全部有英文版、56 对已对账（中文 134 / 英文 60）。正反例语料 24 tests；仓库级负向对照三向。提交 `7051006`。Review Gate R1 Pass → R2 Pass。
+- **M2-4 nav / sidebar 链接校验**：新增 `docs:check:config-links`——用 VitePress **已解析**配置取 nav / sidebar 链接（不静态解析 `config.ts`，避免计算式配置被静默排除），校验站点绝对路径存在性与锚点实算 slug；逐类报出纯锚点 / 非站点绝对路径 / `..` 穿越 / 目标缺失 / 锚点失效，外链跳过；分面空扫描与 `slug-source-diverged` 按失败退出。共享解析器同步收敛（统一越界收敛、`normalizeSidebar`、`EXTERNAL_LINK_RE` 单点）。受检面 152 条（nav 10 / sidebar 142）零问题；正反例语料 14 tests。提交 `193d01d`。Review Gate R1 Pass → R2 Pass。
+- **M2-5 文档站观感与展示力（条件条目，用户确认启动）**：新增中英「组件画廊」页（`/components/showcase` + en），以登记表 `docs/.vitepress/showcase-registry.json`（12 项，覆盖 §11 全部 6 分组）驱动真实组件预览卡片；`ShowcaseGrid` 用 `import.meta.glob` 取中英示例、`defineAsyncComponent` 渲染，卡片链接按组件名 kebab 推导并过 `withBase`（兼容非根 base）。入口走中英总览页与指南侧栏；**不进组件侧栏**（§11 侧栏不变式为机器校验面）。新增 `docs:check:showcase`：对账结构 / `example` 形态 / 分组归属 / 中英组件页与示例存在性 / 登记顺序 / 挂载点，并设项数与分组数下界、空扫描拒绝；20 tests + 两次仓库级负向对照。**V 阶段 7 项全通过**（四档溢出 0px、列数 2/2/2/1、亮暗一致、12×2 链接 200 且 locale 正确、console / pageerror 0）。提交 `e801d64` / `899eaf4`。Review Gate **两分区并行 R1 双 Pass**（0 blocker）；修复点（`withBase` 链接、挂载点边界正则、`isNonEmptyString`、描述与文档措辞）已同批修正并复验（含 `VITEPRESS_BASE=/caomei-ui/` 实机构建），记为「已修复未复审」。证据见 [M2-5 记录](../design/governance/2026-09-22-m2-5-component-gallery.md)。
+- 关键记录：[文档站版本化形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md)（M2-1）、[导航栏 768–959px 横向溢出修复](../design/governance/2026-09-22-m2-1-nav-overflow-fix.md)（M2-1 后续）、[M2-5 组件画廊交付与验证](../design/governance/2026-09-22-m2-5-component-gallery.md)
+
+### M3 样式一致性收官（5 条）
+
+- **M3-1 尺寸档位 `:where()` 归一化**：8 个组件的 28 条非 `:where()` 尺寸档位块归一（基类 `var(…, fallback)` 消费 + 档位块只声明变量）；真实浏览器计算样式 **242 项逐属性 0 差异**（新增 26 项 + 既有主矩阵 216 项）、`rg` 归零核验 0 命中。提交 `046c53e`。Review Gate R1 Reject（覆盖构成错述）→ R2 Pass。
+- **M3-2 `check:design` 规则面扩围**：新增尺寸档位选择器守卫 `[tier-where]`（拦「档位类直接作为选择器主体」——G1 / G2 均无法覆盖的 28 条收敛面形态）；正反例语料 14 条、全库零误报、负向对照（注入裸档位块 → exit 1）确认可阻断；同步开发规范 §7 与设计规范 §8 检查项清单。提交 `e96903e`。Review Gate 三轮（R1 Reject → R2 Reject → R3 Pass）。
+- **M3-3 重复声明（死声明）守卫 + 同类残留清理**：重新取证为 **8 处 / 4 组件**（input / input-number / select / textarea 各 2）并全部清理，落地 `[dup-decl]` 守卫（预算 0，含自定义属性）；正反例语料 6 条、全库零误报；真实浏览器 A/B（8 个聚焦态用例）**250 项逐属性 0 差异**，负向对照确认探针灵敏。**技术结论（已写入开发规范 §7）**：后写声明含 `var()` 时不构成渐进增强回退（级联选中后计算值期非法 → `unset`），故本清理为零行为变化。提交 `6b2ac42`。Review Gate R1 Pass。
+- **M3-4 触发器 `unstyled` 遗留收敛**：date-picker / color-picker / split-button 三处「直连 Reka primitive 触发器 + `as-child`」收敛为本库 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger`（`as-child` + `unstyled`）；真实 Chromium 触发结构 A/B **262 项逐属性 0 差异**（含闭合 / 开合两态），负向对照（去掉 `unstyled`）报 5 处差异；新增 6 条回归断言。提交 `72fa5aa`。Review Gate R1 Pass → R2 Pass。
+- **M3-5 计算样式取证装置入库（自 M3-2 拆出）**：一次性采集装置迁入 `test/capture/`（聚焦夹具 + `capture.mjs` / `diff.mjs` + 冻结基线 `baseline.json`），命令 `pnpm capture:styles` / `capture:styles:freeze`，接入周级回归。采样面 **239 项**（相对一次性装置 262 项未纳入 23 项并逐条登记依据与触发点）；**等价证据**：交集 239 项逐属性 0 差异、负向对照报 1 处差异、冻结基线自一致复跑 0 差异；迁移期由交叉复算捕获两处真实缺陷。提交 `7575375`。Review Gate R1 并发分区（A Pass / B Reject）→ R2 Pass。规模：计入阈值 1323 行 / 13 文件（`baseline.json` 为生成物不计入）。
+- 关键记录：[尺寸档位归一化](../design/governance/2026-09-21-m3-1-size-tier-normalization.md)、[触发器 unstyled 收敛](../design/governance/2026-09-21-m3-4-trigger-unstyled-convergence.md)、[计算样式取证装置入库](../design/governance/2026-09-22-m3-5-computed-style-capture-landing.md)
+
+### M4 可访问性自动化回归（2 条）
+
+- **M4-1 既有例外清单建立**：以 `axe-core`（devDependency）× Vitest `happy-dom` 建立组件级审计装置（`test/a11y/`，命令 `pnpm test:a11y`，53 tests）。受检面 = 组件族根组件（47 夹具），对外导出（`caomeiComponents`，79 个）按四组穷尽登记并由单测机检；规则面 16 条禁用规则逐条带理由，其余默认规则生效；**既有例外清单 3 条全部已裁定、无静默豁免**（ToastProvider `aria-hidden-focus` ×2 / MultiSelect 关闭态空 `aria-controls` / Calendar `aria-label` 落 `role=generic`，后两条经真实 Chromium 复核）。提交 `901297f`。Review Gate 并发分区 R1 双 Reject → R2 Pass。
+- **M4-2 a11y 断言接入门禁**：把例外清单搬进机检数据（`test/a11y/exceptions.ts`，含判定依据指针与命中节点数指纹），落**两向断言**（例外外零违规 / 已登记例外必须仍命中且节点数不变）+ 清单自身守卫；断言位于 `pnpm test` → 随 `pnpm verify` 与 CI 合并门禁生效，**门禁强度只增不减**。负向对照三向实测灵敏；连续零失败（`pnpm test:a11y` 5 次 54 passed）。提交 `83ca018`。Review Gate R1 Pass。
+- 关键记录：[a11y 既有例外清单](../design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md)、[a11y 断言接入门禁](../design/governance/2026-09-22-m4-2-a11y-gate-wiring.md)
+
+### M5 治理守卫精选（5 条）
+
+- **M5-1 规划编号守卫**：新增 `check:planning-numbers`（代码注释与测试名的规划编号拦截，四段形态矩阵；测试名只在代码位置识别、未闭合引号按非字符串放弃；空扫描 / 非法目标目录 / 未知参数均 exit 1）；正反例语料 39 tests；首跑即修复 `tsdown.config.ts` 注释内既有编号。提交 `e95b547`。Review Gate R1 Pass → R2 Pass。
+- **M5-2 治理记录索引与历史规划指针守卫**：新增 `check:governance-records`——① 治理索引**双向对账**（`missing-from-index` / `dangling-index-entry`，三类拒绝空扫描通过）；② 历史规划指针失效（链接文字含阶段 / 条目编号而目标已无该标识）；首跑命中并修复 4 处失效指针。正反例语料 24 tests；仓库级负向对照双类型 exit 1。提交 `3173e2e`。Review Gate R1 Pass → R2 Pass。
+- **M5-3 文档完整性守卫的归档误报**：`check-docs-integrity` 的豁免口径由「全标题数不得减少」改为「**H1/H2 骨架标题数不得减少**」（层级由单点常量派生）；**双向仓库级对照**：模拟归档形态零告警、其上去掉一个 H2 则告警 1 条；单测 24 tests。提交 `b88d6e3`。Review Gate R1 Pass → R2 Pass。
+- **M5-4 wisdom 蒸馏机检完备性**：`distill-wisdom` 新增 `--reconcile` 与 `check:distill-archive`（接入 `governance:check`）——归档批次段前言声明的「活跃 N 条」须与该段内顶层 bullet 数一致，声明缺失 / 数值不符 / 归档缺失均 exit 1，并拒绝空扫描通过；仓库级负向对照两向；单测 17 tests。提交 `02b29fd`。Review Gate R1 Pass → R2 Pass。
+- **M5-5 载体一致性缺口**：复核判定为措辞错误并拆分修正（「D1 同类残留 8 处」确以重新取证口径登记于 Backlog 且后续已交付；「`scanRules` 漏检路径」实为本阶段内修复、非 Backlog 载体），历史评估记录 §2 补复核结论并标注快照口径。提交 `58f814d`。Review Gate R1 Pass → R2 Pass。
+- 关键记录：[M4-2 / M5 各项记录见治理索引](../design/governance/index.md)
+
+### 阶段总结
+
+- **提交对账**：`git log --oneline f1b0b22..899eaf4 | wc -l` → **28** 个提交（阶段边界为 `899eaf4`；**不得写 `HEAD` 相对范围**，归档提交会推进 `HEAD`），其中 **27** 个为本阶段 M1~M5 的交付 / 记录提交（归档块逐条引用），另 1 个 `f7d8194`（`docs(plan): 登记 dependfix 迁移反馈的 DataTable 与组件缺口候选`）为候选登记类提交、非交付物，故未逐条引用。
+- **回扫口径（三段式，避免把回扫面等同于机检面）**：① **机检面 8 处**——链接文字含阶段 / 条目编号的历史规划指针，由 `pnpm check:governance-records` 覆盖（接入 `governance:check`）：`2026-09-16-m2-primary-browser-validation.md:7`、`2026-09-16-m3-demo-motion-validation.md:11`、`2026-09-20-m1-1-build-path-poc.md:5`、`2026-09-20-m1-2-entry-semantics-and-dts-verification.md:5`、`2026-09-20-m1-3-style-on-demand-landing.md:6`、`2026-09-20-m2-1-component-quality-audit.md:5` 与 `:122`、`2026-09-20-m2-2-m2-3-style-governance-landing.md:6`；可复算（**钉提交边界**，不用 `HEAD` / 工作区相对范围）：`git show da74641 -- 'docs/**' | grep -E '^\+.*todo-archive\.md' | grep -cE '\[待办事项归档 [A-Z]{1,3}[0-9]{1,3}\]|\[待办事项归档 M[0-9]'` → 8。② **人工面 8 处**——链接文字为**载体名**（`待办事项` / `待办归档` / `todo-archive.md` 等形态）而目标内容已迁出的指针，本批一并改指 `todo-archive.md`：`2026-09-16-m2-primary-browser-validation.md:5`、`2026-09-20-m2-1-component-quality-audit.md:91` 与 `:122`（该行第二个链接）、`2026-09-20-m2-2-m2-3-style-governance-landing.md:27` 与 `:75`、`2026-09-21-next-stage-scope-evaluation.md:193`、`2026-09-22-phase12-m1-release-execution.md:70`、`roadmap.md:32`；口径为**逐条枚举求和**（改指分属 `da74641` / `e58ad96` 与本次归档提交，无单命令可覆盖，故不写命令）。合计 **16 处**。③ **未处理面**——其余历史记录中以载体名出现的链接多属「出证时点登记动作」的陈述（如「已同步 `待办事项`」），其时效由各记录头部的快照 / 让渡声明界定；本批**不回改**、亦未登记为待办——若需统一口径，须另立条目并经用户裁定（[规划规范 §7](../standards/planning.md) 的机检义务止于第 ① 段）。
+- **质量门**：`pnpm verify` exit 0（lint / lint:css / lint:md / typecheck / typecheck:docs / test **83 文件 1681 tests** / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`docs:build` exit 0（0 dead link / 0 TypeError）；`governance:check` 新增守卫 5 项（planning-numbers / governance-records / distill-archive / docs:check 三段扩链 / showcase）。
+- **长期任务**：阶段收口前触发一轮门槛复核（[长期任务](./recurring.md) §3 第 11 轮，2026-09-23，零代码改动域；两组任务待执行批次 0 项、条件触发 2 项维持）。
+- **归档批次审计**（2026-09-23，本阶段归档与规划清理批次）：经 `@code-reviewer` Review Gate **三分区并行审计**——R1 分区 A（规划载体）**Reject**（`todo.md` 仍保留 Phase 12 归档摘要与归档指针）/ 分区 B（规范新增）、分区 C（治理记录回扫）Pass；R2 **Reject**（回扫口径声明与事实不一致）；R3 **Reject**（同一声明的处数与标签不自洽，属复发）；按 [AI 协作规范 §3.5](../standards/ai-collaboration.md) 执行改进协议（① 先提交已 Pass 子范围 `da74641` / `e58ad96`；② 复发 finding 落为规范约束「引用命令须钉持久边界」）；R4 **Reject**（引用的 `git diff` / `HEAD` 相对命令在提交后不可复算——`HEAD` 相对范围与工作区相对范围都不可作为持久证据）；修复后 **R5 Pass（0 blocker）**。R5 的 1 条 warning（§8 规则的 ref 钉定要求应按命令维度区分 revision 维度命令与内容扫描类）已同批修正，记为「已修复未复审」。
+- **遗留与后续候选**：中英组件总览页缺 `CheckboxGroup`（§11 要求总览页与侧栏一致）；画廊浏览器回归断言；对比度遗留项（含 M2-5 实测 `--caomei-color-text-muted` × 站点 soft 底 4.48:1）；Input 示例可访问名；文档站双花括号插值机检守卫；多版本托管（触发条件：同时维护 ≥2 个对外版本）；Phase 8 未启动（等待下游完成接入）；momei 侧迁移由 momei 项目执行；其余候选见 [Backlog](./backlog.md)。

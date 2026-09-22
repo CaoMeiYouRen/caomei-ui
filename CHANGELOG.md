@@ -1,6 +1,42 @@
 # caomei-ui
 
-# 0.1.0 (2026-09-19)
+# Unreleased (2026-09-22)
+
+# [0.2.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.1.0...v0.2.0) (2026-09-22)
+
+### ✨ 新功能
+
+* **components:** M3 组件能力增强 ([38398b3](https://github.com/CaoMeiYouRen/caomei-ui/commit/38398b3))
+* **docs:** 把 nav 与 sidebar 链接纳入链接校验覆盖面 ([193d01d](https://github.com/CaoMeiYouRen/caomei-ui/commit/193d01d))
+* **docs:** 新增英文文档 parity 与结构新鲜度守卫 ([7051006](https://github.com/CaoMeiYouRen/caomei-ui/commit/7051006))
+* **docs:** 新增锚点与侧栏分区不变式守卫 ([158a1ea](https://github.com/CaoMeiYouRen/caomei-ui/commit/158a1ea))
+* **governance:** M4 质量门与文档守卫 ([0591cad](https://github.com/CaoMeiYouRen/caomei-ui/commit/0591cad))
+* **governance:** 新增同规则重复声明守卫并清理死声明残留 ([6b2ac42](https://github.com/CaoMeiYouRen/caomei-ui/commit/6b2ac42))
+* **governance:** 新增尺寸档位选择器归一守卫 ([e96903e](https://github.com/CaoMeiYouRen/caomei-ui/commit/e96903e))
+* **governance:** 新增治理索引与历史规划指针守卫 ([3173e2e](https://github.com/CaoMeiYouRen/caomei-ui/commit/3173e2e))
+* **governance:** 新增蒸馏计数对账守卫并接入门禁 ([02b29fd](https://github.com/CaoMeiYouRen/caomei-ui/commit/02b29fd))
+* **governance:** 新增规划编号守卫拦截注释与测试名编号 ([e95b547](https://github.com/CaoMeiYouRen/caomei-ui/commit/e95b547))
+* **governance:** 新增计算样式取证装置并接入周级回归 ([7575375](https://github.com/CaoMeiYouRen/caomei-ui/commit/7575375))
+* **styles:** 改用逐模块产物与 CSS 注入并调整样式入口 ([a869b8f](https://github.com/CaoMeiYouRen/caomei-ui/commit/a869b8f))
+
+### 🐛 Bug 修复
+
+* **docs:** 修正 11 处 VitePress 断锚并补 §11 登记缺口 ([9167eaf](https://github.com/CaoMeiYouRen/caomei-ui/commit/9167eaf))
+* **docs:** 修正文档完整性守卫的阶段归档误报 ([b88d6e3](https://github.com/CaoMeiYouRen/caomei-ui/commit/b88d6e3))
+
+### 📦 代码重构
+
+* **components:** 尺寸档位块归一到 :where() 并改由基类回退消费 ([046c53e](https://github.com/CaoMeiYouRen/caomei-ui/commit/046c53e))
+* **components:** 触发器收敛为本库包装组件并启用 unstyled ([72fa5aa](https://github.com/CaoMeiYouRen/caomei-ui/commit/72fa5aa))
+* **styles:** 归一化档位与变体声明并 token 化层级 ([ad0eae7](https://github.com/CaoMeiYouRen/caomei-ui/commit/ad0eae7))
+
+### 💥 BREAKING CHANGES
+
+* **styles:** 移除 caomei-ui/styles.css 子路径导出，改用 caomei-ui/theme.css
+（基础层）。产物不再提供单体全量样式，组件样式随模块自带；基础层需显式引入或
+由 resolver / Nuxt 模块注入。产物以打包器消费为前提，裸 Node ESM 不能直接导入。
+
+# [0.1.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/6b64969...v0.1.0) (2026-09-19)
 
 ### ✨ 新功能
 

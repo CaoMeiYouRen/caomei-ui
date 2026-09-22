@@ -67,7 +67,7 @@ CHANGELOG 的破坏性变更原文（摘）：移除 `caomei-ui/styles.css` 子�
 | [快速上手](../../guide/getting-started.md) / [Getting Started](/en-US/guide/getting-started) | 版本号与样式入口口径同步（中英） |
 | [发布指南 §4 / §9](../../guide/release.md) / [Release guide](/en-US/guide/release) | §4 补失败路径（403 版本已存在）；§9 补 0.2.0 破坏性变更、下游修复指引与消费前提（英文侧新增等价小节） |
 | [路线图 §1](../../plan/roadmap.md) | 现状句：0.1.0 与 0.2.0 的发布事实与 `latest` 口径 |
-| [待办事项](../../plan/todo.md) | M1 状态行 |
+| [待办归档](../../plan/todo-archive.md) | M1 交付与 Review Gate 结论（原 M1 状态行在阶段归档时移除，见 §7） |
 
 ## 6. 未覆盖边界
 
@@ -75,3 +75,10 @@ CHANGELOG 的破坏性变更原文（摘）：移除 `caomei-ui/styles.css` 子�
 - 未验证 Nuxt 侧端到端（本记录只做 `caomei-ui/nuxt` 的模块工厂导入冒烟）；Nuxt 注入路径的完整验证由周期回归与本仓 `check:nuxt` 承担。
 - 未做产物级的样式等价比对（该面由 M3-5 的计算样式取证装置与冻结基线承载）。
 - registry 侧 `npm view` 的检索时间为 2026-09-22；下载的 tarball 与 shasum 已在本记录留痕，可复算。
+
+## 7. Review Gate
+
+- M1 批次（M1-1 / M1-2 / M1-3）经 `@code-reviewer` Review Gate **R1 Pass**（0 blocker / 2 warning / 1 suggest）；修复点 W01（状态行错位）/ W02（章节引用 §3→§4）已同批修正，记为「已修复未复审」。
+- M1-2 为发布执行动作、无代码改动，**Gate 不适用**；M1-3 的 3 个文档提交（`fb0ac04` / `70c8e1f` / `d4c2753`）同批受审。
+- 本结论为该批次唯一的可提交留痕（原结论随 `docs/plan/todo.md` 的 M1 状态行在阶段归档时移除）。
+

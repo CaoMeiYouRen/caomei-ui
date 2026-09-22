@@ -26,6 +26,8 @@
 | M1-2 | 手动发布执行 | 按[发布指南](../guide/release.md) runbook 本地发布；发布前核验凭据可用性 | 发布命令与产物核验记录留痕；401 / 版本已存在等失败路径在指南中有对应说明 | M1-1 |
 | M1-3 | 发布后校验与状态同步 | `npm view` / `npm pack --dry-run` / 干净目录安装与四项子路径导入冒烟；README / roadmap / 指南状态同步 | 与首发执行记录同口径通过；无「未发布 / 旧形态」残留表述 | M1-2 |
 
+状态（M1）：**M1-1 / M1-2 / M1-3 已交付（2026-09-22）**——`package.json` 置 `0.2.0`（提交 `80df3b4`）、`CHANGELOG.md` 含 `# [0.2.0]` 段并在 `💥 BREAKING CHANGES` 明示形态变更（提交 `3ef4182`）、**annotated** tag `v0.2.0` 指向发布提交；用户完成本地手动 `npm publish`（**未启用 CI 自动发布**）。**发布后校验**：registry `latest = 0.2.0`（发布时间 2026-09-22T12:21:29Z）；从 registry 下载的 tarball 含 `dist/styles/index.css`、不含旧单体 `dist/styles.css`（345 文件 / unpacked 779,993 B / shasum `d29c75bd…`）；干净目录安装 + 四项子路径冒烟（根 88 导出 / resolver / nuxt（需可选 peer `@nuxt/kit`）/ theme.css 5,880 B）+ Vite 消费方构建冒烟均通过；`exports` 键无 `./styles.css`。**破坏性变更披露**：CHANGELOG 破坏性段 + 发布指南 §9（下游修复指引：`styles.css` → `theme.css`、注入点唯一、裸 Node ESM 须经打包器）；§4 补失败路径（401 / 403 版本已存在 / prepublishOnly 中止）。**状态同步**：README（中英）/ 快速上手（中英）/ 路线图 §1 / 发布指南 §4·§9（英文侧新增等价小节）/ Backlog（CHANGELOG 生成器空 `Unreleased` 段候选）。**偏差登记**：tag 视图不含 0.2.0 的 CHANGELOG 段（tag 指向版本提交、CHANGELOG 提交在其后；指南 §3 已规定正确次序，已发布 tag 不重写）。证据见[发布执行记录](../design/governance/2026-09-22-phase12-m1-release-execution.md)。
+
 #### M2 文档对外可用性（版本信息与文档守卫）
 
 - 执行范围：版本信息与兼容策略（轻量形态）；锚点校验与侧栏不变式；英文文档同步治理；nav / sidebar 链接校验；文档站观感与展示力（条件条目）。

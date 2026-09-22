@@ -10,22 +10,23 @@
 }
 
 /*
-  修复 en-US 文档页 768 档横向溢出。
+  历史归因更正（2026-09-22）：早期记录（m6-6 / m6-7、m6-8 A/B/C 的「观察项」）把 en-US 页
+  768 档的 79px 横向溢出归因于 VitePress **内容列** `.content`，并在此处加了
+  `.vp-doc .content { min-width: 0 }`。
 
-  问题：en-US 页面在 768px 视口下 `scrollWidth 847 > clientWidth 768`（79px），
-  溢出元素为 VitePress 内容列 `.content`。
-  原因：en-US 文本较长，`.content` 的 `min-width` 在窄屏下撑破容器。
-
-  修复：在 768px 及以下视口，强制 `.content` 的 `min-width` 为 0，
-  允许内容自然收缩。同时确保 `overflow-wrap` 正确断行。
+  复核结论：该选择器**在构建产物中不存在**（`.vp-doc` 位于 `.VPDoc .content` **内部**，
+  故 `.vp-doc .content` 永不匹配；DOM 实测 8 个原列为命中的页面均返回 `no-element`），
+  属死规则，已移除。真实成因是**导航栏**：`.VPNavBar .content-body` 在 768px 下被
+  既有英文导航 + `ThemePresetSwitcher`（及其后新增的导航版本项）撑破视口。
+  完整归因、用户裁定与复验见 docs/design/governance/2026-09-22-m2-1-nav-overflow-fix.md；
+  窄档收敛规则见本文件末的 `@media (max-width: 959px)`。
 */
-@media (max-width: 768px) {
-    .vp-doc .content {
-        min-width: 0;
-        overflow-wrap: break-word;
-    }
 
-    .vp-doc .content-container {
-        min-width: 0;
+/* 导航栏窄档（<960px）收敛：收紧导航项内边距，配合切换器隐藏标签，消除 768–959px 档的横向溢出。
+   规则置于文档站全局层并用 .VPNavBar 前缀限定，避免与默认主题风格漂移。 */
+@media (max-width: 959px) {
+    .VPNavBar .VPNavBarMenuLink {
+        padding: 0 5px;
+        font-size: 13px;
     }
 }

@@ -1,11 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { useData } from 'vitepress'
+import { computed, onMounted, ref } from 'vue'
 
 const presets = [
     { value: '', label: '默认' },
     { value: 'caomei', label: 'caomei' },
     { value: 'momei', label: 'momei' },
 ] as const
+
+const { lang } = useData()
+
+/**
+ * 控件文案：窄档（<960px）会隐藏可见标签，故必须同时提供 `aria-label`，
+ * 否则该 `<select>` 在窄档失去可访问名（文案中英各一，与站点语言一致）。
+ */
+const controlLabel = computed(() => (lang.value === 'en-US' ? 'Theme preset' : '主题预设'))
 
 const STORAGE_KEY = 'caomei-docs-preset'
 const VALID_PRESETS: Set<string> = new Set<string>(presets.map((preset) => preset.value))
@@ -38,9 +47,10 @@ onMounted(() => {
 
 <template>
     <label class="theme-preset-switcher">
-        <span class="theme-preset-switcher__label">主题预设</span>
+        <span class="theme-preset-switcher__label">{{ controlLabel }}</span>
         <select
             :value="current"
+            :aria-label="controlLabel"
             @change="onChange"
         >
             <option
@@ -66,6 +76,17 @@ onMounted(() => {
 .theme-preset-switcher__label {
     color: var(--vp-c-text-2, inherit);
     white-space: nowrap;
+}
+
+/* 窄档（<960px）收敛：隐藏标签并收紧左边距，避免导航栏在 768–959px 档横向溢出 */
+@media (max-width: 959px) {
+    .theme-preset-switcher {
+        margin-left: 4px;
+    }
+
+    .theme-preset-switcher__label {
+        display: none;
+    }
 }
 
 .theme-preset-switcher select {

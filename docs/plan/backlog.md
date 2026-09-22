@@ -80,8 +80,8 @@
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
+| 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 M2 窄档收敛规则实测依赖人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
 | README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
-| 文档站导航栏 768–959px 横向溢出（en） | **既有隐患**：2026-09-22 M2-1 的 V 阶段实测——768px 下 `/en-US/**` 页面 `documentElement.scrollWidth 914 vs clientWidth 768`（溢出 146px）；DOM 隔离：移除 M2-1 新增导航版本项后仍溢出 79px（既有英文导航 + `ThemePresetSwitcher`），两者都移除则为 768 → **既有 79px + M2-1 放大 67px**。候选修法（含权衡，须用户裁定）：① `<960px` 把 `ThemePresetSwitcher` 收进汉堡菜单（但默认主题 768–959px 无汉堡，会导致该档不可用）；② 窄档隐藏切换器标签并收紧导航项内边距（需迭代实测）；③ 窄档隐藏导航版本项（站点内版本展示仍由版本页 / 快速上手承担）；④ 允许导航栏内部横向滚动（`overflow-x: auto`，避开页面级溢出但 UX 一般）。**M2 主线「四档视口无横向溢出」在 768 档（en）尚未满足** | 中 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |

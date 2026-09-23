@@ -25,8 +25,11 @@
 | 全宽 | `fluid` | 默认 `width: 100%` | 迁移时删除 `fluid`；**选择器家族另有 `20rem` 宽度上限**，需要真正全宽时把对应上限 token 覆盖为 `none`（见 §7 与[主题与样式 §4.1](../design/theming.md)）。**例外**：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度） |
 | 选项字段 | `option-label` / `option-value` | `optionLabel` / `optionValue` | 语义一致，仅命名风格不同 |
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
+| 标签录入 | `Chips`（v4 起为 `InputChips` 的旧名） | `CaomeiTagsInput`（**首选**）；`CaomeiAutoComplete` + `multiple`（备选） | `separator` → `delimiter`；`allowDuplicate` **默认相反**（本库默认拒绝重复）；见 §7 与 [TagsInput](../components/tags-input.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |
 | 插槽命名 | 列级 `#body` / `#header` | `#cell-{key}` / `#header-{key}` | 按列 `key` 命名，作用域字段口径见组件页 |
+| 表格排序模型 | `sort-mode` / `multi-sort-meta` / `default-sort-order` | `sortMode` / `multiSortMeta` / `sortDescFirst` | 多列为受控模型（`v-model:multiSortMeta`）；`default-sort-order` 改**表格级** `sortDescFirst`（本库不提供列级）；见 §7 与 [DataTable](../components/data-table.md) |
+| 表格分组与行展开 | `row-group-mode` / `group-rows-by` / `expandable-row-groups` / `expanded-rows` / `Column expander` | 同名 camelCase + `v-model:expandedRowGroups` / `v-model:expandedRows` + `#groupheader` / `#expansion` | 分组按**连续同值**切分、可折叠分组缺省全部收起；展开列写作 `{ key, expander: true }`；见 §7 与 [DataTable](../components/data-table.md) |
 | 命令式浮层 | `ref.toggle(event)` / `show(event)` / `hide()`（以事件坐标为锚点） | 声明式触发器 | 把原触发按钮本身作为 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger`（锚点即该按钮）；`as-child` 复用自定义按钮时加 `unstyled`，`hide()` 改受控 `v-model:open`（Popover 也可用 `<CaomeiPopoverClose>`）；见 [Popover](../components/popover.md) 与 [DropdownMenu](../components/dropdown-menu.md) |
 | 未实现项 | — | 见 §7 各组件行的「未实现 / 未暴露」 | 迁移前先读该行，避免按 PrimeVue 文档写了不生效的 prop |
 
@@ -39,7 +42,7 @@
 | 分组 | 组件 |
 | --- | --- |
 | 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[ButtonGroup](/components/button-group)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
-| 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[FileUpload](/components/file-upload)、[FloatLabel](/components/float-label)、[Input](/components/input)、[InputGroup](/components/input-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[RadioGroup](/components/radio-group)、[Slider](/components/slider)、[Switch](/components/switch)、[Textarea](/components/textarea) |
+| 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[FileUpload](/components/file-upload)、[FloatLabel](/components/float-label)、[Input](/components/input)、[InputGroup](/components/input-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[RadioGroup](/components/radio-group)、[Slider](/components/slider)、[Switch](/components/switch)、[TagsInput](/components/tags-input)、[Textarea](/components/textarea) |
 | 选择器 | [AutoComplete](/components/auto-complete)、[Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
 | 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |
 | 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator)、[ProgressBar](/components/progress-bar)、[ProgressSpinner](/components/progress-spinner)、[Skeleton](/components/skeleton) |

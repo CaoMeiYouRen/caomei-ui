@@ -45,6 +45,15 @@
         }
     },
     {
+        "name": "TagsInput",
+        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "example": "tags-input/basic.vue",
+        "description": {
+            "zh": "录入多个自由文本标签，支持回车 / 分隔符提交、粘贴拆分与数量 / 去重约束。",
+            "en": "Enters multiple free-text tags with Enter or delimiter commit, paste splitting and count / duplicate limits."
+        }
+    },
+    {
         "name": "DatePicker",
         "group": { "zh": "选择器", "en": "Selectors" },
         "example": "date-picker/basic.vue",

@@ -26,6 +26,7 @@
 - [RadioGroup 单选组](./radio-group)：单选组用于在一组互斥选项中选择一项，基于 Reka UI RadioGroup 封装，由 `CaomeiRadioGroup` 与 `CaomeiRadioButton` 组合使用。
 - [Slider 滑块](./slider)：滑块用于在数值区间内拖动选择单个或多个值，基于 Reka UI Slider 封装。
 - [Switch 开关](./switch)：开关用于切换单个选项的开启 / 关闭状态，基于 Reka UI Switch 封装。
+- [TagsInput 标签输入](./tags-input)：标签输入用于录入多个自由文本标签，支持回车 / 分隔符提交、粘贴拆分、点击删除与数量 / 去重约束，基于 Reka UI TagsInput 封装。
 - [Textarea 多行输入](./textarea)：多行文本输入框，适用于备注、描述等场景。
 
 ## 选择器

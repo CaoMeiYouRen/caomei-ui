@@ -64,7 +64,7 @@ import {
 | `splitButton` | `menu` | SplitButton |
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
-| `table` | `empty` `selectAll` `selectRow` | DataTable |
+| `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` | DataTable |
 | `toast` | `label` `viewport` `close` | Toast |
 
 ## 快速使用

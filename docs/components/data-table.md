@@ -84,9 +84,25 @@
 
 > 分组标题行横跨全部数据列，因此**不参与冻结列吸边**；同时使用冻结列与行分组时请评估这一限制。
 >
-> 同时开启 `striped` 时，斑马纹按 `<tbody>` 子节点顺序（`nth-child`）计算，分组标题行会占用一个序号、使数据行的条纹相位相对未分组时发生偏移。
+> 同时开启 `striped` 时，斑马纹按 `<tbody>` 子节点顺序（`nth-child`）计算，分组标题行会占用一个序号、使数据行的条纹相位相对未分组时发生偏移；可折叠分组展开 / 收起还会改变后续行的奇偶，条纹落点随之平移。
 >
 > **与 PrimeVue 的有意差异**：PrimeVue 在 subheader 模式下直接不渲染分组字段列的数据单元格，会让数据行整体左移一列、与表头错位（[primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)）；本库改为渲染空白占位单元格以保持列对齐，分组值的展示仍以分组标题行为准。
+
+### 可折叠分组
+
+设置 `expandableRowGroups` 后，分组标题行渲染内建切换按钮（原生 `<button>` + chevron，带 `aria-expanded` 与可访问名、键盘可达），用于折叠 / 展开该分组的数据行。
+
+- **缺省（未提供 `expandedRowGroups`）时分组全部收起**（对齐 PrimeVue）——此时只渲染分组标题行；需要初始展开时用 `v-model:expandedRowGroups` 给出初始值。
+- 用 `v-model:expandedRowGroups`（`string[]`）双向绑定展开的分组键集合；提供该 prop 即进入**受控模式**（点击只抛出 `update:expandedRowGroups`，是否采纳由父级决定），移除后回到自持。下方示例未传该 prop（自持模式）故初始全部收起，需要初始展开时传入初始值（如 `['前端']`）。
+- 抛出 `rowgroupExpand` / `rowgroupCollapse`，载荷 `{ originalEvent, data }`，`data` 为分组键。
+- 分组键取分组字段值的字符串形式（`null` / `undefined` 归一为空串）；**非连续的同值分组共用同一分组键**，切换会同时影响它们；字符串化后相同的不同取值（如数字 `1` 与字符串 `'1'`）也会共用同一键。
+- 收起只影响渲染，不影响分页器总条数（总条数按 `data` / `totalRecords` 计算）。
+- 切换按钮的可访问名默认取当前语言的「展开分组」/「收起分组」，可用 `expandRowGroupLabel` / `collapseRowGroupLabel` 覆盖。
+
+<demo
+    vue="../examples/data-table/grouping-expandable.vue"
+    ssg="true"
+/>
 
 ## 行选择
 
@@ -150,6 +166,8 @@
 ## 无障碍
 
 - 使用语义化 `<table>` / `<thead>` / `<tbody>`，表头单元格带 `scope="col"`。
+- 可折叠分组的内建切换按钮为原生 `<button>`，带 `aria-expanded` 与可访问名（默认取当前语言，可用 `expandRowGroupLabel` / `collapseRowGroupLabel` 覆盖），键盘可达。
+  - 该按钮的 `aria-label` **随状态切换**（收起态为「展开分组」、展开态为「收起分组」），与 `aria-expanded` 表达的状态并存；这是本库的取舍（名称描述动作），若希望名称恒定，可在使用层把两个 label 覆盖为同一文案，由 `aria-expanded` 单独承载状态。
 - 建议通过 `caption` 提供表格标题，或在使用层提供可见说明。
 
 ## 样式定制
@@ -181,6 +199,9 @@
 | `rowGroupMode="subheader"` + `groupRowsBy` | 同名 `rowGroupMode` + `groupRowsBy`；按连续同值切分，分组列在数据行渲染为空白占位（不重复取值） |
 | `#groupheader="slotProps"` | `#groupheader="{ data, index, groupValue }"`（`data` / `index` 与 PrimeVue 一致，另提供 `groupValue`）；未提供插槽时回退渲染分组键取值 |
 | `#groupfooter` | **不支持**（分组页脚未纳入本轮范围，见[设计规范 §7](../design/design-spec.md)） |
+| `expandableRowGroups` | 同名；分组标题行渲染内建切换按钮（原生 `button` + `aria-expanded` + 可访问名） |
+| `v-model:expandedRowGroups` | 同名（`string[]` 分组键集合）；受控优先、缺省自持，缺省时全部收起 |
+| `@rowgroup-expand` / `@rowgroup-collapse` | `@rowgroup-expand` / `@rowgroup-collapse`；载荷 `{ originalEvent, data }`，`data` 为分组键（PrimeVue 传分组字段原值） |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

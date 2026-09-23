@@ -59,9 +59,10 @@
 | AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
 | 对比度遗留项盘点 | 亮色 soft 变体 primary 文本 4.37:1 等 4 项；预设品牌色既有例外长期跟踪（2026-09-21：本阶段未取，须另行裁定）。**2026-09-22 新增观察**：亮色 `--caomei-color-text-muted`（#6b7280）落在站点 `--vp-c-bg-soft`（#f6f6f7）上为 **4.48:1**（同色在纯白上 5.1）——M2-5 组件画廊 V 阶段实测，归因库 token × 站点 soft 底，非画廊引入 | 中 |
 | 迁移口径一致性守卫 | 入口表 / 组件页节 ↔ §7 一致性机检 | 低 |
-| 浮层展开态的 a11y 断言 | M4-1 受检状态为默认（关闭）态：12 个面板内导出（`DropdownMenu*` / `PopoverContent` / `PopoverArrow` / `PopoverClose` / `SelectGroup`）需交互展开才渲染，未纳入受检面 | 低 |
+| 内置文案台账机检对账 | `docs/components/locale.md`（中英）的「命名空间 → 文案键」索引表与 `src/locale/*` 实际键集合对账。**触发依据**：2026-09-23 M1-2 新增 `table.expandRowGroup` / `table.collapseRowGroup` 时该台账漏更新，`docs:check` 与 `check:locale-keys` 均不覆盖，Review Gate 判 blocker 后人工修复 | 低 |
+| 浮层与分组展开态的 a11y 断言 | M4-1 受检状态为默认（关闭）态：12 个面板内导出（`DropdownMenu*` / `PopoverContent` / `PopoverArrow` / `PopoverClose` / `SelectGroup`）需交互展开才渲染，未纳入受检面；**2026-09-23 补**：DataTable 可折叠分组的切换按钮（`aria-expanded` / 可访问名）同样只在开启分组时渲染，当前仅由 `@ui-validator` 真机覆盖，未进入 axe 受检面 | 低 |
 | a11y 既有例外的修复候选 | M4-1 清单产出 3 条例外：Reka `Toast/FocusProxy` 焦点哨兵与 `aria-hidden-focus` 规则冲突（上游反馈 / `inert` 可行性）；`MultiSelect` 关闭态输出空 `aria-controls`；`Calendar` 根容器 `aria-label` 落在 `role=generic` 上（补显式 role 或改标签落点）；无 `CaomeiStepperDescription` 的步骤产生悬空 `aria-describedby`（按有无描述决定是否输出该属性） | 低 |
-| 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪。**出现记录**：2026-09-23 全量 `pnpm test` 偶发 1 例（`src/components/color-picker/color-picker.test.ts` 的「区域 pointerdown 捕获阶段先让输入框失焦」断言 `blurred === true` 失败）；单文件重跑 32 passed、其后两次全量 1681 passed，判定为并发时序 flaky（非代码缺陷，当日无 `src/` 改动） | 中 |
+| 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪。**出现记录**：① 2026-09-23 全量 `pnpm test` 偶发 1 例（`src/components/color-picker/color-picker.test.ts` 的「区域 pointerdown 捕获阶段先让输入框失焦」断言 `blurred === true` 失败）；单文件重跑 32 passed、其后两次全量 1681 passed，判定为并发时序 flaky（非代码缺陷，当日无 `src/` 改动）。② 2026-09-23 M1-2 复审期间全量 `pnpm test` 首跑偶发 1 例（`src/components/auto-complete/auto-complete.test.ts` 的 select 断言），复跑两次均 1702 passed，同为并发时序 flaky | 中 |
 | Review Gate 证据留存 | 评审结论与截图归档到 `artifacts/review-gate/` | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |

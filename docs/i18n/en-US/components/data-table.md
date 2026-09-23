@@ -84,9 +84,25 @@ The `#groupheader` slot customizes the group header content; without it the grou
 
 > The group header row spans all data columns, so it **does not take part in frozen-column pinning**; evaluate this limitation when combining frozen columns with row grouping.
 >
-> With `striped` enabled as well, striping is computed on the `<tbody>` child order (`nth-child`), so a group header row consumes an index and shifts the data rows' stripe phase relative to the ungrouped case.
+> With `striped` enabled as well, striping is computed on the `<tbody>` child order (`nth-child`), so a group header row consumes an index and shifts the data rows' stripe phase relative to the ungrouped case; expanding / collapsing groups also changes the parity of the following rows, shifting the stripes again.
 >
 > **Intentional difference from PrimeVue**: in subheader mode PrimeVue does not render the group field's data cells at all, which shifts the whole data row one column left and misaligns it with the header ([primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)); this library renders a blank placeholder cell instead to keep the columns aligned, while the group value is still shown in the group header row.
+
+### Expandable row groups
+
+With `expandableRowGroups`, each group header row renders a built-in toggle button (a native `<button>` with a chevron, carrying `aria-expanded` and an accessible name, keyboard reachable) that collapses / expands that group's data rows.
+
+- **By default (no `expandedRowGroups`) all groups start collapsed** (matching PrimeVue) — only the group header rows are rendered; pass an initial value with `v-model:expandedRowGroups` when groups should start open.
+- Bind the expanded group-key set with `v-model:expandedRowGroups` (`string[]`); providing it enables the **controlled mode** (a click only emits `update:expandedRowGroups`, and the parent decides whether to accept), removing it falls back to component-managed state. The demo below omits it (component-managed), so all groups start collapsed; pass an initial value (e.g. `['Frontend']`) to open groups initially.
+- Emits `rowgroupExpand` / `rowgroupCollapse` with the payload `{ originalEvent, data }`, where `data` is the group key.
+- The group key is the group field value stringified (`null` / `undefined` normalize to an empty string); **non-contiguous groups with the same value share one group key**, so toggling affects them together, and different values that stringify identically (e.g. the number `1` and the string `'1'`) also share one key.
+- Collapsing only affects rendering and does not change the paginator's total (the total comes from `data` / `totalRecords`).
+- The toggle's accessible name defaults to the current locale's "Expand row group" / "Collapse row group" and can be overridden with `expandRowGroupLabel` / `collapseRowGroupLabel`.
+
+<demo
+    vue="../examples/data-table/grouping-expandable.vue"
+    ssg="true"
+/>
 
 ## Row selection
 
@@ -150,6 +166,8 @@ When `data` is empty an empty state is rendered, with default text from the curr
 ## Accessibility
 
 - Uses semantic `<table>` / `<thead>` / `<tbody>`, with `scope="col"` on header cells.
+- The built-in toggle of expandable row groups is a native `<button>` carrying `aria-expanded` and an accessible name (locale-based by default, overridable with `expandRowGroupLabel` / `collapseRowGroupLabel`), and is keyboard reachable.
+  - That button's `aria-label` **follows the state** ("Expand row group" while collapsed, "Collapse row group" while expanded) alongside `aria-expanded`; this is this library's trade-off (the name describes the action). If a constant name is preferred, override both labels with the same text at the usage site and let `aria-expanded` carry the state alone.
 - Provide a table caption via `caption`, or a visible explanation at the usage site.
 
 ## Style customization
@@ -181,6 +199,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `rowGroupMode="subheader"` + `groupRowsBy` | The same-named `rowGroupMode` + `groupRowsBy`; splits on contiguous equal values and renders the group column as a blank placeholder in data rows (the value is not repeated) |
 | `#groupheader="slotProps"` | `#groupheader="{ data, index, groupValue }"` (`data` / `index` match PrimeVue, plus `groupValue`); without the slot the group key value is rendered as a fallback |
 | `#groupfooter` | **Not supported** (group footers are out of scope for this round, see [Design spec §7](/design/design-spec)) |
+| `expandableRowGroups` | The same-named prop; each group header row renders a built-in toggle button (native `button` + `aria-expanded` + accessible name) |
+| `v-model:expandedRowGroups` | The same-named prop (a `string[]` of group keys); controlled takes precedence, component-managed by default, and all groups start collapsed without it |
+| `@rowgroup-expand` / `@rowgroup-collapse` | `@rowgroup-expand` / `@rowgroup-collapse`; payload `{ originalEvent, data }` where `data` is the group key (PrimeVue passes the raw group field value) |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

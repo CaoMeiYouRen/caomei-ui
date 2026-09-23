@@ -17,27 +17,27 @@
 
 | 任务 | 判定门槛 | 触发时机 | 上次执行 | 状态 |
 |------|----------|----------|----------|------|
-| 代码复用治理 | 同一模式 ≥3 处且语义一致，且抽取后净收益为正 | 阶段收口前 / 发布前 | 2026-09-23（第 11 轮：门槛复核；第 7 轮：交付「label 优先级全库统一」） | 进行中（暂无待执行批次；条件触发候选见 §2.1） |
-| 样式重复收敛 | 同一视觉效果在 ≥3 个组件重复，且已存在或可归纳为语义 token | 阶段收口前 / 发布前 | 2026-09-23（第 11 轮：门槛复核；第 6 轮：交付「禁用态 0.5 档归并」） | 进行中（暂无待执行批次；条件触发候选见 §2.2） |
+| 代码复用治理 | 同一模式 ≥3 处且语义一致，且抽取后净收益为正 | 阶段收口前 / 发布前 | 2026-09-24（第 12 轮：门槛复核；第 7 轮：交付「label 优先级全库统一」） | 进行中（暂无待执行批次；条件触发候选见 §2.1） |
+| 样式重复收敛 | 同一视觉效果在 ≥3 个组件重复，且已存在或可归纳为语义 token | 阶段收口前 / 发布前 | 2026-09-24（第 12 轮：门槛复核；第 6 轮：交付「禁用态 0.5 档归并」） | 进行中（**待执行批次 1 项**见 §2.2） |
 
 > 「上次执行」列同时记录**交付轮**与**门槛复核轮**（复核轮不计入交付轮次）；批次是否已交付以 §2.1 / §2.2 的判定列为准。
 
 ### 2.1 代码复用治理
 
 - **复用地**：组件间共享落 `src/components/_shared/`，对外公开能力落 `src/composables/`。
-- **取证口径**（2026-09-23 复核：计数与 2026-09-19 一致）：标签属性转发 `rg -l "useLabelAttrs" src/components/*/*.vue | wc -l` → 15；模板级 `:aria-label="label"` `rg -o ':aria-label="label"' src/components | wc -l` → 0（已全部收敛到 `labelAttrs`）；已继承公共契约 `rg -ln 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts | wc -l` → 11；仍含内联同名字段的 `rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts | wc -l` → 31；聚焦控制 `rg -l 'useFocusControl' src/components/*/*.vue | wc -l` → 4。
+- **取证口径**（2026-09-24 复核：除注明外与 2026-09-23 一致）：标签属性转发 `rg -l "useLabelAttrs" src/components/*/*.vue | wc -l` → 15（另 `labelAttrs` 直接引用 9 个文件，如 `tags-input` 经 `labelAttrs` 而未走 `useLabelAttrs`）；模板级 `:aria-label="label"` `rg -o ':aria-label="label"' src/components | wc -l` → 0（已全部收敛到 `labelAttrs`）；已继承公共契约 `rg -ln 'extends (FieldProps|FieldStateProps|FieldIdentityProps)' src/components/*/types.ts | wc -l` → **12**（2026-09-24 +1 = **Phase 13** M2-1 新增 `tags-input`）；仍含内联同名字段的 `rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts | wc -l` → 31；聚焦控制 `rg -l 'useFocusControl' src/components/*/*.vue | wc -l` → 4。
 - **描述收敛决策**：公共 props 的 JSDoc 采用通用措辞（如「是否禁用」/ "Whether the control is disabled"）；组件特有约束不靠重复字段声明承载，改在组件 `types.ts` 的接口级注释保留（如 select-button 的 `role="group"` id 约束、select / multi-select / auto-complete 的 `id` / `name` 落点）。
 
 > **待执行批次**：暂无。
 
-- **未达门槛 / 条件触发（2026-09-23 复核维持）**：表单控件公共 props 契约（后续候选）——`rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts` 命中的 31 个 `types.ts` 为宽口径；逐文件核对 5 个候选后确认其**字段集合与公共契约不一致**（`date-picker` 缺 `name`、`color-picker` 缺 `size`/`placeholder`、`slider` 缺 `size`/`invalid`/`id`、`toggle-button` 缺 `invalid`/`name`/`id`、`file-upload` 仅 `disabled`/`label`），纳入会**新增对外 props**，净收益不为正 → 改为**条件触发**：当某组件因功能需要自身新增这些字段时，顺带改为继承契约。
-- **已判定不纳入（依据见评估记录 §6，保留结论避免重复评估）**：attrs 透传收敛（仅 2 处手写 `useAttrs()`，语义不同）、ARIA 布尔假值归一（15 处，抽取后表达式变长）、locale 文本解析（39 处，props 名与路径逐处不同）、选项列表渲染（3 份，primitive 与插槽能力不同）、数值钳位（2026-09-23 复核维持：`input-number` 的值钳位 1 处（`Math.max(props.min, next)` / `Math.min(props.max, next)` 同一处两行）+ `date-picker` 本地 `clamp` 1 处 = **2 处**，仍远低于 ≥3 门槛；另 `Math.max(maximum ?? 20, precision ?? 0)` 为小数位计算、**非值钳位**，不计入）。
+- **未达门槛 / 条件触发（2026-09-24 复核维持）**：表单控件公共 props 契约（后续候选）——`rg -l 'size\?:|disabled\?:|invalid\?:|placeholder\?:' src/components/*/types.ts` 命中的 31 个 `types.ts` 为宽口径；逐文件核对 5 个候选后确认其**字段集合与公共契约不一致**（`date-picker` 缺 `name`、`color-picker` 缺 `size`/`placeholder`、`slider` 缺 `size`/`invalid`/`id`、`toggle-button` 缺 `invalid`/`name`/`id`、`file-upload` 仅 `disabled`/`label`），纳入会**新增对外 props**，净收益不为正 → 改为**条件触发**：当某组件因功能需要自身新增这些字段时，顺带改为继承契约。
+- **已判定不纳入（依据见评估记录 §6，保留结论避免重复评估）**：attrs 透传收敛（**计数订正（2026-09-24）**：`rg -l "useAttrs\(\)" src/components/*/*.vue | wc -l` → **10**，原记「仅 2 处」为过期断言。**历史口径对账（两条独立事实）**：① 首轮（`64a3ac8`）命令 `rg -l 'const attrs = useAttrs\(\)' src/components | wc -l` → **13 = 12 个 `.vue` + 1 个 `.ts`**（`_shared/use-attr-forwarding.ts` 自身；当时 `use-label-attrs.ts` 尚未创建），排除该 helper 后 **12 个 `.vue` 手写**；② 本轮同命令 → **12 = 10 个 `.vue` + 2 个 `.ts`**（`use-attr-forwarding.ts` / `use-label-attrs.ts` 两个共享 helper）。故首轮 12 个 `.vue` 手写 → 本轮 10 个 `.vue` 手写（**净减少 2 个**，非 helper 变动；期间有组件退出与新增，不逐一列举）。这 10 个文件均**不使用 `useAttrForwarding` 的根 / 控件分流**（为整体 `$attrs` 透传、或仅读取 `attrs['aria-label']` 供 `resolveLabelName`；`slider` 另对 thumb 选择性转发 2 个 aria 属性），且标签优先级已由 `resolveLabelName` 单点承载（第 7 轮交付），**无进一步抽取收益**，结论维持不纳入）、ARIA 布尔假值归一（15 处，抽取后表达式变长）、locale 文本解析（39 处，props 名与路径逐处不同）、选项列表渲染（3 份，primitive 与插槽能力不同）、数值钳位（2026-09-24 复核维持：`input-number` 的值钳位 1 处（`Math.max(props.min, next)` / `Math.min(props.max, next)` 同一处两行）+ `date-picker` 本地 `clamp` 定义 1 处（`time-input.vue`，另有 4 个调用点）= **2 处**，仍远低于 ≥3 门槛；另 `Math.max(maximum ?? 20, precision ?? 0)` 为小数位计算、**非值钳位**，不计入）。
 
 ### 2.2 样式重复收敛
 
-| 待执行批次 | 门槛判定（2026-09-23） | 证据 | 规模 | 说明 |
+| 待执行批次 | 门槛判定（2026-09-24） | 证据 | 规模 | 说明 |
 |------|------|------|------|------|
-| Input 家族样式层共享 | **未达门槛（条件触发，2026-09-23 复核维持）** | 仅知 Password 已由 Input 派生并复用样式，其余各自维护，缺 ≥3 处同构取证 | — | 出现样式分叉时补取证后启动 |
+| 字段 shell 样式层共享（原「Input 家族样式层共享」） | **达标（2026-09-24 取证，修订此前「条件触发」）**：field shell 的 **13 条声明**在 **4 个字段组件**（`input` / `textarea` / `input-number` / `tags-input`；`password` 经 `Input` 派生）逐字重复（组件变量名归一后），取值以既有语义 token 为主，其余为可归纳的字面量（`border-box` / `100%` / `0.15s` / `2px` / `20%`） | `node test-results/m3-1/field-shell-overlap.mjs`：各组件 shell 声明 15 / 13 / 15 / 16，**四组件共有 13**（`box-sizing` / `width` / `border` / `border-radius` / `background` / `color` / `transition` / `:focus-within` 的 `border-color` + `box-shadow` / `--invalid` 的 `border-color` 与 `--invalid:focus-within` 的 `box-shadow` / `--disabled` 的 `background` + `opacity`） | 4 个字段组件 + 1 处共享层 | **前置**：共享形态会引入公共类 / 变量契约（影响下游样式覆盖），须先定形态（共享基类 vs 语义 token 契约）再实施；**本轮未执行**（0.3.0 发布前复核轮，零代码改动域）；**下次触发点**：下一交付轮，或用户指定 |
 
 ## 3. 执行记录
 
@@ -54,5 +54,6 @@
 | 第 9 轮（Phase 5 第二阶段收口前触发，**门槛复核轮**） | 2026-09-19 | **门槛复核**（两组任务的全部候选；复用同日第 8 轮取证，门槛与规模未变） | 待执行批次 **0 项**；未达门槛 → 条件触发 **2 项维持**（表单控件公共 props 契约后续候选、Input 家族样式层共享）；已判定不纳入 5 项维持 | 证据同第 8 轮（§2.1 / §2.2 的 2026-09-19 取证命令与判定）；用户本轮授权范围为**发布后规划清理**（零代码改动域），故未纳入实现批次；**下次触发点**：下一次阶段收口 / 发布前，或用户指定 |
 | 第 10 轮（Phase 11 收口前触发，**门槛复核轮**） | 2026-09-20 | **门槛复核**（两组任务的全部候选重新取证） | 待执行批次 **0 项**；未达门槛 → 条件触发 **2 项维持**（表单控件公共 props 契约后续候选、Input 家族样式层共享）；已判定不纳入 5 项维持 | 证据：§2.1 / §2.2 各行的 2026-09-20 取证命令与判定；用户本轮授权范围为**归档与规划清理**（零代码改动域），故未纳入实现批次；**下次触发点**：下一次阶段收口 / 发布前，或用户指定 |
 | 第 11 轮（Phase 12 收口前触发，**门槛复核轮**） | 2026-09-23 | **门槛复核**（两组任务的全部候选重新取证；已判定不纳入 5 项结论维持） | 待执行批次 **0 项**；未达门槛 → 条件触发 **2 项维持**（表单控件公共 props 契约后续候选、Input 家族样式层共享）；已判定不纳入 5 项维持（数值钳位复核：`input-number` 值钳位 1 处 + `date-picker` 本地 `clamp` 1 处 = **2 处**，另订正 `Math.max(maximum ?? 20, precision ?? 0)` 为小数位计算、不计入） | 证据：§2.1 / §2.2 各行的 2026-09-23 取证命令与判定（`useLabelAttrs` 15 / 模板级 `:aria-label="label"` 0 / 继承契约 11 / 含内联同名字段 31 / `useFocusControl` 4）；用户本轮授权范围为**阶段归档与规划清理**（零代码改动域），故未纳入实现批次；**下次触发点**：下一次阶段收口 / 发布前，或用户指定 |
+| 第 12 轮（**0.3.0 发布前触发**，**门槛复核轮**） | 2026-09-24 | **门槛复核**（两组任务的全部候选重新取证；已判定不纳入 5 项结论维持，其中「attrs 透传收敛」计数订正；**§2.2 候选补齐取证后修订为「达标」**） | 待执行批次 **1 项**（**新增「字段 shell 样式层共享」**——§2.2 由「条件触发」修订为达标，13 条 shell 声明在 4 个字段组件逐字重复）；未达门槛 → 条件触发 **1 项维持**（表单控件公共 props 契约后续候选）；已判定不纳入 5 项维持 | 证据：§2.1 各行 2026-09-24 取证（`useLabelAttrs` 15 / `labelAttrs` 9 / 模板级 `:aria-label="label"` 0 / 继承契约 **12**（+1 = **Phase 13** M2-1 新增 `tags-input`）/ 含内联同名字段 31 / `useFocusControl` 4；数值钳位 2 处）；§2.2 取证 `node test-results/m3-1/field-shell-overlap.mjs`（各组件 shell 声明 15/13/15/16，四组件共有 **13**）。**订正**：「attrs 透传收敛」的 `useAttrs()` 计数由原记「仅 2 处」订正为 **10**（原记为过期断言）；**历史口径对账**：首轮（`64a3ac8`）13 = 12 个 `.vue` + 1 个 `.ts`（helper 自身），排除后 12 个 `.vue` 手写；本轮 12 = 10 个 `.vue` + 2 个 `.ts`（两个 helper）——**净减少 2 个 `.vue` 手写**（非 helper 变动），10 个文件均不使用 `useAttrForwarding` 的根 / 控件分流，**不纳入结论维持**。**未纳入实现批次**：本轮为 **0.3.0 发布前复核轮**（配合 M3-2，零代码改动域）；「字段 shell 样式层共享」的共享形态涉及公共类 / 变量契约，须先定形态再实施。**下次触发点**：下一交付轮，或用户指定 |
 
-> **触发义务**（[规划规范 §8](../standards/planning.md)）：每个阶段收口前与每次发布前各执行一轮；未留下执行记录视为未执行。0.1.0 发布前的义务由同日第 8 轮覆盖（Phase 7 第二阶段归档前），第 9 轮为 Phase 5 第二阶段收口前触发并留痕，第 10 轮为 Phase 11 收口前触发并留痕，**第 11 轮为 Phase 12 收口前触发并留痕**（上表）。**0.2.0 发布前（2026-09-22）的义务未留痕，按 §8 视为未执行**——发布已完成，不追溯补做；下一次发布前须先执行并留痕。
+> **触发义务**（[规划规范 §8](../standards/planning.md)）：每个阶段收口前与每次发布前各执行一轮；未留下执行记录视为未执行。0.1.0 发布前的义务由同日第 8 轮覆盖（Phase 7 第二阶段归档前），第 9 轮为 Phase 5 第二阶段收口前触发并留痕，第 10 轮为 Phase 11 收口前触发并留痕，第 11 轮为 Phase 12 收口前触发并留痕，**第 12 轮为 0.3.0 发布前触发并留痕**（上表）。**0.2.0 发布前（2026-09-22）的义务未留痕，按 §8 视为未执行**——发布已完成，不追溯补做；下一次发布前须先执行并留痕。

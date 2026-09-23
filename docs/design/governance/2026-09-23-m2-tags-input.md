@@ -1,4 +1,4 @@
-# M2 `TagsInput` 组件交付与验证记录（M2-1 实现与接线 / M2-2 组件页与示例）
+# M2 `TagsInput` 组件交付与验证记录（M2-1 实现与接线 / M2-2 组件页与示例 / M2-3 登记面接入）
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M2 缺失组件补齐（`TagsInput`）。
 > 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办事项](../../plan/todo.md) Phase 13 M2；M1 记录见 [M1-1](./2026-09-23-m1-1-row-grouping.md) / [M1-2](./2026-09-23-m1-2-expandable-row-groups.md) / [M1-3](./2026-09-23-m1-3-row-expansion.md) / [M1-4](./2026-09-23-m1-4-multi-sort.md)。
@@ -52,7 +52,7 @@
 - 中英组件页 `docs/components/tags-input.md` / `docs/i18n/en-US/components/tags-input.md`（8 个 H2 对称）：基础用法 / 提交与删除 / 数量与去重 / 状态与尺寸 / 表单与无障碍 / 范围说明 / 样式定制 / 从 PrimeVue 迁移 + `<ComponentApi name="tags-input" />`。
 - 中英示例各 3 个：`basic.vue`（基础用法）/ `limits.vue`（`max` + 去重 + 清空 + `invalidInput` 反馈）/ `form.vue`（`FloatLabel` 组合 + `name` / `required` + `invalid` / `disabled` / `size`）。
 - [设计规范 §7](../design-spec.md) 新增 TagsInput 迁移映射段（含上游 props 逐条映射、默认差异、包装层 a11y 修复、未实现清单与「首选 / 备选」口径）。
-- **未进侧栏**：本条目只落页面与示例；侧栏 / 总览页 / 画廊登记属 M2-3（`docs:check:structure` 的侧栏不变式因此保持 6 组 / 46 条目）。
+- **未进侧栏（M2-2 时点）**：本条目只落页面与示例；侧栏 / 总览页 / 画廊登记属 M2-3（`docs:check:structure` 的侧栏不变式因此保持 6 组 / 46 条目）。**M2-3 已接入**（§11）：侧栏 / 总览页 / 画廊登记表现与 §11 一致（6 组 / **47** 条目、画廊 **13** 项）。
 
 ## 6. 验证与证据
 
@@ -115,7 +115,9 @@ V 阶段之后仅有两类改动，均未触及组件运行期行为，且 V 已
 
 **M2-1 面：17 文件 / +719 −6；M2-2 面：9 文件 / +414 −0**（唯一口径；复算命令 `git diff 5344f57 --numstat`（可按路径前缀分面求和），base = M1-4 末提交 `5344f57`（持久 ref），快照 2026-09-23。其余载体不复写该数字，需要时引用本节）。
 
-两面各自低于「建议 10 文件 / 800 行新增」阈值，按交付面拆**两次提交**（`feat(tags-input)` / `docs(tags-input)`），治理记录与规划载体随第三次提交落库；M2-3 的登记面（§11 侧栏 / 总览页 / 画廊登记表）另批收口。
+两面各自低于「建议 10 文件 / 800 行新增」阈值，按交付面拆**两次提交**（`feat(tags-input)` / `docs(tags-input)`），治理记录与规划载体随第三次提交落库；M2-3 的登记面（§11 侧栏 / 总览页 / 画廊登记表）另批收口（§11）。
+
+**M2-3 面：6 文件 / +17 −2**（登记面；复算命令 `git diff 657c02c --numstat -- docs/.vitepress/config.ts docs/.vitepress/showcase-registry.json docs/components/index.md docs/design/components.md docs/design/documentation-site.md docs/i18n/en-US/components/index.md`，base = M2-2 末提交 `657c02c`（持久 ref），快照 2026-09-23）。治理记录本文件追加 §10~§12 为证据与结论载体，不计入登记面规模；M2-3 单批提交。
 
 ## 8. 结论
 
@@ -138,3 +140,71 @@ M2-1 / M2-2 已交付：组件在受控与自持两种用法下均有断言（29
 **M2-1 第 2 轮（只审修复点 / `standard`）：`Pass`（0 blocker）**，实测用时 **8 分 12 秒**（`2026-09-23T21:08:37+08:00` → `21:16:49+08:00`），未超时间盒。RG-B01 实质闭合（复审方独立复现关键项）；W01–W04 / S01 / S04 与声明一致；新增 1 条 warning（V 证据中 sm 高度数值失准 → 已在 §6.2 更正为 29.19px）与 2 条 suggest（`placeholder` 在有标签时保留、与 MultiSelect 不同——**保留**：标签输入需持续提示录入方式，且与 PrimeVue 一致；治理留痕落点 → 已按建议在本记录 §6.3 设独立小节并在 `todo.md` 补指针），按规则转 follow-up、不阻断。
 
 **M2-2 第 1 轮（`standard`）：`Pass`（0 blocker / 2 warning / 3 suggest）**，实测用时 **9 分 05 秒**（`2026-09-23T21:20:10+08:00` → `21:29:15+08:00`），未超时间盒。W1（键盘模型过度声明：`Delete` 单独不选中末位标签）、W2（「在 `invalidInput` 中自行处理清空」不可达）、S1（`tabindex="-1"` 归属误记为本库修复）、S2（示例同时传 `label` 与可见 `<label for>`）、S3（拒绝提示在移除后滞留）**已同批修正**（§6.4），记为「已修复未复审」；复审方另确认迁移映射与上游 props 逐条对齐、「首选 / 备选」口径三处一致、中英 H2 8:8 对称、新页未进侧栏属 M2-3 范围（孤儿页盲区为已知且与计划一致）。
+
+## 10. M2-3 登记面接入 · V 阶段（`@ui-validator`，2026-09-23）
+
+**范围**：6 文件登记面 delta（`documentation-site.md` §11 登记表 / `config.ts` 中英侧栏 / 中英组件总览页 / `showcase-registry.json` 第 13 卡 / `components.md` 清单），**无组件源码改动**。被测 revision `657c02c`；delta sha256 `a61c58c7…880e6d9`（`git diff`）。入口 `pnpm docs:dev`（VitePress 1.6.4 / Playwright 1.63.0），验证前按端口清场。
+
+**结论：通过（0 问题 / 1 观察项 / 2 显式跳过）。** 复跑脚本 `test-results/m2-3-tagsinput-registry/m2-3-tagsinput-validate.mjs`；完整记录 `test-results/m2-3-tagsinput-registry-validation.md`。
+
+| # | 断言 | 结论 | 关键实测 |
+| :-- | :--- | :--- | :--- |
+| 1 | zh 侧栏位次 + 跳转 | 通过 | 组 13 条；`Switch 开关 → TagsInput 标签输入 → Textarea 多行输入` 相邻；URL `/components/tags-input`、H1 `TagsInput 标签输入` |
+| 2 | en 侧栏位次 + 跳转 | 通过 | `Switch → TagsInput → Textarea`；URL `/en-US/components/tags-input`、H1 `TagsInput` |
+| 3 | zh 总览页 | 通过 | 节内 `Switch 开关 < TagsInput 标签输入 < Textarea 多行输入` 相邻；`./tags-input` → `/components/tags-input` |
+| 4 | en 总览页 | 通过 | 两处：`/en-US/components/tags-input` + `/components/tags-input` |
+| 5 | zh 画廊 | 通过（观察项 O1） | 卡数 **13**；Form Inputs `Input → Switch → TagsInput`；真实渲染 chip 2 `[Vue, TypeScript]` + 输入框；链接 `/components/tags-input` |
+| 6 | en 画廊 | 通过（观察项 O1） | 13 卡；真实渲染；链接 `/en-US/components/tags-input` |
+| 7 | 无回归 | 通过 | 13 卡 stage 全非空；既有 12 卡名齐全；侧栏组 13 条无错位 |
+| 8 | 噪声 | 通过 | 6 页 × 亮/暗 12 run，四类噪声**全 0** |
+| 9 | 响应式 | 通过 | 三档 `scrollWidth-clientWidth=0`；画廊列数 1440/834/390 = **2 / 2 / 1** |
+| 10 | 主题 | 通过 | 亮 对比度 卡名 10.94 / chip 16.26 / 侧栏 10.13；暗 12.81 / 16.41 / 13.48；两态预览正常 |
+| 11 | a11y 抽检 | 通过 | 侧栏条目 Tab **1 步**可达、可访问名正确；画廊卡链接 `role=link` 名 `TagsInput` |
+
+**观察项 O1**：断言 #5「TagsInput 在 Switch 与 Textarea 之间」的措辞不成立——画廊登记表 Form Inputs 组**未含 Textarea 卡**，TagsInput 实为「Switch 之后、组内末位」。画廊是总览的策展子集，非渲染缺陷；若产品要求画廊含 Textarea，属登记表范围决策（另判）。**O2**：1440/834 画廊列数 2，系 `minmax(min(280px,100%),1fr)` 受内容列宽约束，属设计预期。
+
+**显式跳过**：Step 2.5 宿主稳定性（无浮层 / portal / 滚动锁改动）、reduced-motion 对照（无动画 / 过渡改动）。
+
+**视觉通道声明**：本会话未注册 `vision-augment` MCP，视觉通道**不可用**；结论仅基于几何 / 对比度 / DOM-ARIA / 计算样式，截图留档作人工复核，**美观度未经视觉确认**。
+
+**未覆盖**：生产构建（`docs:build` + preview）下的登记面、834 档暗色、组件自身行为边界（属 §6.2）、`docs:check` 全绿（T 阶段职责）。
+
+**交接**：问题 0；建议回归断言 5 条见 `test-results/m2-3-tagsinput-registry-validation.md` §7，交 `@test-engineer` 在 T 阶段于 build 产物补抽检。`docs/plan/todo.md` Phase 13 进度行仍记「M2-3 未启动」，需由规划归属角色在 M2-3 收口时刷新。
+
+## 11. M2-3 登记面接入 · 交付面与规模
+
+**交付面（6 文件，均为登记面）**：
+
+1. [文档与演示站 §11](../documentation-site.md) 分组登记表——表单输入组新增 `TagsInput`（位于 `Switch` 与 `Textarea` 之间，kebab 序 `slider < switch < tags-input < textarea`）。
+2. `docs/.vitepress/config.ts`——中英组件侧栏「表单输入 / Form Inputs」组各新增 1 条（zh `TagsInput 标签输入` → `/components/tags-input`；en `TagsInput` → `/en-US/components/tags-input`）。
+3. `docs/components/index.md`——中文组件总览「表单输入」组新增条目。
+4. `docs/i18n/en-US/components/index.md`——英文总览两处列表（Translated component pages / Chinese documentation）各新增 1 条。
+5. `docs/.vitepress/showcase-registry.json`——新增第 13 项 TagsInput 卡片（Form Inputs 组，示例 `tags-input/basic.vue`）。
+6. `docs/design/components.md`——组件清单 §5 Tier 3 新增 `TagsInput` 行（封装 / TagsInput / **稳定** / 已实现），并从「未纳入本清单的 primitive」候选清单移除 `TagsInput、`。
+
+**第 6 项属登记面的理由**：该文件是组件清单，既有组件（Drawer / ColorPicker / SplitButton / DataView 等）均在实现批次的 docs 提交中同步登记「（已实现）」；TagsInput 在 M2-1 / M2-2 漏登，仍列于候选清单，属登记面陈旧项。「稳定」依据：本仓锁定 `reka-ui@2.10.4`，其官方文档站侧栏中 `Tags Input` 无 `Alpha` 标记（同页 `Calendar` / `DatePicker` / `Color Area` 等带 Alpha）。
+
+**未改**：`docs/guide/primevue-migration.md` 的「表单输入」对应表（按计划由 **M3-1** 跨组件收口）；未触碰 `AGENTS.md`。
+
+**规模**：6 文件 / **+17 −2**（唯一口径见 §7；本记录 §10~§12 为证据与结论载体，不计入登记面规模）。单批提交。
+
+## 12. M2-3 Review Gate
+
+**第 1 轮（`audit-depth: standard`；理由：含 VitePress 配置类文件 `docs/.vitepress/config.ts`，按 [AI 协作规范 §3.1](../../standards/ai-collaboration.md)「配置类改动至少 standard」；时间盒 ≤ 10 分钟）：`Pass`（0 blocker / 1 warning / 3 suggest）**，实测 ≤ **5 分 02 秒**（宿主时钟 `2026-09-23T23:00:59+08:00` → `23:06:01+08:00`，含返回后处理；未超时间盒）。审计方独立复现：`git diff --numstat`（7 文件 / +47 −2，全部 `docs/**`）、delta sha256 `a61c58c7…880e6d9` 与 §10 声明逐位一致、`docs:check:structure` / `docs:check:showcase` / `lint:md:check` / `governance:check` 独立复跑通过、Reka 上游成熟度外部核验。
+
+| 编号 | 级别 | 内容 | 处置 |
+| :---: | :--- | :--- | :--- |
+| RG-W01 | warning | `docs/plan/todo.md` Phase 13 进度行仍记「M2-3 未启动」，与已交付 delta 矛盾 | **已同批修正**（F 阶段刷新进度行与 M2-3 条目状态，§13） |
+| RG-S01 | suggest | `docs/plan/backlog.md` 的 TagsInput 候选行仍称「无对应组件与导出」并引用已移除的 §5 候选清单 | **已同批修正**（改为「已交付」口径 + 交付面指针，§13） |
+| RG-S02 | suggest | `docs/guide/primevue-migration.md`（中英）「表单输入」对应表未含 TagsInput | **保留**：按计划属 **M3-1**「迁移映射与不支持清单收口」范围，不扩本批 |
+| RG-S03 | suggest | 中英组件总览页缺 `CheckboxGroup`（既有缺口，非本 delta 引入） | **保留**：已在 [Backlog](../../plan/backlog.md)「组件总览页与侧栏的成员对账」候选在册（含该缺口与守卫候选），本批不扩面 |
+
+## 13. M2 收口结论
+
+M2（`TagsInput` 缺失组件补齐）三条原子条目全部交付：**M2-1** 组件实现与接线、**M2-2** 中英组件页与示例、**M2-3** 登记面接入。组件在受控与自持两种用法下均有断言（29 条），导出与 Nuxt 自动导入可用，a11y 受检面 `V=0 / I=0`（未新增例外）；中英组件页与示例齐备、迁移映射含「首选 / 备选」口径；四处登记面（§11 表 / 中英侧栏 / 中英总览页 / 画廊登记表）与组件清单互相一致，`docs:check` 9 段链全绿（侧栏 6 组 / 47 条目、画廊 13 项）。
+
+**Review Gate**：M2-1 R1 `Reject`（1 blocker：UI 组件缺浏览器证据）→ R2 `Pass`；M2-2 R1 `Pass`；M2-3 R1 `Pass`。W1 / S1 已同批修正，S2 留 M3-1，S3 维持 Backlog 在册。
+
+**T 阶段**：`pnpm verify` exit 0（87 文件 / 1767 tests）；构建产物 SSG 静态断言 18/18（中英画廊 13 卡 + TagsInput SSR 真实渲染 + 链接 + 侧栏 / 总览顺序）。**边界**：本环境 Chromium 打开 preview 服务时对所有页面（含 `/`）均 crash，build 面以 SSG HTML 静态断言替代浏览器渲染，客户端 hydration 后行为由 dev 真机 V 覆盖。
+
+**残留项**：`docs/guide/primevue-migration.md` 的 TagsInput 映射与不支持清单收口归 **M3-1**；组件总览页成员对账守卫归 Backlog。

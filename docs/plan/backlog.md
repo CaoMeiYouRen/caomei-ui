@@ -28,7 +28,7 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|:-:|
 | Sidebar | momei 使用面（标签级统计未命中，待复核） | — 。**下游反馈（2026-09-22，dependfix `1a73abc`）**：`apps/platform` 1 处用 `Sidebar`，其迁移评估确认可由 `CaomeiDrawer` 机械承接（`v-model:open` + `title` / `#header` + `position="right"`），**不构成阻塞**。触发条件：出现 Drawer 语义不适配的用例 | 低 |
-| TagsInput（标签录入） | dependfix 迁移反馈 | 对应 PrimeVue `Chips`（下游 `repos.vue` 1 处：自由文本多值标签，取证 2026-09-22）。**现状**：无对应组件与导出；Reka UI 提供 `TagsInput` primitive（`TagsInputRoot` / `Input` / `Item` / `ItemDelete` / `ItemText` / `Clear`，2026-09-23 核对 `reka-ui@2.10.4`），[组件设计 §5](../design/components.md) 已列入「未纳入本清单、可作为后续候选」的 primitive 清单。**取向已裁定**：封装 Reka primitive（2026-09-23 用户裁定 D5）→ M2（Phase 13 组件能力补齐与 dependfix 迁移解阻） | 中 |
+| TagsInput（标签录入） | dependfix 迁移反馈 | 对应 PrimeVue `Chips`（下游 `repos.vue` 1 处：自由文本多值标签，取证 2026-09-22）。**候选时点现状（2026-09-23 核对 `reka-ui@2.10.4`）**：本仓无对应组件与导出；Reka UI 提供 `TagsInput` primitive（`TagsInputRoot` / `Input` / `Item` / `ItemDelete` / `ItemText` / `Clear`）。**取向已裁定**：封装 Reka primitive（2026-09-23 用户裁定 D5）→ M2（Phase 13 组件能力补齐与 dependfix 迁移解阻）。**已交付**（M2-1 / M2-2 / M2-3）：`CaomeiTagsInput` 已实现并进导出 / Nuxt 注册 / locale / 中英组件页与示例 / 四处登记面；[组件设计 §5](../design/components.md) 已登记「（已实现）」并移出候选清单 | 中 |
 | ScrollPanel 型滚动面板 | dependfix 迁移反馈 | **评估结论：不自研**。下游 2 处（`repo-history-dialog.vue` / `run-detail-dialog.vue`，取证 2026-09-22）均为 `height: 200px` 固定高度日志区，原生滚动容器 + CSS 足以覆盖。触发条件：出现视口检测 / 滚动条定制 / 虚拟滚动等原生无法覆盖的用例。采纳「不自研」时须同步 [组件设计 §5](../design/components.md) 的 `ScrollArea` 候选行，避免两处口径并存 | 低 |
 
 ### 1.3 不纳入自研的能力（外购建议）

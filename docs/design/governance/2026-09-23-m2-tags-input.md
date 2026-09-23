@@ -196,7 +196,7 @@ M2-1 / M2-2 已交付：组件在受控与自持两种用法下均有断言（29
 | :---: | :--- | :--- | :--- |
 | RG-W01 | warning | `docs/plan/todo.md` Phase 13 进度行仍记「M2-3 未启动」，与已交付 delta 矛盾 | **已同批修正**（F 阶段刷新进度行与 M2-3 条目状态，§13） |
 | RG-S01 | suggest | `docs/plan/backlog.md` 的 TagsInput 候选行仍称「无对应组件与导出」并引用已移除的 §5 候选清单 | **已同批修正**（改为「已交付」口径 + 交付面指针，§13） |
-| RG-S02 | suggest | `docs/guide/primevue-migration.md`（中英）「表单输入」对应表未含 TagsInput | **保留**：按计划属 **M3-1**「迁移映射与不支持清单收口」范围，不扩本批 |
+| RG-S02 | suggest | `docs/guide/primevue-migration.md`（中英）「表单输入」对应表未含 TagsInput | **已由 M3-1 闭合**（2026-09-23，[M3 记录](./2026-09-23-m3-migration-delivery.md) §2）：指南「表单输入」入口行已补 `TagsInput`，并补 3 行通用陷阱覆盖 `DataTable` 三项能力与 `TagsInput` |
 | RG-S03 | suggest | 中英组件总览页缺 `CheckboxGroup`（既有缺口，非本 delta 引入） | **保留**：已在 [Backlog](../../plan/backlog.md)「组件总览页与侧栏的成员对账」候选在册（含该缺口与守卫候选），本批不扩面 |
 
 ## 13. M2 收口结论

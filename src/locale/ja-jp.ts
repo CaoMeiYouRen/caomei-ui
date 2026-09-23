@@ -118,6 +118,8 @@ const jaJP: CaomeiLocaleMessages = {
         selectRow: '行を選択',
         expandRowGroup: 'グループを展開',
         collapseRowGroup: 'グループを折りたたむ',
+        expandRow: '行を展開',
+        collapseRow: '行を折りたたむ',
     },
     toast: {
         label: '通知',

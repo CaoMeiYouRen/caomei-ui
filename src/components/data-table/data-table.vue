@@ -1,12 +1,12 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronRight, ChevronUp } from '@lucide/vue'
-import { computed, ref, toRaw, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
+import { computed, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -36,6 +36,9 @@ const emit = defineEmits<{
     'update:expandedRowGroups': [expandedRowGroups: string[]]
     rowgroupExpand: [event: DataTableRowGroupEvent]
     rowgroupCollapse: [event: DataTableRowGroupEvent]
+    'update:expandedRows': [expandedRows: string[]]
+    rowExpand: [event: DataTableRowExpandEvent<T>]
+    rowCollapse: [event: DataTableRowExpandEvent<T>]
 }>()
 
 // 插槽声明仅供类型推导；存在性判断在模板渲染期进行，以反映父组件对插槽的增删
@@ -50,6 +53,8 @@ defineSlots<{
      * 未提供时回退渲染分组键取值
      */
     groupheader?: (props: DataTableRowGroupSlotProps<T>) => unknown
+    /** 行展开区内容；仅在提供该插槽时渲染展开行 */
+    expansion?: (props: DataTableExpansionSlotProps<T>) => unknown
 }>()
 
 const slots = useSlots()
@@ -57,6 +62,11 @@ const slots = useSlots()
 /** 判断某个列是否提供了指定类型的插槽 */
 function hasColumnSlot(kind: 'cell' | 'header', key: string): boolean {
     return Boolean((slots as Record<string, unknown>)[`${kind}-${key}`])
+}
+
+/** 是否提供了 `#expansion` 插槽；展开行仅在提供时渲染（缺省时展开态仍抛出事件） */
+function hasExpansionSlot(): boolean {
+    return Boolean((slots as Record<string, unknown>).expansion)
 }
 
 const locale = useLocale()
@@ -70,6 +80,8 @@ const expandRowGroupLabel = computed(
 const collapseRowGroupLabel = computed(
     () => props.collapseRowGroupLabel ?? locale.value.table.collapseRowGroup,
 )
+const expandRowLabel = computed(() => props.expandRowLabel ?? locale.value.table.expandRow)
+const collapseRowLabel = computed(() => props.collapseRowLabel ?? locale.value.table.collapseRow)
 
 const columnMap = computed(() => new Map(props.columns.map((column) => [column.key, column])))
 
@@ -307,6 +319,54 @@ function isGroupExpanded(key: string): boolean {
     return currentExpandedRowGroups.value.includes(key)
 }
 
+/** 展开列（`expander: true` 的列）的 key；缺省时行展开能力不生效 */
+const expanderColumnKey = computed(() => props.columns.find((column) => column.expander)?.key)
+
+function isExpanderColumn(key: string): boolean {
+    return key === expanderColumnKey.value
+}
+
+/*
+ * 展开行集合：受控优先、缺省自持，与分组展开同构（数组型 prop 用 deep 监听，理由同上）。
+ * 行 key 取 tanstack 行 id（即 `rowKey` 的解析结果），与选择态使用同一套标识。
+ */
+const isRowExpansionControlled = computed(() => props.expandedRows !== undefined)
+const controlledExpandedRows = computed<string[]>(() => props.expandedRows ?? [])
+const internalExpandedRows = ref<string[]>(controlledExpandedRows.value)
+
+watch(
+    controlledExpandedRows,
+    (next) => {
+        if (isRowExpansionControlled.value) {
+            internalExpandedRows.value = next
+        }
+    },
+    { deep: true },
+)
+
+const currentExpandedRows = computed(() =>
+    isRowExpansionControlled.value ? controlledExpandedRows.value : internalExpandedRows.value,
+)
+
+function isRowExpanded(rowKey: string): boolean {
+    return currentExpandedRows.value.includes(rowKey)
+}
+
+/*
+ * 展开区 id：供展开按钮的 `aria-controls` 引用。以组件实例 id + 数据源行序拼装，
+ * 避免行 key 含空格等字符时产生非法 id（两处调用点取同一表达式的同值）。
+ */
+const tableId = useId()
+
+function expansionRowId(rowIndex: number): string {
+    return `${tableId}-expansion-${rowIndex}`
+}
+
+/** 展开按钮的 `aria-controls`：仅当展开行实际渲染时输出，避免引用不存在的元素 */
+function expanderControlsId(rowKey: string, rowIndex: number): string | undefined {
+    return hasExpansionSlot() && isRowExpanded(rowKey) ? expansionRowId(rowIndex) : undefined
+}
+
 /*
  * 分组字段同名列：该列在**数据行**中渲染为空白占位单元格（不重复显示分组值），
  * 但仍占用列宽，保证其余数据列与表头对齐。
@@ -328,7 +388,7 @@ type DataTableRow = Row<typeof dataTableFeatures, T>
 /** 渲染条目：分组标题行与数据行交错排列 */
 type DataTableDisplayEntry
     = | { kind: 'group', id: string, value: unknown, groupKey: string, firstRow: T, index: number, expanded: boolean }
-        | { kind: 'row', id: string, row: DataTableRow }
+        | { kind: 'row', id: string, row: DataTableRow, index: number }
 
 /*
  * 分组按「连续同值」切分（对齐 PrimeVue）：只在当前渲染行序上计算，
@@ -338,7 +398,7 @@ type DataTableDisplayEntry
 const displayEntries = computed<DataTableDisplayEntry[]>(() => {
     const rows = tableRows.value
     if (!isSubheaderGrouped.value) {
-        return rows.map((row) => ({ kind: 'row', id: row.id, row }))
+        return rows.map((row, index) => ({ kind: 'row', id: row.id, row, index }))
     }
     const field = props.groupRowsBy ?? ''
     const entries: DataTableDisplayEntry[] = []
@@ -363,7 +423,7 @@ const displayEntries = computed<DataTableDisplayEntry[]>(() => {
             hasPrevious = true
         }
         if (currentExpanded) {
-            entries.push({ kind: 'row', id: row.id, row })
+            entries.push({ kind: 'row', id: row.id, row, index })
         }
     }
     return entries
@@ -400,6 +460,25 @@ function toggleRowGroup(originalEvent: Event, groupKey: string): void {
         emit('rowgroupCollapse', { originalEvent, data: groupKey })
     } else {
         emit('rowgroupExpand', { originalEvent, data: groupKey })
+    }
+}
+
+/*
+ * 切换单行的展开态：受控模式下只抛出事件（由父级决定是否采纳），自持模式下同时更新内部状态；
+ * 两种模式都会抛出 `update:expandedRows` 与 `rowExpand` / `rowCollapse`。
+ */
+function toggleRowExpansion(originalEvent: Event, rowKey: string, row: T): void {
+    const current = currentExpandedRows.value
+    const wasExpanded = current.includes(rowKey)
+    const next = wasExpanded ? current.filter((item) => item !== rowKey) : [...current, rowKey]
+    if (!isRowExpansionControlled.value) {
+        internalExpandedRows.value = next
+    }
+    emit('update:expandedRows', next)
+    if (wasExpanded) {
+        emit('rowCollapse', { originalEvent, data: row })
+    } else {
+        emit('rowExpand', { originalEvent, data: row })
     }
 }
 
@@ -666,40 +745,43 @@ function setPageSize(rows: number): void {
                         :style="columnStyle(header.column.id)"
                         :aria-sort="ariaSort(header.column.id)"
                     >
-                        <button
-                            v-if="isSortable(header.column.id)"
-                            type="button"
-                            class="caomei-data-table__sort"
-                            @click="toggleSort(header.column.id)"
-                        >
+                        <!-- 展开列只承载切换按钮，表头始终留空（排序 / 列插槽 / 默认表头三条路径统一收敛在此） -->
+                        <template v-if="!isExpanderColumn(header.column.id)">
+                            <button
+                                v-if="isSortable(header.column.id)"
+                                type="button"
+                                class="caomei-data-table__sort"
+                                @click="toggleSort(header.column.id)"
+                            >
+                                <slot
+                                    v-if="hasColumnSlot('header', header.column.id)"
+                                    :name="`header-${header.column.id}`"
+                                    :column="columnDef(header.column.id)"
+                                />
+                                <span v-else>{{ headerTitle(header.column.id) }}</span>
+                                <ChevronUp
+                                    v-if="sortState(header.column.id) === 'asc'"
+                                    class="caomei-data-table__sort-icon"
+                                    :size="14"
+                                    aria-hidden="true"
+                                />
+                                <ChevronDown
+                                    v-else-if="sortState(header.column.id) === 'desc'"
+                                    class="caomei-data-table__sort-icon"
+                                    :size="14"
+                                    aria-hidden="true"
+                                />
+                            </button>
                             <slot
-                                v-if="hasColumnSlot('header', header.column.id)"
+                                v-else-if="hasColumnSlot('header', header.column.id)"
                                 :name="`header-${header.column.id}`"
                                 :column="columnDef(header.column.id)"
                             />
-                            <span v-else>{{ headerTitle(header.column.id) }}</span>
-                            <ChevronUp
-                                v-if="sortState(header.column.id) === 'asc'"
-                                class="caomei-data-table__sort-icon"
-                                :size="14"
-                                aria-hidden="true"
+                            <FlexRender
+                                v-else-if="!header.isPlaceholder"
+                                :header="header"
                             />
-                            <ChevronDown
-                                v-else-if="sortState(header.column.id) === 'desc'"
-                                class="caomei-data-table__sort-icon"
-                                :size="14"
-                                aria-hidden="true"
-                            />
-                        </button>
-                        <slot
-                            v-else-if="hasColumnSlot('header', header.column.id)"
-                            :name="`header-${header.column.id}`"
-                            :column="columnDef(header.column.id)"
-                        />
-                        <FlexRender
-                            v-else-if="!header.isPlaceholder"
-                            :header="header"
-                        />
+                        </template>
                     </th>
                 </tr>
             </thead>
@@ -762,44 +844,82 @@ function setPageSize(rows: number): void {
                                 </slot>
                             </td>
                         </tr>
-                        <tr
-                            v-else
-                            class="caomei-data-table__row"
-                            :class="entry.row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
-                        >
-                            <td
-                                v-if="selectionMode"
-                                class="caomei-data-table__select-cell caomei-data-table__td"
+                        <template v-else>
+                            <tr
+                                class="caomei-data-table__row"
+                                :class="entry.row.getIsSelected() ? 'caomei-data-table__row--selected' : undefined"
                             >
-                                <div class="caomei-data-table__select-cell-inner">
-                                    <CaomeiCheckbox
-                                        :model-value="entry.row.getIsSelected()"
-                                        :label="`${selectRowLabel} ${entry.row.id}`"
-                                        @update:model-value="toggleRow(entry.row)"
+                                <td
+                                    v-if="selectionMode"
+                                    class="caomei-data-table__select-cell caomei-data-table__td"
+                                >
+                                    <div class="caomei-data-table__select-cell-inner">
+                                        <CaomeiCheckbox
+                                            :model-value="entry.row.getIsSelected()"
+                                            :label="`${selectRowLabel} ${entry.row.id}`"
+                                            @update:model-value="toggleRow(entry.row)"
+                                        />
+                                    </div>
+                                </td>
+                                <td
+                                    v-for="cell in entry.row.getAllCells()"
+                                    :key="cell.id"
+                                    class="caomei-data-table__td"
+                                    :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
+                                    :style="cellStyle(cell.column.id)"
+                                >
+                                    <button
+                                        v-if="isExpanderColumn(cell.column.id)"
+                                        type="button"
+                                        class="caomei-data-table__row-expander"
+                                        :aria-expanded="isRowExpanded(entry.row.id)"
+                                        :aria-controls="expanderControlsId(entry.row.id, entry.row.index)"
+                                        :aria-label="isRowExpanded(entry.row.id) ? collapseRowLabel : expandRowLabel"
+                                        @click.stop="toggleRowExpansion($event, entry.row.id, entry.row.original)"
+                                    >
+                                        <ChevronDown
+                                            v-if="isRowExpanded(entry.row.id)"
+                                            :size="14"
+                                            aria-hidden="true"
+                                        />
+                                        <ChevronRight
+                                            v-else
+                                            :size="14"
+                                            aria-hidden="true"
+                                        />
+                                    </button>
+                                    <slot
+                                        v-else-if="!isGroupColumn(cell.column.id) && hasColumnSlot('cell', cell.column.id)"
+                                        :name="`cell-${cell.column.id}`"
+                                        :row="entry.row.original"
+                                        :value="cell.getValue()"
+                                        :index="entry.row.index"
+                                        :column="columnDef(cell.column.id)"
                                     />
-                                </div>
-                            </td>
-                            <td
-                                v-for="cell in entry.row.getAllCells()"
-                                :key="cell.id"
-                                class="caomei-data-table__td"
-                                :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"
-                                :style="cellStyle(cell.column.id)"
+                                    <FlexRender
+                                        v-else-if="!isGroupColumn(cell.column.id)"
+                                        :cell="cell"
+                                    />
+                                </td>
+                            </tr>
+                            <tr
+                                v-if="hasExpansionSlot() && isRowExpanded(entry.row.id)"
+                                :id="expansionRowId(entry.row.index)"
+                                class="caomei-data-table__row-expansion"
+                                role="row"
                             >
-                                <slot
-                                    v-if="!isGroupColumn(cell.column.id) && hasColumnSlot('cell', cell.column.id)"
-                                    :name="`cell-${cell.column.id}`"
-                                    :row="entry.row.original"
-                                    :value="cell.getValue()"
-                                    :index="entry.row.index"
-                                    :column="columnDef(cell.column.id)"
-                                />
-                                <FlexRender
-                                    v-else-if="!isGroupColumn(cell.column.id)"
-                                    :cell="cell"
-                                />
-                            </td>
-                        </tr>
+                                <td
+                                    :colspan="bodyColspan"
+                                    class="caomei-data-table__row-expansion-cell"
+                                >
+                                    <slot
+                                        name="expansion"
+                                        :data="entry.row.original"
+                                        :index="entry.index"
+                                    />
+                                </td>
+                            </tr>
+                        </template>
                     </template>
                 </template>
             </tbody>
@@ -954,6 +1074,33 @@ function setPageSize(rows: number): void {
 .caomei-data-table__row-group-toggle:focus-visible {
     outline: 2px solid var(--caomei-color-primary);
     outline-offset: 2px;
+}
+
+/* 行展开列的切换按钮：与分组切换按钮同形 */
+.caomei-data-table__row-expander {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.caomei-data-table__row-expander:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 2px;
+}
+
+/* 展开区：横跨全部数据列（含展开列与选择列），不参与冻结列吸边 */
+.caomei-data-table__row-expansion > .caomei-data-table__row-expansion-cell {
+    padding: var(--caomei-space-2) var(--caomei-space-3);
+    border-bottom: 1px solid var(--caomei-data-table-border, var(--caomei-color-border));
+    background: var(--caomei-data-table-expansion-bg, var(--caomei-color-bg-elevated));
+    color: var(--caomei-color-text);
+    text-align: left;
 }
 
 .caomei-data-table__empty,

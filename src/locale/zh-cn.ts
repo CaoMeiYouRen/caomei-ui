@@ -118,6 +118,8 @@ const zhCN: CaomeiLocaleMessages = {
         selectRow: '选择该行',
         expandRowGroup: '展开分组',
         collapseRowGroup: '收起分组',
+        expandRow: '展开行',
+        collapseRow: '收起行',
     },
     toast: {
         label: '通知',

@@ -118,6 +118,8 @@ const enUS: CaomeiLocaleMessages = {
         selectRow: 'Select row',
         expandRowGroup: 'Expand row group',
         collapseRowGroup: 'Collapse row group',
+        expandRow: 'Expand row',
+        collapseRow: 'Collapse row',
     },
     toast: {
         label: 'Notification',

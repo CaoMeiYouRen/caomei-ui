@@ -118,6 +118,8 @@ const koKR: CaomeiLocaleMessages = {
         selectRow: '행 선택',
         expandRowGroup: '그룹 펼치기',
         collapseRowGroup: '그룹 접기',
+        expandRow: '행 펼치기',
+        collapseRow: '행 접기',
     },
     toast: {
         label: '알림',

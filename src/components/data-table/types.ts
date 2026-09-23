@@ -38,6 +38,14 @@ export interface DataTableRowGroupEvent {
     data: string
 }
 
+/** 行展开 / 收起事件载荷（对齐 PrimeVue 的 `row-expand` / `row-collapse`） */
+export interface DataTableRowExpandEvent<T> {
+    /** 触发事件的原生事件 */
+    originalEvent: Event
+    /** 该行数据 */
+    data: T
+}
+
 export interface DataTablePageEvent {
     /** 当前页码（从 1 开始） */
     page: number
@@ -82,6 +90,17 @@ export interface DataTableColumn<T> {
     headerStyle?: CSSProperties
     /** 数据单元格自定义样式 */
     bodyStyle?: CSSProperties
+    /**
+     * 是否作为**行展开列**：该列的单元格渲染展开 / 收起切换按钮，表头**始终留空**
+     * （即使提供 `header` 也不渲染表头文本 / 排序按钮 / 列插槽；多个 `expander` 列仅首个生效）；
+     * 需同时提供 `#expansion` 插槽才有可见展开区
+     * @en Whether this column is the **row expander column**: its cells render the expand /
+     * collapse toggle and its header is **always left blank** (even when `header` is provided, no
+     * header text / sort button / column slot is rendered; when several `expander` columns are
+     * declared only the first one takes effect); an `#expansion` slot is required for visible
+     * expansion content
+     */
+    expander?: boolean
 }
 
 /**
@@ -118,6 +137,22 @@ export interface DataTableRowGroupSlotProps<T> {
     index: number
     /** 分组键取值 */
     groupValue: unknown
+}
+
+/**
+ * `#expansion` 插槽作用域；仅在提供该插槽时渲染展开区
+ * @en `#expansion` slot scope; the expansion area renders only when this slot is provided
+ */
+export interface DataTableExpansionSlotProps<T> {
+    /** 该行数据 */
+    data: T
+    /**
+     * 该行在当前渲染行序中的索引（排序 / 分页后的显示序号，0 基，口径同 `#groupheader`）；
+     * 与 `#cell-{key}` 的数据源索引语义不同
+     * @en Index of the row in the current rendered row order (display index after sorting/pagination,
+     * 0-based, same as `#groupheader`); differs from the source index semantics of `#cell-{key}`
+     */
+    index: number
 }
 
 export interface DataTableProps<T> {
@@ -265,4 +300,24 @@ export interface DataTableProps<T> {
      * @en Accessible name of the collapse-group button; defaults to the current locale's "Collapse row group"
      */
     collapseRowGroupLabel?: string
+    /**
+     * 受控展开的行集合（行 key，口径同 `rowKey`）；提供时进入受控模式，配合
+     * `@update:expandedRows` 回写。**需配合 `expander` 列与 `#expansion` 插槽使用**；
+     * 缺省（未提供）时由组件自持（初始为空，即全部收起）
+     * @en Controlled set of expanded row keys (same key shape as `rowKey`); providing it enables the
+     * controlled mode, write back from `@update:expandedRows`. **Used together with an `expander`
+     * column and the `#expansion` slot**; without it the component holds the state itself (starting
+     * empty, i.e. all rows collapsed)
+     */
+    expandedRows?: string[]
+    /**
+     * 展开行按钮的可访问名，默认取当前语言的「展开行」
+     * @en Accessible name of the expand-row button; defaults to the current locale's "Expand row"
+     */
+    expandRowLabel?: string
+    /**
+     * 收起行按钮的可访问名，默认取当前语言的「收起行」
+     * @en Accessible name of the collapse-row button; defaults to the current locale's "Collapse row"
+     */
+    collapseRowLabel?: string
 }

@@ -57,10 +57,28 @@
 
 ## 排序
 
-`sortable` 列点击表头即可排序（首次升序）。传入 `sortField` + `sortOrder` 进入**受控排序**并在变化时抛出 `sort` 事件；运行时传入或移除 `sortField` 会在受控与自持之间切换，受控时需在 `sort` 事件中回写 `sortField` / `sortOrder`。非受控时同样抛出 `sort`（供观察，排序状态由组件自持）。
+`sortable` 列点击表头即可排序（首次升序，可用 `sortDescFirst` 改为首次降序）。传入 `sortField` + `sortOrder` 进入**受控排序**并在变化时抛出 `sort` 事件；运行时传入或移除 `sortField` 会在受控与自持之间切换，受控时需在 `sort` 事件中回写 `sortField` / `sortOrder`。非受控时同样抛出 `sort`（供观察，排序状态由组件自持）。
+
+排序键按「升 → 降 → 移除」循环：对已排序的列，第三击会把排序移除（`sort` 载荷的 `sortOrder` 为空字符串）。
 
 <demo
     vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+### 多列排序
+
+`sortMode="multiple"` 开启多列排序，用 `v-model:multiSortMeta`（`DataTableSortMeta[]`，**按优先级排列**）双向绑定排序键。
+
+- **按住 Cmd / Ctrl 点击表头**把该列追加为下一个排序键（已在列表中的列则切换其方向，不影响其它键）；**不按修饰键**点击则收敛为该列的单列排序（对齐 PrimeVue 语义）。
+- `order` 取 `1`（升序）/ `-1`（降序）；`order: 0` 的条目会被忽略。新键首次参与排序的方向由 `sortDescFirst` 决定（默认 `false` 升序）。
+- 已参与排序的表头显示优先级序号；多列同时排序时各表头分别带 `aria-sort`。
+- 提供 `multiSortMeta` 即进入**受控模式**（点击只抛出 `update:multiSortMeta`，需自行回写），移除后回到自持；两种模式都会抛出 `update:multiSortMeta`。
+- 多列模式下 `sort` 载荷额外带 `multiSortMeta`（完整排序键），`sortField` / `sortOrder` 仍取第一优先级的键。
+- `sortMode` 需在挂载时确定；`sortMode="multiple"` 与单列模式互斥。
+
+<demo
+    vue="../examples/data-table/sorting-multiple.vue"
     ssg="true"
 />
 
@@ -182,8 +200,9 @@
 ## 范围与约定
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
+- `multiSortMeta` / `selection` / `expandedRows` / `expandedRowGroups` 同为浅响应：受控回写时请替换数组引用（原地增删不会触发重新渲染）。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义与列插槽、排序、行分组、行展开、行选择、分页、冻结列与加载态。
+- 当前已支持列定义与列插槽、排序（含多列排序）、行分组、行展开、行选择、分页、冻结列与加载态。
 
 ## 无障碍
 
@@ -191,6 +210,7 @@
 - 可折叠分组的内建切换按钮为原生 `<button>`，带 `aria-expanded` 与可访问名（默认取当前语言，可用 `expandRowGroupLabel` / `collapseRowGroupLabel` 覆盖），键盘可达。
   - 该按钮的 `aria-label` **随状态切换**（收起态为「展开分组」、展开态为「收起分组」），与 `aria-expanded` 表达的状态并存；这是本库的取舍（名称描述动作），若希望名称恒定，可在使用层把两个 label 覆盖为同一文案，由 `aria-expanded` 单独承载状态。
 - 行展开列的内建切换按钮同样是原生 `<button>`，带 `aria-expanded`、`aria-controls`（指向展开行）与可访问名（默认取当前语言，可用 `expandRowLabel` / `collapseRowLabel` 覆盖），键盘可达；展开列的表头留空。
+- 多列排序时每个已排序的表头分别带 `aria-sort`；优先级序号为可见文本（会并入表头按钮的可访问名，与 PrimeVue 一致）。
 - 建议通过 `caption` 提供表格标题，或在使用层提供可见说明。
 
 ## 样式定制
@@ -230,6 +250,9 @@
 | `<Column expander>` | `columns` 数组项 `{ key, expander: true }`；该列表头留空 |
 | `#expansion="slotProps"` | `#expansion="{ data, index }"`（`data` 语义对齐；`index` 为显示序号，与 `#cell-{key}` 的数据源索引不同） |
 | `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`；载荷 `{ originalEvent, data }`，`data` 为该行数据 |
+| `sortMode="multiple"` + `v-model:multiSortMeta` | 同名；`field` 只接受列 key（PrimeVue 允许字段函数）、`order` 为 `1 \| 0 \| -1` |
+| `:default-sort-order="-1"` | `sortDescFirst`（**表格级**布尔量；PrimeVue 为列级 / 表格级数值，本库不提供列级） |
+| `removableSort` | **未提供开关**；本库排序键固定按「升 → 降 → 移除」循环（与单列排序一致） |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

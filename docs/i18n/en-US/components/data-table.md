@@ -57,10 +57,28 @@ Besides the `cell` function in a column definition, you can customize cells and 
 
 ## Sorting
 
-Click the header of a `sortable` column to sort (ascending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Adding or removing `sortField` at runtime switches between controlled and component-managed modes; when uncontrolled the `sort` event is still emitted for observation.
+Click the header of a `sortable` column to sort (ascending first; set `sortDescFirst` to sort descending first). Pass `sortField` + `sortOrder` for **controlled sorting** and listen to the `sort` event; write the new value back from that event. Adding or removing `sortField` at runtime switches between controlled and component-managed modes; when uncontrolled the `sort` event is still emitted for observation.
+
+Sort keys cycle through "asc → desc → removed": a third click on a sorted column removes the sorting (the `sort` payload then carries an empty `sortOrder`).
 
 <demo
     vue="../examples/data-table/sorting.vue"
+    ssg="true"
+/>
+
+### Multi-column sorting
+
+Set `sortMode="multiple"` for multi-column sorting and bind the sort keys (in priority order) with `v-model:multiSortMeta` (`DataTableSortMeta[]`).
+
+- **Hold Cmd / Ctrl while clicking a header** to append that column as the next sort key (a column already in the list has its direction flipped instead, leaving the other keys untouched); clicking **without** the modifier collapses the sorting to that column alone (matching PrimeVue).
+- `order` is `1` (ascending) / `-1` (descending); entries with `order: 0` are ignored. The first direction of a new key comes from `sortDescFirst` (default `false`, ascending).
+- Sorted headers show their priority number; with several columns sorted, each header carries its own `aria-sort`.
+- Providing `multiSortMeta` enables the **controlled mode** (a click only emits `update:multiSortMeta`, so write it back yourself); removing it falls back to component-managed state. Both modes emit `update:multiSortMeta`.
+- In multi-column mode the `sort` payload additionally carries `multiSortMeta` (the full sort keys), while `sortField` / `sortOrder` still reflect the first key.
+- `sortMode` must be set at mount; `sortMode="multiple"` is mutually exclusive with the single-column path.
+
+<demo
+    vue="../examples/data-table/sorting-multiple.vue"
     ssg="true"
 />
 
@@ -182,8 +200,9 @@ When `data` is empty an empty state is rendered, with default text from the curr
 ## Scope and conventions
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
+- `multiSortMeta` / `selection` / `expandedRows` / `expandedRowGroups` are likewise shallowly reactive: replace the array reference when writing back from a controlled binding (in-place mutation will not trigger a re-render).
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions and column slots, sorting, row grouping, row expansion, row selection, pagination, frozen columns and loading state are all supported.
+- Currently column definitions and column slots, sorting (including multi-column sorting), row grouping, row expansion, row selection, pagination, frozen columns and loading state are all supported.
 
 ## Accessibility
 
@@ -191,6 +210,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
 - The built-in toggle of expandable row groups is a native `<button>` carrying `aria-expanded` and an accessible name (locale-based by default, overridable with `expandRowGroupLabel` / `collapseRowGroupLabel`), and is keyboard reachable.
   - That button's `aria-label` **follows the state** ("Expand row group" while collapsed, "Collapse row group" while expanded) alongside `aria-expanded`; this is this library's trade-off (the name describes the action). If a constant name is preferred, override both labels with the same text at the usage site and let `aria-expanded` carry the state alone.
 - The row-expander toggle is likewise a native `<button>` carrying `aria-expanded`, `aria-controls` (pointing at the expansion row) and an accessible name (locale-based by default, overridable with `expandRowLabel` / `collapseRowLabel`), and is keyboard reachable; the expander column's header is left blank.
+- With multi-column sorting, every sorted header carries its own `aria-sort`; the priority number is visible text (it becomes part of the header button's accessible name, matching PrimeVue).
 - Provide a table caption via `caption`, or a visible explanation at the usage site.
 
 ## Style customization
@@ -230,6 +250,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `<Column expander>` | An entry in the `columns` array: `{ key, expander: true }`; that column's header is left blank |
 | `#expansion="slotProps"` | `#expansion="{ data, index }"` (`data` matches; `index` is the display index, unlike the source index of `#cell-{key}`) |
 | `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`; payload `{ originalEvent, data }` where `data` is the row |
+| `sortMode="multiple"` + `v-model:multiSortMeta` | The same-named props; `field` accepts only a column key (PrimeVue also allows a field function) and `order` is `1 \| 0 \| -1` |
+| `:default-sort-order="-1"` | `sortDescFirst` (a **table-level** boolean; PrimeVue offers column-level and table-level numbers, this library only the table-level one) |
+| `removableSort` | **No toggle provided**; sort keys always cycle through "asc → desc → removed" (same as the single-column path) |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

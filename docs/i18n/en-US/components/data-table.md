@@ -28,6 +28,7 @@ Common `DataTableColumn` fields:
 | `headerClass` / `bodyClass` | `string` | Custom class for header / body cells |
 | `headerStyle` / `bodyStyle` | `CSSProperties` | Custom style for header / body cells |
 | `frozen` | `'left' \| 'right'` | Frozen column (sticks to the edge when scrolling horizontally) |
+| `expander` | `boolean` | Marks the row-expander column: its cells render the expand / collapse toggle and its header is left blank (an `#expansion` slot is required) |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
@@ -84,7 +85,7 @@ The `#groupheader` slot customizes the group header content; without it the grou
 
 > The group header row spans all data columns, so it **does not take part in frozen-column pinning**; evaluate this limitation when combining frozen columns with row grouping.
 >
-> With `striped` enabled as well, striping is computed on the `<tbody>` child order (`nth-child`), so a group header row consumes an index and shifts the data rows' stripe phase relative to the ungrouped case; expanding / collapsing groups also changes the parity of the following rows, shifting the stripes again.
+> With `striped` enabled as well, striping is computed on the `<tbody>` child order (`nth-child`), so both group header rows and **row expansion areas** consume an index and shift the data rows' stripe phase relative to the ungrouped case; expanding / collapsing groups or rows also changes the parity of the following rows, shifting the stripes again.
 >
 > **Intentional difference from PrimeVue**: in subheader mode PrimeVue does not render the group field's data cells at all, which shifts the whole data row one column left and misaligns it with the header ([primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)); this library renders a blank placeholder cell instead to keep the columns aligned, while the group value is still shown in the group header row.
 
@@ -103,6 +104,27 @@ With `expandableRowGroups`, each group header row renders a built-in toggle butt
     vue="../examples/data-table/grouping-expandable.vue"
     ssg="true"
 />
+
+## Row expansion
+
+Mark a column with `expander: true` and that column's body cells render an **expand / collapse toggle** (a native `<button>` with a chevron, carrying `aria-expanded`, `aria-controls` and an accessible name, keyboard reachable); the column's header is **always left blank** (even when `header` is provided, no header text / sort button / column slot is rendered; when several `expander` columns are declared only the first one takes effect). The expansion area comes from the `#expansion` slot and can hold arbitrary nested content (a sub-table, a detail list, ……).
+
+- Bind the expanded row set with `v-model:expandedRows` (`string[]`, row keys with the same shape as `rowKey`); providing it enables the **controlled mode** (a click only emits `update:expandedRows`, and the parent decides whether to accept), removing it falls back to component-managed state (starting empty, i.e. all rows collapsed).
+- Emits `rowExpand` / `rowCollapse` with the payload `{ originalEvent, data }`, where `data` is the row.
+- The **`#expansion` slot is required** for visible expansion content; without it the expansion state and events still work (same as PrimeVue).
+- The expansion row spans all data columns (including the selection and expander columns), so it **does not take part in frozen-column pinning**; give the expander column an explicit px `width`.
+- **Providing `rowKey` is recommended**: without it keys come from the row index and expansion drifts once `data` is replaced wholesale (server pagination / lazy loading / a data refresh); sorting and client-side pagination only reorder row references and do not change the keys.
+
+| Slot | Scope | Description |
+|------|-------|-------------|
+| `#expansion` | `{ data, index }` | `data` is the row, `index` is that row's index in the current rendered row order (0-based, same convention as `#groupheader`, unlike the source index of `#cell-{key}`) |
+
+<demo
+    vue="../examples/data-table/row-expansion.vue"
+    ssg="true"
+/>
+
+> The toggle's accessible name defaults to the current locale's "Expand row" / "Collapse row" and can be overridden with `expandRowLabel` / `collapseRowLabel`.
 
 ## Row selection
 
@@ -161,13 +183,14 @@ When `data` is empty an empty state is rendered, with default text from the curr
 
 - `data` is shallowly reactive: replace the array reference when updating (`data.value = [...]`); in-place `push` / `splice` will not trigger a re-render.
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
-- Currently column definitions and column slots, sorting, row grouping, row selection, pagination, frozen columns and loading state are all supported.
+- Currently column definitions and column slots, sorting, row grouping, row expansion, row selection, pagination, frozen columns and loading state are all supported.
 
 ## Accessibility
 
 - Uses semantic `<table>` / `<thead>` / `<tbody>`, with `scope="col"` on header cells.
 - The built-in toggle of expandable row groups is a native `<button>` carrying `aria-expanded` and an accessible name (locale-based by default, overridable with `expandRowGroupLabel` / `collapseRowGroupLabel`), and is keyboard reachable.
   - That button's `aria-label` **follows the state** ("Expand row group" while collapsed, "Collapse row group" while expanded) alongside `aria-expanded`; this is this library's trade-off (the name describes the action). If a constant name is preferred, override both labels with the same text at the usage site and let `aria-expanded` carry the state alone.
+- The row-expander toggle is likewise a native `<button>` carrying `aria-expanded`, `aria-controls` (pointing at the expansion row) and an accessible name (locale-based by default, overridable with `expandRowLabel` / `collapseRowLabel`), and is keyboard reachable; the expander column's header is left blank.
 - Provide a table caption via `caption`, or a visible explanation at the usage site.
 
 ## Style customization
@@ -183,6 +206,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-row-hover-bg` | 4% text color mix | Row hover background color |
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | Group header row background color |
+| `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | Row expansion area background color |
 
 ## Migration from PrimeVue
 
@@ -202,6 +226,10 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `expandableRowGroups` | The same-named prop; each group header row renders a built-in toggle button (native `button` + `aria-expanded` + accessible name) |
 | `v-model:expandedRowGroups` | The same-named prop (a `string[]` of group keys); controlled takes precedence, component-managed by default, and all groups start collapsed without it |
 | `@rowgroup-expand` / `@rowgroup-collapse` | `@rowgroup-expand` / `@rowgroup-collapse`; payload `{ originalEvent, data }` where `data` is the group key (PrimeVue passes the raw group field value) |
+| `v-model:expandedRows` (+ `dataKey`) | `v-model:expandedRows` (a `string[]` of row keys) + `rowKey`; only the row-key array form is supported (PrimeVue also accepts an array of row objects and a `{ [key]: true }` record) |
+| `<Column expander>` | An entry in the `columns` array: `{ key, expander: true }`; that column's header is left blank |
+| `#expansion="slotProps"` | `#expansion="{ data, index }"` (`data` matches; `index` is the display index, unlike the source index of `#cell-{key}`) |
+| `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`; payload `{ originalEvent, data }` where `data` is the row |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

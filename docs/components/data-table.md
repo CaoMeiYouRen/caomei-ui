@@ -28,6 +28,7 @@
 | `headerClass` / `bodyClass` | `string` | 表头 / 数据单元格自定义 class |
 | `headerStyle` / `bodyStyle` | `CSSProperties` | 表头 / 数据单元格自定义样式 |
 | `frozen` | `'left' \| 'right'` | 冻结列（横向滚动时吸边） |
+| `expander` | `boolean` | 标记为行展开列：单元格渲染展开 / 收起切换按钮、表头留空（需配合 `#expansion` 插槽） |
 
 <demo
     vue="../examples/data-table/custom-cell.vue"
@@ -84,7 +85,7 @@
 
 > 分组标题行横跨全部数据列，因此**不参与冻结列吸边**；同时使用冻结列与行分组时请评估这一限制。
 >
-> 同时开启 `striped` 时，斑马纹按 `<tbody>` 子节点顺序（`nth-child`）计算，分组标题行会占用一个序号、使数据行的条纹相位相对未分组时发生偏移；可折叠分组展开 / 收起还会改变后续行的奇偶，条纹落点随之平移。
+> 同时开启 `striped` 时，斑马纹按 `<tbody>` 子节点顺序（`nth-child`）计算，分组标题行与**行展开区**都会占用一个序号、使数据行的条纹相位相对未分组时发生偏移；可折叠分组或行展开的展开 / 收起还会改变后续行的奇偶，条纹落点随之平移。
 >
 > **与 PrimeVue 的有意差异**：PrimeVue 在 subheader 模式下直接不渲染分组字段列的数据单元格，会让数据行整体左移一列、与表头错位（[primefaces/primevue#6496](https://github.com/primefaces/primevue/issues/6496)）；本库改为渲染空白占位单元格以保持列对齐，分组值的展示仍以分组标题行为准。
 
@@ -103,6 +104,27 @@
     vue="../examples/data-table/grouping-expandable.vue"
     ssg="true"
 />
+
+## 行展开
+
+在列定义中把某一列标记为 `expander: true`，该列的数据单元格即渲染**展开 / 收起切换按钮**（原生 `<button>` + chevron，带 `aria-expanded`、`aria-controls` 与可访问名，键盘可达），该列表头**始终留空**（即使提供了 `header`，也不渲染表头文本 / 排序按钮 / 列插槽；若声明多个 `expander` 列，仅首个生效）。展开区由 `#expansion` 插槽承载，可放任意嵌套内容（如子表格、明细列表）。
+
+- 用 `v-model:expandedRows`（`string[]`，行 key，口径同 `rowKey`）双向绑定展开的行集合；提供该 prop 即进入**受控模式**（点击只抛出 `update:expandedRows`，是否采纳由父级决定），移除后回到自持（缺省初始为空，即全部收起）。
+- 抛出 `rowExpand` / `rowCollapse`，载荷 `{ originalEvent, data }`，`data` 为该行数据。
+- **必须提供 `#expansion` 插槽**才有可见展开区；未提供时展开态与事件仍生效（与 PrimeVue 一致）。
+- 展开行横跨全部数据列（含选择列与展开列），因此**不参与冻结列吸边**；展开列请显式设置 px `width`。
+- **建议提供 `rowKey`**：缺省按行索引生成 key，**整体替换 `data`（服务端分页 / 懒加载 / 数据刷新）** 后展开态会错位（排序与客户端分页只重排行引用、不改变 key）。
+
+| 插槽 | 作用域 | 说明 |
+|------|--------|------|
+| `#expansion` | `{ data, index }` | `data` 为该行数据、`index` 为该行在当前渲染行序中的索引（0 基，口径同 `#groupheader`，与 `#cell-{key}` 的数据源索引不同） |
+
+<demo
+    vue="../examples/data-table/row-expansion.vue"
+    ssg="true"
+/>
+
+> 切换按钮的可访问名默认取当前语言的「展开行」/「收起行」，可用 `expandRowLabel` / `collapseRowLabel` 覆盖。
 
 ## 行选择
 
@@ -161,13 +183,14 @@
 
 - `data` 为浅响应：更新时请替换数组引用（`data.value = [...]`），原地 `push` / `splice` 不会触发重新渲染。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
-- 当前已支持列定义与列插槽、排序、行分组、行选择、分页、冻结列与加载态。
+- 当前已支持列定义与列插槽、排序、行分组、行展开、行选择、分页、冻结列与加载态。
 
 ## 无障碍
 
 - 使用语义化 `<table>` / `<thead>` / `<tbody>`，表头单元格带 `scope="col"`。
 - 可折叠分组的内建切换按钮为原生 `<button>`，带 `aria-expanded` 与可访问名（默认取当前语言，可用 `expandRowGroupLabel` / `collapseRowGroupLabel` 覆盖），键盘可达。
   - 该按钮的 `aria-label` **随状态切换**（收起态为「展开分组」、展开态为「收起分组」），与 `aria-expanded` 表达的状态并存；这是本库的取舍（名称描述动作），若希望名称恒定，可在使用层把两个 label 覆盖为同一文案，由 `aria-expanded` 单独承载状态。
+- 行展开列的内建切换按钮同样是原生 `<button>`，带 `aria-expanded`、`aria-controls`（指向展开行）与可访问名（默认取当前语言，可用 `expandRowLabel` / `collapseRowLabel` 覆盖），键盘可达；展开列的表头留空。
 - 建议通过 `caption` 提供表格标题，或在使用层提供可见说明。
 
 ## 样式定制
@@ -183,6 +206,7 @@
 | `--caomei-data-table-row-hover-bg` | 文字色 4% 混合 | 行悬浮背景色 |
 | `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | 分组标题行背景色 |
+| `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | 行展开区背景色 |
 
 ## 从 PrimeVue 迁移
 
@@ -202,6 +226,10 @@
 | `expandableRowGroups` | 同名；分组标题行渲染内建切换按钮（原生 `button` + `aria-expanded` + 可访问名） |
 | `v-model:expandedRowGroups` | 同名（`string[]` 分组键集合）；受控优先、缺省自持，缺省时全部收起 |
 | `@rowgroup-expand` / `@rowgroup-collapse` | `@rowgroup-expand` / `@rowgroup-collapse`；载荷 `{ originalEvent, data }`，`data` 为分组键（PrimeVue 传分组字段原值） |
+| `v-model:expandedRows`（+ `dataKey`） | `v-model:expandedRows`（`string[]` 行 key）+ `rowKey`；本库只支持「行 key 数组」形态（PrimeVue 另有行对象数组与 `{ [key]: true }` 记录两种形态） |
+| `<Column expander>` | `columns` 数组项 `{ key, expander: true }`；该列表头留空 |
+| `#expansion="slotProps"` | `#expansion="{ data, index }"`（`data` 语义对齐；`index` 为显示序号，与 `#cell-{key}` 的数据源索引不同） |
+| `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`；载荷 `{ originalEvent, data }`，`data` 为该行数据 |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

@@ -15,5 +15,7 @@ export type {
     DataTableSelectionMode,
     DataTableSortEvent,
     DataTableSortFn,
+    DataTableSortMeta,
+    DataTableSortMode,
     DataTableSortOrder,
 } from './types'

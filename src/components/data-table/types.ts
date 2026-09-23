@@ -14,6 +14,23 @@ export type DataTableSelectionMode = 'single' | 'multiple'
 /** 行分组模式；`subheader` 在每个分组前渲染分组标题行（对齐 PrimeVue 命名） */
 export type DataTableRowGroupMode = 'subheader'
 
+/** 排序模式；`multiple` 为多列排序（对齐 PrimeVue 命名） */
+export type DataTableSortMode = 'single' | 'multiple'
+
+/**
+ * 多列排序键（对齐 PrimeVue 的 `DataTableSortMeta` 命名）
+ * @en Multi-column sort key (named after PrimeVue's `DataTableSortMeta`)
+ */
+export interface DataTableSortMeta {
+    /** 列 key */
+    field: string
+    /**
+     * 排序方向：`1` 升序 / `-1` 降序 / `0` 不参与排序（会被忽略）
+     * @en Sort direction: `1` ascending / `-1` descending / `0` excluded from sorting (ignored)
+     */
+    order: 1 | 0 | -1
+}
+
 export interface DataTableCellContext<T> {
     /** 当前行数据 */
     row: T
@@ -28,6 +45,12 @@ export interface DataTableSortEvent {
     sortField: string
     /** 排序方向（无排序时为空字符串） */
     sortOrder: DataTableSortOrder | ''
+    /**
+     * 多列排序模式下的完整排序键（按优先级排列）；仅 `sortMode="multiple"` 时提供
+     * @en Full sort keys in priority order for multi-column sorting; provided only when
+     * `sortMode="multiple"`
+     */
+    multiSortMeta?: DataTableSortMeta[]
 }
 
 /** 分组展开 / 收起事件载荷（对齐 PrimeVue 的 `rowgroup-expand` / `rowgroup-collapse`） */
@@ -201,6 +224,28 @@ export interface DataTableProps<T> {
      * @en Controlled sort order
      */
     sortOrder?: DataTableSortOrder
+    /**
+     * 排序模式：`single`（默认）单列排序；`multiple` 多列排序——点击表头时按住 Cmd / Ctrl 追加为下一个排序键，
+     * 不按修饰键则收敛为该列的单列排序（对齐 PrimeVue 语义）
+     * @en Sort mode: `single` (default) for one column; `multiple` for multi-column sorting — hold
+     * Cmd / Ctrl while clicking a header to append it as the next sort key, otherwise the sorting
+     * collapses to that column alone (matching PrimeVue)
+     */
+    sortMode?: DataTableSortMode
+    /**
+     * 受控多列排序键（按优先级排列）；仅在 `sortMode="multiple"` 时生效，提供时进入受控模式，
+     * 配合 `@update:multiSortMeta` 回写。`order` 为 `0` 的条目会被忽略
+     * @en Controlled multi-column sort keys (in priority order); only effective when
+     * `sortMode="multiple"`, providing it enables the controlled mode and you write back from
+     * `@update:multiSortMeta`. Entries whose `order` is `0` are ignored
+     */
+    multiSortMeta?: DataTableSortMeta[]
+    /**
+     * 首次点击可排序列时的方向是否为降序，默认 `false`（升序）
+     * @en Whether the first click on a sortable column sorts descending, defaults to `false`
+     * (ascending)
+     */
+    sortDescFirst?: boolean
     /**
      * 加载态；显示加载行并标注 aria-busy
      * @en Loading state; shows a loading row and sets aria-busy

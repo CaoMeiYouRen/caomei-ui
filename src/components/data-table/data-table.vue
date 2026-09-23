@@ -6,7 +6,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent, DataTableSortMeta } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -39,6 +39,7 @@ const emit = defineEmits<{
     'update:expandedRows': [expandedRows: string[]]
     rowExpand: [event: DataTableRowExpandEvent<T>]
     rowCollapse: [event: DataTableRowExpandEvent<T>]
+    'update:multiSortMeta': [multiSortMeta: DataTableSortMeta[]]
 }>()
 
 // 插槽声明仅供类型推导；存在性判断在模板渲染期进行，以反映父组件对插槽的增删
@@ -141,14 +142,33 @@ const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
     })),
 )
 
+/** 是否多列排序模式 */
+const isMultipleSort = computed(() => props.sortMode === 'multiple')
+
+/*
+ * 排序状态来源：
+ * - `multiple`：由受控 `multiSortMeta` 派生（`order: 0` 的条目忽略），未受控时用内部状态；
+ * - `single`（默认）：由受控 `sortField` + `sortOrder` 派生，未受控时用内部状态。
+ */
 const sortingState = computed<SortingState>(() => {
+    if (isMultipleSort.value) {
+        const meta = props.multiSortMeta
+        if (!meta) {
+            return []
+        }
+        return meta
+            .filter((item) => item.order !== 0)
+            .map((item) => ({ id: item.field, desc: item.order === -1 }))
+    }
     if (!props.sortField) {
         return []
     }
     return [{ id: props.sortField, desc: props.sortOrder === 'desc' }]
 })
 
-const isSortControlled = computed(() => props.sortField !== undefined)
+const isSortControlled = computed(() =>
+    isMultipleSort.value ? props.multiSortMeta !== undefined : props.sortField !== undefined,
+)
 
 const isSelectionControlled = computed(() => props.selection !== undefined)
 
@@ -239,10 +259,23 @@ function onSortingChange(updater: Updater<SortingState>): void {
     if (!isSortControlled.value) {
         internalSorting.value = next
     }
+    emitSortChange(next)
+}
+
+/** 抛出排序变更：多列模式额外抛出 `update:multiSortMeta` 并在 `sort` 载荷中带上完整排序键 */
+function emitSortChange(next: SortingState): void {
     const first = next.length > 0 ? next[0] : undefined
+    const multiSortMeta: DataTableSortMeta[] = next.map((item) => ({
+        field: item.id,
+        order: item.desc ? -1 : 1,
+    }))
+    if (isMultipleSort.value) {
+        emit('update:multiSortMeta', multiSortMeta)
+    }
     emit('sort', {
         sortField: first?.id ?? '',
         sortOrder: first ? (first.desc ? 'desc' : 'asc') : '',
+        ...(isMultipleSort.value ? { multiSortMeta } : {}),
     } satisfies DataTableSortEvent)
 }
 
@@ -270,7 +303,7 @@ const table = useTable({
     columns: tableColumns,
     data: computed(() => props.data),
     getRowId: (row: T, index: number) => resolveRowKey(row, index),
-    sortDescFirst: false,
+    sortDescFirst: computed(() => props.sortDescFirst),
     enableRowSelection: Boolean(props.selectionMode),
     enableMultiRowSelection: props.selectionMode === 'multiple',
     manualPagination: computed(() => props.lazy),
@@ -579,11 +612,29 @@ function ariaSort(key: string): 'ascending' | 'descending' | 'none' | undefined 
     return 'none'
 }
 
-function toggleSort(key: string): void {
+function toggleSort(key: string, event?: MouseEvent): void {
     if (!isSortable(key)) {
         return
     }
-    table.getColumn(key)?.toggleSorting()
+    const column = table.getColumn(key)
+    if (!column) {
+        return
+    }
+    if (isMultipleSort.value) {
+        /*
+         * 多列模式（对齐 PrimeVue）：按住 Cmd / Ctrl 时把该列追加为下一个排序键，
+         * 否则收敛为该列的单列排序。首次方向由 `sortDescFirst` 决定（tanstack 的表格选项）。
+         */
+        const multi = Boolean(event?.metaKey) || Boolean(event?.ctrlKey)
+        column.toggleSorting(undefined, multi)
+        return
+    }
+    column.toggleSorting()
+}
+
+/** 该列在当前多列排序中的优先级（1 基；未参与排序时为 0） */
+function sortIndex(key: string): number {
+    return currentSorting.value.findIndex((item) => item.id === key) + 1
 }
 
 function headerTitle(key: string): string {
@@ -751,7 +802,7 @@ function setPageSize(rows: number): void {
                                 v-if="isSortable(header.column.id)"
                                 type="button"
                                 class="caomei-data-table__sort"
-                                @click="toggleSort(header.column.id)"
+                                @click="toggleSort(header.column.id, $event)"
                             >
                                 <slot
                                     v-if="hasColumnSlot('header', header.column.id)"
@@ -771,6 +822,10 @@ function setPageSize(rows: number): void {
                                     :size="14"
                                     aria-hidden="true"
                                 />
+                                <span
+                                    v-if="isMultipleSort && sortState(header.column.id)"
+                                    class="caomei-data-table__sort-index"
+                                >{{ sortIndex(header.column.id) }}</span>
                             </button>
                             <slot
                                 v-else-if="hasColumnSlot('header', header.column.id)"
@@ -998,6 +1053,14 @@ function setPageSize(rows: number): void {
 .caomei-data-table__sort-icon {
     flex-shrink: 0;
     color: var(--caomei-color-text-muted);
+}
+
+/* 多列排序的优先级序号（仅 `sortMode="multiple"` 且该列参与排序时渲染） */
+.caomei-data-table__sort-index {
+    flex-shrink: 0;
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-sm);
+    font-weight: 600;
 }
 
 .caomei-data-table__cell--center {

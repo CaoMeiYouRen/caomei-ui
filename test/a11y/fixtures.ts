@@ -60,6 +60,7 @@ import {
     CaomeiTabTrigger,
     CaomeiTabs,
     CaomeiTag,
+    CaomeiTagsInput,
     CaomeiTextarea,
     CaomeiToastProvider,
     CaomeiToggleButton,
@@ -173,6 +174,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiSwitch', root: CaomeiSwitch, definition: { components: { CaomeiSwitch }, template: '<CaomeiSwitch label="开关" />' } },
     { name: 'CaomeiTabs', root: CaomeiTabs, definition: { components: { CaomeiTabs, CaomeiTabList, CaomeiTabTrigger, CaomeiTabContent }, template: '<CaomeiTabs model-value="a"><CaomeiTabList><CaomeiTabTrigger value="a">甲</CaomeiTabTrigger></CaomeiTabList><CaomeiTabContent value="a">内容</CaomeiTabContent></CaomeiTabs>' } },
     { name: 'CaomeiTag', root: CaomeiTag, definition: { components: { CaomeiTag }, template: '<CaomeiTag>标签</CaomeiTag>' } },
+    { name: 'CaomeiTagsInput', root: CaomeiTagsInput, definition: { components: { CaomeiTagsInput }, template: '<CaomeiTagsInput label="标签" :model-value="tags" />', setup: () => ({ tags: ['React'] }) } },
     { name: 'CaomeiTextarea', root: CaomeiTextarea, definition: { components: { CaomeiTextarea }, template: '<CaomeiTextarea label="备注" placeholder="备注" />' } },
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
@@ -230,4 +232,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检组件集规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 47
+export const A11Y_FIXTURE_BUDGET = 48

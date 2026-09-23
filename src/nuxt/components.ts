@@ -80,6 +80,7 @@ export const caomeiComponents = [
     'CaomeiTabTrigger',
     'CaomeiTabs',
     'CaomeiTag',
+    'CaomeiTagsInput',
     'CaomeiTextarea',
     'CaomeiToastProvider',
     'CaomeiToggleButton',

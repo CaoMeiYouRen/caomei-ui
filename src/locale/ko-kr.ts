@@ -121,6 +121,9 @@ const koKR: CaomeiLocaleMessages = {
         expandRow: '행 펼치기',
         collapseRow: '행 접기',
     },
+    tagsInput: {
+        clear: '지우기',
+    },
     toast: {
         label: '알림',
         viewport: '알림 ({hotkey})',

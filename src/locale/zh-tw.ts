@@ -121,6 +121,9 @@ const zhTW: CaomeiLocaleMessages = {
         expandRow: '展開此列',
         collapseRow: '收合此列',
     },
+    tagsInput: {
+        clear: '清空',
+    },
     toast: {
         label: '通知',
         viewport: '通知 ({hotkey})',

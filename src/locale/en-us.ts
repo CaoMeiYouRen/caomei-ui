@@ -121,6 +121,9 @@ const enUS: CaomeiLocaleMessages = {
         expandRow: 'Expand row',
         collapseRow: 'Collapse row',
     },
+    tagsInput: {
+        clear: 'Clear',
+    },
     toast: {
         label: 'Notification',
         viewport: 'Notifications ({hotkey})',

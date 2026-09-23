@@ -121,6 +121,9 @@ const jaJP: CaomeiLocaleMessages = {
         expandRow: '行を展開',
         collapseRow: '行を折りたたむ',
     },
+    tagsInput: {
+        clear: 'クリア',
+    },
     toast: {
         label: '通知',
         viewport: '通知 ({hotkey})',

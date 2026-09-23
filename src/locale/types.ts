@@ -127,6 +127,9 @@ export interface CaomeiLocaleMessages {
         expandRow: string
         collapseRow: string
     }
+    tagsInput: {
+        clear: string
+    }
     toast: {
         label: string
         viewport: string

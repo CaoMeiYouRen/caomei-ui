@@ -65,6 +65,7 @@ import {
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
+| `tagsInput` | `clear` | TagsInput |
 | `toast` | `label` `viewport` `close` | Toast |
 
 ## 快速使用

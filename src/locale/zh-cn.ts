@@ -116,6 +116,8 @@ const zhCN: CaomeiLocaleMessages = {
         empty: '暂无数据',
         selectAll: '全选',
         selectRow: '选择该行',
+        expandRowGroup: '展开分组',
+        collapseRowGroup: '收起分组',
     },
     toast: {
         label: '通知',

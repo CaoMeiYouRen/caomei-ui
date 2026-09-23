@@ -30,6 +30,14 @@ export interface DataTableSortEvent {
     sortOrder: DataTableSortOrder | ''
 }
 
+/** 分组展开 / 收起事件载荷（对齐 PrimeVue 的 `rowgroup-expand` / `rowgroup-collapse`） */
+export interface DataTableRowGroupEvent {
+    /** 触发事件的原生事件 */
+    originalEvent: Event
+    /** 分组键取值（与 `expandedRowGroups` 中的字符串一致） */
+    data: string
+}
+
 export interface DataTablePageEvent {
     /** 当前页码（从 1 开始） */
     page: number
@@ -233,4 +241,28 @@ export interface DataTableProps<T> {
      * header; deliberately does not follow PrimeVue's "do not render" approach)
      */
     groupRowsBy?: string
+    /**
+     * 是否可折叠分组；需与 `rowGroupMode="subheader"` + `groupRowsBy` 同用，开启后分组标题行渲染内建折叠按钮
+     * @en Whether row groups are collapsible; used together with `rowGroupMode="subheader"` + `groupRowsBy`;
+     * when enabled a built-in toggle button is rendered in each group header row
+     */
+    expandableRowGroups?: boolean
+    /**
+     * 受控展开的分组键集合；提供时进入受控模式，配合 `@update:expandedRowGroups` 回写。
+     * **缺省（未提供）时分组全部收起**（对齐 PrimeVue），未列出的分组不渲染其数据行
+     * @en Controlled set of expanded group keys; providing it enables the controlled mode, write back
+     * from `@update:expandedRowGroups`. **Without it all groups start collapsed** (matching PrimeVue),
+     * and groups not listed do not render their data rows
+     */
+    expandedRowGroups?: string[]
+    /**
+     * 展开分组按钮的可访问名，默认取当前语言的「展开分组」
+     * @en Accessible name of the expand-group button; defaults to the current locale's "Expand row group"
+     */
+    expandRowGroupLabel?: string
+    /**
+     * 收起分组按钮的可访问名，默认取当前语言的「收起分组」
+     * @en Accessible name of the collapse-group button; defaults to the current locale's "Collapse row group"
+     */
+    collapseRowGroupLabel?: string
 }

@@ -122,6 +122,8 @@ export interface CaomeiLocaleMessages {
         empty: string
         selectAll: string
         selectRow: string
+        expandRowGroup: string
+        collapseRowGroup: string
     }
     toast: {
         label: string

@@ -116,6 +116,8 @@ const koKR: CaomeiLocaleMessages = {
         empty: '데이터 없음',
         selectAll: '전체 선택',
         selectRow: '행 선택',
+        expandRowGroup: '그룹 펼치기',
+        collapseRowGroup: '그룹 접기',
     },
     toast: {
         label: '알림',

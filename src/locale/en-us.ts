@@ -116,6 +116,8 @@ const enUS: CaomeiLocaleMessages = {
         empty: 'No data',
         selectAll: 'Select all',
         selectRow: 'Select row',
+        expandRowGroup: 'Expand row group',
+        collapseRowGroup: 'Collapse row group',
     },
     toast: {
         label: 'Notification',

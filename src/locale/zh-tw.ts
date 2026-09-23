@@ -116,6 +116,8 @@ const zhTW: CaomeiLocaleMessages = {
         empty: '暫無資料',
         selectAll: '全選',
         selectRow: '選擇此列',
+        expandRowGroup: '展開分組',
+        collapseRowGroup: '收合分組',
     },
     toast: {
         label: '通知',

@@ -1,12 +1,12 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
-import { ChevronDown, ChevronUp } from '@lucide/vue'
+import { ChevronDown, ChevronRight, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { dataTableFeatures } from './table-features'
-import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -33,6 +33,9 @@ const emit = defineEmits<{
     'update:page': [page: number]
     'update:rows': [rows: number]
     page: [event: DataTablePageEvent]
+    'update:expandedRowGroups': [expandedRowGroups: string[]]
+    rowgroupExpand: [event: DataTableRowGroupEvent]
+    rowgroupCollapse: [event: DataTableRowGroupEvent]
 }>()
 
 // 插槽声明仅供类型推导；存在性判断在模板渲染期进行，以反映父组件对插槽的增删
@@ -61,6 +64,12 @@ const emptyText = computed(() => props.emptyText ?? locale.value.table.empty)
 const loadingText = computed(() => props.loadingText ?? locale.value.progress.loading)
 const selectAllLabel = computed(() => props.selectAllLabel ?? locale.value.table.selectAll)
 const selectRowLabel = computed(() => props.selectRowLabel ?? locale.value.table.selectRow)
+const expandRowGroupLabel = computed(
+    () => props.expandRowGroupLabel ?? locale.value.table.expandRowGroup,
+)
+const collapseRowGroupLabel = computed(
+    () => props.collapseRowGroupLabel ?? locale.value.table.collapseRowGroup,
+)
 
 const columnMap = computed(() => new Map(props.columns.map((column) => [column.key, column])))
 
@@ -266,6 +275,38 @@ const isEmpty = computed(() => props.data.length === 0)
 /** 行分组（subheader）是否生效 */
 const isSubheaderGrouped = computed(() => props.rowGroupMode === 'subheader' && Boolean(props.groupRowsBy))
 
+/** 可折叠分组是否生效（需行分组同时生效） */
+const isExpandableRowGroups = computed(() => isSubheaderGrouped.value && Boolean(props.expandableRowGroups))
+
+/*
+ * 展开集合：受控优先、缺省自持。
+ * 未提供 `expandedRowGroups` 时内部自持，且**初始为空**（分组全部收起，对齐 PrimeVue）。
+ *
+ * 这里对受控数组用 `deep` 监听（其余受控 prop 均为标量、无需 deep）：数组型 prop 常被
+ * 父级原地增删，仅按引用监听会让内部值滞后，从而在「原地变更后移除受控 prop 退回自持」时取到旧值。
+ */
+const isRowGroupExpansionControlled = computed(() => props.expandedRowGroups !== undefined)
+const controlledExpandedRowGroups = computed<string[]>(() => props.expandedRowGroups ?? [])
+const internalExpandedRowGroups = ref<string[]>(controlledExpandedRowGroups.value)
+
+watch(
+    controlledExpandedRowGroups,
+    (next) => {
+        if (isRowGroupExpansionControlled.value) {
+            internalExpandedRowGroups.value = next
+        }
+    },
+    { deep: true },
+)
+
+const currentExpandedRowGroups = computed(() =>
+    isRowGroupExpansionControlled.value ? controlledExpandedRowGroups.value : internalExpandedRowGroups.value,
+)
+
+function isGroupExpanded(key: string): boolean {
+    return currentExpandedRowGroups.value.includes(key)
+}
+
 /*
  * 分组字段同名列：该列在**数据行**中渲染为空白占位单元格（不重复显示分组值），
  * 但仍占用列宽，保证其余数据列与表头对齐。
@@ -286,12 +327,13 @@ type DataTableRow = Row<typeof dataTableFeatures, T>
 
 /** 渲染条目：分组标题行与数据行交错排列 */
 type DataTableDisplayEntry
-    = | { kind: 'group', id: string, value: unknown, firstRow: T, index: number }
+    = | { kind: 'group', id: string, value: unknown, groupKey: string, firstRow: T, index: number, expanded: boolean }
         | { kind: 'row', id: string, row: DataTableRow }
 
 /*
  * 分组按「连续同值」切分（对齐 PrimeVue）：只在当前渲染行序上计算，
  * 故分组以排序 + 分页后的切片为准，跨页的同值行会各自出现分组标题行。
+ * 可折叠分组开启时，收起分组的数据行不进入渲染条目（分组标题行保留）。
  */
 const displayEntries = computed<DataTableDisplayEntry[]>(() => {
     const rows = tableRows.value
@@ -302,14 +344,27 @@ const displayEntries = computed<DataTableDisplayEntry[]>(() => {
     const entries: DataTableDisplayEntry[] = []
     let previous: unknown
     let hasPrevious = false
+    let currentExpanded = true
     for (const [index, row] of rows.entries()) {
         const value = getByPath(row.original, field)
         if (!hasPrevious || value !== previous) {
-            entries.push({ kind: 'group', id: `group:${row.id}`, value, firstRow: row.original, index })
+            const groupKey = formatGroupValue(value)
+            currentExpanded = !isExpandableRowGroups.value || isGroupExpanded(groupKey)
+            entries.push({
+                kind: 'group',
+                id: `group:${row.id}`,
+                value,
+                groupKey,
+                firstRow: row.original,
+                index,
+                expanded: currentExpanded,
+            })
             previous = value
             hasPrevious = true
         }
-        entries.push({ kind: 'row', id: row.id, row })
+        if (currentExpanded) {
+            entries.push({ kind: 'row', id: row.id, row })
+        }
     }
     return entries
 })
@@ -327,6 +382,25 @@ function formatGroupValue(value: unknown): string {
     // 与默认单元格口径一致：按 JS 默认字符串化输出（对象 → [object Object]）
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     return String(value)
+}
+
+/*
+ * 切换单个分组的展开态：受控模式下只抛出事件（由父级决定是否采纳），
+ * 自持模式下同时更新内部状态；两种模式都会抛出 `update:expandedRowGroups` 与展开 / 收起事件。
+ */
+function toggleRowGroup(originalEvent: Event, groupKey: string): void {
+    const current = currentExpandedRowGroups.value
+    const wasExpanded = current.includes(groupKey)
+    const next = wasExpanded ? current.filter((item) => item !== groupKey) : [...current, groupKey]
+    if (!isRowGroupExpansionControlled.value) {
+        internalExpandedRowGroups.value = next
+    }
+    emit('update:expandedRowGroups', next)
+    if (wasExpanded) {
+        emit('rowgroupCollapse', { originalEvent, data: groupKey })
+    } else {
+        emit('rowgroupExpand', { originalEvent, data: groupKey })
+    }
 }
 
 const rootClass = computed(() => ({
@@ -659,6 +733,25 @@ function setPageSize(rows: number): void {
                                 :colspan="bodyColspan"
                                 class="caomei-data-table__row-group-cell"
                             >
+                                <button
+                                    v-if="isExpandableRowGroups"
+                                    type="button"
+                                    class="caomei-data-table__row-group-toggle"
+                                    :aria-expanded="entry.expanded"
+                                    :aria-label="entry.expanded ? collapseRowGroupLabel : expandRowGroupLabel"
+                                    @click="toggleRowGroup($event, entry.groupKey)"
+                                >
+                                    <ChevronDown
+                                        v-if="entry.expanded"
+                                        :size="14"
+                                        aria-hidden="true"
+                                    />
+                                    <ChevronRight
+                                        v-else
+                                        :size="14"
+                                        aria-hidden="true"
+                                    />
+                                </button>
                                 <slot
                                     name="groupheader"
                                     :data="entry.firstRow"
@@ -841,6 +934,26 @@ function setPageSize(rows: number): void {
     color: var(--caomei-color-text);
     font-weight: 600;
     text-align: left;
+}
+
+/* 可折叠分组的内建切换按钮：行内排布在分组标题内容之前，保留文本基线对齐 */
+.caomei-data-table__row-group-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--caomei-space-1);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.caomei-data-table__row-group-toggle:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 2px;
 }
 
 .caomei-data-table__empty,

@@ -116,6 +116,8 @@ const jaJP: CaomeiLocaleMessages = {
         empty: 'データがありません',
         selectAll: 'すべて選択',
         selectRow: '行を選択',
+        expandRowGroup: 'グループを展開',
+        collapseRowGroup: 'グループを折りたたむ',
     },
     toast: {
         label: '通知',

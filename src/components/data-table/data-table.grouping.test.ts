@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { h, nextTick, type DefineComponent } from 'vue'
+import { h, nextTick, reactive, type DefineComponent } from 'vue'
 import { describe, expect, it } from 'vitest'
 import type { DataTableColumn, DataTableProps, DataTableRowGroupSlotProps } from './types'
 import { CaomeiDataTable } from './index'
@@ -238,5 +238,216 @@ describe('CaomeiDataTable 行分组（subheader）', () => {
 
         expect(wrapper.find('.caomei-data-table__row-group').exists()).toBe(false)
         expect(wrapper.get('.caomei-data-table__empty').attributes('colspan')).toBe('3')
+    })
+
+    describe('可折叠分组', () => {
+        const expandableProps: Partial<DataTableProps<GroupedRow>> = {
+            rowGroupMode: 'subheader',
+            groupRowsBy: 'dept',
+            expandableRowGroups: true,
+        }
+
+        function groupToggles(wrapper: ReturnType<typeof mountGrouped>) {
+            return wrapper.findAll('.caomei-data-table__row-group-toggle')
+        }
+
+        it('缺省（未提供 expandedRowGroups）时分组全部收起，仅渲染分组标题行', () => {
+            const wrapper = mountGrouped(expandableProps)
+
+            expect(groupToggles(wrapper)).toHaveLength(2)
+            expect(groupToggles(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+                'false',
+                'false',
+            ])
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+            expect(
+                wrapper.findAll('.caomei-data-table__row-group-cell').map((cell) => cell.text()),
+            ).toEqual(['A', 'B'])
+        })
+
+        it('自持模式下点击切换按钮展开 / 收起该组并抛出双向事件', async () => {
+            const wrapper = mountGrouped(expandableProps)
+
+            await groupToggles(wrapper)[0].trigger('click')
+
+            expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('true')
+            expect(groupToggles(wrapper)[1].attributes('aria-expanded')).toBe('false')
+            expect(
+                wrapper.findAll('.caomei-data-table__row').map((row) => row.text()),
+            ).toEqual(['Ada', 'Bob'])
+            expect(wrapper.emitted('update:expandedRowGroups')?.[0]?.[0]).toEqual(['A'])
+            expect(wrapper.emitted('rowgroupExpand')?.[0]?.[0]).toMatchObject({ data: 'A' })
+
+            await groupToggles(wrapper)[0].trigger('click')
+
+            expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('false')
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+            expect(wrapper.emitted('update:expandedRowGroups')?.[1]?.[0]).toEqual([])
+            expect(wrapper.emitted('rowgroupCollapse')?.[0]?.[0]).toMatchObject({ data: 'A' })
+        })
+
+        it('自持模式下多个分组独立折叠，互不影响', async () => {
+            const wrapper = mountGrouped(expandableProps)
+
+            await groupToggles(wrapper)[1].trigger('click')
+
+            expect(groupToggles(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+                'false',
+                'true',
+            ])
+            expect(wrapper.findAll('.caomei-data-table__row').map((row) => row.text())).toEqual([
+                'Cara',
+                'Dan',
+                'Eve',
+            ])
+        })
+
+        it('受控模式下点击只抛出事件、渲染由父级决定，回写后生效', async () => {
+            const wrapper = mountGrouped({ ...expandableProps, expandedRowGroups: [] })
+
+            await groupToggles(wrapper)[0].trigger('click')
+
+            expect(wrapper.emitted('update:expandedRowGroups')?.[0]?.[0]).toEqual(['A'])
+            // 受控：父级未回写时 DOM 不变（仍全部收起）
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+
+            await wrapper.setProps({ expandedRowGroups: ['A'] })
+
+            expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('true')
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        })
+
+        it('受控初始值决定展开态；运行期移除受控 prop 后退回自持并沿用已同步的内部值', async () => {
+            const wrapper = mountGrouped({ ...expandableProps, expandedRowGroups: ['B'] })
+
+            expect(groupToggles(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+                'false',
+                'true',
+            ])
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(3)
+
+            await wrapper.setProps({ expandedRowGroups: undefined })
+
+            // 受控期间内部值已同步为 ['B']，退回自持后沿用该值
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(3)
+
+            await groupToggles(wrapper)[1].trigger('click')
+
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+        })
+
+        it('切换按钮为原生 button、带 aria-expanded 与可访问名，可覆盖可访问名', () => {
+            const wrapper = mountGrouped(expandableProps)
+            const button = groupToggles(wrapper)[0]
+
+            expect(button.element.tagName).toBe('BUTTON')
+            expect(button.attributes('type')).toBe('button')
+            expect(button.attributes('aria-label')).toBe('展开分组')
+
+            const custom = mount(GroupedDataTable, {
+                props: {
+                    data: groupedData,
+                    columns: groupedColumns,
+                    ...expandableProps,
+                    expandedRowGroups: ['A'],
+                    expandRowGroupLabel: '展开该组',
+                    collapseRowGroupLabel: '收起该组',
+                },
+            })
+
+            expect(groupToggles(custom)[0].attributes('aria-label')).toBe('收起该组')
+            expect(groupToggles(custom)[1].attributes('aria-label')).toBe('展开该组')
+        })
+
+        it('未开启 expandableRowGroups 时不渲染切换按钮且数据行全部渲染', () => {
+            const wrapper = mountGrouped({ rowGroupMode: 'subheader', groupRowsBy: 'dept' })
+
+            expect(groupToggles(wrapper)).toHaveLength(0)
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+        })
+
+        it('未开启行分组时 expandableRowGroups 不生效', () => {
+            const wrapper = mountGrouped({ expandableRowGroups: true })
+
+            expect(groupToggles(wrapper)).toHaveLength(0)
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
+        })
+
+        it('非连续的同值分组共用同一分组键，切换时同步翻转', async () => {
+            const wrapper = mount(GroupedDataTable, {
+                props: {
+                    data: [
+                        { name: 'Ada', dept: 'A' },
+                        { name: 'Bob', dept: 'B' },
+                        { name: 'Cara', dept: 'A' },
+                    ],
+                    columns: groupedColumns,
+                    ...expandableProps,
+                },
+            })
+
+            // 两段 A 各自出现分组标题行，但共用键 'A'
+            expect(
+                wrapper.findAll('.caomei-data-table__row-group-cell').map((cell) => cell.text()),
+            ).toEqual(['A', 'B', 'A'])
+
+            await groupToggles(wrapper)[0].trigger('click')
+
+            expect(groupToggles(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+                'true',
+                'false',
+                'true',
+            ])
+            expect(wrapper.findAll('.caomei-data-table__row').map((row) => row.text())).toEqual([
+                'Ada',
+                'Cara',
+            ])
+        })
+
+        it('分组值为 null 时以空串作为分组键参与展开集合', async () => {
+            const wrapper = mount(GroupedDataTable, {
+                props: {
+                    data: [
+                        { name: 'Ada', dept: null },
+                        { name: 'Bob', dept: null },
+                        { name: 'Cara', dept: 'B' },
+                    ],
+                    columns: groupedColumns,
+                    ...expandableProps,
+                },
+            })
+
+            await groupToggles(wrapper)[0].trigger('click')
+
+            expect(wrapper.emitted('update:expandedRowGroups')?.[0]?.[0]).toEqual([''])
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        })
+        it('受控数组原地变更后移除受控 prop，退回自持时沿用最新值', async () => {
+            const expandedRowGroups = reactive<string[]>([])
+            const wrapper = mount(GroupedDataTable, {
+                props: { data: groupedData, columns: groupedColumns, ...expandableProps, expandedRowGroups },
+            })
+
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+
+            // 原地 push（不替换数组引用）：deep 监听须把新值同步进内部值
+            expandedRowGroups.push('A')
+            await nextTick()
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+
+            await wrapper.setProps({ expandedRowGroups: undefined })
+
+            // 退回自持后沿用已同步的 ['A']，而非停留在初始的空数组
+            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(2)
+        })
+
+        it('空数据时渲染空态且不渲染切换按钮', () => {
+            const wrapper = mount(GroupedDataTable, {
+                props: { data: [], columns: groupedColumns, ...expandableProps },
+            })
+
+            expect(groupToggles(wrapper)).toHaveLength(0)
+            expect(wrapper.find('.caomei-data-table__empty').exists()).toBe(true)
+        })
     })
 })

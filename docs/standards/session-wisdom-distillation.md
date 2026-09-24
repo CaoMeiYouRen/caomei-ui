@@ -17,6 +17,8 @@
 
 > 维护注意：`current-task.yaml` 是**YAML 形态的纯文本任务态**（非严格 YAML：条目值以 `**` 开头的行会被解析器当成别名指示符，长句里的半角冒号加空格也会触发嵌套映射错误）——**按文本读取，不要用 YAML 解析器解析**。维护检查项：顶层键唯一（曾出现两个 `progress:` 键，后者覆盖前者使先写的阶段摘要被静默丢弃，按 `rg -n "^[a-z_]+:" .session/current-task.yaml` 核对）、条目缩进与所属键一致（缩进错位会静默并入上一项）。
 
+> 维护注意：本文件与 `docs/design/governance/experience-archive.md`（归档载体）都按 `##` 分区。**用 `cat >>` 追加会把内容写进最后一个分区**（曾把活跃条目落进「已蒸馏条目 (Historical)」段，计数脚本随即不再命中该条、活跃数不变且静默）。追加前先 `grep -n '^## '` 确认目标分区边界，或用编辑工具锚定分区标题插入。
+
 `todo.md` 负责阶段跨度（周），`.session/current-task.yaml` 负责 session 跨度（小时），两者同步不替代。相关流程见 `todo-manager` skill 与 `@full-stack-master` agent。
 
 目标：有价值的跨 session 发现统一沉淀到 `docs/`，避免仅本地留存、随 session 膨胀与过时残留，使其在所有分支与机器可查。

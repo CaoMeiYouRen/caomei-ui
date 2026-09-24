@@ -115,6 +115,9 @@ chromium.launch({
 - **DOM 属性快照须剔除无语义易变属性**：`data-v-*`（Vue scoped 哈希）跨构建必然变化；Reka / 上游 `useId` 的实例计数器（如 `reka-dropdown-menu-content-v-42`）会随夹具中组件数量与挂载顺序漂移，使 `aria-controls` / `id` 被报成差异。过滤口径：**归一计数、保留名称**（`-v-\d+` → `-v-*`），这样「`aria-controls` 指向哪一类面板」仍可断言。diff 工具须按属性名逐项比较，值序列化为**单属性对象**（字符串会被按字符索引展开成上百条假差异）。
 - **瞬时元素的采样必须排在交互型采样之前**：面板开合等交互会「偷走」自动消失元素的采样窗口（toast 默认时长内消失 → `waitForFunction(length >= N)` 超时、该项静默缺失，且两次采集同缺 → diff 仍报 0 差异，属**假通过**）。做法：瞬时元素先采，或交互后重新触发；采集结束须检查 `errors` 为空。
 - **计算样式 A/B 复用同一夹具**：夹具的 `test/capture/fixture/vite.config.mjs` 支持以 `CAOMEI_SRC` 指向 `HEAD` worktree，可在同一夹具下采集改动前 / 改动后。**worktree 没有 `node_modules` 时页面空白、`waitForSelector` 超时**（解析不到 `reka-ui` 等依赖）——`ln -s <repo>/node_modules <worktree>/node_modules` 即可。
+- **表格列「不渲染单元格」会破坏 `table-layout: auto` 的列对齐**：body 行少一个 `td` 时浏览器把后续单元格映射到前 N-1 列，数据整体左移；happy-dom 无布局引擎，单测全绿也发现不了。列隐藏 / 占位类改动必须在真实浏览器取**逐列 x 区间**作证据（空白占位修复后 0 偏差）。
+- **登记表驱动的「策展子集」页面，断言以登记表实际成员为参照**：画廊 / 组件总览按登记表渲染且**只登记部分组件**，用「A 与 B 之间」或完整组件集定位新项会必然失败；应断言**该组实际相邻成员序列**（或先读登记表得出预期再比对）。「顺序不变式」类断言同样以登记表为事实源。
+- **容器内 `vitepress preview` 可能对所有页面 crash（含 `/`）**：dev 服务（`docs:dev`）真机正常，但 `docs:build` + preview 下 Chromium 报 `Page crashed`（`domcontentloaded` 也崩，`--no-sandbox` / 降等待策略均无效）——属**环境限制而非改动缺陷**。可行替代：对 SSG 产物 HTML 做静态断言（卡数 / 卡名 / 顺序 / 链接 / 组件 SSR 节点与文本），并与 dev 真机的 hydration 后行为互补；结论须声明该边界，不要把 build 面记为「已浏览器验证」。
 
 ## 8. 组件测试写法
 
@@ -134,6 +137,9 @@ chromium.launch({
 - **不要用 `document.body.innerHTML = ''` 清理 teleport 内容**（组件 `attachTo: document.body` 时）：Vue 持有的锚点被移除会在卸载阶段抛 `Cannot read properties of null (reading 'nextSibling')`；Portal 清理交给 `enableAutoUnmount(afterEach)`，或 `unmount()` 后按选择器删具体节点。
 - **断言要挑「随实现变化而变」的量**：上游无条件输出的属性（如 `RovingFocusItem` 的 `tabindex="-1"`）恒真，应改为断言行为（聚焦后按键、`document.activeElement` 迁移路径）；集合类断言须先断言长度，`.every()` 在空集合上恒真。
 - **可访问名 / 不透明度等要断言「有效值」而非元素自身值**：`opacity` 沿祖先链连乘（`0.6 × 0.6 = 0.36`）、Reka 会把 `calendar-label` 合成为「日历, <月份>」；只断言属性字符串会漏检，须用 role+name 查询、`ariaSnapshot` 或 CDP AX 树取证。
+- **VTU `trigger` 的修饰键结论与 `key` 相反**：`trigger('click', { metaKey: true })` **能**设置修饰键（options 进 `getEventProperties` 的 init dict，`new MouseEvent('click', { metaKey: true })` 生效），`trigger('click.meta')` 亦可（systemModifiers → `metaKey`）——与本节前文「点号修饰符会把 `key` 置为小写」的结论**相反，不可类推**；`key` 小写的成因与修法（改传 `{ key: '…' }`，Reka TagsInput 的 `Backspace` 即此语境）见前文。
+- **受控组件测试必须区分「受控」与「自持」两种累积路径**：受控模式下点击只抛事件、状态来自 prop，**父级不回写时多次点击不累积**（每次从 prop 现值出发）；「连续点击累积」类断言只能在自持模式或显式 `setProps(emitted)` 回写后成立，断言渲染结果时也须先回写再断言。同理，`defineModel` 下「传 `modelValue` 但不监听 `update:modelValue`」仍会立即反映到渲染，断言「受控不回写 → 渲染冻结」必然失败（语义见[开发规范 §5](./development.md#_5-vue-组件准则)）。
+- **依赖 collection 注册表的键盘交互须等一个 tick**：Reka `useCollection` 的 `collectionRef` 在异步 watch（pre-flush）中赋值，`getItems()` 在未就绪时**直接返回 `[]`** → 挂载后立即派发依赖 collection 的键盘交互（如 TagsInput 的 Backspace 选中 / 删除）会静默无效（无异常、`preventDefault` 未调用、状态不变）。单测须在 `mount` 后 `await nextTick()` 再派发；排查「派发了但毫无反应」时先查依赖的注册表是否已就绪。
 
 ## 9. 反模式
 
@@ -151,3 +157,5 @@ chromium.launch({
 - 断言只覆盖一个轴会漏检另一轴：允许换行 / 滚动的容器除横向口径外必须同时断言 `scrollHeight <= clientHeight + 1` 与「成员 rect 落在容器 client rect 内」。
 - **清单 / 枚举类内容的断言覆盖全集而非抽样**：迁移节的「未实现清单」等应把关键词集合与清单条目一一对应并用 `.every()` 断言（只取 2 个词会被判粒度过窄、无法防回退）。
 - **选择器 / 括号分析类守卫须先剥离属性选择器引号内容**（`replace(/"[^"]*"|'[^']*'/g, '""')`），否则 `[data-x="where("]` 会干扰括号配对判定；生效性证据的固定形态是「注入一条反例 → 守卫 exit 1；还原后 `git diff --stat` 零输出且重新 exit 0」（负向验证的一般要求见 [AI 协作规范 §3.5](./ai-collaboration.md#_3-5-3-轮未过的改进协议-先缩面、再防复发、缺信息先取证)，本节只承载测试面细化）。
+- **门禁脚本的「抗静默收窄」+「允许名单反向校验」标准手法**：受检文件数**下界** + 关键前缀覆盖（缺一即失败）+ 空扫描拒绝；允许名单逐条断言「文件存在 + 仍含被放行形态」（防清单腐烂）；允许名单与相邻守卫的同类登记表用**集合相等断言**机检，消除第二事实源漂移。参照 `scripts/docs/check-interpolation.mjs`。
+- **单个 `describe` 回调超过 600 行会撞 `max-lines-per-function`**：给既有测试文件追加一组用例时若外层 `describe` 溢出，应把该组提为同文件**顶层 `describe`** 或落独立测试文件；`eslint --fix` 只修缩进、不会搬文件，拆分后须同步 import（漏 `nextTick` 等会得到一次假失败）。

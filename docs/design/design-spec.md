@@ -325,6 +325,8 @@
 
 > TagsInput 迁移映射（已实现）：PrimeVue `Chips`（v4 起为 `InputChips` 的旧名）→ `<CaomeiTagsInput>`，**`Chips` 迁移首选本组件**，`AutoComplete + multiple` 降为**备选**（后者是带选项面板的搜索选择，语义不同，仅在需要异步建议时使用）。映射：`modelValue` 同名（`string[]`）；`separator` → `delimiter`（默认 `,`，另支持正则）；`max` 同名；`allowDuplicate` 同名但**默认相反**（PrimeVue 默认 `true` 允许重复，本库默认 `false` 拒绝重复并在拒绝时抛 `invalidInput`）；`addOnBlur` 同名（默认 `false`）；`inputId` → `id`、`ariaLabel` → `label`、`ariaLabelledby` 经透传作用于输入框；`invalid` / `disabled` / `placeholder` 同名；`fluid` 删除（字段默认 `width: 100%`）。**本库新增或改默认**：`showClear` / `clearLabel`、`size`（`sm` / `md` / `lg`）、`addOnPaste`（**默认 `true`**，与上游 Reka 的默认相反，粘贴按分隔符拆分）、`addOnTab`（默认 `false`）、`label`、`invalidInput` 事件。**包装层 a11y 修复**：标签项显式声明 `role="group"`（Reka 在 `role=generic` 的 div 上输出 `aria-labelledby`，ARIA 1.2 禁止在 generic 上命名；改 `group` 后 axe 无 `aria-prohibited-attr`，未新增例外清单条目）；删除按钮的 `tabindex="-1"` 为 **Reka 上游默认**（非包装层修改），键盘删除走「方向键选中 + `Backspace` / `Delete`」；有标签时字段根输出 `data-filled` 以接入 `FloatLabel` 的 `over` 浮动态。**未实现**：`#chip` / `#chipicon` 插槽、`removeTokenIcon` / `chipIcon`、`variant`（`outlined` / `filled`）、`pt` / `dt` / `unstyled`、对象型标签值（Reka 的 `convertValue` / `displayValue` 未暴露）。
 
+> **迁移对齐「命名」不等于复制「行为」**：API 命名对齐上游（如 PrimeVue）时，若逐字节照搬上游实现，会把上游缺陷一并搬入——`DataTable` subheader 曾按上游「不渲染分组列数据单元格」实现，导致数据行整体左移一列、与表头错位（primefaces/primevue#6496，master 未修）。正确做法：取**一方源码**核对契约（`DataTable.d.ts` 的 slot 类型 / `BodyRow.vue` 的 `shouldRenderRowGroupHeader` 与 `colspan` 计算）而非只读文档，并把每处偏离登记为「有意差异」（见 §7 各条 `**已知差异（有意）**`）。
+
 ## 8. 规范落实与可验证脚本（已实现）
 
 - **规范可验证脚本**：`scripts/governance/check-design.mjs`，经 `pnpm check:design` 运行，已纳入 `pnpm governance:check` 与 `pnpm verify`：

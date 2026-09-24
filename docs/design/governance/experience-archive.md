@@ -4,6 +4,61 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-24 阶段归档蒸馏（Phase 13）
+
+> 本批活跃 **24 条全部处置**：分态 `migrate 24 / compress 0 / remove 0 / keep 0`。归档摘要 **24 行**（可复算：`awk '/^## 2026-09-24 阶段归档蒸馏（Phase 13）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`ai-collaboration §8`、`planning §7`、`testing §7/§8/§10`、`development §5`、`documentation-site §11/§13`、`design-spec §7`、`guide/release.md §3`、`session-wisdom-distillation §1`；其中 **2 条**（`current-task.yaml` 维护口径 / 计数多处载体漂移）的落点已在此前批次存在——本次仅补摘要与链接（对应摘要行末标「落点已存在」）；其余 **22 条**为本批新增或扩写落点。`wisdom.md` 活跃段清空并保留指针。
+
+### 会话与规划载体（→ [Session Wisdom 蒸馏机制 §1](../../standards/session-wisdom-distillation.md)）
+
+- [2026-09-23] [gotcha] `.session/current-task.yaml` 是「YAML 形态的纯文本任务态」（非严格 YAML），按文本读取 + `rg -n "^[a-z_]+:"` 核对顶层键唯一 + 缩进与所属键一致 → docs/standards/session-wisdom-distillation.md §1（落点已存在）
+- [2026-09-23] [gotcha] 向按 `##` 分区的台账（`wisdom.md` / `experience-archive.md`）用 `cat >>` 追加会落进最后一个分区、计数脚本静默不命中；追加前先 `grep -n '^## '` 确认边界 → docs/standards/session-wisdom-distillation.md §1
+
+### 取数与门禁（→ [AI 协作规范 §8](../../standards/ai-collaboration.md)）
+
+- [2026-09-23] [gotcha] 归档清空 `todo.md` 会让「链接文字含条目编号 → `docs/plan/todo.md`」的历史规划指针集体失效；清理后立即跑 `check-governance-records` 并改指 `todo-archive.md` → docs/standards/planning.md §7 + docs/standards/ai-collaboration.md §8
+- [2026-09-23] [gotcha] 治理记录「最终 revision」计数须区分 staged 与工作区：口径取「提交前最后一次全量暂存后的工作区」，并写明命令 + 范围 + 快照日期 → docs/standards/ai-collaboration.md §8
+- [2026-09-23] [pattern] 同一批次的规模 / 计数写进多处载体必然漂移：计数只在治理记录一处定义并附可复算命令（钉持久 ref），索引与 `todo.md` 只留指针 → docs/standards/ai-collaboration.md §8（落点已存在）
+- [2026-09-24] [gotcha] 调用方审计 prompt 不得预写「未发生的落点状态」：F 阶段产物一律写「待 F 阶段建立」，不用完成时 → docs/standards/ai-collaboration.md §8
+- [2026-09-24] [gotcha] 同一批次内的修复点会改变 diff 行数，治理记录的规模口径必须在修复点全部落地后重算 → docs/standards/ai-collaboration.md §8
+- [2026-09-24] [gotcha] 治理记录计数的两类自引用陷阱：① `git ls-files` 枚举受检面的守卫在记录 `git add` 后计入记录自身（交付态恒 +1）；② 「唯一口径」的复算命令缺 pathspec → docs/standards/ai-collaboration.md §8
+
+### 测试与浏览器验证（→ [测试规范 §7](../../standards/testing.md)）
+
+- [2026-09-23] [gotcha] 表格列「不渲染单元格」破坏 `table-layout: auto` 的列对齐（body 少一个 `td` → 数据整体左移），happy-dom 无布局引擎发现不了；列隐藏 / 占位类改动须取真实浏览器**逐列 x 区间** → docs/standards/testing.md §7
+- [2026-09-23] [gotcha] 画廊 / 组件总览是「策展子集」，断言以登记表**实际相邻成员序列**为参照，不能用「A 与 B 之间」或完整组件集 → docs/standards/testing.md §7
+- [2026-09-23] [gotcha] 容器内 `vitepress preview` 可能对所有页面 crash（环境限制非改动缺陷）；替代为 SSG 产物静态断言并与 dev 真机互补，结论须声明边界 → docs/standards/testing.md §7
+
+### 组件测试写法（→ [测试规范 §8](../../standards/testing.md)）
+
+- [2026-09-23] [gotcha] VTU `trigger` 的修饰键与 `key` 结论相反：`trigger('click', { metaKey: true })` / `trigger('click.meta')` 能设修饰键；`trigger('keydown.backspace')` 置**小写** key → 用 `trigger('keydown', { key: 'Backspace' })` → docs/standards/testing.md §8
+- [2026-09-23] [gotcha] Reka `useCollection` 的 `collectionRef` 在异步 watch（pre-flush）中赋值，未就绪时 `getItems()` 返回 `[]`；依赖它的键盘交互须 `mount` 后 `await nextTick()` 再派发 → docs/standards/testing.md §8
+- [2026-09-23] [pattern] 受控组件测试须区分「受控」与「自持」两种累积路径：受控模式下父级不回写时多次点击**不累积** → docs/standards/testing.md §8
+
+### 守卫型测试（→ [测试规范 §10](../../standards/testing.md)）
+
+- [2026-09-23] [pattern] 单个 `describe` 回调超 600 行会撞 `max-lines-per-function`：提为同文件顶层 describe 或落独立文件；`eslint --fix` 不会搬文件，拆分后同步 import → docs/standards/testing.md §10
+- [2026-09-24] [pattern] 门禁脚本的「抗静默收窄」（文件数下界 + 关键前缀覆盖 + 空扫描拒绝）与「允许名单反向校验」（存在 + 仍含被放行形态 + 同类登记表集合相等断言） → docs/standards/testing.md §10
+
+### 组件实现（→ [开发规范 §5](../../standards/development.md)）
+
+- [2026-09-23] [gotcha] 新增 locale 文案键有 3 处载体，其中 `docs/components/locale.md` 中英台账**无任何机检**；加键前先 `rg` 台账行并同批更新 → docs/standards/development.md §5
+- [2026-09-23] [pattern] Vue 3.5 `defineModel` 是「本地值 + prop 同步」而非「受控必须回写」；断言「受控不回写 → 渲染冻结」必然失败 → docs/standards/development.md §5
+- [2026-09-23] [gotcha] Reka primitive 会在 `role=generic` 上输出命名属性（ARIA 1.2 禁止）；包装层改显式 `role="group"`（允许命名且无必需父级）即可免登记例外 → docs/standards/development.md §5
+- [2026-09-23] [pattern] `aria-controls` 只在目标元素实际渲染时输出，否则形成悬空 idref（`aria-expanded` 则恒定输出） → docs/standards/development.md §5
+
+### 迁移映射（→ [设计规范 §7](../design-spec.md)）
+
+- [2026-09-23] [pattern] 迁移对齐「命名」不等于复制「行为」：取**一方源码**核对契约（而非只读文档），并把每处偏离登记为「有意差异」 → docs/design/design-spec.md §7
+
+### 文档站（→ [文档与演示站设计 §11 / §13](../documentation-site.md)）
+
+- [2026-09-23] [gotcha] 新增组件的登记面不止「§11 侧栏 / 总览页 / 画廊登记表」三项，还有组件清单 §5（无机检）；收口时须人工回扫 → docs/design/documentation-site.md §11
+- [2026-09-24] [gotcha] VitePress 围栏代码块由 `v-pre` 豁免字面双花括号、**行内代码不豁免**（仅 `-vue` 后缀语言保留插值）——守卫受检面取「围栏外」的依据 → docs/design/documentation-site.md §13
+
+### 发布流程（→ [发布指南 §3](../../guide/release.md)）
+
+- [2026-09-24] [gotcha] `npm version <v>` 不是本仓的发布姿势：它直接提交（裸版本号，非 Conventional 形态）并打 annotated tag，tag 早于 `pnpm changelog` 提交 → tag 视图不含 CHANGELOG 段 → docs/guide/release.md §3
+
 ## 2026-09-23 阶段归档蒸馏（Phase 12）
 
 > 本批活跃 **20 条全部处置**：分态 `migrate 20 / compress 0 / remove 0 / keep 0`。归档摘要 **20 行**（可复算：`awk '/^## 2026-09-23 阶段归档蒸馏/,/^## 2026-09-19 阶段归档蒸馏/' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`planning §3.8/§4/§9`、`ai-collaboration §8`、`testing §7/§10`、`development §7/§12`、`session-wisdom-distillation §1`；其中 **5 条**（编号规则 / 不得预写 Gate 结论 / 死声明机制 / 注释内 glob / 守卫生效性证据）的落点此前已存在——最后一条此前仅为 `ai-collaboration §3.5` 的通用要求，本批另向 `testing §10` 补专门化条款；其余 **15 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。

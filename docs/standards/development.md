@@ -100,6 +100,10 @@ test/                     # 单元与 E2E 测试
 - 组件间复用（如 Paginator 内嵌 Select）会把被复用组件的交互契约带进宿主：新控件默认不受宿主 `disabled` 等约束，必须显式透传并补对应用例，否则宿主的既有承诺出现用例覆盖不到的缝隙。
 - 组件默认值变更会连带证伪迁移台账里的既有结论，须回扫全部载体（中英组件页 / 主题 / 设计规范 / 评估与交接记录）并给受影响用量留可复现命令。
 - `useSlots()` 返回的是对 `instance.slots` 的**实时对象**（Vue 3.5 为内部原型链对象，`getCurrentInstance().slots` 等价），不是 setup 期快照；插槽存在性判断放在模板渲染期，不要据「setup 期读到空对象」写技术论断。
+- `defineModel` 是「**本地值 + prop 同步**」而非「受控必须回写」：getter 返回内部 `localValue`（由 `watchSyncEffect` 从 prop 同步），setter 先写 `localValue` 再 emit。故父级传 `modelValue` 但**不监听** `update:modelValue` 时，组件写入仍立即反映到渲染（等价自持）；要区分真正的受控语义须用显式 props + 手动回写（`selection` / `sortField` 那类手写受控开关才是「不回写即冻结」）。
+- Reka primitive 会在 `role=generic` 的元素上输出命名属性（如 `TagsInputItem` 的 `aria-labelledby`），而 ARIA 1.2 **禁止在 `generic` 上命名** → axe 报 `aria-prohibited-attr`。包装层的低成本修法是给该元素显式声明**允许命名且无必需父级**的角色（本库用 `role="group"`），修完 axe `V=0 / I=0` 且**无需新增例外清单条目**；反例 `role="listitem"` / `role="option"` 会引入必需父级校验（`aria-required-parent`）。
+- `aria-controls` 只在目标元素**实际渲染**时输出：折叠 / 展开类控件的目标行 / 面板仅在展开态渲染，恒定输出会形成悬空 idref（axe `aria-valid-attr-value` 检查 id 引用存在性）。反之 `aria-expanded` 恒定输出、表达状态。
+- **新增 locale 文案键有 3 处载体**：`src/locale/types.ts`（类型）+ 5 个语种文件（`check-locale-keys` 覆盖结构与条数）+ `docs/components/locale.md` 及英文页的「命名空间 → 文案键」穷尽式索引表（**无任何机检**）。加键前先 `rg` 台账行并同批更新，否则 `docs:check` / `check-locale-keys` 全绿而 Review Gate 判 blocker（台账 ↔ `src/locale` 对账守卫见 [Backlog](../plan/backlog.md)）。
 
 ## 6. 组件 API 设计约定
 

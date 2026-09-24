@@ -142,6 +142,8 @@ docs/
 
 > 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。
 
+> **新增组件的登记面不止「§11 侧栏 / 组件总览页 / 画廊登记表」三项**：还有 [组件设计 §5](./components.md) 的组件清单（含「（已实现）」标记）。前三项分别由 `docs:check:structure`（侧栏不变式）/ `check-showcase-registry` 对账，**组件清单与总览页成员目前无机检**（总览页成员对账已在 [Backlog](../plan/backlog.md) 在册）——收口「新增组件」类条目时须人工回扫这两处。
+
 ## 12. 演示动画的诊断与覆盖约定
 
 - 诊断「某组件没有动画」类报告时，须在**两种上下文**各测一次 `getComputedStyle(el).animationDuration`：默认与 `emulateMedia({ reducedMotion: 'reduce' })`。文档站在 reduced-motion 下对 `*` 注入 `animation-duration: 1ms !important`，会把「演示静态化」误判为组件缺陷。
@@ -159,6 +161,7 @@ docs/
 - **版本展示的单一来源**：站点展示的当前版本派生自仓库根 `package.json`（配置经 `themeConfig.version` 暴露，页面用 `useData()` 的 `theme.version` 插值展示）。页面里的插值写法是**有意**的 Vue 插值（`.md` 按 Vue 模板编译），与本条末项「不要写双花括号」的告诫不冲突——后者针对「描述插值语法」而非「消费站点数据」；**描述该写法时不要写字面双花括号**（与本节末项同理，写成字面量会让描述页自身抛渲染错误）。版本展示面由 `pnpm docs:check:version` 看守：已解析配置的版本必须等于 `package.json`，且展示面不得出现三段式版本字面量（派生即可，发版无需手改站点文档）。**边界**：仓库根 `README.md` / `README.en-US.md` 由 GitHub / npm 渲染、无插值能力，版本表述仍需人工同步（不在该守卫受检面内）。
 - `.md`（含治理记录）里出现**双花括号插值**时——即使在行内代码内——会被 VitePress 当 Vue 模板求值，渲染该页时抛 `TypeError`（**构建仍 exit 0**，只在渲染日志可见）。描述插值语法时用文字（如「只解构单个花括号占位并直接输出字段值」），不要写出双花括号。
 - **双花括号插值的机检守卫**：`pnpm docs:check:interpolation` 扫描 `docs/**/*.md`，把**围栏外**（含行内代码）出现的字面双花括号判为 `literal-interpolation` 并失败（消息带 `file:line` 与片段）；围栏代码块由 VitePress 的 `v-pre` 豁免（除 `-vue` 后缀语言的围栏会保留插值，本仓未使用，属已知不覆盖）。允许插值的页面登记在守卫的 `INTERPOLATION_ALLOWLIST`（当前为中英《快速上手》与《版本与兼容策略》四页，仅放行消费 `theme.version` 的形态），登记表做**反向校验**（登记页不再含该插值即 `allowlist-stale` 失败，防清单腐烂），并对受检文件数下界与中英前缀覆盖设断言（`scan-scope-narrowed`，防受检范围被静默收窄）。
+- **围栏豁免的机制**：VitePress 给**普通语言**（`vue` / `css` / `ts` 等）的围栏代码块加 `v-pre`（编译期指令、产物 HTML 不出现），故围栏内的字面双花括号**不被求值**；仅 lang 匹配 `/-vue(?=:|$)/` 的围栏保留插值（上游 PR #875）。**行内代码不豁免**（仍参与模板求值，即历史两次踩中的形态）——这正是守卫受检面取「围栏外」的依据。
 
 ## 14. API 表与公共 props 继承
 

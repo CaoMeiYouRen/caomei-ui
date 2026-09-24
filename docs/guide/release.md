@@ -24,6 +24,8 @@
 7. **校验**：`npm view caomei-ui versions dist-tags`；`npm pack caomei-ui --dry-run` 或安装到临时目录做冒烟。
 8. **记录**：把发布结论与关键实测值落到可提交位置（规划文档或提交信息）。
 
+> **不要用 `npm version` 替代本流程**：`npm version <v>` 会**直接提交**（信息为裸版本号，非 Conventional 形态）并打 annotated tag，且 tag 指向版本提交、`pnpm changelog` 提交在其后 → **tag 视图不含 CHANGELOG 段**（0.3.0 实测）。正确次序见本节 1~4 步，且版本基线提交前须复跑 `pnpm verify` 并留痕。确需借用其版本号写入能力时，加 `--no-git-tag-version`（该开关同时关闭自动提交与打 tag），再按本节 3~4 步自行提交与打 tag。
+
 **发版后的文档同步边界**：站点内展示的版本号由 `themeConfig.version` 从 `package.json` **自动派生**（页面用 `useData()` 的 `theme.version` 插值，由 `pnpm docs:check:version` 看守），发版时**无需手改站点文档**；但仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述仍需人工同步，属发布后校验清单的一部分。
 
 **CHANGELOG 生成口径**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）基于 `conventional-changelog` 与 `conventional-changelog-cmyr-config` 预设生成 / 重写 `CHANGELOG.md`；分组标题、commit 链接与模板均来自该预设（`package.json` 的 `changelog.language` 为 `zh`），生成口径与 semantic-release 一致。脚本对预设做两处定向补丁：① 预置 `headerPattern` 不识别 `type(scope)!: …`，会整条丢弃 `BREAKING CHANGE` 提交（semantic-release 走同一预设，行为相同），补 `!?` 后恢复；② 本仓提交正文含 Vue 插槽名（`#option`）与十六进制色值（`#60a5fa`），会被 GitHub 的 issue 前缀规则误判为引用，故关闭引用抽取。已知残留：预设 writer 仍会把**提交标题**中的 `#<数字>` 渲染为 issue 链接（当前历史 0 命中，出现时需补丁或改用其他标题写法）。另注意：**tag 建立后不可再用同名 `--version=` 重生成该段**——与已存在 tag 同名时会触发 `Unreleased` 置换（如需修复历史发布说明，应改名或改期另发）。依赖 `conventional-changelog@7.2.0` 与 `conventional-changelog-cmyr-config@3.0.0` 精确钉定：预设的字符串模板配套 `conventional-changelog-writer@8`，升到内置 writer@9 的 `conventional-changelog@8` 会在运行期抛 `headerPartial is not a function`。

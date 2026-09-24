@@ -42,7 +42,7 @@
 pnpm add caomei-ui
 ```
 
-Current version is `0.2.0` (style entry: `caomei-ui/theme.css`; 0.2.0 introduced a breaking package-format change from `caomei-ui/styles.css`). The library requires Vue 3.5+ as a peer dependency. API and directory structure may change before 1.0.
+Current version is `0.3.0` (style entry: `caomei-ui/theme.css`; 0.2.0 introduced a breaking package-format change from `caomei-ui/styles.css`; 0.3.0 adds `DataTable` row grouping / expandable row groups / row expansion / multi-sort and the `TagsInput` component). The library requires Vue 3.5+ as a peer dependency. API and directory structure may change before 1.0; see the [versioning & compatibility page](./docs/guide/version-policy.md) for the frozen surfaces.
 
 ## 📖 Usage
 

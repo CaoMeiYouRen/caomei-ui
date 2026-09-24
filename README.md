@@ -23,7 +23,7 @@
 
 ## 📌 项目状态
 
-组件库已完成 Tier 0 ~ Tier 3 稳定批组件与各阶段补全：首个正式版本 **0.1.0** 于 2026-09-19 发布，当前最新版本 **0.2.0** 于 2026-09-22 发布到 npm（`latest`）。**0.2.0 含破坏性包形态变更**：样式入口由 `caomei-ui/styles.css` 改为 `caomei-ui/theme.css`（下游修复指引见[发布指南](./docs/guide/release.md#9-包形态与兼容性)）。Phase 12（发布就绪、文档对外与一致性收官）已完成并归档，当前无进行中阶段。采用本地手动发布，CI 自动发布暂缓，下游接入验证由发布后的实际迁移反馈驱动。0.x 期间 API 与目录结构仍可能调整。
+组件库已完成 Tier 0 ~ Tier 3 稳定批组件与各阶段补全：首个正式版本 **0.1.0** 于 2026-09-19 发布，当前最新版本 **0.3.0** 于 2026-09-24 发布到 npm（`latest`）。**0.2.0 含破坏性包形态变更**：样式入口由 `caomei-ui/styles.css` 改为 `caomei-ui/theme.css`（下游修复指引见[发布指南](./docs/guide/release.md#9-包形态与兼容性)）；**0.3.0** 补齐 `DataTable` 行分组 / 可折叠分组 / 行展开 / 多列排序并新增 `TagsInput` 组件，同时明确 [0.x API 冻结窗口](./docs/guide/version-policy.md)。Phase 13（组件能力补齐与 dependfix 迁移解阻）条目已全部交付，阶段收口与归档待执行。采用本地手动发布，CI 自动发布暂缓，下游接入验证由发布后的实际迁移反馈驱动。0.x 期间 API 与目录结构仍可能调整（冻结面见[版本与兼容策略](./docs/guide/version-policy.md)）。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险。
 - 阶段进展、组件清单与下一步方向见[路线图](./docs/plan/roadmap.md)、[待办事项](./docs/plan/todo.md) 与 [Backlog](./docs/plan/backlog.md)。
@@ -47,7 +47,7 @@
 pnpm add caomei-ui
 ```
 
-当前最新版本为 `0.2.0`（样式入口为 `caomei-ui/theme.css`），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。0.x 阶段 API 与目录结构在 1.0 前可能调整。
+当前最新版本为 `0.3.0`（样式入口为 `caomei-ui/theme.css`），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。0.x 阶段 API 与目录结构在 1.0 前可能调整，冻结面见[版本与兼容策略](./docs/guide/version-policy.md)。
 
 需要参与开发或本地联调时，也可通过本地依赖（`file:` / `link:`）消费构建产物，步骤见[本地联调](./docs/guide/local-linking.md)。
 

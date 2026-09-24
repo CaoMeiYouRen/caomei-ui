@@ -1,6 +1,25 @@
 # caomei-ui
 
-# Unreleased (2026-09-22)
+# Unreleased (2026-09-24)
+
+# [0.3.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.2.0...v0.3.0) (2026-09-24)
+
+### ✨ 新功能
+
+* **data-table:** 支持可折叠分组 ([b18fe85](https://github.com/CaoMeiYouRen/caomei-ui/commit/b18fe85))
+* **data-table:** 支持多列排序与降序优先 ([22fc0aa](https://github.com/CaoMeiYouRen/caomei-ui/commit/22fc0aa))
+* **data-table:** 支持行展开 ([d3749e0](https://github.com/CaoMeiYouRen/caomei-ui/commit/d3749e0))
+* **data-table:** 新增行分组能力 ([24eaa16](https://github.com/CaoMeiYouRen/caomei-ui/commit/24eaa16))
+* **docs:** 新增文档站双花括号插值机检守卫 ([3fd2f36](https://github.com/CaoMeiYouRen/caomei-ui/commit/3fd2f36))
+* **docs:** 新增登记表驱动的组件画廊页 ([e801d64](https://github.com/CaoMeiYouRen/caomei-ui/commit/e801d64))
+* **docs:** 新增站点版本信息与兼容策略 ([5643447](https://github.com/CaoMeiYouRen/caomei-ui/commit/5643447))
+* **docs:** 新增站点版本单一来源守卫 ([d486747](https://github.com/CaoMeiYouRen/caomei-ui/commit/d486747))
+* **docs:** 新增组件画廊登记表对账守卫 ([899eaf4](https://github.com/CaoMeiYouRen/caomei-ui/commit/899eaf4))
+* **tags-input:** 新增 TagsInput 标签输入组件 ([fdbfa1f](https://github.com/CaoMeiYouRen/caomei-ui/commit/fdbfa1f))
+
+### 🐛 Bug 修复
+
+* **docs:** 修复导航栏 768–959px 横向溢出并更正历史归因 ([3213a01](https://github.com/CaoMeiYouRen/caomei-ui/commit/3213a01))
 
 # [0.2.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.1.0...v0.2.0) (2026-09-22)
 

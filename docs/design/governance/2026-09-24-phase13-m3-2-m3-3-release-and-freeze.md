@@ -1,11 +1,11 @@
 # M3-2 / M3-3 迁移交付面收口：0.3.0 发布执行与 0.x API 冻结窗口
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M3 迁移交付面（M3-2 版本交付 / M3-3 冻结窗口声明）。
-> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办事项](../../plan/todo.md) Phase 13 M3；同批上游记录：[M3-1 迁移映射收口](./2026-09-23-m3-migration-delivery.md)。
+> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办归档](../../plan/todo-archive.md) Phase 13 M3；同批上游记录：[M3-1 迁移映射收口](./2026-09-23-m3-migration-delivery.md)。
 
 ## 1. 范围与目标
 
-按 [待办事项](../../plan/todo.md) M3-2 / M3-3：
+按 [待办归档](../../plan/todo-archive.md) M3-2 / M3-3：
 
 - **M3-2**：版本基线 + `pnpm changelog` + annotated tag + 按 runbook 本地手动发布 + 发布后校验（含四项子路径冒烟），版本 / CHANGELOG / tag 三者一致，`npm view` = 0.3.0，发布记录登记治理索引。
 - **M3-3**：在 `guide/version-policy.md`（中英）声明 1.0 前不再变更的能力面（组件 props / 子路径导出 / token 契约）与仍可能调整的面，并与 dependfix `docs/design/governance/caomei-ui-migration.md` §12 的上收条件 3 对齐。

@@ -1,7 +1,7 @@
 # M1-2 `DataTable` 可折叠分组（expandableRowGroups）交付与验证记录
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M1 `DataTable` 能力补齐（dependfix 迁移关键路径）→ M1-2 可折叠分组。
-> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办事项](../../plan/todo.md) Phase 13 M1-2；前置条目见 [M1-1 记录](./2026-09-23-m1-1-row-grouping.md)。
+> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办归档](../../plan/todo-archive.md) Phase 13 M1-2；前置条目见 [M1-1 记录](./2026-09-23-m1-1-row-grouping.md)。
 
 ## 1. 范围与目标
 

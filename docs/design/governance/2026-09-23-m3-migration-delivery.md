@@ -1,11 +1,11 @@
 # M3 迁移交付面交付与验证记录（M3-1 迁移映射与不支持清单收口）
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M3 迁移交付面。
-> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办事项](../../plan/todo.md) Phase 13 M3；上游记录：M1 见 [M1-1](./2026-09-23-m1-1-row-grouping.md) / [M1-2](./2026-09-23-m1-2-expandable-row-groups.md) / [M1-3](./2026-09-23-m1-3-row-expansion.md) / [M1-4](./2026-09-23-m1-4-multi-sort.md)，M2 见 [M2 `TagsInput`](./2026-09-23-m2-tags-input.md)。
+> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办归档](../../plan/todo-archive.md) Phase 13 M3；上游记录：M1 见 [M1-1](./2026-09-23-m1-1-row-grouping.md) / [M1-2](./2026-09-23-m1-2-expandable-row-groups.md) / [M1-3](./2026-09-23-m1-3-row-expansion.md) / [M1-4](./2026-09-23-m1-4-multi-sort.md)，M2 见 [M2 `TagsInput`](./2026-09-23-m2-tags-input.md)。
 
 ## 1. 范围与目标
 
-按 [待办事项](../../plan/todo.md) M3-1：在[从 PrimeVue 迁移](../../guide/primevue-migration.md)（中英）与[设计规范 §7](../design-spec.md) 补齐 `DataTable` 三项能力与 `TagsInput` 的映射，回扫「未实现 / 未暴露」清单与入口表一致性，且**不宣称穷尽**。
+按 [待办归档](../../plan/todo-archive.md) M3-1：在[从 PrimeVue 迁移](../../guide/primevue-migration.md)（中英）与[设计规范 §7](../design-spec.md) 补齐 `DataTable` 三项能力与 `TagsInput` 的映射，回扫「未实现 / 未暴露」清单与入口表一致性，且**不宣称穷尽**。
 
 **本条目只补指南层**：逐组件精确映射的权威仍是设计规范 §7——`DataTable` 行分组 / 可折叠分组 / 行展开 / 多列排序 / `sortDescFirst` 与 `TagsInput` 的映射在 M1 / M2 已登记于 §7 与各组件页，本条目不改 §7。指南的设计定位是「流程 + 通用约定 + 注意事项，不重复映射表」，故本条目补的是**入口表成员**与**通用陷阱注意事项（含指针）**。
 

@@ -1,7 +1,7 @@
 # M2 `TagsInput` 组件交付与验证记录（M2-1 实现与接线 / M2-2 组件页与示例 / M2-3 登记面接入）
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M2 缺失组件补齐（`TagsInput`）。
-> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办事项](../../plan/todo.md) Phase 13 M2；M1 记录见 [M1-1](./2026-09-23-m1-1-row-grouping.md) / [M1-2](./2026-09-23-m1-2-expandable-row-groups.md) / [M1-3](./2026-09-23-m1-3-row-expansion.md) / [M1-4](./2026-09-23-m1-4-multi-sort.md)。
+> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)；条目登记：[待办归档](../../plan/todo-archive.md) Phase 13 M2；M1 记录见 [M1-1](./2026-09-23-m1-1-row-grouping.md) / [M1-2](./2026-09-23-m1-2-expandable-row-groups.md) / [M1-3](./2026-09-23-m1-3-row-expansion.md) / [M1-4](./2026-09-23-m1-4-multi-sort.md)。
 
 ## 1. 范围与目标
 

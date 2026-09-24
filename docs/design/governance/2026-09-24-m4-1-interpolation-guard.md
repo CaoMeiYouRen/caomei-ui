@@ -1,11 +1,11 @@
 # M4-1 文档站双花括号插值机检守卫交付与验证记录
 
 > 阶段：Phase 13（组件能力补齐与 dependfix 迁移解阻）→ M4 治理守卫精选。
-> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)（D9 纳入 1 项）；条目登记：[待办事项](../../plan/todo.md) Phase 13 M4；同批上游记录：M3 见 [M3 迁移交付面](./2026-09-23-m3-migration-delivery.md)。
+> 范围依据：[下一阶段范围评估 §6 / §11](./2026-09-23-next-stage-scope-evaluation.md)（D9 纳入 1 项）；条目登记：[待办归档](../../plan/todo-archive.md) Phase 13 M4；同批上游记录：M3 见 [M3 迁移交付面](./2026-09-23-m3-migration-delivery.md)。
 
 ## 1. 范围与目标
 
-按 [待办事项](../../plan/todo.md) M4-1 与用户裁定 D9：为文档站补**双花括号插值机检守卫**——`docs/**/*.md` 中**围栏外**出现的字面双花括号纳入守卫，并登记允许插值的页面。
+按 [待办归档](../../plan/todo-archive.md) M4-1 与用户裁定 D9：为文档站补**双花括号插值机检守卫**——`docs/**/*.md` 中**围栏外**出现的字面双花括号纳入守卫，并登记允许插值的页面。
 
 **背景（真实缺陷面）**：VitePress 把 `.md` 当 Vue 模板编译，页面里出现的字面双花括号会被求值；2026-09-22 M2-1 落地时**两次踩中**（`design/documentation-site.md` 与 `guide/release.md` 的行内代码里写字面量 → 目标页抛 `TypeError: Cannot read properties of undefined (reading 'version')`）。该失败**只在渲染日志可见**，`pnpm docs:build` 仍 exit 0，无任何机检拦截。
 

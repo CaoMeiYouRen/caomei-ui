@@ -6,6 +6,7 @@
 >
 > - §1 候选池：仅收录**尚未决策 / 尚未交付**的候选。
 > - §2 维护约定。
+> - §3 已评估、不纳入（结论留档）：已判定**不进入候选池**的下游诉求与理由。
 >
 > 已交付与已归档条目随阶段迁入 [待办归档](./todo-archive.md)，本表不保留。
 
@@ -20,6 +21,12 @@
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
+| Button 图标按钮形态（`iconOnly`） | momei 迁移反馈 2026-09-25 §1.3 | 仅有 `#icon` + `variant="ghost"` 时仍按 `--caomei-button-padding-x` 渲染、非方形；下游表格行内动作 3 处各加本地类。候选：`iconOnly`，或「无默认插槽内容时自动收敛为方形」。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 中 |
+| Select 触发器 `#value` 插槽 | momei 迁移反馈 2026-09-25 §1.5 | 现仅 `#option`；触发器只能显示 `optionLabel` 文本，PrimeVue `#value` 的「图标 + 文案」触发器无等价写法。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 中 |
+| DataTable 分页对齐 token | momei 迁移反馈 2026-09-25 §1.4 | `.caomei-data-table__pagination` 硬编码 `justify-content: flex-end`（PrimeVue 默认居中），无 token 钩子，下游只能选择器级覆盖。候选：`--caomei-data-table-pagination-justify` | 低 |
+| Avatar `xl` 尺寸档位 | momei 迁移反馈 2026-09-25 §2.1 | 现仅 `sm` / `md` / `lg`；更大档位可用 `--caomei-avatar-size` 覆盖（组件页已给映射表，差异已登记为有意）。候选：补 `xl`，或维持「覆盖 token」口径 | 低 |
+| Select 字段层 class 透传（`fieldClass`） | momei 迁移反馈 2026-09-25 §1.1 | **条件候选**：`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层，组件上写宽度类静默无效。先补文档；出现文档无法覆盖的真实用例再评估 `fieldClass` | 低 |
+| Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -84,6 +91,7 @@
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 | 样式侧旧命名裸类守卫 | `findLegacyNaming` 只扫组件 `types.ts`，样式侧 `.caomei-*--small` / `--large` 回流无守卫（2026-09-21 实测 0 命中）；候选：把旧尺寸命名检测扩展到样式选择器。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M2-4（Phase 14 质量与一致性收口） | 低 |
 | check-design 声明解析健壮性 | `declarationsOf` 按 `;` 切分：值内含分号（如 `url(data:image/svg+xml;utf8,…)`）会造出伪造属性名（实测可复现误报，当前全库 0 暴露）；另属性名大小写未归一（`color` / `Color` 漏判）、CSS 嵌套内部不展开（既有解析面限制）。候选：只把匹配属性名形态的片段计为声明 + 非自定义属性名 `toLowerCase()` 比较。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M2-4（Phase 14 质量与一致性收口） | 低 |
+| 选择器 / 表格迁移陷阱文档补强 | momei 迁移反馈 2026-09-25 §1.1 / §2.2 / §2.3 | 三处未文档化的迁移陷阱：① `Select` 的 `class` / `$attrs` 落触发器，宽度类写在组件上静默无效；② `DataTable` 列 `headerClass` / `bodyClass` 的单元格由组件内部渲染，下游 scoped 样式静默不生效（须改用 `bodyStyle` / `headerStyle` 或全局类）；③ `showClear` 的 `hasValue` 口径不给「语义空值」留口。补 `primevue-migration.md` 陷阱表与相关组件页。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 低 |
 
 ### 1.7 服务层候选（composables）
 
@@ -101,6 +109,14 @@
 ## 2. 维护约定
 
 - 新增候选时注明来源与初步优先级。
-- 被否决的候选记录结论与理由。
+- 被否决的候选记录结论与理由（见 §3）。
 - 候选状态流转：§1 候选池 → 用户决策后登记到待办事项当前阶段 → 阶段完成后随待办归档迁移；**已交付 / 已归档条目不在本表保留任何内容**。
 - 重复发生或需按期重复执行的治理动作，按规划规范 §8 升级到[长期任务台账](./recurring.md)。
+
+## 3. 已评估、不纳入（结论留档）
+
+> 本节记录**已评估但判定不进入候选池**的下游诉求结论与理由（维护约定「被否决的候选记录结论与理由」的落点）；条目为判定记录，非待决策候选。
+
+| 诉求 | 来源 | 结论与理由 |
+|------|------|------------|
+| Select 选项 `null` 值支持（以独立哨兵区分「未选择」） | momei 迁移反馈 2026-09-25 §1.2 | **不纳入**：`optionValue` 收窄为 `string \| number` 属有意契约（对齐 Reka 可稳定比较子集），非字符串 / 数字选项不渲染已在[设计规范 §7](../design/design-spec.md) 与 Select 组件页声明；支持 `null` 会改变「未选择」语义，须另立契约。开发期告警已作为条件候选登记于 §1.1，评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) |

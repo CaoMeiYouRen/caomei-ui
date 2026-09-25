@@ -18,7 +18,7 @@
 | 任务 | 判定门槛 | 触发时机 | 上次执行 | 状态 |
 |------|----------|----------|----------|------|
 | 代码复用治理 | 同一模式 ≥3 处且语义一致，且抽取后净收益为正 | 阶段收口前 / 发布前 | 2026-09-24（第 13 轮：门槛复核；第 7 轮：交付「label 优先级全库统一」） | 进行中（暂无待执行批次；条件触发候选见 §2.1） |
-| 样式重复收敛 | 同一视觉效果在 ≥3 个组件重复，且已存在或可归纳为语义 token | 阶段收口前 / 发布前 | 2026-09-24（第 13 轮：门槛复核；第 6 轮：交付「禁用态 0.5 档归并」） | 进行中（**待执行批次 1 项**见 §2.2） |
+| 样式重复收敛 | 同一视觉效果在 ≥3 个组件重复，且已存在或可归纳为语义 token | 阶段收口前 / 发布前 | 2026-09-24（第 13 轮：门槛复核；第 6 轮：交付「禁用态 0.5 档归并」） | 进行中（**待执行批次 1 项**见 §2.2；形态已裁定「语义 token 契约」，可执行） |
 
 > 「上次执行」列同时记录**交付轮**与**门槛复核轮**（复核轮不计入交付轮次）；批次是否已交付以 §2.1 / §2.2 的判定列为准。
 
@@ -37,7 +37,7 @@
 
 | 待执行批次 | 门槛判定（2026-09-24） | 证据 | 规模 | 说明 |
 |------|------|------|------|------|
-| 字段 shell 样式层共享（原「Input 家族样式层共享」） | **达标（2026-09-24 取证，修订此前「条件触发」）**：field shell 的 **13 条声明**在 **4 个字段组件**（`input` / `textarea` / `input-number` / `tags-input`；`password` 经 `Input` 派生）逐字重复（组件变量名归一后），取值以既有语义 token 为主，其余为可归纳的字面量（`border-box` / `100%` / `0.15s` / `2px` / `20%`） | `node test-results/m3-1/field-shell-overlap.mjs`：各组件 shell 声明 15 / 13 / 15 / 16，**四组件共有 13**（`box-sizing` / `width` / `border` / `border-radius` / `background` / `color` / `transition` / `:focus-within` 的 `border-color` + `box-shadow` / `--invalid` 的 `border-color` 与 `--invalid:focus-within` 的 `box-shadow` / `--disabled` 的 `background` + `opacity`） | 4 个字段组件 + 1 处共享层 | **前置**：共享形态会引入公共类 / 变量契约（影响下游样式覆盖），须先定形态（共享基类 vs 语义 token 契约）再实施；**本轮未执行**（0.3.0 发布前复核轮，零代码改动域）；**下次触发点**：下一交付轮，或用户指定 |
+| 字段 shell 样式层共享（原「Input 家族样式层共享」） | **达标（2026-09-24 取证，修订此前「条件触发」）**：field shell 的 **13 条声明**在 **4 个字段组件**（`input` / `textarea` / `input-number` / `tags-input`；`password` 经 `Input` 派生）逐字重复（组件变量名归一后），取值以既有语义 token 为主，其余为可归纳的字面量（`border-box` / `100%` / `0.15s` / `2px` / `20%`） | `node test-results/m3-1/field-shell-overlap.mjs`：各组件 shell 声明 15 / 13 / 15 / 16，**四组件共有 13**（`box-sizing` / `width` / `border` / `border-radius` / `background` / `color` / `transition` / `:focus-within` 的 `border-color` + `box-shadow` / `--invalid` 的 `border-color` 与 `--invalid:focus-within` 的 `box-shadow` / `--disabled` 的 `background` + `opacity`） | 4 个字段组件 + 1 处共享层 | **前置**：共享形态会引入公共类 / 变量契约（影响下游样式覆盖），须先定形态（共享类 vs 语义 token 契约）再实施；**形态已裁定（2026-09-25 用户裁定 D4②）：取「语义 token 契约」**——把 13 条声明归纳为少量 token / 变量、**不改公共类名**，由本台账跟踪交付、不占阶段原子条目（[规划规范 §8](../standards/planning.md)）；**可执行**（实施以「开工」指令为准）；**下次触发点**：Phase 14 执行期内，或用户指定 |
 
 ## 3. 执行记录
 

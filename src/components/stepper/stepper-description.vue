@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { StepperDescription } from 'reka-ui'
+import { useStepperLabelPresence } from './stepper-presence'
 import type { StepperDescriptionProps } from './types'
 
 defineOptions({ name: 'CaomeiStepperDescription', inheritAttrs: false })
@@ -7,6 +8,9 @@ defineOptions({ name: 'CaomeiStepperDescription', inheritAttrs: false })
 withDefaults(defineProps<StepperDescriptionProps>(), {
     asChild: false,
 })
+
+/** 登记描述在位：缺席时触发器不输出悬空 `aria-describedby` */
+useStepperLabelPresence('description')
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { StepperTitle } from 'reka-ui'
+import { useStepperLabelPresence } from './stepper-presence'
 import type { StepperTitleProps } from './types'
 
 defineOptions({ name: 'CaomeiStepperTitle', inheritAttrs: false })
@@ -7,6 +8,9 @@ defineOptions({ name: 'CaomeiStepperTitle', inheritAttrs: false })
 withDefaults(defineProps<StepperTitleProps>(), {
     asChild: false,
 })
+
+/** 登记标题在位：缺席时触发器不输出悬空 `aria-labelledby` */
+useStepperLabelPresence('title')
 </script>
 
 <template>

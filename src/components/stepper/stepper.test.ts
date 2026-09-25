@@ -1,5 +1,6 @@
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
-import { computed, h, nextTick } from 'vue'
+import { computed, createSSRApp, h, nextTick, ref } from 'vue'
+import { renderToString } from 'vue/server-renderer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
@@ -102,6 +103,177 @@ describe('CaomeiStepper', () => {
         const indicators = wrapper.findAll('.caomei-stepper__indicator')
         expect(indicators.map((item) => item.text())).toEqual(['1', '2', '3'])
         expect(wrapper.findAll('.caomei-stepper__separator')).toHaveLength(2)
+    })
+
+    it('无描述步骤不输出悬空 aria-describedby，有描述时指向描述元素', async () => {
+        const wrapper = mount(CaomeiStepper, {
+            props: { defaultValue: 1 },
+            attachTo: document.body,
+            slots: {
+                default: () => [
+                    h(CaomeiStepperList, null, {
+                        default: () => [
+                            h(CaomeiStepperItem, { step: 1 }, {
+                                default: () => h(CaomeiStepperTrigger, null, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '1' }),
+                                        h(CaomeiStepperTitle, null, { default: () => '账户' }),
+                                    ],
+                                }),
+                            }),
+                            h(CaomeiStepperItem, { step: 2 }, {
+                                default: () => h(CaomeiStepperTrigger, null, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '2' }),
+                                        h(CaomeiStepperTitle, null, { default: () => '资料' }),
+                                        h(CaomeiStepperDescription, null, { default: () => '补充资料' }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                ],
+            },
+        })
+        await flush()
+
+        const triggers = wrapper.findAll('.caomei-stepper__trigger')
+        expect(triggers[0].attributes('aria-describedby')).toBeUndefined()
+
+        const describedBy = triggers[1].attributes('aria-describedby')
+        expect(describedBy).toBeTruthy()
+        expect(document.getElementById(describedBy as string)?.textContent).toContain('补充资料')
+    })
+
+    it('无标题步骤不输出悬空 aria-labelledby，有标题时指向标题元素', async () => {
+        const wrapper = mount(CaomeiStepper, {
+            props: { defaultValue: 1 },
+            attachTo: document.body,
+            slots: {
+                default: () => [
+                    h(CaomeiStepperList, null, {
+                        default: () => [
+                            h(CaomeiStepperItem, { step: 1 }, {
+                                default: () => h(CaomeiStepperTrigger, null, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '1' }),
+                                        h(CaomeiStepperDescription, null, { default: () => '仅描述' }),
+                                    ],
+                                }),
+                            }),
+                            h(CaomeiStepperItem, { step: 2 }, {
+                                default: () => h(CaomeiStepperTrigger, null, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '2' }),
+                                        h(CaomeiStepperTitle, null, { default: () => '资料' }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                ],
+            },
+        })
+        await flush()
+
+        const triggers = wrapper.findAll('.caomei-stepper__trigger')
+        expect(triggers[0].attributes('aria-labelledby')).toBeUndefined()
+        expect(triggers[0].attributes('aria-describedby')).toBeTruthy()
+
+        const labelledBy = triggers[1].attributes('aria-labelledby')
+        expect(labelledBy).toBeTruthy()
+        expect(document.getElementById(labelledBy as string)?.textContent).toContain('资料')
+        expect(triggers[1].attributes('aria-describedby')).toBeUndefined()
+    })
+
+    it('使用方显式提供的非空 aria-describedby 优先于条件输出', async () => {
+        const wrapper = mount(CaomeiStepper, {
+            props: { defaultValue: 1 },
+            slots: {
+                default: () => [
+                    h(CaomeiStepperList, null, {
+                        default: () => [
+                            h(CaomeiStepperItem, { step: 1 }, {
+                                default: () => h(CaomeiStepperTrigger, { 'aria-describedby': 'external-hint' }, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '1' }),
+                                        h(CaomeiStepperTitle, null, { default: () => '账户' }),
+                                        h(CaomeiStepperDescription, null, { default: () => '描述' }),
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                ],
+            },
+        })
+        await flush()
+
+        expect(wrapper.findAll('.caomei-stepper__trigger')[0].attributes('aria-describedby')).toBe('external-hint')
+    })
+
+    it('运行时增删描述时 aria-describedby 随之出现与消失', async () => {
+        const showDescription = ref(true)
+        const wrapper = mount(CaomeiStepper, {
+            props: { defaultValue: 1 },
+            attachTo: document.body,
+            slots: {
+                default: () => [
+                    h(CaomeiStepperList, null, {
+                        default: () => [
+                            h(CaomeiStepperItem, { step: 1 }, {
+                                default: () => h(CaomeiStepperTrigger, null, {
+                                    default: () => [
+                                        h(CaomeiStepperIndicator, null, { default: () => '1' }),
+                                        h(CaomeiStepperTitle, null, { default: () => '账户' }),
+                                        showDescription.value
+                                            ? h(CaomeiStepperDescription, null, { default: () => '描述' })
+                                            : null,
+                                    ],
+                                }),
+                            }),
+                        ],
+                    }),
+                ],
+            },
+        })
+        await flush()
+
+        const trigger = () => wrapper.findAll('.caomei-stepper__trigger')[0]
+        expect(trigger().attributes('aria-describedby')).toBeTruthy()
+
+        showDescription.value = false
+        await flush()
+        expect(trigger().attributes('aria-describedby')).toBeUndefined()
+
+        showDescription.value = true
+        await flush()
+        expect(trigger().attributes('aria-describedby')).toBeTruthy()
+    })
+
+    it('SSR 直出不带引用型属性（水合后建立，服务端 HTML 无悬空引用）', async () => {
+        const app = createSSRApp({
+            render: () => h(CaomeiStepper, { defaultValue: 1 }, {
+                default: () => h(CaomeiStepperList, null, {
+                    default: () => h(CaomeiStepperItem, { step: 1 }, {
+                        default: () => h(CaomeiStepperTrigger, null, {
+                            default: () => [
+                                h(CaomeiStepperIndicator, null, { default: () => '1' }),
+                                h(CaomeiStepperTitle, null, { default: () => '账户' }),
+                                h(CaomeiStepperDescription, null, { default: () => '补充资料' }),
+                            ],
+                        }),
+                    }),
+                }),
+            }),
+        })
+        const html = await renderToString(app)
+
+        // 已知取舍：在位计数在挂载期登记，服务端 HTML 不带引用型属性（关联水合后建立）；
+        // 描述内容本身在触发器内可读，且服务端 HTML 永不产生悬空引用
+        expect(html).not.toContain('aria-describedby')
+        expect(html).not.toContain('aria-labelledby')
+        expect(html).toContain('补充资料')
     })
 
     it('defaultValue 决定非受控初始激活项及步骤状态', () => {

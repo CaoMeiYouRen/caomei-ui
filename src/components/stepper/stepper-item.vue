@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { StepperItem } from 'reka-ui'
+import { provideStepperLabelPresence } from './stepper-presence'
 import type { StepperItemProps } from './types'
 
 defineOptions({ name: 'CaomeiStepperItem', inheritAttrs: false })
@@ -8,6 +9,9 @@ withDefaults(defineProps<StepperItemProps>(), {
     disabled: false,
     completed: false,
 })
+
+/** 标题 / 描述在位计数：供触发器条件输出 `aria-labelledby` / `aria-describedby` */
+provideStepperLabelPresence()
 </script>
 
 <template>

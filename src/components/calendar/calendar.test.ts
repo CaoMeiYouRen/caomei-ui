@@ -41,6 +41,22 @@ describe('CaomeiCalendar', () => {
         wrapper.unmount()
     })
 
+    it('根容器输出显式 role="group" 使可访问名合法，且不被透传 role 覆盖', () => {
+        const named = mountCalendar({ label: '预约日历' })
+        const root = named.get('.caomei-calendar')
+        expect(root.attributes('role')).toBe('group')
+        expect(root.attributes('aria-label')).toBe('预约日历')
+        named.unmount()
+
+        const forwarded = mount(CaomeiCalendar, {
+            props: { label: '预约日历' },
+            attrs: { role: 'presentation' },
+            attachTo: document.body,
+        })
+        expect(forwarded.get('.caomei-calendar').attributes('role')).toBe('group')
+        forwarded.unmount()
+    })
+
     it('渲染当前月份网格与星期表头', () => {
         const wrapper = mountCalendar({ modelValue: new Date(2026, 8, 15) })
 

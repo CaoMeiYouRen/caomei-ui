@@ -1,5 +1,8 @@
 /**
- * 已裁定的既有例外清单（**机检数据**，与 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3 一一对应）。
+ * 已裁定的既有例外清单（**机检数据**；判定依据与处置见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3）。
+ *
+ * 该清单只登记「已裁定接受、暂不修复」的命中；**可按规范清零的命中随修复直接移除条目**
+ * （条目删除须有等价新增断言；组件测试给出更早、更精确的回归信号，漏网由例外外零违规兜底）。
  *
  * 断言口径（见 `a11y.test.ts`）：
  * 1. 每个组件的违规 / 待复核项必须 ⊆ 本清单（**例外外零违规**）；
@@ -34,13 +37,6 @@ export const A11Y_EXCEPTIONS: A11yException[] = [
         kind: 'incomplete',
         count: 1,
         judgment: '关闭态 `aria-controls=""`（开启态指向正确面板 id，真实 Chromium 实测）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
-    },
-    {
-        component: 'CaomeiCalendar',
-        rule: 'aria-prohibited-attr',
-        kind: 'incomplete',
-        count: 1,
-        judgment: '`aria-label` 落在 `role=generic` 容器（真实 Chromium AX 树名称可解析，ARIA 规范上仍属偏差）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
     },
 ]
 

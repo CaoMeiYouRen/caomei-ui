@@ -36,9 +36,12 @@ function onUpdate(value: DateValue | undefined): void {
     <!--
       显式 `label` 需压过透传值，故以对象绑定在其后覆盖 `aria-label`；
       未显式提供时保持 Reka 的合成名（`<名称>, <月份>`），不额外声明裸名。
+      `role="group"` 是可访问名契约的一部分：Reka 的 CalendarRoot 根容器为 `role=generic`，
+      ARIA 禁止 generic 承载名称，补显式 role 后 `aria-label` 才合法；故 role 同样压过透传值，
+      不接受外部覆盖（覆盖回非可命名 role 会重新引入 `aria-prohibited-attr`）。
     -->
     <CalendarRoot
-        v-bind="{...$attrs, ...(label ? {'aria-label': calendarLabel} : {})}"
+        v-bind="{...$attrs, role: 'group', ...(label ? {'aria-label': calendarLabel} : {})}"
         :model-value="dateValue"
         :default-value="defaultValue"
         :min-value="minValue"

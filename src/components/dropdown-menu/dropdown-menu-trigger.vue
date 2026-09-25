@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { DropdownMenuTrigger } from 'reka-ui'
+import { DropdownMenuTrigger, injectDropdownMenuRootContext } from 'reka-ui'
+import { useId } from 'vue'
+import { registerPanelIdref, usePanelIdrefState, type PanelIdrefContext } from '../_shared/panel-idref'
 import type { DropdownMenuTriggerProps } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuTrigger', inheritAttrs: false })
@@ -8,6 +10,17 @@ const props = withDefaults(defineProps<DropdownMenuTriggerProps>(), {
     disabled: false,
     unstyled: false,
 })
+
+/**
+ * 面板 idref 接线（契约与理由见 `_shared/panel-idref`）：把面板 id 预注册进浮层上下文，
+ * 使 Reka 触发器自身的 `aria-controls: open ? contentId : void 0` 绑定在两态下都正确——
+ * 关闭态省略（面板未挂载）、开启态指向面板 id（`contentId` 不再是面板挂载后才补的空串）。
+ *
+ * 注：触发器上的 `aria-controls` 由 Reka 内部绑定遮蔽 fallthrough（`Slot` 合并时子节点胜），
+ * 本组件不额外覆盖该属性；「显式非空取值优先」仅适用于无内部绑定的接线点（多选 / 自动完成字段）。
+ */
+const panelIdref = usePanelIdrefState(useId())
+registerPanelIdref(injectDropdownMenuRootContext() as unknown as PanelIdrefContext, panelIdref)
 </script>
 
 <template>

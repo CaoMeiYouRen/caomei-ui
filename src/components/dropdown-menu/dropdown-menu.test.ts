@@ -168,6 +168,21 @@ describe('CaomeiDropdownMenu', () => {
         expect(getContent()).toBeNull()
     })
 
+    it('关闭态不输出空 aria-controls，开启态指向面板 id', async () => {
+        const wrapper = mountMenu()
+        const trigger = getTrigger(wrapper)
+
+        // 关闭态省略引用型属性；开启态取值由预注册的面板 id 保证（契约见 _shared/panel-idref）
+        expect(trigger.attributes('aria-controls')).toBeUndefined()
+
+        await trigger.trigger('click')
+        await flush()
+
+        const content = getContent()
+        expect(content?.id).toBeTruthy()
+        expect(trigger.attributes('aria-controls')).toBe(content?.id)
+    })
+
     it('点击触发器打开菜单并渲染 role=menu 内容', async () => {
         const wrapper = mountMenu()
 

@@ -6,7 +6,7 @@ import {
 
 defineOptions({ name: 'CaomeiSelectGroup' })
 
-defineProps<{
+const props = defineProps<{
     /** 分组标签文本
      * @en Group label text
      */
@@ -15,9 +15,19 @@ defineProps<{
 </script>
 
 <template>
-    <SelectGroup class="caomei-select-group">
-        <SelectLabel v-if="label" class="caomei-select-group__label">
-            {{ label }}
+    <!--
+      Reka 的 SelectGroup 无条件绑定 `aria-labelledby`（指向标签元素 id），
+      未提供 `label` 时该目标不渲染 → 条件省略该属性，避免悬空引用。
+    -->
+    <SelectGroup
+        class="caomei-select-group"
+        v-bind="props.label ? {} : {'aria-labelledby': undefined}"
+    >
+        <SelectLabel
+            v-if="props.label"
+            class="caomei-select-group__label"
+        >
+            {{ props.label }}
         </SelectLabel>
         <slot />
     </SelectGroup>

@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { createSSRApp, h, nextTick, type DefineComponent } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import type { SelectProps } from './types'
-import { CaomeiSelect } from './index'
+import { CaomeiSelect, CaomeiSelectGroup } from './index'
 
 afterEach(() => {
     document.body.innerHTML = ''
@@ -497,6 +497,32 @@ describe('CaomeiSelect 插槽与文本来源', () => {
         })
 
         expect(wrapper.get('.caomei-select').text()).toContain('已发布')
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiSelectGroup', () => {
+    it('提供 label 时 aria-labelledby 指向标签元素', () => {
+        const wrapper = mount(CaomeiSelectGroup, {
+            props: { label: '热门' },
+            attachTo: document.body,
+        })
+
+        const group = wrapper.get('.caomei-select-group')
+        const labelledBy = group.attributes('aria-labelledby')
+        expect(labelledBy).toBeTruthy()
+        expect(document.getElementById(labelledBy as string)?.textContent).toContain('热门')
+
+        wrapper.unmount()
+    })
+
+    it('未提供 label 时不输出悬空 aria-labelledby', () => {
+        const wrapper = mount(CaomeiSelectGroup, {
+            slots: { default: () => '内容' },
+        })
+
+        expect(wrapper.get('.caomei-select-group').attributes('aria-labelledby')).toBeUndefined()
 
         wrapper.unmount()
     })

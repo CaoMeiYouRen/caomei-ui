@@ -158,6 +158,26 @@ describe('CaomeiMultiSelect', () => {
         expect(custom.get('.caomei-multi-select__icon').attributes('aria-label')).toBe('选择水果')
     })
 
+    it('关闭态不输出空 aria-controls，开启态输入框指向面板 id', async () => {
+        const wrapper = mount(CaomeiMultiSelect, { props: { options }, attachTo: document.body })
+        const input = wrapper.get('.caomei-multi-select__input')
+        const trigger = wrapper.get('.caomei-multi-select__icon')
+
+        // 关闭态面板未挂载：引用型属性的空值必须省略（IDREF 空值无引用对象，却会命中 axe 校验）
+        expect(input.attributes('aria-controls')).toBeUndefined()
+        expect(trigger.attributes('aria-controls')).toBeUndefined()
+
+        await open(wrapper)
+
+        const panel = document.querySelector('[role="listbox"]')
+        expect(panel?.id).toBeTruthy()
+        expect(input.attributes('aria-controls')).toBe(panel?.id)
+        // 触发器与输入框同源指向面板 id（id 由本库持有并注册进浮层上下文，两态取值确定）
+        expect(trigger.attributes('aria-controls')).toBe(panel?.id)
+
+        wrapper.unmount()
+    })
+
     it('展开后渲染全部选项并标记禁用项', async () => {
         const wrapper = mount(CaomeiMultiSelect, { props: { options }, attachTo: document.body })
 
@@ -295,6 +315,20 @@ describe('CaomeiMultiSelect', () => {
         expect(input.attributes('data-test')).toBe('multi')
         expect(input.attributes('maxlength')).toBe('10')
         expect(input.attributes('aria-describedby')).toBe('hint')
+    })
+
+    it('显式非空 aria-controls 以使用方为准，空值按无意见回退派生取值', () => {
+        const explicit = mount(CaomeiMultiSelect, {
+            props: { options },
+            attrs: { 'aria-controls': 'external-panel' },
+        })
+        expect(explicit.get('.caomei-multi-select__input').attributes('aria-controls')).toBe('external-panel')
+
+        const empty = mount(CaomeiMultiSelect, {
+            props: { options },
+            attrs: { 'aria-controls': '' },
+        })
+        expect(empty.get('.caomei-multi-select__input').attributes('aria-controls')).toBeUndefined()
     })
 
     it('展开时默认不锁定页面滚动', async () => {

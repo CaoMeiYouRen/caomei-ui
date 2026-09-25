@@ -353,6 +353,28 @@ describe('CaomeiAutoComplete', () => {
         expect(custom.get('.caomei-auto-complete__trigger').attributes('aria-label')).toBe('打开列表')
     })
 
+    it('关闭态不输出空 aria-controls，开启态输入框指向面板 id', async () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: { options, dropdown: true },
+            attachTo: document.body,
+        })
+        const input = wrapper.get('input')
+        const trigger = wrapper.get('.caomei-auto-complete__trigger')
+
+        // 与多选字段同根因（Reka Combobox 关闭态空 contentId）：空引用一律省略
+        expect(input.attributes('aria-controls')).toBeUndefined()
+        expect(trigger.attributes('aria-controls')).toBeUndefined()
+
+        await open(wrapper)
+
+        const panel = document.querySelector('[role="listbox"]')
+        expect(panel?.id).toBeTruthy()
+        expect(input.attributes('aria-controls')).toBe(panel?.id)
+        expect(trigger.attributes('aria-controls')).toBe(panel?.id)
+
+        wrapper.unmount()
+    })
+
     it('class 落在根元素，其余原生属性透传到输入框', () => {
         const wrapper = mount(CaomeiAutoComplete, {
             props: { options },

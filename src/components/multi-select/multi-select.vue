@@ -12,9 +12,10 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from 'reka-ui'
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, useId } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import {
     resolveOptionDisabled,
@@ -49,6 +50,9 @@ defineSlots<{
 }>()
 
 const model = defineModel<OptionValue[]>({ default: () => [] })
+
+/** 面板 idref：关闭态省略 `aria-controls`、开启态指向面板 id（契约与理由见 `_shared/panel-idref`） */
+const panelIdref = usePanelIdrefState(useId())
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
@@ -159,6 +163,7 @@ function onAnchorClick(event: MouseEvent): void {
         :required="required"
         :open-on-click="true"
     >
+        <ComboboxPanelIdrefBridge :state="panelIdref" />
         <ComboboxAnchor
             v-bind="rootAttrs"
             class="caomei-multi-select"
@@ -183,7 +188,7 @@ function onAnchorClick(event: MouseEvent): void {
                 </button>
             </span>
             <ComboboxInput
-                v-bind="{...controlAttrs, ...labelAttrs(label)}"
+                v-bind="{...controlAttrs, ...labelAttrs(label), ...panelControlsBinds(panelIdref, controlAttrs)}"
                 :id="id"
                 ref="inputRef"
                 class="caomei-multi-select__input"
@@ -204,6 +209,7 @@ function onAnchorClick(event: MouseEvent): void {
                 class="caomei-multi-select__icon"
                 :disabled="disabled"
                 :aria-label="openLabel"
+                :aria-controls="panelControlsAttr(panelIdref)"
             >
                 <CaomeiIcon :icon="ChevronDown" />
             </ComboboxTrigger>

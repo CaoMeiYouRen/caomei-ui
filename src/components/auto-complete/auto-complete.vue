@@ -13,9 +13,10 @@ import {
     ComboboxViewport,
     type AcceptableValue,
 } from 'reka-ui'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
+import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type {
@@ -45,6 +46,9 @@ const props = withDefaults(defineProps<AutoCompleteProps>(), {
 const emit = defineEmits<AutoCompleteEmits>()
 
 const model = defineModel<string | string[]>()
+
+/** 面板 idref：关闭态省略 `aria-controls`、开启态指向面板 id（契约与理由见 `_shared/panel-idref`） */
+const panelIdref = usePanelIdrefState(useId())
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
@@ -290,6 +294,7 @@ watch(normalizedOptions, () => {
         @update:model-value="onUpdateModel"
         @highlight="onHighlight"
     >
+        <ComboboxPanelIdrefBridge :state="panelIdref" />
         <ComboboxAnchor
             v-bind="rootAttrs"
             class="caomei-auto-complete"
@@ -315,7 +320,7 @@ watch(normalizedOptions, () => {
                 </button>
             </span>
             <ComboboxInput
-                v-bind="{...controlAttrs, ...labelAttrs(label)}"
+                v-bind="{...controlAttrs, ...labelAttrs(label), ...panelControlsBinds(panelIdref, controlAttrs)}"
                 :id="id"
                 v-model="inputValue"
                 class="caomei-auto-complete__input"
@@ -350,6 +355,7 @@ watch(normalizedOptions, () => {
                 class="caomei-auto-complete__trigger"
                 :disabled="disabled"
                 :aria-label="openLabel"
+                :aria-controls="panelControlsAttr(panelIdref)"
             >
                 <CaomeiIcon :icon="ChevronDown" />
             </ComboboxTrigger>

@@ -31,13 +31,6 @@ export const A11Y_EXCEPTIONS: A11yException[] = [
         count: 2,
         judgment: 'Reka `Toast/FocusProxy` 的 `VisuallyHidden` + `tabindex="0"` 焦点哨兵（上游有意模式，非本库标记）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
     },
-    {
-        component: 'CaomeiMultiSelect',
-        rule: 'aria-valid-attr-value',
-        kind: 'incomplete',
-        count: 1,
-        judgment: '关闭态 `aria-controls=""`（开启态指向正确面板 id，真实 Chromium 实测）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
-    },
 ]
 
 /** 例外清单的稳定键（组件 × 类型 × 规则）。 */

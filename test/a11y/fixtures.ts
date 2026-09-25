@@ -21,7 +21,14 @@ import {
     CaomeiDivider,
     CaomeiDrawer,
     CaomeiDropdownMenu,
+    CaomeiDropdownMenuCheckboxItem,
     CaomeiDropdownMenuContent,
+    CaomeiDropdownMenuGroup,
+    CaomeiDropdownMenuItem,
+    CaomeiDropdownMenuLabel,
+    CaomeiDropdownMenuRadioGroup,
+    CaomeiDropdownMenuRadioItem,
+    CaomeiDropdownMenuSeparator,
     CaomeiDropdownMenuTrigger,
     CaomeiFileUpload,
     CaomeiFloatLabel,
@@ -35,6 +42,8 @@ import {
     CaomeiPaginator,
     CaomeiPassword,
     CaomeiPopover,
+    CaomeiPopoverArrow,
+    CaomeiPopoverClose,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
     CaomeiProgressBar,
@@ -43,6 +52,7 @@ import {
     CaomeiRadioGroup,
     CaomeiSelect,
     CaomeiSelectButton,
+    CaomeiSelectGroup,
     CaomeiSkeleton,
     CaomeiSlider,
     CaomeiSplitButton,
@@ -80,8 +90,16 @@ const options = [
     { label: '乙', value: 'b' },
 ]
 
-const columns = [{ key: 'name', header: '名称' }]
-const rows = [{ name: '甲' }]
+const columns = [
+    { key: 'name', header: '名称' },
+    { key: 'type', header: '类型' },
+]
+/** 行分组夹具数据：`type` 为分组字段，A 组两行 / B 组一行，折叠 toggle 随分组渲染 */
+const rows = [
+    { name: '甲', type: 'A' },
+    { name: '乙', type: 'A' },
+    { name: '丙', type: 'B' },
+]
 
 /** Toast 需在 Provider 后代中触发，故拆为「Provider 外壳 + 后代种子」。 */
 const ToastSeed = defineComponent({
@@ -110,24 +128,28 @@ const ConfirmHost = defineComponent({
 })
 
 /**
- * 受检面声明：受检单位是**组件族根组件**（`src/components/<dir>` 的对外主组件 + `CaomeiIcon`），
- * 每族一个最小可用夹具（`A11Y_FIXTURES`）。
+ * 受检面声明：受检单位是**审计单元**——默认（关闭）态的组件族根组件（`src/components/<dir>` 的对外主组件
+ * + `CaomeiIcon`）各一个最小可用夹具（`A11Y_FIXTURES`），以及**展开态审计单元**（面板内导出以稳定可驱动的
+ * 形态挂载：受控 `open` / `force-mount` / 独立渲染；逐项可驱动性判定见治理记录）。夹具名取该单元的主受检
+ * 导出名（展开态单元取面板根导出），使导出穷尽性登记保持单一命名轴。
  *
  * 为什么取全量而非「挑几个关键组件」：a11y 违规与组件能力面不成正比（本轮实测命中的是
  * toast 的焦点哨兵与 calendar 的 `aria-label` 落点），按主观清单取舍等于给受检面开静默豁免口子。
  *
  * **对外导出的穷尽性**由 `a11y.test.ts` 对 `src/nuxt/components.ts` 的 `caomeiComponents` 机检：
  * 每个对外导出必须落在下列四组之一——夹具根组件（`A11Y_FIXTURES`）/ 由夹具组合渲染
- * （`COVERED_BY_FIXTURE`，运行期断言）/ 需交互展开面板才能渲染（`INTERACTION_ONLY_EXPORTS`）/
+ * （`COVERED_BY_FIXTURE`，运行期断言）/ 不可稳定驱动、维持登记 + 触发点（`INTERACTION_ONLY_EXPORTS`）/
  * 不渲染自有 DOM（`EXCLUDED_COMPONENTS`）。
  */
 export interface A11yFixture {
-    /** 组件族名（与对外导出名一致） */
+    /** 组件族名（与对外导出名一致；展开态审计单元取该单元的主受检导出名） */
     name: string
     /** 该夹具的根组件：运行期断言「夹具确实渲染了它」，避免夹具漏渲染却仍打印清单 */
     root: unknown
     /** VTU 挂载定义（选项对象或组件）；保持宽松类型以容纳泛型 SFC（其 props 推断由组件自身单测承担） */
     definition: unknown
+    /** 夹具必须渲染出的关键元素选择器（如内部交互控件 / 面板部件），使新增受检面进入审计 DOM 的事实可断言 */
+    requiredSelectors?: string[]
 }
 
 export const A11Y_FIXTURES: A11yFixture[] = [
@@ -143,13 +165,45 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiCheckboxGroup', root: CaomeiCheckboxGroup, definition: { components: { CaomeiCheckboxGroup }, template: '<CaomeiCheckboxGroup label="多选" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiColorPicker', root: CaomeiColorPicker, definition: { components: { CaomeiColorPicker }, template: '<CaomeiColorPicker label="颜色" />' } },
     { name: 'CaomeiConfirmDialog', root: CaomeiConfirmDialog, definition: ConfirmHost },
-    { name: 'CaomeiDataTable', root: CaomeiDataTable, definition: { components: { CaomeiDataTable }, template: '<CaomeiDataTable :columns="columns" :data="rows" row-key="name" />', setup: () => ({ columns, rows }) } },
+    { name: 'CaomeiDataTable', root: CaomeiDataTable, definition: { components: { CaomeiDataTable }, template: '<CaomeiDataTable :columns="columns" :data="rows" row-key="name" row-group-mode="subheader" group-rows-by="type" expandable-row-groups />', setup: () => ({ columns, rows }) }, requiredSelectors: ['.caomei-data-table__row-group-toggle'] },
     { name: 'CaomeiDataView', root: CaomeiDataView, definition: { components: { CaomeiDataView }, template: '<CaomeiDataView :items="[1, 2]"><template #list="{ items }"><p>{{ items.length }}</p></template></CaomeiDataView>' } },
     { name: 'CaomeiDatePicker', root: CaomeiDatePicker, definition: { components: { CaomeiDatePicker }, template: '<CaomeiDatePicker label="日期" />' } },
     { name: 'CaomeiDialog', root: CaomeiDialog, definition: { components: { CaomeiDialog }, template: '<CaomeiDialog :open="true" title="对话框"><p>内容</p></CaomeiDialog>' } },
     { name: 'CaomeiDivider', root: CaomeiDivider, definition: { components: { CaomeiDivider }, template: '<CaomeiDivider />' } },
     { name: 'CaomeiDrawer', root: CaomeiDrawer, definition: { components: { CaomeiDrawer }, template: '<CaomeiDrawer :open="true" title="抽屉"><p>内容</p></CaomeiDrawer>' } },
     { name: 'CaomeiDropdownMenu', root: CaomeiDropdownMenu, definition: { components: { CaomeiDropdownMenu, CaomeiDropdownMenuTrigger, CaomeiDropdownMenuContent }, template: '<CaomeiDropdownMenu><CaomeiDropdownMenuTrigger>菜单</CaomeiDropdownMenuTrigger><CaomeiDropdownMenuContent :model="[{ label: \'一\' }]" /></CaomeiDropdownMenu>' } },
+    /*
+     * 展开态审计单元：受控 `open` 驱动（实测展开后 500ms 内稳定保持）。覆盖面板内 8 个导出；
+     * 分组内带 `CaomeiDropdownMenuLabel`（分组无标签时的悬空 `aria-labelledby` 为已登记同类缺陷，
+     * 见治理记录，不在本夹具内重复暴露）。
+     * 不渲染触发器：触发器已由关闭态夹具覆盖，而 axe 对「`aria-haspopup` + `aria-controls`」
+     * 恒判 needsReview（`controlsWithinPopup`，无法判定引用是否存在于页面），与取值正确与否无关。
+     */
+    {
+        name: 'CaomeiDropdownMenuContent',
+        root: CaomeiDropdownMenuContent,
+        definition: {
+            components: { CaomeiDropdownMenu, CaomeiDropdownMenuContent, CaomeiDropdownMenuGroup, CaomeiDropdownMenuItem, CaomeiDropdownMenuCheckboxItem, CaomeiDropdownMenuRadioGroup, CaomeiDropdownMenuRadioItem, CaomeiDropdownMenuLabel, CaomeiDropdownMenuSeparator },
+            template: `<CaomeiDropdownMenu v-model:open="open">
+              <CaomeiDropdownMenuContent>
+                <CaomeiDropdownMenuLabel>标题</CaomeiDropdownMenuLabel>
+                <CaomeiDropdownMenuItem>一</CaomeiDropdownMenuItem>
+                <CaomeiDropdownMenuSeparator />
+                <CaomeiDropdownMenuGroup>
+                  <CaomeiDropdownMenuLabel>分组</CaomeiDropdownMenuLabel>
+                  <CaomeiDropdownMenuCheckboxItem :model-value="true">勾选</CaomeiDropdownMenuCheckboxItem>
+                </CaomeiDropdownMenuGroup>
+                <CaomeiDropdownMenuRadioGroup model-value="a">
+                  <CaomeiDropdownMenuLabel>单选组</CaomeiDropdownMenuLabel>
+                  <CaomeiDropdownMenuRadioItem value="a">甲</CaomeiDropdownMenuRadioItem>
+                  <CaomeiDropdownMenuRadioItem value="b">乙</CaomeiDropdownMenuRadioItem>
+                </CaomeiDropdownMenuRadioGroup>
+              </CaomeiDropdownMenuContent>
+            </CaomeiDropdownMenu>`,
+            setup: () => ({ open: ref(true) }),
+        },
+        requiredSelectors: ['[role="menu"]', '[role="menuitem"]', '[role="menuitemcheckbox"]', '[role="menuitemradio"]'],
+    },
     { name: 'CaomeiFileUpload', root: CaomeiFileUpload, definition: { components: { CaomeiFileUpload }, template: '<CaomeiFileUpload label="上传" />' } },
     { name: 'CaomeiFloatLabel', root: CaomeiFloatLabel, definition: { components: { CaomeiFloatLabel, CaomeiInput }, template: '<CaomeiFloatLabel><CaomeiInput id="a11y-float" /><label for="a11y-float">名称</label></CaomeiFloatLabel>' } },
     { name: 'CaomeiIcon', root: CaomeiIcon, definition: { components: { CaomeiIcon }, template: '<CaomeiIcon :icon="Bold" />', setup: () => ({ Bold }) } },
@@ -162,11 +216,44 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiPaginator', root: CaomeiPaginator, definition: { components: { CaomeiPaginator }, template: '<CaomeiPaginator :total="30" :rows="10" :page="1" />' } },
     { name: 'CaomeiPassword', root: CaomeiPassword, definition: { components: { CaomeiPassword }, template: '<CaomeiPassword label="密码" />' } },
     { name: 'CaomeiPopover', root: CaomeiPopover, definition: { components: { CaomeiPopover, CaomeiPopoverTrigger, CaomeiPopoverContent }, template: '<CaomeiPopover><CaomeiPopoverTrigger>打开</CaomeiPopoverTrigger><CaomeiPopoverContent>面板</CaomeiPopoverContent></CaomeiPopover>' } },
+    /*
+     * 展开态审计单元：受控 `open` 在 happy-dom 下初始化即自关闭、不可稳定驱动（真实浏览器可开合），
+     * 改以公开属性 `force-mount` 稳定渲染面板内容；面板三导出由此进入受检面（逐项判定见治理记录）。
+     */
+    {
+        name: 'CaomeiPopoverContent',
+        root: CaomeiPopoverContent,
+        definition: {
+            components: { CaomeiPopover, CaomeiPopoverTrigger, CaomeiPopoverContent, CaomeiPopoverArrow, CaomeiPopoverClose },
+            template: `<CaomeiPopover>
+              <CaomeiPopoverTrigger>打开</CaomeiPopoverTrigger>
+              <CaomeiPopoverContent force-mount>
+                <CaomeiPopoverArrow :width="8" :height="4" />
+                面板
+                <CaomeiPopoverClose>关闭</CaomeiPopoverClose>
+              </CaomeiPopoverContent>
+            </CaomeiPopover>`,
+        },
+        requiredSelectors: ['.caomei-popover__content'],
+    },
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRadioGroup', root: CaomeiRadioGroup, definition: { components: { CaomeiRadioGroup, CaomeiRadioButton }, template: '<CaomeiRadioGroup label="单选" model-value="a"><CaomeiRadioButton value="a">甲</CaomeiRadioButton><CaomeiRadioButton value="b">乙</CaomeiRadioButton></CaomeiRadioGroup>' } },
     { name: 'CaomeiSelect', root: CaomeiSelect, definition: { components: { CaomeiSelect }, template: '<CaomeiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiSelectButton', root: CaomeiSelectButton, definition: { components: { CaomeiSelectButton }, template: '<CaomeiSelectButton label="分段" :options="options" model-value="a" />', setup: () => ({ options }) } },
+    /*
+     * 展开态审计单元：Select 面板在 happy-dom 下无法稳定展开（点击不展开、无 `force-mount` 透传），
+     * 但该导出可独立稳定渲染 → 以独立形态受检（逐项判定见治理记录）。
+     */
+    {
+        name: 'CaomeiSelectGroup',
+        root: CaomeiSelectGroup,
+        definition: {
+            components: { CaomeiSelectGroup },
+            template: '<CaomeiSelectGroup label="热门">内容</CaomeiSelectGroup>',
+        },
+        requiredSelectors: ['.caomei-select-group'],
+    },
     { name: 'CaomeiSkeleton', root: CaomeiSkeleton, definition: { components: { CaomeiSkeleton }, template: '<CaomeiSkeleton />' } },
     { name: 'CaomeiSlider', root: CaomeiSlider, definition: { components: { CaomeiSlider }, template: '<CaomeiSlider label="滑块" :model-value="3" />' } },
     { name: 'CaomeiSplitButton', root: CaomeiSplitButton, definition: { components: { CaomeiSplitButton }, template: '<CaomeiSplitButton label="操作" :items="[{ label: \'一\' }]" />' } },
@@ -205,31 +292,29 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiStepperSeparator', component: CaomeiStepperSeparator, fixture: 'CaomeiStepper' },
     { name: 'CaomeiDropdownMenuTrigger', component: CaomeiDropdownMenuTrigger, fixture: 'CaomeiDropdownMenu' },
     { name: 'CaomeiPopoverTrigger', component: CaomeiPopoverTrigger, fixture: 'CaomeiPopover' },
+    { name: 'CaomeiDropdownMenuGroup', component: CaomeiDropdownMenuGroup, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuItem', component: CaomeiDropdownMenuItem, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuCheckboxItem', component: CaomeiDropdownMenuCheckboxItem, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuRadioGroup', component: CaomeiDropdownMenuRadioGroup, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuRadioItem', component: CaomeiDropdownMenuRadioItem, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuLabel', component: CaomeiDropdownMenuLabel, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiDropdownMenuSeparator', component: CaomeiDropdownMenuSeparator, fixture: 'CaomeiDropdownMenuContent' },
+    { name: 'CaomeiPopoverArrow', component: CaomeiPopoverArrow, fixture: 'CaomeiPopoverContent' },
+    { name: 'CaomeiPopoverClose', component: CaomeiPopoverClose, fixture: 'CaomeiPopoverContent' },
 ]
 
 /**
- * 需交互展开面板才能渲染的对外导出（受检状态为默认关闭态，故不在本轮受检面）。
- * 触发点：浮层展开态的 a11y 断言（登记 [Backlog](../../docs/plan/backlog.md)）。
+ * **不可稳定驱动**、维持登记 + 触发点的对外导出（逐条登记理由，避免静默豁免）。
+ *
+ * 当前为空：12 个面板内导出已逐项判定可稳定驱动（受控 `open` / `force-mount` / 独立渲染三种形态，
+ * 判定与实测证据见治理记录），全部转入夹具受检面。新增此类条目时必须登记理由与触发点。
  */
-export const INTERACTION_ONLY_EXPORTS: { name: string, reason: string }[] = [
-    { name: 'CaomeiDropdownMenuContent', reason: 'DropdownMenu 面板，需展开菜单才渲染' },
-    { name: 'CaomeiDropdownMenuGroup', reason: '同上（面板内分组）' },
-    { name: 'CaomeiDropdownMenuItem', reason: '同上（面板内菜单项）' },
-    { name: 'CaomeiDropdownMenuCheckboxItem', reason: '同上（面板内复选项）' },
-    { name: 'CaomeiDropdownMenuRadioGroup', reason: '同上（面板内单选组）' },
-    { name: 'CaomeiDropdownMenuRadioItem', reason: '同上（面板内单选项）' },
-    { name: 'CaomeiDropdownMenuLabel', reason: '同上（面板内标签）' },
-    { name: 'CaomeiDropdownMenuSeparator', reason: '同上（面板内分隔线）' },
-    { name: 'CaomeiPopoverContent', reason: 'Popover 面板，需展开才渲染' },
-    { name: 'CaomeiPopoverArrow', reason: '同上（面板内箭头）' },
-    { name: 'CaomeiPopoverClose', reason: '同上（面板内关闭按钮）' },
-    { name: 'CaomeiSelectGroup', reason: 'Select 面板内分组，需展开选择面板才渲染' },
-]
+export const INTERACTION_ONLY_EXPORTS: { name: string, reason: string }[] = []
 
 /** 不渲染自有 DOM 的对外导出（逐条登记理由，避免静默豁免）。 */
 export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
     { name: 'CaomeiConfigProvider', reason: '不渲染自有 DOM（仅 provide 上下文并透传插槽），单独挂载时审计对象是插槽内容而非组件本身' },
 ]
 
-/** 受检组件集规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 48
+/** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
+export const A11Y_FIXTURE_BUDGET = 51

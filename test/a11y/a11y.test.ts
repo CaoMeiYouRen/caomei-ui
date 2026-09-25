@@ -85,16 +85,26 @@ describe('a11y 受检面', () => {
 })
 
 describe('夹具渲染完备性', () => {
-    it('每个夹具渲染出根组件与声明的子部件', () => {
+    it('每个夹具渲染出根组件与声明的子部件', async () => {
         for (const fixture of A11Y_FIXTURES) {
             const wrapper = mount(fixture.definition as Component, { attachTo: document.body })
             try {
+                // 面板类夹具经 Presence / Portal 挂载，部件在挂载后一帧才就位
+                await new Promise((resolve) => setTimeout(resolve, 30))
                 const rootCount = wrapper.findAllComponents(fixture.root as Component).length
                 expect(rootCount, `${fixture.name} 夹具未渲染其根组件`).toBeGreaterThan(0)
 
                 for (const entry of COVERED_BY_FIXTURE.filter((item) => item.fixture === fixture.name)) {
                     const count = wrapper.findAllComponents(entry.component as Component).length
                     expect(count, `${entry.name} 未被 ${fixture.name} 夹具渲染`).toBeGreaterThan(0)
+                }
+
+                // 关键元素（面板部件 / 内部交互控件）必须进入审计 DOM（含 portal 挂载面，故按 body 查询）
+                for (const selector of fixture.requiredSelectors ?? []) {
+                    expect(
+                        document.body.querySelector(selector),
+                        `${fixture.name} 未渲染关键元素 ${selector}`,
+                    ).not.toBeNull()
                 }
             } finally {
                 wrapper.unmount()

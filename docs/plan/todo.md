@@ -17,16 +17,18 @@
 
 #### M1 a11y 例外处置与受检面扩面
 
+- **状态**：4 条原子条目已全部交付（2026-09-26，提交 `7a77bd5` / `f6f5341` / `f95b715` / `2e75e53` / `eaff97c`，均未推送）。例外清单 3 → 1（仅剩 Toast 焦点哨兵，按 D2③ 维持现状）；12 个面板内导出与 DataTable 折叠 toggle 全部入受检面（逐项判定表与证据见[交付与验证记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md)）。同批登记 2 项同类悬空引用待后续处置（[Backlog](./backlog.md)）。
+
 - 执行范围：① 修复可按规范清零的例外——`CaomeiCalendar` 根容器 `aria-label` 落点、`CaomeiMultiSelect` 关闭态空 `aria-controls`、`CaomeiStepper` 悬空 `aria-describedby`；② 受检面扩面——逐项判定 12 个面板内导出与 DataTable 折叠分组 toggle 的**可稳定驱动性**，可驱动者入受检面（D3③）；③ `CaomeiToastProvider` 焦点哨兵例外按 D2③ **维持现状**，仅更新记录注记（不引入定向豁免机制）。
 - 非目标：不改造 Reka primitive；不为扩面而扩面（不可稳定驱动者维持登记 + 触发点）；不改组件视觉；不改动既有 3 条例外中不属本主线的判定。
 - 最小验收标准：① 修复项落地后**例外清单同步收窄**（`count` 指纹更新、条目删除须有等价新增断言）；② `pnpm test:a11y` 例外外零违规；③ 受检面集合与 `caomeiComponents` 的差集有据、穷尽性机检、不可驱动项有登记理由；④ 涉及引用型 ARIA 属性的判定以**真实 Chromium** 复验。
 
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |
-| M1-1 | `CaomeiCalendar` 根容器 `aria-label` 落点修复 | 补显式 role 或把标签落到具备 role 的元素（择一，实施时定）；保留既有可访问名 | 例外清单该条删除或更新 count；`test:a11y` 例外外零违规；Chromium AX 树名称仍可解析 | D3 |
-| M1-2 | `CaomeiMultiSelect` 关闭态空 `aria-controls` | 关闭态不输出空引用，开启态指向正确面板 id 不变 | 关闭 / 开启两态断言；Chromium 两态复验；例外清单同步收窄 | D3 |
-| M1-3 | `CaomeiStepper` 悬空 `aria-describedby` | 无 `CaomeiStepperDescription` 的步骤条件输出该属性；有描述时不变 | 有 / 无描述两态断言；例外清单无新增；文档形态零影响 | D3 |
-| M1-4 | 受检面扩面（只纳入可稳定驱动者） | 逐项判定 12 个面板内导出与 DataTable 折叠分组 toggle 的可驱动性；可稳定驱动者入 axe 受检面，其余维持登记 + 触发点 | 受检面差集有据 + 穷尽性机检；不可驱动项有登记理由；新增受检项带断言 | D3 |
+| M1-1 | `CaomeiCalendar` 根容器 `aria-label` 落点修复 | 补显式 role 或把标签落到具备 role 的元素（择一，实施时定）；保留既有可访问名 | 例外清单该条删除或更新 count；`test:a11y` 例外外零违规；Chromium AX 树名称仍可解析 | D3③ |
+| M1-2 | `CaomeiMultiSelect` 关闭态空 `aria-controls` | 关闭态不输出空引用，开启态指向正确面板 id 不变 | 关闭 / 开启两态断言；Chromium 两态复验；例外清单同步收窄 | D3③ |
+| M1-3 | `CaomeiStepper` 悬空 `aria-describedby` | 无 `CaomeiStepperDescription` 的步骤条件输出该属性；有描述时不变 | 有 / 无描述两态断言；例外清单无新增；文档形态零影响 | D3③ |
+| M1-4 | 受检面扩面（只纳入可稳定驱动者） | 逐项判定 12 个面板内导出与 DataTable 折叠分组 toggle 的可驱动性；可稳定驱动者入 axe 受检面，其余维持登记 + 触发点 | 受检面差集有据 + 穷尽性机检；不可驱动项有登记理由；新增受检项带断言 | D3③ |
 
 #### M2 样式与 token 一致性收口
 

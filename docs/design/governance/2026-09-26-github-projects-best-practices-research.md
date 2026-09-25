@@ -12,7 +12,7 @@
 
 | # | 结论 |
 | :--- | :--- |
-| 1 | 「Backlog → Done」的 Status 流转与本仓 [规划规范](../../standards/planning.md)「评估 → backlog → 用户决策 → todo → 阶段交付 → 归档」同构，方向正确；建议 Status 列收敛为 **5 列以内**并开启内置自动化 |
+| 1 | 「Backlog → Done」的 Status 流转与本仓 [规划规范](../../standards/planning.md)「评估 → backlog → 用户决策 → todo → 阶段交付 → 归档」同构，方向正确；建议 Status 列收敛为 **5 列以内**并开启内置自动化；**Review 列裁定为「待裁定（人工审查）」**（当下等用户决策 / 验收 / 授权提交，未来多人协作承接 code review，见 §3.1.1） |
 | 2 | Projects 的正确定位：**跨仓规划与状态的聚合视图**；权威决策记录仍落各仓 `docs/design/governance/`（与协作调研报告 §5.1 一致，防双源漂移） |
 | 3 | **agent 读写看板的前置条件是给 token 补 `read:project`（写入需 `project` / `workflow` scope）**——本次实测已撞上该墙，这是看板进 agent 工作流的第一道门 |
 | 4 | 内置 workflow（item closed / PR merged → Done、auto-add、auto-archive）先用足，不够再上 GraphQL / Actions 自动化 |
@@ -38,17 +38,25 @@
 ### 3.1 Status 设计
 
 - **5 列以内**（社区共识：超过 5~6 列失去看板的视觉简洁性）；典型 `Backlog / Todo / In Progress / Review / Done`。
-- 与本仓流程映射建议：
+- 与本仓流程映射建议（**Review 列语义经用户裁定，见 §3.1.1**）：
 
 | 看板 Status | 对应 [规划规范](../../standards/planning.md) 状态 |
 | :--- | :--- |
 | Backlog | [backlog.md](../../plan/backlog.md) 在册候选（评估 → backlog，未决策） |
 | Todo | 用户已决策、已登记 [todo.md](../../plan/todo.md)（登记 = 范围授权） |
 | In Progress | 阶段 / 原子条目实施中 |
-| Review | Review Gate / V 阶段 / 待用户验收 |
+| Review（待裁定） | **等人工审查 / 裁定**：待用户决策、待验收、待授权提交；多人协作后兼作 code review（§3.1.1） |
 | Done | 阶段收口、条目归档（todo-archive） |
 
-- **Review 列的价值与本仓强相关**：本仓 PDTFC+ 流程中 Review Gate 与 V 阶段是显式环节，独立列能显出「做完待验收」的堆积。
+#### 3.1.1 Review 列语义（用户 2026-09-26 裁定）
+
+**背景**：当前开发以人机协作为主，code review 在本地会话内闭环（Review Gate R1/R2、V 阶段），条目提交推送时不会经过「In review」状态；若强制本地 review 进列，条目会在 In Progress ↔ In review 间频繁拖动，只增维护成本、不增信息量。
+
+**裁定**：Review 列保留但**重新定位为「待裁定（人工审查）」**，看板状态表达「条目卡在等谁」：
+
+- **当下语义**：等人工介入——待用户决策（D 项）、批次完成待验收、待授权提交 / 推送（与「提交推送需明示授权」纪律对应）。本仓 PDTFC+ 流程中这是最长的等待态，5 列因此各有信息量。
+- **未来语义**：引入多人协作时，该列自然承接 PR / code review 审查职责，无需再改列结构。
+- **不采纳**：把本地 Review Gate / V 阶段映射为看板状态（实施环内部动作，不表达等待）。
 
 ### 3.2 自动化用足内置、再上 API
 
@@ -103,7 +111,7 @@
 ## 6. 建议落点（待用户决策，不在本轮实施）
 
 1. **补 token scope**（`read:project` 起步，需 agent 写入时加 `project`）→ 机器核验看板字段 / 视图 / workflow 实况，回填本记录 §取证边界。
-2. **Status 列与 workflow 收口**：按 §3.1 映射核对现有列名；开启 / 调整内置 workflow（PR merged → Done 对迁移长批次条目评估关闭）。
+2. **Status 列与 workflow 收口**：按 §3.1 映射核对现有列名（含 Review 列改名「待裁定（人工审查）」，§3.1.1 已裁定）；开启 / 调整内置 workflow（PR merged → Done 对迁移长批次条目评估关闭）。
 3. **auto-add 配置**：三仓聚合按 §4.2 选型（Pro / GraphQL 自动化 / 手动 + CLI）。
 4. **Project README**：写入用途、视图说明、与 [规划规范](../../standards/planning.md) 的状态映射（§3.1 表）。
 5. **进 AGENTS.md 的看板使用约定**（并入协作调研 L1 第 3 项的跨项目协作章节）：agent 读看板定位工作、写状态的边界与坐标纪律。

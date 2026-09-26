@@ -92,3 +92,28 @@
 1. **面板 id 可读命名（伴随修正，超出条目字面范围）**：零漂移门禁暴露 M1-4 面板 id 所有权使 id 变为 `useId()` 形态（`v-*`），丢失捕获工具「`aria-controls` 指向哪一类面板」的断言语义（`test/capture/capture.mjs` 显式保留 id 名称、只归一化实例计数器）。本批为 3 个调用点补 `caomei-<组件>-panel-` 前缀（multi-select / auto-complete / dropdown-menu-trigger），并**重新冻结基线**（`git diff test/capture/baseline.json` 仅 2 行：`capturedAt` + 1 条属性快照）。Review Gate 裁定成立、不要求拆分。
 2. **流程缺口（RG-W02，如实登记）**：M1 批次的 `f6f5341` / `2e75e53` 改动面板 idref 接线后**未复跑 `capture:styles`**，冻结基线在 HEAD 上已先于本批漂移（该门禁非 `verify` 常驻链，需手动触发）。规则：**引用型属性 / 渲染契约类改动（不改组件单测可断言面者）须同批复跑 `capture:styles`**；已登记 [Backlog](../../plan/backlog.md)。
 3. **透传断言的边界（RG-S01）**：date-picker / color-picker 的新增断言保护组件两态输出契约（内层按钮自有 `:disabled`，断言不区分透传路径）；包装层契约由 popover / dropdown 两处测试直接覆盖。
+
+## 5. M2-4 一致性机检（样式侧旧命名裸类 + 解析健壮性）
+
+### 5.1 实现落点（`scripts/governance/check-design.mjs`）
+
+1. **旧尺寸命名扩到样式选择器**（新守卫 `[naming]`，`findLegacySizeSelectors`）：扫描组件样式规则的选择器，命中 `--small` / `--large` 修饰符即失败（当前档位为 `sm` / `md` / `lg`）；与既有的「组件类型字面量」面（`findLegacyNaming`）同属旧命名泄漏面、分列两类消息。
+2. **`declarationsOf` 解析健壮性**：**只把匹配属性名形态的片段计为声明**（自定义属性 `--x` / 标准属性 ident），值内分号（如 `content: "a;b"`）切出的尾段、非属性名片段与嵌套规则体直接丢弃；属性名非自定义属性时统一 `toLowerCase()` 比较（CSS 属性名不区分大小写），自定义属性名保持原样（**大小写敏感**）。
+3. **受检面双下界**（新守卫 `[scope-floor]`，`findScanScopeIssues` + `countComponentScanScope`）：**规则数**（`MIN_COMPONENT_RULE_COUNT = 600`，取实测七成余量）与**声明数**（`MIN_COMPONENT_DECLARATION_COUNT = 2500`）各设下界，任一低于即失败——规则面下界拦「扫描器 / 入口配置整体或整目录失效」，声明面下界拦「规则仍在、`declarationsOf` 解析静默丢项」。运行摘要输出实测两值（当前 **818** 规则 / **2763** 声明），单次扫描复用。
+
+### 5.2 验证与证据
+
+- **正反例语料**（`check-design.test.mjs`，64 例全绿）：值内分号（尾段丢弃）、大小写属性名（`Opacity` / `Z-Index` 小写归一后仍被 G3 / G4 拦下、`Color` / `color` 视为重复声明）、自定义属性大小写保留（`--Foo` ≠ `--foo`）、旧尺寸选择器正反例（`--small` / `--large` 命中、`--sm` 与 `--smalls` 不命中）、受检面下界正反例（低规则数命中、真实仓库零告警）。
+- **仓库级负向对照**：向 `src/components/divider/divider.vue` 注入 `.caomei-divider--large { color: red; }` → `check-design` exit 1 且消息精确（文件 + 选择器 + 命名口径）；还原后 exit 0、`git diff src/` 为空。
+- **声明面未静默收窄**：① 一次性对照脚本（`.temp/`，不入库；简化样式块提取口径）逐规则对比新旧 `declarationsOf` —— 声明总数 **2792 = 2792**、数量差异规则 **0**、属性名重写 **0**，证明本次健壮性改动是**净等价的解析收紧**（既未丢声明、也未改判）；② 该对照已**固化为常驻断言**（声明数下界 + 真实仓库零告警），不再依赖不入库脚本。
+- **门禁**：`pnpm check:design` exit 0（`governance:check` / `verify` 链内）；`pnpm lint:check` / `pnpm typecheck` / `pnpm lint:md` 全绿。
+
+### 5.3 已知边界
+
+- `declarationsOf` 按**首个冒号 + 分号**切分（不做引号 / 括号感知的顶层切分）：若值内含 `;` 且其后恰好是「属性名形态」的片段（如 `content: "a; color: red"`），该片段仍会被计为声明；当前组件样式无此形态（负向对照 0 差异），且 G3 / G4 的值形态校验会过滤其中的数值型假命中。**该边界已用单测固化**（改为顶层感知切分时该断言即失败，提示同步本记录与规范口径）；旧尺寸选择器规则面亦有意不覆盖裸类 `.x-small`（`\b` 词边界会命中 `--small-font` 一类复合尾串）。
+
+## 6. 验证与证据（M2 批次）
+
+- **质量门**：`pnpm test`（全量单测）/ `pnpm lint:check` / `pnpm typecheck` / `pnpm lint:md` / `pnpm check:design` / `pnpm governance:check` / `pnpm docs:build` 全绿；`pnpm capture:styles` 239 项 0 差异（M2-3 重新冻结后复验）。
+- **Review Gate**：M2-1 + M2-2 一批 2 轮（R1 `Reject`：图标面复算值错误 + 枚举完整性 + 规范归因双源 → 修复 → R2 `Pass`）；M2-3 1 轮 `Pass`（2 warning：伴随修正登记 / 流程缺口登记）；M2-4 R1 `Pass`（2 warning：边界固化 / 声明面下界）+ 修复点 R2 `Pass`（另 1 warning：记录测试计数陈旧 + 1 suggest：单次扫描复用未落实，均同批修正）。
+- **不改色约束**：本批次零 token 色值改动、零既有视觉改动（M2-1 / M2-2 仅清单；M2-3 / M2-4 仅属性取值与守卫），D5 / D6 成立。

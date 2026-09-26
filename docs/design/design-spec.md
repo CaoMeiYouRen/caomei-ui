@@ -128,7 +128,7 @@
 - `-solid` 实底与 `--caomei-color-on-solid` 前景必须满足 AA（其余 tone 实底均 ≥ 4.5:1）。
   - **默认主题（2026-09-16 起）达标**：`primary` 与 `primary-foreground` 配对——亮 `#2563eb` + `#fff` = **5.17:1**、暗 `#60a5fa` + `#0b0b0d` = **7.73:1**；`primary-solid` 与 `on-solid` 配对两态均 **5.17:1**。实测证据见 [M2 浏览器验证记录](./governance/2026-09-16-m2-primary-browser-validation.md)。
   - **本节（`-solid` 配对）的唯一例外**：`caomei` 预设 `primary-solid` `#e63946` 配 `on-solid` 白字约 **4.17:1**，略低于阈值；用户决策预设品牌色保持不变，故暂予接受，跟踪见 [Backlog](../plan/backlog.md)「对比度遗留项盘点」。同预设 `danger-solid` `#b91c1c` 配白字 **6.47:1** 达标。
-  - **不在本节范围的其它既有缺口**（按第一条「正文 ≥ 4.5:1 / 图形 ≥ 3:1」跟踪，见同一 Backlog 行）：亮色 soft 变体 primary 文本 4.37:1、`.caomei-calendar__weekday` 亮色 4.48:1、`.caomei-toast__icon` 暗色 2.54:1；`caomei` 预设 `danger` `#ef4444` 作为前景色时：纯白底约 **3.76:1**、soft 变体的 `color-mix(tone 12%)` 底约 **3.22:1**（消费点为 soft / outline 文本；invalid 描边属图形、3:1 阈值下达标，无需改动；实底仍走 `danger-solid`）。
+  - **不在本节范围的其它既有缺口**（按第一条「正文 ≥ 4.5:1 / 图形 ≥ 3:1」跟踪，见同一 Backlog 行；2026-09-26 复算口径见 [M2 一致性收口记录](./governance/2026-09-26-m2-style-token-consistency.md) §3）：亮色 soft 变体 primary 文本 4.37:1、toast 中性强调**描边**（`neutral-solid`）暗色 2.54:1（历史条目名 `.caomei-toast__icon`，其图标面已按继承收口、18.04:1 达标）；`caomei` 预设 `danger` `#ef4444` 作为前景色时：纯白底约 **3.76:1**、soft 变体的 `color-mix(tone 12%)` 底约 **3.23:1**（消费点为 soft / outline 文本；invalid 描边属图形、3:1 阈值下达标，无需改动；实底仍走 `danger-solid`）。`.caomei-calendar__weekday` 亮色 **4.83:1**（on `bg`）/ 4.52:1（on `bg-elevated`）库内达标，历史值 4.48:1 系站点 `--vp-c-bg-soft` 口径（见同记录 §3 #6）。
 - 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
 
 ## 4. 主题与暗色

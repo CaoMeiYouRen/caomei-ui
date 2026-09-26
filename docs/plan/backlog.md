@@ -16,7 +16,8 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 实底前景 token 配对复核 | M3 复核 | 复核其余实底消费点的 `-solid` × `-foreground` 配对，避免跨主题配对冲突（2026-09-21：本阶段未取，须另行裁定）。**已裁定纳入**（2026-09-25 用户裁定 D6②）→ M2-1（Phase 14 质量与一致性收口；**仅出清单、修复另行裁定**） | 中 |
+| switch 滑块前景配对待裁定 | 2026-09-26 M2-1 配对复核清单（[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §2.2）发现：`switch` 滑块前景取 `--caomei-color-bg` 而非 `--caomei-color-primary-foreground`，默认主题两值相等（亮均 `#fff`、暗均 `#0b0b0d`），预设 / 自定义下可能失配。**触发条件**：预设或下游覆盖 `primary-foreground` 与 `bg` 使其分离，或裁定统一配对口径 | 低 |
+| toast 强调色回退口径不一致 | 2026-09-26 M2-1 清单 §2.3 发现：`border-left` 强调描边用 `var(--caomei-toast-accent, var(--caomei-color-neutral-solid))` 有回退，而图标色 `color: var(--caomei-toast-accent)` 无回退（tone 未命中时继承正文色）；补回退会改变渲染色值（D5 禁改面）。**触发条件**：对比度 / 一致性裁定允许调整 neutral 强调面时一并处理 | 低 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
@@ -61,7 +62,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
-| 对比度遗留项盘点 | 亮色 soft 变体 primary 文本 4.37:1 等 4 项；预设品牌色既有例外长期跟踪（2026-09-21：本阶段未取，须另行裁定）。**2026-09-22 新增观察**：亮色 `--caomei-color-text-muted`（#6b7280）落在站点 `--vp-c-bg-soft`（#f6f6f7）上为 **4.48:1**（同色在纯白上 5.1）——M2-5 组件画廊 V 阶段实测，归因库 token × 站点 soft 底，非画廊引入。**已裁定纳入**（2026-09-25 用户裁定 D5①）→ M2-2（Phase 14 质量与一致性收口；**仅盘点并登记、不改色**） | 中 |
+| 对比度遗留项盘点 | **2026-09-26 复算后在册 5 项**（逐条复算值与消费点见[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §3）：① 亮色 soft 变体 primary 文本 4.37:1；② `neutral-solid` 强调描边暗色 2.54:1（toast 图标面已走继承、口径不一致另计）；③ `caomei` 预设 `danger` 作前景 3.76:1 / soft 底 3.23:1；④ `caomei` 预设 `primary-solid` 配 `on-solid` 4.17:1（**已裁定维持**，预设品牌色不变）；⑤ 站点侧 `text-muted` on `--vp-c-bg-soft` 4.48:1（库 token × 站点底，归因站点主题）。历史条目「`.caomei-calendar__weekday` 亮色 4.48:1」经复算**归因为站点侧口径**（库内 on `bg` 4.83:1 / on `bg-elevated` 4.52:1 均达标），不再单列。**按 D5① 不改色**，维持跟踪 | 中 |
 | 迁移口径一致性守卫 | 入口表 / 组件页节 ↔ §7 一致性机检。**已裁定纳入**（2026-09-25 用户裁定 D8）→ M4-3（Phase 14 质量与一致性收口） | 低 |
 | 内置文案台账机检对账 | `docs/components/locale.md`（中英）的「命名空间 → 文案键」索引表与 `src/locale/*` 实际键集合对账。**触发依据**：2026-09-23 M1-2 新增 `table.expandRowGroup` / `table.collapseRowGroup` 时该台账漏更新，`docs:check` 与 `check-locale-keys` 均不覆盖，Review Gate 判 blocker 后人工修复。**已裁定纳入**（2026-09-25 用户裁定 D8）→ M4-1（Phase 14 质量与一致性收口） | 低 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |

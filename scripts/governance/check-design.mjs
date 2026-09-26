@@ -7,7 +7,7 @@
  * 1. token 引用存在性：`var(--caomei-*)` 若既非全局 token（`src/styles/**`）、也非同文件局部定义、又无 fallback，视为错误；
  * 2. 组件原始色值：`src/components/**` 的样式块出现 `#hex` 为错误；`rgb()/rgba()/hsl()` 受预算约束（超出预算为错误）；
  * 3. 档位常量：`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone` 必须与设计规范一致；
- * 4. 旧命名泄漏：组件类型中的 `'small'` / `'large'` 尺寸命名为错误；
+ * 4. 旧命名泄漏：组件类型中的 `'small'` / `'large'` 尺寸命名、以及组件样式选择器中的 `--small` / `--large` 为错误；
  * 5. 档位块直接声明属性（G1）：`:where(.caomei-<comp>[__<el>]--<档位/变体>)` 规则内出现非自定义属性为错误；
  * 6. scoped 变量声明（G2）：组件样式块内声明**非全局 token** 的 `--caomei-*` 时选择器必须含 `:where(`（基类不预声明默认值）；
  * 7. 禁用态字面量（G3）：`opacity: 0.5 / 0.6` 字面量为错误（跳过 `@keyframes` 块）；
@@ -16,6 +16,7 @@
  *    （G1 / G2 只检查「已用 `:where()`」的块，本项拦的是「根本没用 `:where()`」的形态）；
  * 10. 同规则内同名属性重复声明（G6）：后写覆盖先写、前者恒为死代码，为错误
  *    （含自定义属性；本项目组件样式层已统一依赖 `color-mix()`，故不保留渐进增强回退分支）。
+ * 11. 受检面下界：组件样式规则数低于下界（扫描器 / 入口配置静默收窄）为错误。
  *
  * 用法：
  *   node scripts/governance/check-design.mjs            # 有错误 exit 1
@@ -198,7 +199,7 @@ export function findTypeScaleIssues(text, expected = EXPECTED_UNIONS) {
     return issues
 }
 
-/** 检查 PrimeVue 旧尺寸命名泄漏。 */
+/** 检查 PrimeVue 旧尺寸命名泄漏（组件类型中的 `'small'` / `'large'` 字面量）。 */
 export function findLegacyNaming(entries) {
     const files = []
     for (const { file, text } of entries) {
@@ -207,6 +208,65 @@ export function findLegacyNaming(entries) {
         }
     }
     return files
+}
+
+/**
+ * 旧尺寸命名在**样式选择器**中的形态：`--small` / `--large` 修饰符（当前尺寸档位为 `sm` / `md` / `lg`）。
+ * 与 `findLegacyNaming` 同属「旧命名泄漏」面，但扫描对象是组件样式块的选择器，而非 TS 字面量。
+ *
+ * 规则面边界（有意）：`-` 属词边界字符，`--small\b` 亦会命中 `--small-font` 一类复合尾串；
+ * 裸类 `.x-small`（无修饰符）不在面内。两者现网均零命中，需要时另行评估扩面。
+ */
+const LEGACY_SIZE_SELECTOR_RE = /--(small|large)\b/
+
+/** 检查组件样式选择器中的旧尺寸命名（`--small` / `--large`）。 */
+export function findLegacySizeSelectors(entries) {
+    const issues = []
+    for (const rule of collectRuleEntries(entries)) {
+        if (LEGACY_SIZE_SELECTOR_RE.test(rule.selector)) {
+            issues.push({ file: rule.file, selector: rule.selector })
+        }
+    }
+    return issues
+}
+
+/**
+ * 受检面下界（**规则面**）：组件样式规则数不得低于该值。扫描器（`collectRuleEntries` /
+ * `scanRules` / `extractStyleBlocks`）或入口配置静默收窄时，全部规则面守卫会「空转通过」——
+ * 本断言把这种退化直接判失败。
+ *
+ * 下界取当前实测规模的七成余量（拦截「整体失效」与「整目录被跳过」类部分收窄）；**组件下线**
+ * 导致规则数合法下降时，按规范同步下调下界（消息已提示该路径）。
+ */
+export const MIN_COMPONENT_RULE_COUNT = 600
+
+/**
+ * 受检面下界（**声明面**）：组件样式的声明总数不得低于该值。规则数下界挡不住「规则仍在、
+ * 声明解析静默丢项」——声明面下界让 `declarationsOf` 的解析收窄可被回归断言捕获。
+ */
+export const MIN_COMPONENT_DECLARATION_COUNT = 2500
+
+/** 组件样式受检面规模（规则数 / 声明数），供下界断言与运行摘要复用（单次扫描）。 */
+export function countComponentScanScope(entries) {
+    const rules = collectRuleEntries(entries)
+    const declarationCount = rules.reduce((total, rule) => total + declarationsOf(rule.body).length, 0)
+    return { ruleCount: rules.length, declarationCount }
+}
+
+/**
+ * 检查受检面是否被静默收窄（规则数 / 声明数低于各自下界）。
+ * `counts` 可由调用方预计算复用，避免同一受检面被重复全量扫描。
+ */
+export function findScanScopeIssues(entries, counts = countComponentScanScope(entries)) {
+    const { ruleCount, declarationCount } = counts
+    const issues = []
+    if (ruleCount < MIN_COMPONENT_RULE_COUNT) {
+        issues.push({ kind: 'rule', actual: ruleCount, floor: MIN_COMPONENT_RULE_COUNT })
+    }
+    if (declarationCount < MIN_COMPONENT_DECLARATION_COUNT) {
+        issues.push({ kind: 'declaration', actual: declarationCount, floor: MIN_COMPONENT_DECLARATION_COUNT })
+    }
+    return issues
 }
 
 /** 跳过空白与注释。 */
@@ -324,7 +384,20 @@ export function scanRules(text, inKeyframes = false, acc = []) {
     return acc
 }
 
-/** 将规则体解析为声明列表（剥离注释，按首个冒号切分）。 */
+/**
+ * CSS 属性名形态：自定义属性（`--x`，**大小写敏感**）与标准属性 ident（大小写不敏感，
+ * 统一小写后比较——CSS 属性名本身不区分大小写）。
+ */
+const CUSTOM_PROPERTY_RE = /^--[A-Za-z0-9_-]+$/
+const STANDARD_PROPERTY_RE = /^-?[A-Za-z][A-Za-z0-9-]*$/
+
+/**
+ * 将规则体解析为声明列表（剥离注释，按首个冒号切分）。
+ *
+ * 健壮性口径：**只把匹配属性名形态的片段计为声明**——值内分号（如 `content: "a;b"`）切出的
+ * 尾段（`b"`）与嵌套规则体不具属性名形态，直接丢弃，避免污染声明面造成假命中；非自定义属性名
+ * 统一 `toLowerCase()` 后比较（CSS 属性名不区分大小写），自定义属性名保持原样（大小写敏感）。
+ */
 export function declarationsOf(body) {
     const withoutComments = body.replace(/\/\*[\s\S]*?\*\//g, '')
     const declarations = []
@@ -337,8 +410,13 @@ export function declarationsOf(body) {
         if (colon === -1) {
             continue
         }
+        const rawProperty = item.slice(0, colon).trim()
+        const isCustomProperty = CUSTOM_PROPERTY_RE.test(rawProperty)
+        if (!isCustomProperty && !STANDARD_PROPERTY_RE.test(rawProperty)) {
+            continue
+        }
         declarations.push({
-            property: item.slice(0, colon).trim(),
+            property: isCustomProperty ? rawProperty : rawProperty.toLowerCase(),
             value: item.slice(colon + 1).trim(),
         })
     }
@@ -526,11 +604,16 @@ export function runChecks() {
     const sourceEntries = collectEntries(SRC, (f) => /\.(css|vue)$/.test(f) && !/\.test\./.test(f))
     const typeEntries = collectEntries(COMPONENTS, (f) => f.endsWith('.ts') && !/\.test\./.test(f))
     const globalTokens = collectGlobalTokens()
+    // 受检面规模单次计算后复用（下界断言与运行摘要同源，避免重复全量扫描）
+    const scanScopeCount = countComponentScanScope(componentEntries)
     return {
         tokenIssues: findTokenIssues(sourceEntries, globalTokens),
         rawColors: findRawColors(componentEntries),
         typeIssues: findTypeScaleIssues(readFileSync(TYPES_FILE, 'utf8')),
         legacyNaming: findLegacyNaming(typeEntries),
+        legacySizeSelectors: findLegacySizeSelectors(componentEntries),
+        scanScopeCount,
+        scanScope: findScanScopeIssues(componentEntries, scanScopeCount),
         tierBlockDeclarations: findTierBlockPropertyDeclarations(componentEntries),
         scopedVariableDeclarations: findScopedVariableDeclarations(componentEntries, globalTokens),
         nonWhereSizeSelectors: findNonWhereSizeSelectors(componentEntries),
@@ -557,6 +640,12 @@ function main() {
     }
     for (const file of result.legacyNaming) {
         problems.push(`[naming] ${file}: 出现 PrimeVue 旧尺寸命名 'small' / 'large'`)
+    }
+    for (const issue of result.legacySizeSelectors) {
+        problems.push(`[naming] ${issue.file}: 样式选择器 ${issue.selector} 出现 PrimeVue 旧尺寸命名（--small / --large，当前档位为 sm / md / lg）`)
+    }
+    for (const issue of result.scanScope) {
+        problems.push(`[scope-floor] 受检面疑似静默收窄：组件样式${issue.kind === 'rule' ? '规则' : '声明'}数 ${issue.actual} 低于下界 ${issue.floor}（检查扫描器与入口配置；组件下线时按规范下调下界）`)
     }
     for (const issue of result.tierBlockDeclarations) {
         problems.push(`[tier] ${issue.file}: ${issue.selector} 内直接声明属性 ${issue.property}: ${issue.value}（档位块只应声明 CSS 变量）`)
@@ -598,10 +687,10 @@ function main() {
     }
 
     console.info(
-        `[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致、`
+        `[check-design] 通过：token 引用有效、无原始 hex 色值、档位常量一致、无旧尺寸命名、`
         + `档位块仅声明变量、scoped 变量声明合规、尺寸档位选择器均经 :where() 归一、`
-        + `无同规则重复声明、无禁用态 opacity 字面量、无数字 z-index`
-        + `（rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`,
+        + `无同规则重复声明、无禁用态 opacity 字面量、无数字 z-index、受检面未收窄`
+        + `（组件样式规则 ${result.scanScopeCount.ruleCount} 条 / 下界 ${MIN_COMPONENT_RULE_COUNT}、声明 ${result.scanScopeCount.declarationCount} 条 / 下界 ${MIN_COMPONENT_DECLARATION_COUNT}，rgb 警告 ${notes.length}/${RGB_BUDGET} 处）`,
     )
 }
 

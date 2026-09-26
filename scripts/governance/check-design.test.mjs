@@ -1,8 +1,10 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
+    MIN_COMPONENT_DECLARATION_COUNT,
+    MIN_COMPONENT_RULE_COUNT,
     OPACITY_BUDGET,
     RGB_BUDGET,
     Z_INDEX_BUDGET,
@@ -11,7 +13,10 @@ import {
     declarationsOf,
     findDuplicateDeclarations,
     findLegacyNaming,
+    findLegacySizeSelectors,
     findOpacityLiterals,
+    countComponentScanScope,
+    findScanScopeIssues,
     findRawColors,
     findNonWhereSizeSelectors,
     findScopedVariableDeclarations,
@@ -111,6 +116,25 @@ describe('check-design 负向用例', () => {
         expect(findLegacyNaming([{ file: '/tmp/opencode/x.ts', text: 'size?: \'small\'' }])).toHaveLength(1)
     })
 })
+
+
+/** 真实组件目录的样式条目（与 `runChecks` 的受检面同源），用于「真实集合零命中 / 高于下界」断言。 */
+function collectComponentStyleEntries() {
+    const dir = join(REPO_ROOT, 'src', 'components')
+    const entries = []
+    const walk = (current) => {
+        for (const name of readdirSync(current)) {
+            const full = join(current, name)
+            if (statSync(full).isDirectory()) {
+                walk(full)
+            } else if (/\.(css|vue)$/.test(name) && !/\.test\./.test(name)) {
+                entries.push({ file: full, text: readFileSync(full, 'utf8') })
+            }
+        }
+    }
+    walk(dir)
+    return entries
+}
 
 const vue = (css) => [{ file: '/tmp/opencode/x.vue', text: `<style>${css}</style>` }]
 
@@ -330,5 +354,105 @@ describe('scanRules 边界（W3：注释与字符串中的花括号不得破坏�
         const rules = scanRules('@starting-style { .caomei-a--sm { z-index: 1 } }')
 
         expect(rules.map((rule) => rule.selector)).toEqual(['.caomei-a--sm'])
+    })
+})
+
+describe('check-design 声明解析健壮性（declarationsOf）', () => {
+    it('反例（值内分号）：引号内分号切出的尾段不具属性名形态，丢弃不计为声明', () => {
+        expect(declarationsOf('content: "a;b"; color: red;')).toEqual([
+            { property: 'content', value: '"a' },
+            { property: 'color', value: 'red' },
+        ])
+    })
+
+    it('反例（大小写）：非自定义属性名统一小写后比较', () => {
+        expect(declarationsOf('Opacity: 0.5; Z-Index: 1;')).toEqual([
+            { property: 'opacity', value: '0.5' },
+            { property: 'z-index', value: '1' },
+        ])
+    })
+
+    it('正例：自定义属性名大小写敏感，原样保留', () => {
+        expect(declarationsOf('--Foo: 1; --foo: 2;')).toEqual([
+            { property: '--Foo', value: '1' },
+            { property: '--foo', value: '2' },
+        ])
+    })
+
+    it('反例：非属性名形态的片段（无冒号 / 含引号 / 嵌套路片段）丢弃', () => {
+        expect(declarationsOf('b"); color: red; & .caomei-x--sm { z-index: 1 }')).toEqual([
+            { property: 'color', value: 'red' },
+        ])
+    })
+
+    it('反例：大小写属性名仍被 G3 / G4 拦下', () => {
+        expect(findOpacityLiterals(vue('.caomei-foo { Opacity: 0.5; }'))).toHaveLength(1)
+        expect(findZIndexLiterals(vue('.caomei-foo { Z-Index: 9; }'))).toHaveLength(1)
+    })
+
+    it('正例：大小写不同的同名标准属性视为重复声明（G6）', () => {
+        expect(findDuplicateDeclarations(vue('.caomei-foo { Color: red; color: blue; }'))).toHaveLength(1)
+    })
+})
+
+describe('check-design 旧尺寸命名的样式选择器面（[naming]）', () => {
+    it('反例：选择器出现 --small / --large 命中', () => {
+        expect(findLegacySizeSelectors(vue('.caomei-foo--small { color: red; }'))).toHaveLength(1)
+        expect(findLegacySizeSelectors(vue(':where(.caomei-foo--large) { color: red; }'))).toHaveLength(1)
+    })
+
+    it('正例：当前档位 sm / md / lg 与相似词不命中', () => {
+        expect(findLegacySizeSelectors(vue('.caomei-foo--sm { color: red; }'))).toEqual([])
+        expect(findLegacySizeSelectors(vue('.caomei-foo--smalls { color: red; }'))).toEqual([])
+    })
+
+    it('正例：真实组件集零命中', () => {
+        const issues = findLegacySizeSelectors(collectComponentStyleEntries())
+        expect(issues).toEqual([])
+    })
+})
+
+describe('check-design 受检面下界（防静默收窄）', () => {
+    it('反例：规则数低于下界判失败（声明数同时低于各自下界）', () => {
+        const issues = findScanScopeIssues(vue('.caomei-foo { color: red; }'))
+        expect(issues.map((issue) => issue.kind)).toEqual(['rule', 'declaration'])
+        expect(issues[0].floor).toBe(MIN_COMPONENT_RULE_COUNT)
+        expect(issues[1].floor).toBe(MIN_COMPONENT_DECLARATION_COUNT)
+    })
+
+    it('正例：真实仓库受检面高于下界且无下界告警', () => {
+        const entries = collectComponentStyleEntries()
+        expect(entries.length).toBeGreaterThan(0)
+        expect(findScanScopeIssues(entries)).toEqual([])
+        expect(runChecks().scanScope).toEqual([])
+    })
+})
+
+describe('check-design 声明解析的已知边界（固化拦截）', () => {
+    it('已知边界：值为引号字符串且分号后恰为属性名形态时仍计为声明（现网无此形态）', () => {
+        // 现状固化：`declarationsOf` 不做引号感知的顶层切分，该形态会产生一条幻影声明。
+        // 一旦改为顶层感知切分，本断言即失败并提示同步更新记录 §5.3 与规范口径。
+        expect(declarationsOf('content: "a; color: red";')).toEqual([
+            { property: 'content', value: '"a' },
+            { property: 'color', value: 'red"' },
+        ])
+    })
+})
+
+describe('check-design 受检面下界（声明面）', () => {
+    it('反例：规则数达标但声明数低于下界仍判失败', () => {
+        const entries = Array.from({ length: MIN_COMPONENT_RULE_COUNT + 10 }, () => ({
+            file: '/tmp/opencode/x.css',
+            text: '.caomei-x { color: red; }',
+        }))
+        const issues = findScanScopeIssues(entries)
+        expect(issues.map((issue) => issue.kind)).toEqual(['declaration'])
+    })
+
+    it('正例：真实仓库规则数与声明数均高于下界', () => {
+        const scope = countComponentScanScope(collectComponentStyleEntries())
+        expect(scope.ruleCount).toBeGreaterThanOrEqual(MIN_COMPONENT_RULE_COUNT)
+        expect(scope.declarationCount).toBeGreaterThanOrEqual(MIN_COMPONENT_DECLARATION_COUNT)
+        expect(findScanScopeIssues(collectComponentStyleEntries())).toEqual([])
     })
 })

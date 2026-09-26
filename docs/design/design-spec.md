@@ -333,13 +333,14 @@
   1. token 引用存在性（`var(--caomei-*)` 未定义且无 fallback 为错误）；
   2. 组件原始色值（`#hex` 与 `rgb()` / `rgba()` / `hsl()` / `hsla()` 均为错误，rgb/hsl 预算 0）；
   3. 档位常量一致性（`src/types.ts` 的 `ComponentSize` / `ComponentVariant` / `ComponentTone`）；
-  4. 旧命名泄漏（组件类型中的 `'small'` / `'large'`）；
+  4. 旧命名泄漏（`[naming]`）：组件类型中的 `'small'` / `'large'` 字面量、以及组件样式选择器中的 `--small` / `--large` 修饰符；
   5. 档位块属性（G1）：`:where(.caomei-<comp>[__<el>]--<档位/变体>)` 规则内直接声明属性为错误；
   6. scoped 变量声明（G2）：组件命名空间的 `--caomei-*` 声明必须落在含 `:where(` 的选择器内；
   7. 禁用态字面量（G3）：`opacity: 0.5` / `0.6` 字面量为错误（跳过 `@keyframes`）；
   8. 层级字面量（G4）：数字 `z-index` 为错误，须走 `var(--caomei-z-*)` 或关键字；
   9. 尺寸档位选择器归一（G5，`[tier-where]`）：`.caomei-<comp>[__<el>]--(sm|md|lg)` 未被 `:where(...)` 归零为错误（规则面只含尺寸档位，不含变体 / 语气）；
   10. 同规则重复声明（G6，`[dup-decl]`）：同一规则内同名属性重复声明（含自定义属性）为错误——后写覆盖先写、前者恒为死代码。
+  11. 受检面下界（`[scope-floor]`）：组件样式的**规则数**与**声明数**各有下界（常量在脚本内，实测值见运行摘要），任一低于下界即判失败——防止扫描器 / 入口配置静默收窄、或声明解析静默丢项导致规则面守卫空转；组件下线致规模合法下降时按规范同步下调下界。
 - **单测**：`scripts/governance/check-design.test.mjs` 将上述不变量固化为断言。
 - **新组件自检清单**：新增组件按下列顺序核对，全部满足方可进入 Review Gate。
   1. 命名与结构：`Caomei` + `PascalCase`；目录 `src/components/<kebab>/`，含同名 `.vue`、`types.ts`、`index.ts` 与 `.test.ts`；在 `src/index.ts` 导出。

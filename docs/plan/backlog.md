@@ -16,6 +16,7 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
+| 引用型属性改动须复跑样式回归 | 2026-09-26 M2-3 发现：`capture:styles` 不在 `verify` 常驻链，M1 批次改 `panel-idref` 接线（`f6f5341` / `2e75e53`）后未复跑，冻结基线在 HEAD 上已漂移（属性快照 id 名称）。**规则**：引用型属性 / 渲染契约类改动（不改组件单测可断言面者）须同批复跑 `capture:styles` 并核对基线 diff 行数。**触发条件**：周级回归或改动此类接线时 | 中 |
 | switch 滑块前景配对待裁定 | 2026-09-26 M2-1 配对复核清单（[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §2.2）发现：`switch` 滑块前景取 `--caomei-color-bg` 而非 `--caomei-color-primary-foreground`，默认主题两值相等（亮均 `#fff`、暗均 `#0b0b0d`），预设 / 自定义下可能失配。**触发条件**：预设或下游覆盖 `primary-foreground` 与 `bg` 使其分离，或裁定统一配对口径 | 低 |
 | toast 强调色回退口径不一致 | 2026-09-26 M2-1 清单 §2.3 发现：`border-left` 强调描边用 `var(--caomei-toast-accent, var(--caomei-color-neutral-solid))` 有回退，而图标色 `color: var(--caomei-toast-accent)` 无回退（tone 未命中时继承正文色）；补回退会改变渲染色值（D5 禁改面）。**触发条件**：对比度 / 一致性裁定允许调整 neutral 强调面时一并处理 | 低 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |

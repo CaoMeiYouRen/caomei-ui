@@ -69,3 +69,26 @@
 | 6 | 站点侧 `text-muted` on soft 底 | 文档站 `--vp-c-bg-soft`（`#f6f6f7`）上的 `--caomei-color-text-muted`（`#6b7280`） | **4.48:1** | 4.5 | **缺口（维持登记）**：库 token × 站点底，归因站点主题，非库内可修面 |
 
 **结论**：6 项逐条复算完成，**无新增缺口、无修复消除**（#2 经归因更正移出库内在册、转站点侧口径）；按 D5① **不改任何色值**，在册缺口维持 [Backlog](../../plan/backlog.md)「对比度遗留项盘点」跟踪。
+
+## 4. M2-3 触发器 `disabled` 透传与包装层归一化
+
+### 4.1 实现落点
+
+- `src/components/date-picker/date-picker.vue` / `src/components/color-picker/color-picker.vue`：`<CaomeiPopoverTrigger as-child unstyled>` 补 `:disabled="disabled"`（对齐 `split-button` 的既有透传形态，使触发器包装层承载禁用契约）。
+- `src/components/dropdown-menu/dropdown-menu-trigger.vue`：`:disabled="props.disabled"` → `:disabled="props.disabled || undefined"`，与 `popover-trigger.vue` 的既有归一化对齐（消除「一裸传、一归一化」双形态）。
+
+### 4.2 行为等价性依据
+
+- Reka `Primitive/Slot.js` 的 `mergeProps(attrs, firstNonCommentChildren.props)` 为**子节点胜**：`as-child` 下包装层的 `disabled` 不覆盖内层按钮自有绑定（date-picker / color-picker 内层按钮本就有 `:disabled="disabled"`，透传属契约完整性而非行为修复）。
+- `false` / `undefined` 经 Vue 布尔属性处理均不渲染 `disabled` 属性（两态断言实测）；Reka `PopoverTrigger` 未声明 `disabled`（经 attrs 合并到元素），`DropdownMenuTrigger` 的 `disabled` 计算对两者同为假值。
+
+### 4.3 验证与证据
+
+- **两态断言**：`popover.test.ts` / `dropdown-menu.test.ts` 各补 1 条包装层归一化两态断言（true 输出属性 / false 与未传不输出）；`date-picker.test.ts` / `color-picker.test.ts` 补触发按钮两态断言。定向 `vitest` 173 例全绿。
+- **计算样式零漂移**：`pnpm capture:styles` 复跑 **0 差异（239 项逐属性与基线一致）**。
+
+### 4.4 伴随修正与边界（审查确认）
+
+1. **面板 id 可读命名（伴随修正，超出条目字面范围）**：零漂移门禁暴露 M1-4 面板 id 所有权使 id 变为 `useId()` 形态（`v-*`），丢失捕获工具「`aria-controls` 指向哪一类面板」的断言语义（`test/capture/capture.mjs` 显式保留 id 名称、只归一化实例计数器）。本批为 3 个调用点补 `caomei-<组件>-panel-` 前缀（multi-select / auto-complete / dropdown-menu-trigger），并**重新冻结基线**（`git diff test/capture/baseline.json` 仅 2 行：`capturedAt` + 1 条属性快照）。Review Gate 裁定成立、不要求拆分。
+2. **流程缺口（RG-W02，如实登记）**：M1 批次的 `f6f5341` / `2e75e53` 改动面板 idref 接线后**未复跑 `capture:styles`**，冻结基线在 HEAD 上已先于本批漂移（该门禁非 `verify` 常驻链，需手动触发）。规则：**引用型属性 / 渲染契约类改动（不改组件单测可断言面者）须同批复跑 `capture:styles`**；已登记 [Backlog](../../plan/backlog.md)。
+3. **透传断言的边界（RG-S01）**：date-picker / color-picker 的新增断言保护组件两态输出契约（内层按钮自有 `:disabled`，断言不区分透传路径）；包装层契约由 popover / dropdown 两处测试直接覆盖。

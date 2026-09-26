@@ -117,3 +117,17 @@
 - **质量门**：`pnpm test`（全量单测）/ `pnpm lint:check` / `pnpm typecheck` / `pnpm lint:md` / `pnpm check:design` / `pnpm governance:check` / `pnpm docs:build` 全绿；`pnpm capture:styles` 239 项 0 差异（M2-3 重新冻结后复验）。
 - **Review Gate**：M2-1 + M2-2 一批 2 轮（R1 `Reject`：图标面复算值错误 + 枚举完整性 + 规范归因双源 → 修复 → R2 `Pass`）；M2-3 1 轮 `Pass`（2 warning：伴随修正登记 / 流程缺口登记）；M2-4 R1 `Pass`（2 warning：边界固化 / 声明面下界）+ 修复点 R2 `Pass`（另 1 warning：记录测试计数陈旧 + 1 suggest：单次扫描复用未落实，均同批修正）。
 - **不改色约束**：本批次零 token 色值改动、零既有视觉改动（M2-1 / M2-2 仅清单；M2-3 / M2-4 仅属性取值与守卫），D5 / D6 成立。
+
+## 7. 遗留与后续
+
+| 项 | 性质 | 去向 |
+| :--- | :--- | :--- |
+| switch 滑块前景取 `bg` 而非 `primary-foreground` | M2-1 复核发现（D6② 不修复） | [Backlog](../../plan/backlog.md)（触发：预设 / 下游覆盖使两值分离，或统一配对口径） |
+| toast 强调色回退口径不一致（描边有回退、图标无回退） | M2-1 复核发现（D5① 不改渲染色值） | [Backlog](../../plan/backlog.md)（触发：中性强调面裁定调整时一并处理） |
+| 对比度在册缺口 5 项（soft primary 4.37 / neutral 描边 2.54 / 预设 danger 3.76·3.23 / 预设 primary-solid 4.17 / 站点 text-muted 4.48） | M2-2 盘点（D5① 仅登记） | [Backlog](../../plan/backlog.md)「对比度遗留项盘点」维持跟踪 |
+| 面板 id 可读命名（M1-4 伴随修正） | M2-3 已落地 + 基线重新冻结 | 已闭环（记录 §4.4） |
+| `capture:styles` 未随引用型属性改动复跑 | M2-3 发现的流程缺口 | [Backlog](../../plan/backlog.md)（规则：此类改动须同批复核样式回归） |
+| `declarationsOf` 不做引号 / 括号感知的顶层切分；旧尺寸选择器不覆盖裸类 `.x-small` | M2-4 已知边界（已用单测 / 注释固化） | 需要时另行评估（改切分即触发固定断言提示同步口径） |
+| 字段 shell 样式层共享 | 长期任务（D4② 语义 token 契约） | [长期任务台账](../../plan/recurring.md)（不占阶段原子条目） |
+
+**不改色约束复核**：本批次零 token 色值改动、零既有视觉改动（M2-1 / M2-2 仅清单；M2-3 / M2-4 仅属性取值与守卫），D5 / D6 成立。

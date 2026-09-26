@@ -232,6 +232,17 @@ describe('CaomeiDropdownMenu', () => {
         expect(getContent()).toBeNull()
     })
 
+    it('disabled 两态归一化：true 输出属性，false / 未传不输出', () => {
+        const disabledWrapper = mountMenu({}, { slots: createSlots({ disabled: true }) })
+        expect(getTrigger(disabledWrapper).attributes('disabled')).toBeDefined()
+
+        const falseWrapper = mountMenu({}, { slots: createSlots({ disabled: false }) })
+        expect(getTrigger(falseWrapper).attributes('disabled')).toBeUndefined()
+
+        const omittedWrapper = mountMenu()
+        expect(getTrigger(omittedWrapper).attributes('disabled')).toBeUndefined()
+    })
+
     it('键盘 ArrowDown 打开菜单', async () => {
         const wrapper = mountMenu()
         const trigger = getTrigger(wrapper)

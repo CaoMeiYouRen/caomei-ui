@@ -184,6 +184,38 @@ describe('CaomeiPopover', () => {
         wrapper.unmount()
     })
 
+    it('disabled 两态归一化：true 输出属性，false / 未传不输出', () => {
+        const mountTrigger = (props: { disabled?: boolean }) => mount(CaomeiPopover, {
+            attachTo: document.body,
+            slots: {
+                default: () => [
+                    h(CaomeiPopoverTrigger, props, { default: () => '打开' }),
+                    h(CaomeiPopoverContent, {}, { default: () => '内容' }),
+                ],
+            },
+        })
+        const expectDisabled = (expected: boolean) => {
+            const element = getTrigger()
+            expect(element).not.toBeNull()
+            expect(element?.hasAttribute('disabled')).toBe(expected)
+        }
+
+        const disabledWrapper = mountTrigger({ disabled: true })
+        expectDisabled(true)
+        disabledWrapper.unmount()
+        document.body.innerHTML = ''
+
+        const falseWrapper = mountTrigger({ disabled: false })
+        expectDisabled(false)
+        falseWrapper.unmount()
+        document.body.innerHTML = ''
+
+        const omittedWrapper = mountTrigger({})
+        expectDisabled(false)
+        omittedWrapper.unmount()
+        document.body.innerHTML = ''
+    })
+
     it('side 与 align 传到面板 data 属性', async () => {
         const { wrapper } = mountControlled(true, { side: 'top', align: 'start' })
         await nextTick()

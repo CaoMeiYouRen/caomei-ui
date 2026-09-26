@@ -19,14 +19,14 @@ const props = withDefaults(defineProps<DropdownMenuTriggerProps>(), {
  * 注：触发器上的 `aria-controls` 由 Reka 内部绑定遮蔽 fallthrough（`Slot` 合并时子节点胜），
  * 本组件不额外覆盖该属性；「显式非空取值优先」仅适用于无内部绑定的接线点（多选 / 自动完成字段）。
  */
-const panelIdref = usePanelIdrefState(useId())
+const panelIdref = usePanelIdrefState(`caomei-dropdown-menu-panel-${useId()}`)
 registerPanelIdref(injectDropdownMenuRootContext() as unknown as PanelIdrefContext, panelIdref)
 </script>
 
 <template>
     <DropdownMenuTrigger
         v-bind="$attrs"
-        :disabled="props.disabled"
+        :disabled="props.disabled || undefined"
         :class="props.unstyled ? undefined : 'caomei-dropdown-menu__trigger'"
     >
         <slot />

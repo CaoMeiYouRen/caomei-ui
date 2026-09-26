@@ -109,6 +109,15 @@ describe('CaomeiDatePicker', () => {
 
         expect(document.body.querySelector('.caomei-date-picker__content')).toBeNull()
         expect(wrapper.get('.caomei-date-picker').classes()).toContain('caomei-date-picker--disabled')
+        expect(wrapper.get('.caomei-date-picker').attributes('disabled')).toBeDefined()
+
+        wrapper.unmount()
+    })
+
+    it('未禁用时触发按钮不带 disabled', () => {
+        const wrapper = mountPicker({ modelValue: new Date(2026, 8, 15) })
+
+        expect(wrapper.get('.caomei-date-picker').attributes('disabled')).toBeUndefined()
 
         wrapper.unmount()
     })

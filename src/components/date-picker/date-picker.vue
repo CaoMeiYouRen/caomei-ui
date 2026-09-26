@@ -128,6 +128,7 @@ function onTimeUpdate(value: TimeParts): void {
         <CaomeiPopoverTrigger
             as-child
             unstyled
+            :disabled="disabled"
         >
             <button
                 :id="id"

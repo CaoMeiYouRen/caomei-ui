@@ -167,6 +167,9 @@ describe('CaomeiColorPicker', () => {
 
         const wrapper = mountPicker({ disabled: true })
         expect(trigger(wrapper).attributes('disabled')).toBeDefined()
+
+        const enabledWrapper = mountPicker({})
+        expect(trigger(enabledWrapper).attributes('disabled')).toBeUndefined()
     })
 
     it('invalid 时标注 aria-invalid 与校验样式', () => {

@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-21T17:02:55.520Z",
+    "capturedAt": "2026-09-26T06:16:48.719Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1755,7 +1755,7 @@
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
         },
         "trigger.split-button-menu.open": {
-            "dump": "BUTTON aria-controls=\"reka-dropdown-menu-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"open\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+            "dump": "BUTTON aria-controls=\"caomei-dropdown-menu-panel-v-*\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"open\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
         },
         "trigger.split-button-menu.closed": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""

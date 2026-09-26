@@ -75,6 +75,7 @@ function onUpdate(value: string): void {
             <CaomeiPopoverTrigger
                 as-child
                 unstyled
+                :disabled="disabled"
             >
                 <button
                     type="button"

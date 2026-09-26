@@ -48,7 +48,7 @@ const emit = defineEmits<AutoCompleteEmits>()
 const model = defineModel<string | string[]>()
 
 /** 面板 idref：关闭态省略 `aria-controls`、开启态指向面板 id（契约与理由见 `_shared/panel-idref`） */
-const panelIdref = usePanelIdrefState(useId())
+const panelIdref = usePanelIdrefState(`caomei-auto-complete-panel-${useId()}`)
 
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 

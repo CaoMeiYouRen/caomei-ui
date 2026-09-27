@@ -74,7 +74,8 @@
 
 - 执行范围：对评估记录 T5 的条件触发 / 不补候选（DatePicker 范围选择、ColorPicker 色板导航、DataTable 滚动高度、Paginator 页码报表、Sidebar、ScrollPanel）与 `@iconify/vue` 逐条复核触发条件与依据，输出**判定表**。
 - 非目标：**不纳入任何组件实现**（D9②）；不为凑数纳入零下游用量能力；不改组件代码。
-- 最小验收标准：判定表逐条带触发条件、当前取证与结论（维持条件触发 / 不纳入 / 升级依据）；`@iconify/vue` 等维持 Backlog。
+- 最小验收标准：判定表逐条带触发条件、当前取证与结论（维持条件触发 / 不纳入 / 升级依据）；`@iconify/vue` 等维持 Backlog.
+- **状态**：✅ **M5-1 全部交付完成（2026-09-27）**，判定表输出 `docs/design/governance/2026-09-27-m5-component-capability-longtail-judgment.md`
 
 | 编号 | 条目 | 范围 | 最小验收标准 | 依赖 |
 | :-: | --- | --- | --- | :-: |

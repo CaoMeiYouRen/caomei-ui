@@ -84,6 +84,8 @@
 
 **事件**：`complete`（查询词）与 `select`（选中值）对应 PrimeVue 的同名事件；另有 `focus` / `blur` / `clear`。
 
+**已知差异（有意）**：`forceSelection` 未实现——本库**允许自由文本**（回车 / 失焦提交输入值），需要「值必须来自选项列表」时请使用方自行校验（评估见 [Backlog](../plan/backlog.md)）。
+
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 
 <ComponentApi name="auto-complete" />

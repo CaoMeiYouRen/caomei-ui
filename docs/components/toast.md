@@ -135,6 +135,8 @@ toast.clear()
 | `<Toast position>` / `group` | `position` 由 Provider 统一配置（非逐条）；`group`（多实例分组）未实现 |
 | `styleClass` / `contentStyleClass` / `breakpoints` | 未实现 |
 
+**已知差异（有意）**：`position` 为 Provider 级统一配置而非逐条；`group`（多实例分组）未实现。
+
 **本库新增**：`action`（内联操作按钮）、`type`（`foreground` / `background`）；Provider 级 `max` / `hotkey` / `swipeThreshold` / `disableSwipe`。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。

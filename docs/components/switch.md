@@ -81,6 +81,8 @@
 | `inputId` | `id` |
 | `aria-label` | `label`（不可见可访问名，`aria-labelledby` 仍可经属性透传） |
 
+**已知差异（有意）**：`change` 事件载荷差异——PrimeVue 传原生事件对象，本库直接给切换后的布尔值；且仅用户交互触发，父级程序化改 `modelValue` 不触发（下游只做「切换后刷新」而不读取载荷时可原样迁移）。
+
 **未暴露**：`true-value` / `false-value`（`v-model` 即布尔值，`value` 仅作表单提交值）、`readonly`、`input-class` / `input-style`。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。

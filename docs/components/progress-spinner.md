@@ -72,6 +72,8 @@
 | `animationDuration` | 未实现：固定 `0.6s`，`prefers-reduced-motion` 下 `1.6s` |
 | 无 | `label`（可访问名；未提供时回退内建「加载中」文案）为本库新增 |
 
+**已知差异（有意）**：`strokeWidth` 语义差异——PrimeVue 为 SVG 用户单位（随渲染尺寸等比缩放），本库为不随组件尺寸缩放的 CSS 长度——迁移时按目标视觉粗细折算为 px / rem。
+
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 
 <ComponentApi name="progress-spinner" />

@@ -63,6 +63,8 @@
 | `size`（`small` / `large`） | `size`（`sm` / `lg`） |
 | `invalid` | 同名 |
 
+**已知差异（有意）**：`feedback` 默认值分歧——PrimeVue 默认 `true`，本库默认 `false`（momei 32 处用量中 24 处为外部服务凭据字段，强度条无实际意义；用户自设密码建议显式传 `:feedback="true"`）。
+
 **未实现**：`medium-regex` / `strong-regex`（强度规则固定）、`mask-icon` / `unmask-icon`、`variant`、`append-to`。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。

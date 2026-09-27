@@ -17,6 +17,7 @@
 ## 表单输入
 
 - [Checkbox 复选框](./checkbox)：复选框用于在多个选项中选择若干项，或表示单个布尔开关，基于 Reka UI Checkbox 封装。
+- [CheckboxGroup 复选框组](./checkbox-group)：复选框组用于管理一组复选框，支持 `options` 渲染、`selectAll` 全选与半选状态、`label` 分组可访问名与 `rovingFocus` 键盘导航，基于 Reka UI Checkbox 封装。
 - [FileUpload 文件上传](./file-upload)：文件上传组件基于原生 `input[type=file]` 自建，负责文件选择（点击 / 拖拽）与列表管理；`customUpload` 下抛出 `uploader` 交由业务层上传。
 - [FloatLabel 浮动标签](./float-label)：浮动标签把 `<label>` 叠加在表单字段上：`over`（默认）在空值时居中充当占位提示，聚焦或有值时上浮到字段上方；`in` 让标签常驻字段顶部、字段内容下移。
 - [Input 输入框](./input)：输入框用于接收用户的单行文本输入。

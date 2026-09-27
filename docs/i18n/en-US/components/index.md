@@ -16,6 +16,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [SplitButton](/en-US/components/split-button)
 - [Tag](/en-US/components/tag)
 - [Checkbox](/en-US/components/checkbox)
+- [CheckboxGroup](/en-US/components/checkbox-group)
 - [FileUpload](/en-US/components/file-upload)
 - [FloatLabel](/en-US/components/float-label)
 - [Input](/en-US/components/input)

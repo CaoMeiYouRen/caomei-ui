@@ -85,7 +85,9 @@
 
 > **`Chips` 迁移首选本组件**：PrimeVue `Chips`（v4 起为 `InputChips` 的旧名）与本组件语义一致（自由文本多值录入），迁移时首选 `CaomeiTagsInput`；`AutoComplete + multiple` 降为**备选**——它是带选项面板的搜索选择，与本组件的「自由文本 + 标签」语义不同，仅在需要异步建议时使用。
 
-**未实现**：`#chip` / `#chipicon` 插槽、`removeTokenIcon` / `chipIcon`、`variant`（`outlined` / `filled`）、`pt` / `dt` / `unstyled`、对象型标签值。
+**已知差异（有意）**：`allowDuplicate` 默认值相反——PrimeVue 默认 `true`（允许重复），本库默认 `false`（拒绝重复并抛 `invalidInput`）；需要允许重复时显式传 `allowDuplicate: true`。
+
+**未实现**：`#chip` / `#chipicon` 插槽、`removeTokenIcon` / `chipIcon`、`variant`（`outlined` / `filled`）、`pt` / `dt` / `unstyled`、对象型标签值（Reka 的 `convertValue` / `displayValue` 未暴露）。
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

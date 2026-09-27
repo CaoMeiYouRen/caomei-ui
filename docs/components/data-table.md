@@ -252,7 +252,12 @@
 | `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`；载荷 `{ originalEvent, data }`，`data` 为该行数据 |
 | `sortMode="multiple"` + `v-model:multiSortMeta` | 同名；`field` 只接受列 key（PrimeVue 允许字段函数）、`order` 为 `1 \| 0 \| -1` |
 | `:default-sort-order="-1"` | `sortDescFirst`（**表格级**布尔量；PrimeVue 为列级 / 表格级数值，本库不提供列级） |
-| `removableSort` | **未提供开关**；本库排序键固定按「升 → 降 → 移除」循环（与单列排序一致） |
+> `removableSort` | **未提供开关**；本库排序键固定按「升 → 降 → 移除」循环（与单列排序一致） |
+
+**已知差异（有意）**：
+1. PrimeVue 的 `DataTableSortMeta.field` 允许字段函数、`order` 允许 `undefined` / `null`，本库只接受列 key 与 `1 | 0 | -1`；PrimeVue 的 `defaultSortOrder` 有表格级与列级两种形态，本库只提供表格级 `sortDescFirst`；PrimeVue 的 `removableSort` 开关本库未提供，排序键固定按「升 → 降 → 移除」循环。
+2. PrimeVue 的 `expandedRows` 支持行对象数组与 `{ [key]: true }` 记录两种形态，本库只支持行 key 数组（`rowKey` 口径）；PrimeVue 的展开按钮 `aria-label` 在展开态取 `aria.expandRow`、收起态取 `aria.collapseRow`，与按钮实际动作相反，本库按动作取名；展开行横跨全部数据列、不参与冻结列吸边；未提供 `#expansion` 槽时无可见展开区。
+3. 分组标题行横跨全部数据列、不参与冻结列吸边；PrimeVue 在 subheader 模式下不渲染分组列的数据单元格（数据行整体左移一列、与表头错位），本库保留空白占位以维持列对齐；PrimeVue 的分组切换按钮无 `aria-expanded` 与内建可访问名（仅 chevron），本库补 `aria-expanded` + `aria-label`；`#groupfooter` 与 `rowGroupMode="rowspan"`（行合并）不实现。
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

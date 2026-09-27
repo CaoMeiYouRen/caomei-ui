@@ -85,7 +85,9 @@
 | `name` | 透传到内层 `<input type="file">`（原生表单提交可用） |
 | 无 | `disabled`、`label`（可访问名）与 `#file` 插槽（自定义文件列表项）为本库新增 |
 
-**未实现（已登记为后续补强项，交付后同步本节）**：`url` / `withCredentials` 与默认 XHR 传输、`before-upload` / `progress` / `upload` / `before-send` / `error` 事件、`fileLimit` / `invalidFileLimitMessage` / `invalidFileTypeMessage`（超限文案固定走内建 locale，不提供 prop 覆盖）、`uploadLabel` / `cancelLabel` / `showUploadButton` / `showCancelButton`（无上传 / 取消按钮）、`previewWidth`（无图片缩略图）。
+**已知差异（有意）**：basic 形态在「本次选择全部被拒」时保留原列表（PrimeVue 先清空再校验）；超限提示固定走内建 locale，不提供 `invalidFileSizeMessage` prop 覆盖（可经 `CaomeiConfigProvider` 的 `messages` 覆盖）。
+
+**未实现（已登记为后续补强项，交付后同步本节）**：`url` / `withCredentials` 与默认 XHR 传输、`before-upload` / `progress` / `upload` / `before-send` / `error` 事件、`fileLimit` / `invalidFileLimitMessage` / `invalidFileTypeMessage`、`uploadLabel` / `cancelLabel` / `showUploadButton` / `showCancelButton`（无上传 / 取消按钮）、`previewWidth`（无图片缩略图）。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

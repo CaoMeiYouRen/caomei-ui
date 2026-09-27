@@ -47,7 +47,7 @@
 | `defaultColor` | 同名 |
 | 无 | `showInput`（输入框显示 / 隐藏）、`swatches`（自定义预设色板）与 `label` 为本库新增 |
 
-**已知行为差异（有意）**：PrimeVue `format="hex"` 的 `v-model` 是**不带 `#`** 的 6 位十六进制，本库统一为标准 CSS 颜色字符串 `#rrggbb`（迁移时可移除补 `#` / 去 `#` 的适配）；`format="rgb"` / `"hsb"` 在 PrimeVue 为 `{ r, g, b }` / `{ h, s, b }` **对象**，本库统一为**字符串**（`rgb(r, g, b)` / `hsb(h, s%, b%)`）；alpha 通道不支持。
+**已知差异（有意）**：PrimeVue `format="hex"` 的 `v-model` 是**不带 `#`** 的 6 位十六进制，本库统一为标准 CSS 颜色字符串 `#rrggbb`（迁移时可移除补 `#` / 去 `#` 的适配）；`format="rgb"` / `"hsb"` 在 PrimeVue 为 `{ r, g, b }` / `{ h, s, b }` **对象**，本库统一为**字符串**（`rgb(r, g, b)` / `hsb(h, s%, b%)`）；alpha 通道不支持。
 
 **未实现**：`appendTo`、`overlayClass` / `panelClass`（面板经 Portal 挂载，层级与外观由库管理）、`formControl`、`tabindex`。
 

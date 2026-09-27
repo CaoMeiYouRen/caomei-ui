@@ -16,15 +16,11 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 引用型属性改动须复跑样式回归 | 2026-09-26 M2-3 发现：`capture:styles` 不在 `verify` 常驻链，M1 批次改 `panel-idref` 接线（`f6f5341` / `2e75e53`）后未复跑，冻结基线在 HEAD 上已漂移（属性快照 id 名称）。**规则**：引用型属性 / 渲染契约类改动（不改组件单测可断言面者）须同批复跑 `capture:styles` 并核对基线 diff 行数。**触发条件**：周级回归或改动此类接线时 | 中 |
-| switch 滑块前景配对待裁定 | 2026-09-26 M2-1 配对复核清单（[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §2.2）发现：`switch` 滑块前景取 `--caomei-color-bg` 而非 `--caomei-color-primary-foreground`，默认主题两值相等（亮均 `#fff`、暗均 `#0b0b0d`），预设 / 自定义下可能失配。**触发条件**：预设或下游覆盖 `primary-foreground` 与 `bg` 使其分离，或裁定统一配对口径 | 低 |
 | toast 强调色回退口径不一致 | 2026-09-26 M2-1 清单 §2.3 发现：`border-left` 强调描边用 `var(--caomei-toast-accent, var(--caomei-color-neutral-solid))` 有回退，而图标色 `color: var(--caomei-toast-accent)` 无回退（tone 未命中时继承正文色）；补回退会改变渲染色值（D5 禁改面）。**触发条件**：对比度 / 一致性裁定允许调整 neutral 强调面时一并处理 | 低 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
-| Button 图标按钮形态（`iconOnly`） | momei 迁移反馈 2026-09-25 §1.3 | 仅有 `#icon` + `variant="ghost"` 时仍按 `--caomei-button-padding-x` 渲染、非方形；下游表格行内动作 3 处各加本地类。候选：`iconOnly`，或「无默认插槽内容时自动收敛为方形」。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 中 |
-| Select 触发器 `#value` 插槽 | momei 迁移反馈 2026-09-25 §1.5 | 现仅 `#option`；触发器只能显示 `optionLabel` 文本，PrimeVue `#value` 的「图标 + 文案」触发器无等价写法。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 中 |
 | DataTable 分页对齐 token | momei 迁移反馈 2026-09-25 §1.4 | `.caomei-data-table__pagination` 硬编码 `justify-content: flex-end`（PrimeVue 默认居中），无 token 钩子，下游只能选择器级覆盖。候选：`--caomei-data-table-pagination-justify` | 低 |
 | Avatar `xl` 尺寸档位 | momei 迁移反馈 2026-09-25 §2.1 | 现仅 `sm` / `md` / `lg`；更大档位可用 `--caomei-avatar-size` 覆盖（组件页已给映射表，差异已登记为有意）。候选：补 `xl`，或维持「覆盖 token」口径 | 低 |
 | Select 字段层 class 透传（`fieldClass`） | momei 迁移反馈 2026-09-25 §1.1 | **条件候选**：`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层，组件上写宽度类静默无效。先补文档；出现文档无法覆盖的真实用例再评估 `fieldClass` | 低 |
@@ -63,7 +59,6 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
-| 对比度遗留项盘点 | **2026-09-26 复算后在册 5 项**（逐条复算值与消费点见[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §3）：① 亮色 soft 变体 primary 文本 4.37:1；② `neutral-solid` 强调描边暗色 2.54:1（toast 图标面已走继承、口径不一致另计）；③ `caomei` 预设 `danger` 作前景 3.76:1 / soft 底 3.23:1；④ `caomei` 预设 `primary-solid` 配 `on-solid` 4.17:1（**已裁定维持**，预设品牌色不变）；⑤ 站点侧 `text-muted` on `--vp-c-bg-soft` 4.48:1（库 token × 站点底，归因站点主题）。历史条目「`.caomei-calendar__weekday` 亮色 4.48:1」经复算**归因为站点侧口径**（库内 on `bg` 4.83:1 / on `bg-elevated` 4.52:1 均达标），不再单列。**按 D5① 不改色**，维持跟踪 | 中 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
@@ -85,7 +80,6 @@
 | 组件画廊浏览器回归断言 | M2-5 V 阶段产出的断言清单（12/12 stage 非空、11 个组件根类名存在、四档 `scrollWidth === clientWidth` 与列数 2/2/2/1、12×2 链接 200 且 locale 前缀正确、Dialog 初始 0 → 点击后 1 且 Portal 到 body、两页 console / pageerror 0）尚未沉淀为常驻用例；触发条件：需要画廊回归保护（与「视觉回归基线」同族，当前不做） | 低 |
 | 文档站示例的可访问名补强 | M2-5 V 阶段实测：`docs/examples/input/basic.vue`（中英）仅以 placeholder 提供可访问名，无 `label` / `aria-label`；属示例层问题（组件本身由使用方决定标签落点），非画廊引入 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 选择器 / 表格迁移陷阱文档补强 | momei 迁移反馈 2026-09-25 §1.1 / §2.2 / §2.3 | 三处未文档化的迁移陷阱：① `Select` 的 `class` / `$attrs` 落触发器，宽度类写在组件上静默无效；② `DataTable` 列 `headerClass` / `bodyClass` 的单元格由组件内部渲染，下游 scoped 样式静默不生效（须改用 `bodyStyle` / `headerStyle` 或全局类）；③ `showClear` 的 `hasValue` 口径不给「语义空值」留口。补 `primevue-migration.md` 陷阱表与相关组件页。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 低 |
 
 ### 1.7 服务层候选（composables）
 

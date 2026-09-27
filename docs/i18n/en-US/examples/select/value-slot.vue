@@ -20,31 +20,31 @@ const value4c = ref<string>()
 const value5 = ref<string>()
 
 const options: Fruit[] = [
-    { label: '苹果', value: 'apple' },
-    { label: '香蕉', value: 'banana' },
-    { label: '樱桃', value: 'cherry' },
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Cherry', value: 'cherry' },
 ]
 
 const starredOptions: StarredFruit[] = [
-    { label: '苹果', value: 'apple', star: true },
-    { label: '香蕉', value: 'banana', star: false },
-    { label: '樱桃', value: 'cherry', star: true },
+    { label: 'Apple', value: 'apple', star: true },
+    { label: 'Banana', value: 'banana', star: false },
+    { label: 'Cherry', value: 'cherry', star: true },
 ]
 </script>
 
 <template>
     <div class="demo-section">
-        <h4>基础用法</h4>
+        <h4>Basic usage</h4>
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value1"
                 :options="options"
-                placeholder="选择水果"
+                placeholder="Select a fruit"
             >
                 <template #value="{option, label, selected}">
                     <span class="custom-trigger">
-                        <span v-if="selected" class="selected-badge">已选</span>
-                        <span>{{ label || '请选择' }}</span>
+                        <span v-if="selected" class="selected-badge">Selected</span>
+                        <span>{{ label || 'Please select' }}</span>
                         <span v-if="option" class="option-id">(ID: {{ option.value }})</span>
                     </span>
                 </template>
@@ -53,17 +53,17 @@ const starredOptions: StarredFruit[] = [
     </div>
 
     <div class="demo-section">
-        <h4>显示图标 + 标签</h4>
+        <h4>Icon + label</h4>
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value2"
                 :options="starredOptions"
-                placeholder="选择收藏"
+                placeholder="Select a favorite"
             >
                 <template #value="{option, label}">
                     <span class="custom-trigger-icon">
                         <span v-if="option?.star" class="star-icon">★</span>
-                        <span>{{ label || '未选择' }}</span>
+                        <span>{{ label || 'None selected' }}</span>
                     </span>
                 </template>
             </CaomeiSelect>
@@ -71,17 +71,17 @@ const starredOptions: StarredFruit[] = [
     </div>
 
     <div class="demo-section">
-        <h4>无选中值时显示占位</h4>
+        <h4>Placeholder when nothing is selected</h4>
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value3"
                 :options="options"
-                placeholder="未选中时显示此文本"
+                placeholder="Shown when nothing is selected"
             >
                 <template #value="{label, selected}">
                     <span class="custom-trigger">
-                        <span v-if="selected" class="selected-tag">选中: {{ label }}</span>
-                        <span v-else class="placeholder-tag">未选择</span>
+                        <span v-if="selected" class="selected-tag">Selected: {{ label }}</span>
+                        <span v-else class="placeholder-tag">None selected</span>
                     </span>
                 </template>
             </CaomeiSelect>
@@ -89,66 +89,66 @@ const starredOptions: StarredFruit[] = [
     </div>
 
     <div class="demo-section">
-        <h4>不同尺寸</h4>
+        <h4>Sizes</h4>
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value4a"
                 :options="options"
-                placeholder="默认"
+                placeholder="Small"
                 size="sm"
             >
                 <template #value="{label, selected}">
                     <span v-if="selected" class="selected-tag">✓ {{ label }}</span>
-                    <span v-else class="placeholder-tag">请选择</span>
+                    <span v-else class="placeholder-tag">Please select</span>
                 </template>
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4b"
                 :options="options"
-                placeholder="中等"
+                placeholder="Medium"
                 size="md"
             >
                 <template #value="{label, selected}">
                     <span v-if="selected" class="selected-tag">✓ {{ label }}</span>
-                    <span v-else class="placeholder-tag">请选择</span>
+                    <span v-else class="placeholder-tag">Please select</span>
                 </template>
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4c"
                 :options="options"
-                placeholder="大号"
+                placeholder="Large"
                 size="lg"
             >
                 <template #value="{label, selected}">
                     <span v-if="selected" class="selected-tag">✓ {{ label }}</span>
-                    <span v-else class="placeholder-tag">请选择</span>
+                    <span v-else class="placeholder-tag">Please select</span>
                 </template>
             </CaomeiSelect>
         </div>
     </div>
 
     <div class="demo-section">
-        <h4>#value 与 #option 组合使用</h4>
+        <h4>#value combined with #option</h4>
         <p class="desc">
-            触发器显示自定义内容，面板选项使用 #option 插槽
+            The trigger shows custom content while the panel uses the #option slot
         </p>
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value5"
                 :options="starredOptions"
-                placeholder="选择"
+                placeholder="Select"
             >
                 <template #value="{option, label}">
                     <span class="custom-trigger">
                         <span v-if="option?.star">⭐ </span>
-                        <span>{{ label || '请选择' }}</span>
+                        <span>{{ label || 'Please select' }}</span>
                     </span>
                 </template>
                 <template #option="{option, selected}">
                     <span class="custom-option">
                         <span v-if="option.star">⭐ </span>
                         {{ option.label }}
-                        <span v-if="selected" class="selected-badge">(当前)</span>
+                        <span v-if="selected" class="selected-badge">(current)</span>
                     </span>
                 </template>
             </CaomeiSelect>

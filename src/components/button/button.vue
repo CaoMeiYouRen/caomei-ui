@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     loading: false,
     block: false,
     rounded: false,
+    iconOnly: false,
     iconPosition: 'start',
     type: 'button',
     badgeTone: 'neutral',
@@ -32,10 +33,17 @@ const isInactive = computed(() => props.disabled || props.loading)
 const forwardedAttrs = useLabelAttrs(() => props.label)
 
 /** 加载态由组件表达 `aria-busy`；非加载态保留消费者透传值。 */
-const rootAttrs = computed<Record<string, unknown>>(() => ({
-    ...forwardedAttrs.value,
-    ...(props.loading ? { 'aria-busy': 'true' } : {}),
-}))
+const rootAttrs = computed<Record<string, unknown>>(() => {
+    const base: Record<string, unknown> = {
+        ...forwardedAttrs.value,
+        ...(props.loading ? { 'aria-busy': 'true' } : {}),
+    }
+    // iconOnly 时强制使用 label 作为 aria-label（优先级高于透传）
+    if (props.iconOnly && props.label) {
+        base['aria-label'] = props.label
+    }
+    return base
+})
 
 const rootClass = computed(() => [
     `caomei-button--${props.variant}`,
@@ -45,6 +53,7 @@ const rootClass = computed(() => [
         'caomei-button--block': props.block,
         'caomei-button--rounded': props.rounded,
         'caomei-button--loading': props.loading,
+        'caomei-button--icon-only': props.iconOnly,
     },
 ])
 
@@ -68,16 +77,22 @@ function onClick(event: MouseEvent): void {
             aria-hidden="true"
         />
         <span
-            v-if="!loading && $slots.icon && iconPosition === 'start'"
+            v-else-if="iconOnly && $slots.icon"
             class="caomei-button__icon"
         >
             <slot name="icon" />
         </span>
-        <span v-if="$slots.default" class="caomei-button__content">
+        <span
+            v-else-if="!loading && !iconOnly && $slots.icon && iconPosition === 'start'"
+            class="caomei-button__icon"
+        >
+            <slot name="icon" />
+        </span>
+        <span v-if="!iconOnly && $slots.default" class="caomei-button__content">
             <slot />
         </span>
         <span
-            v-if="!loading && $slots.icon && iconPosition === 'end'"
+            v-if="!loading && !iconOnly && $slots.icon && iconPosition === 'end'"
             class="caomei-button__icon"
         >
             <slot name="icon" />
@@ -131,6 +146,20 @@ function onClick(event: MouseEvent): void {
 
 .caomei-button--rounded {
     border-radius: var(--caomei-radius-full);
+}
+
+/*
+  iconOnly：方形、内边距归零、图标居中。
+  宽度等于高度（由尺寸档位变量控制），padding 归零，gap 归零。
+*/
+.caumei-button--icon-only {
+    width: var(--caomei-button-height);
+    padding: 0;
+    gap: 0;
+}
+
+.caumei-button--icon-only .caomei-button__icon {
+    margin: 0;
 }
 
 .caomei-button--primary {

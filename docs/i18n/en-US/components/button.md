@@ -27,14 +27,23 @@ Use `tone` to give the button a semantic color; when unset, the variant's defaul
     ssg="true"
 />
 
+## Icon-only button
+
+The `iconOnly` prop enables icon-only mode: the button becomes square (width equals height), the icon is centered, and no text content is rendered. It must be paired with `label` to provide an accessible name (mapped to `aria-label`); in this mode `iconPosition` is ignored.
+
+<demo
+    vue="../../../examples/button/icon-only.vue"
+    ssg="true"
+ />
+
 ## Rounded and icon position
 
-`rounded` renders a pill shape; `iconPosition` controls where the icon sits relative to the label (default `start`).
+`rounded` renders a pill shape; `iconPosition` controls where the icon sits relative to the label (default `start`, ignored when `iconOnly` is true).
 
 <demo
     vue="../../../examples/button/rounded-icon.vue"
     ssg="true"
-/>
+ />
 
 ## Sizes
 
@@ -72,6 +81,7 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 ## Accessibility
 
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).
+- When `iconOnly` is enabled, `label` is required and is used as `aria-label` (takes precedence over forwarded `aria-label`).
 - The loading state is marked with `aria-busy` and still uses native `disabled` to block interaction.
 
 ## Migration from PrimeVue
@@ -84,6 +94,7 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 | `size` (`small` / `large`) | `size` (`sm` / `lg`) |
 | `rounded` | `rounded` |
 | `icon` / `iconPos` (`left` / `right`) | `#icon` slot (pass an `@lucide/vue` component) / `iconPosition` (`start` / `end`); PrimeVue also has `top` / `bottom`, **not supported here** |
+| `iconOnly` (icon-only button) | `iconOnly` (square, centered icon, requires `label` for accessible name) |
 | `:badge` / `badgeSeverity` | `badge` (a non-empty string renders outside the top-right corner without affecting layout) / `badgeTone` (`secondary` → `neutral` and so on; `info` / `contrast` are lossy) |
 | `fluid` (span the parent width) | `block` (span the parent width) |
 | `loading` | `loading` (disables the button automatically and shows the built-in indicator) |

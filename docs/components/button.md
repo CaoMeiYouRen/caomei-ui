@@ -27,14 +27,23 @@
     ssg="true"
 />
 
+## 纯图标按钮
+
+通过 `iconOnly` 开启纯图标模式：按钮变为方形（宽度等于高度）、图标居中、不渲染文本内容。需配合 `label` 提供可访问名（映射为 `aria-label`）；此时 `iconPosition` 被忽略。
+
+<demo
+    vue="../examples/button/icon-only.vue"
+    ssg="true"
+ />
+
 ## 圆角与图标位置
 
-`rounded` 输出胶囊圆角；`iconPosition` 控制图标相对文本的位置（默认 `start`）。
+`rounded` 输出胶囊圆角；`iconPosition` 控制图标相对文本的位置（默认 `start`，`iconOnly` 时忽略）。
 
 <demo
     vue="../examples/button/rounded-icon.vue"
     ssg="true"
-/>
+ />
 
 ## 尺寸
 
@@ -72,6 +81,7 @@
 ## 无障碍
 
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
+- `iconOnly` 开启时强制使用 `label` 作为 `aria-label`（优先级高于透传），且 `label` 为必填。
 - 加载态通过 `aria-busy` 标注，并沿用原生 `disabled` 阻止交互。
 
 ## 从 PrimeVue 迁移
@@ -84,6 +94,7 @@
 | `size`（`small` / `large`） | `size`（`sm` / `lg`） |
 | `rounded` | `rounded` |
 | `icon` / `iconPos`（`left` / `right`） | `#icon` 插槽（传 `@lucide/vue` 组件）/ `iconPosition`（`start` / `end`）；PrimeVue 另有 `top` / `bottom`，**本库未支持** |
+| `iconOnly`（纯图标按钮） | `iconOnly`（方形、图标居中、需 `label` 提供可访问名） |
 | `:badge` / `badgeSeverity` | `badge`（非空字符串渲染于右上角外扩、不参与布局）/ `badgeTone`（`secondary` → `neutral` 等；`info` / `contrast` 为有损近似） |
 | `fluid`（撑满父容器宽度） | `block`（撑满父容器宽度） |
 | `loading` | `loading`（加载时自动禁用并显示内建指示） |

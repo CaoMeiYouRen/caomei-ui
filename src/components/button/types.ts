@@ -4,6 +4,18 @@ export type ButtonIconPosition = 'start' | 'end'
 
 export interface ButtonProps {
     /**
+     * 是否为纯图标按钮（方形、图标居中、不渲染文本内容）
+     * 开启时需配合 `label` 提供可访问名（映射 aria-label）
+     * @en Whether the button is icon-only (square, centered icon, no text content).
+     * When enabled, `label` is required for accessible name (maps to aria-label).
+     */
+    iconOnly?: boolean
+    /**
+     * 图标相对文本的位置；`iconOnly` 时忽略
+     * @en Icon position relative to the label; ignored when `iconOnly` is true
+     */
+    iconPosition?: ButtonIconPosition
+    /**
      * 视觉变体：`primary` 实底、`secondary` 描边、`ghost` 无底色
      * @en Visual variant: `primary` solid, `secondary` outlined, `ghost` plain
      */
@@ -38,11 +50,6 @@ export interface ButtonProps {
      * @en Whether the button uses pill radius
      */
     rounded?: boolean
-    /**
-     * 图标相对文本的位置
-     * @en Icon position relative to the label
-     */
-    iconPosition?: ButtonIconPosition
     /**
      * 角标内容；提供非空字符串时渲染在按钮右上角（对齐 PrimeVue `:badge`）
      * @en Badge content; a non-empty string renders a badge at the button's top-right corner

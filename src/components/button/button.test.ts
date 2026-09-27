@@ -86,6 +86,77 @@ describe('CaomeiButton', () => {
         expect(wrapper.get('button').attributes('aria-label')).toBe('设置')
     })
 
+    it('iconOnly prop 应用 icon-only class 并渲染纯图标', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { iconOnly: true, label: '设置' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        const button = wrapper.get('button')
+        expect(button.classes()).toContain('caomei-button--icon-only')
+        expect(button.find('.caomei-button__icon').exists()).toBe(true)
+        expect(button.find('.caomei-button__content').exists()).toBe(false)
+        expect(button.attributes('aria-label')).toBe('设置')
+    })
+
+    it.each(['sm', 'md', 'lg'] as const)('iconOnly 尺寸 %s 时宽度等于高度', (size) => {
+        const wrapper = mount(CaomeiButton, {
+            props: { iconOnly: true, size, label: '测试' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        const button = wrapper.get('button')
+        // iconOnly 时按钮为方形：宽度等于高度（由尺寸档位变量控制）
+        expect(button.classes()).toContain('caomei-button--icon-only')
+    })
+
+    it('iconOnly 时忽略 iconPosition', () => {
+        const start = mount(CaomeiButton, {
+            props: { iconOnly: true, iconPosition: 'start', label: '测试' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+        const end = mount(CaomeiButton, {
+            props: { iconOnly: true, iconPosition: 'end', label: '测试' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        // iconOnly 时图标始终居中，iconPosition 被忽略
+        expect(start.get('button').element.children[0]?.classList.contains('caomei-button__icon')).toBe(true)
+        expect(end.get('button').element.children[0]?.classList.contains('caomei-button__icon')).toBe(true)
+    })
+
+    it('iconOnly 无 label 时不输出 aria-label', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { iconOnly: true },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        expect(wrapper.get('button').attributes('aria-label')).toBeUndefined()
+    })
+
+    it('iconOnly 时 label 优先于透传 aria-label', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { iconOnly: true, label: '显式名' },
+            attrs: { 'aria-label': '透传名' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+
+        expect(wrapper.get('button').attributes('aria-label')).toBe('显式名')
+    })
+
+    it('iconOnly 时不渲染默认插槽内容', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { iconOnly: true, label: '测试' },
+            slots: {
+                default: '文本内容',
+                icon: '<svg data-test="icon" />',
+            },
+        })
+
+        expect(wrapper.find('.caomei-button__content').exists()).toBe(false)
+        expect(wrapper.find('.caomei-button__icon').exists()).toBe(true)
+    })
+
     it('label 为空串时不输出空 aria-label，也不覆盖透传值', () => {
         const empty = mount(CaomeiButton, { props: { label: '' } })
         expect(empty.get('button').attributes('aria-label')).toBeUndefined()

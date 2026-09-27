@@ -500,6 +500,116 @@ describe('CaomeiSelect 插槽与文本来源', () => {
 
         wrapper.unmount()
     })
+
+    it('#value 插槽接收选中的选项对象、标签和选中状态', () => {
+        interface SlotOption {
+            name: string
+            id: number
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [{ name: '已发布', id: 2 }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                attachTo: document.body,
+            },
+            slots: {
+                value: ({ option, label, selected }: { option: SlotOption | undefined, label: string | undefined, selected: boolean }) =>
+                    h('span', { class: 'custom-value' }, `${selected ? '选中: ' : '未选中: '}${label ?? '无'} (id: ${option?.id ?? 'N/A'})`),
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('选中: 已发布 (id: 2)')
+    })
+
+    it('#value 插槽在无选中值时接收 undefined', () => {
+        interface SlotOption {
+            name: string
+            id: number
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [{ name: '已发布', id: 2 }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: null,
+                attachTo: document.body,
+            },
+            slots: {
+                value: ({ option, label, selected }: { option: SlotOption | undefined, label: string | undefined, selected: boolean }) =>
+                    h('span', { class: 'custom-value' }, `${selected ? '选中' : '未选中'} (label: ${label ?? 'undefined'}, option: ${option ? '存在' : 'undefined'})`),
+            },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('未选中 (label: undefined, option: undefined)')
+    })
+
+    it('#value 插槽优先于默认渲染，#option 插槽仍用于面板', () => {
+        interface SlotOption {
+            name: string
+            id: number
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [{ name: '已发布', id: 2 }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                attachTo: document.body,
+            },
+            slots: {
+                value: () => h('span', { class: 'custom-value' }, '触发器自定义'),
+                option: ({ option }: { option: SlotOption }) => h('span', { class: 'custom-option' }, `面板: ${option.name}`),
+            },
+        })
+
+        // 触发器显示自定义值
+        expect(wrapper.get('.caomei-select').text()).toContain('触发器自定义')
+
+        // 展开面板检查 #option 插槽
+        return wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' }).then(() => {
+            // wait for nextTick
+        }).then(() => {
+            const rendered = document.querySelectorAll('.custom-option')
+            expect(rendered).toHaveLength(1)
+            expect(rendered[0].textContent).toBe('面板: 已发布')
+            wrapper.unmount()
+        })
+    })
+
+    it('#option 插槽仅渲染图标时，触发器仍显示 optionLabel 文本', () => {
+        interface SlotOption {
+            name: string
+            id: number
+        }
+
+        const SlotSelect = CaomeiSelect as unknown as DefineComponent<SelectProps<SlotOption>>
+
+        const wrapper = mount(SlotSelect, {
+            props: {
+                options: [{ name: '已发布', id: 2 }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                modelValue: 2,
+                attachTo: document.body,
+            },
+            slots: { option: () => h('span', { class: 'icon-only' }) },
+        })
+
+        expect(wrapper.get('.caomei-select').text()).toContain('已发布')
+
+        wrapper.unmount()
+    })
 })
 
 describe('CaomeiSelectGroup', () => {

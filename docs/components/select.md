@@ -42,7 +42,24 @@
 <demo
     vue="../examples/select/option-slot.vue"
     ssg="true"
-/>
+ />
+
+## 自定义触发器显示
+
+`#value` 插槽用于自定义触发器显示内容，作用域为 `{ option, label, selected }`，其中：
+
+- `option`：当前选中的**原始**选项对象（未选中时为 `undefined`）
+- `label`：当前选中的显示文本（未选中时为 `undefined`）
+- `selected`：是否有选中值（`boolean`）
+
+未提供 `#value` 插槽时，触发器回退显示映射后的显示文本（同 `selectedLabel`）或 `placeholder`。
+
+> `#value` 仅影响触发器显示，**不影响面板选项渲染**（面板仍使用 `#option` 插槽）。
+
+<demo
+    vue="../examples/select/value-slot.vue"
+    ssg="true"
+ />
 
 ## 尺寸
 
@@ -68,6 +85,7 @@
 - `label` 用于无可见标签时提供可访问名，映射为 `aria-label`。
 - `invalid` 时输出 `aria-invalid="true"`。
 - `#option` 自定义内容请保留可读文本：Reka 以选项文本快照支撑首字母跳转，仅渲染图标会使该跳转退化（触发器显示文本始终取自 `optionLabel`，不受插槽内容影响）。
+- `#value` 自定义内容请包含可读文本：若返回空 / 仅图标，需确保触发器仍有可读的 `aria-label`（组件内已在有 `label` prop 时自动回填）。
 
 ## 事件与暴露
 
@@ -91,6 +109,7 @@
 | `inputId` | `id`；`aria-label` → `label` |
 | `size`（`small` / `large`） | `size`（`sm` / `lg`） |
 | 无 | `#option` 插槽（收原始选项对象与选中态）为本库新增 |
+| 无 | `#value` 插槽（触发器自定义显示，作用域 `{ option, label, selected }`）为本库新增 |
 
 **可搜索单选**：PrimeVue 的 `filter` **未实现**——Reka Select 把 `role="listbox"` 固定在面板元素上，面板内搜索框会使其成为 listbox 的 owned child、违反 WAI-ARIA `aria-required-children`；需要「可搜索单选」时改用 `CaomeiAutoComplete`（**允许自由文本**，与 PrimeVue「值须来自选项」有差异，见 [AutoComplete 页](./auto-complete.md) 与 [Backlog](../plan/backlog.md)）。
 

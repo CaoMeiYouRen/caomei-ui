@@ -41,6 +41,13 @@ defineSlots<{
      * @en Custom option content; `option` is the raw option object and `selected` marks the selected one
      */
     option?: (props: { option: T, selected: boolean }) => unknown
+    /**
+     * 自定义触发器显示内容；作用域为当前选中的选项 `{ option, label, selected }`
+     * 当未选中值时 `option` 为 `undefined`，`label` 为 `undefined`
+     * @en Custom trigger display content; scope is the current selected option `{ option, label, selected }`.
+     * When no value is selected, `option` is `undefined` and `label` is `undefined`.
+     */
+    value?: (props: { option: T | undefined, label: string | undefined, selected: boolean }) => unknown
 }>()
 
 const model = defineModel<OptionValue | null>()
@@ -124,24 +131,27 @@ const hasValue = computed(
 
 const clearable = computed(() => props.showClear && hasValue.value && !props.disabled)
 
-const selectedLabel = computed(() => {
+/** 当前选中的归一化选项（含 raw 对象） */
+const selectedOption = computed<NormalizedOption | undefined>(() => {
     if (!hasValue.value) {
         return undefined
     }
     // 先从扁平选项中查找
     const flatMatch = normalizedOptions.value.find((option) => option.value === model.value)
     if (flatMatch) {
-        return flatMatch.label
+        return flatMatch
     }
     // 再从分组中查找
     for (const group of normalizedGroups.value) {
         const match = group.options.find((option) => option.value === model.value)
         if (match) {
-            return match.label
+            return match
         }
     }
     return undefined
 })
+
+const selectedLabel = computed(() => selectedOption.value?.label)
 
 const rootClass = computed(() => [
     `caomei-field--${props.size}`,
@@ -191,8 +201,15 @@ function clearValue(): void {
                 :aria-invalid="invalid || undefined"
             >
                 <SelectValue class="caomei-select__value">
-                    <span v-if="selectedLabel">{{ selectedLabel }}</span>
-                    <span v-else class="caomei-select__placeholder">{{ placeholder }}</span>
+                    <slot
+                        name="value"
+                        :option="selectedOption?.raw"
+                        :label="selectedLabel"
+                        :selected="hasValue"
+                    >
+                        <span v-if="selectedLabel">{{ selectedLabel }}</span>
+                        <span v-else class="caomei-select__placeholder">{{ placeholder }}</span>
+                    </slot>
                 </SelectValue>
                 <SelectIcon class="caomei-select__icon">
                     <CaomeiIcon :icon="ChevronDown" />

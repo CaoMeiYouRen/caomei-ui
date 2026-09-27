@@ -14,7 +14,7 @@
 | M2-1 | 引用型属性回归规则 | 规则文档化（`development.md`/`ai-collaboration.md`） | 文档落地、示例可复现、团队知晓 | **已完成** |
 | M2-2 | 引用型属性回归规则 | CI 守卫：引用型属性/渲染契约改动同批强制 `capture:styles` 并核对基线 diff（阻断模式，进入 `verify` 常驻链） | 守卫生效、负向对照拦截、文档同步 | **已完成** |
 | M3-1 | Button `iconOnly` 形态 | 新增 `iconOnly` boolean prop，实现 + 测试 + 文档（显式 prop，迁移改动最小） | 组件页 + 示例 + 单测 + a11y 夹具 + 侧栏登记、`capture:styles` 0 差异、真实浏览器验证通过 | **已完成** |
-| M4-1 | Select `#value` 插槽 | 触发器补 `#value` 插槽（最小作用域 `{ option, label, selected }`），兼容既有 `#option`，i18n 与 a11y 同步 | 组件页 + 示例 + 单测 + a11y 夹具 + 侧栏登记、`capture:styles` 0 差异、真实浏览器验证通过 | 待开工 |
+| M4-1 | Select `#value` 插槽 | 触发器补 `#value` 插槽（最小作用域 `{ option, label, selected }`），兼容既有 `#option`，i18n 与 a11y 同步 | 组件页 + 示例 + 单测 + a11y 夹具 + 侧栏登记、`capture:styles` 0 差异、真实浏览器验证通过 | **已完成** |
 | M5-1 | 对比度盘点 | 5 项在册逐条复算（WCAG 亮度 + soft 底合成），登记结论不改色（Phase 14 D5① 口径） | 记录文档落盘、逐项复算值可追溯、零 token 色值变更 | 待开工 |
 | M6-1 | 迁移陷阱文档补强 | `primevue-migration.md` 新增 3 行陷阱表 + 对应组件页补注（单一源头 + 组件页 `see` 引用） | 陷阱表 3 行、组件页引用、中英同步、`docs:check` 全绿 | 待开工 |
 | M7-1 | 条件候选判定表 | C6（switch 滑块配对）仅出判定表：维持条件触发、不补（参考 Phase 14 M5 口径） | 判定表记录、结论可追溯、不纳入实现 | 待开工 |

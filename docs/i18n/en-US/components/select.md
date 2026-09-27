@@ -42,7 +42,24 @@ Slot content is rendered on a **single line** and truncated with an ellipsis (th
 <demo
     vue="../examples/select/option-slot.vue"
     ssg="true"
-/>
+ />
+
+## Custom trigger display
+
+The `#value` slot customizes the trigger display; its scope is `{ option, label, selected }`, where:
+
+- `option`: the currently selected **raw** option object (`undefined` when no value is selected)
+- `label`: the display text of the selected option (`undefined` when no value is selected)
+- `selected`: whether a value is selected (`boolean`)
+
+Without the `#value` slot, the trigger falls back to showing the mapped display text (same as `selectedLabel`) or `placeholder`.
+
+> `#value` only affects the trigger display; **it does not affect panel option rendering** (the panel still uses the `#option` slot).
+
+<demo
+    vue="../examples/select/value-slot.vue"
+    ssg="true"
+ />
 
 ## Sizes
 
@@ -68,6 +85,7 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
 - `label` provides an accessible name when there is no visible label and maps to `aria-label`.
 - When `invalid`, it outputs `aria-invalid="true"`.
 - Keep readable text inside custom `#option` content: Reka relies on a snapshot of the option text for type-ahead, so icon-only content degrades that jump (the trigger label always comes from `optionLabel` and is unaffected by slot content).
+- Custom `#value` content should include readable text: if it returns empty / icon-only, ensure the trigger still has a readable `aria-label` (the component auto-fills from `label` prop when present).
 
 ## Events and exposed
 
@@ -91,6 +109,7 @@ No events besides `update:modelValue`; the option list is passed in a controlled
 | `inputId` | `id`; `aria-label` → `label` |
 | `size` (`small` / `large`) | `size` (`sm` / `lg`) |
 | — | The `#option` slot (receiving the raw option object and its selected state) is new here |
+| — | The `#value` slot (custom trigger display with scope `{ option, label, selected }`) is new here |
 
 **Searchable single select**: PrimeVue's `filter` is **not implemented** — Reka Select keeps `role="listbox"` on the panel element, so a search box inside it would become an owned child of the listbox and violate WAI-ARIA `aria-required-children`; use `CaomeiAutoComplete` for searchable single select (it **allows free text**, a difference from PrimeVue's "value must come from the options" — see the [AutoComplete page](./auto-complete.md) and the [Backlog](/plan/backlog), Chinese).
 

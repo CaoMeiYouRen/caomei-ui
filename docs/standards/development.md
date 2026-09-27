@@ -103,6 +103,41 @@ test/                     # 单元与 E2E 测试
 - `defineModel` 是「**本地值 + prop 同步**」而非「受控必须回写」：getter 返回内部 `localValue`（由 `watchSyncEffect` 从 prop 同步），setter 先写 `localValue` 再 emit。故父级传 `modelValue` 但**不监听** `update:modelValue` 时，组件写入仍立即反映到渲染（等价自持）；要区分真正的受控语义须用显式 props + 手动回写（`selection` / `sortField` 那类手写受控开关才是「不回写即冻结」）。
 - Reka primitive 会在 `role=generic` 的元素上输出命名属性（如 `TagsInputItem` 的 `aria-labelledby`），而 ARIA 1.2 **禁止在 `generic` 上命名** → axe 报 `aria-prohibited-attr`。包装层的低成本修法是给该元素显式声明**允许命名且无必需父级**的角色（本库用 `role="group"`），修完 axe `V=0 / I=0` 且**无需新增例外清单条目**；反例 `role="listitem"` / `role="option"` 会引入必需父级校验（`aria-required-parent`）。
 - `aria-controls` 只在目标元素**实际渲染**时输出：折叠 / 展开类控件的目标行 / 面板仅在展开态渲染，恒定输出会形成悬空 idref（axe `aria-valid-attr-value` 检查 id 引用存在性）。反之 `aria-expanded` 恒定输出、表达状态。
+
+## 13. 引用型 ARIA 属性回归规则（M2-1 固化）
+
+**定义**：`aria-controls` / `aria-describedby` / `aria-labelledby` / `aria-owns` / `aria-activedescendant` 等**引用其他元素 ID** 的 ARIA 属性，统称为「引用型属性」。
+
+**核心规则**：**引用目标未渲染时，必须完全省略该属性** —— 不得输出空串、空格或残留 ID。
+
+| 场景 | 正确做法 | 反例 |
+|------|----------|------|
+| 折叠面板 / 下拉菜单关闭态 | 省略 `aria-controls` | `aria-controls=""` 或保留旧 ID |
+| 无描述元素 / 无标题元素 | 省略 `aria-describedby` / `aria-labelledby` | 输出空串或指向不存在 ID |
+| `forceMount` / `unmountOnHide=false` 导致目标始终在 DOM | 可恒定输出 | — |
+
+**实现模式**：
+```ts
+// 条件展开：有目标才输出
+...(panelId ? { 'aria-controls': panelId } : {})
+
+// 关联目标缺席时条件输出：Reka 无条件绑定 aria-describedby，
+// 需在包装层接管并过滤空值
+const attrs = computed(() => {
+  const base = { ...forwardedAttrs }
+  if (!hasDescription.value) delete base['aria-describedby']
+  if (!hasLabelledby.value) delete base['aria-labelledby']
+  return base
+})
+```
+
+**回归守卫**：
+- 任何引用型属性的增删 / 条件逻辑变更，属「渲染契约类改动」
+- 同批必须复跑 `pnpm capture:styles`（含 a11y 夹具 Chromium 复验），基线 diff 为 0 才可提交
+- CI 守卫见 M2-2（进入 `verify` 常驻链，阻断模式）
+
+**SSR 取舍**：服务端 HTML 不带引用型属性（关闭态面板未挂载），水合后由客户端建立；`capture:styles` 夹具须同步此口径（SSR 构建不跑浏览器验证，E2E 负责覆盖）。
+
 - **新增 locale 文案键有 3 处载体**：`src/locale/types.ts`（类型）+ 5 个语种文件（`check-locale-keys` 覆盖结构与条数）+ `docs/components/locale.md` 及英文页的「命名空间 → 文案键」穷尽式索引表（**无任何机检**）。加键前先 `rg` 台账行并同批更新，否则 `docs:check` / `check-locale-keys` 全绿而 Review Gate 判 blocker（台账 ↔ `src/locale` 对账守卫见 [Backlog](../plan/backlog.md)）。
 
 ## 6. 组件 API 设计约定

@@ -11,7 +11,7 @@
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
 | M1-1 | 字段 shell 样式层共享 | 13 条声明归纳为语义 token / 变量契约，4 字段组件迁移，`check:design` 预算收紧 | `capture:styles` 0 差异、`check:design` 预算归零、4 组件计算样式等价验证通过 | **已完成** |
-| M2-1 | 引用型属性回归规则 | 规则文档化（`development.md`/`ai-collaboration.md`） | 文档落地、示例可复现、团队知晓 | 待开工 |
+| M2-1 | 引用型属性回归规则 | 规则文档化（`development.md`/`ai-collaboration.md`） | 文档落地、示例可复现、团队知晓 | **已完成** |
 | M2-2 | 引用型属性回归规则 | CI 守卫：引用型属性/渲染契约改动同批强制 `capture:styles` 并核对基线 diff（阻断模式，进入 `verify` 常驻链） | 守卫生效、负向对照拦截、文档同步 | 待开工 |
 | M3-1 | Button `iconOnly` 形态 | 新增 `iconOnly` boolean prop，实现 + 测试 + 文档（显式 prop，迁移改动最小） | 组件页 + 示例 + 单测 + a11y 夹具 + 侧栏登记、`capture:styles` 0 差异、真实浏览器验证通过 | 待开工 |
 | M4-1 | Select `#value` 插槽 | 触发器补 `#value` 插槽（最小作用域 `{ option, label, selected }`），兼容既有 `#option`，i18n 与 a11y 同步 | 组件页 + 示例 + 单测 + a11y 夹具 + 侧栏登记、`capture:styles` 0 差异、真实浏览器验证通过 | 待开工 |

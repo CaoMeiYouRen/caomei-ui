@@ -32,7 +32,7 @@
 |------|------|-----------|----------|
 | **Priority** | Single select | P0(阻断/紧急,红) / P1(高,橙) / P2(正常,黄) / P3(低/可选,绿) | PM/开发者 |
 | **Iteration** | Iteration | 按 2 周迭代创建，含 breaks | PM |
-| **Size** | Single select | XS(≤0.5d) / S(1d) / M(2-3d) / L(1周) / XL(>1周) | 开发者估算 |
+| **Size** | Single select | XS(≤0.5d) / S(1d) / M(2-3d) / L(1 周) / XL(>1 周) | 开发者估算 |
 | **Repository** | 内建 | 自动同步 issue 所属仓 | — |
 
 **禁止新增**同义字段（如 Target date、Estimate 等与 Iteration/Size 重叠的字段）。

@@ -312,6 +312,7 @@ function clearValue(): void {
     justify-content: space-between;
     gap: var(--caomei-space-1);
     width: 100%;
+
     /* height/padding/font-size 由 .caomei-field 基类变量控制 */
     padding-inline-end: var(--caomei-field-padding-end);
     cursor: pointer;

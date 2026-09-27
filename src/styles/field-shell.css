@@ -38,10 +38,15 @@
     --caomei-field-readonly-bg: var(--caomei-color-bg-elevated);
 
     /* 尺寸档位变量（基类不预声明默认值，由档位块按需声明） */
+
     /* --caomei-field-height */
+
     /* --caomei-field-padding-inline */
+
     /* --caomei-field-padding-block */
+
     /* --caomei-field-padding-end (可选，用于需右侧预留空间的组件如 Select) */
+
     /* --caomei-field-font-size */
 }
 

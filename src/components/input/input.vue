@@ -123,6 +123,7 @@ defineExpose({ focus, blur, inputRef })
     display: inline-flex;
     align-items: center;
     gap: var(--caomei-space-1);
+
     /* width: 100% 由 .caomei-field 基类提供 */
 }
 

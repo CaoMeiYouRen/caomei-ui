@@ -149,7 +149,7 @@
 - 在注释/测试名中写入规划编号（`T001`、`P1-1` 等）。
 - 擅自扩大范围或重构无关代码。
 
-## 8. 引用型 ARIA 属性回归规则（M2-1 固化，同 [开发规范 §13](../development.md#13-引用型-aria-属性回归规则m2-1-固化)）
+## 8. 引用型 ARIA 属性回归规则（M2-1 固化，同 [开发规范 §13](./development.md#_13-引用型-aria-属性回归规则-m2-1-固化)）
 
 **定义**：`aria-controls` / `aria-describedby` / `aria-labelledby` / `aria-owns` / `aria-activedescendant` 等**引用其他元素 ID** 的 ARIA 属性。
 

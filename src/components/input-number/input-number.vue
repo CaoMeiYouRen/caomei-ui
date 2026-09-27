@@ -259,6 +259,7 @@ defineExpose({ focus, blur, inputRef })
 .caomei-input-number {
     display: inline-flex;
     align-items: center;
+
     /* width: 100% 由 .caomei-field 基类提供 */
     max-width: var(--caomei-input-number-max-width);
 }

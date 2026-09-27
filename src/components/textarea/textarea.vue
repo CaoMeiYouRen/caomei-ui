@@ -194,6 +194,7 @@ defineExpose({ focus, blur, textareaRef })
 */
 .caomei-textarea {
     display: block;
+
     /* width: 100% 由 .caomei-field 基类提供 */
     padding: var(--caomei-field-padding-block) var(--caomei-field-padding-inline);
 }
@@ -208,6 +209,7 @@ defineExpose({ focus, blur, textareaRef })
     background: transparent;
     color: inherit;
     font: inherit;
+
     /* 控件本身不加 padding，由包裹层提供 */
     padding: 0;
     font-size: var(--caomei-field-font-size);

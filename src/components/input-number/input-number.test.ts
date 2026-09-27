@@ -29,7 +29,7 @@ describe('CaomeiInputNumber', () => {
         expect(input.attributes('type')).toBe('text')
         expect(input.attributes('role')).toBe('spinbutton')
         expect(input.attributes('placeholder')).toBe('请输入')
-        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-input-number--md')
+        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-field--md')
 
         const buttons = wrapper.findAll('.caomei-input-number__button')
         expect(buttons).toHaveLength(2)
@@ -44,7 +44,7 @@ describe('CaomeiInputNumber', () => {
 
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', (size) => {
         const wrapper = mount(CaomeiInputNumber, { props: { size } })
-        expect(wrapper.get('.caomei-input-number').classes()).toContain(`caomei-input-number--${size}`)
+        expect(wrapper.get('.caomei-input-number').classes()).toContain(`caomei-field--${size}`)
     })
 
     it('默认使用分组分隔符', () => {
@@ -280,7 +280,7 @@ describe('CaomeiInputNumber', () => {
         expect(wrapper.get('input').attributes('disabled')).toBeDefined()
         expect(wrapper.findAll('.caomei-input-number__button')[0].attributes('disabled')).toBeDefined()
         expect(wrapper.findAll('.caomei-input-number__button')[1].attributes('disabled')).toBeDefined()
-        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-input-number--disabled')
+        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-field--disabled')
     })
 
     it('只读时透传 readonly', () => {
@@ -292,7 +292,7 @@ describe('CaomeiInputNumber', () => {
         const wrapper = mount(CaomeiInputNumber, { props: { invalid: true } })
 
         expect(wrapper.get('input').attributes('aria-invalid')).toBe('true')
-        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-input-number--invalid')
+        expect(wrapper.get('.caomei-input-number').classes()).toContain('caomei-field--invalid')
     })
 
     it('label 映射为 aria-label', () => {

@@ -30,11 +30,11 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const rootClass = computed(() => [
-    `caomei-textarea--${props.size}`,
+    `caomei-field--${props.size}`,
     {
-        'caomei-textarea--invalid': props.invalid,
-        'caomei-textarea--disabled': props.disabled,
-        'caomei-textarea--readonly': props.readonly,
+        'caomei-field--invalid': props.invalid,
+        'caomei-field--disabled': props.disabled,
+        'caomei-field--readonly': props.readonly,
         'caomei-textarea--auto-resize': props.autoResize,
     },
 ])
@@ -160,7 +160,7 @@ defineExpose({ focus, blur, textareaRef })
 <template>
     <div
         v-bind="rootAttrs"
-        class="caomei-textarea"
+        class="caomei-field caomei-textarea"
         :class="rootClass"
         :data-filled="model ? 'true' : undefined"
     >
@@ -169,7 +169,7 @@ defineExpose({ focus, blur, textareaRef })
             ref="textareaRef"
             v-model="model"
             v-bind="{...controlAttrs, ...labelAttrs(label)}"
-            class="caomei-textarea__control"
+            class="caomei-field__control caomei-textarea__control"
             :style="controlStyle"
             :disabled="disabled"
             :readonly="readonly"
@@ -186,40 +186,16 @@ defineExpose({ focus, blur, textareaRef })
 </template>
 
 <style scoped>
+/*
+  Textarea 组件特有样式：block 布局、垂直内边距、自动增高逻辑的配合样式。
+  外壳样式（边框/圆角/背景/色值/聚焦/非法/禁用/只读/尺寸档位）由共享层 `field-shell.css`
+  的 `.caomei-field` 基类提供。
+  差异点：需要垂直内边距，覆盖基类的水平-only padding。
+*/
 .caomei-textarea {
-    box-sizing: border-box;
     display: block;
-    width: 100%;
-    border: 1px solid var(--caomei-color-border);
-    border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
-    color: var(--caomei-color-text);
-    font-family: var(--caomei-font-sans);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.caomei-textarea:focus-within {
-    border-color: var(--caomei-color-primary);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
-}
-
-.caomei-textarea--invalid {
-    border-color: var(--caomei-color-danger);
-}
-
-.caomei-textarea--invalid:focus-within {
-    border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
-}
-
-.caomei-textarea--disabled {
-    cursor: not-allowed;
-    background: var(--caomei-color-bg-elevated);
-    opacity: var(--caomei-disabled-opacity);
-}
-
-.caomei-textarea--readonly {
-    background: var(--caomei-color-bg-elevated);
+    /* width: 100% 由 .caomei-field 基类提供 */
+    padding: var(--caomei-field-padding-block) var(--caomei-field-padding-inline);
 }
 
 .caomei-textarea__control {
@@ -232,8 +208,9 @@ defineExpose({ focus, blur, textareaRef })
     background: transparent;
     color: inherit;
     font: inherit;
-    padding: var(--caomei-textarea-padding-y, var(--caomei-space-2)) var(--caomei-textarea-padding-x, var(--caomei-space-3));
-    font-size: var(--caomei-textarea-font-size, var(--caomei-font-size-md));
+    /* 控件本身不加 padding，由包裹层提供 */
+    padding: 0;
+    font-size: var(--caomei-field-font-size);
 }
 
 .caomei-textarea__control:disabled {
@@ -244,21 +221,8 @@ defineExpose({ focus, blur, textareaRef })
     color: var(--caomei-color-text-muted);
 }
 
-:where(.caomei-textarea--sm) {
-    --caomei-textarea-padding-y: var(--caomei-space-1);
-    --caomei-textarea-padding-x: var(--caomei-space-2);
-    --caomei-textarea-font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-textarea--md) {
-    --caomei-textarea-padding-y: var(--caomei-space-2);
-    --caomei-textarea-padding-x: var(--caomei-space-3);
-    --caomei-textarea-font-size: var(--caomei-font-size-md);
-}
-
-:where(.caomei-textarea--lg) {
-    --caomei-textarea-padding-y: var(--caomei-space-3);
-    --caomei-textarea-padding-x: var(--caomei-space-4);
-    --caomei-textarea-font-size: var(--caomei-font-size-lg);
+/* 自动增高时高度由内容决定，尺寸档位变量不生效 */
+.caomei-textarea--auto-resize {
+    height: auto;
 }
 </style>

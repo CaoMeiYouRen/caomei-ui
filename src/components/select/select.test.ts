@@ -46,7 +46,7 @@ describe('CaomeiSelect', () => {
 
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', (size) => {
         const wrapper = mount(CaomeiSelect, { props: { options, size } })
-        expect(wrapper.get('.caomei-select').classes()).toContain(`caomei-select--${size}`)
+        expect(wrapper.get('.caomei-select').classes()).toContain(`caomei-field--${size}`)
     })
 
     it('invalid 时标注 aria-invalid 并应用错误样式', () => {
@@ -54,7 +54,7 @@ describe('CaomeiSelect', () => {
 
         const trigger = wrapper.get('.caomei-select')
         expect(trigger.attributes('aria-invalid')).toBe('true')
-        expect(trigger.classes()).toContain('caomei-select--invalid')
+        expect(trigger.classes()).toContain('caomei-field--invalid')
     })
 
     it('disabled 时禁用触发器并应用禁用样式', () => {
@@ -62,7 +62,7 @@ describe('CaomeiSelect', () => {
 
         const trigger = wrapper.get('.caomei-select')
         expect(trigger.attributes('disabled')).toBeDefined()
-        expect(trigger.classes()).toContain('caomei-select--disabled')
+        expect(trigger.classes()).toContain('caomei-field--disabled')
     })
 
     it('label 映射为 aria-label', () => {

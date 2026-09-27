@@ -15,12 +15,12 @@ describe('CaomeiInput', () => {
         const input = wrapper.get('input')
         expect(input.attributes('type')).toBe('text')
         expect(input.attributes('placeholder')).toBe('请输入')
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--md')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--md')
     })
 
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', (size) => {
         const wrapper = mount(CaomeiInput, { props: { size } })
-        expect(wrapper.get('.caomei-input').classes()).toContain(`caomei-input--${size}`)
+        expect(wrapper.get('.caomei-input').classes()).toContain(`caomei-field--${size}`)
     })
 
     it.each(['text', 'password', 'email', 'search', 'tel', 'url'] as const)(
@@ -47,7 +47,7 @@ describe('CaomeiInput', () => {
         const wrapper = mount(CaomeiInput, { props: { disabled: true } })
 
         expect(wrapper.get('input').attributes('disabled')).toBeDefined()
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--disabled')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--disabled')
     })
 
     it('只读时透传 readonly', () => {
@@ -59,7 +59,7 @@ describe('CaomeiInput', () => {
         const wrapper = mount(CaomeiInput, { props: { invalid: true } })
 
         expect(wrapper.get('input').attributes('aria-invalid')).toBe('true')
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--invalid')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--invalid')
     })
 
     it('label 映射为 aria-label', () => {

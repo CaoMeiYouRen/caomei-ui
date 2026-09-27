@@ -10,12 +10,12 @@ describe('CaomeiTextarea', () => {
 
         const textarea = wrapper.get('textarea')
         expect(textarea.attributes('placeholder')).toBe('请输入')
-        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-textarea--md')
+        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-field--md')
     })
 
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', (size) => {
         const wrapper = mount(CaomeiTextarea, { props: { size } })
-        expect(wrapper.get('.caomei-textarea').classes()).toContain(`caomei-textarea--${size}`)
+        expect(wrapper.get('.caomei-textarea').classes()).toContain(`caomei-field--${size}`)
     })
 
     it('透传 rows', () => {
@@ -39,21 +39,21 @@ describe('CaomeiTextarea', () => {
         const wrapper = mount(CaomeiTextarea, { props: { disabled: true } })
 
         expect(wrapper.get('textarea').attributes('disabled')).toBeDefined()
-        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-textarea--disabled')
+        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-field--disabled')
     })
 
     it('只读时透传 readonly 并应用只读样式', () => {
         const wrapper = mount(CaomeiTextarea, { props: { readonly: true } })
 
         expect(wrapper.get('textarea').attributes('readonly')).toBeDefined()
-        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-textarea--readonly')
+        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-field--readonly')
     })
 
     it('invalid 时标注 aria-invalid 并应用错误样式', () => {
         const wrapper = mount(CaomeiTextarea, { props: { invalid: true } })
 
         expect(wrapper.get('textarea').attributes('aria-invalid')).toBe('true')
-        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-textarea--invalid')
+        expect(wrapper.get('.caomei-textarea').classes()).toContain('caomei-field--invalid')
     })
 
     it('label 映射为 aria-label', () => {

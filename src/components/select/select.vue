@@ -144,10 +144,10 @@ const selectedLabel = computed(() => {
 })
 
 const rootClass = computed(() => [
-    `caomei-select--${props.size}`,
+    `caomei-field--${props.size}`,
     {
-        'caomei-select--invalid': props.invalid,
-        'caomei-select--disabled': props.disabled,
+        'caomei-field--invalid': props.invalid,
+        'caomei-field--disabled': props.disabled,
         'caomei-select--clearable': clearable.value,
     },
 ])
@@ -178,13 +178,13 @@ function clearValue(): void {
     >
         <div
             class="caomei-select__field"
-            :class="`caomei-select__field--${size}`"
+            :class="[`caomei-select__field--${size}`, rootClass]"
         >
             <SelectTrigger
                 v-bind="{...$attrs, ...labelAttrs(label)}"
                 :id="id"
                 ref="triggerRef"
-                class="caomei-select"
+                class="caomei-field caomei-select"
                 :class="rootClass"
                 :data-filled="hasValue ? 'true' : undefined"
                 :data-has-placeholder="placeholder ? 'true' : undefined"
@@ -300,52 +300,45 @@ function clearValue(): void {
 </template>
 
 <style scoped>
+/*
+  Select 触发器特有样式：inline-flex 布局、图标/清除按钮定位、值/占位文本截断。
+  外壳样式（边框/圆角/背景/色值/聚焦/非法/禁用/尺寸档位基础变量）由共享层 `field-shell.css`
+  的 `.caomei-field` 基类提供。
+  差异点：触发器为原生 <button>，聚焦态走 `:focus-visible` 而非 `:focus-within`，需在此覆盖。
+*/
 .caomei-select {
-    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--caomei-space-1);
     width: 100%;
-    height: var(--caomei-select-height, var(--caomei-control-height-md));
-    padding: 0 var(--caomei-select-padding-end, var(--caomei-space-3));
-    border: 1px solid var(--caomei-color-border);
-    border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
-    color: var(--caomei-color-text);
-    font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-select-font-size, var(--caomei-font-size-md));
+    /* height/padding/font-size 由 .caomei-field 基类变量控制 */
+    padding-inline-end: var(--caomei-field-padding-end);
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-/*
-  清除按钮与触发器是兄弟节点（触发器为 <button>，嵌套按钮会破坏 SSR 输出结构），
-  因此以绝对定位覆盖在字段右侧 [图标 + 间隙] 之前，输入区右端留出按钮宽度，避免文本压到按钮下方。
-*/
+/* 清除按钮绝对定位：覆盖在字段右侧 [图标 + 间隙] 之前 */
 .caomei-select--clearable .caomei-select__value {
     margin-inline-end: calc(var(--caomei-select-clear-width, 1.25rem) + var(--caomei-space-1));
 }
 
+/* 触发器为原生 button，聚焦态走 :focus-visible 覆盖基类的 :focus-within */
 .caomei-select:focus-visible {
-    border-color: var(--caomei-color-primary);
+    border-color: var(--caomei-field-focus-border-color);
     outline: none;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
+    box-shadow: var(--caomei-field-focus-shadow);
 }
 
-.caomei-select--invalid {
-    border-color: var(--caomei-color-danger);
+/* 非法态聚焦：字段外层带有 caomei-field--invalid 且 :focus-within 时，
+   使用 :deep() 穿透 scoped 透传不到 Reka UI 原生 button 的限制。 */
+.caumei-field--invalid:focus-within :deep([role="combobox"]) {
+    border-color: var(--caomei-field-invalid-border-color) !important;
+    box-shadow: var(--caomei-field-invalid-focus-shadow) !important;
 }
 
-.caomei-select--invalid:focus-visible {
-    border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
-}
-
-.caomei-select--disabled {
+/* 禁用态：基类 .caomei-field--disabled 已提供，此处仅补充 cursor/opacity 细节 */
+.caomei-field--disabled.caumei-select {
     cursor: not-allowed;
-    background: var(--caomei-color-bg-elevated);
-    opacity: var(--caomei-disabled-opacity);
 }
 
 /*
@@ -359,31 +352,29 @@ function clearValue(): void {
     display: inline-flex;
     width: 100%;
     max-width: var(--caomei-select-max-width);
-    font-size: var(--caomei-select-field-font-size, var(--caomei-font-size-md));
+    font-size: var(--caomei-field-font-size);
 }
 
-/* 尺寸档位只声明变量：右内边距 / 图标尺寸供触发器与兄弟节点清除按钮共同消费，字号由基类回退消费 */
+/* 尺寸档位：复用 .caomei-field 基类变量，仅声明 Select 特有的图标尺寸与清除按钮定位相关变量 */
 :where(.caomei-select__field--sm) {
-    --caomei-select-padding-end: var(--caomei-space-2);
+    --caomei-field-font-size: var(--caomei-font-size-sm);
     --caomei-select-icon-size: var(--caomei-font-size-sm);
-    --caomei-select-field-font-size: var(--caomei-font-size-sm);
 }
 
 :where(.caomei-select__field--md) {
-    --caomei-select-padding-end: var(--caomei-space-3);
+    --caomei-field-font-size: var(--caomei-font-size-md);
     --caomei-select-icon-size: var(--caomei-font-size-md);
 }
 
 :where(.caomei-select__field--lg) {
-    --caomei-select-padding-end: var(--caomei-space-4);
+    --caomei-field-font-size: var(--caomei-font-size-lg);
     --caomei-select-icon-size: var(--caomei-font-size-lg);
-    --caomei-select-field-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-select__clear {
     position: absolute;
     inset-block: 0;
-    inset-inline-end: calc(var(--caomei-select-padding-end, var(--caomei-space-3)) + var(--caomei-select-icon-size, 1rem) + var(--caomei-space-1));
+    inset-inline-end: calc(var(--caomei-field-padding-end) + var(--caomei-select-icon-size, 1rem) + var(--caomei-space-1));
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -393,8 +384,6 @@ function clearValue(): void {
     border-radius: var(--caomei-radius-sm);
     background: transparent;
     color: var(--caomei-color-text-muted);
-
-    /* 按钮默认不继承字体：显式继承以保持图标与字段文本同源 */
     font: inherit;
     cursor: pointer;
 }
@@ -406,21 +395,6 @@ function clearValue(): void {
 .caomei-select__clear:focus-visible {
     outline: 2px solid var(--caomei-color-primary);
     outline-offset: 1px;
-}
-
-:where(.caomei-select--sm) {
-    --caomei-select-height: var(--caomei-control-height-sm);
-    --caomei-select-font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-select--md) {
-    --caomei-select-height: var(--caomei-control-height-md);
-    --caomei-select-font-size: var(--caomei-font-size-md);
-}
-
-:where(.caomei-select--lg) {
-    --caomei-select-height: var(--caomei-control-height-lg);
-    --caomei-select-font-size: var(--caomei-font-size-lg);
 }
 
 .caomei-select__value {
@@ -442,7 +416,6 @@ function clearValue(): void {
     color: var(--caomei-color-text-muted);
 }
 
-/* 图标尺寸走 token（与档位字号同源），使清除按钮的定位不依赖 `em` 解析上下文 */
 .caomei-select__icon svg {
     width: var(--caomei-select-icon-size, 1rem);
     height: var(--caomei-select-icon-size, 1rem);

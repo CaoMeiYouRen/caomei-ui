@@ -47,11 +47,11 @@ const showClear = computed(
 )
 
 const rootClass = computed(() => [
-    `caomei-input--${props.size}`,
+    `caomei-field--${props.size}`,
     {
-        'caomei-input--invalid': props.invalid,
-        'caomei-input--disabled': props.disabled,
-        'caomei-input--readonly': props.readonly,
+        'caomei-field--invalid': props.invalid,
+        'caomei-field--disabled': props.disabled,
+        'caomei-field--readonly': props.readonly,
     },
 ])
 
@@ -73,7 +73,7 @@ defineExpose({ focus, blur, inputRef })
 <template>
     <div
         v-bind="rootAttrs"
-        class="caomei-input"
+        class="caomei-field caomei-input"
         :class="rootClass"
         :data-filled="model ? 'true' : undefined"
     >
@@ -85,7 +85,7 @@ defineExpose({ focus, blur, inputRef })
             ref="inputRef"
             v-model="model"
             v-bind="{...controlAttrs, ...labelAttrs(label)}"
-            class="caomei-input__control"
+            class="caomei-field__control caomei-input__control"
             :type="type"
             :disabled="disabled"
             :readonly="readonly"
@@ -114,63 +114,16 @@ defineExpose({ focus, blur, inputRef })
 </template>
 
 <style scoped>
+/*
+  Input 组件特有样式：仅包含布局结构（inline-flex + gap）、前缀/后缀/清除按钮对齐、
+  以及控件内部细节。外壳样式（边框/圆角/背景/色值/聚焦/非法/禁用/只读/尺寸档位）由
+  共享层 `field-shell.css` 的 `.caomei-field` 基类提供。
+*/
 .caomei-input {
-    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     gap: var(--caomei-space-1);
-    width: 100%;
-    border: 1px solid var(--caomei-color-border);
-    border-radius: var(--caomei-radius-md);
-    height: var(--caomei-input-height, var(--caomei-control-height-md));
-    padding: 0 var(--caomei-input-padding-x, var(--caomei-space-3));
-    background: var(--caomei-color-bg);
-    color: var(--caomei-color-text);
-    font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-input-font-size, var(--caomei-font-size-md));
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.caomei-input:focus-within {
-    border-color: var(--caomei-color-primary);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
-}
-
-.caomei-input--invalid {
-    border-color: var(--caomei-color-danger);
-}
-
-.caomei-input--invalid:focus-within {
-    border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
-}
-
-.caomei-input--disabled {
-    cursor: not-allowed;
-    background: var(--caomei-color-bg-elevated);
-    opacity: var(--caomei-disabled-opacity);
-}
-
-.caomei-input--readonly {
-    background: var(--caomei-color-bg-elevated);
-}
-
-:where(.caomei-input--sm) {
-    --caomei-input-height: var(--caomei-control-height-sm);
-    --caomei-input-padding-x: var(--caomei-space-2);
-    --caomei-input-font-size: var(--caomei-font-size-sm);
-}
-
-:where(.caomei-input--md) {
-    --caomei-input-height: var(--caomei-control-height-md);
-    --caomei-input-padding-x: var(--caomei-space-3);
-    --caomei-input-font-size: var(--caomei-font-size-md);
-}
-
-:where(.caomei-input--lg) {
-    --caomei-input-height: var(--caomei-control-height-lg);
-    --caomei-input-padding-x: var(--caomei-space-4);
-    --caomei-input-font-size: var(--caomei-font-size-lg);
+    /* width: 100% 由 .caomei-field 基类提供 */
 }
 
 .caomei-input__control {

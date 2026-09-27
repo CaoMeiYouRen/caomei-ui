@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-26T06:16:48.719Z",
+    "capturedAt": "2026-09-27T14:28:30.249Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -177,28 +177,28 @@
         },
         "tier.textarea.sm": {
             "min-height": "auto",
-            "height": "38px",
-            "padding-top": "0px",
-            "padding-right": "0px",
-            "padding-bottom": "0px",
-            "padding-left": "0px",
-            "font-size": "16px",
-            "border-top-left-radius": "8px"
-        },
-        "tier.textarea-control.sm": {
+            "height": "28px",
             "padding-top": "4px",
             "padding-right": "8px",
             "padding-bottom": "4px",
             "padding-left": "8px",
+            "font-size": "12px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.sm": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
             "font-size": "12px"
         },
         "tier.input-number.sm": {
             "min-height": "auto",
             "height": "28px",
             "padding-top": "0px",
-            "padding-right": "0px",
+            "padding-right": "8px",
             "padding-bottom": "0px",
-            "padding-left": "0px",
+            "padding-left": "8px",
             "font-size": "12px",
             "border-top-left-radius": "8px"
         },
@@ -248,28 +248,28 @@
         },
         "tier.textarea.md": {
             "min-height": "auto",
-            "height": "50px",
-            "padding-top": "0px",
-            "padding-right": "0px",
-            "padding-bottom": "0px",
-            "padding-left": "0px",
-            "font-size": "16px",
-            "border-top-left-radius": "8px"
-        },
-        "tier.textarea-control.md": {
+            "height": "36px",
             "padding-top": "8px",
             "padding-right": "12px",
             "padding-bottom": "8px",
             "padding-left": "12px",
+            "font-size": "14px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.md": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
             "font-size": "14px"
         },
         "tier.input-number.md": {
             "min-height": "auto",
             "height": "36px",
             "padding-top": "0px",
-            "padding-right": "0px",
+            "padding-right": "12px",
             "padding-bottom": "0px",
-            "padding-left": "0px",
+            "padding-left": "12px",
             "font-size": "14px",
             "border-top-left-radius": "8px"
         },
@@ -319,28 +319,28 @@
         },
         "tier.textarea.lg": {
             "min-height": "auto",
-            "height": "64px",
-            "padding-top": "0px",
-            "padding-right": "0px",
-            "padding-bottom": "0px",
-            "padding-left": "0px",
-            "font-size": "16px",
-            "border-top-left-radius": "8px"
-        },
-        "tier.textarea-control.lg": {
+            "height": "44px",
             "padding-top": "12px",
             "padding-right": "16px",
             "padding-bottom": "12px",
             "padding-left": "16px",
+            "font-size": "16px",
+            "border-top-left-radius": "8px"
+        },
+        "tier.textarea-control.lg": {
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
             "font-size": "16px"
         },
         "tier.input-number.lg": {
             "min-height": "auto",
             "height": "44px",
             "padding-top": "0px",
-            "padding-right": "0px",
+            "padding-right": "16px",
             "padding-bottom": "0px",
-            "padding-left": "0px",
+            "padding-left": "16px",
             "font-size": "16px",
             "border-top-left-radius": "8px"
         },
@@ -1733,8 +1733,8 @@
             "border-top-color": "rgb(37, 99, 235)"
         },
         "state.select.invalid": {
-            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
-            "border-top-color": "rgb(220, 38, 38)"
+            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(37, 99, 235)"
         },
         "z.button-group.focus-within": {
             "z-index": "1"

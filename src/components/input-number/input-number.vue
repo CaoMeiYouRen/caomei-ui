@@ -102,11 +102,11 @@ const inputAttrs = computed<Record<string, unknown>>(() => {
 })
 
 const rootClass = computed(() => [
-    `caomei-input-number--${props.size}`,
+    `caomei-field--${props.size}`,
     {
-        'caomei-input-number--invalid': props.invalid,
-        'caomei-input-number--disabled': props.disabled,
-        'caomei-input-number--readonly': props.readonly,
+        'caomei-field--invalid': props.invalid,
+        'caomei-field--disabled': props.disabled,
+        'caomei-field--readonly': props.readonly,
     },
 ])
 
@@ -212,7 +212,7 @@ defineExpose({ focus, blur, inputRef })
         :disabled="disabled"
         :readonly="readonly"
         :name="name"
-        class="caomei-input-number"
+        class="caomei-field caomei-input-number"
         :class="rootClass"
         :data-filled="model !== null && model !== undefined ? 'true' : undefined"
         @update:model-value="onModelUpdate"
@@ -230,7 +230,7 @@ defineExpose({ focus, blur, inputRef })
         <NumberFieldInput
             :ref="setInputRef"
             v-bind="{...inputAttrs, ...labelAttrs(label)}"
-            class="caomei-input-number__control"
+            class="caomei-field__control caomei-input-number__control"
             :placeholder="placeholder"
             :aria-invalid="invalid || undefined"
             @focus="onFocus"
@@ -251,62 +251,16 @@ defineExpose({ focus, blur, inputRef })
 </template>
 
 <style scoped>
+/*
+  InputNumber 组件特有样式：内联 flex 布局、左右步进按钮、居中文本输入。
+  外壳样式（边框/圆角/背景/色值/聚焦/非法/禁用/只读/尺寸档位）由共享层 `field-shell.css`
+  的 `.caomei-field` 基类提供。
+*/
 .caomei-input-number {
-    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
-    width: 100%;
+    /* width: 100% 由 .caomei-field 基类提供 */
     max-width: var(--caomei-input-number-max-width);
-    height: var(--caomei-input-number-height, var(--caomei-control-height-md));
-    border: 1px solid var(--caomei-color-border);
-    border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
-    color: var(--caomei-color-text);
-    font-family: var(--caomei-font-sans);
-    font-size: var(--caomei-input-number-font-size, var(--caomei-font-size-md));
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.caomei-input-number:focus-within {
-    border-color: var(--caomei-color-primary);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
-}
-
-.caomei-input-number--invalid {
-    border-color: var(--caomei-color-danger);
-}
-
-.caomei-input-number--invalid:focus-within {
-    border-color: var(--caomei-color-danger);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
-}
-
-.caomei-input-number--disabled {
-    cursor: not-allowed;
-    background: var(--caomei-color-bg-elevated);
-    opacity: var(--caomei-disabled-opacity);
-}
-
-.caomei-input-number--readonly {
-    background: var(--caomei-color-bg-elevated);
-}
-
-:where(.caomei-input-number--sm) {
-    --caomei-input-number-height: var(--caomei-control-height-sm);
-    --caomei-input-number-font-size: var(--caomei-font-size-sm);
-    --caomei-input-number-button-width: var(--caomei-control-height-sm);
-}
-
-:where(.caomei-input-number--md) {
-    --caomei-input-number-height: var(--caomei-control-height-md);
-    --caomei-input-number-font-size: var(--caomei-font-size-md);
-    --caomei-input-number-button-width: var(--caomei-control-height-md);
-}
-
-:where(.caomei-input-number--lg) {
-    --caomei-input-number-height: var(--caomei-control-height-lg);
-    --caomei-input-number-font-size: var(--caomei-font-size-lg);
-    --caomei-input-number-button-width: var(--caomei-control-height-lg);
 }
 
 .caomei-input-number__control {
@@ -351,5 +305,18 @@ defineExpose({ focus, blur, inputRef })
 
 .caomei-input-number__button:hover:not(:disabled) {
     color: var(--caomei-color-text);
+}
+
+/* 尺寸档位仅声明按钮宽度变量（高度/字号由 .caomei-field 基类的变量控制） */
+:where(.caomei-field--sm) {
+    --caomei-input-number-button-width: var(--caomei-control-height-sm);
+}
+
+:where(.caomei-field--md) {
+    --caomei-input-number-button-width: var(--caomei-control-height-md);
+}
+
+:where(.caomei-field--lg) {
+    --caomei-input-number-button-width: var(--caomei-control-height-lg);
 }
 </style>

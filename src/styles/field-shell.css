@@ -1,0 +1,155 @@
+/**
+ * 字段外壳共享样式层（Field Shell Shared Style Layer）。
+ *
+ * 统一表单类组件的外层包裹样式：边框、圆角、背景、色值、聚焦态、非法态、禁用态、
+ * 只读态、尺寸档位变量分发。各组件仅需在基类上叠加自身特有结构（前缀/后缀/清除/触发器等）。
+ *
+ * 设计约束：
+ * 1. 基类 `.caomei-field` 仅声明**语义化 CSS 变量**的默认回退值，不写死像素值；
+ * 2. 尺寸档位（sm/md/lg）通过 `:where(.caomei-field--<size>)` 仅声明变量，特异性归零；
+ * 3. 组件可覆盖 `--caomei-field-*` 变量实现定制，无需重写基类规则；
+ * 4. 该层不包含内部控件（input/textarea/select）的样式，控件层由各组件自行维护。
+ */
+
+/* ── 语义化变量契约（组件层可覆盖，基类提供回退） ── */
+:root {
+    /* 外壳几何 */
+    --caomei-field-border-width: 1px;
+    --caomei-field-border-color: var(--caomei-color-border);
+    --caomei-field-border-radius: var(--caomei-radius-md);
+    --caomei-field-bg: var(--caomei-color-bg);
+    --caomei-field-color: var(--caomei-color-text);
+    --caomei-field-font-family: var(--caomei-font-sans);
+    --caomei-field-transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    /* 聚焦态 */
+    --caomei-field-focus-border-color: var(--caomei-color-primary);
+    --caomei-field-focus-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-primary) 20%, transparent);
+
+    /* 非法态 */
+    --caomei-field-invalid-border-color: var(--caomei-color-danger);
+    --caomei-field-invalid-focus-shadow: 0 0 0 2px color-mix(in srgb, var(--caomei-color-danger) 20%, transparent);
+
+    /* 禁用态 */
+    --caomei-field-disabled-bg: var(--caomei-color-bg-elevated);
+    --caomei-field-disabled-opacity: var(--caomei-disabled-opacity);
+
+    /* 只读态 */
+    --caomei-field-readonly-bg: var(--caomei-color-bg-elevated);
+
+    /* 尺寸档位变量（基类不预声明默认值，由档位块按需声明） */
+    /* --caomei-field-height */
+    /* --caomei-field-padding-inline */
+    /* --caomei-field-padding-block */
+    /* --caomei-field-padding-end (可选，用于需右侧预留空间的组件如 Select) */
+    /* --caomei-field-font-size */
+}
+
+/* ── 基类：仅消费变量，不写死值 ── */
+.caomei-field {
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--caomei-field-height);
+    padding: 0 var(--caomei-field-padding-inline);
+    font-size: var(--caomei-field-font-size);
+    border: var(--caomei-field-border-width) solid var(--caomei-field-border-color);
+    border-radius: var(--caomei-field-border-radius);
+    background: var(--caomei-field-bg);
+    color: var(--caomei-field-color);
+    font-family: var(--caomei-field-font-family);
+    transition: var(--caomei-field-transition);
+}
+
+/* 聚焦态（:focus-within 让包裹层感知内部控件聚焦） */
+.caomei-field:focus-within {
+    border-color: var(--caomei-field-focus-border-color);
+    box-shadow: var(--caomei-field-focus-shadow);
+}
+
+/* 非法态 */
+.caomei-field--invalid {
+    border-color: var(--caomei-field-invalid-border-color);
+}
+
+.caomei-field--invalid:focus-within {
+    border-color: var(--caomei-field-invalid-border-color);
+    box-shadow: var(--caomei-field-invalid-focus-shadow);
+}
+
+/* 禁用态 */
+.caomei-field--disabled {
+    cursor: not-allowed;
+    background: var(--caomei-field-disabled-bg);
+    opacity: var(--caomei-field-disabled-opacity);
+}
+
+/* 只读态 */
+.caomei-field--readonly {
+    background: var(--caomei-field-readonly-bg);
+}
+
+/* ── 尺寸档位：仅声明变量，特异性归零 ── */
+:where(.caomei-field--sm) {
+    --caomei-field-height: var(--caomei-control-height-sm);
+    --caomei-field-padding-inline: var(--caomei-space-2);
+    --caomei-field-padding-end: var(--caomei-space-2);
+    --caomei-field-padding-block: var(--caomei-space-1);
+    --caomei-field-font-size: var(--caomei-font-size-sm);
+}
+
+:where(.caomei-field--md) {
+    --caomei-field-height: var(--caomei-control-height-md);
+    --caomei-field-padding-inline: var(--caomei-space-3);
+    --caomei-field-padding-end: var(--caomei-space-3);
+    --caomei-field-padding-block: var(--caomei-space-2);
+    --caomei-field-font-size: var(--caomei-font-size-md);
+}
+
+:where(.caomei-field--lg) {
+    --caomei-field-height: var(--caomei-control-height-lg);
+    --caomei-field-padding-inline: var(--caomei-space-4);
+    --caomei-field-padding-end: var(--caomei-space-4);
+    --caomei-field-padding-block: var(--caomei-space-3);
+    --caomei-field-font-size: var(--caomei-font-size-lg);
+}
+
+/* ── 内部控件通用重置（可选消费，组件可自行决定是否应用） ── */
+.caomei-field__control {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+}
+
+.caomei-field__control:disabled {
+    cursor: not-allowed;
+}
+
+.caomei-field__control::placeholder {
+    color: var(--caomei-color-text-muted);
+}
+
+/* ── 前缀/后缀/清除按钮通用对齐（可选消费） ── */
+.caomei-field__prefix,
+.caomei-field__suffix,
+.caomei-field__clear {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: var(--caomei-color-text-muted);
+}
+
+.caomei-field__clear {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.caomei-field__clear:hover {
+    color: var(--caomei-color-text);
+}

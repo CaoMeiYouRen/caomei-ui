@@ -11,12 +11,12 @@ describe('CaomeiPassword', () => {
 
         expect(wrapper.get('input').attributes('type')).toBe('password')
         expect(wrapper.get('input').attributes('placeholder')).toBe('请输入密码')
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--md')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--md')
     })
 
     it.each(['sm', 'md', 'lg'] as const)('应用尺寸样式 %s', (size) => {
         const wrapper = mount(CaomeiPassword, { props: { size } })
-        expect(wrapper.get('.caomei-input').classes()).toContain(`caomei-input--${size}`)
+        expect(wrapper.get('.caomei-input').classes()).toContain(`caomei-field--${size}`)
     })
 
     it('v-model 与内部输入双向绑定', async () => {
@@ -82,14 +82,14 @@ describe('CaomeiPassword', () => {
 
         expect(wrapper.get('input').attributes('disabled')).toBeDefined()
         expect(wrapper.get('.caomei-password__toggle').attributes('disabled')).toBeDefined()
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--disabled')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--disabled')
     })
 
     it('invalid 时标注 aria-invalid 并应用错误样式', () => {
         const wrapper = mount(CaomeiPassword, { props: { invalid: true } })
 
         expect(wrapper.get('input').attributes('aria-invalid')).toBe('true')
-        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-input--invalid')
+        expect(wrapper.get('.caomei-input').classes()).toContain('caomei-field--invalid')
     })
 
     it('label 映射为 aria-label', () => {

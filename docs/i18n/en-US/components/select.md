@@ -115,6 +115,6 @@ No events besides `update:modelValue`; the option list is passed in a controlled
 
 **Not implemented**: `filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`, `editable`, `optionGroupLabel` / `optionGroupChildren`, `scrollHeight` / `dataKey`, `variant` (`outlined` / `filled`), `labelId` / `labelStyle` / `labelClass`, `appendTo` and panel style/class forwarding.
 
-> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration) (**trap table additions**: Select `#value` slot, `#value` vs `#option` separation, `iconOnly` ignores `iconPosition`).
 
 <ComponentApi name="select" />

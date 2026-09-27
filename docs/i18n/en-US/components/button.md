@@ -101,6 +101,6 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 
 **Not implemented / not exposed**: `loadingIcon` (built-in indicator), `badgeClass` / `iconClass` (the badge and icon elements carry fixed class names you can override), `raised` / `plain` / `link` and `variant="outlined" | "text" | "link"` (express these with `variant` / `tone`).
 
-> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
+> For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration) (**trap table additions**: Button icon-only shape, `iconPosition` ignored when `iconOnly`, `iconOnly` requires `label`).
 
 <ComponentApi name="button" />

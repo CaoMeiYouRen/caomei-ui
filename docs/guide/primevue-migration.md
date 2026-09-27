@@ -27,6 +27,9 @@
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
 | 标签录入 | `Chips`（v4 起为 `InputChips` 的旧名） | `CaomeiTagsInput`（**首选**）；`CaomeiAutoComplete` + `multiple`（备选） | `separator` → `delimiter`；`allowDuplicate` **默认相反**（本库默认拒绝重复）；见 §7 与 [TagsInput](../components/tags-input.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |
+| Button 纯图标形态 | — | 新增 `iconOnly` boolean prop；开启时按钮变为方形、图标居中、不渲染文本，**需配合 `label` 提供可访问名**（映射 `aria-label`）；此时 `iconPosition` 被忽略 | 见 [Button](../components/button.md) 与 [#iconOnly 形态](../components/button.md#纯图标按钮) |
+| Select 触发器自定义显示 | — | 新增 `#value` 插槽（作用域 `{ option, label, selected }`），仅影响触发器显示，面板仍用 `#option` | 见 [Select](../components/select.md) 与 [#自定义触发器显示](../components/select.md#自定义触发器显示) |
+| Button `iconOnly` 时 `iconPosition` 失效 | — | `iconOnly=true` 时图标始终居中、`iconPosition` 被忽略，**必须提供 `label`**（否则无 `aria-label`） | 见 [Button](../components/button.md) 与 [#纯图标按钮](../components/button.md#纯图标按钮) |
 | 插槽命名 | 列级 `#body` / `#header` | `#cell-{key}` / `#header-{key}` | 按列 `key` 命名，作用域字段口径见组件页 |
 | 表格排序模型 | `sort-mode` / `multi-sort-meta` / `default-sort-order` | `sortMode` / `multiSortMeta` / `sortDescFirst` | 多列为受控模型（`v-model:multiSortMeta`）；`default-sort-order` 改**表格级** `sortDescFirst`（本库不提供列级）；见 §7 与 [DataTable](../components/data-table.md) |
 | 表格分组与行展开 | `row-group-mode` / `group-rows-by` / `expandable-row-groups` / `expanded-rows` / `Column expander` | 同名 camelCase + `v-model:expandedRowGroups` / `v-model:expandedRows` + `#groupheader` / `#expansion` | 分组按**连续同值**切分、可折叠分组缺省全部收起；展开列写作 `{ key, expander: true }`；见 §7 与 [DataTable](../components/data-table.md) |

@@ -101,6 +101,6 @@
 
 **未实现 / 未暴露**：`loadingIcon`（内建加载指示）、`badgeClass` / `iconClass`（角标与图标元素带固定类名，可直接覆盖样式）、`raised` / `plain` / `link` 与 `variant="outlined" | "text" | "link"`（用 `variant` / `tone` 表达）。
 
-> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)（**陷阱表新增**：Button 纯图标形态、`iconPosition` 失效、`iconOnly` 必填 `label`）。
 
 <ComponentApi name="button" />

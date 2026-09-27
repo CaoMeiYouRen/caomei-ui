@@ -115,6 +115,6 @@
 
 **未实现**：`filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`、`editable`、`optionGroupLabel` / `optionGroupChildren`、`scrollHeight` / `dataKey`、`variant`（`outlined` / `filled`）、`labelId` / `labelStyle` / `labelClass`、`appendTo` 与面板样式 / 类名透传。
 
-> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
+> 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)（**陷阱表新增**：Select `#value` 插槽、`#value` 与 `#option` 分离、`iconOnly` 时忽略 `iconPosition`）。
 
 <ComponentApi name="select" />

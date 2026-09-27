@@ -23,7 +23,21 @@ async function open(wrapper: ReturnType<typeof mount>): Promise<void> {
     await nextTick()
 }
 
-function optionElements(): NodeListOf<HTMLElement> {
+function optionElements(wrapper: ReturnType<typeof mount>): NodeListOf<HTMLElement> {
+    // 并发隔离：通过 trigger 的 aria-controls 关联定位面板，避免全局查找命中其他测试的选项
+    const trigger = wrapper.get('.caomei-auto-complete__trigger')
+    const controlsId = trigger.attributes('aria-controls')
+    if (controlsId) {
+        const panel = document.getElementById(controlsId)
+        if (panel) {
+            return panel.querySelectorAll<HTMLElement>('[role="option"]')
+        }
+    }
+    // 回退：面板在 wrapper 内（非 Portal 模式）
+    const panelInWrapper = wrapper.find('[role="listbox"]')
+    if (panelInWrapper.exists()) {
+        return panelInWrapper.element.querySelectorAll<HTMLElement>('[role="option"]')
+    }
     return document.querySelectorAll<HTMLElement>('[role="option"]')
 }
 
@@ -44,7 +58,7 @@ describe('CaomeiAutoComplete', () => {
 
         await open(wrapper)
 
-        const rendered = optionElements()
+        const rendered = optionElements(wrapper)
         expect(rendered).toHaveLength(2)
         expect(rendered[0].textContent).toContain('苹果')
         expect(rendered[0].getAttribute('role')).toBe('option')
@@ -80,7 +94,7 @@ describe('CaomeiAutoComplete', () => {
         })
 
         await open(wrapper)
-        optionElements()[0].click()
+        optionElements(wrapper)[0].click()
         await flushPromises()
         await nextTick()
 
@@ -109,7 +123,7 @@ describe('CaomeiAutoComplete', () => {
         })
 
         await open(wrapper)
-        optionElements()[0].click()
+        optionElements(wrapper)[0].click()
         await flushPromises()
         await nextTick()
 
@@ -130,7 +144,7 @@ describe('CaomeiAutoComplete', () => {
         })
 
         await open(wrapper)
-        optionElements()[2].click()
+        optionElements(wrapper)[2].click()
         await flushPromises()
 
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
@@ -138,32 +152,40 @@ describe('CaomeiAutoComplete', () => {
 
     it('complete 事件在 debounce 后触发且连续输入只触发一次', async () => {
         vi.useFakeTimers()
-        const wrapper = mount(CaomeiAutoComplete, { props: { options, debounce: 300 } })
+        try {
+            const wrapper = mount(CaomeiAutoComplete, { props: { options, debounce: 300 } })
 
-        const input = wrapper.get('input')
-        await input.setValue('a')
-        await input.setValue('ap')
-        await input.setValue('app')
+            const input = wrapper.get('input')
+            await input.setValue('a')
+            await input.setValue('ap')
+            await input.setValue('app')
 
-        expect(wrapper.emitted('complete')).toBeUndefined()
+            expect(wrapper.emitted('complete')).toBeUndefined()
 
-        vi.advanceTimersByTime(300)
-        await nextTick()
+            vi.advanceTimersByTime(300)
+            await nextTick()
 
-        const emitted = wrapper.emitted('complete')
-        expect(emitted).toHaveLength(1)
-        expect(emitted?.[0]).toEqual(['app'])
+            const emitted = wrapper.emitted('complete')
+            expect(emitted).toHaveLength(1)
+            expect(emitted?.[0]).toEqual(['app'])
+        } finally {
+            vi.useRealTimers()
+        }
     })
 
     it('debounce 为 0 时尽快触发 complete', async () => {
         vi.useFakeTimers()
-        const wrapper = mount(CaomeiAutoComplete, { props: { options, debounce: 0 } })
+        try {
+            const wrapper = mount(CaomeiAutoComplete, { props: { options, debounce: 0 } })
 
-        await wrapper.get('input').setValue('q')
-        vi.advanceTimersByTime(0)
-        await nextTick()
+            await wrapper.get('input').setValue('q')
+            vi.advanceTimersByTime(0)
+            await nextTick()
 
-        expect(wrapper.emitted('complete')?.[0]).toEqual(['q'])
+            expect(wrapper.emitted('complete')?.[0]).toEqual(['q'])
+        } finally {
+            vi.useRealTimers()
+        }
     })
 
     it('多选模式渲染已选标签并可逐个移除', async () => {
@@ -192,7 +214,7 @@ describe('CaomeiAutoComplete', () => {
         })
 
         await open(wrapper)
-        optionElements()[1].click()
+        optionElements(wrapper)[1].click()
         await flushPromises()
 
         expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['apple', 'banana']])
@@ -367,7 +389,9 @@ describe('CaomeiAutoComplete', () => {
 
         await open(wrapper)
 
-        const panel = document.querySelector('[role="listbox"]')
+        // 并发隔离：通过 trigger 的 aria-controls 关联定位面板
+        const controlsId = trigger.attributes('aria-controls')
+        const panel = controlsId ? document.getElementById(controlsId) : document.querySelector('[role="listbox"]')
         expect(panel?.id).toBeTruthy()
         expect(input.attributes('aria-controls')).toBe(panel?.id)
         expect(trigger.attributes('aria-controls')).toBe(panel?.id)
@@ -414,7 +438,7 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        expect(optionElements()).toHaveLength(0)
+        expect(optionElements(filtered)).toHaveLength(0)
 
         filtered.unmount()
 
@@ -428,7 +452,7 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        expect(optionElements()).toHaveLength(options.length)
+        expect(optionElements(unfiltered)).toHaveLength(options.length)
     })
 
     it('内建可访问名与空提示使用注入 locale 的文案', async () => {
@@ -450,8 +474,11 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        expect(document.querySelector('.caomei-auto-complete__empty')?.textContent?.trim()).toBe(
-            'No matching suggestions',
-        )
+        // 并发隔离：通过面板查找空提示
+        const trigger = wrapper.get('.caomei-auto-complete__trigger')
+        const controlsId = trigger.attributes('aria-controls')
+        const panel = controlsId ? document.getElementById(controlsId) : wrapper.find('[role="listbox"]').element
+        const emptyEl = panel?.querySelector('.caomei-auto-complete__empty')
+        expect(emptyEl?.textContent?.trim()).toBe('No matching suggestions')
     })
 })

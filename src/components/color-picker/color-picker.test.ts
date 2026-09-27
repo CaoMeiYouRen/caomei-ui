@@ -1,11 +1,12 @@
 import { DOMWrapper, mount, type VueWrapper } from '@vue/test-utils'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, nextTick } from 'vue'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiColorPicker } from './index'
 
 afterEach(() => {
+    vi.useRealTimers()
     document.body.innerHTML = ''
 })
 
@@ -38,8 +39,19 @@ async function openPanel(wrapper: VueWrapper) {
     await flush()
 }
 
-function panel() {
-    return document.body.querySelector('.caomei-color-picker__panel')
+function panel(wrapper: VueWrapper): Element | null {
+    // 并发隔离：基于 wrapper 查找面板，避免 document.body 全局查找命中其他测试的面板
+    const panelEl = wrapper.find('.caomei-color-picker__panel')
+    if (panelEl.exists()) {
+        return panelEl.element
+    }
+    // 回退：某些模式下面板渲染在 body，通过 trigger 的 aria-controls 关联定位
+    const triggerEl = trigger(wrapper)
+    const controlsId = triggerEl.attributes('aria-controls')
+    if (controlsId) {
+        return document.getElementById(controlsId)
+    }
+    return null
 }
 
 describe('CaomeiColorPicker', () => {
@@ -104,10 +116,10 @@ describe('CaomeiColorPicker', () => {
         await openPanel(wrapper)
 
         expect(trigger(wrapper).attributes('aria-expanded')).toBe('true')
-        expect(panel()).not.toBeNull()
-        expect(panel()?.querySelector('.caomei-color-picker__area')).not.toBeNull()
-        expect(panel()?.querySelector('.caomei-color-picker__hue')).not.toBeNull()
-        expect(panel()?.querySelector('.caomei-color-picker__input')).not.toBeNull()
+        expect(panel(wrapper)).not.toBeNull()
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__area')).not.toBeNull()
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__hue')).not.toBeNull()
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__input')).not.toBeNull()
     })
 
     it('showInput 为 false 时不渲染十六进制输入框', async () => {
@@ -115,14 +127,14 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        expect(panel()?.querySelector('.caomei-color-picker__input')).toBeNull()
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__input')).toBeNull()
     })
 
     it('十六进制输入框输入后按 format 抛出 update:modelValue', async () => {
         const wrapper = mountPicker({ modelValue: '#ff0000' })
 
         await openPanel(wrapper)
-        const input = new DOMWrapper(panel()?.querySelector('.caomei-color-picker__input') as Element)
+        const input = new DOMWrapper(panel(wrapper)?.querySelector('.caomei-color-picker__input') as Element)
         await input.setValue('#00ff00')
         await input.trigger('blur')
         await flush()
@@ -138,7 +150,7 @@ describe('CaomeiColorPicker', () => {
         const wrapper = mountPicker({ modelValue: '#ff0000', format, swatches: ['#00ff00'] })
 
         await openPanel(wrapper)
-        await new DOMWrapper(panel()?.querySelector('.caomei-color-picker__swatch') as Element).trigger('click')
+        await new DOMWrapper(panel(wrapper)?.querySelector('.caomei-color-picker__swatch') as Element).trigger('click')
         await flush()
 
         const emitted = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string
@@ -150,7 +162,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        expect(panel()?.querySelector('.caomei-color-picker__swatches')).toBeNull()
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__swatches')).toBeNull()
     })
 
     it('inline 模式直接渲染面板且不渲染触发按钮', () => {
@@ -190,10 +202,10 @@ describe('CaomeiColorPicker', () => {
         await openPanel(wrapper)
 
         const labels = await Promise.resolve({
-            area: panel()?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-label'),
-            hue: panel()?.querySelector('.caomei-color-picker__hue-thumb')?.getAttribute('aria-label'),
-            hex: panel()?.querySelector('.caomei-color-picker__input')?.getAttribute('aria-label'),
-            swatches: panel()?.querySelector('.caomei-color-picker__swatches')?.getAttribute('aria-label'),
+            area: panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-label'),
+            hue: panel(wrapper)?.querySelector('.caomei-color-picker__hue-thumb')?.getAttribute('aria-label'),
+            hex: panel(wrapper)?.querySelector('.caomei-color-picker__input')?.getAttribute('aria-label'),
+            swatches: panel(wrapper)?.querySelector('.caomei-color-picker__swatches')?.getAttribute('aria-label'),
         })
         expect(labels.area).toBe('饱和度与明度')
         expect(labels.hue).toBe('色相')
@@ -206,8 +218,8 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const hueThumb = panel()?.querySelector('.caomei-color-picker__hue-thumb')
-        const areaThumb = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        const hueThumb = panel(wrapper)?.querySelector('.caomei-color-picker__hue-thumb')
+        const areaThumb = panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')
         expect(hueThumb?.getAttribute('role')).toBe('slider')
         expect(areaThumb?.getAttribute('role')).toBe('slider')
         expect(hueThumb?.getAttribute('aria-label')).toBe('色相')
@@ -221,20 +233,20 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        expect(panel()?.querySelector('.caomei-color-picker__hue-thumb')?.getAttribute('aria-label')).toBe('Hue')
-        expect(panel()?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-label')).toBe('Saturation and brightness')
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__hue-thumb')?.getAttribute('aria-label')).toBe('Hue')
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-label')).toBe('Saturation and brightness')
     })
 
     it('十六进制输入非法值时失焦回退显示（不压制 Reka 内部编辑态）', async () => {
         const wrapper = mountPicker({ modelValue: '#ff0000' })
 
         await openPanel(wrapper)
-        const input = new DOMWrapper(panel()?.querySelector('.caomei-color-picker__input') as Element)
+        const input = new DOMWrapper(panel(wrapper)?.querySelector('.caomei-color-picker__input') as Element)
         await input.setValue('zzz')
         await input.trigger('blur')
         await flush()
 
-        const el = panel()?.querySelector('.caomei-color-picker__input') as HTMLInputElement
+        const el = panel(wrapper)?.querySelector('.caomei-color-picker__input') as HTMLInputElement
         expect(el.value).toBe('#ff0000')
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     })
@@ -244,7 +256,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const item = panel()?.querySelector('.caomei-color-picker__swatch')
+        const item = panel(wrapper)?.querySelector('.caomei-color-picker__swatch')
         expect(item?.getAttribute('aria-label')).toBe('#00ff00')
         expect(item?.getAttribute('aria-pressed')).toBe('true')
     })
@@ -259,7 +271,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const thumb = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        const thumb = panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')
         const valueText = thumb?.getAttribute('aria-valuetext') ?? ''
         expect(valueText).toContain('饱和度')
         expect(valueText).toContain('明度')
@@ -271,8 +283,8 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const items = () => Array.from(panel()?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
-        expect(panel()?.querySelector('.caomei-color-picker__swatches')?.getAttribute('role')).toBe('group')
+        const items = () => Array.from(panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__swatches')?.getAttribute('role')).toBe('group')
         expect(items()[0]?.tagName).toBe('BUTTON')
         expect(items()[0]?.getAttribute('aria-label')).toBe('#e63946')
         expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
@@ -286,7 +298,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const thumb = panel()?.querySelector('.caomei-color-picker__area-thumb') as HTMLElement
+        const thumb = panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb') as HTMLElement
         expect(Number(thumb.getAttribute('aria-valuenow'))).toBe(expected)
         expect(thumb.getAttribute('aria-valuetext')).toContain(`饱和度 ${expected}`)
         expect(thumb.style.left).toBe(`${expected}%`)
@@ -296,7 +308,7 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const inputEl = panel()?.querySelector('.caomei-color-picker__input') as HTMLInputElement
+        const inputEl = panel(wrapper)?.querySelector('.caomei-color-picker__input') as HTMLInputElement
         inputEl.focus()
         expect(document.activeElement).toBe(inputEl)
 
@@ -304,7 +316,7 @@ describe('CaomeiColorPicker', () => {
         inputEl.addEventListener('blur', () => {
             blurred = true
         })
-        panel()
+        panel(wrapper)
             ?.querySelector('.caomei-color-picker__area-bg')
             ?.dispatchEvent(new Event('pointerdown', { bubbles: true, cancelable: true }))
         await nextTick()
@@ -317,8 +329,8 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        expect(panel()?.querySelector('.caomei-color-picker__area-bg')?.getAttribute('aria-roledescription')).toBe('颜色选择区域')
-        expect(panel()?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-roledescription')).toBe('颜色滑块')
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__area-bg')?.getAttribute('aria-roledescription')).toBe('颜色选择区域')
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')?.getAttribute('aria-roledescription')).toBe('颜色滑块')
     })
 
     it('区域 valuenow 与 valuetext 同源（均由模型派生且为整数）', async () => {
@@ -327,14 +339,14 @@ describe('CaomeiColorPicker', () => {
 
         await openPanel(wrapper)
 
-        const thumb = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        const thumb = panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')
         expect(thumb?.getAttribute('aria-valuenow')).toBe('20')
         expect(thumb?.getAttribute('aria-valuetext')).toContain('饱和度 20')
 
         await wrapper.setProps({ modelValue: '#3b82f6' })
         await flush()
 
-        const after = panel()?.querySelector('.caomei-color-picker__area-thumb')
+        const after = panel(wrapper)?.querySelector('.caomei-color-picker__area-thumb')
         expect(after?.getAttribute('aria-valuenow')).toBe('76')
         expect(after?.getAttribute('aria-valuetext')).toContain('饱和度 76')
     })
@@ -343,7 +355,7 @@ describe('CaomeiColorPicker', () => {
         const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#e63946', '#22c55e'] })
 
         await openPanel(wrapper)
-        const items = () => Array.from(panel()?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
+        const items = () => Array.from(panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
 
         expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
         expect(items()[1]?.getAttribute('aria-pressed')).toBe('false')

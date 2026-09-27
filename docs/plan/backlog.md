@@ -64,17 +64,11 @@
 |------|------|--------|
 | AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
 | 对比度遗留项盘点 | **2026-09-26 复算后在册 5 项**（逐条复算值与消费点见[记录](../design/governance/2026-09-26-m2-style-token-consistency.md) §3）：① 亮色 soft 变体 primary 文本 4.37:1；② `neutral-solid` 强调描边暗色 2.54:1（toast 图标面已走继承、口径不一致另计）；③ `caomei` 预设 `danger` 作前景 3.76:1 / soft 底 3.23:1；④ `caomei` 预设 `primary-solid` 配 `on-solid` 4.17:1（**已裁定维持**，预设品牌色不变）；⑤ 站点侧 `text-muted` on `--vp-c-bg-soft` 4.48:1（库 token × 站点底，归因站点主题）。历史条目「`.caomei-calendar__weekday` 亮色 4.48:1」经复算**归因为站点侧口径**（库内 on `bg` 4.83:1 / on `bg-elevated` 4.52:1 均达标），不再单列。**按 D5① 不改色**，维持跟踪 | 中 |
-| 迁移口径一致性守卫 | 入口表 / 组件页节 ↔ §7 一致性机检。**已裁定纳入**（2026-09-25 用户裁定 D8）→ M4-3（Phase 14 质量与一致性收口） | 低 |
-| 内置文案台账机检对账 | `docs/components/locale.md`（中英）的「命名空间 → 文案键」索引表与 `src/locale/*` 实际键集合对账。**触发依据**：2026-09-23 M1-2 新增 `table.expandRowGroup` / `table.collapseRowGroup` 时该台账漏更新，`docs:check` 与 `check-locale-keys` 均不覆盖，Review Gate 判 blocker 后人工修复。**已裁定纳入**（2026-09-25 用户裁定 D8）→ M4-1（Phase 14 质量与一致性收口） | 低 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
-| 测试隔离与偶发失败 | Reka + happy-dom 并发时序问题；按「多次出现再处理」跟踪。**出现记录**：① 2026-09-23 全量 `pnpm test` 偶发 1 例（`src/components/color-picker/color-picker.test.ts` 的「区域 pointerdown 捕获阶段先让输入框失焦」断言 `blurred === true` 失败）；单文件重跑 32 passed、其后两次全量 1681 passed，判定为并发时序 flaky（非代码缺陷，当日无 `src/` 改动）。② 2026-09-23 M1-2 复审期间全量 `pnpm test` 首跑偶发 1 例（`src/components/auto-complete/auto-complete.test.ts` 的 select 断言），复跑两次均 1702 passed，同为并发时序 flaky。③ 2026-09-23 M2-1 期间全量 `pnpm test` 首跑偶发 1 例（1 failed / 1758 passed；**未捕获用例名**，其后连续 5 次全量均 1759 passed）。④ 2026-09-24 M3-2 发布后校验期间全量 `pnpm test` 首跑偶发 **2 例**（`auto-complete.test.ts` 的「内建可访问名与空提示使用注入 locale 的文案」与 `color-picker.test.ts` 的「十六进制输入框输入后按 format 抛出 update:modelValue」）；两文件隔离重跑 61 passed、`pnpm verify` 复跑 1793 passed，判定为并发时序 flaky（当日无 `src/` 改动）。**已裁定纳入**（2026-09-25 用户裁定 D7①）→ M3-1（Phase 14 质量与一致性收口；**定位根因并修**） | 中 |
-| Review Gate 证据留存 | 评审结论与截图归档到 `artifacts/review-gate/`。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M3-2（Phase 14 质量与一致性收口） | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
-| 组件总览页与侧栏的成员对账 | [文档与演示站 §11](../design/documentation-site.md) 要求「组件总览页（`/components/index.md`）的分组顺序与侧栏一致」，但中英总览页缺 `CheckboxGroup`（侧栏与 §11 登记表均已含；2026-09-22 侧栏不变式守卫发现）。候选：把总览页的分组与成员纳入该守卫的受检面。**已裁定纳入**（2026-09-25 用户裁定 D8）→ M4-2（Phase 14 质量与一致性收口；含中英总览页缺 `CheckboxGroup` 的存量修复） | 低 |
-| 触发器 `disabled` 透传与包装层归一化 | ① date-picker / color-picker 未向触发器透传 `disabled`（现由原生 `<button :disabled>` 兜住）；② 两个薄包装对 `disabled=false` 归一化不一致（popover `props.disabled \|\| undefined` vs dropdown 直传），未来 Reka 若区分 `false` / `undefined` 会单边漂移。候选：补透传 + 用例，并对齐归一化。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M2-3（Phase 14 质量与一致性收口） | 低 |
 | 直连 Reka 触发器的机检守卫 | 存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警；否则「单点生效」收益只能靠人工记忆维持（2026-09-21 触发器收敛后新增） | 低 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
@@ -91,8 +85,6 @@
 | 组件画廊浏览器回归断言 | M2-5 V 阶段产出的断言清单（12/12 stage 非空、11 个组件根类名存在、四档 `scrollWidth === clientWidth` 与列数 2/2/2/1、12×2 链接 200 且 locale 前缀正确、Dialog 初始 0 → 点击后 1 且 Portal 到 body、两页 console / pageerror 0）尚未沉淀为常驻用例；触发条件：需要画廊回归保护（与「视觉回归基线」同族，当前不做） | 低 |
 | 文档站示例的可访问名补强 | M2-5 V 阶段实测：`docs/examples/input/basic.vue`（中英）仅以 placeholder 提供可访问名，无 `label` / `aria-label`；属示例层问题（组件本身由使用方决定标签落点），非画廊引入 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 样式侧旧命名裸类守卫 | `findLegacyNaming` 只扫组件 `types.ts`，样式侧 `.caomei-*--small` / `--large` 回流无守卫（2026-09-21 实测 0 命中）；候选：把旧尺寸命名检测扩展到样式选择器。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M2-4（Phase 14 质量与一致性收口） | 低 |
-| check-design 声明解析健壮性 | `declarationsOf` 按 `;` 切分：值内含分号（如 `url(data:image/svg+xml;utf8,…)`）会造出伪造属性名（实测可复现误报，当前全库 0 暴露）；另属性名大小写未归一（`color` / `Color` 漏判）、CSS 嵌套内部不展开（既有解析面限制）。候选：只把匹配属性名形态的片段计为声明 + 非自定义属性名 `toLowerCase()` 比较。**已裁定纳入**（2026-09-25 用户裁定 D1）→ M2-4（Phase 14 质量与一致性收口） | 低 |
 | 选择器 / 表格迁移陷阱文档补强 | momei 迁移反馈 2026-09-25 §1.1 / §2.2 / §2.3 | 三处未文档化的迁移陷阱：① `Select` 的 `class` / `$attrs` 落触发器，宽度类写在组件上静默无效；② `DataTable` 列 `headerClass` / `bodyClass` 的单元格由组件内部渲染，下游 scoped 样式静默不生效（须改用 `bodyStyle` / `headerStyle` 或全局类）；③ `showClear` 的 `hasValue` 口径不给「语义空值」留口。补 `primevue-migration.md` 陷阱表与相关组件页。评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) | 低 |
 
 ### 1.7 服务层候选（composables）

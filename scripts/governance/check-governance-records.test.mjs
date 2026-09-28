@@ -10,6 +10,7 @@ import {
     collectMarkdownFiles,
     collectPlanningPointerIssues,
     collectRecordFiles,
+    collectTrailingIdentifiers,
     resolveLinkTarget,
     resolveTargetRoot,
     runGovernanceRecordsCheck,
@@ -214,6 +215,60 @@ describe('collectPlanningPointerIssues', () => {
             'docs/design/governance/r.md': '登记为 [Phase 10](../../plan/todo.md "标题")。\n',
         })
         expect(collectPlanningPointerIssues(root)).toHaveLength(1)
+    })
+})
+
+describe('链接闭合符后紧邻编号（机检盲区扩展）', () => {
+    const PLAN_FILES = {
+        'docs/plan/todo.md': '# 待办事项\n\n## 当前阶段\n\n### Phase 16：进行中\n',
+        'docs/plan/todo-archive.md': '# 待办归档\n\n## Phase 12：发布就绪\n',
+    }
+
+    it('collectTrailingIdentifiers 只取同一行紧邻标识并允许分隔符', () => {
+        expect(collectTrailingIdentifiers('x) Phase 12', 2)).toEqual(['Phase 12'])
+        expect(collectTrailingIdentifiers('x)）:：,，Phase 11 ｜ y', 2)).toEqual(['Phase 11'])
+        expect(collectTrailingIdentifiers('x) M6-8。', 2)).toEqual(['M6-8'])
+    })
+
+    it('表格单元格与加粗的紧邻形态也提取', () => {
+        expect(collectTrailingIdentifiers('x) | Phase 12 |', 2)).toEqual(['Phase 12'])
+        expect(collectTrailingIdentifiers('x) **Phase 12**', 2)).toEqual(['Phase 12'])
+    })
+
+    it('散文（非紧邻）与下一行不提取', () => {
+        expect(collectTrailingIdentifiers('x) 见 Phase 12 段', 2)).toEqual([])
+        expect(collectTrailingIdentifiers('x)\nPhase 12', 2)).toEqual([])
+    })
+
+    it('载体名链接 + 闭合符后紧邻编号：目标已无该编号时判失效', () => {
+        const root = createFixture({
+            '.github/keep': '',
+            ...PLAN_FILES,
+            'docs/design/governance/r.md': '关联：[待办事项](../../plan/todo.md) Phase 12 ｜ 其它\n',
+        })
+        const issues = collectPlanningPointerIssues(root)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].message).toContain('Phase 12')
+    })
+
+    it('改指归档后零问题（紧邻形态）', () => {
+        const root = createFixture({
+            '.github/keep': '',
+            ...PLAN_FILES,
+            'docs/design/governance/r.md': '关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ 其它\n',
+        })
+        expect(collectPlanningPointerIssues(root)).toEqual([])
+    })
+
+    it('链接文字与紧邻标识同时命中时一并核验', () => {
+        const root = createFixture({
+            '.github/keep': '',
+            ...PLAN_FILES,
+            'docs/design/governance/r.md': '见 [Phase 12](../../plan/todo-archive.md) M6-8 段。\n',
+        })
+        const issues = collectPlanningPointerIssues(root)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].message).toContain('M6-8')
     })
 })
 

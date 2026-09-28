@@ -2,7 +2,7 @@
 
 - 类型：阶段内原子条目交付记录（含真实浏览器触发结构等价证据）
 - 触发：Phase 12 M3-4（Backlog 候选「触发器 `unstyled` 遗留收敛」）
-- 关联：[待办事项](../../plan/todo.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [Popover 触发器](../../components/popover.md) ｜ [DropdownMenu 触发器](../../components/dropdown-menu.md) ｜ [开发规范 §7](../../standards/development.md)
+- 关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [Popover 触发器](../../components/popover.md) ｜ [DropdownMenu 触发器](../../components/dropdown-menu.md) ｜ [开发规范 §7](../../standards/development.md)
 
 ## 1. 结论
 

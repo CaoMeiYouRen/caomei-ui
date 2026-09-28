@@ -2,7 +2,7 @@
 
 - 类型：阶段内原子条目交付记录（例外清单机检化与门禁接线）
 - 触发：Phase 12 M4-2（在 [M4-1 清单](./2026-09-22-m4-1-a11y-baseline-inventory.md) 建立之后把清单变成约束）
-- 关联：[待办事项](../../plan/todo.md) Phase 12 ｜ [M4-1 记录](./2026-09-22-m4-1-a11y-baseline-inventory.md) ｜ [测试规范 §1 / §5 / §6](../../standards/testing.md)
+- 关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ [M4-1 记录](./2026-09-22-m4-1-a11y-baseline-inventory.md) ｜ [测试规范 §1 / §5 / §6](../../standards/testing.md)
 
 ## 1. 结论
 

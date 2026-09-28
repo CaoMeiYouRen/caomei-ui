@@ -7,12 +7,13 @@
  * 1. **治理记录索引完整性**：`docs/design/governance/index.md` 与同目录记录文件集合**双向对账**——
  *    每个记录文件必须被索引引用（missing-from-index），索引里的每条记录链接必须命中真实文件
  *    （dangling-index-entry）。索引此前靠人工维护，漏登记不会报错；本守卫把它变为可判定门禁。
- * 2. **历史规划指针失效**：指向 `docs/plan/` 载体的 Markdown 链接，若**链接文字**含规划标识
- *    （阶段编号 / 条目编号），该标识必须在目标文件内出现；阶段归档后被清空的段落
+ * 2. **历史规划指针失效**：指向 `docs/plan/` 载体的 Markdown 链接，若**链接文字**或**闭合符后紧邻处**
+ *    含规划标识（阶段编号 / 条目编号），该标识必须在目标文件内出现；阶段归档后被清空的段落
  *    （标识已迁往 `todo-archive.md`）会被判为失效指针（stale-planning-pointer）。
  *
  * 有意边界：
- * - 只审**链接文字**中的标识，不审链接周围的散文（散文里的历史叙述是快照，允许保留）；
+ * - 「闭合符后紧邻处」只取**同一行**且 `)` 与标识之间仅允许分隔符（空白 / 括号 / 常见标点）；
+ *   链接之后的散文叙述仍是快照，不纳入；
  * - 标识在目标文件里以任何语境出现即视为有效（同一编号在不同阶段的复用不另判）；
  * - 治理记录目录为**平铺**结构，索引里的嵌套路径不计为记录条目；
  * - 链接目标允许带 title（`(path "标题")`），标题不参与解析。
@@ -66,6 +67,26 @@ export const MD_LINK_RE = /\[([^\]]*)\]\(([^)]+)\)/g
  * 与 check-planning-numbers 的形态矩阵同族，但只用于**链接文字**匹配，故不做代码词法切分。
  */
 export const PLANNING_ID_RE = /Phase\s+\d+|(?<![A-Za-z0-9])[A-Z]{1,3}\d{1,3}(?:-\d{1,3})?(?![A-Za-z0-9])/g
+
+/** 链接闭合符与「紧邻标识」之间允许的分隔符（空白 / 括号 / 常见标点 / 表格与强调标记）。 */
+const TRAILING_SEPARATOR_RE = /^[\s)）】:：,，。、·|*_—-]*/
+
+/** 紧邻标识的匹配（行首即标识，后随非字母数字）。 */
+const TRAILING_ID_RE = /^(?:Phase\s+\d+|[A-Z]{1,3}\d{1,3}(?:-\d{1,3})?)(?![A-Za-z0-9])/
+
+/**
+ * 提取链接闭合符后**紧邻**的规划标识（同一行，仅允许分隔符相隔）。
+ *
+ * @param {string} content 文件全文
+ * @param {number} linkEndOffset 链接匹配结束（`)` 之后）的偏移
+ * @returns {string[]} 紧邻标识（至多一个）
+ */
+export function collectTrailingIdentifiers(content, linkEndOffset) {
+    const sameLine = content.slice(linkEndOffset).split(/\r?\n/, 1)[0]
+    const stripped = sameLine.replace(TRAILING_SEPARATOR_RE, '')
+    const match = stripped.match(TRAILING_ID_RE)
+    return match ? [match[0]] : []
+}
 
 /**
  * 收集仓库内 Markdown 文件。
@@ -226,7 +247,12 @@ export function collectPlanningPointerIssues(root = projectRoot, files = collect
             if (!target || !target.startsWith(PLAN_DIR_PREFIX)) {
                 continue
             }
-            const identifiers = [...new Set(text.match(PLANNING_ID_RE) ?? [])]
+            const identifiers = [
+                ...new Set([
+                    ...(text.match(PLANNING_ID_RE) ?? []),
+                    ...collectTrailingIdentifiers(content, (match.index ?? 0) + match[0].length),
+                ]),
+            ]
             if (identifiers.length === 0) {
                 continue
             }

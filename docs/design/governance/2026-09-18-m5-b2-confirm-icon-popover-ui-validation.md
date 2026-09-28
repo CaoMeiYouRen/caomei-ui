@@ -1,6 +1,6 @@
 # M5 批次 B2「ConfirmDialog 图标 + Popover 声明式锚点」浏览器验证记录
 
-**批次**：M5-3（ConfirmDialog `icon`）+ M5-4（Popover 命令式改声明式迁移写法、`CaomeiPopoverTrigger` `unstyled`）——[待办事项](../../plan/todo.md) M5 批次 B2。
+**批次**：M5-3（ConfirmDialog `icon`）+ M5-4（Popover 命令式改声明式迁移写法、`CaomeiPopoverTrigger` `unstyled`）——[待办事项归档](../../plan/todo-archive.md) M5 批次 B2。
 **结论：通过** —— 文档站（当前源码，Vite dev）在 light / dark 两主题下实测三个演示，图标类名 / 装饰语义 / 计算样式 / 几何全部符合预期，console error / pageerror **0**；标题与描述间距与改造前**逐值一致**（`12px`，无未登记视觉副作用）。
 
 ## 1. 环境与取证方式

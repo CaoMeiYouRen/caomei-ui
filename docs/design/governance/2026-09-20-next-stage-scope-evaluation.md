@@ -170,7 +170,7 @@
 | 3.3 DropdownMenu `model` 扩展 | `model` 支持 `items` 嵌套子菜单与逐条目 `class`（momei 实测 2 处 / 1 处） | 模型契约扩展已获授权（2026-09-20 用户原话「M3 按现有情况直接做」） |
 | 3.4 分组按钮可访问语义 | ButtonGroup / SplitButton 根补 `role="group"` 与可选分组名 | 无 |
 
-> 验证口径：涉及视觉 / 交互的条目走 `@ui-validator` 真实浏览器验证；新增 props 走受控枚举（[开发规范](../../standards/development.md)）；能力面与 [设计规范 §7](../design-spec.md) 登记一致、组件页中英同步。**各条目的最小验收标准见 [待办事项](../../plan/todo.md) Phase 11 的 M3 表**（本节不重复）。
+> 验证口径：涉及视觉 / 交互的条目走 `@ui-validator` 真实浏览器验证；新增 props 走受控枚举（[开发规范](../../standards/development.md)）；能力面与 [设计规范 §7](../design-spec.md) 登记一致、组件页中英同步。**各条目的最小验收标准见 [待办事项归档](../../plan/todo-archive.md) Phase 11 的 M3 表**（本节不重复）。
 
 ### M4 质量门与文档守卫（低成本精选）
 

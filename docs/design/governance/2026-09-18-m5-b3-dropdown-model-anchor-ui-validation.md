@@ -1,6 +1,6 @@
 # M5 批次 B3「DropdownMenu 项模型 + 声明式锚点」浏览器验证记录
 
-**批次**：M5-5（DropdownMenu `model` 数据驱动项模型）+ M5-6（`:popup` + `toggle(event)` 收敛为声明式锚点）——[待办事项](../../plan/todo.md) M5 批次 B3。
+**批次**：M5-5（DropdownMenu `model` 数据驱动项模型）+ M5-6（`:popup` + `toggle(event)` 收敛为声明式锚点）——[待办事项归档](../../plan/todo-archive.md) M5 批次 B3。
 **结论：通过** —— 文档站（Vite dev，当前源码）在 light / dark 两主题下实测「数据驱动项模型」演示：项模型渲染、`command` 触发与关闭语义、面板经 Portal 弹出、锚点几何（面板紧贴触发器下方 `sideOffset`、左对齐、落在视口内）与 `unstyled` 外观豁免全部符合预期，console error / pageerror **0**。M5-6 原判据中的「`:popup` 生效有单测」经用户裁定（2026-09-18，采纳候选 A）收敛为「Portal 挂载于 `body` + `data-side`」单测与本节 §3 的锚点几何实测，两项均已交付，见 §4。
 
 ## 1. 环境与取证方式

@@ -2,7 +2,7 @@
 
 - 类型：阶段内原子条目交付记录（含装置复算与等价证据）
 - 触发：Phase 12 M3-5（**自 M3-2 拆出**：按 [规划规范 §5](../../standards/planning.md) 的任务粒度阈值，守卫与取证装置合计超阈值）
-- 关联：[待办事项](../../plan/todo.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [测试规范 §2.1 / §4 / §6](../../standards/testing.md) ｜ [尺寸档位归一化记录](./2026-09-21-m3-1-size-tier-normalization.md) §5 ｜ [触发器收敛记录](./2026-09-21-m3-4-trigger-unstyled-convergence.md) §5
+- 关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [测试规范 §2.1 / §4 / §6](../../standards/testing.md) ｜ [尺寸档位归一化记录](./2026-09-21-m3-1-size-tier-normalization.md) §5 ｜ [触发器收敛记录](./2026-09-21-m3-4-trigger-unstyled-convergence.md) §5
 
 ## 1. 结论
 

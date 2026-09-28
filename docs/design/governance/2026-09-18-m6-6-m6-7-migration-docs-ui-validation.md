@@ -1,6 +1,6 @@
 # M6-6 / M6-7「迁移文档体系」浏览器验证记录
 
-**批次**：M6-6（组件页「从 PrimeVue 迁移」节后置与文档约定）+ M6-7（中英《从 PrimeVue 迁移》专题页）——[待办事项](../../plan/todo.md) M6。
+**批次**：M6-6（组件页「从 PrimeVue 迁移」节后置与文档约定）+ M6-7（中英《从 PrimeVue 迁移》专题页）——[待办事项归档](../../plan/todo-archive.md) M6。
 **结论：通过** —— V 脚本 **75 / 75** 项核对通过、失败 0、console error / pageerror / HTTP ≥ 400 均为 0；观察项 2（en-US 文档页 @768 的既有横向溢出，与本批无关）。原始 JSON 落 `test-results/m6-migration-docs/result.json`（gitignored，供复现）。
 
 ## 1. 环境与取证方式

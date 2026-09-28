@@ -1,6 +1,6 @@
 # M5 批次 B5（M5-9）「ProgressSpinner `strokeWidth`」浏览器验证记录
 
-**批次**：M5-9（将既有 CSS 变量钩子提升为 `strokeWidth` prop）——[待办事项](../../plan/todo.md) M5 批次 B5（本批仅交付 M5-9）。
+**批次**：M5-9（将既有 CSS 变量钩子提升为 `strokeWidth` prop）——[待办事项归档](../../plan/todo-archive.md) M5 批次 B5（本批仅交付 M5-9）。
 **结论：通过** —— 文档站（Vite dev，当前源码）实测「prop → 计算描边宽度」全链路成立：不传时按 `size` 档位回退（`sm` / `md` 2px、`lg` 3px），传入数字 / 纯数字字符串 / CSS 长度均生效并**覆盖档位默认**（内联变量优先于 `:where()` 档位声明），圆环在全部用例中保持 `border-style: solid`（未被 invalid at computed-value time 丢弃），暗色一致，console error / pageerror **0**。
 
 ## 1. 环境与取证方式

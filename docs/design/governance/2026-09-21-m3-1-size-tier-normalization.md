@@ -2,7 +2,7 @@
 
 - 类型：阶段内原子条目交付记录（含真实浏览器等价证据）
 - 触发：Phase 12 M3-1（28 条非 `:where()` 尺寸档位块归一化）
-- 关联：[待办事项](../../plan/todo.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [M2-2 / M2-3 样式治理落地](./2026-09-20-m2-2-m2-3-style-governance-landing.md) ｜ [开发规范 §7](../../standards/development.md)
+- 关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ [下一阶段范围评估](./2026-09-21-next-stage-scope-evaluation.md) §9 ｜ [M2-2 / M2-3 样式治理落地](./2026-09-20-m2-2-m2-3-style-governance-landing.md) ｜ [开发规范 §7](../../standards/development.md)
 
 ## 1. 结论
 

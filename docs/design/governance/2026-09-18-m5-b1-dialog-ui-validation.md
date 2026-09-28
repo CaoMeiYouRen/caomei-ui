@@ -1,6 +1,6 @@
 # M5 批次 B1「Dialog 头部契约与断点宽度」浏览器验证记录
 
-**批次**：M5-1（`showHeader` / `title` 可选化 / `@hide`）+ M5-2（`breakpoints`）——[待办事项](../../plan/todo.md) M5 批次 B1。
+**批次**：M5-1（`showHeader` / `title` 可选化 / `@hide`）+ M5-2（`breakpoints`）——[待办事项归档](../../plan/todo-archive.md) M5 批次 B1。
 **结论：通过** —— 常驻 E2E **54 / 54** 通过（含本批新增 6 项，三档视口各 2 项），一次性实测核对 **45 / 45**，另断言 4 基线 **54 项逐字段零差异**；console error / pageerror / 崩溃 0，页面与用例容器无横向溢出。改动前基线与关键实测值见 [M5 B1 Dialog 基线](./2026-09-18-m5-b1-dialog-baseline.md)。
 
 ## 1. 环境与取证方式

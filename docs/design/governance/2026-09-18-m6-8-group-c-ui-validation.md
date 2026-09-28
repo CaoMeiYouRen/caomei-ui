@@ -1,6 +1,6 @@
 # M6-8 第四批「选择器」迁移节浏览器验证记录
 
-**批次**：M6-8 第四批（最后一批）——「选择器」组 8 个组件页（AutoComplete / Calendar / ColorPicker / DatePicker / MultiSelect / Select / SelectButton / ToggleButton）补齐中英「从 PrimeVue 迁移」节；同批为 AutoComplete 新增[设计规范 §7](../design-spec.md) 映射条目。依据见[待办事项](../../plan/todo.md) M6-8。
+**批次**：M6-8 第四批（最后一批）——「选择器」组 8 个组件页（AutoComplete / Calendar / ColorPicker / DatePicker / MultiSelect / Select / SelectButton / ToggleButton）补齐中英「从 PrimeVue 迁移」节；同批为 AutoComplete 新增[设计规范 §7](../design-spec.md) 映射条目。依据见[待办事项归档](../../plan/todo-archive.md) M6-8。
 **结论：通过** —— V 脚本 **953 / 953** 项核对通过、失败 0、console error / pageerror / HTTP ≥ 400 均为 0；观察项 40（en-US 文档页 @768 的既有横向溢出，与 [M6-6 / M6-7 记录](./2026-09-18-m6-6-m6-7-migration-docs-ui-validation.md) 同源）。原始 JSON 落 `test-results/m6-migration-docs/result.json`（gitignored）。
 
 ## 1. 环境与取证方式

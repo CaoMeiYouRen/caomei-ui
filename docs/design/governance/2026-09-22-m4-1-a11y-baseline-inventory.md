@@ -2,7 +2,7 @@
 
 - 类型：阶段内原子条目交付记录（含组件级 a11y 清单与逐条判定依据）
 - 触发：Phase 12 M4-1（引入 axe-core 做可访问性断言，先建立并登记既有例外清单）
-- 关联：[待办事项](../../plan/todo.md) Phase 12 ｜ [测试规范 §1](../../standards/testing.md) ｜ [Backlog §1.6](../../plan/backlog.md) ｜ [标签优先级统一（真实浏览器可访问名）](./2026-09-17-label-priority-unification-ui-validation.md)
+- 关联：[待办事项归档](../../plan/todo-archive.md) Phase 12 ｜ [测试规范 §1](../../standards/testing.md) ｜ [Backlog §1.6](../../plan/backlog.md) ｜ [标签优先级统一（真实浏览器可访问名）](./2026-09-17-label-priority-unification-ui-validation.md)
 
 ## 1. 结论
 

@@ -209,7 +209,7 @@ function onOpenChange(id: string, open: boolean): void {
     box-sizing: border-box;
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
-    border-left: 3px solid var(--caomei-toast-accent, var(--caomei-color-neutral-solid));
+    border-left: 3px solid var(--caomei-toast-accent, var(--caomei-color-text-muted));
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);

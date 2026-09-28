@@ -22,6 +22,7 @@
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
 | Select 字段层 class 透传（`fieldClass`） | momei 迁移反馈 2026-09-25 §1.1 | **条件候选**：`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层，组件上写宽度类静默无效。先补文档；出现文档无法覆盖的真实用例再评估 `fieldClass` | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
+| Button `iconOnly` 示例形态与默认插槽语义 | 2026-09-29 缺陷复核 | **缺陷 + 待决策**：`docs/examples/button/icon-only.vue` 的 22 个按钮把图标放在**默认插槽**，而 `iconOnly` 按既有契约（单测「`iconOnly` 时不渲染默认插槽内容」锁定）不渲染默认插槽、图标只走 `#icon` → 文档站「纯图标按钮」节渲染空白方块。**待调研后二选一**：对比 PrimeVue 等组件库的纯图标用法（`icon` prop / `#icon` 插槽 / 默认插槽取图标）的优劣，再在「改示例」与「放宽组件语义」间决策；放宽语义需同批改单测、`types.ts` JSDoc 与中英组件页。**2026-09-29 仅登记，不修**（当轮授权范围为选择器拼写修复） | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -56,7 +57,9 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 对比度遗留项盘点（维持项 + 新增候选） | **维持（用户 2026-09-28 裁定 D2「预设品牌色不变」）**：`caomei` 预设 `danger` `#ef4444` 作前景（纯白底 3.76:1 / soft 现值 **3.39:1**，改前 12% 底为 3.23:1）与预设 `primary-solid` `#e63946` 4.17:1。**新增候选（2026-09-28 M2-1 复算发现，待裁定）**：默认预设 soft 变体 `danger` 4.28:1 / `neutral` 4.39:1（8% 底）与 `caomei` / `momei` 预设 primary soft 3.73:1 / 4.32:1 仍 < 4.5:1。复算口径与逐条裁定见 [M2 对比度与配色口径收口记录](../design/governance/2026-09-28-m2-contrast-and-pairing.md) | 低 |
-| 计算样式采样面扩展（toast / switch 回退色） | 2026-09-28 M2 发现：`capture:styles`（239 项）不含 toast / switch，二者回退色变化（toast 中性描边 / 图标、switch 滑块 `primary-foreground`）无计算样式回归保护，仅由 token 级复算承载。候选：把两组件纳入采样 fixture | 低 |
+| 计算样式采样面扩展（toast / switch 回退色） | 2026-09-28 M2 发现：`capture:styles`（245 项）不含 toast / switch，二者回退色变化（toast 中性描边 / 图标、switch 滑块 `primary-foreground`）无计算样式回归保护，仅由 token 级复算承载。候选：把两组件纳入采样 fixture | 低 |
+| `caumei` 类名前缀拼写的机检守卫 | 2026-09-29 复核发现：样式选择器的类名前缀拼写错误（`caumei-*`）会让规则**永不命中**，而现有守卫（`check-design` 的形态规则、`check-planning-numbers`、`guard-ref-attrs`）**均不校验前缀拼写**——同一根因在 `v0.3.0..b1da270` 窗口内产生 4 处缺陷（`button.vue` 2 处 + `select.vue` 2 处），其中 2 处有真实可观察影响。候选：扫描 `src/**/*.{vue,css}` 选择器中的类名令牌，对 `ca` 开头者要求命中 `caomei-` 前缀；或反向校验「选择器中的 `caomei-*` 类名必须在组件模板 / 全局样式中出现过」。**须先论证误报边界**（scoped `:deep()` 穿透、第三方类名、动态类名拼接） | 中 |
+| 文档内取证命令的 revision 钉定守卫 | 2026-09-29 复审第 2 轮发现：治理记录里带 revision 维度的 `git log` / `git show` / `git diff` 命令缺显式 ref（隐式 `HEAD`）时，提交落地后结论不可复算——同一批次连续两轮命中（记录 §5 计数命令、§1 引入窗口取证命令）。候选：新增守卫扫描 `docs/**/*.md` 中的 `git (log|diff|show|grep)` 命令，要求带显式 revision 且禁 `HEAD`；须补负向对照测试并论证围栏 / 行内代码中的示例命令是否同受检 | 中 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |

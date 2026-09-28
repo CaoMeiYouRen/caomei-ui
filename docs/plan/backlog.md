@@ -16,14 +16,10 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| toast 强调色回退口径不一致 | 2026-09-26 M2-1 清单 §2.3 发现：`border-left` 强调描边用 `var(--caomei-toast-accent, var(--caomei-color-neutral-solid))` 有回退，而图标色 `color: var(--caomei-toast-accent)` 无回退（tone 未命中时继承正文色）；补回退会改变渲染色值（D5 禁改面）。**触发条件**：对比度 / 一致性裁定允许调整 neutral 强调面时一并处理 | 低 |
-| switch 滑块前景配对 | 2026-09-26 M2-1 清单 §2.2 发现 + 2026-09-28 M7-1 判定表 | **条件候选**：开启态滑块取 `--caomei-color-bg`，族内契约应为 `--caomei-color-primary-foreground`（自适应 `primary` 底 10 个消费点中唯一偏离）。库内 6 个主题快照中 5 个两值相同、momei 预设暗色分离但 7.87:1 / 8.19:1 均达标，**当前无缺口**。**触发条件（三要件同时成立）**：下游实际渲染 `CaomeiSwitch` + 两值实质分离 + `contrast(bg, primary) < 3:1`。下游取证（2026-09-28 只读）：dependfix 有渲染（`alerts-table.vue:292`）但无 token 覆盖；momei 桥接使两值在 6/8 预设组合分离、极浅自定义主色（`#ffe411`）命中判据式（1.28:1）但 0 处 `CaomeiSwitch`。判定与复算见[M7-1 判定表](../design/governance/2026-09-28-m7-1-switch-thumb-foreground-judgment.md) | 低 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
-| DataTable 分页对齐 token | momei 迁移反馈 2026-09-25 §1.4 | `.caomei-data-table__pagination` 硬编码 `justify-content: flex-end`（PrimeVue 默认居中），无 token 钩子，下游只能选择器级覆盖。候选：`--caomei-data-table-pagination-justify` | 低 |
-| Avatar `xl` 尺寸档位 | momei 迁移反馈 2026-09-25 §2.1 | 现仅 `sm` / `md` / `lg`；更大档位可用 `--caomei-avatar-size` 覆盖（组件页已给映射表，差异已登记为有意）。候选：补 `xl`，或维持「覆盖 token」口径 | 低 |
 | Select 字段层 class 透传（`fieldClass`） | momei 迁移反馈 2026-09-25 §1.1 | **条件候选**：`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层，组件上写宽度类静默无效。先补文档；出现文档无法覆盖的真实用例再评估 `fieldClass` | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 
@@ -59,7 +55,6 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| AI 资产指针（`AGENTS.md`） | §11「相关文档」缺长期任务台账指针；受保护文件，须用户指示 | 低 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
@@ -70,18 +65,16 @@
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
 | 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 实测：文档站窄档收敛规则只能靠人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
-| 文档站示例引用存在性守卫 | 文档站 md 的 `<demo vue="...">` 若引用不存在的示例文件，只能穿透到 `docs:build` 的 Rollup `?raw` 解析阶段才报错（2026-09-28：Select `#value` 英文镜像缺失，同批中文示例亦缺 `<script setup>` 绑定）。现有 `docs:check:i18n-parity` 只对账 md 页面、`check-showcase-registry` 只覆盖登记项，均不覆盖 `docs/**/examples/**` 资产。候选：新增「md 内示例引用文件存在性」检查 | 低 |
-| 治理记录规划指针的机检盲区扩展 | 归档回扫三段式的「人工面」形态——「链接文字为载体名（如 `待办事项`）+ 闭合符后紧邻编号」不在 `check-governance-records` 覆盖内（该守卫只对链接文字跑编号正则）：Phase 14 归档声明「人工面 0 处」而实为 2 处、Phase 15 归档同形态 2 处。候选：把守卫扩到该形态，或增设「归档块三段式自洽检查」（三段式口径见 [规划规范 §7](../standards/planning.md)） | 低 |
 | README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
 | 常驻 E2E 规格 follow-up | 滚动容器、键盘聚焦等 | 低 |
+| 全量首跑 flaky（`generate-changelog` git fixture） | 2026-09-28 归档批次实测：`scripts/release/generate-changelog.test.mjs > readPackageField`（git fixture 子进程）在 88 文件并行负载下 5s 超时；隔离重跑 816ms 通过、二次全量 1837 例全通过，与当批 docs-only 改动无因果。**条件候选**：按「多次出现再处理」跟踪——再次出现（任意环境 / 任意批次）时定位根因并修 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | 组件画廊浏览器回归断言 | M2-5 V 阶段产出的断言清单（12/12 stage 非空、11 个组件根类名存在、四档 `scrollWidth === clientWidth` 与列数 2/2/2/1、12×2 链接 200 且 locale 前缀正确、Dialog 初始 0 → 点击后 1 且 Portal 到 body、两页 console / pageerror 0）尚未沉淀为常驻用例；触发条件：需要画廊回归保护（与「视觉回归基线」同族，当前不做） | 低 |
-| 文档站示例的可访问名补强 | M2-5 V 阶段实测：`docs/examples/input/basic.vue`（中英）仅以 placeholder 提供可访问名，无 `label` / `aria-label`；属示例层问题（组件本身由使用方决定标签落点），非画廊引入 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 
 ### 1.7 服务层候选（composables）

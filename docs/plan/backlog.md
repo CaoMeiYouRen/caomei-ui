@@ -71,6 +71,7 @@
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
 | 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 实测：文档站窄档收敛规则只能靠人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
 | 文档站示例引用存在性守卫 | 文档站 md 的 `<demo vue="...">` 若引用不存在的示例文件，只能穿透到 `docs:build` 的 Rollup `?raw` 解析阶段才报错（2026-09-28：Select `#value` 英文镜像缺失，同批中文示例亦缺 `<script setup>` 绑定）。现有 `docs:check:i18n-parity` 只对账 md 页面、`check-showcase-registry` 只覆盖登记项，均不覆盖 `docs/**/examples/**` 资产。候选：新增「md 内示例引用文件存在性」检查 | 低 |
+| 治理记录规划指针的机检盲区扩展 | 归档回扫三段式的「人工面」形态——「链接文字为载体名（如 `待办事项`）+ 闭合符后紧邻编号」不在 `check-governance-records` 覆盖内（该守卫只对链接文字跑编号正则）：Phase 14 归档声明「人工面 0 处」而实为 2 处、Phase 15 归档同形态 2 处。候选：把守卫扩到该形态，或增设「归档块三段式自洽检查」（三段式口径见 [规划规范 §7](../standards/planning.md)） | 低 |
 | README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |

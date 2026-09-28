@@ -474,3 +474,57 @@
 - **回扫口径（三段式）**：① **机检面 0 处**——`pnpm check:governance-records` exit 0（本阶段记录无「链接文字含阶段 / 条目编号 → `docs/plan/todo.md`」的失效指针）。② **人工面 0 处**——无「载体名 + 条目编号」形态指针。③ **未处理面**——Phase 13 / Phase 12 历史记录同类指针沿用既有边界，本批不回改。
 - **归档批次审计**：经 `@code-reviewer` Review Gate 审计（本批次）。
 - **遗留与后续候选**：dependfix `apps/platform` 迁移实施（B0~B4）与 momei 侧迁移由对应仓库执行、本仓等待反馈；Phase 8 未启动（等待下游完成接入）；对比度遗留项与实底前景 token 配对复核（已登记 [Backlog §1.1/§1.6](./backlog.md)）；文档站多版本托管；a11y 同类悬空引用后续处置（已登记 [Backlog §1.6](./backlog.md)）；Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突（上游有意模式，维持现状）；测试并发时序 flaky（出现记录 ④，已根治）；switch 滑块前景配对 / toast 强调色回退口径待裁定（已登记 [Backlog §1.1](./backlog.md)）；其余候选见 [Backlog](./backlog.md).
+
+---
+
+## Phase 15：治理收口深化 + 组件能力补齐 + 下游迁移护航文档
+
+- 时间：2026-09-27 用户授权启动 ~ 2026-09-28 完成并归档（5 条主线 / 8 条原子条目全部交付）
+- 授权与范围（用户决策 2026-09-27，评估记录 D1~D7）：取向为**「治理收口深化 + 组件能力补齐 + 下游迁移护航文档」**（Phase 8 维持未启动）；同步执行长期任务待执行批次「字段 shell 样式层共享」（D1：语义 token 契约按既定）；M2-2 CI 守卫取**阻断模式**并进入 `verify` 常驻链（D2）；Button 取**显式 `iconOnly` prop**（D3）；Select `#value` 插槽取**最小作用域** `{ option, label, selected }`（D4）；M5 对比度**仅记录不改色**（D5，延续 Phase 14 D5①）；M6 陷阱表**单一源头** + 组件页 `see` 引用（D6）；**不发布新版本**（D7，延续 Phase 14 D10）。范围依据见[下一阶段范围评估](../design/governance/2026-09-27-next-stage-scope-evaluation.md) §3 / §5。
+- 非目标：新组件开发；启动 Phase 8；破坏性 API 变更；发布新版本；做 dependfix / momei 侧迁移实施（他仓执行）。
+
+### M1 字段 shell 样式层共享（1 条）
+
+- **M1-1**：抽离 `src/styles/field-shell.css`（`--caomei-field-*` 语义 token + `.caomei-field` 基类，覆盖边框 / 圆角 / 背景 / 色值 / 聚焦 / 非法 / 禁用 / 只读 / 尺寸档位），Input / Textarea / InputNumber / Select 4 个字段组件迁移至共享 shell、删约 190 行逐字重复声明（Password 经 Input 复用）；Select invalid 态聚焦改用 `:deep([role="combobox"])` + `:focus-within`；单测类名断言同步（`caomei-xxx--*` → `caomei-field--*`）。提交 `0dc4116` / `51ecae1`（状态同步）。**冻结新基线**：`capture:styles` 239 项 0 差异、`check:design` 预算归零。**token 计数口径**（归档实测）：`:root` 直接声明 **14** 个 `--caomei-field-*`，另有 **5** 个尺寸档位变量（`height` / `padding-inline` / `padding-block` / `padding-end` / `font-size`）由 `:where(.caomei-field--sm/md/lg)` 声明（`:root` 内为注释占位），去重共 **19**。
+- 长期任务出处：「字段 shell 样式层共享」原为 [长期任务](./recurring.md) §2.2 待执行批次，本条目为其交付轮（形态 = 语义 token 契约、不改公共类名）。
+
+### M2 引用型属性回归规则（2 条）
+
+- **M2-1**：规则文档化——[开发规范 §13](../standards/development.md)（定义 / 核心规则 / 实现模式 / 回归守卫 / SSR 取舍）+ [AI 协作规范 §8](../standards/ai-collaboration.md)（同步摘要 + Review Gate 必查项 + 对审计方影响），两处交叉引用避免双源漂移。提交 `8ac8219`。
+- **M2-2**：CI 守卫 `scripts/governance/guard-ref-attrs.mjs`——检测引用型 ARIA 属性 / 渲染契约类改动并**强制同批复跑 `capture:styles` 核对基线 diff**（阻断模式），接入 `governance:check`（随 `verify` 与 CI 生效）；无相关文件变更时跳过并打印口径。提交 `3a30b43`。
+
+### M3 Button `iconOnly` 形态（1 条）
+
+- **M3-1**：新增 `iconOnly` boolean prop（方形 `width = height`、`padding` / `gap` 归零、图标居中、`label` 自动绑定为 `aria-label`），`iconPosition` 在 `iconOnly` 时忽略并在 JSDoc 声明；单测新增 8 条（class 应用 / 尺寸方形 / `iconPosition` 忽略 / 无 `label` 不输出 `aria-label` / `label` 优先级 / 不渲染内容插槽）；中英组件页 + `icon-only.vue` 示例。提交 `d182da0`。
+
+### M4 Select `#value` 插槽（1 条）
+
+- **M4-1**：触发器补 `#value` 插槽（最小作用域 `{ option, label, selected }`，兼容既有 `#option` 并明确优先级），新增 `selectedOption` 计算属性复用选中项查找；单测新增 4 条（有值 / 无值 / 与 `#option` 组合 / 优先级）；中英组件页 + 示例。提交 `f3b6de1`；同批修复英文示例镜像缺失与示例类型错误 `f777d43`（并据此登记 Backlog 候选「文档站示例引用存在性守卫」，提交 `35abc4d`）。
+
+### M5 对比度盘点（1 条）
+
+- **M5-1**：5 项在册缺口逐条复算（WCAG 亮度公式 + soft 底 `color-mix` 合成），**无新增缺口、无修复消除**、**零 token 色值变更**，维持 [Backlog](./backlog.md)「对比度遗留项盘点」跟踪；复算输入与公式内联可复现。记录 [M5-1 对比度盘点](../design/governance/2026-09-28-m5-1-contrast-audit.md)。提交 `3c6f190`。
+
+### M6 迁移陷阱文档补强（1 条）
+
+- **M6-1**：`guide/primevue-migration.md`（中英）「常见陷阱」表新增 3 行（Button `iconOnly` 形态 / Select `#value` 插槽 / `iconOnly` 时 `iconPosition` 失效），对应组件页（Button / Select，中英）补迁移指引 `see` 引用；**单一源头**（陷阱表在指南、组件页只引用）不构成第二事实源。提交 `489a3e2`。
+
+### M7 条件候选判定表（1 条）
+
+- **M7-1**：switch 滑块前景配对**仅出判定表、不纳入实现**（参考 Phase 14 M5 口径）——**契约偏离成立**（自适应 `primary` 底族内 10 个消费点中 9 个以 `--caomei-color-primary-foreground` 承载底上内容，`switch.vue:100` 唯一取 `--caomei-color-bg`）；**库内无后果**（3 套主题 × 2 态 = 6 个快照中 5 个两值相同，仅 momei 预设暗色分离但 7.87:1 / 8.19:1 均达标）；**触发三要件经下游只读取证交集为空**（dependfix `5789b279` 有渲染无 token 覆盖、momei `be702836` 有分离但 0 处 `CaomeiSwitch`），故维持条件触发。记录 [M7-1 判定表](../design/governance/2026-09-28-m7-1-switch-thumb-foreground-judgment.md)。Review Gate R1 `quick` **Pass**（2 warning：`7/8` 应为 `6/8`、§3.1 枚举漏 `button` / `calendar`）→ 修复 → R2 `quick` **Pass**（0 blocker）。提交 `30ec7a0`。
+
+### 附带交付（非阶段条目）
+
+- GitHub Projects 看板约定：新增 [docs/standards/github-projects.md](../standards/github-projects.md)（看板结构 / 字段 / 视图 / 自动化 / Agent 读写边界）并引用至 `AGENTS.md` §11；提交 `04428ab`。
+- Backlog 登记：文档站示例引用存在性守卫候选（来源 `f777d43`）；提交 `35abc4d`。
+
+### 阶段总结
+
+- **提交对账**：`git log --oneline 25c5de8..30ec7a0 | wc -l` → **13**（阶段下界 = 上一阶段归档提交 `25c5de8`；**不得写 `HEAD` 相对范围**，归档提交会推进 `HEAD`），其中 **11** 个为条目交付 / 记录提交（含 `35abc4d` Backlog 候选登记），另 2 个为 `c878aa6`（阶段授权与载体同步登记）与 `04428ab`（附带规范交付，非阶段条目）。
+- **质量门**（归档批次实测，2026-09-28 终态口径）：`pnpm verify` exit 0（lint / lint:css / lint:md / typecheck / typecheck:docs / test **88 文件 1837 tests** / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:a11y` **58**（受检面 51 单元 / 例外清单 1 条）；`capture:styles` **239 项 0 差异**；`docs:check` 10 段链全绿（integrity **262** md / links **261** md / structure 223 页 + 侧栏 6 组 47 条目 / config-links 160 条 / i18n-parity 59 对 / version / interpolation **223** md / showcase 13 项）；`governance:check` 含 `check-governance-records`（76 记录与索引一致 / 261 md 指针无失效）与 `guard-ref-attrs`（无相关变更时跳过）；`docs:build` exit 0。
+- **长期任务**：阶段收口前触发一轮门槛复核（[长期任务](./recurring.md) §3 第 15 轮，2026-09-28，零代码改动域）——**待执行批次 0 项**（「字段 shell 样式层共享」经本阶段 M1-1 交付，已从 §2.2 待执行批次迁出）；条件触发 1 项与已判定不纳入 5 项维持。
+- **回扫口径（三段式）**：① **机检面 0 处**——`pnpm check:governance-records` exit 0。② **人工面 4 处**——本阶段记录中「链接文字为载体名（`待办事项`）而编号写在链接之外」的指针 2 处，改指 `todo-archive.md`：`2026-09-28-m5-1-contrast-audit.md:120`（`待办事项` M5-1）、`2026-09-28-m7-1-switch-thumb-foreground-judgment.md:4`（`待办事项` M7-1）；**并一并处置 Phase 14 归档批次漏扫的同形态 2 处**（`2026-09-26-m1-a11y-exception-disposal-and-surface.md:4` / `2026-09-26-m2-style-token-consistency.md:4`，均改指 Phase 14 块）——Phase 14 归档块第 474 行声明「人工面 0 处」与实际不符，属**本批复核发现的「断言 ↔ 载体」不一致**（[规划规范 §9](../standards/planning.md) 要求复核旧记录时登记该类不一致），本批改指后该偏差关闭。③ **未处理面**——Phase 13 / 12 及更早记录的同类指针（`2026-09-18-m5-*` / `m6-*`、`2026-09-20-m2-2-m2-3-style-governance-landing.md`、`2026-09-20-css-on-demand-evaluation.md`、`2026-09-22-docs-versioning-reevaluation.md` 等）沿用既有边界（属「出证时点登记动作」的陈述，时效由各记录头部快照 / 让渡声明界定），**不回改、亦未登记为待办**；该形态的机检盲区已登记 [Backlog §1.6](./backlog.md)。
+- **wisdom 蒸馏**：活跃 **3 条全部迁移**（migrate 3 / compress 0 / remove 0 / keep 0），落点 [测试规范 §6](../standards/testing.md)（全量首跑 flaky 归属判定）与 [AI 协作规范 §3.1 / §9](../standards/ai-collaboration.md)（判定表类审计档位校准 / 跨载体计数同步后 `grep` 核对）；归档摘要 3 行见[经验归档](../design/governance/experience-archive.md)；`pnpm check:distill-archive` 对账通过。
+- **归档批次审计**（2026-09-28，本阶段归档与规划清理批次）：经 `@code-reviewer` Review Gate **三分区并发审计**（§3.2；分区 A 规划载体 `standard` ≤10 分钟 / 分区 B 规范与 AI 资产 `deep` ≤20 分钟（§3.1 协议本体变更取严）/ 分区 C 治理记录与经验归档 `standard` ≤10 分钟；总时间盒取最大值）——**R1**：分区 A **Reject**（1 blocker：归档块质量门计数混源不自洽——`integrity` / `interpolation` 取 M7-1 入库前时点值而 `links` / `structure` 取终态值，且 `integrity == links` 违背历史恒定的 1 差；2 warning：`todo.md` 条件候选条目残留里程碑编号、`recurring.md` §2.2 内联枚举已交付批次名；1 suggest：M1-1 token 计数口径需注明）/ 分区 B **Pass**（0 blocker / 0 warning / 3 suggest；**独立裁定 §3.1 新增条目属协议本体变更、`deep` 申报正确**）/ 分区 C **Pass**（0 blocker / 0 warning / 2 suggest）→ 合并取最严 **Reject**；修复：计数改终态（`integrity 262` / `interpolation 223 md`）并加「终态口径」限定、`todo.md` 去里程碑编号、`recurring.md` §2.2 精简、M1-1 token 口径改为「`:root` 14 + 档位 5 = 去重 19」（该改法由复审建议给出，纠正了调用方把 `:root` 注释占位计入的误数）、**并入 Phase 14 漏扫的 2 处同类指针**（人工面 2 → 4 处）、B/C 的 4 条 suggest 同批采纳（词边界 / §6.1 子标题 / 界定语 / 机检盲区登记 Backlog）→ **R2**（`deep`，修复点复审）**Pass**（blocker 关闭、8 个修复点全部落地、0 新增阻断；2 条非阻塞 suggest 已同批采纳，记为「已修复未复审」）。
+- **已知观察（非缺陷，登记以免后续重复排查）**：① `todo-archive.md` 行数超 `docs:check:line-count` 的 warn 阈值（warn > 400 / error > 600，**非阻断**）——归档载体只增不减，本批接受。② 全量测试首跑出现 **1 例 flaky**：`scripts/release/generate-changelog.test.mjs > readPackageField`（git fixture 子进程在 88 文件并行负载下 5s 超时），隔离重跑 816ms 通过、二次全量 1837 例全通过——属 Phase 14 已根治的并发隔离族之外的**独立面**，按「多次出现再处理」登记为**该文件首次出现**（后续复现再升级为条目）。③ M1-1 ~ M6-1 的 Review Gate 记录未见于 `artifacts/review-gate/`（该目录为 gitignored 的本地留存，本批之前无 Phase 15 条目）；归档按**提交与验收声明**登记，**不宣称其审查结论**。④ `docs:check:integrity` 对 `todo.md` 产生 1 条「H1/H2 结构标题由 4 降为 3」告警——脚本自带说明「阶段 / 条目标题在 H3/H4，属归档正常移除面」，属归档预期（非阻断）。
+- **遗留与后续候选**：dependfix `apps/platform` 迁移实施（B0~B4）与 momei 侧迁移由对应仓库执行、本仓等待反馈；Phase 8 未启动（等待下游完成接入）；对比度在册缺口 5 项（已登记 [Backlog §1.6](./backlog.md)）；条件触发候选（M5 判定表 5 项 + M7-1 switch 滑块前景配对）；a11y 同类悬空引用后续处置；文档站多版本托管；其余候选见 [Backlog](./backlog.md)。

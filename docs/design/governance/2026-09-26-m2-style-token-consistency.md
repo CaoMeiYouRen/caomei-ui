@@ -1,7 +1,7 @@
 # M2 样式与 token 一致性收口交付与验证记录
 
 > 阶段：Phase 14（质量与一致性收口）→ M2 样式与 token 一致性收口。
-> 范围依据：[下一阶段范围评估 §10](./2026-09-25-next-stage-scope-evaluation.md)（用户裁定 D5 / D6）；条目登记：[待办事项](../../plan/todo.md) Phase 14 M2。
+> 范围依据：[下一阶段范围评估 §10](./2026-09-25-next-stage-scope-evaluation.md)（用户裁定 D5 / D6）；条目登记：[待办归档](../../plan/todo-archive.md)（Phase 14 块 M2）。
 > 快照日期：2026-09-26。**本阶段不改任何 token 色值与既有视觉**（D5 / D6：仅盘点、清单与机检）。
 
 ## 1. 范围与目标

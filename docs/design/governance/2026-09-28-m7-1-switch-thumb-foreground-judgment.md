@@ -1,7 +1,7 @@
 # M7-1 条件候选判定表：switch 滑块前景配对
 
 > **阶段**：Phase 15（治理收口深化 + 组件能力补齐 + 下游迁移护航文档）→ M7 条件候选判定表
-> **依据**：[下一阶段范围评估](./2026-09-27-next-stage-scope-evaluation.md) §3 C6 / §5 D7；[待办事项](../../plan/todo.md) M7-1
+> **依据**：[下一阶段范围评估](./2026-09-27-next-stage-scope-evaluation.md) §3 C6 / §5 D7；[待办归档](../../plan/todo-archive.md)（Phase 15 块 M7-1）
 > **上游发现**：[M2 样式与 token 一致性收口](./2026-09-26-m2-style-token-consistency.md) §2.2 / §7（Phase 14 M2-1，D6② 本批不修复）
 > **裁定**：维持条件触发、**不纳入实现**（参考 Phase 14 M5 判定表口径）
 > **快照日期**：2026-09-28

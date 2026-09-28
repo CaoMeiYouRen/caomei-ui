@@ -80,6 +80,10 @@
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。
 
+### 6.1 全量首跑偶发失败的归属判定
+
+- 先 `pnpm exec vitest run <path>` 隔离复跑该文件（超时 / 时序类用例在并行负载下可能仅偶发命中），再跑一次全量取结论；两者均通过即可判为并行竞争或环境导致的偶发失败，**与本次改动无因果**。结论与门禁声明须如实写明「首跑 N 例 flaky + 归属 + 复跑结果」，不得静默吞掉或直接改判为通过（实例：`scripts/release/generate-changelog.test.mjs` 的 git fixture 在 88 文件并行负载下 5s 超时，隔离重跑 816ms 通过）。
+
 ## 7. 容器/受限环境下的浏览器验证
 
 部分容器会把 `/tmp` 设为不可写（如 `dr-xr-xr-x`）。Chromium 会在临时目录下创建 profile 与共享内存，此时渲染进程会直接崩溃（Playwright 报 `Target crashed`，日志含 `platform_shared_memory_region_posix.cc ... Permission denied`）。

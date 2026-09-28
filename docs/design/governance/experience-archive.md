@@ -4,6 +4,14 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-28 阶段归档蒸馏（Phase 15）
+
+> 本批活跃 **3 条全部处置**：分态 `migrate 3 / compress 0 / remove 0 / keep 0`。归档摘要 **3 行**（可复算：`awk '/^## 2026-09-28 阶段归档蒸馏（Phase 15）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[测试规范 §6](../../standards/testing.md)、[AI 协作规范 §3.1 / §9](../../standards/ai-collaboration.md)；3 条均为本批新增落点。`wisdom.md` 活跃段清空并保留指针。
+
+- [2026-09-28] [test] 全量首跑偶发失败（flaky）的归属判定：先隔离复跑该文件、再全量复跑取结论，两者均通过即判为并行竞争 / 环境导致、与本次改动无因果；门禁声明须如实写明「首跑 N 例 flaky + 归属 + 复跑结果」，不静默吞掉或改判通过 → docs/standards/testing.md §6
+- [2026-09-28] [process] 含定量复算 / 跨仓取证的判定表类交付至少 `standard`（核验面超出 `quick` 的「文档措辞 / 重命名」）；D 阶段已完成复算与取证时可注明「量化证据已由调用方预核验」以收窄审计面，但不得据此降为 `quick` → docs/standards/ai-collaboration.md §3.1
+- [2026-09-28] [process] 同一组计数跨多载体（治理记录 / 索引 / `backlog` / `todo`）同步后，须用 `rg -o <计数> <文件> | wc -l` 逐载体核对出现次数——整段替换易把尾段重复贴入，人工目视拦不住 → docs/standards/ai-collaboration.md §9
+
 ## 2026-09-24 阶段归档蒸馏（Phase 13）
 
 > 本批活跃 **24 条全部处置**：分态 `migrate 24 / compress 0 / remove 0 / keep 0`。归档摘要 **24 行**（可复算：`awk '/^## 2026-09-24 阶段归档蒸馏（Phase 13）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：`ai-collaboration §8`、`planning §7`、`testing §7/§8/§10`、`development §5`、`documentation-site §11/§13`、`design-spec §7`、`guide/release.md §3`、`session-wisdom-distillation §1`；其中 **2 条**（`current-task.yaml` 维护口径 / 计数多处载体漂移）的落点已在此前批次存在——本次仅补摘要与链接（对应摘要行末标「落点已存在」）；其余 **22 条**为本批新增或扩写落点。`wisdom.md` 活跃段清空并保留指针。

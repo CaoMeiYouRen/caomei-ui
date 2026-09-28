@@ -117,7 +117,7 @@ node /tmp/compute-contrast.mjs
 - **Backlog 条目**：[对比度遗留项盘点](../../plan/backlog.md) —— 5 项在册缺口持续跟踪
 - **Phase 14 D5① 口径**：仅盘点并登记，不改色、零 token 色值变更
 - **关联治理记录**：[M2 样式与 token 一致性收口](./2026-09-26-m2-style-token-consistency.md) §3
-- **Phase 15 M5-1 登记**：[待办事项](../../plan/todo.md) M5-1
+- **Phase 15 M5-1 登记**：[待办归档](../../plan/todo-archive.md)（Phase 15 块）
 
 ---
 

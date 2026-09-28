@@ -55,6 +55,8 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
+| 对比度遗留项盘点（维持项 + 新增候选） | **维持（用户 2026-09-28 裁定 D2「预设品牌色不变」）**：`caomei` 预设 `danger` `#ef4444` 作前景（纯白底 3.76:1 / soft 现值 **3.39:1**，改前 12% 底为 3.23:1）与预设 `primary-solid` `#e63946` 4.17:1。**新增候选（2026-09-28 M2-1 复算发现，待裁定）**：默认预设 soft 变体 `danger` 4.28:1 / `neutral` 4.39:1（8% 底）与 `caomei` / `momei` 预设 primary soft 3.73:1 / 4.32:1 仍 < 4.5:1。复算口径与逐条裁定见 [M2 对比度与配色口径收口记录](../design/governance/2026-09-28-m2-contrast-and-pairing.md) | 低 |
+| 计算样式采样面扩展（toast / switch 回退色） | 2026-09-28 M2 发现：`capture:styles`（239 项）不含 toast / switch，二者回退色变化（toast 中性描边 / 图标、switch 滑块 `primary-foreground`）无计算样式回归保护，仅由 token 级复算承载。候选：把两组件纳入采样 fixture | 低 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |

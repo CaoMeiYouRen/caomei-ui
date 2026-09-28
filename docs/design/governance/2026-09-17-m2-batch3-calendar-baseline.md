@@ -121,7 +121,7 @@ overflow: auto;
 - 未测 RTL、200% 缩放、触摸手势与移动端软键盘（软键盘改变可用高时，`max-height` 会随之收敛并出现内部滚动，属预期降级，未实测）。
 - **窄容器（< 198px）下的内联 Calendar** 无用例：本批只把该边界写入矩阵 #6 与使用方职责，未做夹具用例（夹具 section 宽随视口，无法在验收视口下构造窄容器）。
 - **`showTime` 形态的纵向尺寸**未实测：时间区位于日历下方（增高不增宽），本批纵向上限对它应同样收敛，但无实测与断言。
-- 面板内焦点态（日格 `outline-offset: 1px`）未设常驻断言：静态推算外扩 3px < 面板内边距 12px，几何上不裁；候选见 [Backlog §1.6](../../plan/backlog.md) 的「常驻 E2E 规格 follow-up」。
+- 面板内焦点态（日格 `outline-offset: 1px`）未设常驻断言：静态推算外扩 3px < 面板内边距 12px，几何上不裁；候选见 [Backlog §1.6](../../plan/backlog.md) 的「常驻 E2E 规格 follow-up」。**2026-09-28 更新**：已由 Phase 16 M4-1 交付常驻断言（见 [M4 记录](./2026-09-28-m4-test-regression.md)），该 Backlog 候选行已随交付迁出。
 - 取证脚本与原始 JSON 落 `test-results/m2-batch3/`（gitignored）；**本记录可提交**，结论与关键数值已同步落[响应式设计](../../design/responsive.md)、[待办事项](../../plan/todo.md) 与提交信息。
 
 ## 7. 真实页面验证（文档站产物预览，2026-09-17）

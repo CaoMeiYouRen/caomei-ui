@@ -71,12 +71,10 @@
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
-| 常驻 E2E 规格 follow-up | 滚动容器、键盘聚焦等 | 低 |
 | 全量首跑 flaky（`generate-changelog` git fixture） | 2026-09-28 归档批次实测：`scripts/release/generate-changelog.test.mjs > readPackageField`（git fixture 子进程）在 88 文件并行负载下 5s 超时；隔离重跑 816ms 通过、二次全量 1837 例全通过，与当批 docs-only 改动无因果。**条件候选**：按「多次出现再处理」跟踪——再次出现（任意环境 / 任意批次）时定位根因并修 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
-| 组件画廊浏览器回归断言 | M2-5 V 阶段产出的断言清单（12/12 stage 非空、11 个组件根类名存在、四档 `scrollWidth === clientWidth` 与列数 2/2/2/1、12×2 链接 200 且 locale 前缀正确、Dialog 初始 0 → 点击后 1 且 Portal 到 body、两页 console / pageerror 0）尚未沉淀为常驻用例；触发条件：需要画廊回归保护（与「视觉回归基线」同族，当前不做） | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 
 ### 1.7 服务层候选（composables）

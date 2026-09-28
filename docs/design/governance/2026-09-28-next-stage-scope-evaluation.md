@@ -103,11 +103,11 @@
 | C33 | `@iconify/vue` 可选接入 | `package.json` dependencies = `@internationalized/date` / `@lucide/vue` / `@tanstack/vue-table` / `reka-ui`（无 iconify）；下游均用组件式图标 | 不纳入本阶段（维持条件触发） |
 | C34 | 视觉回归基线 | Playwright 截图比对（与 C40 同族） | 不纳入本阶段（成本高，需独立立项） |
 | C35 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 不纳入本阶段（与 C36 部分重叠，按容量） |
-| C36 | 常驻 E2E 规格 follow-up | 滚动容器 / 键盘聚焦等尚未沉淀为常驻用例 | **建议纳入（M4）** |
+| C36 | 常驻 E2E 规格 follow-up | 滚动容器 / 键盘聚焦等尚未沉淀为常驻用例 | **建议纳入（M4）**。**2026-09-28 已交付**（见 [M4 记录](./2026-09-28-m4-test-regression.md)）；**口径澄清**：滚动容器 / 键盘聚焦在评估时点**已由** `responsive.e2e.ts` 覆盖，M4-1 实际补齐的是日历焦点环与默认动效路径 |
 | C37 | Tailwind preset（可选） | 项目明确不引入 Tailwind | 不纳入本阶段 |
 | C38 | Storybook 组件工坊 | 暂不启用（已有「组件画廊」） | 不纳入本阶段 |
 | C39 | 执行层规则重述与失效引用收敛 | `code-reviewer` SKILL.md 重述收敛；`check:audit-protocol` 当前 0 命中（未构成失效引用） | 不纳入本阶段（无失效项） |
-| C40 | 组件画廊浏览器回归断言 | M2-5 V 阶段的断言清单（12/12 stage 非空、四档 `scrollWidth === clientWidth`、链接 200 等）未沉淀为常驻用例 | **建议纳入（M4，可选）**（受容量约束） |
+| C40 | 组件画廊浏览器回归断言 | M2-5 V 阶段的断言清单（12/12 stage 非空、四档 `scrollWidth === clientWidth`、链接 200 等）未沉淀为常驻用例 | **建议纳入（M4，可选）**（受容量约束）。**2026-09-28 已交付**（见 [M4 记录](./2026-09-28-m4-test-regression.md)） |
 | C41 | 文档站示例的可访问名补强 | `docs/examples/input/basic.vue`（中英）仅以 placeholder 提供可访问名 | **建议纳入（M3，可选）**：示例层小改动，可与 C31 同批 |
 | C42 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；空 `# Unreleased` 段（2026-09-22 / 2026-09-24 发布会后实测） | **建议纳入（M5，可选）**：与发布同批 |
 

@@ -247,7 +247,7 @@
   - **范围收敛（用户决策）**：`align-frozen` / 列级 `selection-mode` 收敛为迁移映射不新增 API；Popover / DropdownMenu 命令式收敛为声明式迁移写法、不新增命令式入口；`template` / `CurrentPageReport`、菜单嵌套 / 逐条目类名、FileUpload 默认 XHR 传输等未实现项均登记 [设计规范 §7](../design/design-spec.md)。
   - **有意行为差异与未实现项**：逐条登记 [设计规范 §7](../design/design-spec.md) 与各组件页迁移节，本阶段不重复抄写。
   - **规模偏差**：单一验收条目含「组件 + locale + 中英文档 + 示例 + 测试」导致多次超粒度约束，均按既有先例在条目与提交信息登记（M5 B1 合计 30 文件 / 新增 897 行、最大单提交 12 文件 / 400 行）。
-  - **已登记 Backlog 的后续候选**：迁移口径一致性守卫、en-US 文档页 768 档横向溢出、常驻 E2E 规格 follow-up、组件覆盖率门禁、a11y 自动化回归、测试隔离与偶发失败等，见 [Backlog](./backlog.md)。
+  - **已登记 Backlog 的后续候选**：迁移口径一致性守卫、en-US 文档页 768 档横向溢出、常驻 E2E 规格 follow-up、组件覆盖率门禁、a11y 自动化回归、测试隔离与偶发失败等，见 [Backlog](./backlog.md)。（**2026-09-28 更新**：其中「常驻 E2E 规格 follow-up」已由 Phase 16 M4-1 交付并迁出 Backlog；「组件画廊浏览器回归断言」由 M4-2 交付。）
 
 ## Phase 5 第二阶段：首版发布（本地手动发布，0.x）
 

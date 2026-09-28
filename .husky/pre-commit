@@ -1,3 +1,5 @@
 #!/bin/sh
 
+# Review Gate 落盘阻断守卫（本地态；CI 环境自动跳过）
+node scripts/governance/check-review-gate-artifacts.mjs
 npx --no-install lint-staged

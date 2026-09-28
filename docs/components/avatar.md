@@ -20,6 +20,16 @@
     ssg="true"
 />
 
+三档边长 / 字号分别为 `sm` 24 / 12px、`md` 32 / 14px（默认）、`lg` 40 / 16px；**本库不提供 `xl` 档位**。与 PrimeVue（默认预设 Aura）的档位不是一一对应，需要更大尺寸时用 `--caomei-avatar-size` 覆盖（见「样式定制」），而不是新增档位：
+
+| PrimeVue `size` | PrimeVue 边长 | 本库对应写法 |
+| --- | --- | --- |
+| `normal`（默认） | `2rem`（32px） | `size="md"`（默认） |
+| `large` | `3rem`（48px） | 无内置档位：`--caomei-avatar-size: 48px` |
+| `xlarge` | `4rem`（64px） | 无内置档位：`--caomei-avatar-size: 64px` |
+
+> 上表 px 为 16px 根字号下的 `rem` 换算，PrimeVue 取值来自其默认预设（Aura）；本库 `sm`（24px）无 PrimeVue 对应档。
+
 ## 回退内容
 
 回退内容按优先级取自：`#fallback` 插槽 → `fallback` 属性 → `alt` 首字符（大写）。`delayMs` 可延迟回退内容出现，避免图片加载瞬间闪现（需为正数，`0` 等同不延迟）。
@@ -55,6 +65,8 @@
     --caomei-avatar-color: #ffffff;
 }
 ```
+
+`--caomei-avatar-size` 是覆盖钩子：`size` 档位只提供默认值，覆盖后仅改边长，字号仍取档位默认；需要等比例字号时一并覆盖 `--caomei-avatar-font-size`。
 
 ## 从 PrimeVue 迁移
 

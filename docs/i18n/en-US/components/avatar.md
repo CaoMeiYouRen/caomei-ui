@@ -20,6 +20,16 @@ Switch the size with `size` (`sm` / `md` / `lg`) and the shape with `shape` (`ci
     ssg="true"
 />
 
+The three steps are `sm` 24 / 12px, `md` 32 / 14px (default) and `lg` 40 / 16px for edge length / font size; **this library has no `xl` step**. The mapping to PrimeVue (default Aura preset) is not one-to-one — for larger sizes override `--caomei-avatar-size` (see "Style customization") instead of adding a step:
+
+| PrimeVue `size` | PrimeVue edge length | This library |
+| --- | --- | --- |
+| `normal` (default) | `2rem` (32px) | `size="md"` (default) |
+| `large` | `3rem` (48px) | No built-in step: `--caomei-avatar-size: 48px` |
+| `xlarge` | `4rem` (64px) | No built-in step: `--caomei-avatar-size: 64px` |
+
+> Edge lengths above convert `rem` at a 16px root font size; the PrimeVue values come from its default preset (Aura). This library's `sm` (24px) has no PrimeVue counterpart.
+
 ## Fallback content
 
 Fallback content is taken by priority from: the `#fallback` slot → the `fallback` prop → the first character of `alt` (uppercased). `delayMs` can delay the fallback content to avoid a flash while the image loads (must be positive; `0` means no delay).
@@ -55,6 +65,8 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
     --caomei-avatar-color: #ffffff;
 }
 ```
+
+`--caomei-avatar-size` is an override hook: the `size` step only supplies defaults, so overriding it changes the edge length while the font size keeps the step default; override `--caomei-avatar-font-size` too when you need proportional type.
 
 ## Migration from PrimeVue
 

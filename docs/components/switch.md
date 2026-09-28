@@ -60,7 +60,7 @@
 | `--caomei-switch-border` | `--caomei-color-border` | 未开启轨道描边色 |
 | `--caomei-switch-active-bg` | `--caomei-color-primary` | 开启态轨道背景与描边色 |
 | `--caomei-switch-thumb-size` | `16px` | 滑块尺寸 |
-| `--caomei-switch-thumb-bg` | `--caomei-color-bg` | 滑块背景色 |
+| `--caomei-switch-thumb-bg` | `--caomei-color-primary-foreground` | 滑块背景色 |
 | `--caomei-switch-thumb-travel` | `18px` | 开启态滑块水平位移 |
 
 > 覆盖 `--caomei-switch-width` / `--caomei-switch-height` 时，请同步调整 `--caomei-switch-thumb-size` 与 `--caomei-switch-thumb-travel` 以保持对齐。

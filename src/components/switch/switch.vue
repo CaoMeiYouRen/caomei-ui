@@ -97,7 +97,7 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
     width: var(--caomei-switch-thumb-size, 16px);
     height: var(--caomei-switch-thumb-size, 16px);
     border-radius: 50%;
-    background: var(--caomei-switch-thumb-bg, var(--caomei-color-bg));
+    background: var(--caomei-switch-thumb-bg, var(--caomei-color-primary-foreground));
     transition: transform 0.15s ease;
 }
 

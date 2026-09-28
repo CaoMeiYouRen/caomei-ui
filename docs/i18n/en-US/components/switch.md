@@ -60,7 +60,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-switch-border` | `--caomei-color-border` | Track border when off |
 | `--caomei-switch-active-bg` | `--caomei-color-primary` | Track background and border when on |
 | `--caomei-switch-thumb-size` | `16px` | Thumb size |
-| `--caomei-switch-thumb-bg` | `--caomei-color-bg` | Thumb background |
+| `--caomei-switch-thumb-bg` | `--caomei-color-primary-foreground` | Thumb background |
 | `--caomei-switch-thumb-travel` | `18px` | Horizontal thumb travel when on |
 
 > When overriding `--caomei-switch-width` / `--caomei-switch-height`, adjust `--caomei-switch-thumb-size` and `--caomei-switch-thumb-travel` together to keep them aligned.

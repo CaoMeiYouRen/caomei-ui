@@ -104,7 +104,7 @@ Toast styles are based on CSS variables and kept low-specificity for easy overri
 | `--caomei-toast-offset` | `--caomei-space-4` | Distance from the viewport to the screen edge |
 | `--caomei-toast-width` | `min(24rem, 100% - 2 * offset)` | Viewport width |
 | `--caomei-toast-z-index` | `1100` | Viewport stacking level |
-| `--caomei-toast-accent` | by tone | Left accent color of the toast; overridable per tone class |
+| `--caomei-toast-accent` | by tone (`neutral` or no tone class falls back to `--caomei-color-text-muted`) | Shared by the left accent bar and the icon; overridable per tone class |
 
 ```css
 .caomei-toast-viewport {

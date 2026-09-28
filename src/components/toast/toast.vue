@@ -254,7 +254,7 @@ function onOpenChange(id: string, open: boolean): void {
     display: inline-flex;
     flex-shrink: 0;
     margin-top: 1px;
-    color: var(--caomei-toast-accent);
+    color: var(--caomei-toast-accent, var(--caomei-color-text-muted));
     font-size: var(--caomei-font-size-lg);
 }
 

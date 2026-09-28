@@ -104,7 +104,7 @@ toast.clear()
 | `--caomei-toast-offset` | `--caomei-space-4` | 视口距屏幕边缘的距离 |
 | `--caomei-toast-width` | `min(24rem, 100% - 2 * offset)` | 视口宽度 |
 | `--caomei-toast-z-index` | `1100` | 视口层级 |
-| `--caomei-toast-accent` | 随语气 | 提示左侧强调色，可按语气类覆盖 |
+| `--caomei-toast-accent` | 随语气（`neutral` 或未命中语气类时回退 `--caomei-color-text-muted`） | 左侧强调描边与图标色共用；可按语气类覆盖 |
 
 ```css
 .caomei-toast-viewport {

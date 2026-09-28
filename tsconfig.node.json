@@ -12,6 +12,7 @@
         "vitest.config.ts",
         "commitlint.config.ts",
         "playwright.config.ts",
+        "playwright.gallery.config.ts",
         "test/e2e/fixtures/vite.config.ts"
     ]
 }

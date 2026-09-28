@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-28T13:10:21.581Z",
+    "capturedAt": "2026-09-28T17:03:40.020Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1386,6 +1386,51 @@
             "outline-style": "none",
             "outline-width": "3px"
         },
+        "button-icon-only.sm": {
+            "width": "28px",
+            "height": "28px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "gap": "0px"
+        },
+        "button-icon-only-icon.sm": {
+            "margin-top": "0px",
+            "margin-right": "0px",
+            "margin-bottom": "0px",
+            "margin-left": "0px"
+        },
+        "button-icon-only.md": {
+            "width": "36px",
+            "height": "36px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "gap": "0px"
+        },
+        "button-icon-only-icon.md": {
+            "margin-top": "0px",
+            "margin-right": "0px",
+            "margin-bottom": "0px",
+            "margin-left": "0px"
+        },
+        "button-icon-only.lg": {
+            "width": "44px",
+            "height": "44px",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "gap": "0px"
+        },
+        "button-icon-only-icon.lg": {
+            "margin-top": "0px",
+            "margin-right": "0px",
+            "margin-bottom": "0px",
+            "margin-left": "0px"
+        },
         "radio-group-invalid.indicator": {
             "border-top-color": "rgb(220, 38, 38)"
         },
@@ -1733,8 +1778,8 @@
             "border-top-color": "rgb(37, 99, 235)"
         },
         "state.select.invalid": {
-            "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",
-            "border-top-color": "rgb(37, 99, 235)"
+            "box-shadow": "color(srgb 0.862745 0.14902 0.14902 / 0.2) 0px 0px 0px 2px",
+            "border-top-color": "rgb(220, 38, 38)"
         },
         "z.button-group.focus-within": {
             "z-index": "1"

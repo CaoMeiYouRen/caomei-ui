@@ -99,14 +99,15 @@ describe('CaomeiButton', () => {
         expect(button.attributes('aria-label')).toBe('设置')
     })
 
-    it.each(['sm', 'md', 'lg'] as const)('iconOnly 尺寸 %s 时宽度等于高度', (size) => {
+    it.each(['sm', 'md', 'lg'] as const)('iconOnly 尺寸 %s 时应用 icon-only 类（真实几何由 capture:styles 承载）', (size) => {
         const wrapper = mount(CaomeiButton, {
             props: { iconOnly: true, size, label: '测试' },
             slots: { icon: '<svg data-test="icon" />' },
         })
 
         const button = wrapper.get('button')
-        // iconOnly 时按钮为方形：宽度等于高度（由尺寸档位变量控制）
+        // 方形几何（宽度 = 高度）无法由 happy-dom 断言（无布局引擎、不算 SFC scoped CSS），
+        // 真实浏览器计算样式契约由 `pnpm capture:styles` 的 `button-icon-only.*` 采样承载。
         expect(button.classes()).toContain('caomei-button--icon-only')
     })
 

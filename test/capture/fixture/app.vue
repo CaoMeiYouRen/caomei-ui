@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { Search } from '@lucide/vue'
 import {
     CaomeiAutoComplete,
     CaomeiBadge,
@@ -31,7 +32,7 @@ import {
  * docs/design/governance/ 下的采集装置记录。
  *
  * 覆盖范围只含**声明式样式面**：尺寸档位 / 变体与语气 / 状态与几何 / 触发器结构 /
- * 局部层叠 / 浮层尺寸档位。需交互或不稳定时序的采样面（浮层面板 z-index、toast
+ * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位。需交互或不稳定时序的采样面（浮层面板 z-index、toast
  * 瞬时颜色、小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
  *
  * `data-cap` 标记与运行器的采样键一一对应：新增 / 重命名标记必须同步运行器的
@@ -380,7 +381,28 @@ onMounted(() => {
             </div>
         </section>
 
-        <!-- 8. 浮层尺寸档位与层级（采样脚本最后开启，避免模态遮罩拦截交互采样） -->
+        <!-- 8. 纯图标按钮：方形几何契约（宽度等于高度、内边距与间距归零）。
+             图标走 `#icon` 插槽——`iconOnly` 不渲染默认插槽内容。 -->
+        <section>
+            <div
+                v-for="size in sizes"
+                :key="`icon-only-${size}`"
+                class="case"
+                :data-cap="`button-icon-only:${size}`"
+            >
+                <CaomeiButton
+                    icon-only
+                    :size="size"
+                    :label="`纯图标 ${size}`"
+                >
+                    <template #icon>
+                        <Search />
+                    </template>
+                </CaomeiButton>
+            </div>
+        </section>
+
+        <!-- 9. 浮层尺寸档位与层级（采样脚本最后开启，避免模态遮罩拦截交互采样） -->
         <section>
             <CaomeiDrawer
                 v-for="size in sizes"

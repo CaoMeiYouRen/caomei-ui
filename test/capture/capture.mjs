@@ -67,6 +67,18 @@ const BUTTON_PROPS = [
     'background-color', 'color', 'border-top-color', 'font-size', 'height', 'padding-left',
     'outline-color', 'outline-style', 'outline-width',
 ]
+/**
+ * 纯图标按钮的几何集合：方形契约（宽度等于高度、内边距与间距归零）只能由计算样式证明——
+ * happy-dom 不算布局与 scoped CSS，类名断言对选择器拼写错误不敏感。
+ */
+const ICON_ONLY_PROPS = ['width', 'height', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'gap']
+/**
+ * 纯图标按钮的图标盒：锁定该形态下图标盒的外边距归零。
+ *
+ * 不采样 `width` / `height`：图标盒尺寸由消费者传入的图标（夹具为 `@lucide/vue` 的 svg）决定，
+ * 不属组件契约，采样会把夹具固有尺寸当成契约冻结。
+ */
+const ICON_ONLY_ICON_PROPS = ['margin-top', 'margin-right', 'margin-bottom', 'margin-left']
 const FOCUS_PROPS = ['box-shadow', 'border-top-color']
 const TRIGGER_PROPS = ['height', 'padding-left', 'border-top-width', 'border-top-left-radius', 'background-color', 'color', 'font-size']
 const DRAWER_PROPS = ['width', 'height', 'animation-duration', 'transition-duration', 'z-index']
@@ -127,6 +139,12 @@ function buildStaticSamples() {
                 add(`button.${variant}.${tone}.${size}`, `[data-cap="button:${variant}:${tone}:${size}"] .caomei-button`, BUTTON_PROPS)
             }
         }
+    }
+
+    // 纯图标按钮矩阵：方形几何（宽度 = 高度、padding / gap 归零）+ 图标盒外边距归零
+    for (const size of SIZES) {
+        add(`button-icon-only.${size}`, `[data-cap="button-icon-only:${size}"] .caomei-button`, ICON_ONLY_PROPS)
+        add(`button-icon-only-icon.${size}`, `[data-cap="button-icon-only:${size}"] .caomei-button__icon`, ICON_ONLY_ICON_PROPS)
     }
 
     // 局部层叠与被覆盖的边框色

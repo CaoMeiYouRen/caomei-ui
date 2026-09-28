@@ -152,13 +152,13 @@ function onClick(event: MouseEvent): void {
   iconOnly：方形、内边距归零、图标居中。
   宽度等于高度（由尺寸档位变量控制），padding 归零，gap 归零。
 */
-.caumei-button--icon-only {
+.caomei-button--icon-only {
     width: var(--caomei-button-height);
     padding: 0;
     gap: 0;
 }
 
-.caumei-button--icon-only .caomei-button__icon {
+.caomei-button--icon-only .caomei-button__icon {
     margin: 0;
 }
 

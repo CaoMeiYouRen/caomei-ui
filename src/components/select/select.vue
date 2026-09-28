@@ -349,13 +349,13 @@ function clearValue(): void {
 
 /* 非法态聚焦：字段外层带有 caomei-field--invalid 且 :focus-within 时，
    使用 :deep() 穿透 scoped 透传不到 Reka UI 原生 button 的限制。 */
-.caumei-field--invalid:focus-within :deep([role="combobox"]) {
+.caomei-field--invalid:focus-within :deep([role="combobox"]) {
     border-color: var(--caomei-field-invalid-border-color) !important;
     box-shadow: var(--caomei-field-invalid-focus-shadow) !important;
 }
 
 /* 禁用态：基类 .caomei-field--disabled 已提供，此处仅补充 cursor/opacity 细节 */
-.caomei-field--disabled.caumei-select {
+.caomei-field--disabled.caomei-select {
     cursor: not-allowed;
 }
 

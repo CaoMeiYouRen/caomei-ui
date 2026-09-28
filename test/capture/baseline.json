@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-27T14:28:30.249Z",
+    "capturedAt": "2026-09-28T13:10:21.581Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -393,7 +393,7 @@
             "padding-right": "0px"
         },
         "variant.message.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
             "color": "rgb(107, 114, 128)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -425,7 +425,7 @@
             "border-left-width": "1px"
         },
         "variant.badge.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
             "color": "rgb(107, 114, 128)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -433,7 +433,7 @@
             "border-left-width": "1px"
         },
         "variant.tag.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.12)",
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
             "color": "rgb(107, 114, 128)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -473,7 +473,7 @@
             "border-left-width": "1px"
         },
         "variant.message.primary.soft": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
             "color": "rgb(37, 99, 235)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -505,7 +505,7 @@
             "border-left-width": "1px"
         },
         "variant.badge.primary.soft": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
             "color": "rgb(37, 99, 235)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -513,7 +513,7 @@
             "border-left-width": "1px"
         },
         "variant.tag.primary.soft": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.12)",
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
             "color": "rgb(37, 99, 235)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -553,7 +553,7 @@
             "border-left-width": "1px"
         },
         "variant.message.success.soft": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
             "color": "rgb(21, 128, 61)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -585,7 +585,7 @@
             "border-left-width": "1px"
         },
         "variant.badge.success.soft": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
             "color": "rgb(21, 128, 61)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -593,7 +593,7 @@
             "border-left-width": "1px"
         },
         "variant.tag.success.soft": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.12)",
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
             "color": "rgb(21, 128, 61)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -633,7 +633,7 @@
             "border-left-width": "1px"
         },
         "variant.message.warning.soft": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
             "color": "rgb(180, 83, 9)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -665,7 +665,7 @@
             "border-left-width": "1px"
         },
         "variant.badge.warning.soft": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
             "color": "rgb(180, 83, 9)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -673,7 +673,7 @@
             "border-left-width": "1px"
         },
         "variant.tag.warning.soft": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.12)",
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
             "color": "rgb(180, 83, 9)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -713,7 +713,7 @@
             "border-left-width": "1px"
         },
         "variant.message.danger.soft": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
             "color": "rgb(220, 38, 38)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -745,7 +745,7 @@
             "border-left-width": "1px"
         },
         "variant.badge.danger.soft": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
             "color": "rgb(220, 38, 38)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -753,7 +753,7 @@
             "border-left-width": "1px"
         },
         "variant.tag.danger.soft": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.12)",
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
             "color": "rgb(220, 38, 38)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",

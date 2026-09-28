@@ -149,7 +149,8 @@ const rootClass = computed(() => [
 }
 
 .caomei-message--soft {
-    background: color-mix(in srgb, var(--caomei-message-tone) 12%, transparent);
+    /* soft 底取 8%（非 12%）：保证 primary 文本在亮色下 ≥ 4.5:1（12% 时仅 4.37:1），其余 tone 只升不降 */
+    background: color-mix(in srgb, var(--caomei-message-tone) 8%, transparent);
     color: var(--caomei-message-tone);
 }
 

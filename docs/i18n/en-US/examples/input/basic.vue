@@ -9,6 +9,7 @@ const value = ref('')
     <div class="demo-column">
         <CaomeiInput
             v-model="value"
+            label="Content"
             placeholder="Enter a value"
         />
         <p class="demo-value">

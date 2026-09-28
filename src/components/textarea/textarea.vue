@@ -190,12 +190,16 @@ defineExpose({ focus, blur, textareaRef })
   Textarea 组件特有样式：block 布局、垂直内边距、自动增高逻辑的配合样式。
   外壳样式（边框/圆角/背景/色值/聚焦/非法/禁用/只读/尺寸档位）由共享层 `field-shell.css`
   的 `.caomei-field` 基类提供。
-  差异点：需要垂直内边距，覆盖基类的水平-only padding。
+  差异点：
+  1. 需要垂直内边距，覆盖基类的水平-only padding；
+  2. 基类 `height` 取单行控件高度，多行控件必须改由 `rows` / 内容决定高度，
+     否则 `rows > 1` 时控件会溢出边框（文本与滚动条跑到圆角之外）。
 */
 .caomei-textarea {
     display: block;
 
     /* width: 100% 由 .caomei-field 基类提供 */
+    height: auto;
     padding: var(--caomei-field-padding-block) var(--caomei-field-padding-inline);
 }
 
@@ -221,10 +225,5 @@ defineExpose({ focus, blur, textareaRef })
 
 .caomei-textarea__control::placeholder {
     color: var(--caomei-color-text-muted);
-}
-
-/* 自动增高时高度由内容决定，尺寸档位变量不生效 */
-.caomei-textarea--auto-resize {
-    height: auto;
 }
 </style>

@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-28T17:03:40.020Z",
+    "capturedAt": "2026-09-28T18:03:27.777Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -177,7 +177,7 @@
         },
         "tier.textarea.sm": {
             "min-height": "auto",
-            "height": "28px",
+            "height": "38px",
             "padding-top": "4px",
             "padding-right": "8px",
             "padding-bottom": "4px",
@@ -248,7 +248,7 @@
         },
         "tier.textarea.md": {
             "min-height": "auto",
-            "height": "36px",
+            "height": "50px",
             "padding-top": "8px",
             "padding-right": "12px",
             "padding-bottom": "8px",
@@ -319,7 +319,7 @@
         },
         "tier.textarea.lg": {
             "min-height": "auto",
-            "height": "44px",
+            "height": "64px",
             "padding-top": "12px",
             "padding-right": "16px",
             "padding-bottom": "12px",

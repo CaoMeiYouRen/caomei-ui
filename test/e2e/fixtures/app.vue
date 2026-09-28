@@ -11,6 +11,7 @@ import {
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
+    CaomeiTextarea,
     CaomeiToolbar,
 } from '@/index'
 
@@ -105,6 +106,16 @@ const dialogBreakpoints = { '1199px': '85vw', '575px': '95vw' }
 
 /** 无头部用例：`showHeader=false` 时头部与关闭按钮不渲染，标题转为视觉隐藏的可访问名 */
 const dialogHeaderlessOpen = ref(false)
+
+/**
+ * Textarea 字段几何用例：`rows` 决定字段高度，内部控件必须完整落在边框内。
+ * `overflowText` 在 `20rem` 容器下必然折行超过 2 行，用于验证滚动条出现在框内而非越出边框。
+ */
+const textareaRows2 = ref('')
+const textareaRows4 = ref('')
+const textareaOverflow = ref(
+    '这是一段足够长的多行文本，用于验证内容折行超过可见行数时，内部控件及滚动条仍完整落在字段边框内，不会溢出圆角范围。',
+)
 </script>
 
 <template>
@@ -255,6 +266,32 @@ const dialogHeaderlessOpen = ref(false)
                 </template>
             </CaomeiDialog>
         </section>
+
+        <section id="textarea-layout" class="fixture__case">
+            <div id="textarea-rows-2">
+                <CaomeiTextarea
+                    v-model="textareaRows2"
+                    :rows="2"
+                    placeholder="两行文本域"
+                    label="两行文本域"
+                />
+            </div>
+            <div id="textarea-rows-4">
+                <CaomeiTextarea
+                    v-model="textareaRows4"
+                    :rows="4"
+                    placeholder="四行文本域"
+                    label="四行文本域"
+                />
+            </div>
+            <div id="textarea-overflow">
+                <CaomeiTextarea
+                    v-model="textareaOverflow"
+                    :rows="2"
+                    label="溢出文本域"
+                />
+            </div>
+        </section>
     </main>
 </template>
 
@@ -299,5 +336,16 @@ const dialogHeaderlessOpen = ref(false)
 
 #panel-date-picker-edge > * {
     width: min(7.5rem, 100%);
+}
+
+/*
+  Textarea 几何用例：容器定宽（与 `--caomei-select-max-width` 一致），使长文本必然折行超过
+  可见行数，从而覆盖「滚动条出现在框内」的判定路径。
+*/
+#textarea-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
+    width: min(20rem, 100%);
 }
 </style>

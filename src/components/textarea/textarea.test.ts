@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { CaomeiTextarea } from './index'
@@ -358,5 +360,24 @@ describe('CaomeiTextarea', () => {
 
         await wrapper.setProps({ modelValue: '' })
         expect(wrapper.get('.caomei-textarea').attributes('data-filled')).toBeUndefined()
+    })
+
+    /**
+     * 几何契约：共享外壳基类 `.caomei-field` 的 `height` 是**单行控件高度**，多行控件沿用会让
+     * `<textarea>` 按 `rows` 撑出的高度溢出边框（文本与滚动条跑到圆角外）。
+     *
+     * happy-dom 无布局引擎、也不算 scoped CSS，实际几何由 `test/e2e/textarea-layout.e2e.ts`
+     * 与计算样式采集（`test/capture/baseline.json` 的 `tier.textarea.*`）守；此处守住声明本身，
+     * 防止源码层把覆盖改回去（同 `data-table.features.test.ts` 的样式断言口径）。
+     */
+    it('外壳高度改由 rows / 内容决定，覆盖共享外壳的单行固定高度', () => {
+        const source = readFileSync(join(process.cwd(), 'src/components/textarea/textarea.vue'), 'utf8')
+        const rootRule = source.slice(
+            source.indexOf('.caomei-textarea {'),
+            source.indexOf('.caomei-textarea__control'),
+        )
+
+        expect(rootRule).toContain('height: auto')
+        expect(rootRule).not.toContain('--caomei-field-height')
     })
 })

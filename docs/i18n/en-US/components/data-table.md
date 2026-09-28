@@ -157,6 +157,8 @@ When `selectionMode` is `multiple` or `single`, a selection column is rendered f
 
 `paginator` shows the paginator and `rows` sets rows per page; bind the current page with `v-model:page` (controlled). Providing `rowsPerPageOptions` renders a rows-per-page selector in the paginator; switching it emits `update:rows` (use with `v-model:rows`) and derives the page again by preserving the current first-row offset (in controlled pagination it also emits `update:page`, leaving slicing to the parent). Without `paginator` no slicing happens and all rows are rendered. With `lazy`, pagination is server-side: the provided `data` is not sliced further (it should already be the current page) and the page count comes from `totalRecords` (defaulting to `data.length`, which yields a single page — pass it for server-side pagination). Page changes emit `page` (`{ page, rows, first, pageCount }`). `lazy` must be set at mount.
 
+> The pagination container is right-aligned by default (`flex-end`), unlike PrimeVue's centered paginator; to center it or use another alignment, override `--caomei-data-table-pagination-justify` (see "Style customization") instead of adding a selector-level override.
+
 <demo
     vue="../examples/data-table/pagination.vue"
     ssg="true"
@@ -227,6 +229,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | Group header row background color |
 | `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | Row expansion area background color |
+| `--caomei-data-table-pagination-justify` | `flex-end` | Pagination container main-axis alignment (PrimeVue centers it by default; set to `center` to match) |
 
 ## Migration from PrimeVue
 

@@ -1175,7 +1175,7 @@ function setPageSize(rows: number): void {
 
 .caomei-data-table__pagination {
     display: flex;
-    justify-content: flex-end;
+    justify-content: var(--caomei-data-table-pagination-justify, flex-end);
     padding-top: var(--caomei-space-3);
 }
 

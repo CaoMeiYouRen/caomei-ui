@@ -157,6 +157,8 @@
 
 `paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。提供 `rowsPerPageOptions` 后在分页器渲染每页条数选择器，切换时抛出 `update:rows`（配合 `v-model:rows` 使用），并按保留首行偏移的语义重新推导页码（受控分页下同时抛出 `update:page`，裁剪与否由父级决定）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。
 
+> 分页容器默认右对齐（`flex-end`），与 PrimeVue 分页器默认居中不同；需要居中等其它对齐时覆盖 `--caomei-data-table-pagination-justify`（见「样式定制」），无需选择器级覆盖。
+
 <demo
     vue="../examples/data-table/pagination.vue"
     ssg="true"
@@ -227,6 +229,7 @@
 | `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | 分组标题行背景色 |
 | `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | 行展开区背景色 |
+| `--caomei-data-table-pagination-justify` | `flex-end` | 分页容器主轴对齐（PrimeVue 默认居中，可设为 `center`） |
 
 ## 从 PrimeVue 迁移
 

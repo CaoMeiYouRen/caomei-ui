@@ -50,7 +50,7 @@
 ### 2.4 反馈 §1.4：分页器对齐不可配置
 
 - **现象复述**：`DataTable` 分页容器固定右对齐，无 token 钩子；PrimeVue 默认居中。
-- **本仓取证**：`src/components/data-table/data-table.vue` 的分页容器 `.caomei-data-table__pagination` 硬编码 `justify-content: flex-end`；该文件声明的 `--caomei-data-table-*` token 为 `border` / `expansion-bg` / `group-bg` / `head-bg` / `row-bg` / `row-hover-bg` / `selected-bg` / `striped-bg`，**无对齐类 token**（源码判读，快照 2026-09-25）。
+- **本仓取证**：`src/components/data-table/data-table.vue` 的分页容器 `.caomei-data-table__pagination` 硬编码 `justify-content: flex-end`；该文件声明的 `--caomei-data-table-*` token 为 `border` / `expansion-bg` / `group-bg` / `head-bg` / `row-bg` / `row-hover-bg` / `selected-bg` / `striped-bg`，**无对齐类 token**（源码判读，快照 2026-09-25）。**2026-09-28 更新**：已补 `--caomei-data-table-pagination-justify`（缺省 `flex-end`），见 [M1 记录](./2026-09-28-m1-downstream-feedback-disposal.md) §3；本行取证为反馈评估时点快照。
 - **文档现状**：[DataTable 组件页](../../components/data-table.md)「分页」节只说明受控 / 懒加载语义，未声明右对齐为有意差异。
 - **判定**：**真实缺口**（缺 token 钩子，且与「优先用 `--caomei-*` token 定制」的对外指引冲突，下游只能选择器级覆盖）。登记 Backlog §1.1（优先级低）。
 

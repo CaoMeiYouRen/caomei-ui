@@ -10,8 +10,8 @@
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
-| M1-1 | 下游反馈处置（精简纳入） | `DataTable` 分页对齐 token：新增 `--caomei-data-table-pagination-justify`（缺省维持现值 `flex-end`），组件页 token 登记 | 组件页 + token 登记 + 中英同步、`capture:styles` 0 差异、`pnpm verify` 全绿 | 待开工 |
-| M1-2 | 下游反馈处置（精简纳入） | `Avatar` 档位口径文档补强：**维持** `sm` / `md` / `lg` 不补 `xl`，组件页补「与 PrimeVue 档位差异映射 + `--caomei-avatar-size` 覆盖口径」 | 中英组件页落地、`docs:check` 全绿 | 待开工 |
+| M1-1 | 下游反馈处置（精简纳入） | `DataTable` 分页对齐 token：新增 `--caomei-data-table-pagination-justify`（缺省维持现值 `flex-end`），组件页 token 登记 | 组件页 + token 登记 + 中英同步、`capture:styles` 0 差异、`pnpm verify` 全绿 | 已完成 |
+| M1-2 | 下游反馈处置（精简纳入） | `Avatar` 档位口径文档补强：**维持** `sm` / `md` / `lg` 不补 `xl`，组件页补「与 PrimeVue 档位差异映射 + `--caomei-avatar-size` 覆盖口径」 | 中英组件页落地、`docs:check` 全绿 | 已完成 |
 | M2-1 | 对比度与配色口径收口 | soft primary 亮色变体修复（现 **4.37:1** < 正文阈值 4.5） | 复算达标（≥ 4.5:1）+ 改前 / 改后值可复现、不使其他在册项降级 | 待开工 |
 | M2-2 | 对比度与配色口径收口 | toast 中性强调描边（暗色）修复（现 **2.31:1** < 图形阈值 3:1） | 复算达标（≥ 3:1）+ 改前 / 改后值可复现 | 待开工 |
 | M2-3 | 对比度与配色口径收口 | 回退口径与配对统一：toast 描边 / 图标回退口径一致化；switch 滑块前景对齐族内契约 `--caomei-color-primary-foreground` | 两处口径一致、`capture:styles` 差异**逐项有据**并重冻结基线、文档（组件页 token 说明）同步 | 待开工 |

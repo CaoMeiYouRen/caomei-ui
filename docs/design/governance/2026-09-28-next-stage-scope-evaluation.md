@@ -47,7 +47,7 @@
 | C4 | `DatePicker` 范围选择 | `src/components/date-picker/types.ts` 无 `selectionMode` / 范围形态（rg 0 命中）；下游零用量 | 不纳入本阶段（维持条件触发） |
 | C5 | `DataTable` 滚动高度 | 无 `scrollable` / `scrollHeight`；dependfix §15.3 确认改用**原生容器 + CSS** 承接 | 不纳入本阶段（维持条件触发） |
 | C6 | `Paginator` 页码报表 | `src/components/paginator/types.ts` 无 `template` / `CurrentPageReport`（仅可访问名模板 JSDoc）；dependfix §15.3 确认改**自渲染** | 不纳入本阶段（维持条件触发） |
-| C7 | `DataTable` 分页对齐 token | `src/components/data-table/data-table.vue:1178` 硬编码 `justify-content: flex-end`；`rg -- "--caomei-data-table-pagination" src/` **0 命中**（无 token 钩子）；来源 momei 反馈 §1.4（「PrimeVue 默认居中」为**下游反馈口径**，本轮未复核上游实现） | **建议纳入（M1）**：补 `--caomei-data-table-pagination-justify`（新增可选 token，非破坏性）；见 D5 |
+| C7 | `DataTable` 分页对齐 token | `src/components/data-table/data-table.vue:1178` 硬编码 `justify-content: flex-end`；`rg -- "--caomei-data-table-pagination" src/` **0 命中**（无 token 钩子）；来源 momei 反馈 §1.4（「PrimeVue 默认居中」为**下游反馈口径**，本轮未复核上游实现） | **建议纳入（M1）**：补 `--caomei-data-table-pagination-justify`（新增可选 token，非破坏性）；见 D5。**2026-09-28 已交付**（[M1 记录](./2026-09-28-m1-downstream-feedback-disposal.md) §3），本行现状取证为评估时点快照 |
 | C8 | `Avatar` `xl` 尺寸档位 | `src/components/avatar/avatar.vue:105/110/115` 三档（24 / 32 / 40px）+ `:91-92` `--caomei-avatar-size` 覆盖钩子；来源 momei 反馈 §2.1 | **建议纳入（M1）**：二选一裁定（补 `xl` / 维持 token 口径 + 补文档）；见 D4 |
 | C9 | `Select` 字段层 `class` 透传（`fieldClass`） | 来源 momei 反馈 §1.1（`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层）；候选本身即「先补文档」 | **建议纳入（M1，文档面）**：补组件页「宽度 / class 落点」说明；`fieldClass` 本体维持条件触发 |
 | C10 | `Select` `null` 选项开发期告警 | 来源 momei 反馈 §1.2；`optionValue` 收窄为 `string \| number` 属有意契约（[设计规范 §7](../design-spec.md) 已声明）；§3 有「不纳入 `null` 值支持」留档 | **建议纳入（M1，可选）**：开发期告警（不改变契约） |
@@ -192,7 +192,7 @@
 | **D9** | 国际化 / RTL 等长投方向 | ① 本阶段不纳入 ② 上收「语言矩阵 - 长期」③ 单独立项评估 RTL | 长投方向需独立评估与容量 |
 | **D10** | `.session` 同步约束 | ① 仅规范重申 ② 加收尾清单 / 机检 | 恢复起点正确性（本地态，不阻塞提交） |
 | **D11** | flaky 处置深度 | ① 根因定位并修 ② 仅调整用例预算 + 留痕 ③ 维持观察（按「多次出现再处理」） | 影响 M4 规模 |
-| **D12** | `AGENTS.md` §11 指针 | ① 授权补 `recurring.md` 指针 ② 维持不改（受保护文件） | 须明确指示（[AGENTS.md §9.1](../../../AGENTS.md)） |
+| **D12** | `AGENTS.md` §11 指针 | ① 授权补 `recurring.md` 指针 ② 维持不改（受保护文件） | 须明确指示（`AGENTS.md` §9.1，仓库根文件不经文档站链接） |
 | **D13** | 是否随本阶段启动 **Phase 8** | ① 启动（下游已进入迁移实施期）② 继续等待迁移完成后再评估 | Phase 8 范围须单独评估并登记 |
 
 > **让渡（2026-09-28）**：本节为**裁定前的候选清单**，用户逐条裁定的结果与最终执行口径见 **§8.1**（本节不再作为登记依据；未裁定项以 §8.2 为准）。

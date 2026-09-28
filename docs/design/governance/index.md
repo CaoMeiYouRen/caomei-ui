@@ -18,6 +18,8 @@
 
 ## 当前条目
 
+- [2026-09-28-m7-1-switch-thumb-foreground-judgment.md](./2026-09-28-m7-1-switch-thumb-foreground-judgment.md)：M7-1 条件候选判定表：switch 滑块前景配对（Phase 15，**仅出判定表、不纳入实现**，参考 Phase 14 M5 口径）。**判定结论**：**维持条件触发、不纳入实现**。**取证**：自适应 `primary` 底的族内 10 个消费点中 9 个以 `--caomei-color-primary-foreground` 承载底上内容、**switch 唯一取 `--caomei-color-bg`**（偏离）；库内 3 套主题 × 2 态 = 6 个快照中 5 个两值相同，仅 momei 预设暗色分离（`#020617` vs `#000`）但对比度 7.87:1 / 8.19:1 均远超 3:1、**无缺口**。**触发三要件**（下游实际渲染 `CaomeiSwitch` + 两值分离 + `contrast(bg, primary) < 3:1`）经下游只读取证**交集为空**：dependfix `5789b279` 有渲染（`alerts-table.vue:292`）但无 token 覆盖；momei `be702836` 的运行时桥接使两值在 **6/8** 预设组合分离、极浅自定义主色 `#ffe411` 命中判据式（**1.28:1** vs 契约 16.36:1）但 **0 处** `CaomeiSwitch`——已登记为触发后的第一优先取证入口。**范围边界**：关闭态滑块/`border` 轨道、toast 强调色回退口径、`-solid` × `on-solid`、slider 滑块、momei `amber` 亮档 3.07:1 五类逐条给出「不并入 + 去向」，无静默豁免。零 `src/**` 改动、零 token 色值变更。
+
 - [2026-09-28-m5-1-contrast-audit.md](./2026-09-28-m5-1-contrast-audit.md)：M5-1 对比度盘点记录（Phase 15，**仅盘点不改色**，Phase 14 D5① 口径）。**5 项在册缺口逐条复算**（WCAG 亮度公式 + soft 底 `color-mix` 合成），**无新增缺口、无修复消除**；按约束 **不改任何 token 色值**，维持 [Backlog](../../plan/backlog.md)「对比度遗留项盘点」跟踪。复算脚本 `/tmp/compute-contrast.mjs` 可复现。
 
 - [2026-09-27-m5-component-capability-longtail-judgment.md](./2026-09-27-m5-component-capability-longtail-judgment.md)：M5-1 条件候选判定表（Phase 14，**不纳入任何组件实现**，D9②）。**7 个候选逐条复核**：① `@iconify/vue` 可选接入——维持条件触发，无下游取证；② ColorPicker 色板导航——维持条件触发，2026-09-20 判定不达标；③ DatePicker 范围选择——维持条件触发，零下游用量；④ DataTable 滚动高度——维持条件触发，容器+CSS 可承接；⑤ Paginator 页码报表——维持条件触发，自渲染可承接；⑥ Sidebar 独立组件——不补，已裁定 Drawer 承接；⑦ ScrollPanel 型滚动面板——不补，已裁定不自研（原生容器+CSS 足够）。**结论**：5 项维持条件触发、2 项不补，全局零下游用量、均有替代方案、0.x 冻结窗口下不纳入实现。

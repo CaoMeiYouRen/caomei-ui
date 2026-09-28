@@ -17,6 +17,7 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | toast 强调色回退口径不一致 | 2026-09-26 M2-1 清单 §2.3 发现：`border-left` 强调描边用 `var(--caomei-toast-accent, var(--caomei-color-neutral-solid))` 有回退，而图标色 `color: var(--caomei-toast-accent)` 无回退（tone 未命中时继承正文色）；补回退会改变渲染色值（D5 禁改面）。**触发条件**：对比度 / 一致性裁定允许调整 neutral 强调面时一并处理 | 低 |
+| switch 滑块前景配对 | 2026-09-26 M2-1 清单 §2.2 发现 + 2026-09-28 M7-1 判定表 | **条件候选**：开启态滑块取 `--caomei-color-bg`，族内契约应为 `--caomei-color-primary-foreground`（自适应 `primary` 底 10 个消费点中唯一偏离）。库内 6 个主题快照中 5 个两值相同、momei 预设暗色分离但 7.87:1 / 8.19:1 均达标，**当前无缺口**。**触发条件（三要件同时成立）**：下游实际渲染 `CaomeiSwitch` + 两值实质分离 + `contrast(bg, primary) < 3:1`。下游取证（2026-09-28 只读）：dependfix 有渲染（`alerts-table.vue:292`）但无 token 覆盖；momei 桥接使两值在 6/8 预设组合分离、极浅自定义主色（`#ffe411`）命中判据式（1.28:1）但 0 处 `CaomeiSwitch`。判定与复算见[M7-1 判定表](../design/governance/2026-09-28-m7-1-switch-thumb-foreground-judgment.md) | 低 |
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |

@@ -10,7 +10,9 @@
  *    兼容 GitHub / VS Code / VitePress 的 slug 差异；
  * 3. 拒绝本地绝对路径链接（POSIX `/xxx`、Windows `C:/xxx`）；
  * 4. 拒绝超出仓库根目录的路径穿越；
- * 5. 正文中拒绝个人机器绝对路径（`C:\...`、UNC `\\server`）。
+ * 5. 正文中拒绝个人机器绝对路径（`C:\...`、UNC `\\server`）；
+ * 6. `docs/` 下的文件拒绝解析到站点 srcDir（`docs/`）之外的相对链接——目标存在于仓库内
+ *    并不代表站点可用，VitePress 会因其不在 srcDir 内报 dead link 使 `docs:build` 失败。
  *
  * 用法：node scripts/docs/check-links.mjs
  */
@@ -183,6 +185,14 @@ export function checkFile(file, root = projectRoot) {
             const sep = relTarget.includes('\\') ? '\\' : '/'
             if (relTarget === '..' || relTarget.startsWith(`..${sep}`) || isAbsolute(relTarget)) {
                 errors.push(`${rel}:${idx + 1} 链接目标超出项目范围（路径穿越）: ${pathPart}`)
+                continue
+            }
+
+            // docs/ 下的文件链接到站点 srcDir（docs/）之外时，VitePress 会判为 dead link
+            // 使 docs:build 失败；本守卫按文件系统解析，目标存在于仓库内并不代表站点可用。
+            const relToDocs = relative(docsRoot, targetFile)
+            if (isUnderDocs && (relToDocs === '..' || relToDocs.startsWith(`..${sep}`))) {
+                errors.push(`${rel}:${idx + 1} 文档站链接目标超出站点范围（VitePress 判为死链），请改用行内代码或站点内路径: ${pathPart}`)
                 continue
             }
 

@@ -4,7 +4,7 @@
 
 > **文档结构**
 >
-> - §1 候选池：仅收录**尚未决策 / 尚未交付**的候选。
+> - §1 候选池：仅收录**尚未进入阶段**的候选（待决策，以及已决策但尚未登记到当前阶段的过渡态）。
 > - §2 维护约定。
 > - §3 已评估、不纳入（结论留档）：已判定**不进入候选池**的下游诉求与理由。
 >
@@ -35,8 +35,7 @@
 
 | 能力 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 富文本（`mavon-editor`）轻量封装 + 兼容主题 | momei 使用面 + 用户 2026-09-29 口径 | 维持**外购不自研**（同图标逻辑：第三方库作库依赖 + 轻量包装统一 API / 样式，见 [开发规范 §1](../standards/development.md) 与 `src/icons/icon.vue`）。**已裁定（2026-09-29）**：**兼容主题与轻量封装不互斥**（形态待定，不做形态预设）——**优先考虑暗色切换与国际化切换的联动**，**然后**再考虑与库样式兼容的主题；momei 迁移期实测「第三方库与 UI 的暗色模式 / 国际化不联动」，momei 在用 `mavon-editor`。**实施时机待阶段纳入** | 低 |
-| 图表库封装 | 用户 2026-09-29 口径 | 维持**外购不自研**（候选 ECharts 等）；**暂未使用**，等出现真实用例后再按上行同口径评估（先暗色 + 国际化联动，后兼容主题） | 低 |
+| 图表库封装 | 用户 2026-09-29 口径 | 维持**外购不自研**（候选 ECharts 等）；**暂未使用**，等出现真实用例后再按「外购不自研 + 先暗色 / 国际化联动、后兼容主题」同口径评估（口径来源见[下一阶段范围评估](../design/governance/2026-09-30-next-stage-scope-evaluation.md) §3.3 / §8.1 D5） | 低 |
 
 ### 1.4 国际化候选
 
@@ -59,8 +58,6 @@
 |------|------|--------|
 | 对比度遗留项盘点（维持项 + 新增候选） | **维持（用户 2026-09-28 裁定 D2「预设品牌色不变」）**：`caomei` 预设 `danger` `#ef4444` 作前景（纯白底 3.76:1 / soft 现值 **3.39:1**，改前 12% 底为 3.23:1）与预设 `primary-solid` `#e63946` 4.17:1。**新增候选（2026-09-28 M2-1 复算发现，待裁定）**：默认预设 soft 变体 `danger` 4.28:1 / `neutral` 4.39:1（8% 底）与 `caomei` / `momei` 预设 primary soft 3.73:1 / 4.32:1 仍 < 4.5:1。复算口径与逐条裁定见 [M2 对比度与配色口径收口记录](../design/governance/2026-09-28-m2-contrast-and-pairing.md) | 低 |
 | 计算样式采样面扩展（toast / switch 回退色） | 2026-09-28 M2 发现：`capture:styles`（245 项）不含 toast / switch，二者回退色变化（toast 中性描边 / 图标、switch 滑块 `primary-foreground`）无计算样式回归保护，仅由 token 级复算承载。候选：把两组件纳入采样 fixture | 低 |
-| `caumei` 类名前缀拼写的机检守卫 | 2026-09-29 复核发现：样式选择器的类名前缀拼写错误（`caumei-*`）会让规则**永不命中**，而现有守卫（`check-design` 的形态规则、`check-planning-numbers`、`guard-ref-attrs`）**均不校验前缀拼写**——同一根因在 `v0.3.0..b1da270` 窗口内产生 4 处缺陷（`button.vue` 2 处 + `select.vue` 2 处），其中 2 处有真实可观察影响。候选：扫描 `src/**/*.{vue,css}` 选择器中的类名令牌，对 `ca` 开头者要求命中 `caomei-` 前缀；或反向校验「选择器中的 `caomei-*` 类名必须在组件模板 / 全局样式中出现过」。**须先论证误报边界**（scoped `:deep()` 穿透、第三方类名、动态类名拼接） | 中 |
-| 文档内取证命令的 revision 钉定守卫 | 2026-09-29 复审第 2 轮发现：治理记录里带 revision 维度的 `git log` / `git show` / `git diff` 命令缺显式 ref（隐式 `HEAD`）时，提交落地后结论不可复算——同一批次连续两轮命中（记录 §5 计数命令、§1 引入窗口取证命令）。候选：新增守卫扫描 `docs/**/*.md` 中的 `git (log|diff|show|grep)` 命令，要求带显式 revision 且禁 `HEAD`；须补负向对照测试并论证围栏 / 行内代码中的示例命令是否同受检 | 中 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
@@ -71,7 +68,6 @@
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
 | 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 实测：文档站窄档收敛规则只能靠人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
-| README / roadmap 版本句的弱守卫 | 仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述不在 `docs:check:version` 受检面内，发版需人工同步（[发布指南](../guide/release.md) 已列清单项）。候选：加一条弱守卫（存在性 + 与 `package.json` 一致性**告警**，而非阻断） | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
@@ -81,7 +77,6 @@
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 | 组件设计一致性回归扩展（样式 + 交互） | 用户 2026-09-29 口径：「确保每个组件按预定设计的样式展现、提供符合设计的交互，减少样式错误造成的问题」。**现状**：常驻装置已覆盖声明层（源码契约单测）/ 计算样式层（`capture:styles` 冻结基线）/ 几何层（字段族 E2E 等）/ 可访问性（`test:a11y`）/ 焦点与动效（`focus-and-motion.e2e.ts`）；**缺口**：[设计规范 §6](../design/design-spec.md) 的组件约定（尺寸档位 / 变体 / 状态 / 交互反馈）尚未逐组件转为可执行断言，交互面尤甚。**已裁定（2026-09-29）**：**应当评估**，**列入待办、等待后续阶段执行**——先出评估（范围 / 收益 / 误报边界），把 §6 约定按「可机检性」分级（能断言的落单测 / E2E 含负向对照，不可机检的显式登记为人工验收项）。**不纳入当前阶段**；按 [规划规范 §3.2](../standards/planning.md) 在后续阶段授权时登记为 `todo.md` 条目 | 中 |
-| 「极简可用样式」未落为具名主题预设 | 用户 2026-09-29 口径：「宣称可做到极简可用样式，但主题预设中并未提供」。**取证（2026-09-29）**：claim 见 `AGENTS.md §4`、README 引言与「特性」节、[开发规范 §6](../standards/development.md)、[设计规范 §4](../design/design-spec.md)（「缺省为基础预设」）与[主题与样式设计](../design/theming.md)；交付面 `src/styles/presets/` **仅** `caomei` / `momei` 两个品牌预设，`theme.css` 是 token 基础层——**没有具名的「极简 / 默认」预设载体**。**已裁定（2026-09-29）**：取**具名预设**（名称待定，建议 `minimal` / `default`），且**未指定 `data-preset` 时回退到极简模式**（缺省即极简）。实施时须：新增预设入口 + `[data-preset]` 激活、保证缺省路径逐值不变（`capture:styles` 0 差异口径）、回扫并同步全部 claim 载体。**不纳入当前阶段**；实施时机待阶段纳入 | 中 |
 
 ### 1.7 服务层候选（composables）
 
@@ -93,6 +88,7 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
+| 下游 0.4.0 升级护航 | **条件候选**：dependfix `apps/platform` 与 momei 均锁 `caomei-ui@0.3.0`，本仓 0.4.0 已发布但零下游消费（`iconOnly` 方形几何 / `Select` 非法态聚焦色修复 + soft 与 toast 对比度变更可能影响下游视觉回归基线）。触发条件：某下游启动 0.4.0 升级；届时按需产出升级指引 / 差异清单 / 回归关注点 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
 | 下游兼容性回归机制 | 见路线图 Phase 8，稳定使用后启用 | 延迟 |
 

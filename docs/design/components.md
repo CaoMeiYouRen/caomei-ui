@@ -96,8 +96,8 @@ Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选�
 
 | 能力 | 建议 |
 |------|------|
-| 富文本 Editor | 引入 Tiptap / Quill / Lexical |
-| Chart | 引入 Chart.js / ECharts |
+| 富文本 Editor | 引入第三方库（不自研）；momei 在用 `mavon-editor`，**封装形态（轻量封装组件 / 与库样式兼容的主题）与暗色、国际化联动要求以 [Backlog §1.3](../plan/backlog.md#_1-3-不纳入自研的能力-外购建议) 为单点来源** |
+| Chart | 引入第三方库（不自研）；暂未使用，评估入口见 [Backlog §1.3](../plan/backlog.md#_1-3-不纳入自研的能力-外购建议) |
 | Galleria / Carousel | 引入 embla-carousel-vue（headless）+ 自建样式 |
 | Knob / MeterGroup / OrganizationChart / TreeTable 等长尾 | 下游按需引入 Element Plus 或自留 |
 

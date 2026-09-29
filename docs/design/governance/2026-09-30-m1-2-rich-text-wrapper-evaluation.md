@@ -99,7 +99,7 @@
 | **SSR** | 编辑器主体 `client-only`（`defineAsyncComponent` 或 `.client.vue`）；预览若为纯渲染可评估 SSR 可行性（M1-3 定稿） |
 | **不做的** | 不自建工具栏 / 不自研 Markdown 引擎 / 不做富文本 HTML 模式（维持 Markdown 口径）/ 不做拖拽上传的自研实现（复用库能力） |
 
-**依赖影响**：新增运行时依赖 `md-editor-v3`（+ 可选 `@vavt/cm-extension`）；须在 M1-3 一并完成 ① `check:licenses` 声明、② 与既有 `markdown-it` / `@lucide/vue` 的版本去重核对、③ 按需导入的导出面登记（`exports` / resolver / Nuxt 模块是否需要感知）。
+**依赖影响**：新增运行时依赖 `md-editor-v3`（+ 可选 `@vavt/cm-extension`）；须在 M1-3 一并完成 ① `check:licenses` 声明（含 `markdown-it`——本库**首个 Markdown 运行时依赖**）、② 与 `@lucide/vue` 的版本去重核对（本仓 `^1.45.0` vs 库 `^1.16.0`，同主版本）、③ 按需导入的导出面登记（`exports` / resolver / Nuxt 模块是否需要感知）。
 
 ---
 

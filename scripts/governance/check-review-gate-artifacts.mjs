@@ -10,17 +10,18 @@
  * - 阻断规则：本批次（受检范围 = 暂存文件）必须存在**足够新鲜**的 Review Gate 工件——
  *   工件 mtime 不早于受检范围内最新的文件 mtime（工件应在代码冻结、审计完成后写入）。
  *   范围为空（如 CI 洁净检出 / 空提交）时跳过。
- * - **发布元数据豁免**：范围仅是清单文件（`package.json` 等）的**版本号字段单行变更**时跳过——
- *   `npm version` / `pnpm version` 会在改写版本号后直接提交，刷新文件 mtime 使新鲜度判定必然
- *   失败；该改动不含需审计的代码。判定取暂存 diff 的增删内容行，必须**全部**为
- *   `"version": "…"` 形态（见 `isVersionOnlyBatch`），任一其它改动行即恢复阻断。
+ * - **发布元数据豁免**：范围仅由发布元数据文件组成时跳过——① 清单文件（`package.json` 等）的
+ *   **版本号字段单行变更**（`npm version` / `pnpm version` 改写后直接提交，刷新 mtime 使新鲜度
+ *   判定必然失败）；② 发布流程生成的制品（`CHANGELOG.md`，由 `pnpm changelog` 产出）。
+ *   豁免要求范围等于**全量暂存集**且每项状态均为 `M`，任一其它文件 / 状态即恢复阻断；
+ *   清单文件另要求暂存 diff 增删行**全部**为 `"version": "…"` 形态（见 `isReleaseMetadataOnlyBatch`）。
  *
  * 用法：
  *   node scripts/governance/check-review-gate-artifacts.mjs            # 取 git 暂存文件为范围
  *   node scripts/governance/check-review-gate-artifacts.mjs --scope a b # 显式指定范围（测试用）
  */
 import { existsSync, readdirSync, statSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
@@ -32,10 +33,26 @@ export const ARTIFACTS_DIR = 'artifacts/review-gate'
 export const NON_RECORD_FILES = new Set(['README.md'])
 
 /**
- * 允许「仅版本号变更」豁免的发布元数据文件名（`npm version` / `pnpm version` 的改写目标）。
- * 按 basename 匹配；仓库当前为单包，未使用 package-lock.json，但一并登记以覆盖采用 npm 锁文件的形态。
+ * 允许「仅版本号变更」豁免的发布元数据文件（`npm version` / `pnpm version` 的改写目标）。
+ * 采用**仓库根精确路径**匹配（本仓为单包）；嵌套同名文件不豁免。
  */
 export const VERSION_METADATA_FILES = new Set(['package.json', 'package-lock.json', 'npm-shrinkwrap.json'])
+
+/**
+ * 发布流程生成的制品（由 `pnpm changelog` / semantic-release 产出，非人工代码）。
+ * 仓库根精确路径匹配；该类文件只参与「范围纯净性」校验，不校验内容形态，
+ * 也不被允许与任何其它文件同批提交。
+ */
+export const GENERATED_RELEASE_FILES = new Set(['CHANGELOG.md'])
+
+/**
+ * 发布元数据文件全集（版本号清单 + 生成制品）。
+ *
+ * 维护约定：清单与 `semantic-release-cmyr-config` 的 `@semantic-release/git` assets 对齐
+ * （当前为 `["CHANGELOG.md", "package.json"]`）。上游 assets 新增非元数据文件时须同步本表，
+ * 否则发布提交会被 fail-closed 拦下（方向安全，但表现为发布中断）。
+ */
+export const RELEASE_METADATA_FILES = new Set([...VERSION_METADATA_FILES, ...GENERATED_RELEASE_FILES])
 
 /** 仅匹配清单中 `"version": "<值>"` 形态的增删行（允许缩进与尾随逗号）。 */
 const VERSION_FIELD_LINE_RE = /^\s*"version"\s*:\s*"[^"]*"\s*,?\s*$/
@@ -142,13 +159,14 @@ function stagedEntries(root) {
 }
 
 /**
- * 判定受检范围是否全部为「仅版本号变更」的发布元数据改动。
+ * 判定受检范围是否全部为发布元数据改动（版本号清单 / 生成制品）。
  *
- * 保守口径（三重要求全部满足才豁免）：
- * 1. 范围非空，且每个文件都是 `VERSION_METADATA_FILES` 中的清单文件；
+ * 保守口径：
+ * 1. 范围非空，且每个文件都是 `RELEASE_METADATA_FILES` 中的**仓库根精确路径**；
  * 2. 范围等于**全量暂存集**（含删除 / 重命名），且每条暂存状态都是 `M`——
- *    避免「删除代码 + 版本号 bump」被默认范围（`--diff-filter=ACMR` 排除 D）误判为纯版本号；
- * 3. 每个文件的暂存 diff 增删内容行**全部**为 `"version": "…"` 形态。
+ *    避免「删除代码 + 元数据改动」被默认范围（`--diff-filter=ACMR` 排除 D）误判；
+ * 3. 版本号清单文件另需：暂存 diff 增删内容行**全部**为 `"version": "…"` 形态；
+ *    生成制品（`CHANGELOG.md`）只受第 1、2 条约束（内容由生成器负责）。
  *
  * 任一不满足即返回 false（维持阻断），因此无法借该豁免夹带代码 / 依赖 / 脚本改动。
  *
@@ -156,11 +174,11 @@ function stagedEntries(root) {
  * @param {string} [root] 仓库根
  * @returns {boolean}
  */
-export function isVersionOnlyBatch(scope, root = projectRoot) {
+export function isReleaseMetadataOnlyBatch(scope, root = projectRoot) {
     if (scope.length === 0) {
         return false
     }
-    if (!scope.every((file) => VERSION_METADATA_FILES.has(basename(file)))) {
+    if (!scope.every((file) => RELEASE_METADATA_FILES.has(file))) {
         return false
     }
     const entries = stagedEntries(root)
@@ -172,6 +190,9 @@ export function isVersionOnlyBatch(scope, root = projectRoot) {
         return false
     }
     return entries.every((entry) => {
+        if (GENERATED_RELEASE_FILES.has(entry.path)) {
+            return true
+        }
         const changed = stagedContentLines(root, entry.path)
         return changed !== null && changed.length > 0 && changed.every((line) => VERSION_FIELD_LINE_RE.test(line))
     })
@@ -195,8 +216,8 @@ export function resolveSkip(options = {}) {
     if (scope.length === 0) {
         return { skip: true, reason: '受检范围为空（无暂存文件）' }
     }
-    if (isVersionOnlyBatch(scope, root)) {
-        return { skip: true, reason: '受检范围仅为版本号变更（发布元数据，非代码改动）' }
+    if (isReleaseMetadataOnlyBatch(scope, root)) {
+        return { skip: true, reason: '受检范围仅为发布元数据（版本号清单 / 生成制品，非代码改动）' }
     }
     return { skip: false, reason: null }
 }

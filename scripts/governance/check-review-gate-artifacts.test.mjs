@@ -104,7 +104,7 @@ describe('resolveSkip', () => {
     })
 })
 
-describe('版本号变更豁免（npm version 发布元数据）', () => {
+describe('发布元数据豁免（npm version / pnpm changelog）', () => {
     it('仅 package.json 版本号变更时跳过', () => {
         const root = createGitFixture({
             [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
@@ -126,6 +126,78 @@ describe('版本号变更豁免（npm version 发布元数据）', () => {
         stageWrite(root, 'package-lock.json', '{\n  "name": "demo",\n  "version": "0.4.0"\n}\n')
         const result = resolveSkip({ root, ci: false, scope: ['package.json', 'package-lock.json'] })
         expect(result.skip).toBe(true)
+    })
+
+    it('CHANGELOG.md 单独变更豁免（发布流程生成制品）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'CHANGELOG.md': '# caomei-ui\n\n# [0.3.0](x) (2026-09-24)\n',
+        })
+        stageWrite(root, 'CHANGELOG.md', '# caomei-ui\n\n# [0.4.0](y) (2026-09-29)\n')
+        const result = resolveSkip({ root, ci: false, scope: ['CHANGELOG.md'] })
+        expect(result.skip).toBe(true)
+        expect(result.reason).toContain('发布元数据')
+    })
+
+    it('版本号 + CHANGELOG 同批豁免（semantic-release 提交形态）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+            'CHANGELOG.md': '# caomei-ui\n\n# [0.3.0](x) (2026-09-24)\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        stageWrite(root, 'CHANGELOG.md', '# caomei-ui\n\n# [0.4.0](y) (2026-09-29)\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json', 'CHANGELOG.md'] })
+        expect(result.skip).toBe(true)
+    })
+
+    it('CHANGELOG 混入代码文件时不豁免', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'CHANGELOG.md': '# caomei-ui\n\n# [0.3.0](x)\n',
+            'src/a.ts': 'export const a = 1\n',
+        })
+        stageWrite(root, 'CHANGELOG.md', '# caomei-ui\n\n# [0.4.0](y)\n')
+        stageWrite(root, 'src/a.ts', 'export const a = 2\n')
+        const result = resolveSkip({ root, ci: false, scope: ['CHANGELOG.md', 'src/a.ts'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('CHANGELOG + 非版本号 package.json 改动不豁免', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0",\n  "type": "module"\n}\n',
+            'CHANGELOG.md': '# caomei-ui\n\n# [0.3.0](x)\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0",\n  "type": "commonjs"\n}\n')
+        stageWrite(root, 'CHANGELOG.md', '# caomei-ui\n\n# [0.4.0](y)\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json', 'CHANGELOG.md'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('嵌套路径的 CHANGELOG.md 不豁免（仅仓库根精确匹配）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'docs/CHANGELOG.md': '# docs\n\n# [0.3.0](x)\n',
+        })
+        stageWrite(root, 'docs/CHANGELOG.md', '# docs\n\n# [0.4.0](y)\n')
+        expect(resolveSkip({ root, ci: false, scope: ['docs/CHANGELOG.md'] }).skip).toBe(false)
+    })
+
+    it('嵌套路径的 package.json 不豁免（仅仓库根精确匹配）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'docs/package.json': '{\n  "version": "0.3.0"\n}\n',
+        })
+        stageWrite(root, 'docs/package.json', '{\n  "version": "0.4.0"\n}\n')
+        expect(resolveSkip({ root, ci: false, scope: ['docs/package.json'] }).skip).toBe(false)
+    })
+
+    it('CHANGELOG 为新增文件（状态 A）时不豁免', () => {
+        const root = createGitFixture({ [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT })
+        stageWrite(root, 'CHANGELOG.md', '# caomei-ui\n\n# [0.4.0](y)\n')
+        const result = resolveSkip({ root, ci: false, scope: ['CHANGELOG.md'] })
+        expect(result.skip).toBe(false)
     })
 
     it('版本号外加其它字段变更时不跳过', () => {

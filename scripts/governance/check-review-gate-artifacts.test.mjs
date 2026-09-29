@@ -33,6 +33,35 @@ function createFixture(files) {
 const ARTIFACT = '# Review Gate — 示例\n\n- 范围：`git diff`（1 文件）\n\n## Review Gate\n- 结论：Pass\n'
 const SECONDS = (n) => new Date(n * 1000)
 
+function runGit(dir, args) {
+    const result = spawnSync('git', args, { cwd: dir, encoding: 'utf8' })
+    if (result.status !== 0) {
+        throw new Error(`git ${args.join(' ')} 失败：${result.stderr}`)
+    }
+}
+
+/**
+ * 建临时 git 仓库并按初始内容提交一次，用于版本号豁免的暂存 diff 判定。
+ *
+ * @param {Record<string, string>} files 相对路径 → 内容
+ * @returns {string} 仓库根
+ */
+function createGitFixture(files) {
+    const dir = createFixture(files)
+    runGit(dir, ['init', '-q'])
+    runGit(dir, ['config', 'user.email', 'fixture@example.com'])
+    runGit(dir, ['config', 'user.name', 'fixture'])
+    runGit(dir, ['add', '-A'])
+    runGit(dir, ['commit', '-q', '-m', 'init'])
+    return dir
+}
+
+/** 改写工作区文件并暂存。 */
+function stageWrite(root, relativePath, content) {
+    writeFileSync(join(root, relativePath), content)
+    runGit(root, ['add', relativePath])
+}
+
 describe('parseArgs', () => {
     it('解析 --scope 多文件', () => {
         expect(parseArgs(['--scope', 'a.ts', 'b.ts'])).toEqual({ root: null, scope: ['a.ts', 'b.ts'], error: null })
@@ -72,6 +101,129 @@ describe('resolveSkip', () => {
             'src/a.ts': 'export {}\n',
         })
         expect(resolveSkip({ root, ci: false, scope: ['src/a.ts'] }).skip).toBe(false)
+    })
+})
+
+describe('版本号变更豁免（npm version 发布元数据）', () => {
+    it('仅 package.json 版本号变更时跳过', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "name": "demo",\n  "version": "0.3.0"\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "name": "demo",\n  "version": "0.4.0"\n}\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json'] })
+        expect(result.skip).toBe(true)
+        expect(result.reason).toContain('版本号')
+    })
+
+    it('package-lock.json 仅版本号变更时同样跳过', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+            'package-lock.json': '{\n  "name": "demo",\n  "version": "0.3.0"\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        stageWrite(root, 'package-lock.json', '{\n  "name": "demo",\n  "version": "0.4.0"\n}\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json', 'package-lock.json'] })
+        expect(result.skip).toBe(true)
+    })
+
+    it('版本号外加其它字段变更时不跳过', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0",\n  "type": "module"\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0",\n  "type": "commonjs"\n}\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('非清单文件的版本号变更不豁免（防绕过）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'data.json': '{\n  "version": "1.0.0"\n}\n',
+        })
+        stageWrite(root, 'data.json', '{\n  "version": "2.0.0"\n}\n')
+        const result = resolveSkip({ root, ci: false, scope: ['data.json'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('版本号变更 + 代码文件同批时不豁免', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+            'src/a.ts': 'export const a = 1\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        stageWrite(root, 'src/a.ts', 'export const a = 2\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json', 'src/a.ts'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('以 ++ / -- 开头的其它内容行不被误吞（防判定击穿）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0",\n--OLD\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0",\n++INJECTED\n}\n')
+        const result = resolveSkip({ root, ci: false, scope: ['package.json'] })
+        expect(result.skip).toBe(false)
+    })
+
+    it('删除代码文件 + 版本号 bump 不豁免（删除项须计入）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+            'src/important.ts': 'export const important = 1\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        runGit(root, ['rm', '-q', 'src/important.ts'])
+        const result = resolveSkip({ root, ci: false })
+        expect(result.skip).toBe(false)
+    })
+
+    it('版本号豁免不依赖工件新鲜度：工件陈旧也无问题', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+        })
+        utimesSync(join(root, ARTIFACTS_DIR, 'r.md'), SECONDS(1000), SECONDS(1000))
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        utimesSync(join(root, 'package.json'), SECONDS(1001), SECONDS(1001))
+        const result = checkReviewGateArtifacts({ root, ci: false, scope: ['package.json'] })
+        expect(result.skipped).toBe(true)
+        expect(result.issues).toEqual([])
+    })
+
+    it('CLI 对版本号变更 exit 0 并打印跳过原因', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        const result = spawnSync(process.execPath, [SCRIPT_PATH, '--root', root, '--scope', 'package.json'], {
+            cwd: root,
+            encoding: 'utf8',
+            env: { ...process.env, CI: '' },
+        })
+        expect(result.status).toBe(0)
+        expect(result.stdout).toContain('跳过')
+        expect(result.stdout).toContain('版本号')
+    })
+
+    it('CLI 默认（无 --scope）由暂存区推导时同样豁免（原始缺陷复现点）', () => {
+        const root = createGitFixture({
+            [`${ARTIFACTS_DIR}/r.md`]: ARTIFACT,
+            'package.json': '{\n  "version": "0.3.0"\n}\n',
+        })
+        stageWrite(root, 'package.json', '{\n  "version": "0.4.0"\n}\n')
+        const result = spawnSync(process.execPath, [SCRIPT_PATH, '--root', root], {
+            cwd: root,
+            encoding: 'utf8',
+            env: { ...process.env, CI: '' },
+        })
+        expect(result.status).toBe(0)
+        expect(result.stdout).toContain('版本号')
     })
 })
 

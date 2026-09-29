@@ -10,13 +10,17 @@
  * - 阻断规则：本批次（受检范围 = 暂存文件）必须存在**足够新鲜**的 Review Gate 工件——
  *   工件 mtime 不早于受检范围内最新的文件 mtime（工件应在代码冻结、审计完成后写入）。
  *   范围为空（如 CI 洁净检出 / 空提交）时跳过。
+ * - **发布元数据豁免**：范围仅是清单文件（`package.json` 等）的**版本号字段单行变更**时跳过——
+ *   `npm version` / `pnpm version` 会在改写版本号后直接提交，刷新文件 mtime 使新鲜度判定必然
+ *   失败；该改动不含需审计的代码。判定取暂存 diff 的增删内容行，必须**全部**为
+ *   `"version": "…"` 形态（见 `isVersionOnlyBatch`），任一其它改动行即恢复阻断。
  *
  * 用法：
  *   node scripts/governance/check-review-gate-artifacts.mjs            # 取 git 暂存文件为范围
  *   node scripts/governance/check-review-gate-artifacts.mjs --scope a b # 显式指定范围（测试用）
  */
 import { existsSync, readdirSync, statSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
@@ -26,6 +30,15 @@ export const ARTIFACTS_DIR = 'artifacts/review-gate'
 
 /** 不作为「本批次工件」计的文件（装置说明）。 */
 export const NON_RECORD_FILES = new Set(['README.md'])
+
+/**
+ * 允许「仅版本号变更」豁免的发布元数据文件名（`npm version` / `pnpm version` 的改写目标）。
+ * 按 basename 匹配；仓库当前为单包，未使用 package-lock.json，但一并登记以覆盖采用 npm 锁文件的形态。
+ */
+export const VERSION_METADATA_FILES = new Set(['package.json', 'package-lock.json', 'npm-shrinkwrap.json'])
+
+/** 仅匹配清单中 `"version": "<值>"` 形态的增删行（允许缩进与尾随逗号）。 */
+const VERSION_FIELD_LINE_RE = /^\s*"version"\s*:\s*"[^"]*"\s*,?\s*$/
 
 /**
  * 解析命令行参数。
@@ -74,6 +87,97 @@ export function stagedScope(root = projectRoot) {
 }
 
 /**
+ * 取单个文件暂存 diff 的纯内容增删行（剥离 `+` / `-` 前缀）。
+ *
+ * 只统计 hunk 体内的增删行：进入 `@@` 后才开始采集，遇 `diff --git` 复位。
+ * 这样文件头 `--- a/…` / `+++ b/…` 与 `\ No newline` 等非内容行天然不入选，
+ * 也不会误丢以 `++` / `--` 开头的**真实内容行**。
+ *
+ * 已知边界：`old mode` / `new mode` 等非内容型变更不产生增删行，故不可见。
+ *
+ * @param {string} root 仓库根
+ * @param {string} file 仓库相对路径
+ * @returns {string[] | null} 增删内容行；git 命令失败时返回 null
+ */
+function stagedContentLines(root, file) {
+    const result = spawnSync('git', ['diff', '--cached', '--unified=0', '--', file], {
+        cwd: root,
+        encoding: 'utf8',
+    })
+    if (result.status !== 0) {
+        return null
+    }
+    const changed = []
+    let inHunk = false
+    for (const line of result.stdout.split(/\r?\n/)) {
+        if (line.startsWith('diff --git ')) {
+            inHunk = false
+        } else if (line.startsWith('@@')) {
+            inHunk = true
+        } else if (inHunk && (line.startsWith('+') || line.startsWith('-'))) {
+            changed.push(line.slice(1))
+        }
+    }
+    return changed
+}
+
+/**
+ * 取全量暂存条目（含删除 / 重命名），用于确认豁免判定覆盖整个暂存集。
+ *
+ * @param {string} root 仓库根
+ * @returns {Array<{ status: string, path: string }> | null} 失败时返回 null
+ */
+function stagedEntries(root) {
+    const result = spawnSync('git', ['diff', '--cached', '--name-status'], { cwd: root, encoding: 'utf8' })
+    if (result.status !== 0) {
+        return null
+    }
+    return result.stdout
+        .split(/\r?\n/)
+        .filter(Boolean)
+        .map((line) => {
+            const [status, ...paths] = line.split('\t')
+            return { status: status.trim(), path: paths.join('\t') }
+        })
+}
+
+/**
+ * 判定受检范围是否全部为「仅版本号变更」的发布元数据改动。
+ *
+ * 保守口径（三重要求全部满足才豁免）：
+ * 1. 范围非空，且每个文件都是 `VERSION_METADATA_FILES` 中的清单文件；
+ * 2. 范围等于**全量暂存集**（含删除 / 重命名），且每条暂存状态都是 `M`——
+ *    避免「删除代码 + 版本号 bump」被默认范围（`--diff-filter=ACMR` 排除 D）误判为纯版本号；
+ * 3. 每个文件的暂存 diff 增删内容行**全部**为 `"version": "…"` 形态。
+ *
+ * 任一不满足即返回 false（维持阻断），因此无法借该豁免夹带代码 / 依赖 / 脚本改动。
+ *
+ * @param {string[]} scope 受检范围（仓库相对路径）
+ * @param {string} [root] 仓库根
+ * @returns {boolean}
+ */
+export function isVersionOnlyBatch(scope, root = projectRoot) {
+    if (scope.length === 0) {
+        return false
+    }
+    if (!scope.every((file) => VERSION_METADATA_FILES.has(basename(file)))) {
+        return false
+    }
+    const entries = stagedEntries(root)
+    if (entries === null || entries.length !== scope.length) {
+        return false
+    }
+    const scopeSet = new Set(scope)
+    if (!entries.every((entry) => entry.status === 'M' && scopeSet.has(entry.path))) {
+        return false
+    }
+    return entries.every((entry) => {
+        const changed = stagedContentLines(root, entry.path)
+        return changed !== null && changed.length > 0 && changed.every((line) => VERSION_FIELD_LINE_RE.test(line))
+    })
+}
+
+/**
  * 判定是否应跳过（本地态缺失 / CI / 空范围）。
  *
  * @param {{ root?: string, scope?: string[], ci?: boolean }} options
@@ -90,6 +194,9 @@ export function resolveSkip(options = {}) {
     const scope = options.scope ?? stagedScope(root)
     if (scope.length === 0) {
         return { skip: true, reason: '受检范围为空（无暂存文件）' }
+    }
+    if (isVersionOnlyBatch(scope, root)) {
+        return { skip: true, reason: '受检范围仅为版本号变更（发布元数据，非代码改动）' }
     }
     return { skip: false, reason: null }
 }

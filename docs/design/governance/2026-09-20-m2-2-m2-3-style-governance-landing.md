@@ -2,7 +2,7 @@
 
 - 类型：实现落地与等价验证记录
 - 触发：Phase 11 M2-2「scoped 变量声明治理 + 档位死声明守护」与 M2-3「禁用态字面量守卫 + z-index token」
-- 授权链：M2-1 门槛判定（[M2-1 盘点记录 §3.5 / §7](./2026-09-20-m2-1-component-quality-audit.md)）→ 用户 2026-09-20 裁定「**全面收敛**」→ [待办事项](../../plan/todo.md) M2-2 / M2-3 条目登记范围
+- 授权链：M2-1 门槛判定（[M2-1 盘点记录 §3.5 / §7](./2026-09-20-m2-1-component-quality-audit.md)）→ 用户 2026-09-20 裁定「**全面收敛**」→ [待办归档](../../plan/todo-archive.md) M2-2 / M2-3 条目登记范围
 - 关联：[待办事项归档 M2](../../plan/todo-archive.md) ｜ [M2-1 盘点记录](./2026-09-20-m2-1-component-quality-audit.md) ｜ [设计规范 §2.5](../design-spec.md) ｜ [开发规范 §7](../../standards/development.md) ｜ [长期任务 §2.2](../../plan/recurring.md)
 - 环境：Vue 3.5.x + Reka UI 2.10.4 + Vite 8.2.2（fixture 计算样式）；快照 2026-09-20
 - 规模：工作区 27 文件（22 组件 + `theme.css` + `design-spec` / `development` / 两个守卫测试脚本）；另 5 个登记文档已暂存；本轮收口新增本记录 + 3 处小修（守卫注释路径化、`todo.md` token 词表补全、`scanRules` 语句型 at-rule + 3 条单测）

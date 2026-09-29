@@ -22,7 +22,7 @@
 > 一个基于 Vue 3 与 [Reka UI](https://reka-ui.com/) 的自建组件库。组件与样式解耦，默认提供极简可用的样式并支持 100% 覆盖；主题切换与暗色模式开箱即用，同一套组件适配桌面端与移动端。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险
-- 当前版本：`0.3.0`（npm `latest`），样式入口 `caomei-ui/theme.css`
+- 当前版本：`0.4.0`（npm `latest`），样式入口 `caomei-ui/theme.css`
 - 阶段进展、组件清单与下一步方向见[路线图](./docs/plan/roadmap.md)、[待办事项](./docs/plan/todo.md) 与 [Backlog](./docs/plan/backlog.md)
 - 发布策略：本地手动发布，CI 自动发布暂缓；0.x 期间 API 与目录结构仍可能调整（冻结面见[版本与兼容策略](./docs/guide/version-policy.md)）
 
@@ -45,7 +45,7 @@
 pnpm add caomei-ui
 ```
 
-当前最新版本为 `0.3.0`（样式入口为 `caomei-ui/theme.css`），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。0.x 阶段 API 与目录结构在 1.0 前可能调整，冻结面见[版本与兼容策略](./docs/guide/version-policy.md)。
+当前最新版本为 `0.4.0`（样式入口为 `caomei-ui/theme.css`；0.4.0 修复 `iconOnly` 按钮方形几何与 `Select` 非法态聚焦色等样式缺陷，并改进 soft 变体 / toast 描边对比度、新增 `DataTable` 分页对齐 token），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。0.x 阶段 API 与目录结构在 1.0 前可能调整，冻结面见[版本与兼容策略](./docs/guide/version-policy.md)。
 
 需要参与开发或本地联调时，也可通过本地依赖（`file:` / `link:`）消费构建产物，步骤见[本地联调](./docs/guide/local-linking.md)。
 

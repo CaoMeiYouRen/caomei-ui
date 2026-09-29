@@ -1,6 +1,38 @@
 # caomei-ui
 
-# Unreleased (2026-09-24)
+# [0.4.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.3.0...v0.4.0) (2026-09-29)
+
+### ✨ 新功能
+
+* **button:** 新增 iconOnly prop 实现纯图标按钮形态 ([d182da0](https://github.com/CaoMeiYouRen/caomei-ui/commit/d182da0))
+* **data-table:** 新增分页对齐 token ([b19f077](https://github.com/CaoMeiYouRen/caomei-ui/commit/b19f077))
+* **docs:** 新增示例引用存在性守卫 ([cf19133](https://github.com/CaoMeiYouRen/caomei-ui/commit/cf19133))
+* **docs:** 链接守卫拦截站点范围外链接 ([8b24074](https://github.com/CaoMeiYouRen/caomei-ui/commit/8b24074))
+* **governance:** 指针守卫覆盖紧邻编号形态 ([d60a867](https://github.com/CaoMeiYouRen/caomei-ui/commit/d60a867))
+* **governance:** 新增 Review Gate 落盘阻断守卫 ([ca7acea](https://github.com/CaoMeiYouRen/caomei-ui/commit/ca7acea))
+* **governance:** 旧尺寸命名扩到样式选择器并加固声明解析 ([f8598d7](https://github.com/CaoMeiYouRen/caomei-ui/commit/f8598d7))
+* M4 治理守卫精选交付 ([5f52ee4](https://github.com/CaoMeiYouRen/caomei-ui/commit/5f52ee4))
+* **select:** 新增 #value 插槽自定义触发器显示 ([f3b6de1](https://github.com/CaoMeiYouRen/caomei-ui/commit/f3b6de1))
+
+### 🐛 Bug 修复
+
+* **calendar:** 根容器补显式 role 使可访问名合法 ([7a77bd5](https://github.com/CaoMeiYouRen/caomei-ui/commit/7a77bd5))
+* **components:** 下拉触发器与 SelectGroup 的引用型属性收口 ([2e75e53](https://github.com/CaoMeiYouRen/caomei-ui/commit/2e75e53))
+* **components:** 修复 caumei 选择器拼写致规则永不命中 ([dbfb7ca](https://github.com/CaoMeiYouRen/caomei-ui/commit/dbfb7ca))
+* **components:** 修复多行输入高度固定致内容与滚动条溢出边框 ([658bca2](https://github.com/CaoMeiYouRen/caomei-ui/commit/658bca2))
+* **components:** 多选字段关闭态不输出空 aria-controls 并持有面板 id ([f6f5341](https://github.com/CaoMeiYouRen/caomei-ui/commit/f6f5341))
+* **components:** 触发器 disabled 透传与包装层归一化 ([b4d0d0d](https://github.com/CaoMeiYouRen/caomei-ui/commit/b4d0d0d))
+* **docs:** 修复 Select #value 示例文件缺失与类型错误 ([f777d43](https://github.com/CaoMeiYouRen/caomei-ui/commit/f777d43))
+* **docs:** 修复图标按钮示例 SFC 结构并补示例形态守卫 ([f31ee34](https://github.com/CaoMeiYouRen/caomei-ui/commit/f31ee34))
+* **governance:** 修复 Review Gate 守卫对版本号提交的误拦截 ([e128aa6](https://github.com/CaoMeiYouRen/caomei-ui/commit/e128aa6))
+* **stepper:** 关联目标缺席时条件输出 aria-describedby 与 aria-labelledby ([f95b715](https://github.com/CaoMeiYouRen/caomei-ui/commit/f95b715))
+* **style:** soft 变体底色调整为 8% 以达正文对比度 ([661b67d](https://github.com/CaoMeiYouRen/caomei-ui/commit/661b67d))
+* **toast,switch:** 统一回退口径并对齐滑块前景契约 ([8fc5cda](https://github.com/CaoMeiYouRen/caomei-ui/commit/8fc5cda))
+* **toast:** 中性强调描边回退色改 text-muted 以达图形对比度 ([728a03d](https://github.com/CaoMeiYouRen/caomei-ui/commit/728a03d))
+
+### 📦 代码重构
+
+* **styles:** 抽离字段外壳共享样式层并迁移 4 组件 ([0dc4116](https://github.com/CaoMeiYouRen/caomei-ui/commit/0dc4116))
 
 # [0.3.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.2.0...v0.3.0) (2026-09-24)
 

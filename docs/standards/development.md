@@ -175,6 +175,7 @@ const attrs = computed(() => {
 - CSS 变量被 `border` 等**简写**消费时，语义非法值会触发 invalid at computed-value time，令**整条声明被丢弃**（如圆环 `border` 消失、元素不可见），而非回退默认。接受这类 prop 的组件必须做**白名单**校验（合法长度 / 关键字）而非注入字符黑名单；负向取证除宽度外还须断言 `border-style`。
 - 存量 CSS 钩子提升为 prop 时，缺省路径必须逐值不变：仅「提供时」以内联同名变量覆盖（内联声明在层叠中高于作者选择器，与 `:where()` 归零特异性无关），未提供时仍由档位类给出与改造前一致的默认值；验收覆盖「不传 → 档位默认」与「传 → 覆盖档位」两条路径，文档写明非法值也回退。
 - 渲染正确性若依赖 **CSS 层叠 tie-break**（注入规则与 scoped 基线同特异性、靠源序取胜）：happy-dom 单测只能证明规则文本存在、不能证明渲染结果变了，必须改由真实浏览器取 computed style 作证据；承重假设（含「Portal 目标 / 样式注入位置变更须复核」）要写入设计文档与源码注释。
+- 共享字段外壳 `.caomei-field` 的 `height: var(--caomei-field-height)` 是**单行控件契约**：内容高度可超过单行的字段组件（如 `Textarea`）必须在自身根规则覆盖 `height: auto`，否则内部折行内容与滚动条会画到边框之外；声明层由 `test/contracts/field-shell.test.ts` 守卫，真实几何由 `test/e2e/field-overflow.e2e.ts` 守卫。
 
 ## 8. 构建与产物
 

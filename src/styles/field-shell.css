@@ -8,7 +8,11 @@
  * 1. 基类 `.caomei-field` 仅声明**语义化 CSS 变量**的默认回退值，不写死像素值；
  * 2. 尺寸档位（sm/md/lg）通过 `:where(.caomei-field--<size>)` 仅声明变量，特异性归零；
  * 3. 组件可覆盖 `--caomei-field-*` 变量实现定制，无需重写基类规则；
- * 4. 该层不包含内部控件（input/textarea/select）的样式，控件层由各组件自行维护。
+ * 4. 该层不包含内部控件（input/textarea/select）的样式，控件层由各组件自行维护；
+ * 5. 基类 `height: var(--caomei-field-height)` 是**单行控件契约**——内容高度可超过单行的组件
+ *    （如 Textarea）必须在自身根规则覆盖为 `height: auto`，否则内容会画到边框之外；
+ *    该声明契约由 `test/contracts/field-shell.test.ts` 守卫，真实几何由
+ *    `test/e2e/field-overflow.e2e.ts` 守卫。
  */
 
 /* ── 语义化变量契约（组件层可覆盖，基类提供回退） ── */

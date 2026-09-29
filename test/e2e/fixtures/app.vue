@@ -7,10 +7,13 @@ import {
     CaomeiCalendar,
     CaomeiDatePicker,
     CaomeiDialog,
+    CaomeiInput,
+    CaomeiInputGroup,
     CaomeiMultiSelect,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
+    CaomeiTagsInput,
     CaomeiTextarea,
     CaomeiToolbar,
 } from '@/index'
@@ -116,6 +119,34 @@ const textareaRows4 = ref('')
 const textareaOverflow = ref(
     '这是一段足够长的多行文本，用于验证内容折行超过可见行数时，内部控件及滚动条仍完整落在字段边框内，不会溢出圆角范围。',
 )
+
+/**
+ * 字段族溢出扫描用例（见 `test/e2e/field-overflow.e2e.ts`）：以「内容高度可超过单行」的
+ * 压力内容驱动各字段组件，验证组件边框内不出现越界的 in-flow 内容。
+ * `fieldLongLabel` 用于 Select 的值截断路径（长文本须由 ellipsis 裁切、而非越出边框）。
+ */
+const fieldOptions = [
+    { label: '苹果', value: 'apple' },
+    { label: '香蕉', value: 'banana' },
+    { label: '樱桃', value: 'cherry' },
+    { label: '榴莲', value: 'durian' },
+    { label: '接骨木', value: 'elderberry' },
+    { label: '无花果', value: 'fig' },
+    { label: '葡萄', value: 'grape' },
+    { label: '蜜瓜', value: 'honeydew' },
+    { label: '猕猴桃', value: 'kiwi' },
+    { label: '柠檬', value: 'lemon' },
+]
+const fieldLongLabel = '这是一段足够长的选中文本，用于验证超长取值在字段内被省略号截断而不是越出边框范围。'
+const fieldLongOptions = [{ label: fieldLongLabel, value: 'long' }, ...fieldOptions]
+const fieldMultiTags = ref(fieldOptions.slice(0, 8).map((item) => item.value))
+const fieldAutoMultiple = ref(fieldOptions.slice(0, 8).map((item) => item.value))
+const fieldTags = ref(fieldOptions.map((item) => item.value))
+const fieldSelectLong = ref<string>('long')
+const fieldInputLong = ref(fieldLongLabel)
+const fieldGroupInput = ref('输入')
+const fieldGroupSelect = ref<string>('apple')
+const fieldGroupTextarea = ref(textareaOverflow)
 </script>
 
 <template>
@@ -292,6 +323,61 @@ const textareaOverflow = ref(
                 />
             </div>
         </section>
+
+        <section id="field-overflow" class="fixture__case">
+            <div id="field-multiselect">
+                <CaomeiMultiSelect
+                    v-model="fieldMultiTags"
+                    :options="fieldOptions"
+                    label="多行多选"
+                />
+            </div>
+            <div id="field-autocomplete">
+                <CaomeiAutoComplete
+                    v-model="fieldAutoMultiple"
+                    :options="fieldOptions"
+                    multiple
+                    label="多选自动补全"
+                />
+            </div>
+            <div id="field-tags-input">
+                <CaomeiTagsInput
+                    v-model="fieldTags"
+                    label="多标签录入"
+                />
+            </div>
+            <div id="field-select-long">
+                <CaomeiSelect
+                    v-model="fieldSelectLong"
+                    :options="fieldLongOptions"
+                    label="超长选中项"
+                />
+            </div>
+            <div id="field-input-long">
+                <CaomeiInput
+                    v-model="fieldInputLong"
+                    label="超长输入"
+                />
+            </div>
+            <div id="field-input-group">
+                <CaomeiInputGroup orientation="horizontal">
+                    <CaomeiInput
+                        v-model="fieldGroupInput"
+                        label="组内输入"
+                    />
+                    <CaomeiSelect
+                        v-model="fieldGroupSelect"
+                        :options="fieldOptions"
+                        label="组内选择"
+                    />
+                    <CaomeiTextarea
+                        v-model="fieldGroupTextarea"
+                        :rows="2"
+                        label="组内文本域"
+                    />
+                </CaomeiInputGroup>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -343,6 +429,14 @@ const textareaOverflow = ref(
   可见行数，从而覆盖「滚动条出现在框内」的判定路径。
 */
 #textarea-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
+    width: min(20rem, 100%);
+}
+
+/* 字段族溢出扫描：定宽容器使压力内容必然折行 / 触发截断 */
+#field-overflow {
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-4);

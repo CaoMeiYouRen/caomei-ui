@@ -176,22 +176,24 @@ import { CaomeiButton } from '@/components/button'
             </CaomeiButton>
         </div>
     </div>
-
-    <style scoped>
-        .demo-section {
-        margin-bottom: 24px;
-        }
-        .demo-section h4 {
-        margin: 0 0 12px;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--caomei-color-text);
-        }
-        .demo-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 12px;
-        }
-    </style>
 </template>
+
+<style scoped>
+.demo-section {
+    margin-bottom: 24px;
+}
+
+.demo-section h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--caomei-color-text);
+}
+
+.demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+</style>

@@ -29,6 +29,8 @@
 
 > 相邻改动行无法用 `git add -p` 拆 hunk 时，可临时移除同文件内另一条目的改动先行提交本条目，再恢复后提交（等价于手工拆 hunk）。
 
+> **`lint-staged` 会对 staged 的整个文件跑 `eslint --fix` 后 `git add` 整文件**：用 `git add -p` 做部分暂存后提交，未暂存的同文件 hunk 会被一并 stage。需同文件分提交时，先临时还原后一 hunk、提交、再重新应用。（注：`lint-staged` 只匹配其 glob，未匹配的文件如 `package.json` 可安全部分暂存。）
+
 ## 4. 推送纪律
 
 - **禁止擅自推送**：`git commit` 后不得自动 `git push`，除非用户明确要求「推送」「push」「推到远端」。

@@ -4,6 +4,31 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-09-30 阶段归档蒸馏（Phase 16）
+
+> 本批活跃 **20 条全部处置**：分态 `migrate 20 / compress 0 / remove 0 / keep 0`。归档摘要 **20 行**（可复算，快照 2026-09-30：`awk '/^## 2026-09-30 阶段归档蒸馏（Phase 16）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。本批为 **Phase 16 归档时遗漏义务的补做**（覆盖 Phase 16 执行期与本 session 累积的 20 条）；复用规则外科式写入 `testing §2.1 / §4 / §7 / §10`、`git §3`、`design-spec §3.2`、`planning §9`、`ai-collaboration §9`；其中 **7 条**落点此前已存在（行末标「落点已存在」），**13 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。
+
+- [2026-09-28] [gotcha] VitePress `docs:build` 的死链检查严于 `docs:check:links`：指向文档站 srcDir 之外的 markdown 链接会被前者判死链、后者放行；含跨根链接的记录改动后必须重跑 `docs:build`，跨根文件改用行内代码引用 → docs/design/documentation-site.md §13（落点已存在；现行：M3-7 后 `docs:check:links` 已覆盖站点范围外链接）
+- [2026-09-28] [gotcha] `lint-staged` 会对 staged 的整个文件跑 `eslint --fix` 后 `git add` 整文件，用 `git add -p` 做的部分暂存会被一并 stage → docs/standards/git.md §3
+- [2026-09-28] [pattern] 本地态留痕的阻断守卫必须能区分「本地」与「CI」：CI / 缺目录 / 空范围跳过，只接入 `pre-commit`；新鲜度判据取「工件 mtime ≥ 受检范围最新文件」→ docs/standards/testing.md §10
+- [2026-09-28] [pattern] 文档站页面的浏览器回归须与夹具 E2E 分离：独立 Playwright 配置（`docs:build` + `preview`）并在主配置 `testIgnore` 排除 → docs/standards/testing.md §4
+- [2026-09-28] [gotcha] `:focus-visible` 不随程序化 `focus()` 命中，断言前须补真实键盘交互；`div[role=button]` 的 roving tabindex 仅当前项可聚焦 → docs/standards/testing.md §7
+- [2026-09-28] [gotcha] 扩展守卫的形态覆盖会暴露新的存量违规；「零豁免」裁定下必须同批一次性收口，否则守卫在中间提交失败 → docs/standards/testing.md §10
+- [2026-09-28] [pattern] 数值 / 对比度类在册盘点可能只覆盖被点名项：修共享公式前先对全 tone / 全预设复算，超授权范围的残余缺口转载体行登记 → docs/design/design-spec.md §3.2
+- [2026-09-28] [env] 容器内 headless Chromium 多 context 会渲染进程崩溃：`--no-zygote` 优先（保留多 context）、`--single-process` 兜底 → docs/standards/testing.md §7（落点已存在）
+- [2026-09-29] [gotcha] `capture:styles` 这类冻结基线式装置会把「规则未生效」的现状一起冻结成基线，「0 差异」不等于规则生效；新加 / 改名 / 修正规则的改动须补「故意回注错误」的负向对照证明判别力 → docs/standards/testing.md §2.1
+- [2026-09-29] [pattern] 计算样式采样只应收录**组件契约承载**的属性；夹具固有值（如 svg 固有尺寸）收录等同把夹具快照当契约冻结、给出虚假覆盖感 → docs/standards/testing.md §2.1
+- [2026-09-29] [gotcha] 治理记录里带 revision 维度的取证命令（`git log` / `show` / `diff`）必须钉持久 ref，写 `HEAD` 时提交落地后结论不可复算 → docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-09-29] [gotcha] 抽取「字段外壳」共享样式层时，多行控件（`Textarea`）不能沿用单行控件的固定 `height`，否则内容与滚动条溢出边框；几何回归只能由 Playwright 几何断言 + 计算样式基线承载 → docs/standards/development.md §7（落点已存在）
+- [2026-09-29] [pattern] 同类问题的扩面排查取「真实几何 + 声明守卫」双层；启发式必须用负向对照证伪（初版曾被同文件修饰类死规则误通过）→ docs/standards/testing.md §2.1
+- [2026-09-29] [gotcha] Vue SFC 把 `<style>` / `<script>` 写进根 `<template>` 只在 `docs:dev` 按需 transform 抛错，`docs:build` 与 `typecheck:docs` 均 exit 0 → docs/design/documentation-site.md §13（落点已存在）
+- [2026-09-29] [pattern] 「宣称的能力」与「交付载体」必须成对盘点（claim 载体清单 + 交付资产实况）；同一能力在设计文档与 Backlog 各写实现建议会立刻分叉 → docs/standards/planning.md §9
+- [2026-09-29] [gotcha] 本地态阻断守卫的「内容豁免」判定须按 hunk 体采集（前缀过滤会吞掉以 `++` / `--` 开头的真实内容行），豁免文件清单用仓库根精确路径 → docs/standards/testing.md §10
+- [2026-09-29] [gotcha] 阶段归档后 `todo.md` 的里程碑编号残留会连续复发（Phase 15 / 16 同型），而 `check-planning-numbers` 不覆盖 markdown 规划载体，须由 Review Gate 必查 → docs/standards/planning.md §7（落点已存在）
+- [2026-09-29] [gotcha] `docs:check:integrity` 与 `docs:check:links` 计数口径不同（受控 md vs 工作区 md），提交前可能巧合相等、提交后回归「1 差」不变式 → docs/standards/ai-collaboration.md §9
+- [2026-09-30] [gotcha] 未跟踪的新 `.md` 不在 `docs:check` 以 `git ls-files` 枚举的段受检面内，未 `git add` 时这些段静默全绿；新增文档类文件须「先暂存 → 全链复跑 → 再申报门禁」→ docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-09-30] [gotcha] `check-governance-records` 的链接正则在字符类内跨行匹配，行内代码 / 正文中的孤立 `[` 会被当作链接起点并吞并到下一个 `]` + `(`，据链接文字误报 `stale-planning-pointer` → docs/standards/ai-collaboration.md §9
+
 ## 2026-09-28 阶段归档蒸馏（Phase 15）
 
 > 本批活跃 **3 条全部处置**：分态 `migrate 3 / compress 0 / remove 0 / keep 0`。归档摘要 **3 行**（可复算：`awk '/^## 2026-09-28 阶段归档蒸馏（Phase 15）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[测试规范 §6](../../standards/testing.md)、[AI 协作规范 §3.1 / §9](../../standards/ai-collaboration.md)；3 条均为本批新增落点。`wisdom.md` 活跃段清空并保留指针。

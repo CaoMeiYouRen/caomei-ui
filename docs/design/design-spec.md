@@ -135,6 +135,7 @@
     - **新增候选（2026-09-28 M2-1 复算发现，待裁定）**：默认预设 soft 变体 `danger` **4.28:1** / `neutral` **4.39:1**（8% 底）与 `caomei` / `momei` 预设 primary soft **3.73:1** / **4.32:1** 仍 < 4.5:1。
     - `.caomei-calendar__weekday` 亮色 **4.83:1**（on `bg`）/ 4.52:1（on `bg-elevated`）库内达标，历史值 4.48:1 系站点 `--vp-c-bg-soft` 口径（见 [M2 一致性收口记录](./governance/2026-09-26-m2-style-token-consistency.md) §3 #6）。
 - 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
+- **在册盘点须覆盖全集而非被点名项**：数值 / 对比度类盘点若只覆盖被点名的条目，修复共享公式时会遗漏同根因缺口。修复共享公式前须对全 tone / 全预设复算；超出授权范围的残余缺口转载体行登记，不静默扩面（实例见 [M2 对比度与配色口径收口记录](./governance/2026-09-28-m2-contrast-and-pairing.md)）。
 
 ## 4. 主题与暗色
 

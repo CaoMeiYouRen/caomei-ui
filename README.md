@@ -19,7 +19,7 @@
   </a>
 </p>
 
-> 一个基于 Vue 3 与 [Reka UI](https://reka-ui.com/) 的自建组件库。组件与样式解耦，默认提供极简可用的样式并支持 100% 覆盖；主题切换与暗色模式开箱即用，同一套组件适配桌面端与移动端。
+> 一个基于 Vue 3 与 [Reka UI](https://reka-ui.com/) 的自建组件库。组件与样式解耦，默认提供极简可用的样式（具名预设 `minimal`，缺省即它）并支持 100% 覆盖；主题切换与暗色模式开箱即用，同一套组件适配桌面端与移动端。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险
 - 当前版本：`0.4.0`（npm `latest`），样式入口 `caomei-ui/theme.css`
@@ -28,8 +28,8 @@
 
 ## ✨ 特性
 
-- **组件与样式解耦**：默认极简样式，可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
-- **主题与暗色模式**：CSS variables + 语义化 token；支持 `.dark` / `[data-theme="dark"]` 与两套品牌预设（`data-preset`）；系统跟随需显式开启（`data-scheme="auto"`）。
+- **组件与样式解耦**：默认极简样式（预设 `minimal`，缺省），可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
+- **主题与暗色模式**：CSS variables + 语义化 token；支持 `.dark` / `[data-theme="dark"]` 与三套预设（`data-preset`：极简 `minimal`（缺省）/ `caomei` / `momei`）；系统跟随需显式开启（`data-scheme="auto"`）。
 - **桌面与移动适配**：单包响应式，不拆分移动端包。
 - **单仓库单包**：组件、样式、resolver、Nuxt 模块通过子路径导出，消费者只需安装一个包。
 - **无障碍**：基于 Reka UI 的 ARIA、键盘导航与焦点管理。
@@ -68,7 +68,7 @@ export default defineConfig({
 import { CaomeiButton } from 'caomei-ui'
 ```
 
-> 组件样式随包自带（打包器按组件丢弃未使用的 CSS）；**基础层（tokens / 暗色 / 品牌预设）需显式引入** `import 'caomei-ui/theme.css'`，或走上面的按需引入（resolver 会自动注入）。
+> 组件样式随包自带（打包器按组件丢弃未使用的 CSS）；**基础层（tokens / 暗色 / 预设）需显式引入** `import 'caomei-ui/theme.css'`，或走上面的按需引入（resolver 会自动注入）。
 
 ```vue
 <template>

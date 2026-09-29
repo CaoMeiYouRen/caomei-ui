@@ -143,12 +143,14 @@
   - `.dark` class；
   - `[data-theme="dark"]` 属性；
   - 系统跟随为**显式开启**：根元素加 `data-scheme="auto"`，再以 `.light` / `[data-theme="light"]` 可临时锁定亮色。
-- 品牌预设通过根元素 `data-preset` 切换：`[data-preset="caomei"]` / `[data-preset="momei"]`（缺省为基础预设）；预设与明暗正交组合，且需挂在**同一元素**上（通常为 `<html>`）。
+- 预设通过根元素 `data-preset` 切换：`minimal`（极简，**缺省**——未指定时即它）/ `caomei` / `momei`；`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，故显式指定与缺省渲染逐值一致；预设与明暗正交组合，且需挂在**同一元素**上（通常为 `<html>`）。
 - `useTheme()` 读取模式与暗色状态（`auto` 时读取系统偏好），见 [主题与样式设计 §3](./theming.md)。
 
 ## 5. 主题预设（已实现）
 
-实现位置：`src/styles/theme.css`（基础）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随基础层 `caomei-ui/theme.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
+实现位置：`src/styles/theme.css`（**基础层 = 极简 `minimal` 预设**）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随基础层 `caomei-ui/theme.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
+
+**预设清单**：`minimal`（极简，**缺省预设**——`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，显式指定与缺省渲染逐值一致）、`caomei`（§5.1）、`momei`（§5.2）。
 
 ### 5.1 caomei 预设（源：caomei-auth）
 

@@ -146,7 +146,7 @@ const attrs = computed(() => {
 - **优先封装 Reka UI**：仅在 Reka UI 缺失对应组件或无法满足设计需要时自建（见[组件设计 §1.1](../design/components.md#_1-1-实现方式决策原则)）。
 - 变体通过 `variant` / `size` / `tone` 等受控枚举 props 提供，不通过散落布尔量堆叠。
 - `label` 统一表示不可见可访问名（映射 `aria-label`）；可见标签文本使用语义化 prop（如 Checkbox 的 `text`），避免同一 prop 在不同组件语义分叉。该约定仅约束组件对外 props；值对象字段（如 `SelectOption.label`）沿用「显示文本」的生态惯例。优先级与空串语义单点定义在 `_shared/use-label-attrs`（`labelAttrs` / `useLabelAttrs` / `resolveLabelName`）：显式 `label` 优先于透传 `aria-label`，缺省或空串时透传值生效，带语言兜底文案的组件再回退语言文案。
-- 默认样式**极简可用**，必须能被 CSS variables 或 `class` 100% 覆盖。
+- 默认样式**极简可用**（具名预设 `minimal`，缺省即它），必须能被 CSS variables 或 `class` 100% 覆盖。
 - 公共 API 变更必须考虑向后兼容；破坏性变更走 major 版本。
 - 组件 `types.ts` 的 JSDoc 以中文为主，并按需用 `@en` 标签补充英文（供文档站英文 API 表使用，约定见[文档与演示站设计 §10](../design/documentation-site.md)）。
 

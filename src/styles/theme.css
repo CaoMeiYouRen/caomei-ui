@@ -1,5 +1,8 @@
 /**
- * 基础主题 token（默认预设）。
+ * 基础主题 token（默认预设 = 「极简」预设）。
+ *
+ * `:root` 与 `[data-preset="minimal"]` 共享同一规则：**未指定 `data-preset` 时即极简预设**，
+ * 显式设置 `data-preset="minimal"` 与不设置渲染逐值一致（单一事实源，见 docs/design/design-spec.md §5）。
  *
  * 暗色支持（默认亮色，不会自动跟随系统）：
  * 1. `.dark` class；
@@ -12,7 +15,8 @@
  * 组件样式禁令：`-solid` 实底不得与 `--caomei-color-primary-foreground` 交叉配对。
  * 自适应 / 稳定配对与对比度例外口径见 docs/design/design-spec.md §2.2 / §3.2。
  */
-:root {
+:root,
+[data-preset='minimal'] {
     --caomei-color-primary: #2563eb;
     --caomei-color-primary-foreground: #fff;
     --caomei-color-danger: #dc2626;

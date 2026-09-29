@@ -2,8 +2,9 @@
 import { useData } from 'vitepress'
 import { computed, onMounted, ref } from 'vue'
 
+/** 预设列表：`minimal` 为缺省预设——未指定 `data-preset` 时即它，显式设置与缺省渲染一致。 */
 const presets = [
-    { value: '', label: '默认' },
+    { value: 'minimal', label: 'minimal' },
     { value: 'caomei', label: 'caomei' },
     { value: 'momei', label: 'momei' },
 ] as const
@@ -17,18 +18,15 @@ const { lang } = useData()
 const controlLabel = computed(() => (lang.value === 'en-US' ? 'Theme preset' : '主题预设'))
 
 const STORAGE_KEY = 'caomei-docs-preset'
+const DEFAULT_PRESET = 'minimal'
 const VALID_PRESETS: Set<string> = new Set<string>(presets.map((preset) => preset.value))
-const current = ref('')
+const current = ref(DEFAULT_PRESET)
 
 function apply(value: string): void {
-    const safe = VALID_PRESETS.has(value) ? value : ''
+    // 空值（旧存储 / 未知值）归一到缺省预设；设置 `data-preset="minimal"` 与不设置渲染一致。
+    const safe = VALID_PRESETS.has(value) ? value : DEFAULT_PRESET
     current.value = safe
-    const root = document.documentElement
-    if (safe) {
-        root.dataset.preset = safe
-    } else {
-        delete root.dataset.preset
-    }
+    document.documentElement.dataset.preset = safe
 }
 
 function onChange(event: Event): void {

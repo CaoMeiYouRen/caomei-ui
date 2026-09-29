@@ -26,7 +26,7 @@
 ## ✨ Features
 
 - **Decoupled Components & Styles**: Minimal default styles, fully customizable via `--caomei-*` CSS variables. No Tailwind / UnoCSS dependency.
-- **Theme & Dark Mode**: CSS variables + semantic tokens; supports `.dark` / `[data-theme="dark"]` and two brand presets (`data-preset`).
+- **Theme & Dark Mode**: CSS variables + semantic tokens; supports `.dark` / `[data-theme="dark"]` and three presets (`data-preset`: minimal (default) / caomei / momei).
 - **Desktop & Mobile**: Single responsive package, no separate mobile bundle.
 - **Single Package**: Components, styles, resolver, and Nuxt module exported via subpaths.
 - **Accessible**: Built on Reka UI with ARIA, keyboard navigation, and focus management.
@@ -63,7 +63,7 @@ export default defineConfig({
 import { CaomeiButton } from 'caomei-ui'
 ```
 
-> Component styles are bundled with each component. **The base layer (tokens / dark mode / brand presets) must be explicitly imported**: `import 'caomei-ui/theme.css'`, or use the on-demand import above (resolver auto-injects it).
+> Component styles are bundled with each component. **The base layer (tokens / dark mode / presets) must be explicitly imported**: `import 'caomei-ui/theme.css'`, or use the on-demand import above (resolver auto-injects it).
 
 ```vue
 <template>

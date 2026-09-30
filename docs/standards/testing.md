@@ -95,6 +95,13 @@
 
 - 先 `pnpm exec vitest run <path>` 隔离复跑该文件（超时 / 时序类用例在并行负载下可能仅偶发命中），再跑一次全量取结论；两者均通过即可判为并行竞争或环境导致的偶发失败，**与本次改动无因果**。结论与门禁声明须如实写明「首跑 N 例 flaky + 归属 + 复跑结果」，不得静默吞掉或直接改判为通过（实例：`scripts/release/generate-changelog.test.mjs` 的 git fixture 在 88 文件并行负载下 5s 超时，隔离重跑 816ms 通过）。
 
+### 6.2 交互类断言的稳定性写法
+
+- **禁用固定 tick 数**：`await nextTick()`（或两次 `flush()`）后立即断言，在并行负载下会读到更新前状态——Reka 的浮层挂载、roving focus 与双向 `emit` 由微任务与定时器混合驱动，单靠 tick 数不构成「已落位」的保证。
+- **统一用条件轮询**：`test/helpers/settle.ts` 的 `await expectSettled(() => { expect(...) })`（默认上限 5s）。轮询只改变等待方式、不改变断言内容，超时仍失败（判别力不变）；负向对照可用「把期望值改成不可能值 → 用例须失败」验证。
+- **并发与超时上限**：`vitest.config.ts` 的 `maxWorkers`（并发上限）与 `testTimeout`（须高于轮询上限）。二者是兜底，逐例的轮询修复才是主手段。
+- **门禁提示**：`guard-ref-attrs` 会在改动涉及引用型 ARIA 属性时强制跑 `capture:styles`，故测试文件中出现 `aria-controls` 等字样的改动也会触发该守卫。
+
 ## 7. 容器/受限环境下的浏览器验证
 
 部分容器会把 `/tmp` 设为不可写（如 `dr-xr-xr-x`）。Chromium 会在临时目录下创建 profile 与共享内存，此时渲染进程会直接崩溃（Playwright 报 `Target crashed`，日志含 `platform_shared_memory_region_posix.cc ... Permission denied`）。

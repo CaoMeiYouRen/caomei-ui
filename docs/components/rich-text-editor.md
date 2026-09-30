@@ -2,6 +2,14 @@
 
 基于第三方 `md-editor-v3` 的 Markdown 编辑器**轻量封装**：`v-model` 绑定 Markdown 源文本，暗色与语言跟随宿主状态自动联动，无需使用方逐项传参。内核为**可选 peer 依赖**，按需加载。
 
+> **前置依赖：使用前须先安装 `md-editor-v3`**
+>
+> ```sh
+> pnpm add md-editor-v3
+> ```
+>
+> 内核是**可选 peer 依赖**（本库不强制安装，未使用本组件的下游不受影响）；**未安装就引入本组件**会在打包期报「无法解析 md-editor-v3」（Vite / Rolldown 实测）。扩展语言包 `@vavt/cm-extension` 随本库安装，无需手工安装；内核样式由组件按需加载，宿主无需手工 `import`。详见下文「[依赖与样式定制](#依赖与样式定制)」。
+
 ## 基础用法
 
 `v-model` 绑定 Markdown 源（`string`）；`height` 设定编辑器高度，`placeholder` 提供空态提示，`label` 渲染为容器的可访问名（`role="group"` + `aria-label`）。

@@ -69,7 +69,7 @@
 
 ## 高级组件
 
-- [RichTextEditor 富文本编辑器](./rich-text-editor)：富文本编辑器是 `md-editor-v3` 的轻量封装，`v-model` 绑定 Markdown 源，暗色与语言跟随宿主状态自动联动；内核为可选 peer 依赖、按需加载。
+- [RichTextEditor 富文本编辑器](./rich-text-editor)：富文本编辑器是 `md-editor-v3` 的轻量封装，`v-model` 绑定 Markdown 源，暗色与语言跟随宿主状态自动联动；内核为可选 peer 依赖、按需加载（**使用前须先安装 `md-editor-v3`**）。
 
 ## 能力说明
 

@@ -2,6 +2,14 @@
 
 A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor: `v-model` binds the Markdown source, while the theme and language follow the host state automatically with no per-item wiring. The kernel is an **optional peer dependency**, loaded on demand.
 
+> **Prerequisite: install `md-editor-v3` first**
+>
+> ```sh
+> pnpm add md-editor-v3
+> ```
+>
+> The kernel is an **optional peer dependency** (this library does not force it; consumers that never use this component are unaffected). **Importing this component without installing it** fails at build time with "cannot resolve md-editor-v3" (measured with Vite / Rolldown). The extra locale pack `@vavt/cm-extension` ships with this library (no manual install), and the kernel styles are loaded on demand by the component — the host does not need to `import` them. See [Dependencies and styling](#dependencies-and-styling) below.
+
 ## Basic usage
 
 `v-model` binds the Markdown source (`string`); `height` sets the editor height, `placeholder` provides an empty-state hint and `label` renders the container's accessible name (`role="group"` + `aria-label`).

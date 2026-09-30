@@ -112,7 +112,7 @@ export function extractStyleBlocks(file, text) {
 }
 
 /** 由 `src/**` 读取待检查条目。 */
-function collectEntries(dir, filter) {
+export function collectEntries(dir, filter) {
     return walk(dir, filter).map((file) => ({ file, text: readFileSync(file, 'utf8') }))
 }
 
@@ -423,8 +423,14 @@ export function declarationsOf(body) {
     return declarations
 }
 
-/** 遍历组件样式块的规则（用于 G1~G4）。 */
-function collectRuleEntries(entries) {
+/**
+ * 遍历组件样式块的规则（用于 G1~G4）。
+ *
+ * **跨模块契约**（`check-overlay-z-index` 等守卫复用）：返回项的 `file` 为**仓库相对路径**
+ * （`src/components/<dir>/<file>.vue` 形态，由 `rel()` 归一），且**只展开平铺规则**——
+ * `scanRules` 不展开 CSS 嵌套内部。依赖这两点的守卫须在此契约变更时同步复核。
+ */
+export function collectRuleEntries(entries) {
     const rules = []
     for (const { file, text } of entries) {
         for (const block of extractStyleBlocks(file, text)) {

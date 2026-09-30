@@ -14,6 +14,8 @@ pnpm add caomei-ui
 
 > The latest version is **v{{ theme.version }}** (style entry: `caomei-ui/theme.css`; see [Versioning & Compatibility](/en-US/guide/version-policy) for the breaking package-format change and downstream fixes). 0.x, so the API and directory layout may still change before 1.0; Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
 
+Vue 3.5+ must be installed by your project. On top of that, **some components carry optional peer dependencies** (currently the editor core `md-editor-v3` for `CaomeiRichTextEditor`): downstreams that do not use those components neither install them nor are affected, while using them requires installing the peer first (`pnpm add md-editor-v3`) — otherwise the build fails with "cannot resolve md-editor-v3".
+
 For local development, downstream projects can also consume the local build through [local linking](/en-US/guide/local-linking).
 
 ## Import styles
@@ -56,6 +58,8 @@ export default defineNuxtConfig({
 ```
 
 Components and composables (`useTheme` / `useToast` / `useConfirm` / `useLocale` / `provideLocale`) are auto-imported, and styles are injected by default; see [Architecture §5](/design/architecture) (Chinese) for options and dark mode.
+
+The module is built on `@nuxt/kit`, which is declared as an **optional peer dependency**: non-Nuxt consumers do not install it, while Nuxt 4 apps already ship the same package and can reuse it directly — no manual install needed. The module requires Nuxt 4.
 
 ## Non-Nuxt projects
 

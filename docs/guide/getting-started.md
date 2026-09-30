@@ -14,6 +14,8 @@ pnpm add caomei-ui
 
 > 当前最新版本为 **v{{ theme.version }}**（样式入口为 `caomei-ui/theme.css`；破坏性形态变更与下游修复指引见[版本与兼容策略](./version-policy.md)）。0.x 阶段 API 与目录结构在 1.0 前可能调整；组件库以 Vue 3.5+ 作为 peer 依赖。规划与进展见 [路线图](../plan/roadmap.md)。
 
+Vue 3.5+ 需在项目中自行安装。此外**部分组件带可选 peer 依赖**（当前为 `CaomeiRichTextEditor` 的编辑器内核 `md-editor-v3`）：未使用这些组件的下游无需安装、也不受影响；使用前须自行安装（`pnpm add md-editor-v3`），否则会在打包期报「无法解析 md-editor-v3」。
+
 需要本地联调时，下游项目也可通过[本地联调](./local-linking.md)消费本地构建产物。
 
 ## 引入样式
@@ -56,6 +58,8 @@ export default defineNuxtConfig({
 ```
 
 组件与 composables（`useTheme` / `useToast` / `useConfirm` / `useLocale` / `provideLocale`）自动导入，样式默认自动注入；选项与暗色策略见 [架构设计 §5](/design/architecture)。
+
+模块基于 `@nuxt/kit`，该包声明为**可选 peer 依赖**：**非 Nuxt 消费方不会安装它**，Nuxt 4 应用自带同名依赖、可直接复用，无需手工安装。模块要求 Nuxt 4。
 
 ## 非 Nuxt 项目按需引入
 

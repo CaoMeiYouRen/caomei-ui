@@ -44,6 +44,8 @@ pnpm add caomei-ui
 
 Current version is `0.4.0` (style entry: `caomei-ui/theme.css`; 0.2.0 introduced a breaking package-format change from `caomei-ui/styles.css`; 0.3.0 adds `DataTable` row grouping / expandable row groups / row expansion / multi-sort and the `TagsInput` component; 0.4.0 fixes style defects — `iconOnly` button square geometry and invalid-state focus color in `Select` — and improves soft-variant / toast border contrast, plus a `DataTable` pagination alignment token). The library requires Vue 3.5+ as a peer dependency. API and directory structure may change before 1.0; see the [versioning & compatibility page](./docs/guide/version-policy.md) for the frozen surfaces.
 
+Beyond Vue 3.5+, **some components carry optional peer dependencies** (currently the editor core `md-editor-v3` for `CaomeiRichTextEditor`): downstreams that do not use those components neither install them nor are affected, while using them requires installing the peer first (`pnpm add md-editor-v3`).
+
 ## 📖 Usage
 
 ### On-Demand Import (Recommended)
@@ -87,6 +89,8 @@ export default defineNuxtConfig({
 ```
 
 Components, composables, and styles are automatically integrated. See [Architecture §5](./docs/design/architecture.md) for options.
+
+The module is built on `@nuxt/kit`, declared as an **optional peer dependency**: Nuxt 4 apps already ship the same package and need no manual install, while non-Nuxt consumers never install it. The module requires Nuxt 4.
 
 ## 🔗 Links
 

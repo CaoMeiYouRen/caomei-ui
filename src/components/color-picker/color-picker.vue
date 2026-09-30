@@ -196,7 +196,6 @@ function onUpdate(value: string): void {
 -->
 <style>
 .caomei-color-picker__panel {
-    z-index: var(--caomei-z-modal);
     box-sizing: border-box;
 
     /* 窄屏收敛：面板宽度取 `min(260px, popper 可用宽)`，避免固定宽度越出视口（回退保持既有 260px） */
@@ -208,5 +207,17 @@ function onUpdate(value: string): void {
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
     box-shadow: var(--caomei-shadow-lg);
+}
+
+/*
+  层级：**仅 portal 面板**。面板经 PopoverPortal 挂到 body，与模态内容同处根层叠上下文，
+  故取「锚定浮层面板」档位，使其在 Dialog / Drawer 内确定性地高于模态内容（不再依赖
+  DOM 顺序的平局裁决）。
+  `inline` 形态（`.caomei-color-picker__panel--inline`）是页面内的静态 flex item——
+  `z-index` 对 flex item 同样生效，若沿用基类档位会被抬到模态内容之上，故以 `:not()`
+  把它排除在浮层层叠之外。
+*/
+.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline) {
+    z-index: var(--caomei-color-picker-z-index, var(--caomei-z-dropdown));
 }
 </style>

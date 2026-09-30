@@ -415,7 +415,9 @@ function onAnchorClick(event: MouseEvent): void {
 <style>
 .caomei-multi-select__content {
     box-sizing: border-box;
-    z-index: var(--caomei-z-overlay);
+
+    /* 层级同 Select：面板必须高于模态内容，否则在 Dialog / Drawer 内会被盖住 */
+    z-index: var(--caomei-multi-select-z-index, var(--caomei-z-dropdown));
     overflow: hidden;
 
     /*

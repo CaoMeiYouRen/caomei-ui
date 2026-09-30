@@ -450,7 +450,13 @@ function clearValue(): void {
 <style>
 .caomei-select__content {
     box-sizing: border-box;
-    z-index: var(--caomei-z-overlay);
+
+    /*
+    层级：面板必须高于模态内容（`.caomei-dialog__content` 等，`--caomei-z-modal`），
+    否则在 Dialog / Drawer 内打开的 Select 会被模态卡片盖住（面板为 popper 挂到 body，
+    与模态同处根层叠上下文，只能靠 z-index 分胜负）。故取「锚定浮层面板」档位。
+    */
+    z-index: var(--caomei-select-z-index, var(--caomei-z-dropdown));
     overflow: hidden;
 
     /*

@@ -5,11 +5,18 @@ import {
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiCalendar,
+    CaomeiColorPicker,
     CaomeiDatePicker,
     CaomeiDialog,
+    CaomeiDropdownMenu,
+    CaomeiDropdownMenuContent,
+    CaomeiDropdownMenuTrigger,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiMultiSelect,
+    CaomeiPopover,
+    CaomeiPopoverContent,
+    CaomeiPopoverTrigger,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
@@ -147,6 +154,26 @@ const fieldInputLong = ref(fieldLongLabel)
 const fieldGroupInput = ref('输入')
 const fieldGroupSelect = ref<string>('apple')
 const fieldGroupTextarea = ref(textareaOverflow)
+
+/**
+ * 模态内浮层用例（见 `test/e2e/overlay-stacking.e2e.ts`）：在 Dialog 内部打开的浮层面板
+ * 必须渲染在模态内容之上。**全部 7 个 portal 浮层面板**（Select / MultiSelect / AutoComplete /
+ * ColorPicker / DatePicker / Popover / DropdownMenu）同列为受检面——它们同源（Reka 的 popper
+ * 包裹层承载面板 z-index），任一类回退到遮罩层档位都会被模态内容盖住。
+ */
+const overlayDialogOpen = ref(false)
+const overlaySelectValue = ref<string | null>(null)
+const overlayMultiValue = ref<string[]>([])
+const overlayAutoValue = ref<string>()
+const overlayColorValue = ref('#60a5fa')
+const overlayDateValue = ref<Date | null>(null)
+const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
+
+/**
+ * 内联 ColorPicker 用例（见 `test/e2e/overlay-stacking.e2e.ts` 第二个用例）：`inline` 形态是
+ * 页面内的静态 flex item，`z-index` 对其同样生效，必须**不参与**浮层层叠（不得被基类带上档位）。
+ */
+const inlineColorValue = ref('#60a5fa')
 </script>
 
 <template>
@@ -378,6 +405,83 @@ const fieldGroupTextarea = ref(textareaOverflow)
                 </CaomeiInputGroup>
             </div>
         </section>
+
+        <section id="overlay-in-dialog" class="fixture__case">
+            <CaomeiButton @click="overlayDialogOpen = true">
+                打开浮层对话框
+            </CaomeiButton>
+            <CaomeiDialog
+                v-model:open="overlayDialogOpen"
+                title="批量扫描"
+                description="验证模态内打开的浮层面板是否渲染在模态内容之上。"
+            >
+                <div class="fixture__overlay-stack">
+                    <div id="overlay-select">
+                        <CaomeiSelect
+                            v-model="overlaySelectValue"
+                            :options="panelOptions"
+                            placeholder="仅报告"
+                            label="扫描模式"
+                        />
+                    </div>
+                    <div id="overlay-multi-select">
+                        <CaomeiMultiSelect
+                            v-model="overlayMultiValue"
+                            :options="panelOptions"
+                            placeholder="全部仓库"
+                            label="扫描仓库"
+                        />
+                    </div>
+                    <div id="overlay-auto-complete">
+                        <CaomeiAutoComplete
+                            v-model="overlayAutoValue"
+                            :options="panelOptions"
+                            placeholder="按仓库名搜索"
+                            label="仓库搜索"
+                        />
+                    </div>
+                    <div id="overlay-color-picker">
+                        <CaomeiColorPicker
+                            v-model="overlayColorValue"
+                            label="标记颜色"
+                        />
+                    </div>
+                    <div id="overlay-date-picker">
+                        <CaomeiDatePicker
+                            v-model="overlayDateValue"
+                            placeholder="选择扫描日期"
+                            label="扫描日期"
+                        />
+                    </div>
+                    <div id="overlay-popover">
+                        <CaomeiPopover>
+                            <CaomeiPopoverTrigger>
+                                扫描说明
+                            </CaomeiPopoverTrigger>
+                            <CaomeiPopoverContent>
+                                扫描范围为所选仓库的全部开放依赖告警。
+                            </CaomeiPopoverContent>
+                        </CaomeiPopover>
+                    </div>
+                    <div id="overlay-dropdown-menu">
+                        <CaomeiDropdownMenu>
+                            <CaomeiDropdownMenuTrigger>
+                                更多操作
+                            </CaomeiDropdownMenuTrigger>
+                            <CaomeiDropdownMenuContent :model="overlayMenuItems" />
+                        </CaomeiDropdownMenu>
+                    </div>
+                </div>
+            </CaomeiDialog>
+        </section>
+
+        <section id="inline-color-picker" class="fixture__case">
+            <CaomeiColorPicker
+                v-model="inlineColorValue"
+                inline
+                label="内联颜色"
+            />
+        </section>
     </main>
 </template>
 
@@ -441,5 +545,12 @@ const fieldGroupTextarea = ref(textareaOverflow)
     flex-direction: column;
     gap: var(--caomei-space-4);
     width: min(20rem, 100%);
+}
+
+/* 模态内浮层用例：字段纵向排列，面板向下展开后必然与模态内容区域重叠 */
+.fixture__overlay-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
 }
 </style>

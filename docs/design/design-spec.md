@@ -76,13 +76,15 @@
 | `--caomei-z-pinned` | `2` | 局部层叠：DataTable 冻结列数据单元格 |
 | `--caomei-z-pinned-header` | `3` | 局部层叠：DataTable 冻结列表头（高于数据单元格） |
 | `--caomei-z-sticky` | `10` | 浮层层级词表预留（暂无消费点） |
-| `--caomei-z-overlay` | `1000` | 遮罩层（Dialog / ConfirmDialog / Drawer）与同值浮层面板（Select / MultiSelect / AutoComplete） |
-| `--caomei-z-modal` | `1001` | 模态内容（Dialog / ConfirmDialog / Drawer / ColorPicker 面板） |
-| `--caomei-z-dropdown` | `1050` | 锚定浮层面板（DropdownMenu / Popover / DatePicker） |
+| `--caomei-z-overlay` | `1000` | 遮罩层（Dialog / ConfirmDialog / Drawer） |
+| `--caomei-z-modal` | `1001` | 模态内容（Dialog / ConfirmDialog / Drawer） |
+| `--caomei-z-dropdown` | `1050` | 锚定浮层面板（DropdownMenu / Popover / DatePicker / Select / MultiSelect / AutoComplete / ColorPicker 的 portal 面板） |
 | `--caomei-z-tooltip` | `1060` | 浮层层级词表预留（暂无消费点） |
 | `--caomei-z-toast` | `1100` | Toast 视口 / Image 预览遮罩 |
 
 - 浮层组件保留 `--caomei-<comp>-z-index` 覆盖钩子，未覆盖时回退到上表 token（如 `var(--caomei-popover-z-index, var(--caomei-z-dropdown))`）。
+- 锚定浮层面板（`--caomei-z-dropdown`）档位**必须高于模态内容**：面板经 portal 挂到 `body`，与模态内容同处根层叠上下文，档位低于模态时在 Dialog / Drawer 内打开的面板会被模态卡片盖住。该不变量由 `check:overlay-z-index` 守卫（`governance:check` 链内），真实渲染由 `test/e2e/overlay-stacking.e2e.ts` 守卫。
+- 页面内的**静态**面板形态（如 `ColorPicker` 的 `inline`）不参与浮层层叠、不声明 `z-index`：`z-index` 对 flex item 同样生效，沿用浮层档位会被抬到模态内容之上。
 - Image 放大内容取 `calc(var(--caomei-image-preview-z-index, var(--caomei-z-toast)) + 1)`。
 - 局部层叠 token（`raise` / `pinned` / `pinned-header`）只用于同一容器内的相对抬升，不与浮层层级混用。
 

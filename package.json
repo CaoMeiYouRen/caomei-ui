@@ -99,7 +99,7 @@
     "@lucide/vue": "^1.45.0",
     "@tanstack/vue-table": "9.2.4",
     "@vavt/cm-extension": "^2.0.0",
-    "reka-ui": "2.10.4"
+    "reka-ui": "2.10.5"
   },
   "devDependencies": {
     "@lint-md/cli": "^2.3.1",

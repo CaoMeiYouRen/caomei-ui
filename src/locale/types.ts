@@ -101,6 +101,10 @@ export interface CaomeiLocaleMessages {
         loading: string
         bar: string
     }
+    richTextEditor: {
+        loading: string
+        loadFailed: string
+    }
     select: {
         clear: string
     }

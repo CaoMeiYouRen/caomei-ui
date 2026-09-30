@@ -95,6 +95,10 @@ const koKR: CaomeiLocaleMessages = {
         loading: '로딩 중',
         bar: '진행률',
     },
+    richTextEditor: {
+        loading: '에디터 불러오는 중…',
+        loadFailed: '에디터를 불러오지 못했습니다. md-editor-v3 설치 여부를 확인하세요.',
+    },
     select: {
         clear: '지우기',
     },

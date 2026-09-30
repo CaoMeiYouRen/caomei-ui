@@ -9,12 +9,14 @@ Some components show user-facing text (accessible names, empty states, button la
 ```ts
 import {
   CaomeiConfigProvider,
+  caomeiLocaleCodeKey,
   caomeiLocaleKey,
   caomeiLocales,
   defaultLocale,
   defaultLocaleMessages,
   provideLocale,
   useLocale,
+  useLocaleCode,
   type CaomeiLocale,
   type CaomeiLocaleMessageOverrides,
   type CaomeiLocaleMessages,
@@ -31,13 +33,15 @@ import {
 | `CaomeiLocaleMessages` | interface | Full message shape, useful for typing custom messages |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | Per-namespace partial overrides |
 | `CaomeiConfigProvider` | component | Renderless provider (default slot only); props: `locale` / `messages` |
-| `provideLocale` | `(options?: ProvideLocaleOptions) => ComputedRef<CaomeiLocaleMessages>` | Provides messages for non-component / custom-provider cases; must be called in setup |
+| `provideLocale` | `(options?: ProvideLocaleOptions) => ComputedRef<CaomeiLocaleMessages>` | Provides messages and the locale id for non-component / custom-provider cases; must be called in setup |
 | `useLocale` | `() => ComputedRef<CaomeiLocaleMessages>` | Reads the injected messages; falls back to `defaultLocaleMessages` when none are injected |
-| `caomeiLocaleKey` | `InjectionKey<ComputedRef<CaomeiLocaleMessages>>` | Injection key, for custom providers |
+| `useLocaleCode` | `() => ComputedRef<CaomeiLocale>` | Reads the injected locale id; falls back to `defaultLocale` when none is injected |
+| `caomeiLocaleKey` | `InjectionKey<ComputedRef<CaomeiLocaleMessages>>` | Message injection key, for custom providers |
+| `caomeiLocaleCodeKey` | `InjectionKey<ComputedRef<CaomeiLocale>>` | Locale-id injection key, for custom providers |
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 25 namespaces by component area, covering 26 consuming components:
+`CaomeiLocaleMessages` is split into 27 namespaces by component area, covering 28 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -59,6 +63,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
+| `richTextEditor` | `loading` `loadFailed` | RichTextEditor |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `splitButton` | `menu` | SplitButton |

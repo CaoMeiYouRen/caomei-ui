@@ -9,12 +9,14 @@
 ```ts
 import {
   CaomeiConfigProvider,
+  caomeiLocaleCodeKey,
   caomeiLocaleKey,
   caomeiLocales,
   defaultLocale,
   defaultLocaleMessages,
   provideLocale,
   useLocale,
+  useLocaleCode,
   type CaomeiLocale,
   type CaomeiLocaleMessageOverrides,
   type CaomeiLocaleMessages,
@@ -31,13 +33,15 @@ import {
 | `CaomeiLocaleMessages` | 接口 | 完整文案结构，可用于类型化自定义文案 |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | 按命名空间的部分覆盖 |
 | `CaomeiConfigProvider` | 组件 | renderless provider（仅默认插槽），props：`locale` / `messages` |
-| `provideLocale` | `(options?: ProvideLocaleOptions) => ComputedRef<CaomeiLocaleMessages>` | 非组件 / 自定义 Provider 场景下提供文案，须在 setup 中调用 |
+| `provideLocale` | `(options?: ProvideLocaleOptions) => ComputedRef<CaomeiLocaleMessages>` | 非组件 / 自定义 Provider 场景下提供文案与语言标识，须在 setup 中调用 |
 | `useLocale` | `() => ComputedRef<CaomeiLocaleMessages>` | 读取当前注入的文案；未注入时回退 `defaultLocaleMessages` |
-| `caomeiLocaleKey` | `InjectionKey<ComputedRef<CaomeiLocaleMessages>>` | 注入键，自定义 provider 时使用 |
+| `useLocaleCode` | `() => ComputedRef<CaomeiLocale>` | 读取当前注入的语言标识；未注入时回退 `defaultLocale` |
+| `caomeiLocaleKey` | `InjectionKey<ComputedRef<CaomeiLocaleMessages>>` | 文案注入键，自定义 provider 时使用 |
+| `caomeiLocaleCodeKey` | `InjectionKey<ComputedRef<CaomeiLocale>>` | 语言标识注入键，自定义 provider 时使用 |
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 25 个命名空间，对应 26 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 27 个命名空间，对应 28 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -59,6 +63,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
+| `richTextEditor` | `loading` `loadFailed` | RichTextEditor |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `splitButton` | `menu` | SplitButton |

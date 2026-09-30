@@ -95,6 +95,10 @@ const jaJP: CaomeiLocaleMessages = {
         loading: '読み込み中',
         bar: '進捗',
     },
+    richTextEditor: {
+        loading: 'エディターを読み込み中…',
+        loadFailed: 'エディターの読み込みに失敗しました。md-editor-v3 がインストールされているか確認してください。',
+    },
     select: {
         clear: 'クリア',
     },

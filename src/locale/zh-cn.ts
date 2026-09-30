@@ -95,6 +95,10 @@ const zhCN: CaomeiLocaleMessages = {
         loading: '加载中',
         bar: '进度',
     },
+    richTextEditor: {
+        loading: '正在加载编辑器…',
+        loadFailed: '编辑器加载失败，请确认已安装 md-editor-v3',
+    },
     select: {
         clear: '清除',
     },

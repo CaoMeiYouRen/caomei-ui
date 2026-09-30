@@ -95,6 +95,10 @@ const enUS: CaomeiLocaleMessages = {
         loading: 'Loading',
         bar: 'Progress',
     },
+    richTextEditor: {
+        loading: 'Loading editor…',
+        loadFailed: 'Failed to load the editor. Make sure md-editor-v3 is installed.',
+    },
     select: {
         clear: 'Clear',
     },

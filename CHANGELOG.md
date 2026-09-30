@@ -1,5 +1,22 @@
 # caomei-ui
 
+# [0.5.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.4.0...v0.5.0) (2026-09-30)
+
+### ✨ 新功能
+
+* **components:** 新增 CaomeiRichTextEditor 富文本编辑器封装 ([023e30c](https://github.com/CaoMeiYouRen/caomei-ui/commit/023e30c))
+* **docs:** 画廊进组件侧栏、RichTextEditor 独立分组并修复卡片对齐 ([25f79fa](https://github.com/CaoMeiYouRen/caomei-ui/commit/25f79fa))
+* **governance:** 新增 docs 取证命令 revision 钉定守卫 ([1c26cd3](https://github.com/CaoMeiYouRen/caomei-ui/commit/1c26cd3))
+* **governance:** 新增浮层档位语义门禁 check:overlay-z-index ([17ff31f](https://github.com/CaoMeiYouRen/caomei-ui/commit/17ff31f))
+* **governance:** 新增类名前缀拼写守卫 ([0378fd4](https://github.com/CaoMeiYouRen/caomei-ui/commit/0378fd4))
+* **locale:** 新增 richTextEditor 文案命名空间 ([46b8f12](https://github.com/CaoMeiYouRen/caomei-ui/commit/46b8f12))
+* **theme:** 新增极简具名预设 minimal（缺省即极简） ([50c1f0e](https://github.com/CaoMeiYouRen/caomei-ui/commit/50c1f0e))
+
+### 🐛 Bug 修复
+
+* **components:** 修正模态内浮层面板层级并补齐 z-index 覆盖钩子 ([79e4ef9](https://github.com/CaoMeiYouRen/caomei-ui/commit/79e4ef9))
+* **docs:** 修正版本策略页版本口径并补两条弱守卫 ([bca8db8](https://github.com/CaoMeiYouRen/caomei-ui/commit/bca8db8))
+
 # [0.4.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.3.0...v0.4.0) (2026-09-29)
 
 ### ✨ 新功能
@@ -25,6 +42,7 @@
 * **docs:** 修复 Select #value 示例文件缺失与类型错误 ([f777d43](https://github.com/CaoMeiYouRen/caomei-ui/commit/f777d43))
 * **docs:** 修复图标按钮示例 SFC 结构并补示例形态守卫 ([f31ee34](https://github.com/CaoMeiYouRen/caomei-ui/commit/f31ee34))
 * **governance:** 修复 Review Gate 守卫对版本号提交的误拦截 ([e128aa6](https://github.com/CaoMeiYouRen/caomei-ui/commit/e128aa6))
+* **governance:** 发布元数据豁免扩展至 CHANGELOG 生成制品 ([d07fd8c](https://github.com/CaoMeiYouRen/caomei-ui/commit/d07fd8c))
 * **stepper:** 关联目标缺席时条件输出 aria-describedby 与 aria-labelledby ([f95b715](https://github.com/CaoMeiYouRen/caomei-ui/commit/f95b715))
 * **style:** soft 变体底色调整为 8% 以达正文对比度 ([661b67d](https://github.com/CaoMeiYouRen/caomei-ui/commit/661b67d))
 * **toast,switch:** 统一回退口径并对齐滑块前景契约 ([8fc5cda](https://github.com/CaoMeiYouRen/caomei-ui/commit/8fc5cda))

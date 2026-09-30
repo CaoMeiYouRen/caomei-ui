@@ -4,10 +4,15 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
+    CURRENT_VERSION_STATEMENTS,
+    SERIES_LITERAL_RE,
+    SERIES_LITERAL_SURFACES,
     VERSION_LITERAL_RE,
     VERSION_SURFACES,
     checkVersionSurfaces,
+    findCurrentVersionDrift,
     findHardcodedVersions,
+    findSeriesLiterals,
     resolveTargetRoot,
     runSiteVersionCheck,
 } from './check-site-version.mjs'
@@ -183,5 +188,101 @@ describe('仓库不变量', () => {
         const result = await runSiteVersionCheck(PROJECT_ROOT)
         expect(result.version).toBe(result.exposedVersion)
         expect(result.issues).toEqual([])
+    })
+})
+
+describe('系列字面量识别（弱守卫）', () => {
+    it('命中两段式系列（0.3.x / 1.2.x，大小写不敏感）', () => {
+        for (const line of ['即 0.3.x 系列', 'the 0.3.x line', 'v10.20.x', '写成 0.3.X']) {
+            expect([...line.matchAll(SERIES_LITERAL_RE)].map((match) => match[0])).toEqual([
+                line.match(/\d+\.\d+\.x/i)[0],
+            ])
+        }
+    })
+
+    it('不误报仅 major 的 0.x（概念区间）、三段式、两段式非 x 与后缀文本', () => {
+        for (const line of ['0.x 兼容策略', '0.4.0', '0.3.xlsx', '版本 1.6', '0.4']) {
+            expect([...line.matchAll(SERIES_LITERAL_RE)]).toEqual([])
+        }
+    })
+
+    it('findSeriesLiterals 逐行报出行号', () => {
+        const issues = findSeriesLiterals([{ file: 'docs/guide/version-policy.md', content: '首行\n即 0.3.x 系列\n' }])
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'series-literal', line: 2 })
+    })
+
+    it('受检面登记为版本策略页中英两页', () => {
+        expect(SERIES_LITERAL_SURFACES).toEqual([
+            'docs/guide/version-policy.md',
+            'docs/i18n/en-US/guide/version-policy.md',
+        ])
+    })
+})
+
+describe('「当前版本」句弱守卫（README + roadmap 同一套窄锚策略）', () => {
+    const statements = [
+        { file: 'README.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'zh' },
+        { file: 'README.en-US.md', pattern: /Current version is\s*`([^`\s]+)`/u, label: 'en' },
+        { file: 'docs/plan/roadmap.md', pattern: /`latest`\s*=\s*`?([0-9]+\.[0-9]+(?:\.[0-9]+)?)`?/u, label: 'roadmap' },
+    ]
+
+    const clean = {
+        'README.md': '- 当前版本：`1.2.3`（npm latest）',
+        'README.en-US.md': 'Current version is `1.2.3` (style entry: x)',
+        'docs/plan/roadmap.md': '均已发布到 npm（`latest` = 1.2.3）',
+    }
+
+    it('三面版本一致时零问题', () => {
+        expect(findCurrentVersionDrift(createFixture(clean), '1.2.3', statements)).toEqual([])
+    })
+
+    it('README 版本漂移时报 current-version-drift 并给出行号', () => {
+        const root = createFixture({ ...clean, 'README.md': '首行\n- 当前版本：`0.3.0`（npm latest）' })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'current-version-drift', line: 2 })
+    })
+
+    it('roadmap `latest` 句漂移同样命中（与 README 同族）', () => {
+        const root = createFixture({ ...clean, 'docs/plan/roadmap.md': '均已发布到 npm（`latest` = 1.1.0）' })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'current-version-drift', file: 'docs/plan/roadmap.md' })
+    })
+
+    it('句式被改写时报 statement-missing 并回显期望句式', () => {
+        const root = createFixture({ ...clean, 'README.md': '- 版本：`1.2.3`' })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'statement-missing' })
+        expect(issues[0].message).toContain('期望')
+    })
+
+    it('文件缺失时报 statement-missing', () => {
+        const root = createFixture({ 'README.en-US.md': 'Current version is `1.2.3`' })
+        expect(findCurrentVersionDrift(root, '1.2.3', statements)[0]).toMatchObject({ type: 'statement-missing' })
+    })
+
+    it('仓库登记表覆盖中英 README 与 roadmap 三面', () => {
+        const files = new Set(CURRENT_VERSION_STATEMENTS.map((entry) => entry.file))
+        expect(files).toEqual(new Set(['README.md', 'README.en-US.md', 'docs/plan/roadmap.md']))
+        expect(CURRENT_VERSION_STATEMENTS.filter((entry) => entry.file === 'README.md')).toHaveLength(2)
+    })
+})
+
+describe('runSiteVersionCheck 新规则接线（W1：防接线被静默拆除）', () => {
+    it('系列字面量与当前版本句漂移经 runner 汇总', async () => {
+        const root = createFixture({
+            'package.json': '{ "version": "1.2.3" }\n',
+            'docs/.vitepress/config.mjs': 'export default { themeConfig: { version: "1.2.3" } }\n',
+            'docs/guide/version-policy.md': '# 版本\n\n> 即 0.9.x 系列\n',
+            'README.md': '- 当前版本：`1.1.0`（npm latest）\n',
+            'docs/plan/roadmap.md': '（`latest` = 1.1.0）\n',
+        })
+        const result = await runSiteVersionCheck(root, { surfaces: [] })
+        const kinds = result.issues.map((issue) => issue.type)
+        expect(kinds).toContain('series-literal')
+        expect(kinds).toContain('current-version-drift')
     })
 })

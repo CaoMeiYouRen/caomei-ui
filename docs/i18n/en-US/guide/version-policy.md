@@ -22,7 +22,7 @@ Latest version: **v{{ theme.version }}**
 
 ## 0.x API freeze window
 
-> Starts at the **current release** (shown at the top of this page, derived from `theme.version` — the 0.3.x line; the `x` is derived from the site version, never hand-written). This declaration aligns with dependfix migration assessment §12, trigger condition 3 ("caomei-ui has shipped a stable 0.x release and declares a 0.x API freeze window").
+> Starts at the **current release** (shown at the top of this page, derived from `theme.version`; the version is always derived, never hand-written as a `major.minor.x` series in prose — `0.x` denotes this section's conceptual freeze range, not a series). This declaration aligns with dependfix migration assessment §12, trigger condition 3 ("caomei-ui has shipped a stable 0.x release and declares a 0.x API freeze window").
 
 **Frozen until 1.0 (no breaking changes)**:
 

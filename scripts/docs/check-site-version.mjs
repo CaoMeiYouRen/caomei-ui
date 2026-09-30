@@ -16,6 +16,15 @@
  * 4. `locale-version-mismatch`——**逐 locale** 断言：各 locale **原始**已解析 `themeConfig.version` 必须存在且
  *    等于 `package.json`（防「依赖 locale 合并语义 → 英文页静默展示空版本」这条收窄通道）。
  * 5. `surface-scope-narrowed`——登记表须非空、文件均存在，且至少含 1 个配置面与中英各 1 个页面面。
+ * 6. `series-literal`（**弱守卫**）——版本策略页正文声明「起点由 `theme.version` 派生」，故不得出现
+ *    `<major>.<minor>.x` 系列字面量（大小写不敏感；两段式不在三段式字面量受检面内，曾实测漂移：
+ *    0.4.0 期间正文仍写 0.3.x）。**已知边界**：`0.x`（仅 major）是冻结窗口的概念性区间、非系列号，
+ *    1.0 时随该节语义重写，故不命中；`0.4` 这类两段式非 `x` 形态亦不在面内。
+ * 7. `current-version-statement`（**弱守卫**）——**对外可读的「当前版本」句**须存在且等于
+ *    `package.json` 的 `version`：仓库根 README（中 2 处 + 英 1 处）与 `docs/plan/roadmap.md` §1 的
+ *    `` `latest` = <version> `` 句；句式被改写即 `statement-missing`。
+ *    这三个文件都按设计保留**历史版本叙述**（各版本做了什么），故不能对全文件版本字面量施加相等要求,
+ *    只锚定声明句式——`roadmap` 与 README 采用**同一套窄锚策略**（不因"规划载体每次阶段重写"而豁免）。
  *
  * 说明：`.md` 中的 `{{ theme.version }}` 是**有意**的 Vue 插值（VitePress 会把页面当 Vue 模板编译），
  * 与[文档与演示站 §13](../../docs/design/documentation-site.md) 中「不要写双花括号」的告诫不冲突——
@@ -40,6 +49,101 @@ export const VERSION_SURFACES = [
 
 /** 三段式版本字面量（`1.2.3` / `v1.2.3`）。两段式（`1.6`）与日期不命中。 */
 export const VERSION_LITERAL_RE = /(?<![\d.])\d+\.\d+\.\d+(?![\d.])/g
+
+/**
+ * 版本策略页：正文声明「起点由 `theme.version` 派生」，故**不得**出现 `<major>.<minor>.x` 系列字面量
+ * （两段式 `0.3.x` 不在三段式字面量受检面内，是历史上真实漂移过的形态：0.3.x 写死在 0.4.0 期间）。
+ */
+export const SERIES_LITERAL_SURFACES = [
+    'docs/guide/version-policy.md',
+    'docs/i18n/en-US/guide/version-policy.md',
+]
+
+/** `<major>.<minor>.x` 系列字面量；`0.x`（仅 major）不命中（版本策略节标题即写 0.x）。 */
+export const SERIES_LITERAL_RE = /(?<![\d.])\d+\.\d+\.x(?![\w.])/giu
+
+/**
+ * 「当前版本」声明句登记表（弱守卫面）：README（中英）与 `docs/plan/roadmap.md`。
+ * 语句**必须存在**，且其中版本号须等于 `package.json` 的 `version`。
+ *
+ * 为什么是弱守卫：这些文件按设计保留**历史版本**叙述（各版本做了什么），故不能对文件内所有版本字面量
+ * 施加相等要求；此处只锚定「当前版本 / `latest` =」这一声明句式，句式被改写会在 `statement-missing`
+ * 上响亮失败（有意的防静默失效设计，代价是改措辞即红）。
+ */
+export const CURRENT_VERSION_STATEMENTS = [
+    { file: 'README.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'README「当前版本」句' },
+    { file: 'README.md', pattern: /当前最新版本为\s*`([^`\s]+)`/u, label: 'README「当前最新版本」句' },
+    {
+        file: 'README.en-US.md',
+        pattern: /Current version is\s*`([^`\s]+)`/u,
+        label: 'README (en) "Current version" statement',
+    },
+    {
+        // roadmap 写作 `latest` = 0.4.0（版本号本处未加反引号），故捕获「数字版本」而非反引号内容
+        file: 'docs/plan/roadmap.md',
+        pattern: /`latest`\s*=\s*`?([0-9]+\.[0-9]+(?:\.[0-9]+)?)`?/u,
+        label: 'roadmap §1「latest =」当前版本句',
+    },
+]
+
+/**
+ * 扫描版本策略页正文的系列字面量。
+ *
+ * @param {Array<{ file: string, content: string }>} surfaces 受检页面内容
+ * @returns {Array<{ type: string, file: string, line: number, message: string }>} 问题列表
+ */
+export function findSeriesLiterals(surfaces) {
+    const issues = []
+    for (const { file, content } of surfaces) {
+        content.split(/\r?\n/u).forEach((line, index) => {
+            for (const match of line.matchAll(SERIES_LITERAL_RE)) {
+                issues.push({
+                    type: 'series-literal',
+                    file,
+                    line: index + 1,
+                    message: `版本策略页正文出现系列字面量「${match[0]}」：该页声明版本由 theme.version 派生，系列号不得手写（发版后会静默漂移）`,
+                })
+            }
+        })
+    }
+    return issues
+}
+
+/**
+ * 校验 README「当前版本」句与 `package.json` 一致（弱守卫：句式缺失亦报错）。
+ *
+ * @param {string} root 仓库根
+ * @param {string} version `package.json` 的 version
+ * @param {Array<{ file: string, pattern: RegExp, label: string }>} statements 句式登记表
+ * @returns {Array<{ type: string, file: string, line: number|null, message: string }>} 问题列表
+ */
+export function findCurrentVersionDrift(root, version, statements = CURRENT_VERSION_STATEMENTS) {
+    const issues = []
+    for (const statement of statements) {
+        const absolute = resolve(root, statement.file)
+        const content = existsSync(absolute) ? readFileSync(absolute, 'utf8') : ''
+        const match = statement.pattern.exec(content)
+        if (!match) {
+            issues.push({
+                type: 'statement-missing',
+                file: statement.file,
+                line: null,
+                message: `${statement.label}未匹配到约定句式（期望 ${String(statement.pattern)}）：声明句被改写或删除，弱守卫失效（当前版本 ${version}）`,
+            })
+            continue
+        }
+        if (match[1] !== version) {
+            const line = content.slice(0, match.index).split(/\r?\n/u).length
+            issues.push({
+                type: 'current-version-drift',
+                file: statement.file,
+                line,
+                message: `${statement.label}写作「${match[1]}」，与 package.json 的 version（${version}）不一致`,
+            })
+        }
+    }
+    return issues
+}
 
 /**
  * 扫描版本展示面中的三段式版本字面量。
@@ -119,6 +223,13 @@ export async function runSiteVersionCheck(root = docsProjectRoot, options = {}) 
     const issues = [
         ...checkVersionSurfaces(surfaces, root),
         ...findHardcodedVersions(surfaces.map(({ file, content }) => ({ file, content }))),
+        ...findSeriesLiterals(
+            SERIES_LITERAL_SURFACES.filter((file) => existsSync(resolve(root, file))).map((file) => ({
+                file,
+                content: readFileSync(resolve(root, file), 'utf8'),
+            })),
+        ),
+        ...findCurrentVersionDrift(root, packageJson.version),
     ]
 
     const navigation = await loadSiteNavigation(join(root, 'docs'))
@@ -185,7 +296,7 @@ if (isDirectExecution(import.meta.url)) {
             process.stderr.write(`[check-site-version] ${issues.length} 处问题（受检 ${surfaceCount} 个版本展示面，package.json version = ${String(version)}，已暴露 = ${String(exposedVersion)}）\n`)
             process.exitCode = 1
         } else {
-            process.stdout.write(`[check-site-version] OK：${surfaceCount} 个版本展示面均派生自 package.json（version = ${String(version)}），无手写版本字面量\n`)
+            process.stdout.write(`[check-site-version] OK：${surfaceCount} 个版本展示面均派生自 package.json（version = ${String(version)}），无手写版本字面量；版本策略页无系列字面量、README 与 roadmap 当前版本句一致\n`)
         }
     }
 }

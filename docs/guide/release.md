@@ -18,13 +18,13 @@
 1. **预检**：工作区干净；`master` 与 `origin/master` 同步；`pnpm verify` 全链路通过。
 2. **版本基线与发布说明**：把 `package.json` 的 `version` 置为目标版本；运行 `pnpm changelog` 生成 / 重写 `CHANGELOG.md`。`--version=` 仅在尚未 bump `package.json` 时使用（默认取 `package.json` 的 version），`--date=` 可固定发布日期。
 3. **提交**：版本基线变更后复跑 `pnpm verify`，再经 `conventional-committer` 提交（例如 `chore(release): 0.1.0`）。
-4. **打 tag**：`git tag -a v0.1.0 -m "0.1.0"`（**annotated** tag，与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
+4. **打 tag**：`git tag -a v<version> -m "<version>"`（**annotated** tag，与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。**tag 的落点随提交次序而不同，两种都属正常形态**：若「先 bump 版本并打 tag、再单独提交 `CHANGELOG.md`」，tag 指向**版本提交**、**tag 视图不含 CHANGELOG 段**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；若按本节 2 → 3 → 4 的次序在提交后打 tag，则含该段。**已发布 tag 不重写**（见 §8「回滚与弃用」）。
 5. **发布**：配置有效 npm 凭据后执行 `npm publish`；`prepublishOnly` 会自动复跑许可校验。
 6. **推送**：`git push origin master --follow-tags`（`--follow-tags` **只推送 annotated tag**；若用轻量 tag 须显式 `git push origin v0.1.0`）。按 [Git 规范](/standards/git) 须用户明确授权，不自动 push。
 7. **校验**：`npm view caomei-ui versions dist-tags`；`npm pack caomei-ui --dry-run` 或安装到临时目录做冒烟。
 8. **记录**：把发布结论与关键实测值落到可提交位置（规划文档或提交信息）。
 
-> **不要用 `npm version` 替代本流程**：`npm version <v>` 会**直接提交**（信息为裸版本号，非 Conventional 形态）并打 annotated tag，且 tag 指向版本提交、`pnpm changelog` 提交在其后 → **tag 视图不含 CHANGELOG 段**（0.3.0 实测）。正确次序见本节 1~4 步，且版本基线提交前须复跑 `pnpm verify` 并留痕。确需借用其版本号写入能力时，加 `--no-git-tag-version`（该开关同时关闭自动提交与打 tag），再按本节 3~4 步自行提交与打 tag。
+> **关于 `npm version`（本地发布的常见做法）**：`npm version <v>` 会**直接提交并打 annotated tag**——提交信息为裸版本号（非 Conventional 形态），`pnpm changelog` 提交在其后；这是**正常流程**（2026-09-30 用户口径），其 tag 指向版本提交、tag 视图不含 CHANGELOG 段，按第 4 步口径**不视为偏差、无需重指 tag**。若要改为按本节 2 ~ 4 步自行提交与打 tag，加 `--no-git-tag-version`（该开关同时关闭自动提交与打 tag）。**无论采用哪种方式，版本基线提交前都须复跑 `pnpm verify` 并留痕。**
 
 **发版后的文档同步边界**：站点内展示的版本号由 `themeConfig.version` 从 `package.json` **自动派生**（页面用 `useData()` 的 `theme.version` 插值，由 `pnpm docs:check:version` 看守），发版时**无需手改站点文档**；但仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述仍需人工同步，属发布后校验清单的一部分。
 

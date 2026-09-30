@@ -1,6 +1,6 @@
 # M6-8 第一批「反馈与浮层 + 数据展示」迁移节浏览器验证记录
 
-**批次**：M6-8 第一批——为「反馈与浮层」（ConfirmDialog / Dialog / Drawer / Message / Popover / Toast）与「数据展示」（DataView / ProgressBar / ProgressSpinner / Skeleton）共 10 个组件页补齐中英「从 PrimeVue 迁移」节（`data-table` / `paginator` 两组内其余两页已于 M6-7 交付）——[待办事项归档](../../plan/todo-archive.md) M6-8。
+**批次**：M6-8 第一批——为「反馈与浮层」（ConfirmDialog / Dialog / Drawer / Message / Popover / Toast）与「数据展示」（DataView / ProgressBar / ProgressSpinner / Skeleton）共 10 个组件页补齐中英「从 PrimeVue 迁移」节（`data-table` / `paginator` 两组内其余两页已于 M6-7 交付）——[待办事项归档（深度归档）](../../plan/archive/phase-07-12.md) M6-8。
 **结论：通过** —— V 脚本 **305 / 305** 项核对通过、失败 0、console error / pageerror / HTTP ≥ 400 均为 0；观察项 12（en-US 文档页 @768 的既有横向溢出，与 [M6-6 / M6-7 记录](./2026-09-18-m6-6-m6-7-migration-docs-ui-validation.md) 同源）。原始 JSON 落 `test-results/m6-migration-docs/result.json`（gitignored）。
 
 ## 1. 环境与取证方式

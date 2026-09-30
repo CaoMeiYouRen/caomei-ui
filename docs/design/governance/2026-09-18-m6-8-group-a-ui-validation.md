@@ -1,6 +1,6 @@
 # M6-8 第二批「基础与布局」迁移节浏览器验证记录
 
-**批次**：M6-8 第二批——「基础与布局」组 8 个组件页（Avatar / Badge / Button / Card / Divider / Image / SplitButton / Tag）补齐中英「从 PrimeVue 迁移」节；同批为 Avatar / Badge / Divider / Image 新增[设计规范 §7](../design-spec.md) 映射条目。**未纳入**：ButtonGroup——PrimeVue 侧仅 `dt` / `pt` / `unstyled`，无功能 props 可迁移；本库新增的 `orientation` 等不构成迁移阻塞，故不补节（按 M6-8 三条判据不计必补项）。依据见[待办事项归档](../../plan/todo-archive.md) M6-8。
+**批次**：M6-8 第二批——「基础与布局」组 8 个组件页（Avatar / Badge / Button / Card / Divider / Image / SplitButton / Tag）补齐中英「从 PrimeVue 迁移」节；同批为 Avatar / Badge / Divider / Image 新增[设计规范 §7](../design-spec.md) 映射条目。**未纳入**：ButtonGroup——PrimeVue 侧仅 `dt` / `pt` / `unstyled`，无功能 props 可迁移；本库新增的 `orientation` 等不构成迁移阻塞，故不补节（按 M6-8 三条判据不计必补项）。依据见[待办事项归档（深度归档）](../../plan/archive/phase-07-12.md) M6-8。
 **结论：通过** —— V 脚本 **493 / 493** 项核对通过、失败 0、console error / pageerror / HTTP ≥ 400 均为 0；观察项 20（en-US 文档页 @768 的既有横向溢出，与 [M6-6 / M6-7 记录](./2026-09-18-m6-6-m6-7-migration-docs-ui-validation.md) 同源）。原始 JSON 落 `test-results/m6-migration-docs/result.json`（gitignored）。
 
 ## 1. 环境与取证方式

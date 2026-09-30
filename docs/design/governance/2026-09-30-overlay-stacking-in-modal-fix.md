@@ -207,5 +207,5 @@ git diff --cached --numstat -- src test docs scripts package.json
 | ① 修复 + 装置 | `79e4ef9` fix(components): 修正模态内浮层面板层级并补齐 z-index 覆盖钩子 | 7 文件 / +349 −7 |
 | ② 门禁与接线 | `17ff31f` feat(governance): 新增浮层档位语义门禁 check:overlay-z-index | 4 文件 / +734 −4 |
 | ③ 规范与记录 | `4fffecc` docs(governance): 新增浮层遮挡修复记录与档位守卫规范落点 | 3 文件 / +205 −0 |
-| ④ 规划登记与 Backlog | 见本记录与 [待办事项](../../plan/todo.md) / [Backlog](../../plan/backlog.md) 的同批提交（含 [规划规范 §3.9](../../standards/planning.md) 新增的回扫约束） | 7 文件 / +31 −13 |
+| ④ 规划登记与 Backlog | `bb57703` docs(plan): 登记浮层遮挡修复为 Phase 17 M3 并补阶段条目回扫约束（含 [规划规范 §3.9](../../standards/planning.md) 新增的回扫约束） | 7 文件 / +31 −13 |
 

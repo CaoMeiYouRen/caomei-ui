@@ -79,16 +79,19 @@ function main() {
         }
 
         // 3. 强制跑 capture:styles
+        // 注：此处必须以 `stdio: 'inherit'` 直连终端（保留 capture 的进度输出），
+        // 而 `execSync` 在 inherit 下返回 `null`，故不能用上面的 run() 包装（会 .trim() 崩溃）；
+        // 失败判定改由异常承担（非零退出码会抛出）。
         logInfo('[ref-attr-guard] 触发 capture:styles（阻断模式）...')
-        const result = run('pnpm capture:styles', { stdio: 'inherit' })
-
-        if (result === 0) {
-            logInfo('[ref-attr-guard] capture:styles 通过：0 差异')
-            return 0
+        try {
+            execSync('pnpm capture:styles', { stdio: 'inherit' })
+        } catch {
+            logError('[ref-attr-guard] capture:styles 失败：存在计算样式差异，阻断提交/发布')
+            return 1
         }
 
-        logError('[ref-attr-guard] capture:styles 失败：存在计算样式差异，阻断提交/发布')
-        return 1
+        logInfo('[ref-attr-guard] capture:styles 通过：0 差异')
+        return 0
     } catch (error) {
         logError(`[ref-attr-guard] 执行异常：${error.message}`)
         return 1

@@ -20,7 +20,6 @@
 | DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
-| Select 字段层 class 透传（`fieldClass`） | momei 迁移反馈 2026-09-25 §1.1 | **条件候选**：`class` 经 `$attrs` 落触发器、`--caomei-select-max-width` 宿主为字段外层，组件上写宽度类静默无效。先补文档；出现文档无法覆盖的真实用例再评估 `fieldClass` | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 | Button `iconOnly` 示例形态与默认插槽语义 | 2026-09-29 缺陷复核 | **缺陷 + 待决策**：`docs/examples/button/icon-only.vue` 的 22 个按钮把图标放在**默认插槽**，而 `iconOnly` 按既有契约（单测「`iconOnly` 时不渲染默认插槽内容」锁定）不渲染默认插槽、图标只走 `#icon` → 文档站「纯图标按钮」节渲染空白方块。**待调研后二选一**：对比 PrimeVue 等组件库的纯图标用法（`icon` prop / `#icon` 插槽 / 默认插槽取图标）的优劣，再在「改示例」与「放宽组件语义」间决策；放宽语义需同批改单测、`types.ts` JSDoc 与中英组件页。**2026-09-29 仅登记，不修**（当轮授权范围为选择器拼写修复） | 中 |
 
@@ -44,6 +43,7 @@
 | 语言矩阵 - 长期 | 用户需求 | 追加俄语、法语、德语、西班牙语、葡萄牙语 | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
 | locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载 | 低 |
+| 国际化语言覆盖与文案分包体积调研 | 用户 2026-09-30 口径（D12 追加） | 两个子问题：① 主流组件库（Vue / React 生态）的国际化一般支持哪些语言，用于校准本库语言矩阵的长期范围；② **国际化文本的分包与体积膨胀**问题——翻译文案随语种 / 命名空间增长对产物体积的影响与可行方案（按需加载 / 分包 / 多入口）。**只做调研**，不承诺实现 | 低 |
 
 ### 1.5 移动端与响应式候选
 
@@ -56,8 +56,6 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 对比度遗留项盘点（维持项 + 新增候选） | **维持（用户 2026-09-28 裁定 D2「预设品牌色不变」）**：`caomei` 预设 `danger` `#ef4444` 作前景（纯白底 3.76:1 / soft 现值 **3.39:1**，改前 12% 底为 3.23:1）与预设 `primary-solid` `#e63946` 4.17:1。**新增候选（2026-09-28 M2-1 复算发现，待裁定）**：默认预设 soft 变体 `danger` 4.28:1 / `neutral` 4.39:1（8% 底）与 `caomei` / `momei` 预设 primary soft 3.73:1 / 4.32:1 仍 < 4.5:1。复算口径与逐条裁定见 [M2 对比度与配色口径收口记录](../design/governance/2026-09-28-m2-contrast-and-pairing.md) | 低 |
-| 计算样式采样面扩展（toast / switch 回退色） | 2026-09-28 M2 发现：`capture:styles`（245 项）不含 toast / switch，二者回退色变化（toast 中性描边 / 图标、switch 滑块 `primary-foreground`）无计算样式回归保护，仅由 token 级复算承载。候选：把两组件纳入采样 fixture | 低 |
 | a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
@@ -71,19 +69,12 @@
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
-| 全量首跑 flaky（`generate-changelog` git fixture **与 `auto-complete.test.ts:480`**） | **触发条件已命中（2026-09-30，第二次出现）**：`src/components/auto-complete/auto-complete.test.ts:480`（`aria-controls` 面板查找，报 `Cannot call element on an empty DOMWrapper`）在 94 文件并行负载下偶发失败；按 [测试规范 §6.1](../standards/testing.md) 处置（隔离复跑 30 / 30、全量复跑两次 1965 例全通过）判为并行负载偶发、与当批改动无因果。**原条件候选口径**：`generate-changelog` git fixture 在 88 文件并行负载下 5s 超时（2026-09-28）；「按多次出现再处理」的触发条件现已由第二条实例满足 → **转为待评估：定位并行负载下的根因（用例隔离 / 断言时序 / 负载上限）并修** | 低 |
-| 全量首跑 flaky（`data-table.test.ts:229`，**首次出现 2026-09-30**） | `src/components/data-table/data-table.test.ts:229`（sortable 列点击后 `aria-sort`，报 `expected 'none' to be 'ascending'`）在 `pnpm verify` 链下的 98 文件并行负载中偶发失败；按 [测试规范 §6.1](../standards/testing.md) 处置（隔离复跑 3 / 3、全量复跑两次 2004 例全通过）判为并行负载偶发、与当批改动（Phase 17 M1-3 富文本封装）无因果。**该用例只 `await trigger('click')` 一次即断言排序态，未补二次 tick，疑为断言时序敏感**。触发条件：同一条目**再次出现**（第二次）即按「定位根因并修」处置 | 低 |
-| 富文本编辑器窄屏真实几何回归 | 2026-09-30 M1-3 的 `@ui-validator` 复验发现并闭合的缺陷（组件根缺 `min-width: 0` → 作为 grid 项被内核工具栏 min-content 撑破整页宽度），当前由**声明级守卫** `test/contracts/rich-text-editor-layout.test.ts` 覆盖（负向对照通过）。**缺口**：无真实几何层断言（`pnpm verify` 不含 e2e，且 `test/e2e` 夹具 app 未含该组件）。候选：把组件纳入 e2e 夹具并在 mobile 档断言 `expectPageNoHorizontalOverflow`。触发条件：下一次扩展 e2e 夹具或加几何类断言时一并评估 | 低 |
-| 全量首跑 flaky（`dropdown-menu.test.ts:429`，**首次出现 2026-09-30**） | `src/components/dropdown-menu/dropdown-menu.test.ts:429`（勾选项点击后 `data-state`，报 `expected 'unchecked' to be 'checked'`）在 100 文件并行负载下偶发失败一次；按 [测试规范 §6.1](../standards/testing.md) 处置（隔离复跑 25 / 25 通过、随后全量两次 2009 例全通过）判为并行负载偶发、与当批改动（Phase 17 M1-3）无因果。触发条件：同一条目**再次出现**（第二次）即按「定位根因并修」处置 | 低 |
-| 并行负载 flaky 类（**根因已定位：CPU 过载下的单 tick 断言**；2026-09-30 归档批次实测） | 2026-09-30 Phase 17 归档批次的终态复跑中，全量 `pnpm test` 连续两轮各失败 1 例（`tabs.test.ts`「非受控时点击切换面板」/ `accordion.test.ts`「collapsible 控制单开模式下能否收起」/ `color-picker.test.ts`「format=rgb 时序列化为对应字符串」/ `select-button.test.ts`「非受控单选：点击选中，点击其他项切换」——**每轮命中的用例不同**），隔离复跑均通过。**根因实测**：8 核机器上默认 worker 数（= 核数）时每轮约 1 例失败；`pnpm vitest run --maxWorkers=4` 全量 **102 文件 / 2124 例全过、exit 0**，即 **CPU 过载使「交互后单次 `await flush()` 即断言」的用例偶发读不到更新后状态**。**同类实例累计**：`generate-changelog` git fixture（88 文件负载 5s 超时，2026-09-28）、`auto-complete.test.ts:480`（**第二次出现，已触发定位条件**）、`data-table.test.ts:229`、`dropdown-menu.test.ts:429`、本批 4 例——**均为非受控交互 + 单 tick 断言形态**，属同一缺陷类。**候选处置**（择一，须评审）：① 把受影响用例的断言改为等待稳定（二次 flush / `vi.waitFor`）；② 在 `vitest.config.ts` 限定 `maxWorkers`（代价：CI 用时上升）；③ 两者结合（先修形态、再兜底限流）。**触发条件：再次出现（本条目已是同一类的第 3+ 次）→ 按「定位根因并修」处置**，且不得再以「隔离通过」单点关档 | 中 |
-| 组件设计 §5 组件清单对账（成员 ↔ 侧栏 / 总览页） | `docs/design/components.md` §5 的组件清单（含「（已实现）」标记）与侧栏 / 组件总览页成员目前**无机检**，新增组件时靠人工回扫（口径见 [文档与演示站 §11](../design/documentation-site.md) §11 末段）。候选：新增 `check:components-inventory` 或扩 `check-components-overview`，以 §11 表为事实源对账 §5 清单的成员集合与「已实现」标记（**触发条件**：下一次新增组件，或该清单再次出现成员漂移时一并实施） | 低 |
 | 治理索引与记录计数对账守卫 | 2026-09-30 浮层遮挡修复批次连续两轮 Review Gate 以「同一组计数跨载体漂移」判 blocker（记录本体计数为修复前快照 → 索引摘要计数未同步〔复发〕）。候选：对治理索引摘要与记录本体的 e2e / 测试计数做对账机检。**评估结论：高误报 / 高过拟合，未实施**——计数散落在自然语言摘要中，抽取规则易误伤；当前以「改完逐载体 `rg -o` 核对 + 记录内钉复算命令」的流程约束替代（已记 `.session/wisdom.md` 与 [AI 协作规范 §9](../standards/ai-collaboration.md)） | 低 |
-| 浮层档位装置的判别力补强 | 2026-09-30 浮层遮挡修复批次的 Review Gate follow-up（R2 / R3 / R1′ 三次提出，已登记记录 §4）：① `inline` ColorPicker 用例只断言计算 `z-index === 'auto'`，未做绘制顺序命中测试；② 命中测试的判别力自证只验模态内容**根节点**可命中，未验其后代；③ E2E 的 `PANEL_CASES` 与声明层门禁未联动（新增 portal 组件不强制补进清单）。触发条件：下一次改动浮层装置或新增 portal 浮层组件时一并评估 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 组件设计一致性回归扩展（样式 + 交互） | 用户 2026-09-29 口径：「确保每个组件按预定设计的样式展现、提供符合设计的交互，减少样式错误造成的问题」。**现状**：常驻装置已覆盖声明层（源码契约单测）/ 计算样式层（`capture:styles` 冻结基线）/ 几何层（字段族 E2E 等）/ 可访问性（`test:a11y`）/ 焦点与动效（`focus-and-motion.e2e.ts`）；**缺口**：[设计规范 §6](../design/design-spec.md) 的组件约定（尺寸档位 / 变体 / 状态 / 交互反馈）尚未逐组件转为可执行断言，交互面尤甚。**已裁定（2026-09-29）**：**应当评估**，**列入待办、等待后续阶段执行**——先出评估（范围 / 收益 / 误报边界），把 §6 约定按「可机检性」分级（能断言的落单测 / E2E 含负向对照，不可机检的显式登记为人工验收项）。**不纳入当前阶段**；按 [规划规范 §3.2](../standards/planning.md) 在后续阶段授权时登记为 `todo.md` 条目 | 中 |
+| `.session` 阶段态在阶段登记 / 归档批次的同步约束载体 | 2026-09-30 Review Gate **第 3 次**判出同类 warning（Phase 14 / Phase 17 / Phase 18 登记批次各一次）：`.session/current-task.yaml` 与 `runtime-state.json` 的阶段态字段（「当前无进行中阶段 / 未登记」）未随阶段登记同步，违反 [规划规范 §3.8](../standards/planning.md) 的回扫面要求（该载体 git-ignored、不进提交物，靠流程约束承载）。候选：在 `todo-manager` skill 的 Session 收尾协议中把「阶段登记 / 归档 / 范围变更批次」显式列为 `.session` 阶段态必同步触发点 | 低 |
 
 ### 1.7 服务层候选（composables）
 

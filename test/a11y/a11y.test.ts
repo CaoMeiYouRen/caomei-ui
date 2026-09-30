@@ -1,11 +1,40 @@
 import { mount } from '@vue/test-utils'
-import type { Component } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { defineComponent, h, type Component } from 'vue'
+import { describe, expect, it, vi } from 'vitest'
 import { caomeiComponents } from '../../src/nuxt/components'
 import { auditFixture } from './audit'
 import { A11Y_EXCEPTIONS, exceptionKey } from './exceptions'
 import { A11Y_FIXTURES, A11Y_FIXTURE_BUDGET, COVERED_BY_FIXTURE, EXCLUDED_COMPONENTS, INTERACTION_ONLY_EXPORTS } from './fixtures'
 import { DISABLED_RULES } from './rules'
+
+/**
+ * 富文本编辑器内核为可选 peer `md-editor-v3`：真实内核在 happy-dom 下会注入 CDN 资源并触发
+ * happy-dom 的 DOM 限制（`insertBefore` on `#document`），使审计结果不确定。此处仅把内核替换为
+ * 最小桩组件，**保留包装层自身产出的 DOM（容器 / `role="group"` / `aria-label`）**作为审计对象；
+ * 内核自身的可访问性不在本库职责内。
+ */
+vi.mock('../../src/components/rich-text-editor/editor-language', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('../../src/components/rich-text-editor/editor-language')>()
+    const MdEditorStub = defineComponent({
+        name: 'MdEditorA11yStub',
+        props: {
+            modelValue: { type: String, default: '' },
+            language: { type: String, default: 'zh-CN' },
+            theme: { type: String, default: 'light' },
+        },
+        emits: ['update:modelValue'],
+        setup(stubProps) {
+            return () => h('textarea', {
+                'aria-label': 'markdown',
+                value: stubProps.modelValue,
+            })
+        },
+    })
+    return {
+        ...actual,
+        loadEditor: () => Promise.resolve({ MdEditor: MdEditorStub, config: () => undefined }),
+    }
+})
 
 /**
  * 组件级 a11y 审计（axe-core × happy-dom）。

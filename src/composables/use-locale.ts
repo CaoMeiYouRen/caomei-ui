@@ -9,6 +9,7 @@ import {
 } from 'vue'
 import {
     caomeiLocales,
+    defaultLocale,
     defaultLocaleMessages,
     type CaomeiLocale,
     type CaomeiLocaleMessageOverrides,
@@ -28,8 +29,27 @@ export const caomeiLocaleKey: InjectionKey<ComputedRef<CaomeiLocaleMessages>> = 
     'caomei-locale',
 )
 
+/** 注入键：值为响应式的语言标识（locale 代码，如 `zh-CN`），供需要「按语言分支」的消费组件使用。 */
+export const caomeiLocaleCodeKey: InjectionKey<ComputedRef<CaomeiLocale>> = Symbol(
+    'caomei-locale-code',
+)
+
 /** 无 provider 时的回退文案；保持稳定引用，避免 `inject` 缺省值触发开发期告警。 */
 const fallbackLocale: ComputedRef<CaomeiLocaleMessages> = computed(() => defaultLocaleMessages)
+
+/** 无 provider 时的回退语言标识；同样保持稳定引用。 */
+const fallbackLocaleCode: ComputedRef<CaomeiLocale> = computed(() => defaultLocale)
+
+/**
+ * 归一化语言标识：未知值（含原型链键）回退默认语言，与 `resolveLocaleMessages` 的口径一致。
+ *
+ * 内部工具：仅供 `provideLocale` / 测试使用，不在包根导出面内。
+ */
+export function resolveLocaleCode(locale?: CaomeiLocale): CaomeiLocale {
+    return locale && Object.prototype.hasOwnProperty.call(caomeiLocales, locale)
+        ? locale
+        : defaultLocale
+}
 
 /**
  * 将文案覆盖按命名空间浅合并到基准文案之上，返回新对象（不修改入参）。
@@ -62,15 +82,11 @@ export function resolveLocaleMessages(
     locale?: CaomeiLocale,
     overrides?: CaomeiLocaleMessageOverrides,
 ): CaomeiLocaleMessages {
-    // 用 hasOwnProperty 而非真值判断，避免 'constructor' / 'toString' 等原型键被误当作内建语言
-    const base = locale && Object.prototype.hasOwnProperty.call(caomeiLocales, locale)
-        ? caomeiLocales[locale]
-        : defaultLocaleMessages
-    return mergeLocaleMessages(base, overrides)
+    return mergeLocaleMessages(caomeiLocales[resolveLocaleCode(locale)], overrides)
 }
 
 /**
- * 向下提供组件内建文案，在应用根部调用一次（或使用 `<CaomeiConfigProvider>`）。
+ * 向下提供组件内建文案与语言标识，在应用根部调用一次（或使用 `<CaomeiConfigProvider>`）。
  *
  * `locale` / `messages` 可为 ref / getter，运行时变化会自动传播到消费组件；
  * 每个 Provider 实例持有独立上下文，不会在 SSR 下跨请求串扰。
@@ -81,7 +97,9 @@ export function provideLocale(
     const messages = computed(() =>
         resolveLocaleMessages(toValue(options.locale), toValue(options.messages)),
     )
+    const code = computed(() => resolveLocaleCode(toValue(options.locale)))
     provide(caomeiLocaleKey, messages)
+    provide(caomeiLocaleCodeKey, code)
     return messages
 }
 
@@ -92,4 +110,14 @@ export function provideLocale(
  */
 export function useLocale(): ComputedRef<CaomeiLocaleMessages> {
     return inject(caomeiLocaleKey, fallbackLocale)
+}
+
+/**
+ * 读取当前注入的语言标识（locale 代码）；未注入时回退 `defaultLocale`。
+ *
+ * 供需要按语言分支（而非取文案）的组件使用，例如把本库语言映射到第三方库的语言键；
+ * 返回值随 provider 的 `locale` 变化而更新。
+ */
+export function useLocaleCode(): ComputedRef<CaomeiLocale> {
+    return inject(caomeiLocaleCodeKey, fallbackLocaleCode)
 }

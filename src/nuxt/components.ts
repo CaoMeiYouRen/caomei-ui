@@ -60,6 +60,7 @@ export const caomeiComponents = [
     'CaomeiProgressSpinner',
     'CaomeiRadioButton',
     'CaomeiRadioGroup',
+    'CaomeiRichTextEditor',
     'CaomeiSelect',
     'CaomeiSelectButton',
     'CaomeiSelectGroup',

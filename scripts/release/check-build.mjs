@@ -32,10 +32,12 @@ export const REQUIRED_RUNTIME_EXPORTS = [
     'CaomeiSelect',
     'CaomeiDialog',
     'CaomeiDataTable',
+    'CaomeiRichTextEditor',
     'caomeiLocales',
     'useConfirm',
     'useTheme',
     'useToast',
+    'useLocaleCode',
 ]
 
 /** 递归收集 `exports` 中声明的全部产物文件路径（去重并排序）。 */

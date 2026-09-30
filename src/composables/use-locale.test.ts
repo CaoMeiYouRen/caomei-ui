@@ -5,11 +5,14 @@ import { describe, expect, it } from 'vitest'
 import { CaomeiConfigProvider } from '../components/config-provider'
 import { caomeiLocales, defaultLocaleMessages, type CaomeiLocale } from '../locale'
 import {
+    caomeiLocaleCodeKey,
     caomeiLocaleKey,
     mergeLocaleMessages,
     provideLocale,
+    resolveLocaleCode,
     resolveLocaleMessages,
     useLocale,
+    useLocaleCode,
 } from './use-locale'
 
 /** 通过 useLocale 读取文案的探针组件 */
@@ -27,6 +30,24 @@ const KeyProbe = defineComponent({
     setup() {
         const locale = inject(caomeiLocaleKey)
         return () => h('span', locale ? locale.value.input.clear : 'missing')
+    },
+})
+
+/** 通过 useLocaleCode 读取语言标识的探针组件 */
+const CodeProbe = defineComponent({
+    name: 'LocaleCodeProbe',
+    setup() {
+        const code = useLocaleCode()
+        return () => h('span', code.value)
+    },
+})
+
+/** 直接读取语言标识注入键的探针组件 */
+const CodeKeyProbe = defineComponent({
+    name: 'LocaleCodeKeyProbe',
+    setup() {
+        const code = inject(caomeiLocaleCodeKey)
+        return () => h('span', code ? code.value : 'missing')
     },
 })
 
@@ -61,6 +82,75 @@ describe('resolveLocaleMessages', () => {
 
         expect(merged.input.clear).toBe('Reset')
         expect(merged.dialog.close).toBe('Close')
+    })
+})
+
+describe('resolveLocaleCode', () => {
+    it('未指定语言时回退默认语言标识', () => {
+        expect(resolveLocaleCode()).toBe('zh-CN')
+    })
+
+    it('内建语言原样返回，未知语言（含原型链键）回退默认', () => {
+        expect(resolveLocaleCode('en-US')).toBe('en-US')
+        expect(resolveLocaleCode('ja-JP')).toBe('ja-JP')
+        expect(resolveLocaleCode('fr-FR' as CaomeiLocale)).toBe('zh-CN')
+        expect(resolveLocaleCode('constructor' as CaomeiLocale)).toBe('zh-CN')
+        expect(resolveLocaleCode('toString' as CaomeiLocale)).toBe('zh-CN')
+    })
+})
+
+describe('useLocaleCode', () => {
+    it('无 provider 时回退默认语言标识', () => {
+        expect(mount(CodeProbe).text()).toBe('zh-CN')
+    })
+
+    it('读取 provideLocale 提供的语言标识', () => {
+        const Root = defineComponent({
+            setup() {
+                provideLocale({ locale: 'ko-KR' })
+                return () => h(CodeProbe)
+            },
+        })
+
+        expect(mount(Root).text()).toBe('ko-KR')
+    })
+
+    it('provider 语言变化时响应式更新', async () => {
+        const locale = ref<CaomeiLocale>('zh-CN')
+        const Root = defineComponent({
+            setup() {
+                provideLocale({ locale })
+                return () => h(CodeProbe)
+            },
+        })
+
+        const wrapper = mount(Root)
+        expect(wrapper.text()).toBe('zh-CN')
+
+        locale.value = 'en-US'
+        await nextTick()
+        expect(wrapper.text()).toBe('en-US')
+    })
+
+    it('CaomeiConfigProvider 向后代提供语言标识', async () => {
+        const wrapper = mount(CaomeiConfigProvider, {
+            props: { locale: 'ja-JP' },
+            slots: { default: () => h(CodeProbe) },
+        })
+
+        expect(wrapper.text()).toBe('ja-JP')
+
+        await wrapper.setProps({ locale: 'zh-TW' })
+        expect(wrapper.text()).toBe('zh-TW')
+    })
+
+    it('语言标识注入键在后代中可读取', () => {
+        const wrapper = mount(CaomeiConfigProvider, {
+            props: { locale: 'en-US' },
+            slots: { default: () => h(CodeKeyProbe) },
+        })
+
+        expect(wrapper.text()).toBe('en-US')
     })
 })
 

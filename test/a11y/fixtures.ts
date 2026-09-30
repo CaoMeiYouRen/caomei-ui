@@ -50,6 +50,7 @@ import {
     CaomeiProgressSpinner,
     CaomeiRadioButton,
     CaomeiRadioGroup,
+    CaomeiRichTextEditor,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSelectGroup,
@@ -239,6 +240,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRadioGroup', root: CaomeiRadioGroup, definition: { components: { CaomeiRadioGroup, CaomeiRadioButton }, template: '<CaomeiRadioGroup label="单选" model-value="a"><CaomeiRadioButton value="a">甲</CaomeiRadioButton><CaomeiRadioButton value="b">乙</CaomeiRadioButton></CaomeiRadioGroup>' } },
+    { name: 'CaomeiRichTextEditor', root: CaomeiRichTextEditor, definition: { components: { CaomeiRichTextEditor }, template: '<CaomeiRichTextEditor label="正文" :model-value="content" />', setup: () => ({ content: '# 标题' }) } },
     { name: 'CaomeiSelect', root: CaomeiSelect, definition: { components: { CaomeiSelect }, template: '<CaomeiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiSelectButton', root: CaomeiSelectButton, definition: { components: { CaomeiSelectButton }, template: '<CaomeiSelectButton label="分段" :options="options" model-value="a" />', setup: () => ({ options }) } },
     /*
@@ -317,4 +319,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 51
+export const A11Y_FIXTURE_BUDGET = 52

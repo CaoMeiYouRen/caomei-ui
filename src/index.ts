@@ -34,6 +34,7 @@ export * from './components/popover'
 export * from './components/progress-bar'
 export * from './components/progress-spinner'
 export * from './components/radio-group'
+export * from './components/rich-text-editor'
 export * from './components/select'
 export * from './components/select-button'
 export * from './components/skeleton'
@@ -62,7 +63,13 @@ export type {
     ConfirmRequest,
     ConfirmTone,
 } from './composables/use-confirm'
-export { caomeiLocaleKey, provideLocale, useLocale } from './composables/use-locale'
+export {
+    caomeiLocaleCodeKey,
+    caomeiLocaleKey,
+    provideLocale,
+    useLocale,
+    useLocaleCode,
+} from './composables/use-locale'
 export type { ProvideLocaleOptions } from './composables/use-locale'
 export { useTheme } from './composables/use-theme'
 export type { ThemeMode, UseThemeReturn } from './composables/use-theme'

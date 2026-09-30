@@ -80,7 +80,7 @@ BASE=http://localhost:5175 node test-results/m3-demo-motion/probe-mid-shot.mjs
 | 26 | 宿主稳定性：fixed 元素宽度变化归因 | 通过（已知预期） | `.VPNav` 宽 `1265 → 1280`（+15px）= 实测滚动条宽；滚动锁 `body overflow-y: visible → hidden → visible` 复原 |
 | 27 | CLS 归因 | 通过 | 打开窗口 `clsOpen=[]`、关闭窗口 `clsClose=[]`（0 条 layout-shift） |
 | 28 | 暗色抽检 | 通过 | `html.dark` 下 `caomei-demo-slide-in-left` @ `0.2s`，13 个不同位置（动画时长不随主题变化） |
-| 29 | 加载指示既有行为保持 | 通过 | ProgressSpinner `caomei-progress-spinner-spin-458b6237` @ `1.6s infinite`；Skeleton `caomei-skeleton-pulse-80f16045` @ `2.4s infinite`；原 3 条规则与 HEAD **字节级一致**（`git show HEAD:…motion.css` 对比无差异） |
+| 29 | 加载指示既有行为保持 | 通过 | ProgressSpinner `caomei-progress-spinner-spin-458b6237` @ `1.6s infinite`；Skeleton `caomei-skeleton-pulse-80f16045` @ `2.4s infinite`；原 3 条规则与 HEAD **字节级一致**（`git show d4e4725:…motion.css` 对比无差异） |
 | 30 | 非目标：未恢复全站 `transition-duration` | 通过 | motion.css 的 reduce 规则**无任何** `transition-*` 声明；新增规则不选 `transition` |
 | 31 | 非目标：未改组件库 | 通过 | `git status` 仅 1 文件；`src/**` 无改动；组件自身 `@media (prefers-reduced-motion)` 规则未被源码层修改 |
 | 32 | 桌面/移动截图渲染非空 | 通过 | 11 张 PNG 均有效（10362 / 5549 / 890 / 5604 / …… unique colors）；动画中途帧像素探针：面板右边缘 @x=390（桌面，满宽 420）、@x=356（移动，满宽 351），左侧白 = 面板底色、右侧 `rgb(149,149,149)` = 遮罩压暗后的页面 |
@@ -188,7 +188,7 @@ node test-results/m3-demo-motion/recheck-pixel.mjs                              
 | R13 | CSSOM：新增规则归属 | 通过 | motion.css 25 条样式规则，`styleRulesOutsideReduce=[]`（**全部**位于 `@media (prefers-reduced-motion: reduce)` 内）；`anyReverse=[]`；6 条 out 规则逐一 `inReduce=true` 且键帧引用 = `fade-out` / `slide-out-{left,right,top,bottom}` / `accordion-up`；14 个顶层 keyframes（8 入场/加载 + 6 out）在 reduce 外无引用者 |
 | R14 | demo 外对照 | 通过 | `.VPSidebar` / `.VPNavBarTitle` / `.VPNav` / `.VPContent` / `.vp-doc` → `animationDuration 0.001s`、`transitionDuration 0s` |
 | R15 | 移动 390（isMobile + touch） | 通过 | 入场 `caomei-demo-slide-in-left` @ `0.2s`（x `-324→0`）；退出 `caomei-demo-slide-out-left` @ `0.2s`、13 个不同位置（`0→-350`）、存活 `251.3ms`、start+end；`documentElement`/`body` `scrollWidth == clientWidth == 390`（开 / 关前后一致，无横向溢出） |
-| R16 | 加载指示 3 条规则未回归 | 通过 | 与 `git show HEAD:docs/.vitepress/theme/motion.css` 的 reduce 块 **diff 为空（字节级一致）** |
+| R16 | 加载指示 3 条规则未回归 | 通过 | 与 `git show d4e4725:docs/.vitepress/theme/motion.css` 的 reduce 块 **diff 为空（字节级一致）** |
 | R17 | console error / pageerror / HTTP ≥ 400 | 通过 | **0 / 0 / 0**，另 `requestFailed 0`（reduce 桌面 + no-preference + 移动 390 三上下文） |
 
 #### 8.2 P1 闭环证据（对照首轮失败口径）
@@ -316,3 +316,5 @@ BASE=http://localhost:5175 node test-results/m3-demo-motion/round3-pixel.mjs    
 | Portal 面板元素（`.caomei-drawer__*` / `.caomei-toast` / `.caomei-popover__content` / `.caomei-dropdown-menu__content` / `.caomei-date-picker__content`） | 未打开时为 0；打开后父链为 `DIV < BODY < HTML`（**不在** demo 容器内，属预期，见 §5 O2） |
 
 口径说明：该扫描只能证明「demo 外无恢复项」，不能证明 Portal 面板的触发来源；触发来源结论由源码检索支撑（`docs/.vitepress/theme/layout.vue` 与 `theme/components/**` 无非 demo 触发路径）。
+
+> **附带纠正（2026-09-30，M2-2）**：本记录 R 系列两条取证命令原以 `HEAD` 作 revision，已改钉本记录 §2「范围」声明的基点 `d4e4725`——当时 `HEAD` 即指向该提交，故原命令与该提交的同路径内容等价（记录结论不变，命令变为可复算）；该形态由新增守卫 `check:docs-git-revision` 拦下。

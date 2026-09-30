@@ -157,8 +157,18 @@ const groups = computed(() => {
 
 .caomei-showcase__preview {
     display: flex;
-    align-items: center;
-    min-height: 168px;
+    /*
+      `height`（而非 `min-height`）是承重声明：预览区高度必须与内容无关，否则同一行卡片
+      会因演示内容高低不一（如 Card 演示比 Button 高）而错开「名称 / 描述」的起始线
+      （2026-09-30 用户报告的画廊对齐问题）。超出部分在预览区内滚动。
+
+      居中用 `stretch` + `.stage` 的 `margin: auto`（**安全居中**），不用 `align-items: center`：
+      后者在内容高于容器时按内容盒居中，会把顶部推出可视区，而可滚动溢出面只覆盖块末方向
+      → 超高演示（Card / DataTable / RichTextEditor）的顶部永久不可达（2026-09-30 R1 实测）。
+      自动外边距在无剩余空间时归零，故顶部可达、底部可滚。
+    */
+    align-items: stretch;
+    height: 168px;
     padding: 20px;
     overflow: auto;
     background-color: var(--vp-c-bg-soft);
@@ -167,6 +177,7 @@ const groups = computed(() => {
 
 .caomei-showcase__stage {
     width: 100%;
+    margin: auto;
 }
 
 .caomei-showcase__meta {

@@ -122,27 +122,29 @@ docs/
 
 ## 11. 组件分区与排序
 
-- `/components/` 侧栏按 **6 个组件分组**组织，组间顺序固定为本节表格自上而下的顺序（不采用「按使用频率」等主观口径；新增分组须先在本节登记，登记位置即最终位置）；组内按**英文组件名字母序**排列。
+- `/components/` 侧栏按 **7 个组件分组**组织，组间顺序固定为本节表格自上而下的顺序（不采用「按使用频率」等主观口径；新增分组须先在本节登记，登记位置即最终位置）；组内按**英文组件名字母序**排列。
 - 组内顺序的唯一依据是英文字母序——实现顺序、历史登记顺序、翻译先后均不参与定序；不设「同族微调」例外，如确需例外须先在本节登记为固定规则。
 - 中英两侧侧栏使用同一分组划分与同一组件顺序：中文条目标题形如 `Button 按钮`，英文为 `Button`；组件概览的列表列序遵循同一顺序，翻译侧同步约定见 §10。
 - 分组划分（含英文分组名）以本表为准，实现落在 `docs/.vitepress/config.ts` 的中英两处 sidebar；新增组件时先定分组、再按字母序落在组内正确位置，本节与实现两处同步。
-- 本节范围限于 6 个组件分组；同侧栏内新增的非组件分组位置按下列固定顺序登记，登记位置即最终位置：
-  1. **总览**（zh `总览` / en `Overview`，`/components/`）位于 6 个组件分组**之前**，是组件区的入口页；
-  2. **能力说明**（zh `能力说明` / en `Capabilities`，组合式 API / 图标 / 内建文案与语言）位于 6 个组件分组**之后**，不与组件页混排。
+- 本节范围限于 7 个组件分组；同侧栏内新增的非组件分组位置按下列固定顺序登记，登记位置即最终位置：
+  1. **总览**（zh `总览` / en `Overview`，`/components/`）位于**最前**，是组件区的入口页；
+  2. **组件画廊**（zh `组件画廊` / en `Component Gallery`，`/components/showcase`）位于**总览之后、7 个组件分组之前**（2026-09-30 用户决策：由「仅总览页 + 指南侧栏入口」改为**进组件侧栏**，且入口唯一——指南侧栏的旧条目同批移除）；
+  3. **能力说明**（zh `能力说明` / en `Capabilities`，组合式 API / 图标 / 内建文案与语言）位于 7 个组件分组**之后**，不与组件页混排。
 - 组件总览页（`/components/index.md`）的分组顺序与侧栏一致，并在末尾列出「能力说明」三页。
 
 | 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序） |
 | --- | --- | --- |
 | 基础与布局 | Basics & Layout | Avatar、Badge、Button、ButtonGroup、Card、Divider、Image、SplitButton、Tag |
-| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Input、InputGroup、InputNumber、Password、RadioGroup、RichTextEditor、Slider、Switch、TagsInput、Textarea |
+| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Input、InputGroup、InputNumber、Password、RadioGroup、Slider、Switch、TagsInput、Textarea |
 | 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、MultiSelect、Select、SelectButton、ToggleButton |
 | 反馈与浮层 | Feedback & Overlays | ConfirmDialog、Dialog、Drawer、Message、Popover、Toast |
 | 数据展示 | Data Display | DataTable、DataView、Paginator、ProgressBar、ProgressSpinner、Skeleton |
 | 导航与操作 | Navigation & Actions | Accordion、DropdownMenu、Stepper、Tabs、Toolbar |
+| 高级组件 | Advanced | RichTextEditor |
 
-> 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。
+> 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。**2026-09-30 用户决策追加「高级组件 / Advanced」为第 7 组**（承载外部依赖内核类组件；当前仅 `RichTextEditor`），置于 6 个组件分组之后、能力说明之前。
 
-> **新增组件的登记面不止「§11 侧栏 / 组件总览页 / 画廊登记表」三项**：还有 [组件设计 §5](./components.md) 的组件清单（含「（已实现）」标记）。前三项分别由 `docs:check:structure`（侧栏不变式）/ `check-showcase-registry` 对账，**组件清单与总览页成员目前无机检**（总览页成员对账已在 [Backlog](../plan/backlog.md) 在册）——收口「新增组件」类条目时须人工回扫这两处。
+> **新增组件的登记面不止「§11 侧栏 / 组件总览页 / 画廊登记表」三项**：还有 [组件设计 §5](./components.md) 的组件清单（含「（已实现）」标记）。前三项分别由 `docs:check:structure`（侧栏不变式）/ `check:components-overview`（总览页成员 ↔ §11）/ `check-showcase-registry` 对账，**组件清单（组件设计 §5）是唯一无机检的登记面**（组件清单对账已在 [Backlog](../plan/backlog.md) 在册）——收口「新增组件」类条目时须人工回扫该处。
 
 ## 12. 演示动画的诊断与覆盖约定
 
@@ -194,9 +196,9 @@ docs/
 - **定位**：`/components/showcase`（中）与 `/en-US/components/showcase`（英）是组件总览的**策展子集**，只放「代表性组件的真实渲染预览」；它不是组件页的替代品，也不承诺覆盖全部组件——覆盖项数由登记表决定，只设下界、不设上限。
 - **登记表是单一事实源**：`docs/.vitepress/showcase-registry.json` 逐项声明 `name`（英文组件名，须存在于 §11 登记表）、`group`（中英分组名，须与 §11 同名分组一致）、`example`（示例相对路径，中英各自取根）与 `description`（中英各一条）。卡片链接由 `name` 按 `kebab-case` 推导（经 `withBase` 处理，兼容非根 base）；中英示例根分别为 `docs/examples/` 与 `docs/i18n/en-US/examples/`。**中英示例须齐备**——构建期由 `docs:check:showcase` 强制（缺任一侧即失败）；渲染层对缺示例只做兜底（该卡片预览为空、不阻断整页），不构成「可以只写单侧」的许可。
 - **顺序**：登记表按 §11 的**分组顺序**排列，组内按**英文组件名字母序**；页面渲染顺序即登记顺序，不在渲染层另行排序（与 §11 的侧栏定序同口径）。
-- **入口**：组件总览页（中英）正文给出画廊链接；指南侧栏（中英）末项「组件画廊 / Component Gallery」给出入口。
-- **不进组件侧栏**：组件侧栏的分组结构（总览 + 6 个组件分组 + 能力说明）是 §11 的机器校验面（`docs:check:structure` 的侧栏不变式），画廊页作为**非组件页**混入会破坏该不变式，故入口只走总览页与指南侧栏，不改组件侧栏。
+- **入口（2026-09-30 用户决策后）**：组件总览页（中英）正文给出画廊链接；**组件侧栏（中英）在「总览」之后设「组件画廊 / Component Gallery」条目**——指南侧栏的旧「组件画廊 / Component Gallery」条目同批移除，**入口唯一**。
+- **进组件侧栏的形态与不变式扩展**：画廊是组件区的**非组件分组**，落在「总览」之后、7 个组件分组之前。侧栏不变式（`docs:check:structure`）随之由「单头（总览）+ N 组 + 尾（能力说明）」扩展为「**头列表（总览、组件画廊）+ 7 组 + 尾列表（能力说明）**」，头 / 尾列表与位次以 §11 的非组件分组清单为事实源；画廊条目本身不参与组件分组对账（它没有组件成员），故不破坏「组件分组数 = §11 登记表行数」的等式。
 - **对账守卫**：`pnpm docs:check:showcase`（`scripts/docs/check-showcase-registry.mjs`）以登记表 + 本节 §11 为事实源逐项对账——结构合法性、分组归属（`group.zh` 属 §11 登记分组、`group.en` 与之一致、`name` 属该分组组件清单）、中英组件页与中英示例存在性、`example` 形态（两级 `.vue`、目录等于组件名 kebab-case、无 `..`）、登记顺序、中英画廊页的 `<ShowcaseGrid />` 挂载点；另设项数与覆盖分组数下界、空扫描拒绝（防登记表被清空 / 整组丢失被静默通过）。
-- **分组标题不进 outline**：分组标题由渲染组件输出（`<h3>`），而站点右侧 outline 取自 markdown 标题，故画廊页的目录只有页内 H2，6 个分组不可锚点跳转。这是「登记表驱动、不在页面里逐条写标题」的已知取舍；若将来需要分组锚点，须改为在页面 markdown 中显式书写分组标题。
+- **分组标题不进 outline**：分组标题由渲染组件输出（`<h3>`），而站点右侧 outline 取自 markdown 标题，故画廊页的目录只有页内 H2，7 个分组不可锚点跳转。这是「登记表驱动、不在页面里逐条写标题」的已知取舍；若将来需要分组锚点，须改为在页面 markdown 中显式书写分组标题。
 - **与演示动效层的关系**：画廊预览是 §12「demo 面」的延伸。当前策展集中唯一带入场动效的是经 Portal 挂载的 DatePicker 面板，已由 `motion.css` 的**组件选择器**层恢复；容器内可达的 opt-in 规则（Accordion / Image / Button spinner / AutoComplete spinner）暂未被画廊触发。若后续策展项在预览容器内产生动画，须同步扩展 `motion.css` 的容器作用域（口径见 §12），不留「reduced-motion 下动画被静默压平」的缺口。
 

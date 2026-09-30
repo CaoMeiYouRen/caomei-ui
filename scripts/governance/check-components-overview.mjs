@@ -69,7 +69,7 @@ function parseSection11Groups(markdown) {
 /**
  * 解析中文总览页：返回 { groupZh -> [componentNames] }
  * 组件名按链接 basename 推导（kebab-case -> 英文名还原，如 button-group -> ButtonGroup）
- * 排除 "能力说明" 分组（非组件组，§11 只管 6 个组件分组）
+ * 排除 "能力说明" 分组（非组件组；§11 登记的**组件分组**才参与对账——当前 7 组，含 2026-09-30 追加的「高级组件」）
  */
 function parseOverviewZh(filepath) {
     const content = readFileSync(filepath, 'utf-8')
@@ -177,7 +177,7 @@ function checkOverview() {
     const section11ZhGroups = section11Groups.map((g) => g.zh)
     const overviewZhGroups = Object.keys(overviewZh)
 
-    // 分组数对账（§11 只有 6 个组件分组，总览页还有 "能力说明" 非组件组）
+    // 分组数对账（§11 登记的组件分组才计入；总览页另有 "能力说明" 非组件组）
     if (overviewZhGroups.length !== section11ZhGroups.length) {
         errors.push(`中文总览页组件分组数 ${overviewZhGroups.length} 与 §11 登记 ${section11ZhGroups.length} 不一致（不含"能力说明"）`)
     }

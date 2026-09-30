@@ -24,7 +24,6 @@ Component pages are translated incrementally and listed in the same order as the
 - [InputNumber](/en-US/components/input-number)
 - [Password](/en-US/components/password)
 - [RadioGroup](/en-US/components/radio-group)
-- [RichTextEditor](/en-US/components/rich-text-editor)
 - [Slider](/en-US/components/slider)
 - [Switch](/en-US/components/switch)
 - [TagsInput](/en-US/components/tags-input)
@@ -54,6 +53,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Stepper](/en-US/components/stepper)
 - [Tabs](/en-US/components/tabs)
 - [Toolbar](/en-US/components/toolbar)
+- [RichTextEditor](/en-US/components/rich-text-editor)
 
 Until a page is translated, refer to the Chinese documentation.
 
@@ -78,6 +78,7 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [SplitButton 分裂按钮](/components/split-button)
 - [Tag 标签](/components/tag)
 - [Checkbox 复选框](/components/checkbox)
+- [CheckboxGroup 复选框组](/components/checkbox-group)
 - [FileUpload 文件上传](/components/file-upload)
 - [FloatLabel 浮动标签](/components/float-label)
 - [Input 输入框](/components/input)
@@ -85,7 +86,6 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [InputNumber 数字输入框](/components/input-number)
 - [Password 密码输入框](/components/password)
 - [RadioGroup 单选组](/components/radio-group)
-- [RichTextEditor 富文本编辑器](/components/rich-text-editor)
 - [Slider 滑块](/components/slider)
 - [Switch 开关](/components/switch)
 - [TagsInput 标签输入](/components/tags-input)
@@ -115,3 +115,4 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [Stepper 步骤条](/components/stepper)
 - [Tabs 选项卡](/components/tabs)
 - [Toolbar 工具条](/components/toolbar)
+- [RichTextEditor 富文本编辑器](/components/rich-text-editor)

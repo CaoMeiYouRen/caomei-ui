@@ -304,7 +304,8 @@ describe('仓库不变量', () => {
         expect(result.itemCount).toBeGreaterThanOrEqual(MIN_SHOWCASE_ITEMS)
         expect(result.groupCount).toBeGreaterThanOrEqual(MIN_SHOWCASE_GROUPS)
         // 6 = §11 登记的分组数：该断言与设计文档 §11 硬耦合，§11 新增分组时须同步更新（不是 flaky）
-        expect(result.tableGroups).toBe(6)
+        // §11 登记表：6 个组件分组 + 2026-09-30 用户决策追加的「高级组件」= 7 组
+        expect(result.tableGroups).toBe(7)
     })
 
     it('仓库登记表可被 CLI 对账且 exit 0', () => {

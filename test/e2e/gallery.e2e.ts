@@ -45,6 +45,7 @@ const CARD = '.caomei-showcase__card'
 const STAGE = '.caomei-showcase__stage'
 const GRID = '.caomei-showcase__grid'
 const CARD_LINK = '.caomei-showcase__name'
+const PREVIEW = '.caomei-showcase__preview'
 const GROUP_TITLE = '.caomei-showcase__group-title'
 const DIALOG_CONTENT = '.caomei-dialog__content'
 
@@ -122,6 +123,63 @@ for (const [locale, config] of Object.entries(LOCALES)) {
                 expect(href, `链接应带 locale 前缀 ${config.prefix}`).toMatch(new RegExp(`^${config.prefix}/components/[a-z0-9-]+$`))
                 const response = await page.request.get(href)
                 expect(response.status(), `${href} 应返回 200`).toBe(200)
+            }
+        })
+
+        test('同行卡片对齐且溢出预览顶部可达、可滚到底', async ({ page }) => {
+            await page.setViewportSize({ width: 1440, height: 1000 })
+            await openGallery(page, config.page)
+
+            // 1) 同行对齐：同一网格行的卡片，「名称」起始线与预览区高度必须唯一
+            //    （2026-09-30 用户报告的错位；预览区固定高度 + 网格行等高共同保证）
+            const rows = await page.locator(CARD).evaluateAll((cards) => {
+                const byRow = new Map<number, { nameTops: number[], previewHeights: number[] }>()
+                for (const card of cards) {
+                    const name = card.querySelector<HTMLElement>('.caomei-showcase__name')
+                    const preview = card.querySelector<HTMLElement>('.caomei-showcase__preview')
+                    if (!name || !preview) {
+                        continue
+                    }
+                    const rowKey = Math.round(card.getBoundingClientRect().top)
+                    const row = byRow.get(rowKey) ?? { nameTops: [], previewHeights: [] }
+                    row.nameTops.push(Math.round(name.getBoundingClientRect().top))
+                    row.previewHeights.push(Math.round(preview.getBoundingClientRect().height))
+                    byRow.set(rowKey, row)
+                }
+                return [...byRow.values()]
+            })
+            expect(rows.length, '应至少解析出一行卡片').toBeGreaterThan(0)
+            for (const row of rows) {
+                expect(
+                    new Set(row.nameTops).size,
+                    `同一行卡片的名称起始线应一致（实测 ${row.nameTops.join(' / ')}）`,
+                ).toBe(1)
+                expect(new Set(row.previewHeights).size, '同一行预览区高度应一致').toBe(1)
+            }
+
+            // 2) 溢出预览：`scrollTop = 0` 时 stage 顶部不得被裁到可视区之上（安全居中），
+            //    且确有可滚动量（内容完整可达，非裁切不可恢复）
+            const overflow = await page.locator(PREVIEW).evaluateAll((previews) => {
+                const result: { stageTop: number, maxScroll: number }[] = []
+                for (const preview of previews) {
+                    if (preview.scrollHeight <= preview.clientHeight) {
+                        continue
+                    }
+                    const stage = preview.querySelector<HTMLElement>('.caomei-showcase__stage')
+                    if (!stage) {
+                        continue
+                    }
+                    result.push({
+                        stageTop: stage.getBoundingClientRect().top - preview.getBoundingClientRect().top,
+                        maxScroll: preview.scrollHeight - preview.clientHeight,
+                    })
+                }
+                return result
+            })
+            expect(overflow.length, '应存在溢出预览（Card / DataTable / RichTextEditor 等）').toBeGreaterThan(0)
+            for (const item of overflow) {
+                expect(item.stageTop, '溢出预览的顶部在未滚动时应可见（不得用 align-items: center）').toBeGreaterThanOrEqual(0)
+                expect(item.maxScroll, '溢出预览应可滚动（内容可达）').toBeGreaterThan(0)
             }
         })
 

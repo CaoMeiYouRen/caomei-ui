@@ -8,6 +8,7 @@ import {
     COMPONENT_SIDEBAR_KEYS,
     MIN_COMPONENT_ENTRIES,
     checkComponentSidebar,
+    checkSidebarEdgesAgainstSection,
     collectAnchorIssues,
     extractComponentGroupSection,
     kebabCase,
@@ -127,11 +128,13 @@ function sidebarFor(override = {}) {
     return {
         [COMPONENT_SIDEBAR_KEYS.root]: [
             { text: '总览', link: override.headLink ?? '/components/' },
+            { text: '组件画廊', link: '/components/showcase' },
             ...groups(zhTexts, ''),
             { text: override.tailText ?? '能力说明', items: [{ text: '组合式 API', link: '/components/composables' }] },
         ],
         [COMPONENT_SIDEBAR_KEYS['en-US']]: [
             { text: 'Overview', link: '/en-US/components/' },
+            { text: 'Component Gallery', link: '/en-US/components/showcase' },
             ...groups(enTexts, 'en-US'),
             { text: 'Capabilities', items: [{ text: 'Composables', link: '/en-US/components/composables' }] },
         ],
@@ -166,8 +169,29 @@ describe('checkComponentSidebar', () => {
     it('首项 / 末项不符合 §11 的固定顺序时报出', () => {
         const sidebar = sidebarFor({ headLink: '/components/button', tailText: '其他' })
         const messages = checkComponentSidebar(sidebar, TABLE).map((issue) => issue.message).join('\n')
-        expect(messages).toContain('首项应为「总览」')
-        expect(messages).toContain('末项应为「能力说明」')
+        expect(messages).toContain('侧栏第 1 项应为「总览」')
+        expect(messages).toContain('倒数第 1 项应为「能力说明」')
+    })
+
+    it('头列表条目缺失 / 指向错误时报错（新增「组件画廊」头）', () => {
+        const sidebar = sidebarFor()
+        sidebar['/components/'][1] = { text: '组件画廊', link: '/components/gallery' }
+        const messages = checkComponentSidebar(sidebar, TABLE).map((issue) => issue.message).join('\n')
+        expect(messages).toContain('侧栏第 2 项应为「组件画廊」并指向 /components/showcase')
+
+        const missing = sidebarFor()
+        delete missing['/components/'][1]
+        expect(checkComponentSidebar(missing, TABLE).map((issue) => issue.message).join('\n')).toContain('侧栏第 2 项应为「组件画廊」')
+    })
+
+    it('首尾非组件分组须在 §11 正文中出现（防白名单脱钩）', () => {
+        const edges = {
+            root: { heads: [{ text: '总览', link: '/components/' }, { text: '组件画廊', link: '/components/showcase' }], tails: [{ text: '能力说明' }] },
+        }
+        expect(checkSidebarEdgesAgainstSection('… 总览 … 组件画廊 … 能力说明 …', edges)).toEqual([])
+        const issues = checkSidebarEdgesAgainstSection('… 总览 … 能力说明 …', edges)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].type).toBe('sidebar-edge-drift')
     })
 
     it('登记表为空与 sidebar 缺失时按失败报出（拒绝空扫描通过）', () => {
@@ -313,7 +337,8 @@ describe('仓库不变量', () => {
         const result = await runDocsStructureCheck(PROJECT_ROOT)
         expect(result.pageCount).toBeGreaterThanOrEqual(150)
         expect(result.anchorLinks).toBeGreaterThanOrEqual(20)
-        expect(result.tableGroups).toBe(6)
+        // §11 登记表：6 个组件分组 + 2026-09-30 用户决策追加的「高级组件」= 7 组
+        expect(result.tableGroups).toBe(7)
         expect(result.componentEntries).toBeGreaterThanOrEqual(MIN_COMPONENT_ENTRIES)
         expect(result.sidebarIssues).toEqual([])
         expect(result.anchorIssues).toEqual([])

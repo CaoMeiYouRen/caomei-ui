@@ -1,6 +1,6 @@
 # 组件总览
 
-组件按用途分为 6 组；组内顺序与侧栏一致。想先看效果，可前往[组件画廊](./showcase)浏览一批代表组件的真实预览。
+组件按用途分为 7 组；组内顺序与侧栏一致。想先看效果，可前往[组件画廊](./showcase)浏览一批代表组件的真实预览。
 
 ## 基础与布局
 
@@ -25,7 +25,6 @@
 - [InputNumber 数字输入框](./input-number)：数字输入框用于录入数值，支持范围限制、步进与小数精度。
 - [Password 密码输入框](./password)：密码输入框由 [Input](/components/input) 衍生，在文本输入基础上提供明文可见性切换与密码自动填充语义。
 - [RadioGroup 单选组](./radio-group)：单选组用于在一组互斥选项中选择一项，基于 Reka UI RadioGroup 封装，由 `CaomeiRadioGroup` 与 `CaomeiRadioButton` 组合使用。
-- [RichTextEditor 富文本编辑器](./rich-text-editor)：富文本编辑器是 `md-editor-v3` 的轻量封装，`v-model` 绑定 Markdown 源，暗色与语言跟随宿主状态自动联动；内核为可选 peer 依赖、按需加载。
 - [Slider 滑块](./slider)：滑块用于在数值区间内拖动选择单个或多个值，基于 Reka UI Slider 封装。
 - [Switch 开关](./switch)：开关用于切换单个选项的开启 / 关闭状态，基于 Reka UI Switch 封装。
 - [TagsInput 标签输入](./tags-input)：标签输入用于录入多个自由文本标签，支持回车 / 分隔符提交、粘贴拆分、点击删除与数量 / 去重约束，基于 Reka UI TagsInput 封装。
@@ -67,6 +66,10 @@
 - [Stepper 步骤条](./stepper)：步骤条展示多步流程的进度，并在步骤之间导航。基于 Reka UI Stepper（稳定 primitive）封装，采用与 Tabs 一致的组合式 API。
 - [Tabs 选项卡](./tabs)：选项卡在一组同级内容间切换，同一时刻只展示一个面板，基于 Reka UI Tabs 封装。
 - [Toolbar 工具条](./toolbar)：工具条用于将一组操作控件组织为单一键盘导航区域，基于 Reka UI Toolbar 封装，由 `CaomeiToolbar` 与 `CaomeiToolbarButton` / `CaomeiToolbarLink` / `CaomeiToolbarSeparator` / `CaomeiToolbarToggleGroup` / `CaomeiToolbarToggleItem` 组合使用。
+
+## 高级组件
+
+- [RichTextEditor 富文本编辑器](./rich-text-editor)：富文本编辑器是 `md-editor-v3` 的轻量封装，`v-model` 绑定 Markdown 源，暗色与语言跟随宿主状态自动联动；内核为可选 peer 依赖、按需加载。
 
 ## 能力说明
 

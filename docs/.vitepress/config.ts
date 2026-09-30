@@ -285,8 +285,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Release', link: '/en-US/guide/release' },
                                 { text: 'AI Development', link: '/en-US/guide/ai-development' },
                                 { text: 'Migration from PrimeVue', link: '/en-US/guide/primevue-migration' },
-                                // 组件画廊入口：画廊页属组件区（不进组件侧栏，见 documentation-site §11 / §16）
-                                { text: 'Component Gallery', link: '/en-US/components/showcase' },
                             ],
                         },
                     ],
@@ -294,6 +292,9 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     // 分组命名与规则见 docs/design/documentation-site.md §11。
                     '/en-US/components/': [
                         { text: 'Overview', link: '/en-US/components/' },
+                        // 画廊属组件区的非组件分组（「总览」之后、组件分组之前）；入口唯一，故指南侧栏不再重复
+                        // （2026-09-30 用户决策，见 documentation-site §11 §16）
+                        { text: 'Component Gallery', link: '/en-US/components/showcase' },
                         {
                             text: 'Basics & Layout',
                             items: [
@@ -320,7 +321,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'InputNumber', link: '/en-US/components/input-number' },
                                 { text: 'Password', link: '/en-US/components/password' },
                                 { text: 'RadioGroup', link: '/en-US/components/radio-group' },
-                                { text: 'RichTextEditor', link: '/en-US/components/rich-text-editor' },
                                 { text: 'Slider', link: '/en-US/components/slider' },
                                 { text: 'Switch', link: '/en-US/components/switch' },
                                 { text: 'TagsInput', link: '/en-US/components/tags-input' },
@@ -370,6 +370,13 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Stepper', link: '/en-US/components/stepper' },
                                 { text: 'Tabs', link: '/en-US/components/tabs' },
                                 { text: 'Toolbar', link: '/en-US/components/toolbar' },
+                            ],
+                        },
+                        {
+                            // 第 7 组：外部依赖内核类组件（2026-09-30 用户决策，见 documentation-site §11）
+                            text: 'Advanced',
+                            items: [
+                                { text: 'RichTextEditor', link: '/en-US/components/rich-text-editor' },
                             ],
                         },
                         {
@@ -471,8 +478,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: '发布指南', link: '/guide/release' },
                         { text: 'AI 协同开发', link: '/guide/ai-development' },
                         { text: '从 PrimeVue 迁移', link: '/guide/primevue-migration' },
-                        // 组件画廊入口：画廊页属组件区（不进组件侧栏，见 documentation-site §11 / §16）
-                        { text: '组件画廊', link: '/components/showcase' },
                     ],
                 },
             ],
@@ -480,6 +485,9 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
             // 组内按英文组件名字母序；中英两侧同分组、同组件、同顺序。
             '/components/': [
                 { text: '总览', link: '/components/' },
+                // 画廊属组件区的非组件分组（「总览」之后、组件分组之前）；入口唯一，故指南侧栏不再重复
+                // （2026-09-30 用户决策，见 documentation-site §11 §16）
+                { text: '组件画廊', link: '/components/showcase' },
                 {
                     text: '基础与布局',
                     items: [
@@ -506,7 +514,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'InputNumber 数字输入框', link: '/components/input-number' },
                         { text: 'Password 密码输入框', link: '/components/password' },
                         { text: 'RadioGroup 单选组', link: '/components/radio-group' },
-                        { text: 'RichTextEditor 富文本编辑器', link: '/components/rich-text-editor' },
                         { text: 'Slider 滑块', link: '/components/slider' },
                         { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'TagsInput 标签输入', link: '/components/tags-input' },
@@ -556,6 +563,13 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Stepper 步骤条', link: '/components/stepper' },
                         { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Toolbar 工具条', link: '/components/toolbar' },
+                    ],
+                },
+                {
+                    // 第 7 组：外部依赖内核类组件（2026-09-30 用户决策，见 documentation-site §11）
+                    text: '高级组件',
+                    items: [
+                        { text: 'RichTextEditor 富文本编辑器', link: '/components/rich-text-editor' },
                     ],
                 },
                 {

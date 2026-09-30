@@ -13,9 +13,10 @@
  *   与其目标越出 `docs/` 者不在受检面；行号锚点（`#L12`）跳过。
  *
  * 规则二 `sidebar-order`——**组件区侧栏的分区与排序不变式**。
- *   依据[文档与演示站 §11]：6 个组件分组的组间顺序固定为该节登记表自上而下的顺序，
- *   组内按英文组件名字母序，中英两侧同分组划分与同组件顺序，且「总览」在 6 组之前、
- *   「能力说明」在其后。守卫以 §11 的表为单一事实源，与 `config.ts` 的已解析 sidebar 对账。
+ *   依据[文档与演示站 §11]：7 个组件分组的组间顺序固定为该节登记表自上而下的顺序，
+ *   组内按英文组件名字母序，中英两侧同分组划分与同组件顺序；非组件分组按 §11 的固定位次
+ *   前后夹持——头列表（`总览`、`组件画廊`）在组件分组之前，「能力说明」在其后。
+ *   守卫以 §11 的表 + 非组件分组清单为单一事实源，与 `config.ts` 的已解析 sidebar 对账。
  *
  * 用法：
  *   node scripts/docs/check-docs-structure.mjs [仓库根目录]
@@ -39,8 +40,20 @@ export const DESIGN_DOC = 'docs/design/documentation-site.md'
 /** 组件区侧栏的键（zh / en）与首尾固定条目。 */
 export const COMPONENT_SIDEBAR_KEYS = { root: '/components/', 'en-US': '/en-US/components/' }
 export const COMPONENT_SIDEBAR_EDGES = {
-    root: { head: '总览', tail: '能力说明', headLink: '/components/' },
-    'en-US': { head: 'Overview', tail: 'Capabilities', headLink: '/en-US/components/' },
+    root: {
+        heads: [
+            { text: '总览', link: '/components/' },
+            { text: '组件画廊', link: '/components/showcase' },
+        ],
+        tails: [{ text: '能力说明' }],
+    },
+    'en-US': {
+        heads: [
+            { text: 'Overview', link: '/en-US/components/' },
+            { text: 'Component Gallery', link: '/en-US/components/showcase' },
+        ],
+        tails: [{ text: 'Capabilities' }],
+    },
 }
 
 /** 组件条目数的下界（防「受检范围被静默收窄」：解析不到 sidebar 时不得静默通过）。 */
@@ -104,6 +117,51 @@ function linkBasename(link) {
 }
 
 /**
+ * 取侧栏中的**组件分组**（剥掉头列表与尾列表）。
+ *
+ * @param {unknown[]} value 已解析的组件区 sidebar
+ * @param {'root' | 'en-US'} locale 侧栏键
+ */
+export function componentGroupsOf(value, locale) {
+    const edge = COMPONENT_SIDEBAR_EDGES[locale]
+    return value.slice(edge.heads.length, value.length - edge.tails.length)
+}
+
+/**
+ * 首尾非组件分组的名称须在 §11 正文中出现：防「守卫白名单」与「登记章节」脱钩。
+ *
+ * **契约**：中英两侧的首尾条目名称（含英文名）都必须能在 §11 正文中按字面找到——
+ * §11 登记时须把中英名一并写出（现形如 `` zh `总览` / en `Overview` ``），否则本守卫会报
+ * `sidebar-edge-drift`；若日后 §11 改用 code span 或把英文名迁往别节，须同步改本函数。
+ *
+ * 空配置（heads / tails 全空）视为**范围收窄**直接报错，不依赖「组件分组数」间接兜底。
+ *
+ * @param {string} section §11 小节正文
+ * @param {typeof COMPONENT_SIDEBAR_EDGES} edges 首尾登记表
+ */
+export function checkSidebarEdgesAgainstSection(section, edges = COMPONENT_SIDEBAR_EDGES) {
+    const issues = []
+    for (const [locale, edge] of Object.entries(edges)) {
+        if (edge.heads.length === 0 && edge.tails.length === 0) {
+            issues.push({
+                type: 'sidebar-edge-config-empty',
+                message: `${locale} 首尾登记表为空：拒绝以空配置通过（防受检面被静默收窄）`,
+            })
+            continue
+        }
+        for (const item of [...edge.heads, ...edge.tails]) {
+            if (!section.includes(item.text)) {
+                issues.push({
+                    type: 'sidebar-edge-drift',
+                    message: `${locale} 侧栏首尾条目「${item.text}」未出现在 §11 正文：首尾登记表与登记章节疑似脱钩`,
+                })
+            }
+        }
+    }
+    return issues
+}
+
+/**
  * 侧栏不变式：已解析的两个 locale sidebar 与 §11 登记表的对账。
  *
  * @param {Record<string, unknown>} sidebar 已解析的 sidebar（含 `/components/` 与 `/en-US/components/`）
@@ -128,15 +186,20 @@ export function checkComponentSidebar(sidebar, tableGroups) {
             continue
         }
         const edge = COMPONENT_SIDEBAR_EDGES[locale]
-        const head = value[0]
-        const tail = value[value.length - 1]
-        if (head?.text !== edge.head || linkBasename(head?.link) !== linkBasename(edge.headLink)) {
-            push(`${locale} 侧栏首项应为「${edge.head}」并指向 ${edge.headLink}，实为「${head?.text}」→ ${head?.link}`)
-        }
-        if (tail?.text !== edge.tail) {
-            push(`${locale} 侧栏末项应为「${edge.tail}」，实为「${tail?.text}」`)
-        }
-        resolved[locale] = value.slice(1, -1).map((group) => ({
+        edge.heads.forEach((head, index) => {
+            const actual = value[index]
+            if (actual?.text !== head.text || linkBasename(actual?.link) !== linkBasename(head.link)) {
+                push(`${locale} 侧栏第 ${index + 1} 项应为「${head.text}」并指向 ${head.link}，实为「${actual?.text}」→ ${actual?.link}`)
+            }
+        })
+        edge.tails.forEach((tail, offset) => {
+            const index = value.length - edge.tails.length + offset
+            const actual = value[index]
+            if (actual?.text !== tail.text) {
+                push(`${locale} 侧栏倒数第 ${edge.tails.length - offset} 项应为「${tail.text}」，实为「${actual?.text}」`)
+            }
+        })
+        resolved[locale] = componentGroupsOf(value, locale).map((group) => ({
             text: group?.text,
             items: (group?.items ?? []).map((item) => linkBasename(item?.link)),
         }))
@@ -258,9 +321,10 @@ export async function runDocsStructureCheck(root = docsProjectRoot) {
     const designDoc = readFileSync(resolve(root, DESIGN_DOC), 'utf8')
     const tableGroups = parseComponentGroupTable(designDoc)
     sidebarIssues.push(...checkComponentSidebar(navigation.sidebar, tableGroups))
+    sidebarIssues.push(...checkSidebarEdgesAgainstSection(extractComponentGroupSection(designDoc)))
 
     const zhEntries = Array.isArray(navigation.sidebar[COMPONENT_SIDEBAR_KEYS.root])
-        ? navigation.sidebar[COMPONENT_SIDEBAR_KEYS.root].slice(1, -1).reduce((sum, group) => sum + (group?.items?.length ?? 0), 0)
+        ? componentGroupsOf(navigation.sidebar[COMPONENT_SIDEBAR_KEYS.root], 'root').reduce((sum, group) => sum + (group?.items?.length ?? 0), 0)
         : 0
     let anchorLinks = 0
     for (const file of files) {

@@ -37,6 +37,9 @@ export default defineConfig({
             '@internationalized/date',
             '@nuxt/kit',
             '@nuxt/schema',
+            // 富文本编辑器为可选 peer：始终 external，未安装时由包装组件运行期降级
+            'md-editor-v3',
+            '@vavt/cm-extension',
         ],
     },
     plugins: [

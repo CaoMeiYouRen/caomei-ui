@@ -1,6 +1,7 @@
 import { DOMWrapper, mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, nextTick } from 'vue'
+import { expectSettled } from '../../../test/helpers/settle'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiColorPicker } from './index'
@@ -153,8 +154,11 @@ describe('CaomeiColorPicker', () => {
         await new DOMWrapper(panel(wrapper)?.querySelector('.caomei-color-picker__swatch') as Element).trigger('click')
         await flush()
 
-        const emitted = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string
-        expect(emitted).toBe(expected)
+        // 色板点击的 emit 在 Reka 状态更新后到达：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            const emitted = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as string
+            expect(emitted).toBe(expected)
+        })
     })
 
     it('未提供 swatches 时不渲染色板', async () => {

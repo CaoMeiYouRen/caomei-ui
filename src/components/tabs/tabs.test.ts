@@ -1,6 +1,7 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import {
     CaomeiTabContent,
     CaomeiTabList,
@@ -124,9 +125,11 @@ describe('CaomeiTabs', () => {
 
         await getTabs(wrapper)[1].trigger('mousedown')
         await flush()
-
-        expect(getTabs(wrapper)[1].attributes('aria-selected')).toBe('true')
-        expect(getActivePanel(wrapper).text()).toBe('内容 B')
+        // 非受控切换经 Reka 状态机跨 tick 生效：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(getTabs(wrapper)[1].attributes('aria-selected')).toBe('true')
+            expect(getActivePanel(wrapper).text()).toBe('内容 B')
+        })
     })
 
     it('外部更新 modelValue 同步激活项', async () => {

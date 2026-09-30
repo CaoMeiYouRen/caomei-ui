@@ -49,7 +49,8 @@ describe('generate-changelog', () => {
     it('readPackageField 读取指定仓库根的字段', async () => {
         const root = createGitFixture()
         expect(await readPackageField('name', root)).toBe('fixture-ui')
-    })
+        // git 夹具与读取都要派生 git 子进程；全量并行负载下默认 5s 上限可能不足，显式放宽（非掩盖挂起）
+    }, 30_000)
 
     it('生成结果按预设分组，保留 BREAKING CHANGES 且不产生 issue 链接', async () => {
         const root = createGitFixture()
@@ -63,5 +64,6 @@ describe('generate-changelog', () => {
         expect(content).not.toContain('### 📝 文档')
         expect(content).not.toContain('/issues/')
         expect(content).not.toContain('closes')
-    })
+        // 同上：夹具构建 + changelog 生成共用 git 子进程，显式放宽超时
+    }, 30_000)
 })

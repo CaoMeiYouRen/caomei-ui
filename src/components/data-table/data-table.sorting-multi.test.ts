@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { nextTick, type DefineComponent } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import type { DataTableColumn, DataTableProps, DataTableSortMeta } from './types'
 import { CaomeiDataTable } from './index'
 
@@ -179,9 +180,12 @@ describe('CaomeiDataTable 排序', () => {
             await sortButtons(wrapper)[0].trigger('click.meta')
 
             // 部门：升 → 降 → 移除（姓名键保留）
-            expect(wrapper.emitted('update:multiSortMeta')?.[3]?.[0]).toEqual([
-                { field: 'name', order: 1 },
-            ])
+            // 多列排序键由受控 / 自持状态机异步写回：条件轮询替代「点击后立即断言」
+            await expectSettled(() => {
+                expect(wrapper.emitted('update:multiSortMeta')?.[3]?.[0]).toEqual([
+                    { field: 'name', order: 1 },
+                ])
+            })
             expect(renderedNames(wrapper)).toEqual(['Ada', 'Bob', 'Cara', 'Dan'])
         })
 

@@ -1,6 +1,7 @@
 import { DOMWrapper, mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
+import { expectSettled } from '../../../test/helpers/settle'
 import {
     CaomeiToolbar,
     CaomeiToolbarButton,
@@ -180,9 +181,12 @@ describe('CaomeiToolbarToggleGroup', () => {
 
         await wrapper.findAll('[aria-pressed]')[1].trigger('click')
 
-        expect(wrapper.findComponent(CaomeiToolbarToggleGroup).emitted('update:modelValue')?.[0]).toEqual([
-            ['bold', 'italic'],
-        ])
+        // 组值的 emit 由 Reka 状态更新异步写回：条件轮询替代「点击后立即断言」
+        await expectSettled(() => {
+            expect(wrapper.findComponent(CaomeiToolbarToggleGroup).emitted('update:modelValue')?.[0]).toEqual([
+                ['bold', 'italic'],
+            ])
+        })
     })
 
     it('禁用条目设置 disabled 并移出焦点序列', () => {

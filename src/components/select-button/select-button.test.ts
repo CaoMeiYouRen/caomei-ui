@@ -1,6 +1,7 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick, type Component, type DefineComponent } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import type { SelectButtonProps } from './types'
 import { CaomeiSelectButton, type SelectButtonOption } from './index'
 
@@ -56,12 +57,17 @@ describe('CaomeiSelectButton', () => {
 
         await getItems(wrapper)[0].trigger('click')
         await flush()
-        expect(getItems(wrapper)[0].attributes('data-state')).toBe('on')
+        // 单选态与互斥切换跨 tick 生效：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(getItems(wrapper)[0].attributes('data-state')).toBe('on')
+        })
 
         await getItems(wrapper)[2].trigger('click')
         await flush()
-        expect(getItems(wrapper)[0].attributes('data-state')).toBe('off')
-        expect(getItems(wrapper)[2].attributes('data-state')).toBe('on')
+        await expectSettled(() => {
+            expect(getItems(wrapper)[0].attributes('data-state')).toBe('off')
+            expect(getItems(wrapper)[2].attributes('data-state')).toBe('on')
+        })
     })
 
     it('单选点击已选项不解选且不抛出 undefined', async () => {

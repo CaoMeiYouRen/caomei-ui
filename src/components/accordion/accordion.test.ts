@@ -1,6 +1,7 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import { CaomeiAccordion, CaomeiAccordionItem } from './index'
 
 enableAutoUnmount(afterEach)
@@ -69,30 +70,35 @@ describe('CaomeiAccordion', () => {
         const regions = getRegions(wrapper)
 
         await triggers[0].trigger('click')
-        await nextTick()
-        expect(triggers[0].attributes('aria-expanded')).toBe('true')
-        expect(regions[0].attributes('hidden')).toBeUndefined()
-        expect(regions[0].text()).toBe('内容 A')
+        // 非受控交互跨微任务 / 宏任务生效：条件轮询替代固定 tick 数，避免并行负载下的时序假失败
+        await expectSettled(() => {
+            expect(triggers[0].attributes('aria-expanded')).toBe('true')
+            expect(regions[0].attributes('hidden')).toBeUndefined()
+            expect(regions[0].text()).toBe('内容 A')
+        })
 
         await triggers[1].trigger('click')
-        await nextTick()
-        expect(triggers[0].attributes('aria-expanded')).toBe('false')
-        expect(triggers[1].attributes('aria-expanded')).toBe('true')
-        expect(regions[1].text()).toBe('内容 B')
+        await expectSettled(() => {
+            expect(triggers[0].attributes('aria-expanded')).toBe('false')
+            expect(triggers[1].attributes('aria-expanded')).toBe('true')
+            expect(regions[1].text()).toBe('内容 B')
+        })
     })
 
     it('collapsible 控制单开模式下能否收起', async () => {
         const strict = mountAccordion()
         await getTriggers(strict)[0].trigger('click')
         await getTriggers(strict)[0].trigger('click')
-        await nextTick()
-        expect(getTriggers(strict)[0].attributes('aria-expanded')).toBe('true')
+        await expectSettled(() => {
+            expect(getTriggers(strict)[0].attributes('aria-expanded')).toBe('true')
+        })
 
         const collapsible = mountAccordion({ collapsible: true })
         await getTriggers(collapsible)[0].trigger('click')
         await getTriggers(collapsible)[0].trigger('click')
-        await nextTick()
-        expect(getTriggers(collapsible)[0].attributes('aria-expanded')).toBe('false')
+        await expectSettled(() => {
+            expect(getTriggers(collapsible)[0].attributes('aria-expanded')).toBe('false')
+        })
     })
 
     it('multiple 模式可同时展开多项', async () => {
@@ -180,12 +186,15 @@ describe('CaomeiAccordion', () => {
         focusTrigger(wrapper, 0)
         await nextTick()
         await getTriggers(wrapper)[0].trigger('keydown', { key: 'End' })
-        await nextTick()
-        expect(document.activeElement).toBe(getTriggers(wrapper)[2].element)
+        // roving focus 经 Reka 异步落位：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(document.activeElement).toBe(getTriggers(wrapper)[2].element)
+        })
 
         await getTriggers(wrapper)[2].trigger('keydown', { key: 'Home' })
-        await nextTick()
-        expect(document.activeElement).toBe(getTriggers(wrapper)[0].element)
+        await expectSettled(() => {
+            expect(document.activeElement).toBe(getTriggers(wrapper)[0].element)
+        })
     })
 
     it('键盘上下键在触发器间移动焦点', async () => {
@@ -194,13 +203,16 @@ describe('CaomeiAccordion', () => {
         focusTrigger(wrapper, 0)
         await nextTick()
         await getTriggers(wrapper)[0].trigger('keydown', { key: 'ArrowDown' })
-        await nextTick()
 
-        expect(document.activeElement).toBe(getTriggers(wrapper)[1].element)
+        // roving focus 经 Reka 异步落位：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(document.activeElement).toBe(getTriggers(wrapper)[1].element)
+        })
 
         await getTriggers(wrapper)[1].trigger('keydown', { key: 'ArrowUp' })
-        await nextTick()
-        expect(document.activeElement).toBe(getTriggers(wrapper)[0].element)
+        await expectSettled(() => {
+            expect(document.activeElement).toBe(getTriggers(wrapper)[0].element)
+        })
     })
 
     it('trigger 插槽可自定义触发器内容', () => {

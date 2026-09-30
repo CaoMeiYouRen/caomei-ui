@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { h, nextTick, reactive, type DefineComponent } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import type { DataTableColumn, DataTableProps, DataTableRowGroupSlotProps } from './types'
 import { CaomeiDataTable } from './index'
 
@@ -270,20 +271,25 @@ describe('CaomeiDataTable 行分组（subheader）', () => {
 
             await groupToggles(wrapper)[0].trigger('click')
 
-            expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('true')
-            expect(groupToggles(wrapper)[1].attributes('aria-expanded')).toBe('false')
-            expect(
-                wrapper.findAll('.caomei-data-table__row').map((row) => row.text()),
-            ).toEqual(['Ada', 'Bob'])
-            expect(wrapper.emitted('update:expandedRowGroups')?.[0]?.[0]).toEqual(['A'])
-            expect(wrapper.emitted('rowgroupExpand')?.[0]?.[0]).toMatchObject({ data: 'A' })
+            // 展开态、行序与双向事件均由 Reka 异步写回：条件轮询替代「点击后立即断言」
+            await expectSettled(() => {
+                expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('true')
+                expect(groupToggles(wrapper)[1].attributes('aria-expanded')).toBe('false')
+                expect(
+                    wrapper.findAll('.caomei-data-table__row').map((row) => row.text()),
+                ).toEqual(['Ada', 'Bob'])
+                expect(wrapper.emitted('update:expandedRowGroups')?.[0]?.[0]).toEqual(['A'])
+                expect(wrapper.emitted('rowgroupExpand')?.[0]?.[0]).toMatchObject({ data: 'A' })
+            })
 
             await groupToggles(wrapper)[0].trigger('click')
 
-            expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('false')
-            expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
-            expect(wrapper.emitted('update:expandedRowGroups')?.[1]?.[0]).toEqual([])
-            expect(wrapper.emitted('rowgroupCollapse')?.[0]?.[0]).toMatchObject({ data: 'A' })
+            await expectSettled(() => {
+                expect(groupToggles(wrapper)[0].attributes('aria-expanded')).toBe('false')
+                expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+                expect(wrapper.emitted('update:expandedRowGroups')?.[1]?.[0]).toEqual([])
+                expect(wrapper.emitted('rowgroupCollapse')?.[0]?.[0]).toMatchObject({ data: 'A' })
+            })
         })
 
         it('自持模式下多个分组独立折叠，互不影响', async () => {

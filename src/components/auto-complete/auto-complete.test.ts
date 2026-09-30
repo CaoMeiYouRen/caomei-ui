@@ -1,6 +1,7 @@
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, nextTick } from 'vue'
+import { expectSettled } from '../../../test/helpers/settle'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiAutoComplete } from './index'
@@ -198,7 +199,10 @@ describe('CaomeiAutoComplete', () => {
         expect(tags[0].text()).toContain('苹果')
 
         await tags[0].get('.caomei-auto-complete__tag-remove').trigger('click')
-        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['banana']])
+        // 移除标签的 emit 经 Reka 状态更新后到达：条件轮询替代「点击后立即断言」
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([['banana']])
+        })
     })
 
     it('多选模式点击建议项追加选中值', async () => {
@@ -438,7 +442,10 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        expect(optionElements(filtered)).toHaveLength(0)
+        // 过滤结果经响应式管线异步收敛：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(optionElements(filtered)).toHaveLength(0)
+        })
 
         filtered.unmount()
 
@@ -452,7 +459,9 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        expect(optionElements(unfiltered)).toHaveLength(options.length)
+        await expectSettled(() => {
+            expect(optionElements(unfiltered)).toHaveLength(options.length)
+        })
     })
 
     it('内建可访问名与空提示使用注入 locale 的文案', async () => {
@@ -474,11 +483,13 @@ describe('CaomeiAutoComplete', () => {
         await flushPromises()
         await nextTick()
 
-        // 并发隔离：通过面板查找空提示
-        const trigger = wrapper.get('.caomei-auto-complete__trigger')
-        const controlsId = trigger.attributes('aria-controls')
-        const panel = controlsId ? document.getElementById(controlsId) : wrapper.find('[role="listbox"]').element
-        const emptyEl = panel?.querySelector('.caomei-auto-complete__empty')
-        expect(emptyEl?.textContent?.trim()).toBe('No matching suggestions')
+        // 并发隔离：通过面板查找空提示；面板挂载与空态渲染跨 tick，故用条件轮询重查 DOM
+        await expectSettled(() => {
+            const trigger = wrapper.get('.caomei-auto-complete__trigger')
+            const controlsId = trigger.attributes('aria-controls')
+            const panel = controlsId ? document.getElementById(controlsId) : wrapper.find('[role="listbox"]').element
+            const emptyEl = panel?.querySelector('.caomei-auto-complete__empty')
+            expect(emptyEl?.textContent?.trim()).toBe('No matching suggestions')
+        })
     })
 })

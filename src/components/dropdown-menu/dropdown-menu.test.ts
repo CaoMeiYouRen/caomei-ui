@@ -1,6 +1,7 @@
 import { DOMWrapper, enableAutoUnmount, mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import type { DropdownMenuCommandEvent, DropdownMenuModelItem } from './types'
 import {
     CaomeiDropdownMenu,
@@ -205,8 +206,11 @@ describe('CaomeiDropdownMenu', () => {
         pressEscape()
         await flush()
 
-        expect(getTrigger(wrapper).attributes('aria-expanded')).toBe('false')
-        expect(getContent()).toBeNull()
+        // 关闭态与面板卸载经 Reka 异步写回：条件轮询替代固定 tick 数
+        await expectSettled(() => {
+            expect(getTrigger(wrapper).attributes('aria-expanded')).toBe('false')
+            expect(getContent()).toBeNull()
+        })
     })
 
     it('受控时 Esc 抛出 update:open 且不自行关闭', async () => {
@@ -426,11 +430,16 @@ describe('CaomeiDropdownMenu', () => {
 
         await clickElement(checkbox)
         await flush()
-        expect(checkbox.getAttribute('data-state')).toBe('checked')
+        // 勾选态由 Reka 异步写回：先轮询确认已切换，再触发下一次点击，避免状态叠加时序
+        await expectSettled(() => {
+            expect(checkbox.getAttribute('data-state')).toBe('checked')
+        })
 
         await clickElement(checkbox)
         await flush()
-        expect(checkbox.getAttribute('data-state')).toBe('unchecked')
+        await expectSettled(() => {
+            expect(checkbox.getAttribute('data-state')).toBe('unchecked')
+        })
     })
 
     it('单选组在选项间切换选中', async () => {
@@ -472,7 +481,7 @@ describe('CaomeiDropdownMenu', () => {
         await new DOMWrapper(document.activeElement as Element).trigger('keydown', { key: 'ArrowDown' })
 
         // 焦点移动经 Reka 的 roving focus 异步落位：用条件轮询替代固定 tick 数，不假设调度时序
-        await vi.waitFor(() => {
+        await expectSettled(() => {
             expect(document.activeElement?.getAttribute('role')).toBe('menuitemcheckbox')
         })
     })

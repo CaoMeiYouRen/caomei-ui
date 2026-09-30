@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { computed, defineComponent, h, nextTick, type DefineComponent } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
+import { expectSettled } from '../../../test/helpers/settle'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import type { DataTableCellSlotProps, DataTableColumn, DataTableHeaderSlotProps, DataTableProps } from './types'
@@ -225,13 +226,18 @@ describe('CaomeiDataTable', () => {
         expect(sortButton.text()).toContain('年龄')
         expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('none')
 
-        await sortButton.trigger('click')
-        expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('ascending')
-        expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('24')
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+        // 排序态与行序经表格派生状态跨 tick 生效：条件轮询替代「点击后立即断言」
+        await expectSettled(() => {
+            expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('ascending')
+            expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('24')
+        })
 
-        await sortButton.trigger('click')
-        expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('descending')
-        expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('36')
+        await wrapper.findAll('.caomei-data-table__sort')[0].trigger('click')
+        await expectSettled(() => {
+            expect(wrapper.findAll('.caomei-data-table__th')[1].attributes('aria-sort')).toBe('descending')
+            expect(wrapper.findAll('.caomei-data-table__row')[0].findAll('.caomei-data-table__td')[1].text()).toBe('36')
+        })
     })
 
     it('提供 sortField 时进入受控排序并抛出 sort 事件', async () => {

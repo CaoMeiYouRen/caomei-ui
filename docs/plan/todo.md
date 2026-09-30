@@ -10,7 +10,7 @@
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
-| M1-1 | 发布收口与版本一致性 | 0.5.0 发布后校验与版本句同步：registry `version` / `dist-tags` 复核、tarball shasum 与解包冒烟（复用 `scripts/release/smoke-runtime.mjs`）；同步 README（中英）、[路线图](./roadmap.md) §1、`docs/plan/todo.md` 的「已发布版本的缺陷状态」行 | `docs:check:version` **exit 0**（4 处漂移清零）；`pnpm verify` exit 0；版本句载体逐处 `rg` 复核无旧口径残留；registry 校验与发布日志一致 | 待开工 |
+| M1-1 | 发布收口与版本一致性 | 0.5.0 发布后校验与版本句同步：registry `version` / `dist-tags` 复核、tarball shasum 与解包冒烟（复用 `scripts/release/smoke-runtime.mjs`）；同步 README（中英）、[路线图](./roadmap.md) §1、`docs/plan/todo.md` 的「已发布版本的缺陷状态」行 | `docs:check:version` **exit 0**（4 处漂移清零）；`pnpm verify` exit 0；版本句载体逐处 `rg` 复核无旧口径残留；registry 校验与发布日志一致 | **已完成**（2026-10-01）：`docs:check:version` exit 0；`pnpm verify` exit 0（102 文件 / 2126 例）；registry tarball shasum `266f7686…` 与本地 `npm pack` 产物交叉核对一致（358 文件 / 858390 B）；解包冒烟 `ok`（resolver / nuxt / styles 全 true、导出 92）；「发布日志」在用户本地不可得，替代取证边界记入 M1-3 记录 |
 | M1-2 | 发布收口与版本一致性 | [发布指南](../guide/release.md) §3 的 tag 指向口径修正：与实际流程（先 bump 版本 → 生成 CHANGELOG → 打 tag 指向版本提交）一致；**维持 `v0.5.0` 现状不回改 tag**（用户 2026-09-30 裁定） | 指南口径与实测流程一致；历史记录（预备检查记录 / 既有发布记录）不回写；`docs:check` 全绿 | 待开工 |
 | M1-3 | 发布收口与版本一致性 | 产出 0.5.0 发布执行治理记录并登记[治理索引](../design/governance/index.md)；说明发布前门槛复核义务已由[长期任务](./recurring.md) §3 第 19 轮覆盖 | 记录逐条回链发布日志与 registry 实测值；索引双向对账通过（`check:governance-records`） | 待开工 |
 | M2-1 | 测试稳定性与质量装置消缺 | 并行负载 flaky 类根因修复（根因已定位：CPU 过载下「交互后单 tick 断言」读不到更新态）：受影响用例改为等待稳定（二次 flush / `vi.waitFor`），并在 `vitest.config.ts` 兜底限定 `maxWorkers` | 全量复跑**连续多轮零失败**并留痕；`maxWorkers` 生效性实测（实际 worker 数）；不降低断言判别力 | 待开工 |

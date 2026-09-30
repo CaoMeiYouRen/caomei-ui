@@ -71,7 +71,9 @@
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | 视觉回归基线 | Playwright 截图比对 | 低 |
 | 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
-| 全量首跑 flaky（`generate-changelog` git fixture） | 2026-09-28 归档批次实测：`scripts/release/generate-changelog.test.mjs > readPackageField`（git fixture 子进程）在 88 文件并行负载下 5s 超时；隔离重跑 816ms 通过、二次全量 1837 例全通过，与当批 docs-only 改动无因果。**条件候选**：按「多次出现再处理」跟踪——再次出现（任意环境 / 任意批次）时定位根因并修 | 低 |
+| 全量首跑 flaky（`generate-changelog` git fixture **与 `auto-complete.test.ts:480`**） | **触发条件已命中（2026-09-30，第二次出现）**：`src/components/auto-complete/auto-complete.test.ts:480`（`aria-controls` 面板查找，报 `Cannot call element on an empty DOMWrapper`）在 94 文件并行负载下偶发失败；按 [测试规范 §6.1](../standards/testing.md) 处置（隔离复跑 30 / 30、全量复跑两次 1965 例全通过）判为并行负载偶发、与当批改动无因果。**原条件候选口径**：`generate-changelog` git fixture 在 88 文件并行负载下 5s 超时（2026-09-28）；「按多次出现再处理」的触发条件现已由第二条实例满足 → **转为待评估：定位并行负载下的根因（用例隔离 / 断言时序 / 负载上限）并修** | 低 |
+| 治理索引与记录计数对账守卫 | 2026-09-30 浮层遮挡修复批次连续两轮 Review Gate 以「同一组计数跨载体漂移」判 blocker（记录本体计数为修复前快照 → 索引摘要计数未同步〔复发〕）。候选：对治理索引摘要与记录本体的 e2e / 测试计数做对账机检。**评估结论：高误报 / 高过拟合，未实施**——计数散落在自然语言摘要中，抽取规则易误伤；当前以「改完逐载体 `rg -o` 核对 + 记录内钉复算命令」的流程约束替代（已记 `.session/wisdom.md` 与 [AI 协作规范 §9](../standards/ai-collaboration.md)） | 低 |
+| 浮层档位装置的判别力补强 | 2026-09-30 浮层遮挡修复批次的 Review Gate follow-up（R2 / R3 / R1′ 三次提出，已登记记录 §4）：① `inline` ColorPicker 用例只断言计算 `z-index === 'auto'`，未做绘制顺序命中测试；② 命中测试的判别力自证只验模态内容**根节点**可命中，未验其后代；③ E2E 的 `PANEL_CASES` 与声明层门禁未联动（新增 portal 组件不强制补进清单）。触发条件：下一次改动浮层装置或新增 portal 浮层组件时一并评估 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |

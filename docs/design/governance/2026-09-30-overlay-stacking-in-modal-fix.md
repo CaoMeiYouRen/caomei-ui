@@ -92,10 +92,10 @@
 - **未覆盖（流程边界）**：E2E 的 `PANEL_CASES` 与声明层门禁**未联动**——新增 portal 浮层组件时，门禁单测的精确计数（浮层声明数 10）会失败并强制复核，但不会强制把新组件补进 E2E 清单（`MIN_PANEL_CASES = 7` 为下界）；跨文件耦合成本高于收益，登记为已知流程边界（Review Gate RG-R1′-S04）。
 - **未覆盖**：`check:overlay-z-index` 的 T6 只覆盖「同一文件内」的变体复用；跨文件复用同一基类（如消费方在宿主页面复用组件类名）不在其规则面。
 - **观察项 O2（非本批缺陷）**：`check:overlay-z-index` 首跑即命中 `image.vue` 的 `[static-variant]` 误报——原因是类名正则未含 `_`（`caomei-image__preview-overlay` 被截断为 `caomei-image`）。已修正正则并在单测中固化「模板提取只取 `<template>` 内容」边界；该误报说明**守卫自身的规则面也需要负向语料**。
-- **观察项 O1（非本批缺陷）**：首次 `pnpm verify` 的全量单测出现 1 例偶发失败（`src/components/auto-complete/auto-complete.test.ts:480` 的 `aria-controls` 面板查找，报 `Cannot call element on an empty DOMWrapper`）。按 [测试规范 §6.1](../../standards/testing.md) 处置：隔离复跑该文件 **30 / 30 通过**、全量复跑两次均 **93 文件 / 1931 例全通过**，判为并行负载下的偶发，与改动无因果；本批**未**改该用例、未登记 Backlog（是否登记待用户裁定）。
+- **观察项 O1（非本批缺陷）**：首次 `pnpm verify` 的全量单测出现 1 例偶发失败（`src/components/auto-complete/auto-complete.test.ts:480` 的 `aria-controls` 面板查找，报 `Cannot call element on an empty DOMWrapper`）。按 [测试规范 §6.1](../../standards/testing.md) 处置：隔离复跑该文件 **30 / 30 通过**、全量复跑两次均全通过（**当轮口径** 93 文件 / 1931 例；终态见 §5），判为并行负载下的偶发，与改动无因果；本批**未**改该用例；该实例已按触发条件登记 [Backlog §1.6](../../plan/backlog.md)（第二次出现 → 触发「定位根因并修」）。
 - **未做**：像素级视觉比对（未引入图像基线；本类问题的可判定证据为计算样式 + 绘制顺序命中，`capture:styles` 245 项 0 差异已排除其他视觉回归）。
 - **未做**：组件文档（`select.md` / `multi-select.md` / `auto-complete.md` / `color-picker.md` 的「样式定制」表）未列 `--caomei-<comp>-z-index` 钩子——与既有 `date-picker` / `popover` / `dropdown-menu` 页的现状一致，层级 token 的事实源为设计规范 §2.5（Review Gate R1 suggest RG-S04 未采纳，理由：会单方面抬高四页、与既有六页形成新的不一致）。
-- **规划边界**：本批为用户缺陷报告驱动的修复批次，**未**登记 `todo.md` / `backlog.md`、未占用 Phase 17 条目编号（是否登记待用户裁定）。
+- **规划登记（2026-09-30 用户裁定「登记」）**：按 [规划规范 §3.5](../../standards/planning.md) 插队例外第 3 类（直接影响可用性的 blocker 级缺陷）登记为 Phase 17 的 **M3 主线**（浮层档位契约修复与门禁，2 条原子条目，`todo.md` / `roadmap.md` 同步）；阶段内条目由 6 条增至 8 条。**未登记发布条目**（本阶段非目标）；已发布 0.4.0 仍含该缺陷、下游需 0.4.1 及以后版本，状态已写入 `todo.md` 的「未完成项汇总」。
 
 ## 5. 规模与质量门（终态）
 
@@ -197,6 +197,15 @@ git diff --cached --numstat -- src test docs scripts package.json
 
 - R3 的 1 blocker + 1 warning 均已逐条修复（索引摘要计数同步为 `6 项 / 114`；复算命令改为 `git diff --cached --numstat`）。
 - 按 [AI 协作规范 §3.4](../../standards/ai-collaboration.md)，第 3 轮未 `Pass` 后不得原样续审；本批以「R1 内容 Pass + R2/R3 的流程类 finding 全部修复」收束，**未取得新一轮 Pass**，如实登记于此。
-- 复发类 finding 的机检约束：RG-R3-B01 是 RG-R2-B01 的复发（同一计数跨载体漂移），已按 §3.5 记入 session wisdom（`.session/wisdom.md`）；该类的机检守卫（治理索引摘要与记录本体的计数对账）经评估为高误报 / 高过拟合，未实施，作候选交用户裁定。
-- 残留 follow-up（不阻断）：用例 2 只断言计算 `z-index === 'auto'`、判别力自证只验模态内容根节点（R2 / R3 两次提出，已登记 §4）。
+- 复发类 finding 的机检约束：RG-R3-B01 是 RG-R2-B01 的复发（同一计数跨载体漂移），已按 §3.5 记入 session wisdom（`.session/wisdom.md`）；该类的机检守卫（治理索引摘要与记录本体的计数对账）经评估为高误报 / 高过拟合，未实施，已登记 [Backlog §1.6](../../plan/backlog.md)。
+- 残留 follow-up（不阻断）：用例 2 只断言计算 `z-index === 'auto'`、判别力自证只验模态内容根节点（R2 / R3 两次提出），已与「E2E ↔ 声明层门禁未联动」合并登记 [Backlog §1.6](../../plan/backlog.md) 的「浮层档位装置的判别力补强」。
+
+### 6.8 提交记录（2026-09-30）
+
+| 批次 | 提交 | 规模 |
+| --- | --- | --- |
+| ① 修复 + 装置 | `79e4ef9` fix(components): 修正模态内浮层面板层级并补齐 z-index 覆盖钩子 | 7 文件 / +349 −7 |
+| ② 门禁与接线 | `17ff31f` feat(governance): 新增浮层档位语义门禁 check:overlay-z-index | 4 文件 / +734 −4 |
+| ③ 规范与记录 | `4fffecc` docs(governance): 新增浮层遮挡修复记录与档位守卫规范落点 | 3 文件 / +205 −0 |
+| ④ 规划登记与 Backlog | 见本记录与 [待办事项](../../plan/todo.md) / [Backlog](../../plan/backlog.md) 的同批提交（含 [规划规范 §3.9](../../standards/planning.md) 新增的回扫约束） | 7 文件 / +31 −13 |
 

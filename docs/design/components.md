@@ -89,6 +89,7 @@
 | DataView | 自建（`layout` grid / list + 插槽） | 无 | — | 列表 / 网格两态 + 加载 / 空态（**已实现**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 | TagsInput | 封装 | TagsInput | 稳定 | 标签录入：多值 `v-model`、自由文本、回车 / 分隔符提交、标签删除、数量 / 去重约束（**已实现**） |
+| RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
 Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：Tooltip、HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Tree（Tree 为 Alpha）。
 
@@ -96,7 +97,7 @@ Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选�
 
 | 能力 | 建议 |
 |------|------|
-| 富文本 Editor | 引入第三方库（不自研）；momei 在用 `mavon-editor`，**封装形态（轻量封装组件 / 与库样式兼容的主题）与暗色、国际化联动要求以 [Backlog §1.3](../plan/backlog.md#_1-3-不纳入自研的能力-外购建议) 为单点来源** |
+| 富文本 Editor | **已实现**（[`CaomeiRichTextEditor`](../components/rich-text-editor.md)）：轻量封装 `md-editor-v3`（**可选 peer 依赖**、按需加载内核与样式），暗色 / 国际化联动内建；不自研内核。「兼容主题」（对齐编辑器内部 token）后置，触发条件为下游提出编辑器视觉与宿主不一致 |
 | Chart | 引入第三方库（不自研）；暂未使用，评估入口见 [Backlog §1.3](../plan/backlog.md#_1-3-不纳入自研的能力-外购建议) |
 | Galleria / Carousel | 引入 embla-carousel-vue（headless）+ 自建样式 |
 | Knob / MeterGroup / OrganizationChart / TreeTable 等长尾 | 下游按需引入 Element Plus 或自留 |

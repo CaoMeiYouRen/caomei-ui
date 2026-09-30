@@ -36,7 +36,7 @@
 
 ### Third-party license compliance
 
-- Licenses of the runtime dependencies (`reka-ui` / `@tanstack/vue-table` / `@lucide/vue`) and the `vue` peer dependency are declared in the repository-root `THIRD-PARTY-LICENSES` file and shipped with the npm package (added to `package.json`'s `files`).
+- Licenses of the runtime dependencies (`reka-ui` / `@tanstack/vue-table` / `@lucide/vue` / `@internationalized/date` / `@vavt/cm-extension`, the rich text extra locale pack), the `vue` peer dependency and the optional peer (`md-editor-v3`, the rich text kernel) are declared in the repository-root `THIRD-PARTY-LICENSES` file and shipped with the npm package (added to `package.json`'s `files`).
 - After adding or upgrading a runtime dependency, run `pnpm check:licenses` to verify the declaration covers it and matches the installed version; the check is part of `pnpm verify` (`governance:check`).
 - Keep the declaration in sync: add a `## <name>@<version>` entry for a new dependency, and update both the entry heading and the full license text when upgrading (copy from `node_modules/<pkg>/LICENSE`).
 - `prepublishOnly` runs the same check automatically before publishing, aborting the release if the declaration is missing or stale.

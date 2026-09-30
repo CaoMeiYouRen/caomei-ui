@@ -36,6 +36,15 @@
         }
     },
     {
+        "name": "RichTextEditor",
+        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "example": "rich-text-editor/basic.vue",
+        "description": {
+            "zh": "Markdown 富文本编辑器轻量封装：暗色与语言跟随宿主状态自动联动。",
+            "en": "A lightweight Markdown editor wrapper whose theme and language follow the host state automatically."
+        }
+    },
+    {
         "name": "Switch",
         "group": { "zh": "表单输入", "en": "Form Inputs" },
         "example": "switch/basic.vue",

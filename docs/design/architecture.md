@@ -62,7 +62,7 @@
 
 - 产物（**2026-09-20 起**）：`unbundle: true` 的**逐模块 ESM**（镜像 `src/`，含逐模块 `.d.ts`）+ `css.inject: true`（JS 保留逐模块 CSS import）；`index` / `resolver` / `nuxt` 三入口。
 - 样式：不再抽取单体 CSS；基础层落 `dist/styles/index.css`（经 `caomei-ui/theme.css` 暴露），组件样式随各自模块产出。
-- `vue`、`reka-ui` 必须 external。
+- `vue`、`reka-ui` 必须 external；可选 peer `md-editor-v3`（富文本内核）与运行时依赖 `@vavt/cm-extension`（扩展语言包）同样 external，且只在运行期动态加载、不被静态 import（未安装 / 未使用时不进入消费方模块图；`md-editor-v3` 未安装时组件降级为占位，不影响其余组件与包根类型解析）。
 - `sideEffects: ["**/*.css"]` 声明支持 tree-shaking——**消费方打包器据此丢弃未使用组件的 CSS**，这是按需机制的前提（消费方不应覆写该字段）。
 - **决策反转留痕**：本方案启用 `css.inject`，取代此前「样式始终由消费方显式导入或经 resolver 注入，未启用 `css.inject`」的口径（依据见 §3 引用与 [M1-1 POC §7](../design/governance/2026-09-20-m1-1-build-path-poc.md)）。
 

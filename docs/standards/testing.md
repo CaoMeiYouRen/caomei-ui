@@ -49,7 +49,7 @@
 - 组件测试命名：`<component>.test.ts`。
 - E2E 集中在 `test/e2e/`，命名 `*.e2e.ts`。
 - 计算样式等价装置集中在 `test/capture/`：`fixture/` 是独立 Vite 应用（被测对象为 `src/` 源码，端口 `4521`），`capture.mjs` / `diff.mjs` 为采集与比对运行器，`baseline.json` 为**冻结基线**（生成物，随装置同提交）。夹具的 `data-cap` 标记与运行器的采样面声明一一对应，采集结束按声明自检受检面（缺失 / 选择器未命中即失败），避免受检范围被静默收窄。
-- E2E 夹具（`test/e2e/fixtures/`）是独立 Vite 应用，被测对象为 `src/` 源码（而非构建产物或文档站）；由 `playwright.config.ts` 的 `webServer` 拉起（`127.0.0.1:4501`，端口固定），三个 project 对应[响应式设计 §4](../design/responsive.md) 的验收视口，几何断言基座在 `test/e2e/helpers/`。
+- E2E 夹具（`test/e2e/fixtures/`）是独立 Vite 应用，被测对象为 `src/` 源码（而非构建产物或文档站）；由 `playwright.config.ts` 的 `webServer` 拉起（`127.0.0.1:4501`，端口固定），三个 project 对应[响应式设计 §4](../design/responsive.md) 的验收视口，几何断言基座在 `test/e2e/helpers/`。**带重依赖或高 console 噪声的组件走独立入口**（如富文本编辑器 `/rich-text-editor.html`），避免其内核加载与噪声与共享夹具的「无 console error」断言及 DOM 顺序假设耦合。
 - **文档站页面的浏览器回归须与夹具 E2E 分离**：新建独立 Playwright 配置（`webServer` = `docs:build` + `vitepress preview`，断言构建产物），主配置以 `testIgnore` 排除，避免夹具 project 误跑；断言期望值从登记表 / 单一事实源派生，不在用例另立清单。
 
 ## 5. 验证矩阵

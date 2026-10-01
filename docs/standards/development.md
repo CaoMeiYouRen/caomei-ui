@@ -178,6 +178,7 @@ const attrs = computed(() => {
 - 存量 CSS 钩子提升为 prop 时，缺省路径必须逐值不变：仅「提供时」以内联同名变量覆盖（内联声明在层叠中高于作者选择器，与 `:where()` 归零特异性无关），未提供时仍由档位类给出与改造前一致的默认值；验收覆盖「不传 → 档位默认」与「传 → 覆盖档位」两条路径，文档写明非法值也回退。
 - 渲染正确性若依赖 **CSS 层叠 tie-break**（注入规则与 scoped 基线同特异性、靠源序取胜）：happy-dom 单测只能证明规则文本存在、不能证明渲染结果变了，必须改由真实浏览器取 computed style 作证据；承重假设（含「Portal 目标 / 样式注入位置变更须复核」）要写入设计文档与源码注释。
 - 共享字段外壳 `.caomei-field` 的 `height: var(--caomei-field-height)` 是**单行控件契约**：内容高度可超过单行的字段组件（如 `Textarea`）必须在自身根规则覆盖 `height: auto`，否则内部折行内容与滚动条会画到边框之外；声明层由 `test/contracts/field-shell.test.ts` 守卫，真实几何由 `test/e2e/field-overflow.e2e.ts` 守卫。
+- `CaomeiRichTextEditor` 根类必须同时声明 `width: 100%` 与 `min-width: 0`：组件常作为 grid / flex 项使用，而编辑器内核工具栏为 `nowrap`、min-content 宽度远大于视口，缺 `min-width: 0` 时会被撑破父容器、在窄屏下单点抬高整页宽度（横向溢出交回内核工具栏自身滚动）；声明层由 `test/contracts/rich-text-editor-layout.test.ts` 守卫，真实几何由 `test/e2e/rich-text-editor-overflow.e2e.ts` 守卫（独立夹具入口 `/rich-text-editor.html`，宿主为 `display: grid` 压力容器）。
 
 ## 8. 构建与产物
 

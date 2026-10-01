@@ -76,6 +76,7 @@
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 | `.session` 阶段态在阶段登记 / 归档批次的同步约束载体 | 2026-09-30 Review Gate **第 3 次**判出同类 warning（Phase 14 / Phase 17 / Phase 18 登记批次各一次）：`.session/current-task.yaml` 与 `runtime-state.json` 的阶段态字段（「当前无进行中阶段 / 未登记」）未随阶段登记同步，违反 [规划规范 §3.8](../standards/planning.md) 的回扫面要求（该载体 git-ignored、不进提交物，靠流程约束承载）。候选：在 `todo-manager` skill 的 Session 收尾协议中把「阶段登记 / 归档 / 范围变更批次」显式列为 `.session` 阶段态必同步触发点 | 低 |
 | `todo.md` 完成态回填与 Review Gate 结论的次序约束载体 | 2026-10-01 M2-5 R1 以 warning 判出（M2-2 同类首次，**第 2 次**）：交付批在 Review Gate 结论回填前先把 `todo.md` 标「已完成」，与 M2-3 / M2-4 的「结论 Pass 后回填」实践不一致（最终态同批自洽，非阻塞）。候选：在 `todo-manager` skill 或 [规划规范 §3.8](../standards/planning.md) 固化「完成态回填不得早于 Review Gate 结论、两者同批落地后方可提交」的次序约束（流程约束，无机检面） | 低 |
+| 文档站正文列表样式泄漏进第三方内核浮层 | 用户 2026-10-02 报告（RichTextEditor 工具栏下拉框左侧留白约 31px，**本轮只归因、不修复**）。根因：演示组件渲染在 `.vp-doc` 内、内核下拉未 teleport，VitePress 默认主题 `.vp-doc ul { padding-left: 1.25rem }`（特异性 0-1-1）胜过内核 `.md-editor-menu { padding-inline: 0 }`（0-1-0），叠加内核 `.md-editor-menu-item { padding-inline: 10px }`；同源纵向效应为 `.vp-doc ul { margin: 16px 0 }` 与 `.vp-doc li + li { margin-top: 8px }`。组件侧零覆盖（`:deep()` 仅改 `.md-editor` 圆角 / 描边），故**修复层归属待裁定**：① 文档站作用域隔离（把 `.vp-doc` 正文列表样式收窄到正文选择器，或为内核浮层还原列表内边距）② 组件层防御性覆盖（`:deep()` 复位菜单内边距）。归因、实测值与复算命令见[归因记录](../design/governance/2026-10-02-rich-text-editor-dropdown-indent.md) | 低 |
 
 ### 1.7 服务层候选（composables）
 

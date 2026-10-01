@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { Search } from '@lucide/vue'
 import {
     CaomeiAutoComplete,
@@ -22,8 +22,11 @@ import {
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
+    CaomeiSwitch,
     CaomeiTag,
     CaomeiTextarea,
+    CaomeiToastProvider,
+    useToast,
 } from '@/index'
 
 /*
@@ -32,8 +35,8 @@ import {
  * docs/design/governance/ 下的采集装置记录。
  *
  * 覆盖范围只含**声明式样式面**：尺寸档位 / 变体与语气 / 状态与几何 / 触发器结构 /
- * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位。需交互或不稳定时序的采样面（浮层面板 z-index、toast
- * 瞬时颜色、小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
+ * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位 / Switch 开关 / Toast 语气强调色。需交互或不稳定时序的
+ * 采样面（浮层面板 z-index、小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
  *
  * `data-cap` 标记与运行器的采样键一一对应：新增 / 重命名标记必须同步运行器的
  * 采样面声明，否则采集的「受检面不变量」自检直接失败。
@@ -60,6 +63,9 @@ const inputValue = ref('')
 const numberValue = ref<number | undefined>(2)
 const colorValue = ref('#2563eb')
 const dateValue = ref<Date | null>(null)
+const switchOff = ref(false)
+const switchOn = ref(true)
+const switchDisabled = ref(false)
 
 /** 浮层默认关闭：开合状态由采样脚本经 `window.__ui` 驱动，避免模态遮罩拦截后续交互采样。 */
 const drawerOpen = reactive({ sm: false, md: false, lg: false })
@@ -77,15 +83,50 @@ const tableColumns = [
     { key: 'note', header: '备注', width: '160px', frozen: 'right' as const },
 ]
 
-onMounted(() => {
-    ;(window as unknown as { __ui: unknown }).__ui = {
-        setDrawer: (size: 'sm' | 'md' | 'lg', open: boolean) => {
-            drawerOpen[size] = open
-        },
-        setDialog: (size: 'sm' | 'md' | 'lg', open: boolean) => {
-            dialogOpen[size] = open
-        },
-    }
+/**
+ * 采集脚本驱动接口：开合浮层与按语气入队 Toast。
+ * 在 setup 顶层同步挂到 `window`，确保子组件（ToastDriver）挂载时即可写入 `showToasts`。
+ */
+interface CaptureUi {
+    setDrawer: (size: 'sm' | 'md' | 'lg', open: boolean) => void
+    setDialog: (size: 'sm' | 'md' | 'lg', open: boolean) => void
+    showToasts: () => void
+}
+
+const ui: CaptureUi = {
+    setDrawer: (size, open) => {
+        drawerOpen[size] = open
+    },
+    setDialog: (size, open) => {
+        dialogOpen[size] = open
+    },
+    showToasts: () => {
+        // 占位：ToastDriver 挂载后覆写；未被覆写即调用属夹具装配错误，fail-closed 而非静默无操作
+        throw new Error('[capture] ToastDriver 尚未挂载，无法入队提示')
+    },
+}
+;(window as unknown as { __ui: CaptureUi }).__ui = ui
+
+/**
+ * Toast 驱动：在 Provider 后代中取得 `useToast()`，把「按语气各入队一条常驻提示」
+ * 暴露给采集脚本（`duration: 0` 表示不自动关闭，保证末段采样时提示仍在）。
+ * 不渲染任何节点；提示本体由 Provider 经 Teleport 注入 `.caomei-toast-viewport`。
+ */
+const ToastDriver = defineComponent({
+    name: 'CaptureToastDriver',
+    setup() {
+        const toast = useToast()
+        onMounted(() => {
+            ui.showToasts = () => {
+                toast.show({ tone: 'neutral', title: '中性', duration: 0 })
+                toast.show({ tone: 'primary', title: '主要', duration: 0 })
+                toast.show({ tone: 'success', title: '成功', duration: 0 })
+                toast.show({ tone: 'warning', title: '警告', duration: 0 })
+                toast.show({ tone: 'danger', title: '危险', duration: 0 })
+            }
+        })
+        return () => null
+    },
 })
 </script>
 
@@ -422,6 +463,30 @@ onMounted(() => {
             >
                 <p>对话框内容</p>
             </CaomeiDialog>
+        </section>
+
+        <!-- 10. Switch 开关：轨道与滑块的档位几何 + 回退 token（开 / 关 / 禁用三态） -->
+        <section>
+            <div class="case" data-cap="switch:off">
+                <CaomeiSwitch v-model="switchOff" label="关" />
+            </div>
+            <div class="case" data-cap="switch:on">
+                <CaomeiSwitch v-model="switchOn" label="开" />
+            </div>
+            <div class="case" data-cap="switch:disabled">
+                <CaomeiSwitch
+                    v-model="switchDisabled"
+                    disabled
+                    label="禁用"
+                />
+            </div>
+        </section>
+
+        <!-- 11. Toast：视口层级与各语气强调色（提示由采样脚本经 `window.__ui.showToasts` 末段入队） -->
+        <section data-cap="toast:viewport">
+            <CaomeiToastProvider>
+                <ToastDriver />
+            </CaomeiToastProvider>
         </section>
     </main>
 </template>

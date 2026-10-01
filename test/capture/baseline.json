@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-28T18:03:27.777Z",
+    "capturedAt": "2026-10-01T05:50:14.329Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1443,6 +1443,48 @@
         "z.data-table.td-pinned-start": {
             "z-index": "2"
         },
+        "switch.off.track": {
+            "width": "40px",
+            "height": "22px",
+            "padding-top": "2px",
+            "padding-bottom": "2px",
+            "border-top-width": "1px",
+            "border-top-left-radius": "999px",
+            "background-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(229, 231, 235)"
+        },
+        "switch.off.thumb": {
+            "width": "16px",
+            "height": "16px",
+            "border-top-left-radius": "50%",
+            "background-color": "rgb(255, 255, 255)",
+            "transform": "none"
+        },
+        "switch.on.track": {
+            "width": "40px",
+            "height": "22px",
+            "padding-top": "2px",
+            "padding-bottom": "2px",
+            "border-top-width": "1px",
+            "border-top-left-radius": "999px",
+            "background-color": "rgb(37, 99, 235)",
+            "border-top-color": "rgb(37, 99, 235)"
+        },
+        "switch.on.thumb": {
+            "width": "16px",
+            "height": "16px",
+            "border-top-left-radius": "50%",
+            "background-color": "rgb(255, 255, 255)",
+            "transform": "matrix(1, 0, 0, 1, 18, 0)"
+        },
+        "switch.disabled.track": {
+            "background-color": "rgb(229, 231, 235)",
+            "opacity": "0.6",
+            "cursor": "not-allowed"
+        },
+        "switch.disabled.thumb": {
+            "background-color": "rgb(255, 255, 255)"
+        },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
         },
@@ -1804,6 +1846,74 @@
         },
         "trigger.split-button-menu.closed": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+        },
+        "toast.viewport": {
+            "position": "fixed",
+            "z-index": "1100",
+            "gap": "8px",
+            "flex-direction": "column-reverse",
+            "width": "384px",
+            "max-height": "768px"
+        },
+        "toast.neutral.root": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-left-color": "rgb(107, 114, 128)",
+            "border-left-width": "3px",
+            "border-top-left-radius": "8px",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "toast.neutral.icon": {
+            "color": "rgb(107, 114, 128)"
+        },
+        "toast.primary.root": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-left-color": "rgb(37, 99, 235)",
+            "border-left-width": "3px",
+            "border-top-left-radius": "8px",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "toast.primary.icon": {
+            "color": "rgb(37, 99, 235)"
+        },
+        "toast.success.root": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-left-color": "rgb(21, 128, 61)",
+            "border-left-width": "3px",
+            "border-top-left-radius": "8px",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "toast.success.icon": {
+            "color": "rgb(21, 128, 61)"
+        },
+        "toast.warning.root": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-left-color": "rgb(180, 83, 9)",
+            "border-left-width": "3px",
+            "border-top-left-radius": "8px",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "toast.warning.icon": {
+            "color": "rgb(180, 83, 9)"
+        },
+        "toast.danger.root": {
+            "background-color": "rgb(255, 255, 255)",
+            "color": "rgb(26, 26, 26)",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-left-color": "rgb(220, 38, 38)",
+            "border-left-width": "3px",
+            "border-top-left-radius": "8px",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "toast.danger.icon": {
+            "color": "rgb(220, 38, 38)"
         },
         "drawer.sm.content": {
             "width": "320px",

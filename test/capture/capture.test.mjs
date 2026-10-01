@@ -3,7 +3,7 @@ import { chromiumArgs, declaredKeys, main, verifyCoverage } from './capture.mjs'
 import { diffEntries, formatDiffs } from './diff.mjs'
 
 /** 受检面基线规模：新增 / 删除采样项必须同步此值，使「收窄受检范围」在 diff 中显式可见。 */
-const DECLARED_KEY_BUDGET = 245
+const DECLARED_KEY_BUDGET = 262
 
 describe('采样面声明', () => {
     it('样本键唯一且与预算一致', () => {
@@ -14,7 +14,7 @@ describe('采样面声明', () => {
 
     it('覆盖各采样段的前缀', () => {
         const keys = declaredKeys()
-        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.']) {
+        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.', 'switch.', 'toast.']) {
             expect(keys.some((key) => key.startsWith(prefix))).toBe(true)
         }
     })

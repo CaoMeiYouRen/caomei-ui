@@ -54,6 +54,7 @@ const BUTTON_VARIANTS = ['primary', 'secondary', 'ghost']
 const BUTTON_TONES = ['none', 'neutral', 'primary', 'success', 'warning', 'danger']
 const MESSAGE_VARIANTS = ['soft', 'solid', 'outline', 'simple']
 const BOX_VARIANTS = ['soft', 'solid', 'outline']
+const TOAST_TONES = ['neutral', 'primary', 'success', 'warning', 'danger']
 
 const SIZE_PROPS = [
     'min-height', 'height', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
@@ -84,6 +85,19 @@ const TRIGGER_PROPS = ['height', 'padding-left', 'border-top-width', 'border-top
 const DRAWER_PROPS = ['width', 'height', 'animation-duration', 'transition-duration', 'z-index']
 const DIALOG_PROPS = ['width', 'z-index']
 const Z_PROPS = ['z-index']
+/**
+ * Switch 轨道与滑块：档位几何（宽高 / 内边距 / 圆角 / 边框）与回退 token 的解析值。
+ * `--caomei-switch-*` 只作覆盖钩子（基类不预声明默认值），故「回退到 `--caomei-color-*` / 尺寸默认值」
+ * 只能由计算样式证明；滑块 `transform` 锁定选中态的位移契约。
+ */
+const SWITCH_TRACK_PROPS = ['width', 'height', 'padding-top', 'padding-bottom', 'border-top-width', 'border-top-left-radius', 'background-color', 'border-top-color']
+const SWITCH_THUMB_PROPS = ['width', 'height', 'border-top-left-radius', 'background-color', 'transform']
+/**
+ * Toast 视口与提示项：视口层级 / 停靠几何 + 各语气的强调色（`--caomei-toast-accent`）。
+ * 不采样图标盒尺寸——其尺寸由夹具传入的 `@lucide/vue` svg 固有属性决定，属夹具固有值而非组件契约。
+ */
+const TOAST_VIEWPORT_PROPS = ['position', 'z-index', 'gap', 'flex-direction', 'width', 'max-height']
+const TOAST_ROOT_PROPS = ['background-color', 'color', 'border-top-color', 'border-left-color', 'border-left-width', 'border-top-left-radius', 'box-shadow']
 
 /**
  * 采样面声明：`{ key, selector, props }`，逐条对应夹具中的 `data-cap` 标记。
@@ -153,6 +167,14 @@ function buildStaticSamples() {
     add('z.data-table.th-pinned-start', '[data-cap="stack:data-table"] .caomei-data-table__th.caomei-data-table__cell--pinned-start', Z_PROPS)
     add('z.data-table.td-pinned-start', '[data-cap="stack:data-table"] .caomei-data-table__td.caomei-data-table__cell--pinned-start', Z_PROPS)
 
+    // Switch 开关：开 / 关两态的轨道与滑块几何 + 回退 token 解析值；禁用态另测不透明度与光标
+    for (const state of ['off', 'on']) {
+        add(`switch.${state}.track`, `[data-cap="switch:${state}"] .caomei-switch`, SWITCH_TRACK_PROPS)
+        add(`switch.${state}.thumb`, `[data-cap="switch:${state}"] .caomei-switch__thumb`, SWITCH_THUMB_PROPS)
+    }
+    add('switch.disabled.track', '[data-cap="switch:disabled"] .caomei-switch', ['background-color', 'opacity', 'cursor'])
+    add('switch.disabled.thumb', '[data-cap="switch:disabled"] .caomei-switch__thumb', ['background-color'])
+
     return samples
 }
 
@@ -202,13 +224,29 @@ export const OVERLAY_SAMPLES = [
     { key: 'dialog.overlay', selector: '.caomei-dialog__overlay', props: Z_PROPS },
 ]
 
-/** 全部声明式采样项（静态 + 按钮聚焦态 + 状态 + 焦点层叠 + 浮层）；触发器属性快照另按 `TRIGGER_SAMPLES` 生成。 */
+/**
+ * Toast 采样：视口层级 + 各语气强调色。
+ *
+ * 提示由采样脚本在交互采样之后经 `window.__ui.showToasts` 入队（`duration: 0` 常驻）。
+ * 不变量：**点击类交互必须排在 Toast 之前**——提示视口固定右上角且逐条 `pointer-events: auto`，
+ * 先入队会遮挡后续点击；本段之后无点击类交互（浮层经 `window.__ui` 程序化开合），故置于其前。
+ */
+export const TOAST_SAMPLES = [
+    { key: 'toast.viewport', selector: '[data-cap="toast:viewport"] .caomei-toast-viewport', props: TOAST_VIEWPORT_PROPS },
+    ...TOAST_TONES.flatMap((tone) => [
+        { key: `toast.${tone}.root`, selector: `[data-cap="toast:viewport"] .caomei-toast--${tone}`, props: TOAST_ROOT_PROPS },
+        { key: `toast.${tone}.icon`, selector: `[data-cap="toast:viewport"] .caomei-toast--${tone} .caomei-toast__icon`, props: ['color'] },
+    ]),
+]
+
+/** 全部声明式采样项（静态 + 按钮聚焦态 + 状态 + 焦点层叠 + Toast + 浮层）；触发器属性快照另按 `TRIGGER_SAMPLES` 生成。 */
 export function declaredKeys() {
     return [
         ...STATIC_SAMPLES.map((item) => item.key),
         ...BUTTON_FOCUS_SAMPLES.map((item) => item.key),
         ...STATE_SAMPLES.map((item) => item.key),
         ...FOCUS_WITHIN_SAMPLES.map((item) => item.key),
+        ...TOAST_SAMPLES.map((item) => item.key),
         ...OVERLAY_SAMPLES.map((item) => item.key),
         ...TRIGGER_SAMPLES.flatMap((item) => [`trigger.${item.name}.attrs`, `trigger.${item.name}.style`, `trigger.${item.name}.open`, `trigger.${item.name}.closed`]),
     ]
@@ -379,6 +417,17 @@ async function collect(page, cdp, rootNodeId) {
         await page.keyboard.press('Escape')
         await page.waitForSelector(sample.panel, { state: 'detached' })
         await readAttrs(`trigger.${sample.name}.closed`, sample.selector)
+    }
+
+    // ── Toast：入队常驻提示后读视口层级与各语气强调色 ────────────────
+    // 不变量：点击类交互必须排在 Toast 之前（提示视口固定右上角、逐条 pointer-events: auto）。
+    await page.evaluate(() => {
+        window.__ui.showToasts()
+    })
+    await page.waitForSelector('.caomei-toast', { state: 'visible' })
+    await sleep(SETTLE_MS)
+    for (const sample of TOAST_SAMPLES) {
+        await readStyle(sample.key, sample.selector, sample.props)
     }
 
     // ── 浮层尺寸档位与层级（模态遮罩会拦截点击，故排最后）────────────

@@ -90,7 +90,7 @@
 
 ### 发布流程（→ [发布指南 §3](../../guide/release.md)）
 
-- [2026-09-24] [gotcha] `npm version <v>` 不是本仓的发布姿势：它直接提交（裸版本号，非 Conventional 形态）并打 annotated tag，tag 早于 `pnpm changelog` 提交 → tag 视图不含 CHANGELOG 段 → docs/guide/release.md §3
+- [2026-09-24] [gotcha] `npm version <v>` 的形态：直接提交（裸版本号，非 Conventional 形态）并打 annotated tag、`pnpm changelog` 提交在其后 → tag 指向版本提交、tag 视图不含 CHANGELOG 段。**2026-09-30 用户口径更新**：这属**本地发布的正常流程**，不视为偏差、无需重指 tag；若要按「自行提交 + 自行打 tag」的次序执行，加 `--no-git-tag-version`（同时关闭自动提交与打 tag）→ [发布指南 §3](../../guide/release.md)
 
 ## 2026-09-23 阶段归档蒸馏（Phase 12）
 

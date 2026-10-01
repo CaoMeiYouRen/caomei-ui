@@ -21,6 +21,10 @@ import {
     CaomeiSelectButton,
     CaomeiSplitButton,
     CaomeiTagsInput,
+    CaomeiTabs,
+    CaomeiTabList,
+    CaomeiTabTrigger,
+    CaomeiTabContent,
     CaomeiTextarea,
     CaomeiToolbar,
 } from '@/index'
@@ -482,6 +486,72 @@ const inlineColorValue = ref('#60a5fa')
                 label="内联颜色"
             />
         </section>
+
+        <!--
+          TabList 滚动轴对用例（见 `test/e2e/tabs-list-overflow.e2e.ts`）：容器定宽 `20rem`、
+          触发器取现实文案长度，使横向滚动在三档视口下都必然可用；而**纵向不得出现滚动条**
+          （触发器 `margin-bottom: -1px` 的越界既不能变成滚动条、也不应被裁掉）。纵向列表同列，
+          用于回归 `:where(.caomei-tabs--vertical)` 的 `overflow: visible` 覆盖。
+        -->
+        <section id="tabs-list-overflow" class="fixture__case">
+            <div id="tabs-horizontal">
+                <CaomeiTabs model-value="account">
+                    <CaomeiTabList aria-label="内容分区">
+                        <CaomeiTabTrigger value="account">
+                            账户与个人资料设置
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="password">
+                            密码与安全验证方式
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="team">
+                            团队成员与协作权限
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="notice">
+                            通知偏好与订阅管理
+                        </CaomeiTabTrigger>
+                    </CaomeiTabList>
+                    <CaomeiTabContent value="account">
+                        账户信息面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="password">
+                        密码信息面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="team">
+                        团队信息面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="notice">
+                        通知信息面板
+                    </CaomeiTabContent>
+                </CaomeiTabs>
+            </div>
+            <div id="tabs-vertical">
+                <CaomeiTabs
+                    model-value="account"
+                    orientation="vertical"
+                >
+                    <CaomeiTabList aria-label="纵向分区">
+                        <CaomeiTabTrigger value="account">
+                            账户与个人资料设置
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="password">
+                            密码与安全验证方式
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="team">
+                            团队成员与协作权限
+                        </CaomeiTabTrigger>
+                    </CaomeiTabList>
+                    <CaomeiTabContent value="account">
+                        账户信息面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="password">
+                        密码信息面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="team">
+                        团队信息面板
+                    </CaomeiTabContent>
+                </CaomeiTabs>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -552,5 +622,13 @@ const inlineColorValue = ref('#60a5fa')
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-4);
+}
+
+/* TabList 轴对用例：定宽容器使长触发器列表在三档视口下都横向溢出（横向滚动必须可用） */
+#tabs-list-overflow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
+    width: min(20rem, 100%);
 }
 </style>

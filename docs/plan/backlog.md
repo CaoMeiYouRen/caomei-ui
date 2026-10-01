@@ -22,6 +22,7 @@
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 | Button `iconOnly` 示例形态与默认插槽语义 | 2026-09-29 缺陷复核 | **缺陷 + 待决策**：`docs/examples/button/icon-only.vue` 的 22 个按钮把图标放在**默认插槽**，而 `iconOnly` 按既有契约（单测「`iconOnly` 时不渲染默认插槽内容」锁定）不渲染默认插槽、图标只走 `#icon` → 文档站「纯图标按钮」节渲染空白方块。**待调研后二选一**：对比 PrimeVue 等组件库的纯图标用法（`icon` prop / `#icon` 插槽 / 默认插槽取图标）的优劣，再在「改示例」与「放宽组件语义」间决策；放宽语义需同批改单测、`types.ts` JSDoc 与中英组件页。**2026-09-29 仅登记，不修**（当轮授权范围为选择器拼写修复） | 中 |
+| Tab 激活指示条被容器裁剪（2px 设计只剩 1px 可见） | 2026-10-02 Tabs 滚动条修复的取证发现 | **缺陷 + 待决策（视觉变更）**：`.caomei-tabs__trigger` 的 `margin-bottom: -1px`（纵向排布为 `margin-right: -1px`）本意是让 2px 指示条压住列表 1px 边框，但列表作为滚动容器会在**内边距盒**处裁剪，这 1px 越界被削掉——真实 Chromium 逐行像素实测：激活项下方是「1px 主色 + 1px 分隔线」，而 `overflow: visible` 负向对照下才是「2px 主色、分隔线被盖住」（即设计意图）。修法属**视觉变更**（指示条视觉厚度 1px → 2px、激活项下方分隔线消失），故未随滚动条修复顺手改。候选：① 列表补 `padding-bottom: 1px`、分隔线由 `border-bottom` 改为内边距盒底边的背景线（总高与逐行像素位置可保持不变）② 指示条改 `box-shadow: inset` 并让分隔线由指示条自身覆盖（需处理触发器 `gap` 处分隔线的连续性）。取证与像素对照见 [Tabs 滚动条修复记录](../design/governance/2026-10-02-tabs-list-scrollbar.md) §2.2 / §4 | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 

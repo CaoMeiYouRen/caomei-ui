@@ -84,6 +84,8 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+> **Scroll behaviour**: the trigger list is a **horizontal** scroll container — it scrolls natively (horizontally) when the content exceeds the available width, which is why no scroll navigator buttons (`scrollable` / `showNavigators`) are provided; the list never shows a vertical scrollbar. With `orientation="vertical"` the list does not scroll.
+
 ## Migration from PrimeVue
 
 PrimeVue v4 composes tabs from five components; this library merges them into four:

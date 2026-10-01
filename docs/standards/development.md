@@ -173,12 +173,13 @@ const attrs = computed(() => {
 - Stylelint `selector-not-notation: complex` 要求 `:not(a, b)` 而非 `:not(a):not(b)`。
 - 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
 - 表格单元格内放 inline-flex 组件（如复选框）会因基线对齐产生约 1px 行高抖动，选中态指示器出现时更明显；用 `display: flex` 包裹容器承载可消除，单元格高度取 max 后与文本列一致。
-- 组件 scoped 规则不得为几何属性（`overflow-y` / `max-height` 等）声明样式：这会抬高特异性、挡住消费方覆盖，使使用层叠加的封顶 / 裁剪配方失效；能依赖原生默认行为时不在组件内声明。
+- 组件 scoped 规则不得为**单点封顶 / 裁剪**声明几何属性（`overflow-y` / `max-height` 等）：这会抬高特异性、挡住消费方覆盖，使使用层叠加的封顶 / 裁剪配方失效；能依赖原生默认行为时不在组件内声明。**例外：作为组件契约的滚动容器轴对声明**（如 TabList 的 `overflow-x: auto` + `overflow-y: hidden`）——两轴必须成对声明，否则未声明那一轴的 `visible` 会被 CSS overflow 计算规则改成 `auto`，把本不该滚动的越界内容变成滚动条；该例外须写入源码注释并由契约测试守护。
 - CSS 变量被 `border` 等**简写**消费时，语义非法值会触发 invalid at computed-value time，令**整条声明被丢弃**（如圆环 `border` 消失、元素不可见），而非回退默认。接受这类 prop 的组件必须做**白名单**校验（合法长度 / 关键字）而非注入字符黑名单；负向取证除宽度外还须断言 `border-style`。
 - 存量 CSS 钩子提升为 prop 时，缺省路径必须逐值不变：仅「提供时」以内联同名变量覆盖（内联声明在层叠中高于作者选择器，与 `:where()` 归零特异性无关），未提供时仍由档位类给出与改造前一致的默认值；验收覆盖「不传 → 档位默认」与「传 → 覆盖档位」两条路径，文档写明非法值也回退。
 - 渲染正确性若依赖 **CSS 层叠 tie-break**（注入规则与 scoped 基线同特异性、靠源序取胜）：happy-dom 单测只能证明规则文本存在、不能证明渲染结果变了，必须改由真实浏览器取 computed style 作证据；承重假设（含「Portal 目标 / 样式注入位置变更须复核」）要写入设计文档与源码注释。
 - 共享字段外壳 `.caomei-field` 的 `height: var(--caomei-field-height)` 是**单行控件契约**：内容高度可超过单行的字段组件（如 `Textarea`）必须在自身根规则覆盖 `height: auto`，否则内部折行内容与滚动条会画到边框之外；声明层由 `test/contracts/field-shell.test.ts` 守卫，真实几何由 `test/e2e/field-overflow.e2e.ts` 守卫。
 - `CaomeiRichTextEditor` 根类必须同时声明 `width: 100%` 与 `min-width: 0`：组件常作为 grid / flex 项使用，而编辑器内核工具栏为 `nowrap`、min-content 宽度远大于视口，缺 `min-width: 0` 时会被撑破父容器、在窄屏下单点抬高整页宽度（横向溢出交回内核工具栏自身滚动）；声明层由 `test/contracts/rich-text-editor-layout.test.ts` 守卫，真实几何由 `test/e2e/rich-text-editor-overflow.e2e.ts` 守卫（独立夹具入口 `/rich-text-editor.html`，宿主为 `display: grid` 压力容器）。
+- `CaomeiTabList` 的列表类必须**成对**声明 `overflow-x: auto` 与 `overflow-y: hidden`（可写简写 `overflow: auto hidden`，两值语法为「横 纵」；Stylelint 的 `declaration-block-no-redundant-longhand-properties` 会要求合并长写），纵向排布覆盖必须保持 `overflow: visible`：触发器靠 `margin-bottom: -1px`（纵向排布为 `margin-right: -1px`）让边框盒越出内容盒 1px，好让激活指示条压住列表边框；只声明 `overflow-x` 时另一轴计算为 `auto`，这 1px 纵向越界会被渲染成**多余的纵向滚动条**，且滚轮在列表上滚动会把内容顶起 1px（真实 Chromium 实测：`scrollHeight` 38 > `clientHeight` 37、`scrollTop` 由 0 变 1；纵向置 `hidden` 后裁剪行为与 `auto` 像素级一致、滚轮不再生效）。声明层由 `test/contracts/tabs-list-overflow.test.ts` 守卫（解析有效两轴取值），真实几何与用户滚动由 `test/e2e/tabs-list-overflow.e2e.ts` 守卫。
 
 ## 8. 构建与产物
 

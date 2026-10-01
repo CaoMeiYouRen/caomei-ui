@@ -84,6 +84,8 @@
 }
 ```
 
+> **滚动行为**：触发器列表是**横向**滚动容器——内容超出可用宽时原生横向滚动（故未提供 `scrollable` / `showNavigators` 等滚动导航按钮）；列表不会出现纵向滚动条。纵向排布（`orientation="vertical"`）时列表不滚动。
+
 ## 从 PrimeVue 迁移
 
 PrimeVue v4 的 Tabs 为五件组合，本库合并为四件：

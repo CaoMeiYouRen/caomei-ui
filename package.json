@@ -43,7 +43,7 @@
     "test:e2e:gallery": "playwright test --config playwright.gallery.config.ts",
     "test:a11y": "vitest run test/a11y",
     "docs:gen": "node scripts/docs/gen-component-meta.mjs",
-    "docs:dev": "pnpm docs:gen && vitepress dev docs",
+    "docs:dev": "pnpm docs:gen && vitepress dev docs --open",
     "docs:build": "pnpm docs:gen && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:check:integrity": "node scripts/docs/check-docs-integrity.mjs",

@@ -17,7 +17,7 @@
 | `.md-editor-menu-item` 的 `padding-left` | **10px** | `md-editor-v3` 自带（`.md-editor-menu-item { padding-inline: 10px }`） |
 | 合计：下拉外框左缘 → 首项文字左缘 | **31px**（= 1 + 20 + 10） | — |
 
-组件侧零参与：`src/components/rich-text-editor/rich-text-editor.vue` 的样式块只有 `.caomei-rich-text-editor`、`.caomei-rich-text-editor__status` 与 `:deep(.md-editor) { border-radius; border-color }` 三条，**不含任何菜单 / 下拉相关声明**。换到不含 `.vp-doc` 的下游应用时，同一菜单只剩内核自带的 1px 边框 + 10px 内边距（即内核对齐后的默认形态）。
+组件侧零参与：`src/components/rich-text-editor/rich-text-editor.vue` 的样式块只有 `.caomei-rich-text-editor`、`.caomei-rich-text-editor__status` 与 `:deep(.md-editor) { border-radius; border-color }` 三条，**不含任何菜单 / 下拉相关声明**。换到不含 `.vp-doc` 的下游应用时，同一菜单只剩内核自带的 1px 边框 + 10px 内边距（即内核对齐后的默认形态；**该下游表现为推断，未实测**，见 §4）。
 
 ---
 
@@ -50,7 +50,7 @@
 
 几何（同一帧）：`ul` 外框 `x = 815`、宽 `90px`、高 `98px`；第 1 个 `li` 的 `x = 836`；首项文字左缘 `x = 846`。即 815 → 846 = **31px**。
 
-### 2.3 命中 `.md-editor-menu` 的全部规则（CSSOM 枚举，按声明逐条）
+### 2.3 命中 `.md-editor-menu` 且声明了内边距 / 外边距 / 列表样式的规则（CSSOM 枚举，逐条列出）
 
 | 选择器 | 声明 | 特异性 | 来源 |
 |:---|:---|:---|:---|
@@ -85,9 +85,9 @@ ul.md-editor-menu
 # 1) 本库与文档站主题均无菜单 / 下拉覆盖（快照 135d632，输出应为空）
 git grep -n "md-editor-menu\|md-editor-dropdown" 135d632 -- src/ docs/.vitepress
 # 2) 内核自带菜单样式（md-editor-v3@7.1.0）
-grep -n "md-editor-menu" node_modules/md-editor-v3/lib/style.css
+grep -n -A4 "md-editor-menu" node_modules/md-editor-v3/lib/style.css
 # 3) 文档站宿主正文列表样式（vitepress@1.6.4）
-grep -n "vp-doc ul" node_modules/vitepress/dist/client/theme-default/styles/components/vp-doc.css
+grep -n -A4 "vp-doc ul" node_modules/vitepress/dist/client/theme-default/styles/components/vp-doc.css
 ```
 
 ---

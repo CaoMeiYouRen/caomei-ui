@@ -21,6 +21,7 @@ import {
     collectDocsMarkdownFiles,
     loadSiteNavigation,
 } from '../docs/vitepress-site.mjs'
+import { parseSection11Groups } from './component-registry.mjs'
 
 const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 const OVERVIEW_ZH = join(REPO_ROOT, 'docs', 'components', 'index.md')
@@ -30,41 +31,6 @@ const EN_COMPONENTS_DIR = join(REPO_ROOT, 'docs', 'i18n', 'en-US', 'components')
 
 const MD_LINK_RE = /\[([^\]]*)\]\(([^)]+)\)/g
 const GROUP_HEADER_RE = /^##\s+(.+)$/
-
-/**
- * 解析设计文档 §11 的分组登记表
- */
-function parseSection11Groups(markdown) {
-    const groups = []
-    const lines = markdown.split(/\r?\n/)
-    const start = lines.findIndex((line) => /^##\s+11\.\s/.test(line))
-    if (start === -1) {
-        return groups
-    }
-    const rest = lines.slice(start + 1)
-    const end = rest.findIndex((line) => /^##\s/.test(line))
-    const section = (end === -1 ? rest : rest.slice(0, end)).join('\n')
-
-    for (const line of section.split(/\r?\n/)) {
-        const match = line.match(/^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|$/)
-        if (!match) {
-            continue
-        }
-        const [, zh, en, list] = match
-        if (/^:?-{2,}/.test(zh) || zh === '分组' || zh === 'Group') {
-            continue
-        }
-        const components = list
-            .split('、')
-            .map((name) => name.trim())
-            .filter((name) => name.length > 0)
-        if (components.length === 0) {
-            continue
-        }
-        groups.push({ zh: zh.trim(), en: en.trim(), components })
-    }
-    return groups
-}
 
 /**
  * 解析中文总览页：返回 { groupZh -> [componentNames] }

@@ -66,18 +66,20 @@
 ## 5. Tier 3：长尾（按需）
 
 > 依据 2026-09-11 调研文档《自建组件库（基于 Reka UI）— 最小组件集评估》于 2026-09-13 重新评估：除少数纯样式 / 布局组件外，Tier 3 大多有 Reka UI 对应 primitive，**优先封装**；Reka 标注为 **Alpha** 的组件（Drawer、日期类、Color 系列）存在 API 变动风险，落地时需锁定 Reka 版本并补回归。优先级为「中」的 7 个候选已于 Phase 4 完成（6 个封装 Reka 稳定 primitive + Skeleton 自建纯样式，见 [待办归档](../plan/todo-archive.md)）。Alpha 组件与其余自建件（Drawer / DatePicker / ColorPicker / SplitButton / DataView 等）经用户决策延后至 [Phase 7](../plan/roadmap.md)、不阻塞首版发布。
+>
+> **本表由 `check:design-catalog` 对账**（行成员集合与「（已实现）」标记 ↔ [文档与演示站 §11](./documentation-site.md) 的登记表，接入 `governance:check`）：行对应 §11 已登记组件时须标「（已实现）」，标「（已实现）」的行必须有组件名登记于 §11。新增 / 调整本表后须同步 §11（或反之）。
 
 | 组件 | 实现方式 | Reka UI 对应 | Reka 成熟度 | 说明 |
 |------|----------|--------------|:-:|------|
-| Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低 |
+| Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低（**已实现**） |
 | Divider | 自建（布局 + variants） | 无（Reka `Separator` 仅单元素语义，无内容插槽与两段线结构） | — | 水平 / 垂直、带内容与线型（**已实现**） |
-| RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件 |
-| ProgressBar | 封装 | Progress | 稳定 | 确定进度，与 ProgressSpinner 同源 |
-| Popover | 封装 | Popover | 稳定 | 通用浮层 |
-| Slider | 封装 | Slider | 稳定 | |
+| RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件（**已实现**） |
+| ProgressBar | 封装 | Progress | 稳定 | 确定进度，与 ProgressSpinner 同源（**已实现**） |
+| Popover | 封装 | Popover | 稳定 | 通用浮层（**已实现**） |
+| Slider | 封装 | Slider | 稳定 | （**已实现**） |
 | Stepper | 封装 | Stepper | 稳定 | 步骤导航（**已实现**） |
-| Toolbar | 封装 | Toolbar | 稳定 | |
-| ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态 |
+| Toolbar | 封装 | Toolbar | 稳定 | （**已实现**） |
+| ToggleButton | 封装 | Toggle | 稳定 | 单按钮开关态（**已实现**） |
 | Drawer | 封装 Dialog 派生（四向定位 + 滑入动画） | Dialog（Reka `Drawer` 为 Vaul 形态、不负责面板定位，未采用） | 稳定 | 四向 `position`（默认 `left`）；见 [设计规范 §7](./design-spec.md)（**已实现**） |
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**已实现**；范围选择零用量未实现，见 [设计规范 §7](./design-spec.md)） |
 | ColorPicker | 封装（组合 ColorArea / ColorSlider / ColorField；色板自建按钮组） | Color 系列 | Alpha | 组合 color primitive，色板不用 `ColorSwatchPicker`（见 [设计规范 §7](./design-spec.md)）（**已实现**） |

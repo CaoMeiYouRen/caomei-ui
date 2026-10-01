@@ -145,7 +145,7 @@ docs/
 
 > 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。**2026-09-30 用户决策追加「高级组件 / Advanced」为第 7 组**（承载外部依赖内核类组件；当前仅 `RichTextEditor`），置于 6 个组件分组之后、能力说明之前。
 
-> **新增组件的登记面不止「§11 侧栏 / 组件总览页 / 画廊登记表」三项**：还有 [组件设计 §5](./components.md) 的组件清单（含「（已实现）」标记）。前三项分别由 `docs:check:structure`（侧栏不变式）/ `check:components-overview`（总览页成员 ↔ §11）/ `check-showcase-registry` 对账，**组件清单（组件设计 §5）是唯一无机检的登记面**（组件清单对账已在 [Backlog](../plan/backlog.md) 在册）——收口「新增组件」类条目时须人工回扫该处。
+> **新增组件的登记面不止「§11 侧栏 / 组件总览页 / 画廊登记表」三项**：还有 [组件设计 §5](./components.md) 的组件清单（含「（已实现）」标记）。四项分别由 `docs:check:structure`（侧栏不变式）/ `check:components-overview`（总览页成员 ↔ §11）/ `check-showcase-registry`（画廊登记表）/ `check:design-catalog`（组件清单 §5 ↔ §11 成员集合与「（已实现）」标记，`governance:check` 链内）对账。**守卫边界**：`check:design-catalog` 只覆盖「§5 行 ↔ §11 成员」双向漂移；§11 新增的 Tier 1/2 组件不写入 §5（Tier 3 清单），该方向无机器可读映射，收口「新增组件」类条目时仍须人工确认 §5 是否应新增该行。
 
 ## 12. 演示动画的诊断与覆盖约定
 

@@ -41,8 +41,6 @@ When `loading` is true the component shows the loading text and marks the root w
 
 > Only the slot matching the current `layout` renders: with `layout="grid"` and no `#grid` slot the content area stays empty (it does not fall back to `#list`).
 
-> Migration mapping (PrimeVue → caomei-ui): `value` → `value` (`null` and an empty array both count as empty); `layout` → `layout` (default `list` on both sides, values `list` / `grid`); `#list` / `#grid` / `#empty` / `#header` / `#footer` → slots of the same name, with `#list` / `#grid` also receiving `{ items }` and `#empty` additionally receiving `layout`. **Known difference**: PrimeVue v4 `DataView` has no `loading` prop (the official guidance is to use a skeleton for the busy state), so a `:loading` binding currently has no effect; this component provides `loading` and `loadingText`. PrimeVue's `grid` mode only swaps the root class and the slot without providing columns (the docs ask for a CSS grid library such as Tailwind), and this component likewise leaves columns to the consumer's content layer; PrimeVue reads its empty text from the global `config.locale.emptyMessage`, while this component uses the built-in `dataView.empty` entry, overridable via `emptyText` / `#empty`. **Not implemented (no downstream usage)**: pagination (`paginator` / `rows` / `first` / `totalRecords` / `alwaysShowPaginator` / `paginatorPosition` / `paginatorTemplate` / `pageLinkSize` / `rowsPerPageOptions` / `currentPageReportTemplate`), sorting (`sortField` / `sortOrder`), `lazy`, `dataKey`, and the `#paginatorcontainer` / `#paginatorstart` / `#paginatorend` slots.
-
 ## Accessibility
 
 - While `loading` is true the root carries `aria-busy="true"`, and the loading text defaults to the built-in locale's "Loading" entry, overridable via `loadingText`.
@@ -54,9 +52,11 @@ When `loading` is true the component shows the loading text and marks the root w
 | PrimeVue | This component |
 | --- | --- |
 | `value` | `value` (`null` and empty arrays both count as empty) |
-| `layout` | `layout` (also defaults to `list`) |
+| `layout` | `layout` (also defaults to `list`; values `list` / `grid`) |
 | `#list` / `#grid` / `#empty` / `#header` / `#footer` | Same-named slots (`#list` / `#grid` receive `{ items }`, `#empty` also receives `layout`) |
 | `:loading` (PrimeVue has no such prop, passing it has no effect) | `loading` / `loadingText` (new here; the root gets `aria-busy` while loading) |
+
+> **Known differences (intentional)**: ① PrimeVue v4's `DataView` has no `loading` prop (the official guidance is a skeleton for the busy state), so a `:loading` binding has no effect — this component provides `loading` / `loadingText`; ② PrimeVue's `grid` mode only swaps the root class and the slot without shipping columns (the docs ask for a CSS grid library such as Tailwind), and this component likewise leaves columns to the consumer's content layer; ③ empty text: PrimeVue reads the global `config.locale.emptyMessage`, while this component uses the built-in `dataView.empty` entry, overridable via `emptyText` / `#empty`.
 
 **Not implemented**: pagination (`paginator` / `rows` / `first` / `totalRecords` and the paginator slots), sorting (`sortField` / `sortOrder`), `lazy`, `dataKey`; grid columns are up to the content layer (PrimeVue does not ship them either); see [Design spec §7](/design/design-spec) for the full prop / slot list.
 

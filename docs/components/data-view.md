@@ -41,8 +41,6 @@
 
 > 只渲染与当前 `layout` 匹配的插槽：`layout="grid"` 且未提供 `#grid` 时内容区为空（不会回退到 `#list`）。
 
-> 迁移映射（PrimeVue → caomei-ui）：`value` → `value`（`null` 与空数组均视为空态）；`layout` → `layout`（默认同为 `list`，取值 `list` / `grid`）；`#list` / `#grid` / `#empty` / `#header` / `#footer` → 同名插槽，`#list` / `#grid` 同样收到 `{ items }`，`#empty` 额外收到 `layout`。**已知差异**：PrimeVue v4 的 `DataView` 没有 `loading` prop（官方建议用骨架屏自行表达加载态），下游传入的 `:loading` 目前不生效；本组件提供 `loading` 与 `loadingText`。PrimeVue 的 `grid` 模式只切换根类名与插槽、不内置网格列（官方要求搭配 Tailwind 等 CSS grid），本组件同样由使用方内容层决定列定义；PrimeVue 的空态文案取全局 `config.locale.emptyMessage`，本组件改为内建 locale `dataView.empty`，可用 `emptyText` / `#empty` 覆盖。**未实现（下游零用量）**：分页（`paginator` / `rows` / `first` / `totalRecords` / `alwaysShowPaginator` / `paginatorPosition` / `paginatorTemplate` / `pageLinkSize` / `rowsPerPageOptions` / `currentPageReportTemplate`）、排序（`sortField` / `sortOrder`）、`lazy`、`dataKey`，以及 `#paginatorcontainer` / `#paginatorstart` / `#paginatorend` 插槽。
-
 ## 无障碍
 
 - `loading` 时根元素标注 `aria-busy="true"`，加载文案缺省取内建 locale 的「加载中」，可用 `loadingText` 覆盖。
@@ -54,9 +52,11 @@
 | PrimeVue | 本组件 |
 | --- | --- |
 | `value` | `value`（`null` 与空数组均视为空态） |
-| `layout` | `layout`（默认同为 `list`） |
+| `layout` | `layout`（默认同为 `list`，取值 `list` / `grid`） |
 | `#list` / `#grid` / `#empty` / `#header` / `#footer` | 同名插槽（`#list` / `#grid` 收到 `{ items }`，`#empty` 额外收到 `layout`） |
 | `:loading`（PrimeVue 无此 prop，传入不生效） | `loading` / `loadingText`（本库新增，加载时根标注 `aria-busy`） |
+
+> **已知差异（有意）**：① PrimeVue v4 的 `DataView` 没有 `loading` prop（官方建议用骨架屏自行表达加载态），下游传入的 `:loading` 不生效，本组件提供 `loading` / `loadingText`；② PrimeVue 的 `grid` 模式只切换根类名与插槽、不内置网格列（官方要求搭配 Tailwind 等 CSS grid），本组件同样由使用方内容层决定列定义；③ 空态文案：PrimeVue 取全局 `config.locale.emptyMessage`，本组件改为内建 locale `dataView.empty`，可用 `emptyText` / `#empty` 覆盖。
 
 **未实现**：分页（`paginator` / `rows` / `first` / `totalRecords` 及分页插槽）、排序（`sortField` / `sortOrder`）、`lazy`、`dataKey`；网格列定义由内容层承担（PrimeVue 同样不内置）；其余 prop / 插槽的完整口径见[设计规范 §7](../design/design-spec.md)。
 

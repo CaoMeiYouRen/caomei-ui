@@ -37,6 +37,8 @@ The accordion organizes content into sections that expand / collapse one at a ti
 
 > `CaomeiAccordionItem`'s `title` is a component prop and intercepts the native HTML `title` tooltip attribute; use another approach when a native tooltip is required.
 
+> **Single mode is not collapsible by default**: `collapsible` defaults to `false`, so an expanded item is **not** collapsed when clicked again — this is unrelated to whether the trigger uses `title` or the `#trigger` slot (see "Migration from PrimeVue" for the difference). The lower part of the example above passes `collapsible` explicitly; pass it as well when you want click-to-collapse.
+
 ## Composite component API
 
 | Component | Key props | Description |

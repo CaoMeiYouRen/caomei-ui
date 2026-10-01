@@ -23,7 +23,7 @@ import { CaomeiIcon } from '@/icons'
             </CaomeiAccordionItem>
         </CaomeiAccordion>
 
-        <CaomeiAccordion>
+        <CaomeiAccordion collapsible>
             <CaomeiAccordionItem value="custom">
                 <template #trigger>
                     <CaomeiIcon :icon="Settings" />

@@ -37,6 +37,8 @@
 
 > `CaomeiAccordionItem` 的 `title` 为组件 prop，会拦截原生 HTML `title` 提示属性；需要原生 tooltip 时请改用其他方式。
 
+> **单开模式默认不可收起**：`collapsible` 默认 `false`，此时已展开项**不会**因再次点击而收起——这与触发器用 `title` 还是 `#trigger` 插槽**无关**（差异来源见「从 PrimeVue 迁移」）。上一示例的下半部分为此显式传了 `collapsible`；需要「再点收起」时请一并传。
+
 ## 组合件 API
 
 | 组件 | 关键 props | 说明 |

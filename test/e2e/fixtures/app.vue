@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Settings } from '@lucide/vue'
 import {
+    CaomeiAccordion,
+    CaomeiAccordionItem,
     CaomeiAutoComplete,
     CaomeiButton,
     CaomeiButtonGroup,
@@ -552,6 +555,37 @@ const inlineColorValue = ref('#60a5fa')
                 </CaomeiTabs>
             </div>
         </section>
+        <!--
+          Accordion 触发器可开合用例（见 `test/e2e/accordion-trigger-toggle.e2e.ts`）：
+          ① `#trigger` 自定义触发器（图标 + 文字）在 `collapsible` 单开模式下必须**可开可合**——
+             用户 2026-10-02 报告的「自定义触发器展开后无法关闭」实为文档示例漏传 `collapsible`；
+          ② 同页并列默认单开模式（`collapsible=false`）作为对照：二次点击**保持展开**属既有契约
+             （与 PrimeVue single 模式恒可收起的差异已登记），用于把两者区分钉死在测试里。
+        -->
+        <section id="accordion-trigger-toggle" class="fixture__case">
+            <div id="accordion-collapsible-custom">
+                <CaomeiAccordion collapsible>
+                    <CaomeiAccordionItem value="custom">
+                        <template #trigger>
+                            <Settings :size="16" />
+                            自定义触发器
+                        </template>
+                        <p class="fixture__note">
+                            自定义触发器面板内容。
+                        </p>
+                    </CaomeiAccordionItem>
+                </CaomeiAccordion>
+            </div>
+            <div id="accordion-single-default">
+                <CaomeiAccordion>
+                    <CaomeiAccordionItem value="plain" title="默认单开">
+                        <p class="fixture__note">
+                            默认单开模式下已展开项不可再次收起。
+                        </p>
+                    </CaomeiAccordionItem>
+                </CaomeiAccordion>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -630,5 +664,18 @@ const inlineColorValue = ref('#60a5fa')
     flex-direction: column;
     gap: var(--caomei-space-4);
     width: min(20rem, 100%);
+}
+
+/* Accordion 触发器可开合用例：两个面板纵向排列，各自独立定位 */
+#accordion-trigger-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
+    width: min(20rem, 100%);
+}
+
+.fixture__note {
+    margin: 0;
+    font-size: var(--caomei-font-size-sm);
 }
 </style>

@@ -21,7 +21,11 @@
  *    存在该类的 `--<修饰符>` 变体（如 `ColorPicker` 的 `--inline`），则报错——`z-index` 对
  *    flex item 同样生效，静态形态被抬到模态之上即视觉缺陷（`ColorPicker` 的原始形态）；
  * 7. 抗静默收窄（T7）：受检文件 / 规则 / 浮层声明条目数不得低于下界；预留档位（`sticky` /
- *    `tooltip`）须在册（有消费点时自动移出预留面）。
+ *    `tooltip`）须在册（有消费点时自动移出预留面）；
+ * 8. E2E 面板清单联动（T10）：`src` 中声明锚定浮层档位的组件集合，必须与 E2E 受检清单
+ *    （`test/e2e/fixtures/overlay-panels.json`）逐一对应——新增 portal 浮层组件而未补 E2E
+ *    清单（或反之）即报错；非面板消费点（`toast` 视口 / `image` 预览灯箱）以显式名单排除并受
+ *    反向校验。
  *
  * 用法：
  *   node scripts/governance/check-overlay-z-index.mjs            # 有错误 exit 1
@@ -35,6 +39,7 @@ import { collectEntries, collectRuleEntries, declarationsOf } from './check-desi
 const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 const COMPONENTS = join(REPO_ROOT, 'src', 'components')
 const THEME_FILE = join(REPO_ROOT, 'src', 'styles', 'theme.css')
+const PANEL_CASES_FILE = join(REPO_ROOT, 'test', 'e2e', 'fixtures', 'overlay-panels.json')
 
 /** 档位自证顺序（严格递增）；`raise` / `pinned*` 为局部层叠 token，不参与浮层顺序。 */
 export const FLOATING_TIER_ORDER = ['overlay', 'modal', 'dropdown', 'tooltip', 'toast']
@@ -62,6 +67,13 @@ export const HOOK_NAME_EXCEPTIONS = new Map([
 
 /** 无消费点的预留档位（有消费点时必须移出本表，否则 T7 判「预留档位已有消费点」）。 */
 export const RESERVED_TIERS = new Set(['sticky', 'tooltip'])
+
+/**
+ * 声明浮层档位但**不是锚定浮层面板**的组件（不参与 E2E 面板清单联动，T10）。
+ * `toast` 为命令式视口（非锚定面板）、`image` 为预览灯箱（覆盖整个视口）；
+ * 两者档位同样 ≥ 模态内容，但不由 Dialog 内的触发器开合。受反向校验：条目不再声明浮层档位即报错。
+ */
+export const NON_PANEL_FLOATING_COMPONENTS = new Set(['toast', 'image'])
 
 /** 受检面下界：防扫描器 / 入口静默收窄后「零违规」变成空真。 */
 export const MIN_COMPONENT_FILES = 60
@@ -383,12 +395,98 @@ export function findScopeIssues(counts) {
     return issues
 }
 
+/**
+ * T10：从 `z-index` 声明中提取「锚定浮层面板」的组件目录集合。
+ *
+ * 口径：浮层档位（`dropdown` / `tooltip` / `toast`）+ 覆盖钩子形态（`kind === 'hook'`），
+ * 排除 `NON_PANEL_FLOATING_COMPONENTS`（命令式视口 / 灯箱，非锚定面板）。
+ *
+ * @param {Array<{ file: string, selector: string, value: string, parsed: ReturnType<typeof parseZIndexValue> }>} declarations
+ * @param {Set<string>} [nonPanelComponents]
+ * @returns {Set<string>} 组件目录名集合（如 `select` / `dropdown-menu`）
+ */
+export function collectAnchoredPanelComponents(declarations, nonPanelComponents = NON_PANEL_FLOATING_COMPONENTS) {
+    const dirs = new Set()
+    for (const decl of declarations) {
+        if (!decl.parsed || !FLOATING_TIERS.has(decl.parsed.tier) || decl.parsed.kind !== 'hook') {
+            continue
+        }
+        const dir = decl.file.split('/')[2]
+        if (!dir || nonPanelComponents.has(dir)) {
+            continue
+        }
+        dirs.add(dir)
+    }
+    return dirs
+}
+
+/**
+ * 读取 E2E 面板清单（`test/e2e/fixtures/overlay-panels.json`）的 case 名（即组件目录名）。
+ *
+ * @param {string} [filepath]
+ * @returns {string[]}
+ */
+export function readPanelCaseNames(filepath = PANEL_CASES_FILE) {
+    const parsed = JSON.parse(readFileSync(filepath, 'utf8'))
+    return Array.isArray(parsed?.cases) ? parsed.cases.map((item) => item.name) : []
+}
+
+/**
+ * T10：声明层锚定面板集合 ↔ E2E 面板清单的双向对账（含非面板例外名单的反向校验）。
+ *
+ * @param {Array<{ file: string, selector: string, value: string, parsed: ReturnType<typeof parseZIndexValue> }>} declarations
+ * @param {string[]} panelCaseNames E2E 清单的 case 名
+ * @param {Set<string>} [nonPanelComponents]
+ * @returns {string[]} 问题列表
+ */
+export function findPanelCaseLinkIssues(declarations, panelCaseNames, nonPanelComponents = NON_PANEL_FLOATING_COMPONENTS) {
+    const issues = []
+    const anchored = collectAnchoredPanelComponents(declarations, nonPanelComponents)
+    const cases = new Set(panelCaseNames)
+
+    for (const dir of anchored) {
+        if (!cases.has(dir)) {
+            issues.push(`[panel-case-missing] 组件 ${dir} 声明了锚定浮层档位，但未登记于 E2E 面板清单（test/e2e/fixtures/overlay-panels.json）`)
+        }
+    }
+    for (const name of cases) {
+        if (!anchored.has(name)) {
+            issues.push(`[panel-case-stale] E2E 面板清单条目 "${name}" 无对应的锚定浮层档位声明（清单腐烂，请同步）`)
+        }
+    }
+
+    // 反向校验：非面板例外名单条目必须仍声明浮层档位
+    // 口径：只要求该目录存在**任一**浮层档位声明（不限 `kind === 'hook'`）——例外名单的语义是
+    // 「该组件仍有浮层档位消费点」，形态（钩子 / 纯档位）由 T4 / T5 另行判定。
+    const floatingDirs = new Set(
+        declarations
+            .filter((decl) => decl.parsed && FLOATING_TIERS.has(decl.parsed.tier))
+            .map((decl) => decl.file.split('/')[2]),
+    )
+    for (const dir of nonPanelComponents) {
+        if (!floatingDirs.has(dir)) {
+            issues.push(`[stale-non-panel] NON_PANEL_FLOATING_COMPONENTS 的 ${dir} 未声明浮层档位（例外名单腐烂，请同步）`)
+        }
+    }
+
+    return issues
+}
+
+/**
+ * 收集 `src/components/**` 的样式条目与 `z-index` 声明（供 `runChecks` 与单测共用）。
+ *
+ * @returns {{ entries: Array<{ file: string, text: string }>, declarations: ReturnType<typeof collectZIndexDeclarations> }}
+ */
+export function collectOverlayDeclarations() {
+    const entries = collectEntries(COMPONENTS, (file) => file.endsWith('.vue'))
+    return { entries, declarations: collectZIndexDeclarations(entries) }
+}
+
 /** 运行全部检查（供 CLI 与单测共用）。 */
 export function runChecks() {
     const tiers = parseZIndexTiers(readFileSync(THEME_FILE, 'utf8'))
-    const entries = collectEntries(COMPONENTS, (file) => file.endsWith('.vue'))
+    const { entries, declarations } = collectOverlayDeclarations()
     const rules = collectRuleEntries(entries)
-    const declarations = collectZIndexDeclarations(entries)
     const templateByFile = new Map(entries.map(({ file, text }) => [rel(file), extractTemplateText(file, text)]))
     const floatingDeclarations = declarations.filter((decl) => decl.parsed && FLOATING_TIERS.has(decl.parsed.tier))
     const consumedTiers = new Set(declarations.filter((decl) => decl.parsed).map((decl) => decl.parsed.tier))
@@ -408,6 +506,7 @@ export function runChecks() {
         unparsedTierIssues: findUnparsedTierIssues(declarations),
         allowlistIssues: findAllowlistIssues(declarations),
         scopeIssues: findScopeIssues(counts),
+        panelCaseLinkIssues: findPanelCaseLinkIssues(declarations, readPanelCaseNames()),
     }
 }
 
@@ -421,6 +520,7 @@ function main() {
         ...result.unparsedTierIssues,
         ...result.allowlistIssues,
         ...result.scopeIssues,
+        ...result.panelCaseLinkIssues,
     ]
     if (problems.length > 0) {
         for (const problem of problems) {
@@ -431,7 +531,7 @@ function main() {
         return
     }
     const tierSummary = FLOATING_TIER_ORDER.map((tier) => `${tier} ${result.tiers.get(tier)}`).join(' < ')
-    console.info(`[check-overlay-z-index] 通过：档位表有序（${tierSummary}）、遮罩档位专用、模态内容在册、浮层 ${result.counts.floatingDeclarations} 处均高于模态且带覆盖钩子、无静态变体继承（受检 ${result.counts.files} 文件 / ${result.counts.rules} 规则 / 下界 ${MIN_COMPONENT_FILES}·${MIN_COMPONENT_RULES}）`)
+    console.info(`[check-overlay-z-index] 通过：档位表有序（${tierSummary}）、遮罩档位专用、模态内容在册、浮层 ${result.counts.floatingDeclarations} 处均高于模态且带覆盖钩子、无静态变体继承、锚定面板与 E2E 清单 ${readPanelCaseNames().length} 项联动（受检 ${result.counts.files} 文件 / ${result.counts.rules} 规则 / 下界 ${MIN_COMPONENT_FILES}·${MIN_COMPONENT_RULES}）`)
 }
 
 if (isDirectExecution(import.meta.url)) {

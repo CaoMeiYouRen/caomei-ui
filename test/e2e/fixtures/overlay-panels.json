@@ -1,0 +1,12 @@
+{
+    "$comment": "模态内浮层受检清单（事实源）。由 test/e2e/overlay-stacking.e2e.ts 消费；声明层守卫 check-overlay-z-index 对账「src 中声明浮层档位的锚定面板组件」集合，新增 portal 浮层组件时未更新本表即 exit 1。夹具见 test/e2e/fixtures/app.vue 的 #overlay-in-dialog 段。",
+    "cases": [
+        { "name": "select", "trigger": "#overlay-select .caomei-select", "panel": ".caomei-select__content" },
+        { "name": "multi-select", "trigger": "#overlay-multi-select .caomei-multi-select", "panel": ".caomei-multi-select__content" },
+        { "name": "auto-complete", "trigger": "#overlay-auto-complete .caomei-auto-complete", "panel": ".caomei-auto-complete__content" },
+        { "name": "color-picker", "trigger": "#overlay-color-picker .caomei-color-picker__trigger", "panel": ".caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)" },
+        { "name": "date-picker", "trigger": "#overlay-date-picker .caomei-date-picker", "panel": ".caomei-date-picker__content" },
+        { "name": "popover", "trigger": "#overlay-popover .caomei-popover__trigger", "panel": ".caomei-popover__content" },
+        { "name": "dropdown-menu", "trigger": "#overlay-dropdown-menu .caomei-dropdown-menu__trigger", "panel": ".caomei-dropdown-menu__content" }
+    ]
+}

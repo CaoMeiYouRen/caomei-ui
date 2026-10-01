@@ -7,10 +7,13 @@ import {
     MODAL_CONTENT_SELECTORS,
     RESERVED_TIERS,
     collectZIndexDeclarations,
+    collectAnchoredPanelComponents,
+    collectOverlayDeclarations,
     excludesClass,
     extractTemplateText,
     findAllowlistIssues,
     findFloatingTierIssues,
+    findPanelCaseLinkIssues,
     findScopeIssues,
     findStaticVariantIssues,
     findTierOrderIssues,
@@ -18,6 +21,7 @@ import {
     findUnparsedTierIssues,
     parseZIndexTiers,
     parseZIndexValue,
+    readPanelCaseNames,
     runChecks,
 } from './check-overlay-z-index.mjs'
 
@@ -280,5 +284,49 @@ describe('check-overlay-z-index 受检面守卫（T7）', () => {
 
     it('正例：现行受检面通过', () => {
         expect(findScopeIssues({ files: 83, rules: 796, floatingDeclarations: 9, consumedTiers: new Set(['overlay', 'modal', 'dropdown', 'toast']) })).toEqual([])
+    })
+})
+
+describe('check-overlay-z-index 与 E2E 面板清单联动（T10）', () => {
+    const hookPanel = (dir) => declarationsOfEntry(dir, `.caomei-${dir}__content { z-index: var(--caomei-${dir}-z-index, var(--caomei-z-dropdown)); }`)
+    const toastViewport = declarationsOfEntry('toast', '.caomei-toast-viewport { z-index: var(--caomei-toast-z-index, var(--caomei-z-toast)); }')
+    const imagePreview = declarationsOfEntry('image', '.caomei-image__preview-overlay { z-index: var(--caomei-image-preview-z-index, var(--caomei-z-toast)); }')
+
+    it('锚定面板集合 = 浮层档位 + 覆盖钩子，排除非面板消费点', () => {
+        const declarations = [...hookPanel('select'), ...toastViewport, ...imagePreview]
+        expect([...collectAnchoredPanelComponents(declarations)]).toEqual(['select'])
+    })
+
+    it('非浮层档位（遮罩 / 模态 / 局部层叠）不计入锚定面板', () => {
+        const declarations = declarationsOfEntry('dialog', '.caomei-dialog__overlay { z-index: var(--caomei-z-overlay); } .caomei-dialog__content { z-index: var(--caomei-z-modal); }')
+        expect([...collectAnchoredPanelComponents(declarations)]).toEqual([])
+    })
+
+    it('正例：声明集合与清单逐一对应时通过', () => {
+        const declarations = [...hookPanel('select'), ...hookPanel('popover'), ...toastViewport]
+        expect(findPanelCaseLinkIssues(declarations, ['select', 'popover'], new Set(['toast']))).toEqual([])
+    })
+
+    it('反例：组件声明了锚定浮层档位但未登记于 E2E 清单', () => {
+        const declarations = [...hookPanel('select'), ...hookPanel('popover')]
+        expect(findPanelCaseLinkIssues(declarations, ['select'], new Set())[0]).toContain('[panel-case-missing]')
+    })
+
+    it('反例：E2E 清单条目无对应声明（清单腐烂）', () => {
+        const declarations = [...hookPanel('select')]
+        expect(findPanelCaseLinkIssues(declarations, ['select', 'popover'], new Set())[0]).toContain('[panel-case-stale]')
+    })
+
+    it('反例：非面板例外名单条目不再声明浮层档位（例外腐烂）', () => {
+        const declarations = [...hookPanel('select')]
+        expect(findPanelCaseLinkIssues(declarations, ['select'], new Set(['toast']))[0]).toContain('[stale-non-panel]')
+    })
+
+    it('仓库现状：src 锚定面板集合与 E2E 清单双向一致', () => {
+        const { declarations } = collectOverlayDeclarations()
+        const names = readPanelCaseNames()
+        expect(names.length).toBeGreaterThanOrEqual(7)
+        expect(findPanelCaseLinkIssues(declarations, names)).toEqual([])
+        expect([...collectAnchoredPanelComponents(declarations)].sort()).toEqual([...names].sort())
     })
 })

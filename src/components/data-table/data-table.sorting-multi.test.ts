@@ -45,6 +45,20 @@ describe('CaomeiDataTable 排序', () => {
             .map((row) => row.findAll('.caomei-data-table__td')[1].text())
     }
 
+    /**
+     * 参与排序的列序号文本（按列序）。
+     *
+     * 序号元素在**所有**可排序表头都渲染——未排序时为空的占位（`--reserved`，`visibility: hidden`），
+     * 用于保持表头内容宽不随排序状态变化（否则 `table-layout: auto` 下点击排序会让该列变宽）。
+     * 故此处过滤空文本，只取真正参与排序的序号。
+     */
+    function renderedSortIndexes(wrapper: ReturnType<typeof mountSort>): string[] {
+        return wrapper
+            .findAll('.caomei-data-table__sort-index')
+            .map((node) => node.text())
+            .filter((text) => text.length > 0)
+    }
+
     describe('单列排序（既有路径）', () => {
         it('缺省首次升序、再次降序，抛出不含 multiSortMeta 的 sort 载荷', async () => {
             const wrapper = mountSort()
@@ -116,9 +130,9 @@ describe('CaomeiDataTable 排序', () => {
                 { field: 'dept', order: 1 },
                 { field: 'name', order: 1 },
             ])
-            expect(wrapper.findAll('.caomei-data-table__sort-index').map((node) => node.text())).toEqual(
-                ['1', '2'],
-            )
+            expect(renderedSortIndexes(wrapper)).toEqual(['1', '2'])
+            // 未排序列（age）仍渲染空序号占位，表头内容宽不随排序状态变化
+            expect(wrapper.findAll('.caomei-data-table__sort-index--reserved')).toHaveLength(1)
         })
 
         it('按住 Ctrl 同样可追加（等价于 Cmd）', async () => {
@@ -248,9 +262,8 @@ describe('CaomeiDataTable 排序', () => {
             })
 
             expect(renderedNames(wrapper)).toEqual(['Dan', 'Cara', 'Bob', 'Ada'])
-            expect(wrapper.findAll('.caomei-data-table__sort-index').map((node) => node.text())).toEqual(
-                ['1'],
-            )
+            expect(renderedSortIndexes(wrapper)).toEqual(['1'])
+            expect(wrapper.findAll('.caomei-data-table__sort-index--reserved')).toHaveLength(2)
         })
 
         it('受控模式下点击只抛出事件、渲染由父级决定，回写后生效', async () => {
@@ -276,9 +289,9 @@ describe('CaomeiDataTable 排序', () => {
             await sortButtons(wrapper)[1].trigger('click.meta')
 
             expect(renderedNames(wrapper)).toEqual(['Cara', 'Dan', 'Ada', 'Bob'])
-            expect(wrapper.findAll('.caomei-data-table__sort-index').map((node) => node.text())).toEqual(
-                ['1', '2'],
-            )
+            expect(renderedSortIndexes(wrapper)).toEqual(['1', '2'])
+            // 未排序列（age）仍渲染空序号占位，表头内容宽不随排序状态变化
+            expect(wrapper.findAll('.caomei-data-table__sort-index--reserved')).toHaveLength(1)
             // 自持模式同样抛出事件供观察
             expect(wrapper.emitted('update:multiSortMeta')).toHaveLength(2)
         })

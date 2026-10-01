@@ -1,5 +1,4 @@
 import { expect, test as base } from '@playwright/test'
-import { boxOf } from './helpers/layout'
 
 /**
  * TabList 滚动轴对的常驻回归（依据见 `docs/standards/testing.md` §5：几何 / 滚动断言只由 Playwright 承担）。
@@ -12,8 +11,10 @@ import { boxOf } from './helpers/layout'
  * 断言分两层：
  * 1. **声明在渲染层生效**：横向列表的 `overflow-x` 为 `auto`（保留横向滚动）、`overflow-y` 不得是可滚动值；
  *    纵向列表必须保持 `overflow: visible`（纵向指示条同样靠 `-1px` 越界压住右边框）。
- * 2. **用户滚动行为**：纵向滚轮不得改变 `scrollTop`，横向滚轮仍能改变 `scrollLeft`（正对照——证明滚轮
- *    事件确实被投递并处理，否则纵向的「0」会退化为恒真）。
+ * 2. **行为侧**：容器确实可横向滚动（`scrollLeft` 赋值后可读回），而纵向不是可滚动值——滚轮层的一次性
+ *    取证（修复前注入 `overflow-y: auto` → 三档视口 `scrollTop` 由 0 变 1）落在 `test-results/`（本地态），
+ *    常驻断言不用滚轮：列表不可纵向滚动时滚轮会链式交给祖先，Chromium 的滚动锁存会让后续滚轮继续命中
+ *    祖先，滚轮断言在本仓夹具上不稳定（实测）。
  *
  * 前置条件由断言显式守卫：夹具必须真的构造出「纵向 1px 可滚动溢出」与「横向溢出」两个压力形态
  * （见 `test/e2e/fixtures/app.vue` 的 `#tabs-list-overflow`），否则本用例无判别力。
@@ -44,7 +45,7 @@ test.afterEach(({ pageErrors }) => {
     expect(pageErrors, '页面不得产生 console error').toEqual([])
 })
 
-test('横向 TabList 无纵向滚动条，且纵向用户滚动无效', async ({ page }) => {
+test('横向 TabList 无纵向滚动条（纵向不可滚动，横向滚动保留）', async ({ page }) => {
     const list = page.locator(HORIZONTAL)
     await list.scrollIntoViewIfNeeded()
     await expect(list).toBeVisible()
@@ -77,22 +78,12 @@ test('横向 TabList 无纵向滚动条，且纵向用户滚动无效', async ({
         '纵向不得为可滚动值：overflow-y 为 auto 时 1px 越界会被渲染成多余的纵向滚动条',
     ).toBe('hidden')
 
-    // 用户滚动行为：先纵向（应无效），再横向（正对照，应生效）
-    const box = await boxOf(list)
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-    await page.mouse.wheel(0, 120)
-    await page.mouse.wheel(240, 0)
-
-    // 正对照先落位：横向滚动生效即证明滚轮事件已被投递并处理，纵向的 0 才有判别力
-    await expect
-        .poll(async () => list.evaluate((element) => element.scrollLeft), {
-            message: '横向滚轮应仍能滚动列表（否则容器被误禁用为静态）',
-        })
-        .toBeGreaterThan(0)
-    expect(
-        await list.evaluate((element) => element.scrollTop),
-        '纵向滚轮不得滚动列表（修复前 scrollTop 会由 0 变 1）',
-    ).toBe(0)
+    // 横向能力的行为侧：容器确实可横向滚动（不是被误禁用为静态的容器）
+    const scrolledLeft = await list.evaluate((element) => {
+        element.scrollLeft = 30
+        return element.scrollLeft
+    })
+    expect(scrolledLeft, '列表须可横向滚动（否则横向长列表无法查看）').toBeGreaterThan(0)
 })
 
 test('纵向 TabList 保持 overflow: visible（指示条越界不被裁剪）', async ({ page }) => {

@@ -637,6 +637,18 @@ function sortIndex(key: string): number {
     return currentSorting.value.findIndex((item) => item.id === key) + 1
 }
 
+/**
+ * 多列排序的优先级序号文本；未排序时返回空串。
+ *
+ * 序号元素在**所有**可排序表头都渲染（未排序时为空的占位），配合 `--reserved` 的
+ * `visibility: hidden` + `min-width: 1ch` 预留同宽空间——表头内容宽必须与排序态一致，
+ * 否则 `table-layout: auto` 下点击排序会让该列宽随图标 / 序号的出现而跳变。
+ * 空占位不进入可访问名（无文本），故无需 `aria-hidden`。
+ */
+function sortIndexLabel(key: string): string {
+    return sortState(key) ? String(sortIndex(key)) : ''
+}
+
 function headerTitle(key: string): string {
     return columnMap.value.get(key)?.header ?? key
 }
@@ -811,21 +823,23 @@ function setPageSize(rows: number): void {
                                 />
                                 <span v-else>{{ headerTitle(header.column.id) }}</span>
                                 <ChevronUp
-                                    v-if="sortState(header.column.id) === 'asc'"
+                                    v-if="sortState(header.column.id) !== 'desc'"
                                     class="caomei-data-table__sort-icon"
+                                    :class="{'caomei-data-table__sort-icon--reserved': !sortState(header.column.id)}"
                                     :size="14"
                                     aria-hidden="true"
                                 />
                                 <ChevronDown
-                                    v-else-if="sortState(header.column.id) === 'desc'"
+                                    v-else
                                     class="caomei-data-table__sort-icon"
                                     :size="14"
                                     aria-hidden="true"
                                 />
                                 <span
-                                    v-if="isMultipleSort && sortState(header.column.id)"
+                                    v-if="isMultipleSort"
                                     class="caomei-data-table__sort-index"
-                                >{{ sortIndex(header.column.id) }}</span>
+                                    :class="{'caomei-data-table__sort-index--reserved': !sortState(header.column.id)}"
+                                >{{ sortIndexLabel(header.column.id) }}</span>
                             </button>
                             <slot
                                 v-else-if="hasColumnSlot('header', header.column.id)"
@@ -1055,12 +1069,27 @@ function setPageSize(rows: number): void {
     color: var(--caomei-color-text-muted);
 }
 
-/* 多列排序的优先级序号（仅 `sortMode="multiple"` 且该列参与排序时渲染） */
+/* 多列排序的优先级序号（仅 `sortMode="multiple"` 渲染，未排序时为空占位） */
 .caomei-data-table__sort-index {
     flex-shrink: 0;
+
+    /* `tabular-nums` 让各位数字等宽，`min-width: 1ch` 才与「一位序号」的实宽相等；
+       两位及以上序号（同时排序 ≥10 列）仍会宽于占位，属已声明边界。 */
+    min-width: 1ch;
     color: var(--caomei-color-text-muted);
     font-size: var(--caomei-font-size-sm);
+    font-variant-numeric: tabular-nums;
     font-weight: 600;
+}
+
+/*
+  未排序时的占位：图标与序号在**所有**可排序表头都渲染，未排序时以 `visibility: hidden` 保留
+  同一盒模型（图标 14px + 序号 `1ch` + 两处 `gap`），使表头内容宽在「排序前 / 后」逐值一致。
+  缺这一层时 `table-layout: auto` 会按内容分配列宽，点击排序插入图标会让该列明显变宽、其余列被压缩。
+*/
+.caomei-data-table__sort-icon--reserved,
+.caomei-data-table__sort-index--reserved {
+    visibility: hidden;
 }
 
 .caomei-data-table__cell--center {

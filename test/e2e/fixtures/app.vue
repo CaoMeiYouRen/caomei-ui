@@ -9,6 +9,7 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiColorPicker,
+    CaomeiDataTable,
     CaomeiDatePicker,
     CaomeiDialog,
     CaomeiDropdownMenu,
@@ -181,6 +182,30 @@ const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
  * 页面内的静态 flex item，`z-index` 对其同样生效，必须**不参与**浮层层叠（不得被基类带上档位）。
  */
 const inlineColorValue = ref('#60a5fa')
+
+/**
+ * DataTable 排序图标列宽用例（见 `test/e2e/data-table-sort-width.e2e.ts`）：三列均 `sortable`、
+ * 内容短于表头可用宽，使列宽由内容决定（`table-layout: auto`）——排序指示条（图标 + 多列序号）
+ * 必须在**未排序态也占位**，否则点击排序会让该列变宽、其余列被压缩。
+ */
+interface SortWidthRow {
+    dept: string
+    name: string
+    score: number
+}
+
+const sortWidthColumns = [
+    { key: 'dept', header: '部门', sortable: true },
+    { key: 'name', header: '姓名', sortable: true },
+    { key: 'score', header: '评分', sortable: true, align: 'right' as const },
+]
+
+const sortWidthData: SortWidthRow[] = [
+    { dept: '研发', name: '张三', score: 88 },
+    { dept: '研发', name: '李四', score: 92 },
+    { dept: '设计', name: '王五', score: 75 },
+    { dept: '设计', name: '赵六', score: 81 },
+]
 </script>
 
 <template>
@@ -585,6 +610,21 @@ const inlineColorValue = ref('#60a5fa')
                     </CaomeiAccordionItem>
                 </CaomeiAccordion>
             </div>
+        </section>
+
+        <!--
+          DataTable 排序指示条占位用例（见 `test/e2e/data-table-sort-width.e2e.ts`）：
+          三列均可排序、内容短于表头可用宽（列宽由内容决定），断言「未排序 / 升序 / 降序」三态的
+          各列宽度逐值一致——缺占位时排序列会因图标 + 序号出现而变宽、其余列被压缩。
+        -->
+        <section id="data-table-sort-width" class="fixture__case">
+            <CaomeiDataTable
+                :data="sortWidthData"
+                :columns="sortWidthColumns"
+                row-key="name"
+                sort-mode="multiple"
+                caption="排序列宽"
+            />
         </section>
     </main>
 </template>

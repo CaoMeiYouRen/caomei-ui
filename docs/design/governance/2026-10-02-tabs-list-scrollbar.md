@@ -146,5 +146,5 @@ git grep -n "margin-bottom\|border-bottom" 135d632 -- src/components/tabs/tabs-t
 
 ## 8. 规模与提交
 
-- **规模**：**10 文件 / +453 −2**（口径：`git diff --cached --numstat` 逐文件实测，范围为本批文件清单；**含本记录 137 行与新增的两道守卫**。`docs/design/governance/index.md` 与 `docs/plan/backlog.md` 为跨批共用文件——numstat 另含上一批已暂存的 +3 行，不计入本批）。逐文件：`tabs-list.vue` +14 −1 / `tabs-list-overflow.test.ts` +104 / `tabs-list-overflow.e2e.ts` +111 / `fixtures/app.vue` +78 / `development.md` +2 −1 / `tabs.md`（中）+2 / `tabs.md`（英）+2 / 本记录 +137 / `index.md` +2 / `backlog.md` +1。
-- **提交**：**未提交**（用户未指示提交；当前工作区另有上一批「RichTextEditor 下拉留白归因」的 3 个文件同处暂存区，提交时须按批次拆分）。
+- **规模**：**10 文件 / +466 −2**（口径：`git diff --cached --numstat` 逐文件实测，范围为本批 10 个文件；**含本记录自身与新增的两道守卫**）。逐文件：`tabs-list.vue` +14 −1 / `tabs-list-overflow.test.ts` +104 / `tabs-list-overflow.e2e.ts` +111 / `fixtures/app.vue` +78 / `development.md` +2 −1 / `tabs.md`（中）+2 / `tabs.md`（英）+2 / 本记录 +150 / `index.md` +2 / `backlog.md` +1。
+- **提交**：`568b042`（本批 10 文件 / +466 −2；未推送）。本记录随该批提交，故哈希由本次回填提交补入。

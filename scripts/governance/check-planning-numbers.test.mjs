@@ -6,6 +6,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import {
     CODE_EXTENSIONS,
     EXCLUDED_DIRS,
+    PLANNING_DOC_RULES,
     PLANNING_NUMBER_RULES,
     collectCodeFiles,
     extractComments,
@@ -13,6 +14,7 @@ import {
     matchPlanningNumbers,
     resolveTargetRoot,
     scanContent,
+    scanPlanningDoc,
     scanRepository,
 } from './check-planning-numbers.mjs'
 
@@ -114,6 +116,34 @@ describe('check-planning-numbers 形态矩阵', () => {
 
     it('已知边界：字母 + `-` + 数字（`-` 后无字母）与标准号同形，不在规则面', () => {
         expect(matchPlanningNumbers('// 见 OBS-1 与 SW-01 的处置')).toEqual([])
+    })
+})
+
+describe('规划载体面（markdown）', () => {
+    it('只取条目形态：`phase` 不在本面内（阶段点名是既有形态）', () => {
+        expect(PLANNING_DOC_RULES.map((rule) => rule.id)).toEqual(['entry'])
+    })
+
+    it('围栏外条目编号命中，并给出行号与原文', () => {
+        const content = ['# 待办事项', '', '## 未完成项汇总', '- 待 M3-1 裁定后再落守卫'].join('\n')
+        expect(scanPlanningDoc(content)).toEqual([
+            {
+                id: 'entry',
+                line: 4,
+                source: 'planning-doc',
+                snippet: '- 待 M3-1 裁定后再落守卫',
+                hint: expect.any(String),
+            },
+        ])
+    })
+
+    it('行内代码与围栏代码块内的编号不命中', () => {
+        const content = ['- 形态为 `M3-1`（行内代码）', '', '```md', '- M3-1 在围栏内', '```', '- Phase 8 未启动'].join('\n')
+        expect(scanPlanningDoc(content)).toEqual([])
+    })
+
+    it('阶段点名不命中（点名阶段不属于本面）', () => {
+        expect(scanPlanningDoc('**当前无进行中阶段**——Phase 18 已于 2026-10-01 完成并归档；Phase 8 未启动')).toEqual([])
     })
 })
 

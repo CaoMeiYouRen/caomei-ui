@@ -62,8 +62,17 @@ export const EXCLUDED_DIRS = new Set([
 /** 不参与扫描的仓库相对路径前缀（VitePress 生成物）。 */
 export const EXCLUDED_PATH_PREFIXES = ['docs/.vitepress/dist', 'docs/.vitepress/cache']
 
-/** 命中位置来源：注释 / 测试名。 */
-export const HIT_SOURCES = ['comment', 'test-name']
+/** 命中位置来源：注释 / 测试名 / 规划载体。 */
+export const HIT_SOURCES = ['comment', 'test-name', 'planning-doc']
+
+/**
+ * 规划载体受检面（markdown）：归档清理后不得残留里程碑 / 阶段编号。
+ *
+ * 依据 [规划规范 §7](../../docs/standards/planning.md)：归档后的 `todo.md` 只保留「当前阶段状态 +
+ * 未完成项汇总」，条件候选只写能力名与取证入口、**不写 `Mx-y` 等编号**。该形态在近三次阶段归档中
+ * 复发（`check-planning-numbers` 原先只扫代码注释与测试名，不覆盖 markdown 规划载体），故在此补机检兜底。
+ */
+export const PLANNING_DOC_FILES = ['docs/plan/todo.md']
 
 /**
  * 规划编号形态。`hint` 为该形态的修复方向。
@@ -387,6 +396,69 @@ export function scanRepository(root = projectRoot, files = collectCodeFiles(root
 }
 
 /**
+ * 规划载体的编号形态：**只取 `entry`（`Mx-y` 等条目编号）**。
+ *
+ * 边界（有意）：`phase` 形态不在本面内——归档后的 `todo.md` 允许在「当前阶段状态」句与「未完成项汇总」
+ * 中点名阶段（如「Phase 8 未启动」「Phase 18 已完成并归档」），这是 Phase 15 起各归档批次的既有形态；
+ * 被明令禁止且三次复发的是**条目编号**（规划规范 §7「条件候选只写能力名与取证入口、不写 `Mx-y` 等编号」）。
+ */
+export const PLANNING_DOC_RULES = PLANNING_NUMBER_RULES.filter((rule) => rule.id === 'entry')
+
+/**
+ * 扫描规划载体（markdown）中的规划编号命中；跳过围栏代码块与行内代码（与 `check-standards-redundant` 同口径）。
+ *
+ * @param {string} content markdown 文本
+ * @returns {Array<{ id: string, line: number, source: 'planning-doc', snippet: string, hint: string }>} 命中列表
+ */
+export function scanPlanningDoc(content) {
+    const hits = []
+    let inFence = false
+    content.split(/\r?\n/u).forEach((line, index) => {
+        if (/^\s*```/u.test(line)) {
+            inFence = !inFence
+            return
+        }
+        if (inFence) {
+            return
+        }
+        const clean = line.replace(/`[^`]*`/gu, '')
+        for (const rule of PLANNING_DOC_RULES) {
+            for (const match of clean.matchAll(new RegExp(rule.source, 'gu'))) {
+                hits.push({
+                    id: rule.id,
+                    line: index + 1,
+                    source: 'planning-doc',
+                    snippet: line.trim().slice(0, 160),
+                    hint: rule.hint,
+                })
+            }
+        }
+    })
+    return hits
+}
+
+/**
+ * 扫描仓库内全部受检规划载体。
+ *
+ * @param {string} root 仓库根目录
+ * @returns {Array<{ file: string, hits: Array<object> }>} 按文件聚合的命中（无命中者不返回）
+ */
+export function scanPlanningDocs(root = projectRoot) {
+    const results = []
+    for (const relativePath of PLANNING_DOC_FILES) {
+        const file = join(root, relativePath)
+        if (!existsSync(file)) {
+            continue
+        }
+        const hits = scanPlanningDoc(readFileSync(file, 'utf8'))
+        if (hits.length > 0) {
+            results.push({ file: relativePath, hits })
+        }
+    }
+    return results
+}
+
+/**
  * 校验命令行传入的目标目录：必须是含 `.github/` 的仓库根，非法参数不得静默放行。
  *
  * @param {string | undefined} arg 位置参数
@@ -413,10 +485,10 @@ export function resolveTargetRoot(arg, fallbackRoot = projectRoot) {
  * @param {number} scannedFiles 受检文件数
  * @returns {void}
  */
-export function report(results, scannedFiles) {
+export function report(results, scannedFiles, scannedPlanningDocs = 0) {
     const total = results.reduce((sum, result) => sum + result.hits.length, 0)
     if (total === 0) {
-        process.stdout.write(`[check-planning-numbers] 0 处命中：${scannedFiles} 个受检文件的注释 / 测试名无规划编号\n`)
+        process.stdout.write(`[check-planning-numbers] 0 处命中：${scannedFiles} 个受检文件的注释 / 测试名 + ${scannedPlanningDocs} 个规划载体无规划编号\n`)
         return
     }
     for (const { file, hits } of results) {
@@ -425,7 +497,7 @@ export function report(results, scannedFiles) {
             process.stderr.write(`  修复方向：${hit.hint}\n`)
         }
     }
-    process.stderr.write(`[check-planning-numbers] ${total} 处命中（${results.length} 个文件）：注释 / 测试名不得写规划编号（规划规范 §4）\n`)
+    process.stderr.write(`[check-planning-numbers] ${total} 处命中（${results.length} 个文件）：注释 / 测试名 / 规划载体不得写规划编号（规划规范 §4 / §7）\n`)
     process.exitCode = 1
 }
 
@@ -440,7 +512,7 @@ if (isDirectExecution(import.meta.url)) {
             process.stderr.write(`[check-planning-numbers] 未找到任何受检代码文件（目标目录：${targetRoot}）：拒绝以空扫描通过\n`)
             process.exitCode = 1
         } else {
-            report(scanRepository(targetRoot, files), files.length)
+            report([...scanRepository(targetRoot, files), ...scanPlanningDocs(targetRoot)], files.length, PLANNING_DOC_FILES.length)
         }
     }
 }

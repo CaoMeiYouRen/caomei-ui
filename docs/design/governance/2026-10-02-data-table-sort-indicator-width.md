@@ -118,4 +118,4 @@ git grep -n "caomei-data-table__table" f41a2e2 -- src/components/data-table/data
 
 - 留痕面：本记录 + [治理索引](./index.md) + `.session/current-task.yaml` + 提交历史。
 - 规模：**7 文件 / +334 −34**（口径：`git diff --cached --numstat` 逐文件实测，含本记录自身与治理索引行）。逐文件：`data-table.vue` +34 −5 / `data-table.sorting-multi.test.ts` +22 −9 / `data-table-sort-width.e2e.ts` +104 / `fixtures/app.vue` +40 / `tabs-list-overflow.e2e.ts` +11 −20 / `index.md` +2 / 本记录 +121。
-- 提交：见 `git log` 的 `fix(data-table)` 提交（本记录随该批提交，哈希由回填提交补入）。
+- 提交：`449068e`（本批 7 文件 / +334 −34；未推送）。本记录随该批提交，故哈希由本次回填提交补入。

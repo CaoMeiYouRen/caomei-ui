@@ -95,6 +95,8 @@
 
 > 宽度：默认 `width: 100%`，并由 `--caomei-select-max-width` 设可覆盖的 `max-width`（详见[主题与样式设计 §4.1](../design/theming.md)）；撑满所在列可在字段外层 `.caomei-select__field` 或其祖先上把该变量覆盖为 `none`（写在触发器 `.caomei-select` 上不生效）。清除按钮宽度由 `--caomei-select-clear-width`（默认 `1.25rem`，同样覆盖在字段外层或其祖先）控制。
 >
+> `class` 与 `style` 落点：组件 `inheritAttrs: false`，`$attrs`（含 `class` / `style`）整体绑定在**触发器** `.caomei-field.caomei-select` 上，**不落**字段外层 `.caomei-select__field`——自定义类名与内联样式因此作用于触发器；需要作用于字段外层（如宽度上限）时，请在 `.caomei-select__field` 或其祖先上设置对应 CSS 变量（CSS 变量只向下继承，写在触发器上不会影响其祖先字段外层）。
+>
 > 滚动：展开时默认不锁定页面滚动（`bodyLock` 默认 `false`），避免滚动条消失引起布局跳动；移动端因此可能出现背景可滚动，如需锁定可传入 `body-lock`。
 
 ## 从 PrimeVue 迁移

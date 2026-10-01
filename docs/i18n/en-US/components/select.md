@@ -95,6 +95,8 @@ No events besides `update:modelValue`; the option list is passed in a controlled
 
 > Width: `width: 100%` by default, with an overridable `max-width` set by `--caomei-select-max-width` (see [Theming and styles §4.1](/design/theming), Chinese). To fill its column, set the variable to `none` on the field wrapper `.caomei-select__field` or any ancestor (setting it on the trigger `.caomei-select` has no effect). The clear button width is controlled by `--caomei-select-clear-width` (default `1.25rem`, also set on the field wrapper or an ancestor).
 >
+> Where `class` and `style` land: the component uses `inheritAttrs: false` and binds `$attrs` (including `class` / `style`) to the **trigger** `.caomei-field.caomei-select`, **not** to the field wrapper `.caomei-select__field` — custom classes and inline styles therefore apply to the trigger. To affect the field wrapper (e.g. the width cap), set the relevant CSS variable on `.caomei-select__field` or any ancestor (CSS variables only inherit downwards, so setting one on the trigger never reaches its ancestor wrapper).
+>
 > Scroll: the page scroll is not locked when expanded by default (`bodyLock` defaults to `false`) to avoid layout jumps from the disappearing scrollbar; on mobile the background may therefore scroll — pass `body-lock` to lock it.
 
 ## Migration from PrimeVue

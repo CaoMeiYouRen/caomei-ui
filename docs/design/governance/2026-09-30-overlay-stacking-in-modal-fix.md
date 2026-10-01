@@ -97,6 +97,8 @@
 - **未做**：组件文档（`select.md` / `multi-select.md` / `auto-complete.md` / `color-picker.md` 的「样式定制」表）未列 `--caomei-<comp>-z-index` 钩子——与既有 `date-picker` / `popover` / `dropdown-menu` 页的现状一致，层级 token 的事实源为设计规范 §2.5（Review Gate R1 suggest RG-S04 未采纳，理由：会单方面抬高四页、与既有六页形成新的不一致）。
 - **规划登记（2026-09-30 用户裁定「登记」）**：按 [规划规范 §3.5](../../standards/planning.md) 插队例外第 3 类（直接影响可用性的 blocker 级缺陷）登记为 Phase 17 的 **M3 主线**（浮层档位契约修复与门禁，2 条原子条目，`todo.md` / `roadmap.md` 同步）；阶段内条目由 6 条增至 8 条。**未登记发布条目**（本阶段非目标）；已发布 0.4.0 仍含该缺陷、下游需 0.4.1 及以后版本，状态已写入 `todo.md` 的「未完成项汇总」。
 
+> **后续批次收口（2026-10-01）**：本节的三条 follow-up——① `inline` ColorPicker 绘制顺序命中 / ② 命中测试判别力只自证模态内容根节点 / ③ `PANEL_CASES` 与声明层门禁未联动——已由 [Phase 18 M2-5 记录](./2026-10-01-phase18-m2-5-overlay-device-discriminating-power.md) 收口（内联用例双层判定 + 后代自证 + T10 双向对账）。**本节为 2026-09-30 产出时点口径，历史行不回改**。
+
 ## 5. 规模与质量门（终态）
 
 - 规模：见 §5.1（终态复算，带显式 pathspec）。

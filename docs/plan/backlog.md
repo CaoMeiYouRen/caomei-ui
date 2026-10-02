@@ -21,8 +21,6 @@
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
-| Button `iconOnly` 示例形态与默认插槽语义 | 2026-09-29 缺陷复核 | **缺陷 + 待决策**：`docs/examples/button/icon-only.vue` 的 22 个按钮把图标放在**默认插槽**，而 `iconOnly` 按既有契约（单测「`iconOnly` 时不渲染默认插槽内容」锁定）不渲染默认插槽、图标只走 `#icon` → 文档站「纯图标按钮」节渲染空白方块。**待调研后二选一**：对比 PrimeVue 等组件库的纯图标用法（`icon` prop / `#icon` 插槽 / 默认插槽取图标）的优劣，再在「改示例」与「放宽组件语义」间决策；放宽语义需同批改单测、`types.ts` JSDoc 与中英组件页。**2026-09-29 仅登记，不修**（当轮授权范围为选择器拼写修复） | 中 |
-| Tab 激活指示条被容器裁剪（2px 设计只剩 1px 可见） | 2026-10-02 Tabs 滚动条修复的取证发现 | **缺陷 + 待决策（视觉变更）**：`.caomei-tabs__trigger` 的 `margin-bottom: -1px`（纵向排布为 `margin-right: -1px`）本意是让 2px 指示条压住列表 1px 边框，但列表作为滚动容器会在**内边距盒**处裁剪，这 1px 越界被削掉——真实 Chromium 逐行像素实测：激活项下方是「1px 主色 + 1px 分隔线」，而 `overflow: visible` 负向对照下才是「2px 主色、分隔线被盖住」（即设计意图）。修法属**视觉变更**（指示条视觉厚度 1px → 2px、激活项下方分隔线消失），故未随滚动条修复顺手改。候选：① 列表补 `padding-bottom: 1px`、分隔线由 `border-bottom` 改为内边距盒底边的背景线（总高与逐行像素位置可保持不变）② 指示条改 `box-shadow: inset` 并让分隔线由指示条自身覆盖（需处理触发器 `gap` 处分隔线的连续性）。取证与像素对照见 [Tabs 滚动条修复记录](../design/governance/2026-10-02-tabs-list-scrollbar.md) §2.2 / §4 | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -44,7 +42,6 @@
 | 语言矩阵 - 长期 | 用户需求 | 追加俄语、法语、德语、西班牙语、葡萄牙语 | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
 | locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载 | 低 |
-| 国际化语言覆盖与文案分包体积调研 | 用户 2026-09-30 口径（D12 追加） | 两个子问题：① 主流组件库（Vue / React 生态）的国际化一般支持哪些语言，用于校准本库语言矩阵的长期范围；② **国际化文本的分包与体积膨胀**问题——翻译文案随语种 / 命名空间增长对产物体积的影响与可行方案（按需加载 / 分包 / 多入口）。**只做调研**，不承诺实现 | 低 |
 
 ### 1.5 移动端与响应式候选
 
@@ -75,10 +72,6 @@
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| `.session` 阶段态在阶段登记 / 归档批次的同步约束载体 | 2026-09-30 Review Gate **第 3 次**判出同类 warning（Phase 14 / Phase 17 / Phase 18 登记批次各一次）：`.session/current-task.yaml` 与 `runtime-state.json` 的阶段态字段（「当前无进行中阶段 / 未登记」）未随阶段登记同步，违反 [规划规范 §3.8](../standards/planning.md) 的回扫面要求（该载体 git-ignored、不进提交物，靠流程约束承载）。候选：在 `todo-manager` skill 的 Session 收尾协议中把「阶段登记 / 归档 / 范围变更批次」显式列为 `.session` 阶段态必同步触发点 | 低 |
-| `todo.md` 完成态回填与 Review Gate 结论的次序约束载体 | 2026-10-01 M2-5 R1 以 warning 判出（M2-2 同类首次，**第 2 次**）：交付批在 Review Gate 结论回填前先把 `todo.md` 标「已完成」，与 M2-3 / M2-4 的「结论 Pass 后回填」实践不一致（最终态同批自洽，非阻塞）。候选：在 `todo-manager` skill 或 [规划规范 §3.8](../standards/planning.md) 固化「完成态回填不得早于 Review Gate 结论、两者同批落地后方可提交」的次序约束（流程约束，无机检面） | 低 |
-| 文档站正文列表样式泄漏进第三方内核浮层 | 用户 2026-10-02 报告（RichTextEditor 工具栏下拉框左侧留白约 31px，**本轮只归因、不修复**）。根因：演示组件渲染在 `.vp-doc` 内、内核下拉未 teleport，VitePress 默认主题 `.vp-doc ul { padding-left: 1.25rem }`（特异性 0-1-1）胜过内核 `.md-editor-menu { padding-inline: 0 }`（0-1-0），叠加内核 `.md-editor-menu-item { padding-inline: 10px }`；同源纵向效应为 `.vp-doc ul { margin: 16px 0 }` 与 `.vp-doc li + li { margin-top: 8px }`。组件侧零覆盖（`:deep()` 仅改 `.md-editor` 圆角 / 描边），故**修复层归属待裁定**：① 文档站作用域隔离（把 `.vp-doc` 正文列表样式收窄到正文选择器，或为内核浮层还原列表内边距）② 组件层防御性覆盖（`:deep()` 复位菜单内边距）。归因、实测值与复算命令见[归因记录](../design/governance/2026-10-02-rich-text-editor-dropdown-indent.md) | 低 |
-| 组件页「迁移映射」描述去重（6 页 × 中英） | 用户 2026-10-02 指令（DataView 页重复描述 → 「其他组件的文档也存在类似问题，需要专项计划一并整改……评估并生成分析文档后进入 backlog」） | **待决策（文档一致性）**：同一事实在组件页写了**两遍**（页面中段的 `> 迁移映射（PrimeVue → caomei-ui）：…` 正文块 + 页面末尾的 `## 从 PrimeVue 迁移` 节），并与[设计规范 §7](../design/design-spec.md) 的迁移映射条目构成**第三处副本**（双权威漂移风险）。**盘点**：中英各 53 组件页（其中 47 页含迁移节）中命中 **7** 页（合并前口径；DataView 合并后复算为中文 6 / 英文 5），DataView 已合并，其余 **6** 页待整改（ColorPicker / DatePicker / Drawer / Message / SplitButton / Tag；`date-picker` 的英文页缺正文块 → 已存在中英结构漂移）。**整改形态**：删除正文块 → 把其**独有内容**（逐字段映射 / 语义差异 / 未实现明细）折入迁移节 → 设计规范 §7 保持唯一权威；中英同批。**不可机械化**：正文块含节内没有的语义（如 SplitButton 的「`label` 为不可见可访问名」），须逐页 diff。**建议批次**：按「页面 × 中英」拆 3 批（每批 2 页 × 2 语种）。盘点方法、逐页对账要点与覆盖声明见[专项评估](../design/governance/2026-10-02-component-doc-migration-duplication-evaluation.md) | 低 |
 
 ### 1.7 服务层候选（composables）
 
@@ -90,7 +83,7 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 与 momei 均锁 `caomei-ui@0.3.0`；本仓 `0.5.0` 已发布（registry `latest`）但零下游消费，与下游锁定版本已隔 `0.4.0` / `0.5.0` 两个 minor（`iconOnly` 方形几何 / `Select` 非法态聚焦色 / soft 与 toast 对比度等视觉相关变更可能影响下游视觉回归基线）。触发条件：某下游启动 `0.5.0` 升级；届时按 `CHANGELOG.md` 重取差异清单，产出升级指引 / 回归关注点 | 低 |
+| 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）；momei 根 `package.json` 仍精确锁定 `caomei-ui@0.3.0`（第六十八阶段迁移实施期）。触发条件：**momei 启动 `0.5.0` 升级**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` 两个 minor），产出升级指引 / 回归关注点 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
 | 下游兼容性回归机制 | 见路线图 Phase 8，稳定使用后启用 | 延迟 |
 

@@ -60,9 +60,9 @@
 | `--caomei-popover-min-width` | `12rem` | 面板最小宽度 |
 | `--caomei-popover-max-width` | `min(20rem, 可用宽度)` | 面板最大宽度 |
 | `--caomei-popover-padding` | `--caomei-space-3` | 面板内边距 |
-| `--caomei-popover-bg` | `--caomei-color-bg` | 面板背景色 |
+| `--caomei-popover-bg` | `--caomei-color-bg-elevated` | 面板背景色 |
 | `--caomei-popover-border` | `--caomei-color-border` | 面板描边色 |
-| `--caomei-popover-radius` | `--caomei-radius-md` | 面板圆角 |
+| `--caomei-popover-radius` | `--caomei-radius-lg` | 面板圆角 |
 | `--caomei-popover-arrow-bg` | 面板背景色 | 箭头填充色 |
 | `--caomei-popover-trigger-height` | `--caomei-control-height-md` | 触发器高度 |
 | `--caomei-popover-trigger-gap` | `--caomei-space-1` | 触发器内图标与文本间距 |
@@ -74,9 +74,11 @@
 ```css
 .caomei-popover__content {
     --caomei-popover-max-width: 24rem;
-    --caomei-popover-radius: var(--caomei-radius-lg);
+    --caomei-popover-bg: var(--caomei-color-bg); /* 面板默认取抬升面，此处退回基础面 */
 }
 ```
+
+> 面板的背景与圆角均支持同类覆盖（例如 `--caomei-popover-radius: var(--caomei-radius-md)` 收小圆角）。
 
 ## 组合件 API
 

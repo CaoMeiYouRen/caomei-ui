@@ -130,7 +130,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     flex-direction: column;
     gap: var(--caomei-space-3);
     padding: var(--caomei-space-4);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
     box-shadow: var(--caomei-shadow-lg);

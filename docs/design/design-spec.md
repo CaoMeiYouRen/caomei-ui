@@ -105,7 +105,7 @@
 | --- | --- | --- |
 | `--caomei-shadow-xs` | `0 1px 2px rgb(0 0 0 / 0.2)` | 微元素阴影（滑块拇指） |
 | `--caomei-shadow-sm` | `0 4px 12px rgb(0 0 0 / 0.08)` | 抬升面阴影（卡片） |
-| `--caomei-shadow-md` | `0 8px 24px rgb(0 0 0 / 0.12)` | 浮层阴影（DropdownMenu / Popover / Select / MultiSelect / Toast） |
+| `--caomei-shadow-md` | `0 8px 24px rgb(0 0 0 / 0.12)` | 浮层阴影（DropdownMenu / Popover / Select / MultiSelect / AutoComplete / DatePicker / Toast） |
 | `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 模态类浮层阴影（Dialog / ConfirmDialog / Drawer / ColorPicker） |
 | `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩（Dialog / ConfirmDialog / Drawer） |
 | `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | 骨架屏 `wave` 扫光高光 |
@@ -213,13 +213,13 @@
 | Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用类 / 属性驱动的 invalid 语义（`.caomei-field--invalid` 类 + `aria-invalid` 属性）而非色值类 |
-| Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
-| ColorPicker | 触发器为 `control-height-md` 方形按钮、圆角 `radius-md`；面板圆角 `radius-lg`、宽度 260px、阴影 `shadow-lg`；色块圆角 `radius-sm`、色板 22px 按钮（选中态用 `primary` 描边 + `aria-pressed`）、滑条取 `radius-full` |
+| Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板背景 `bg-elevated`、面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
+| ColorPicker | 触发器为 `control-height-md` 方形按钮、圆角 `radius-md`；浮层面板背景 `bg-elevated`（内联 `--inline` 形态取基础面 `bg`）、圆角 `radius-lg`、宽度 260px、阴影 `shadow-lg`；色块圆角 `radius-sm`、色板 22px 按钮（选中态用 `primary` 描边 + `aria-pressed`）、滑条取 `radius-full` |
 | Card | 圆角 `radius-lg`；背景按变体：`outlined` 取 `bg` + `border`、`elevated` 取 `bg` + `shadow-sm`、`filled` 取 `bg-elevated`；内边距取 `space-4` |
 | Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号：Tag 取档位 `sm` / `md` / `lg`（默认 `md`），Badge 默认 `sm` |
 | Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距） |
-| Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；Dialog 阴影取 `shadow-lg`，Popover / DropdownMenu / Select / MultiSelect / Toast 取 `shadow-md` |
-| Drawer | 面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
+| Dialog / ConfirmDialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；Dialog / ConfirmDialog 阴影取 `shadow-lg`，Popover / DropdownMenu / Select / MultiSelect / AutoComplete / DatePicker / Toast 取 `shadow-md` |
+| Drawer | 面板背景 `bg-elevated`、面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
 | DataTable | 表头/单元格底部边框取 `border`；排序按钮图标取 `text-muted`；排序态经 `aria-sort` 表达；列样式优先 `headerClass` / `bodyClass` |
 | DataView | 内容区不设内边距与背景（条目排版由插槽内容决定）；`layout` 只切换根修饰类与 `list` / `grid` 插槽，网格列定义交给使用方内容层；空态 / 加载态文案居中、取 `text-muted`（加载态取 `primary`） |
 | Checkbox / CheckboxGroup | 指示器为 `radius-sm` 方形（尺寸 sm 16 / md 18 / lg 20）；`v-model` 传数组时为分组语义（按 `value` 增删成员）；分组根为 `role="group"`、间距 `--caomei-checkbox-group-gap`（默认 `space-2`），禁用态不在分组层叠加透明度（子项各自处理，避免双重变淡） |

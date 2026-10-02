@@ -211,7 +211,7 @@ function onOpenChange(id: string, open: boolean): void {
     border: 1px solid var(--caomei-color-border);
     border-left: 3px solid var(--caomei-toast-accent, var(--caomei-color-text-muted));
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
     box-shadow: var(--caomei-shadow-md);
     pointer-events: auto;

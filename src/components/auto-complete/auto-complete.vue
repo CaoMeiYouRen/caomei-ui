@@ -591,9 +591,9 @@ watch(normalizedOptions, () => {
     max-width: var(--reka-combobox-content-available-width, none);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--caomei-color-text) 12%, transparent);
+    box-shadow: var(--caomei-shadow-md);
 }
 
 .caomei-auto-complete__viewport {

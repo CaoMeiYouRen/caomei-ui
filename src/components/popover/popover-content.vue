@@ -49,8 +49,8 @@ withDefaults(defineProps<PopoverContentProps>(), {
     padding: var(--caomei-popover-padding, var(--caomei-space-3));
     overflow: auto;
     border: 1px solid var(--caomei-popover-border, var(--caomei-color-border));
-    border-radius: var(--caomei-popover-radius, var(--caomei-radius-md));
-    background: var(--caomei-popover-bg, var(--caomei-color-bg));
+    border-radius: var(--caomei-popover-radius, var(--caomei-radius-lg));
+    background: var(--caomei-popover-bg, var(--caomei-color-bg-elevated));
     color: var(--caomei-color-text);
     box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);
@@ -61,7 +61,7 @@ withDefaults(defineProps<PopoverContentProps>(), {
 }
 
 .caomei-popover__arrow {
-    fill: var(--caomei-popover-arrow-bg, var(--caomei-popover-bg, var(--caomei-color-bg)));
+    fill: var(--caomei-popover-arrow-bg, var(--caomei-popover-bg, var(--caomei-color-bg-elevated)));
 }
 
 .caomei-popover__close {

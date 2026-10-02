@@ -292,9 +292,9 @@ function onTimeUpdate(value: TimeParts): void {
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--caomei-color-text) 16%, transparent);
+    box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-font-size-md);
     outline: none;

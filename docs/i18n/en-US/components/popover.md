@@ -60,9 +60,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-popover-min-width` | `12rem` | Panel minimum width |
 | `--caomei-popover-max-width` | `min(20rem, available width)` | Panel maximum width |
 | `--caomei-popover-padding` | `--caomei-space-3` | Panel padding |
-| `--caomei-popover-bg` | `--caomei-color-bg` | Panel background color |
+| `--caomei-popover-bg` | `--caomei-color-bg-elevated` | Panel background color |
 | `--caomei-popover-border` | `--caomei-color-border` | Panel border color |
-| `--caomei-popover-radius` | `--caomei-radius-md` | Panel border radius |
+| `--caomei-popover-radius` | `--caomei-radius-lg` | Panel border radius |
 | `--caomei-popover-arrow-bg` | panel background | Arrow fill color |
 | `--caomei-popover-trigger-height` | `--caomei-control-height-md` | Trigger height |
 | `--caomei-popover-trigger-gap` | `--caomei-space-1` | Gap between the icon and the text inside the trigger |
@@ -74,9 +74,11 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 ```css
 .caomei-popover__content {
     --caomei-popover-max-width: 24rem;
-    --caomei-popover-radius: var(--caomei-radius-lg);
+    --caomei-popover-bg: var(--caomei-color-bg); /* panel defaults to the elevated surface; revert to base here */
 }
 ```
+
+> The panel background and radius can both be overridden the same way (e.g. `--caomei-popover-radius: var(--caomei-radius-md)` to reduce the rounding).
 
 ## Composite component API
 

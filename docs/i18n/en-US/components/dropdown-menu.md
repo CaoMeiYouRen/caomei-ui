@@ -100,7 +100,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-dropdown-menu-z-index` | `1050` | Panel stacking level (above Dialog's 1001, below Toast's 1100) |
 | `--caomei-dropdown-menu-min-width` | `9rem` | Panel minimum width (converges to `min(9rem, available width)` on narrow screens; the maximum is the available width too — see matrix #3 in [Responsive design](/design/responsive), Chinese) |
 | `--caomei-dropdown-menu-padding` | `--caomei-space-1` | Panel padding |
-| `--caomei-dropdown-menu-bg` | `--caomei-color-bg` | Panel background color |
+| `--caomei-dropdown-menu-bg` | `--caomei-color-bg-elevated` | Panel background color |
 | `--caomei-dropdown-menu-border` | `--caomei-color-border` | Panel border color |
 | `--caomei-dropdown-menu-item-gap` | `--caomei-space-2` | Gap between elements inside an item |
 | `--caomei-dropdown-menu-item-padding-x` | `--caomei-space-2` | Item horizontal padding |

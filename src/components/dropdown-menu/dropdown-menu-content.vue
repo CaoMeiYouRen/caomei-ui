@@ -189,7 +189,7 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
     overflow: hidden auto;
     border: 1px solid var(--caomei-dropdown-menu-border, var(--caomei-color-border));
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-dropdown-menu-bg, var(--caomei-color-bg));
+    background: var(--caomei-dropdown-menu-bg, var(--caomei-color-bg-elevated));
     color: var(--caomei-color-text);
     box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);

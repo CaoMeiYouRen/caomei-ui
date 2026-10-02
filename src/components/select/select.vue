@@ -469,7 +469,7 @@ function clearValue(): void {
     max-width: var(--reka-select-content-available-width, none);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
     box-shadow: var(--caomei-shadow-md);
 }

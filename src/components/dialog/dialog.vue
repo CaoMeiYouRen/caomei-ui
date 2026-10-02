@@ -177,7 +177,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     overflow: hidden;
     padding: var(--caomei-space-4);
     border-radius: var(--caomei-radius-lg);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
     box-shadow: var(--caomei-shadow-lg);

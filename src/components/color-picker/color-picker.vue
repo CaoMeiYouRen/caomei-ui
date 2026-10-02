@@ -203,7 +203,7 @@ function onUpdate(value: string): void {
     padding: var(--caomei-space-3);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-lg);
-    background: var(--caomei-color-bg);
+    background: var(--caomei-color-bg-elevated);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
     box-shadow: var(--caomei-shadow-lg);

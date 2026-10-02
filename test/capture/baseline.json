@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-01T05:50:14.329Z",
+    "capturedAt": "2026-10-02T04:16:33.482Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1856,7 +1856,7 @@
             "max-height": "768px"
         },
         "toast.neutral.root": {
-            "background-color": "rgb(255, 255, 255)",
+            "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
             "border-left-color": "rgb(107, 114, 128)",
@@ -1868,7 +1868,7 @@
             "color": "rgb(107, 114, 128)"
         },
         "toast.primary.root": {
-            "background-color": "rgb(255, 255, 255)",
+            "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
             "border-left-color": "rgb(37, 99, 235)",
@@ -1880,7 +1880,7 @@
             "color": "rgb(37, 99, 235)"
         },
         "toast.success.root": {
-            "background-color": "rgb(255, 255, 255)",
+            "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
             "border-left-color": "rgb(21, 128, 61)",
@@ -1892,7 +1892,7 @@
             "color": "rgb(21, 128, 61)"
         },
         "toast.warning.root": {
-            "background-color": "rgb(255, 255, 255)",
+            "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
             "border-left-color": "rgb(180, 83, 9)",
@@ -1904,7 +1904,7 @@
             "color": "rgb(180, 83, 9)"
         },
         "toast.danger.root": {
-            "background-color": "rgb(255, 255, 255)",
+            "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
             "border-left-color": "rgb(220, 38, 38)",

@@ -145,6 +145,59 @@ describe('规划载体面（markdown）', () => {
     it('阶段点名不命中（点名阶段不属于本面）', () => {
         expect(scanPlanningDoc('**当前无进行中阶段**——Phase 18 已于 2026-10-01 完成并归档；Phase 8 未启动')).toEqual([])
     })
+
+    it('进行中阶段：`## Phase N 原子条目` 区段内的条目编号豁免，区段外仍受检', () => {
+        const content = [
+            '# 待办事项',
+            '',
+            '当前进行中阶段：**Phase 19（示例）**',
+            '',
+            '## Phase 19 原子条目',
+            '',
+            '| 编号 | 主线 | 原子条目 |',
+            '|------|------|----------|',
+            '| M1-1 | 示例主线 | 示例条目 |',
+            '',
+            '## 未完成项汇总',
+            '',
+            '- 待 M3-1 裁定后再落守卫',
+        ].join('\n')
+        expect(scanPlanningDoc(content).map(({ id, line }) => ({ id, line }))).toEqual([{ id: 'entry', line: 13 }])
+    })
+
+    it('进行中阶段：条目区段内**非表格行**的编号不豁免（豁免仅限表格行）', () => {
+        const content = [
+            '当前进行中阶段：**Phase 19**',
+            '',
+            '## Phase 19 原子条目',
+            '| M1-1 | 示例 |',
+            '> 非目标：不夹带 M2-3',
+        ].join('\n')
+        expect(scanPlanningDoc(content).map(({ id, line }) => ({ id, line }))).toEqual([{ id: 'entry', line: 5 }])
+    })
+
+    it('未带冒号的历史提及不触发豁免（fail-closed）', () => {
+        const content = ['此前当前进行中阶段为 Phase 18', '', '## Phase 19 原子条目', '| M1-1 | 示例 |'].join('\n')
+        expect(scanPlanningDoc(content).map(({ id, line }) => ({ id, line }))).toEqual([{ id: 'entry', line: 4 }])
+    })
+
+    it('无进行中阶段声明时，条目区段同样受检（fail-closed，按归档形态）', () => {
+        const content = ['## Phase 19 原子条目', '| M1-1 | 示例 |'].join('\n')
+        expect(scanPlanningDoc(content).map(({ id, line }) => ({ id, line }))).toEqual([{ id: 'entry', line: 2 }])
+    })
+
+    it('进行中阶段的区段豁免不跨标题：后续 `## ` 标题后编号恢复受检', () => {
+        const content = [
+            '当前进行中阶段：**Phase 19**',
+            '',
+            '## Phase 19 原子条目',
+            '| M1-1 | 示例 |',
+            '',
+            '## 未完成项汇总',
+            '- 见 M2-3',
+        ].join('\n')
+        expect(scanPlanningDoc(content).map(({ id, line }) => ({ id, line }))).toEqual([{ id: 'entry', line: 7 }])
+    })
 })
 
 describe('tokenize 的引号边界', () => {

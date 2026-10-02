@@ -405,20 +405,41 @@ export function scanRepository(root = projectRoot, files = collectCodeFiles(root
 export const PLANNING_DOC_RULES = PLANNING_NUMBER_RULES.filter((rule) => rule.id === 'entry')
 
 /**
+ * 进行中阶段条目表区段标题（如 `## Phase 19 原子条目`）。标题内的 `Phase N` 属阶段点名，不在本面内；
+ * 该区段内的 `Mx-y` 是登记期的正常条目编号（[规划规范 §4](../../docs/standards/planning.md)）。
+ */
+export const ACTIVE_ENTRIES_HEADING = /^##\s+Phase\s+\d+\s*原子条目\s*$/u
+
+/**
  * 扫描规划载体（markdown）中的规划编号命中；跳过围栏代码块与行内代码（与 `check-standards-redundant` 同口径）。
+ *
+ * 状态口径：本面约束的是**归档后**的 `todo.md`（[规划规范 §7](../../docs/standards/planning.md)）。
+ * 进行中阶段的 `todo.md` 依 §4 合法登记 `Mx-y` 条目编号；故仅当文件声明「当前进行中阶段：」
+ * （带冒号的正文声明，避免历史叙述误触发）时，**豁免「## Phase N 原子条目」区段的表格行**
+ * （仅 `|` 开头的行），该区段内的非表格行与其余区段仍受检——归档后该区段不存在，全文件受检。
+ * 声明缺失即按归档形态处理（fail-closed）。
  *
  * @param {string} content markdown 文本
  * @returns {Array<{ id: string, line: number, source: 'planning-doc', snippet: string, hint: string }>} 命中列表
  */
 export function scanPlanningDoc(content) {
     const hits = []
+    const activeStage = /当前进行中阶段[：:]/u.test(content)
     let inFence = false
+    let inEntriesSection = false
     content.split(/\r?\n/u).forEach((line, index) => {
         if (/^\s*```/u.test(line)) {
             inFence = !inFence
             return
         }
         if (inFence) {
+            return
+        }
+        if (/^##\s+/u.test(line)) {
+            inEntriesSection = activeStage && ACTIVE_ENTRIES_HEADING.test(line)
+            return
+        }
+        if (inEntriesSection && /^\s*\|/u.test(line)) {
             return
         }
         const clean = line.replace(/`[^`]*`/gu, '')

@@ -10,7 +10,7 @@
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
-| M1-1 | 设计一致性口径裁定与守卫落地 | 依据 [Phase 18 M3-1 记录](../design/governance/2026-10-01-phase18-m3-1-design-consistency-evaluation.md) §4 逐条修正 [设计规范 §6](../design/design-spec.md) 的**措辞与计数**（D1 禁用态计数 35 / D2 `invalid` 语义 / D5 Tag 字号按档位 / D7 Card 三变体） | §6 逐条与实现一致；`docs:check` 全绿；不夹带实现变更（实现面归 M1-2） | 待开工 |
+| M1-1 | 设计一致性口径裁定与守卫落地 | 依据 [Phase 18 M3-1 记录](../design/governance/2026-10-01-phase18-m3-1-design-consistency-evaluation.md) §4 逐条修正 [设计规范 §6](../design/design-spec.md) 的**措辞与计数**（D1 禁用态计数 35 / D2 `invalid` 语义 / D5 Tag 字号按档位 / D7 Card 三变体） | §6 逐条与实现一致；`docs:check` 全绿；不夹带实现变更（实现面归 M1-2） | 已完成（2026-10-02，RG `quick` Pass；D1/D2/D5/D7 措辞与计数已对齐实现） |
 | M1-2 | 设计一致性口径裁定与守卫落地 | [设计规范 §6](../design/design-spec.md) 涉及的**实现对齐**（视觉变更）：D3 浮层背景 8 面 `bg` → `bg-elevated`（dialog / popover / select / multi-select / auto-complete / dropdown-menu / toast / color-picker）、D4 Popover 默认圆角 `md` → `lg`、D6 AutoComplete 面板阴影走 `--caomei-shadow-md` | 三处实现与 §6 一致；`capture:styles` 重冻结后 0 差异；**涉及渲染走 `@ui-validator`**；`check:design` 全绿 | 待开工 |
 | M1-3 | 设计一致性口径裁定与守卫落地 | 按 M3-1 记录 §5 落地 **P1 + P2 装置**：capture 扩采样 5 项（`button--rounded` / `split-button.*` / `calendar.*` / `color-picker.*` / `card.*` 等）+ 声明层契约 3 项（CheckboxGroup 禁用态不声明 `opacity` / DataView 根规则不声明 `padding`·`background` / invalid 态不得以色值类表达）+ capture 2 项 | 新增断言逐项有负向对照；`capture:styles` 复跑 0 差异；接入 `governance:check` 或显式声明仅告警 | 待开工 |
 | M1-4 | 设计一致性口径裁定与守卫落地 | 按 M3-1 记录 §5 落地 **P3 几何 / 交互层装置**（禁用态尺寸不变 / 焦点可见扩面 / Drawer `90vw`·`90vh` 收敛 / Password 强度条等，视容量取舍） | 逐项具可判定判别力；不引入 flaky；视容量可拆分为后续批次并显式声明 | 待开工 |

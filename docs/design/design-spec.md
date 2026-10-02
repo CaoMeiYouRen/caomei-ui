@@ -109,7 +109,7 @@
 | `--caomei-shadow-lg` | `0 12px 32px rgb(0 0 0 / 0.18)` | 模态类浮层阴影（Dialog / ConfirmDialog / Drawer / ColorPicker） |
 | `--caomei-color-mask` | `rgb(0 0 0 / 0.45)` | 浮层遮罩（Dialog / ConfirmDialog / Drawer） |
 | `--caomei-skeleton-highlight` | `rgb(255 255 255 / 0.6)` | 骨架屏 `wave` 扫光高光 |
-| `--caomei-disabled-opacity` | `0.6` | 禁用态整体不透明度（37 处禁用态——根控件 / 子部件 / 条目——已全部收敛，组件内无字面量残留） |
+| `--caomei-disabled-opacity` | `0.6` | 禁用态整体不透明度（35 处 `var(--caomei-disabled-opacity)` 引用——根控件 / 子部件 / 条目——已全部收敛，组件内无字面量残留） |
 
 - 组件层覆盖钩子 `--caomei-card-shadow` / `--caomei-card-shadow-hover` / `--caomei-slider-thumb-shadow` 保留，默认回退到上表档位（`sm` / `md` / `xs`）。
 - 阴影档位独立于控件尺寸阶梯（§2.3 的 `control-height-*` 等）：`xs` 专供滑块拇指等微元素，不随控件尺寸缩放。
@@ -212,11 +212,11 @@
 | --- | --- |
 | Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
-| Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用 `:invalid` 而非色值类 |
+| Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用类 / 属性驱动的 invalid 语义（`.caomei-field--invalid` 类 + `aria-invalid` 属性）而非色值类 |
 | Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
 | ColorPicker | 触发器为 `control-height-md` 方形按钮、圆角 `radius-md`；面板圆角 `radius-lg`、宽度 260px、阴影 `shadow-lg`；色块圆角 `radius-sm`、色板 22px 按钮（选中态用 `primary` 描边 + `aria-pressed`）、滑条取 `radius-full` |
-| Card | 圆角 `radius-lg`；`bg-elevated` 或 `bg` + `border`；内边距取 `space-4` |
-| Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号 `font-size-sm` |
+| Card | 圆角 `radius-lg`；背景按变体：`outlined` 取 `bg` + `border`、`elevated` 取 `bg` + `shadow-sm`、`filled` 取 `bg-elevated`；内边距取 `space-4` |
+| Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号：Tag 取档位 `sm` / `md` / `lg`（默认 `md`），Badge 默认 `sm` |
 | Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距） |
 | Dialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；Dialog 阴影取 `shadow-lg`，Popover / DropdownMenu / Select / MultiSelect / Toast 取 `shadow-md` |
 | Drawer | 面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
@@ -225,7 +225,7 @@
 | Checkbox / CheckboxGroup | 指示器为 `radius-sm` 方形（尺寸 sm 16 / md 18 / lg 20）；`v-model` 传数组时为分组语义（按 `value` 增删成员）；分组根为 `role="group"`、间距 `--caomei-checkbox-group-gap`（默认 `space-2`），禁用态不在分组层叠加透明度（子项各自处理，避免双重变淡） |
 | Textarea | 自动增高时高度由内容决定、默认不出现滚动条；`rows` 为初始最小高度，`resize` 固定 `none` |
 | Password | 根为 `.caomei-password` 包裹层（单根），`class` / `style` 留在根元素；强度计量条高度 4px、圆角 `radius-full`；弱 / 中 / 强取 `danger` / `warning` / `success`；未聚焦且无值时强度区域不占布局 |
-| 所有组件 | 焦点态可见；禁用态不改变布局尺寸；禁用态不透明度统一为 `--caomei-disabled-opacity`（37 处，含根控件 / 子部件 / 条目，无字面量残留）；`cursor: not-allowed` 与禁用背景按需逐组件声明、未 token 化 |
+| 所有组件 | 焦点态可见；禁用态不改变布局尺寸；禁用态不透明度统一为 `--caomei-disabled-opacity`（35 处，含根控件 / 子部件 / 条目，无字面量残留）；`cursor: not-allowed` 与禁用背景按需逐组件声明、未 token 化 |
 
 ## 7. 迁移映射规范（PrimeVue → caomei-ui）
 

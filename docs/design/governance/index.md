@@ -18,6 +18,8 @@
 
 ## 当前条目
 
+- [2026-10-05-phase19-m2-2-migration-dedup-batch2.md](./2026-10-05-phase19-m2-2-migration-dedup-batch2.md)：**Phase 19 M2-2：组件页迁移映射去重（批 2：Drawer / Message）**。删除中英 4 页中段 `> 迁移映射` 正文块并折入迁移节：Drawer 折入 `#footer` 同名映射行与「`position="full"` / 生命周期事件 / 容器插槽零下游用量」判据；Message 折入「`secondary` / `contrast` / `info` 有损近似」。**复算**：中英命中页批前 **4** / 本批消除 **2** / 当前 **2**。**门禁**：`lint:md:check` / `check:migration-consistency` / `docs:check`（11 段）exit 0。零 `src/**`，设计规范 §7 未改。
+
 - [2026-10-05-phase19-m2-1-migration-dedup-batch1.md](./2026-10-05-phase19-m2-1-migration-dedup-batch1.md)：**Phase 19 M2-1：组件页迁移映射去重（批 1：ColorPicker / DatePicker）**。删除中英 4 页的中段 `> 迁移映射` 正文块并折入末尾迁移节：ColorPicker 两语正文块与迁移节**逐项重复**（纯删除）；DatePicker 两语仅「`selectionMode` 零下游用量 / 用户决策延后」为独有，折入未实现节。**复算**：中英命中页整改前 **6** / 本批消除 **2** / 当前 **4**，确认 N2 属实（整改前中英各 6、两语均含 `date-picker`，英文页用词为 `Migration map`）。**门禁**：`lint:md:check` / `check:migration-consistency` / `docs:check`（11 段）exit 0。零 `src/**`，设计规范 §7 未改。
 
 - [2026-10-05-phase19-m1-4-geometry-interaction-devices.md](./2026-10-05-phase19-m1-4-geometry-interaction-devices.md)：**Phase 19 M1-4：P3 几何 / 交互层装置（M1 收口）**。新增 3 条常驻 E2E：**禁用态尺寸不变**（7 组件对 + Button 角标外扩不参与布局，`disabled-size.e2e.ts`）、**Drawer 90vw·90vh 收敛 + reduced-motion**（`drawer-convergence.e2e.ts`）、**焦点可见扩面**（Checkbox / Switch / Tabs 触发器 / SelectButton 条目 / Accordion 触发器，`focus-visible-expansion.e2e.ts`）。**发现并修复 1 处真实缺陷**：Drawer reduced-motion 规则特异性不足（0-1-0）被状态规则（0-2-0）压过 → reduce 下动画未关闭；补同特异性 `.caomei-drawer__content[data-state]` 后关闭。**负向对照**：2a 12 处 / 2b 3 处（缺陷实锤）/ 2c 3 处，还原后全绿。**质量门**：`test:e2e` **186 passed**（既有 132 + 54）、`pnpm test` 107 文件 / **2185** 例、`capture:styles` 302 项 0 差异。**边界**：禁用态尺寸取 7 代表组件、焦点可见取 5 组件（容量取舍，显式声明）。

@@ -29,8 +29,6 @@ Switch the visual variant with `variant`; supports `soft` (default) / `solid` / 
     ssg="true"
 />
 
-> Migration mapping (PrimeVue → caomei-ui): `severity` → `tone` (`error` → `danger`, `warn` / `warning` → `warning`, `info` → `primary`, `secondary` / `contrast` → `neutral`, `success` → `success`; `secondary` / `contrast` / `info` are **lossy approximations**). `variant="outlined"` → `variant="outline"`, `variant="simple"` → `variant="simple"`; the default form with no `variant` maps to `soft`. PrimeVue Message only offers `outlined` / `simple` (there is no `text`).
-
 ## Sizes
 
 Switch between `sm` / `md` (default) / `lg` with `size`; it affects font size and padding, while the `simple` variant consumes no padding.
@@ -74,7 +72,7 @@ Colors come from the global semantic tokens: `primary` / `success` / `warning` /
 
 | PrimeVue | This component |
 | --- | --- |
-| `severity` | `tone` (`success` → `success`, `info` → `primary`, `error` → `danger`, `warn` → `warning`, `secondary` / `contrast` → `neutral`) |
+| `severity` | `tone` (`success` → `success`, `info` → `primary`, `error` → `danger`, `warn` → `warning`, `secondary` / `contrast` → `neutral`; `secondary` / `contrast` / `info` are **lossy approximations**) |
 | `variant="outlined"` / `"simple"` | `variant="outline"` / `"simple"`; without `variant` the default is `soft` |
 | `size` (`small` / `large`) | `size` (`sm` / `md` / `lg`) |
 | Default slot | Default slot, plus `title` / `description` props |

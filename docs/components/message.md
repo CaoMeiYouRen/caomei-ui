@@ -29,8 +29,6 @@
     ssg="true"
 />
 
-> 迁移映射（PrimeVue → caomei-ui）：`severity` → `tone`（`error` → `danger`、`warn` / `warning` → `warning`、`info` → `primary`、`secondary` / `contrast` → `neutral`、`success` → `success`；`secondary` / `contrast` / `info` 为**有损近似**）。`variant="outlined"` → `variant="outline"`、`variant="simple"` → `variant="simple"`；无 `variant` 的默认形态对应 `soft`。PrimeVue Message 只有 `outlined` / `simple` 两种变体（无 `text`）。
-
 ## 尺寸
 
 通过 `size` 切换 `sm` / `md`（默认）/ `lg`，影响字号与内边距；`simple` 变体不消费内边距。
@@ -74,7 +72,7 @@
 
 | PrimeVue | 本组件 |
 | --- | --- |
-| `severity` | `tone`（`success` → `success`、`info` → `primary`、`error` → `danger`、`warn` → `warning`、`secondary` / `contrast` → `neutral`） |
+| `severity` | `tone`（`success` → `success`、`info` → `primary`、`error` → `danger`、`warn` → `warning`、`secondary` / `contrast` → `neutral`；`secondary` / `contrast` / `info` 为**有损近似**） |
 | `variant="outlined"` / `"simple"` | `variant="outline"` / `"simple"`；无 `variant` 时默认 `soft` |
 | `size`（`small` / `large`） | `size`（`sm` / `md` / `lg`） |
 | 默认插槽承载内容 | 默认插槽，另提供 `title` / `description` prop |

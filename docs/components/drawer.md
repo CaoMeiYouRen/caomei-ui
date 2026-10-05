@@ -45,8 +45,6 @@
     ssg="true"
 />
 
-> 迁移映射（PrimeVue → caomei-ui）：`visible` → `v-model:open`；`header` → `title`（或 `#header` 插槽）；`dismissable` → `closeOnOverlay`；`showCloseIcon` → `closable`；`closeOnEscape` → `closeOnEsc`；`#footer` → `#footer`。**已知行为差异**：`blockScroll` 在 PrimeVue 默认 `false`（`modal` 仅加遮罩、不锁滚动），本库 `modal="true"` 同时锁定页面滚动（更严格）；`position` 新增 `full` 未实现（下游零用量，需全屏时可用 `modal="false"` + `style` 铺满）；`baseZIndex` / `autoZIndex` / `closeButtonProps` / `closeIcon` 未暴露（关闭按钮形态固定，层级固定为遮罩 1000 / 面板 1001）；`size` 为本库新增档位（PrimeVue 无此 prop，宽度经 `style` 传入）。生命周期事件 `show` / `before-hide` / `hide` / `after-show` / `after-hide` 与 `#closebutton` / `#closeicon` / `#container` 插槽未暴露（下游零用量）。
-
 ## 无障碍
 
 - `title` 作为 `aria-labelledby` 指向的可访问名；未提供时回退内建 locale 文案（仅用于读屏器，不显示可见标题，与 PrimeVue 一致）。
@@ -64,10 +62,11 @@
 | `dismissable` | `closeOnOverlay` |
 | `show-close-icon` | `closable` |
 | `close-on-escape` | `closeOnEsc` |
+| `#footer` | `#footer`（底部操作区插槽，同名） |
 | `modal` | `modal`（本库 `modal="true"` 同时锁定页面滚动，比 PrimeVue 更严格） |
 | 经 `style` 传宽度 | `size`（本库新增 `sm` / `md` / `lg` ＝ 320 / 420 / 560px，按视口收敛） |
 
-**未实现 / 未暴露**：`position="full"`；`show` / `before-hide` / `hide` / `after-show` / `after-hide` 事件；`#closebutton` / `#closeicon` / `#container` 插槽；`base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`；层级固定为遮罩 1000 / 面板 1001、关闭按钮形态固定（完整口径见[设计规范 §7](../design/design-spec.md)）。
+**未实现 / 未暴露**：`position="full"`；`show` / `before-hide` / `hide` / `after-show` / `after-hide` 事件；`#closebutton` / `#closeicon` / `#container` 插槽；`base-z-index` / `auto-z-index` / `close-button-props` / `close-icon`；层级固定为遮罩 1000 / 面板 1001、关闭按钮形态固定；`position="full"` 与生命周期事件 / 容器插槽均**零下游用量**（完整口径见[设计规范 §7](../design/design-spec.md)）。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

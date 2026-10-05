@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-05T10:00:17.358Z",
+    "capturedAt": "2026-10-05T10:39:04.065Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1485,6 +1485,119 @@
         "switch.disabled.thumb": {
             "background-color": "rgb(255, 255, 255)"
         },
+        "card.outlined": {
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-left-radius": "12px",
+            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-width": "1px",
+            "box-shadow": "none"
+        },
+        "card.outlined.body": {
+            "padding-top": "0px",
+            "padding-left": "16px"
+        },
+        "card.elevated": {
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-left-radius": "12px",
+            "border-top-color": "rgb(26, 26, 26)",
+            "border-top-width": "0px",
+            "box-shadow": "rgba(0, 0, 0, 0.08) 0px 4px 12px 0px"
+        },
+        "card.elevated.body": {
+            "padding-top": "0px",
+            "padding-left": "16px"
+        },
+        "card.filled": {
+            "background-color": "rgb(247, 247, 248)",
+            "border-top-left-radius": "12px",
+            "border-top-color": "rgb(26, 26, 26)",
+            "border-top-width": "0px",
+            "box-shadow": "none"
+        },
+        "card.filled.body": {
+            "padding-top": "0px",
+            "padding-left": "16px"
+        },
+        "tag.rounded": {
+            "border-top-left-radius": "999px"
+        },
+        "variant.message.neutral.simple.padding": {
+            "padding-top": "0px",
+            "padding-left": "0px"
+        },
+        "variant.message.primary.simple.padding": {
+            "padding-top": "0px",
+            "padding-left": "0px"
+        },
+        "variant.message.success.simple.padding": {
+            "padding-top": "0px",
+            "padding-left": "0px"
+        },
+        "variant.message.warning.simple.padding": {
+            "padding-top": "0px",
+            "padding-left": "0px"
+        },
+        "variant.message.danger.simple.padding": {
+            "padding-top": "0px",
+            "padding-left": "0px"
+        },
+        "password.weak.meter": {
+            "height": "4px",
+            "border-top-left-radius": "999px"
+        },
+        "password.weak.fill": {
+            "background-color": "rgb(220, 38, 38)"
+        },
+        "password.medium.meter": {
+            "height": "4px",
+            "border-top-left-radius": "999px"
+        },
+        "password.medium.fill": {
+            "background-color": "rgb(180, 83, 9)"
+        },
+        "password.strong.meter": {
+            "height": "4px",
+            "border-top-left-radius": "999px"
+        },
+        "password.strong.fill": {
+            "background-color": "rgb(21, 128, 61)"
+        },
+        "data-table.th": {
+            "border-bottom-color": "rgb(229, 231, 235)"
+        },
+        "data-table.td": {
+            "border-bottom-color": "rgb(229, 231, 235)"
+        },
+        "data-table.sort-icon": {
+            "color": "rgb(107, 114, 128)"
+        },
+        "button.rounded": {
+            "border-top-left-radius": "999px"
+        },
+        "calendar.selected": {
+            "background-color": "rgb(37, 99, 235)",
+            "color": "rgb(255, 255, 255)"
+        },
+        "calendar.today": {
+            "border-top-width": "1px",
+            "border-top-color": "rgb(229, 231, 235)"
+        },
+        "color-picker.trigger": {
+            "width": "36px",
+            "height": "36px",
+            "border-top-left-radius": "8px"
+        },
+        "split-button.main": {
+            "border-top-left-radius": "8px",
+            "border-top-right-radius": "0px",
+            "border-right-width": "0px",
+            "border-top-width": "1px"
+        },
+        "split-button.menu": {
+            "border-top-left-radius": "0px",
+            "border-left-width": "1px",
+            "border-top-width": "1px"
+        },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
         },
@@ -1859,10 +1972,14 @@
         },
         "panel.date-picker": {
             "background-color": "rgb(247, 247, 248)",
-            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px",
+            "border-top-left-radius": "8px"
         },
         "panel.color-picker": {
-            "background-color": "rgb(247, 247, 248)"
+            "background-color": "rgb(247, 247, 248)",
+            "border-top-left-radius": "12px",
+            "box-shadow": "rgba(0, 0, 0, 0.18) 0px 12px 32px 0px",
+            "width": "260px"
         },
         "panel.popover": {
             "background-color": "rgb(247, 247, 248)",

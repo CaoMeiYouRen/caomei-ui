@@ -6,6 +6,8 @@ import {
     CaomeiBadge,
     CaomeiButton,
     CaomeiButtonGroup,
+    CaomeiCalendar,
+    CaomeiCard,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
@@ -21,6 +23,7 @@ import {
     CaomeiInputNumber,
     CaomeiMessage,
     CaomeiMultiSelect,
+    CaomeiPassword,
     CaomeiPopover,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
@@ -91,6 +94,26 @@ const tableColumns = [
     { key: 'qty', header: '数量' },
     { key: 'note', header: '备注', width: '160px', frozen: 'right' as const },
 ]
+
+/** 排序表：锁定表头 / 单元格底边色与排序按钮图标色。 */
+const sortRows = [
+    { name: '草稿一', qty: 1 },
+    { name: '草稿二', qty: 2 },
+]
+const sortColumns = [
+    { key: 'name', header: '名称', sortable: true },
+    { key: 'qty', header: '数量', sortable: true },
+]
+
+/** 密码强度三档（值分别命中弱 / 中 / 强，见 STRONG/MEDIUM pattern）。 */
+const passwordWeak = ref('abc')
+const passwordMedium = ref('abcdef1')
+const passwordStrong = ref('Abcdefg1')
+
+/** 日历：选中日取当月 1 / 2 日（避开今日，保证 `[data-today]:not([data-selected])` 始终命中）。 */
+const calendarToday = new Date()
+const calendarSelectedDay = calendarToday.getDate() === 1 ? 2 : 1
+const calendarValue = ref(new Date(calendarToday.getFullYear(), calendarToday.getMonth(), calendarSelectedDay))
 
 /** 抽屉 / 对话框开合状态接到共享驱动接口（`ui` 见 `./ui.ts`；无渲染驱动组件见 `./drivers.ts`）。 */
 ui.setDrawer = (size, open) => {
@@ -507,6 +530,82 @@ ui.setDialog = (size, open) => {
                     <CaomeiDropdownMenuTrigger>更多</CaomeiDropdownMenuTrigger>
                     <CaomeiDropdownMenuContent :model="dropItems" />
                 </CaomeiDropdownMenu>
+            </div>
+        </section>
+
+        <!-- 13. 组件设计 §6 P1 约定：Card 三变体 / Tag rounded / Password 强度 / DataTable 排序 -->
+        <section>
+            <div class="case" data-cap="card:outlined">
+                <CaomeiCard variant="outlined" title="卡片">
+                    内容
+                </CaomeiCard>
+            </div>
+            <div class="case" data-cap="card:elevated">
+                <CaomeiCard variant="elevated" title="卡片">
+                    内容
+                </CaomeiCard>
+            </div>
+            <div class="case" data-cap="card:filled">
+                <CaomeiCard variant="filled" title="卡片">
+                    内容
+                </CaomeiCard>
+            </div>
+            <div class="case" data-cap="tag:rounded">
+                <CaomeiTag rounded>
+                    圆角
+                </CaomeiTag>
+            </div>
+            <div
+                class="case"
+                data-cap="password:weak"
+                style="width: 240px"
+            >
+                <CaomeiPassword
+                    v-model="passwordWeak"
+                    feedback
+                    label="弱"
+                />
+            </div>
+            <div
+                class="case"
+                data-cap="password:medium"
+                style="width: 240px"
+            >
+                <CaomeiPassword
+                    v-model="passwordMedium"
+                    feedback
+                    label="中"
+                />
+            </div>
+            <div
+                class="case"
+                data-cap="password:strong"
+                style="width: 240px"
+            >
+                <CaomeiPassword
+                    v-model="passwordStrong"
+                    feedback
+                    label="强"
+                />
+            </div>
+            <div class="case" data-cap="data-table:sort">
+                <CaomeiDataTable
+                    :columns="sortColumns"
+                    :data="sortRows"
+                    row-key="name"
+                />
+            </div>
+        </section>
+
+        <!-- 14. 登记点名项：Button rounded / Calendar 选中与今日 -->
+        <section>
+            <div class="case" data-cap="button-rounded">
+                <CaomeiButton rounded>
+                    圆角按钮
+                </CaomeiButton>
+            </div>
+            <div class="case" data-cap="calendar">
+                <CaomeiCalendar v-model="calendarValue" />
             </div>
         </section>
 

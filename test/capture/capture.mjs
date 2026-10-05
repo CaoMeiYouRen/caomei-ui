@@ -107,6 +107,28 @@ const TOAST_ROOT_PROPS = ['background-color', 'color', 'border-top-color', 'bord
 const PANEL_BG_PROPS = ['background-color']
 const PANEL_POPOVER_PROPS = ['background-color', 'border-top-left-radius']
 const PANEL_SHADOW_PROPS = ['background-color', 'box-shadow']
+const PANEL_DATE_PICKER_PROPS = ['background-color', 'box-shadow', 'border-top-left-radius']
+const COLOR_PICKER_PANEL_PROPS = ['background-color', 'border-top-left-radius', 'box-shadow', 'width']
+const COLOR_PICKER_TRIGGER_PROPS = ['width', 'height', 'border-top-left-radius']
+const SPLIT_BUTTON_MAIN_PROPS = ['border-top-left-radius', 'border-top-right-radius', 'border-right-width', 'border-top-width']
+const SPLIT_BUTTON_MENU_PROPS = ['border-top-left-radius', 'border-left-width', 'border-top-width']
+const CALENDAR_SELECTED_PROPS = ['background-color', 'color']
+const CALENDAR_TODAY_PROPS = ['border-top-width', 'border-top-color']
+
+/** 组件设计 §6 P1 约定采样（Card / Tag / Message simple / Password / DataTable）。 */
+const CARD_PROPS = ['background-color', 'border-top-left-radius', 'border-top-color', 'border-top-width', 'box-shadow']
+const CARD_BODY_PROPS = ['padding-top', 'padding-left']
+const PASSWORD_METER_PROPS = ['height', 'border-top-left-radius']
+/**
+ * 强度条填充只采信三档语义色（`danger` / `warning` / `success`，即 §6 契约）。
+ * **有意不采样 `width`**：其解析值为百分比（33.333% / 66.666% / 100%）派生的亚像素
+ * （`79.9844px` 等），冻结基线按精确字符串比较，跨 Chromium 版本渲染差异会引入 flaky，
+ * 非组件契约的可靠载体。
+ */
+const PASSWORD_FILL_PROPS = ['background-color']
+const DATA_TABLE_CELL_PROPS = ['border-bottom-color']
+const CARD_VARIANTS = ['outlined', 'elevated', 'filled']
+const PASSWORD_LEVELS = ['weak', 'medium', 'strong']
 
 /**
  * 采样面声明：`{ key, selector, props }`，逐条对应夹具中的 `data-cap` 标记。
@@ -184,6 +206,31 @@ function buildStaticSamples() {
     add('switch.disabled.track', '[data-cap="switch:disabled"] .caomei-switch', ['background-color', 'opacity', 'cursor'])
     add('switch.disabled.thumb', '[data-cap="switch:disabled"] .caomei-switch__thumb', ['background-color'])
 
+    // 组件设计 §6 P1 约定：Card 三变体 / Tag rounded / Message simple 内边距 / Password 强度条 / DataTable 排序
+    for (const variant of CARD_VARIANTS) {
+        add(`card.${variant}`, `[data-cap="card:${variant}"] .caomei-card`, CARD_PROPS)
+        add(`card.${variant}.body`, `[data-cap="card:${variant}"] .caomei-card__body`, CARD_BODY_PROPS)
+    }
+    add('tag.rounded', '[data-cap="tag:rounded"] .caomei-tag', ['border-top-left-radius'])
+    for (const tone of TONES) {
+        add(`variant.message.${tone}.simple.padding`, `[data-cap="variant:message:${tone}:simple"] .caomei-message`, ['padding-top', 'padding-left'])
+    }
+    for (const level of PASSWORD_LEVELS) {
+        add(`password.${level}.meter`, `[data-cap="password:${level}"] .caomei-password__meter`, PASSWORD_METER_PROPS)
+        add(`password.${level}.fill`, `[data-cap="password:${level}"] .caomei-password__meter-fill`, PASSWORD_FILL_PROPS)
+    }
+    add('data-table.th', '[data-cap="data-table:sort"] .caomei-data-table__th', DATA_TABLE_CELL_PROPS)
+    add('data-table.td', '[data-cap="data-table:sort"] .caomei-data-table__td', DATA_TABLE_CELL_PROPS)
+    add('data-table.sort-icon', '[data-cap="data-table:sort"] .caomei-data-table__sort-icon', ['color'])
+
+    // 登记点名项：Button rounded / Calendar 选中与今日 / ColorPicker 触发器方形 / SplitButton 拼接
+    add('button.rounded', '[data-cap="button-rounded"] .caomei-button', ['border-top-left-radius'])
+    add('calendar.selected', '[data-cap="calendar"] .caomei-calendar__day[data-selected]', CALENDAR_SELECTED_PROPS)
+    add('calendar.today', '[data-cap="calendar"] .caomei-calendar__day[data-today]:not([data-selected])', CALENDAR_TODAY_PROPS)
+    add('color-picker.trigger', '[data-cap="trigger:color-picker"] .caomei-color-picker__trigger', COLOR_PICKER_TRIGGER_PROPS)
+    add('split-button.main', '[data-cap="trigger:split-button"] .caomei-split-button__main', SPLIT_BUTTON_MAIN_PROPS)
+    add('split-button.menu', '[data-cap="trigger:split-button"] .caomei-split-button__menu', SPLIT_BUTTON_MENU_PROPS)
+
     return samples
 }
 
@@ -257,8 +304,8 @@ export const PANEL_SAMPLES = [
     { name: 'select', trigger: '[data-cap="panel:select"] .caomei-select', panel: '.caomei-select__content', props: PANEL_BG_PROPS },
     { name: 'multi-select', trigger: '[data-cap="panel:multi-select"] .caomei-multi-select', panel: '.caomei-multi-select__content', props: PANEL_BG_PROPS },
     { name: 'auto-complete', trigger: '[data-cap="panel:auto-complete"] .caomei-auto-complete', panel: '.caomei-auto-complete__content', props: PANEL_SHADOW_PROPS },
-    { name: 'date-picker', trigger: '[data-cap="panel:date-picker"] .caomei-date-picker', panel: '.caomei-date-picker__content', props: PANEL_SHADOW_PROPS },
-    { name: 'color-picker', trigger: '[data-cap="panel:color-picker"] .caomei-color-picker__trigger', panel: '.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)', props: PANEL_BG_PROPS },
+    { name: 'date-picker', trigger: '[data-cap="panel:date-picker"] .caomei-date-picker', panel: '.caomei-date-picker__content', props: PANEL_DATE_PICKER_PROPS },
+    { name: 'color-picker', trigger: '[data-cap="panel:color-picker"] .caomei-color-picker__trigger', panel: '.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)', props: COLOR_PICKER_PANEL_PROPS },
     { name: 'popover', trigger: '[data-cap="panel:popover"] .caomei-popover__trigger', panel: '.caomei-popover__content', props: PANEL_POPOVER_PROPS },
     { name: 'dropdown-menu', trigger: '[data-cap="panel:dropdown-menu"] .caomei-dropdown-menu__trigger', panel: '.caomei-dropdown-menu__content', props: PANEL_BG_PROPS },
 ]

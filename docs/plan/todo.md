@@ -4,14 +4,14 @@
 
 ## 当前状态
 
-当前进行中阶段：**Phase 19（设计一致性口径落地、组件文档去重与观感缺陷处置）**，2026-10-02 用户裁定 D1 ~ D13 后登记（已有最大编号 18 + 1）。**6 条主线 / 14 条原子条目**（M1 4 / M2 3 / M3 3 / M4 2 / M6 1 / M7 1）；取向为用户选定的组合 A + 组合 B + 组合 C（= M1 + M2 + M3 + M4 + M6），并经 D10 上收 M7。范围依据见[下一阶段范围评估（第三轮）](../design/governance/2026-10-02-next-stage-scope-evaluation.md) §8。**登记 = 范围授权，实施未启动**——逐条实施以用户「开工」指令为准。
+当前进行中阶段：**Phase 19（设计一致性口径落地、组件文档去重与观感缺陷处置）**，2026-10-02 用户裁定 D1 ~ D13 后登记（已有最大编号 18 + 1）。**6 条主线 / 14 条原子条目**（M1 4 / M2 3 / M3 3 / M4 2 / M6 1 / M7 1）；取向为用户选定的组合 A + 组合 B + 组合 C（= M1 + M2 + M3 + M4 + M6），并经 D10 上收 M7。范围依据见[下一阶段范围评估（第三轮）](../design/governance/2026-10-02-next-stage-scope-evaluation.md) §8。**登记 = 范围授权，实施进行中**——逐条实施以用户「开工」指令为准。
 
 ## Phase 19 原子条目
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
 | M1-1 | 设计一致性口径裁定与守卫落地 | 依据 [Phase 18 M3-1 记录](../design/governance/2026-10-01-phase18-m3-1-design-consistency-evaluation.md) §4 逐条修正 [设计规范 §6](../design/design-spec.md) 的**措辞与计数**（D1 禁用态计数 35 / D2 `invalid` 语义 / D5 Tag 字号按档位 / D7 Card 三变体） | §6 逐条与实现一致；`docs:check` 全绿；不夹带实现变更（实现面归 M1-2） | 已完成（2026-10-02，RG `quick` Pass；D1/D2/D5/D7 措辞与计数已对齐实现） |
-| M1-2 | 设计一致性口径裁定与守卫落地 | [设计规范 §6](../design/design-spec.md) 涉及的**实现对齐**（视觉变更）：D3 浮层背景 8 面 `bg` → `bg-elevated`（dialog / popover / select / multi-select / auto-complete / dropdown-menu / toast / color-picker）、D4 Popover 默认圆角 `md` → `lg`、D6 AutoComplete 面板阴影走 `--caomei-shadow-md` | 三处实现与 §6 一致；`capture:styles` 重冻结后 0 差异；**涉及渲染走 `@ui-validator`**；`check:design` 全绿 | 待开工 |
+| M1-2 | 设计一致性口径裁定与守卫落地 | [设计规范 §6](../design/design-spec.md) 涉及的**实现对齐**（视觉变更）：D3 浮层背景 8 面 `bg` → `bg-elevated`（dialog / popover / select / multi-select / auto-complete / dropdown-menu / toast / color-picker）、D4 Popover 默认圆角 `md` → `lg`、D6 AutoComplete 面板阴影走 `--caomei-shadow-md` | 三处实现与 §6 一致；`capture:styles` 重冻结后 0 差异；**涉及渲染走 `@ui-validator`**；`check:design` 全绿 | 进行中（实现已完成并提交 `89c4d82`：D3 原定 8 面 + 同批随 §6 扩写的 ConfirmDialog / Drawer / DatePicker，共 **11 处**浮层面板背景 `bg` → `bg-elevated`，Popover 圆角 `lg`、AutoComplete / DatePicker 阴影 token 化；§6 与组件文档已同步，`capture:styles` 262 项 0 差异、`check:design` 全绿。**V 阶段 / RG 待补后方可落「已完成」**） |
 | M1-3 | 设计一致性口径裁定与守卫落地 | 按 M3-1 记录 §5 落地 **P1 + P2 装置**：capture 扩采样 5 项（`button--rounded` / `split-button.*` / `calendar.*` / `color-picker.*` / `card.*` 等）+ 声明层契约 3 项（CheckboxGroup 禁用态不声明 `opacity` / DataView 根规则不声明 `padding`·`background` / invalid 态不得以色值类表达）+ capture 2 项；并**固化 M1-2 的浮层面板背景**（Dialog / ConfirmDialog / Drawer / Popover / DropdownMenu / Select / MultiSelect / AutoComplete / DatePicker / ColorPicker / Toast 的 `backgroundColor`）、**Popover 面板圆角**与 **AutoComplete / DatePicker 面板阴影**的 capture 采样项 | 新增断言逐项有负向对照；`capture:styles` 复跑 0 差异；接入 `governance:check` 或显式声明仅告警；M1-2 的视觉契约不再只靠一次性 V 阶段 | 待开工 |
 | M1-4 | 设计一致性口径裁定与守卫落地 | 按 M3-1 记录 §5 落地 **P3 几何 / 交互层装置**（禁用态尺寸不变 / 焦点可见扩面 / Drawer `90vw`·`90vh` 收敛 / Password 强度条等，视容量取舍） | 逐项具可判定判别力；不引入 flaky；视容量可拆分为后续批次并显式声明 | 待开工 |
 | M2-1 | 组件文档一致性整改（迁移映射去重） | 批 1：删除 `color-picker` / `date-picker` 中英页中段 `> 迁移映射` 正文块，独有内容折入末尾迁移节 | 独有信息无丢失（删除前后信息集合一致并留痕）；中英同批；`docs:check` 全绿 | 待开工 |

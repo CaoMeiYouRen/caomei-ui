@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-05T10:39:04.065Z",
+    "capturedAt": "2026-10-05T10:46:41.783Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1597,6 +1597,27 @@
             "border-top-left-radius": "0px",
             "border-left-width": "1px",
             "border-top-width": "1px"
+        },
+        "checkbox.sm": {
+            "width": "16px",
+            "height": "16px",
+            "border-top-left-radius": "4px"
+        },
+        "checkbox.md": {
+            "width": "18px",
+            "height": "18px",
+            "border-top-left-radius": "4px"
+        },
+        "checkbox.lg": {
+            "width": "20px",
+            "height": "20px",
+            "border-top-left-radius": "4px"
+        },
+        "checkbox-group.gap": {
+            "gap": "8px"
+        },
+        "checkbox-group.options.gap": {
+            "gap": "8px"
         },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""

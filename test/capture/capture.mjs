@@ -114,6 +114,7 @@ const SPLIT_BUTTON_MAIN_PROPS = ['border-top-left-radius', 'border-top-right-rad
 const SPLIT_BUTTON_MENU_PROPS = ['border-top-left-radius', 'border-left-width', 'border-top-width']
 const CALENDAR_SELECTED_PROPS = ['background-color', 'color']
 const CALENDAR_TODAY_PROPS = ['border-top-width', 'border-top-color']
+const CHECKBOX_CONTROL_PROPS = ['width', 'height', 'border-top-left-radius']
 
 /** 组件设计 §6 P1 约定采样（Card / Tag / Message simple / Password / DataTable）。 */
 const CARD_PROPS = ['background-color', 'border-top-left-radius', 'border-top-color', 'border-top-width', 'box-shadow']
@@ -230,6 +231,13 @@ function buildStaticSamples() {
     add('color-picker.trigger', '[data-cap="trigger:color-picker"] .caomei-color-picker__trigger', COLOR_PICKER_TRIGGER_PROPS)
     add('split-button.main', '[data-cap="trigger:split-button"] .caomei-split-button__main', SPLIT_BUTTON_MAIN_PROPS)
     add('split-button.menu', '[data-cap="trigger:split-button"] .caomei-split-button__menu', SPLIT_BUTTON_MENU_PROPS)
+
+    // Checkbox：三档指示器几何 + 分组间距
+    for (const size of SIZES) {
+        add(`checkbox.${size}`, `[data-cap="checkbox:${size}"] .caomei-checkbox__control`, CHECKBOX_CONTROL_PROPS)
+    }
+    add('checkbox-group.gap', '[data-cap="checkbox-group"] .caomei-checkbox-group', ['gap'])
+    add('checkbox-group.options.gap', '[data-cap="checkbox-group"] .caomei-checkbox-group__options', ['gap'])
 
     return samples
 }

@@ -8,6 +8,8 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCard,
+    CaomeiCheckbox,
+    CaomeiCheckboxGroup,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
@@ -114,6 +116,12 @@ const passwordStrong = ref('Abcdefg1')
 const calendarToday = new Date()
 const calendarSelectedDay = calendarToday.getDate() === 1 ? 2 : 1
 const calendarValue = ref(new Date(calendarToday.getFullYear(), calendarToday.getMonth(), calendarSelectedDay))
+
+/** 复选框：三档尺寸 + 分组（间距契约）。 */
+const checkboxSm = ref(false)
+const checkboxMd = ref(true)
+const checkboxLg = ref(false)
+const checkboxGroupValue = ref<string[]>(['a'])
 
 /** 抽屉 / 对话框开合状态接到共享驱动接口（`ui` 见 `./ui.ts`；无渲染驱动组件见 `./drivers.ts`）。 */
 ui.setDrawer = (size, open) => {
@@ -606,6 +614,37 @@ ui.setDialog = (size, open) => {
             </div>
             <div class="case" data-cap="calendar">
                 <CaomeiCalendar v-model="calendarValue" />
+            </div>
+        </section>
+
+        <!-- 15. Checkbox 尺寸档位与分组间距（§6 约定） -->
+        <section>
+            <div class="case" data-cap="checkbox:sm">
+                <CaomeiCheckbox
+                    v-model="checkboxSm"
+                    size="sm"
+                    label="小"
+                />
+            </div>
+            <div class="case" data-cap="checkbox:md">
+                <CaomeiCheckbox
+                    v-model="checkboxMd"
+                    size="md"
+                    label="中"
+                />
+            </div>
+            <div class="case" data-cap="checkbox:lg">
+                <CaomeiCheckbox
+                    v-model="checkboxLg"
+                    size="lg"
+                    label="大"
+                />
+            </div>
+            <div class="case" data-cap="checkbox-group">
+                <CaomeiCheckboxGroup
+                    v-model="checkboxGroupValue"
+                    :options="options"
+                />
             </div>
         </section>
 

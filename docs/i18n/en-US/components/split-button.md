@@ -34,8 +34,6 @@ The main and menu buttons share `variant` / `tone` / `size` / `rounded`; the men
 
 The menu side is controlled by `menuSide` (default `bottom`) and `menuAlign` (default `end`).
 
-> Migration mapping (PrimeVue → caomei-ui): `label` → the default slot (visible text); this library unifies `label` as the **invisible accessible name** (see the development standards), so pass `label` only for icon-only buttons. `icon` → the `#icon` slot (main button; pass a `@lucide/vue` component, not a class-name string); `model` → `model` (`MenuItem`'s `label` / `icon` / `command` / `disabled` are supported; `icon` takes a component); `severity` → `tone`; `text` → `variant="ghost"`; `outlined` → `variant="secondary"`; `size="small"` / `"large"` → `sm` / `lg`; `rounded` → `rounded`. **Not implemented / not exposed (no downstream usage)**: `MenuItem`'s `items` submenu, `url` / `target` navigation, `menuButtonIcon` / `dropdownIcon` (fixed menu-button icon), `menuButtonProps` / `buttonProps` (use root attributes and the `#icon` slot instead), `raised` / `plain`, `appendTo` / `baseZIndex` / `autoZIndex` (the panel is portaled with fixed layering); `fluid` is not implemented (content width).
-
 > The root element is a `CaomeiButtonGroup` (reusing its two-button splice rules); attributes such as `class` / `style` / `id` fall through to that container. ButtonGroup-specific props such as `orientation` are not part of the SplitButton API; do not pass them.
 
 ## Accessibility
@@ -55,7 +53,7 @@ The menu side is controlled by `menuSide` (default `bottom`) and `menuAlign` (de
 | `size` (`small` / `large`) | `size` (`sm` / `lg`) |
 | `rounded` | `rounded` |
 
-**Not implemented / not exposed**: `MenuItem.items` submenus, `url` / `target` navigation, `menuButtonIcon` / `dropdownIcon`, `menuButtonProps` / `buttonProps`, `raised` / `plain`, `appendTo` / `baseZIndex` / `autoZIndex`, `fluid`. The implementation is home-grown (Button + DropdownMenu); `menuLabel` / `menuSide` / `menuAlign` control the menu.
+**Not implemented / not exposed**: `MenuItem.items` submenus, `url` / `target` navigation, `menuButtonIcon` / `dropdownIcon` (fixed menu-button icon), `menuButtonProps` / `buttonProps` (use root attributes and the `#icon` slot instead), `raised` / `plain`, `appendTo` / `baseZIndex` / `autoZIndex` (the panel is portalled with fixed layering), `fluid` (content width). The implementation is home-grown (Button + DropdownMenu); `menuLabel` / `menuSide` / `menuAlign` control the menu.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

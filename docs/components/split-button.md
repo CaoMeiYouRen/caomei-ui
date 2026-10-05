@@ -34,8 +34,6 @@
 
 菜单方向由 `menuSide`（默认 `bottom`）与 `menuAlign`（默认 `end`）控制。
 
-> 迁移映射（PrimeVue → caomei-ui）：`label` → 默认插槽（可见文本）；本库 `label` 统一为**不可见可访问名**（见[开发规范 §组件设计](../standards/development.md)），图标按钮场景改传 `label`。`icon` → `#icon` 插槽（主按钮，传 `@lucide/vue` 组件，非字符串类名）；`model` → `model`（`MenuItem` 的 `label` / `icon` / `command` / `disabled` 支持；`icon` 改传组件）；`severity` → `tone`；`text` → `variant="ghost"`；`outlined` → `variant="secondary"`；`size="small"` / `"large"` → `sm` / `lg`；`rounded` → `rounded`。**未实现 / 未暴露（下游零用量）**：`MenuItem` 的 `items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`（下拉按钮图标固定）、`menuButtonProps` / `buttonProps`（改用根元素属性与 `#icon` 插槽）、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`（面板经 Portal 挂载，层级固定）；`fluid` 未实现（按内容宽度）。
-
 > 根元素为 `CaomeiButtonGroup`（复用两按钮拼接规则），`class` / `style` / `id` 等属性透传到该容器；`orientation` 等 ButtonGroup 自身 prop 不属于 SplitButton 的 API，请勿传入。
 
 ## 无障碍
@@ -55,7 +53,7 @@
 | `size`（`small` / `large`） | `size`（`sm` / `lg`） |
 | `rounded` | `rounded` |
 
-**未实现 / 未暴露**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`、`menuButtonProps` / `buttonProps`、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`、`fluid`。实现取向为**自建**（Button + DropdownMenu 组合），另有 `menuLabel` / `menuSide` / `menuAlign` 控制菜单。
+**未实现 / 未暴露**：`MenuItem.items` 子菜单、`url` / `target` 导航、`menuButtonIcon` / `dropdownIcon`（下拉按钮图标固定）、`menuButtonProps` / `buttonProps`（改用根元素属性与 `#icon` 插槽）、`raised` / `plain`、`appendTo` / `baseZIndex` / `autoZIndex`（面板经 Portal 挂载，层级固定）、`fluid`（按内容宽度）。实现取向为**自建**（Button + DropdownMenu 组合），另有 `menuLabel` / `menuSide` / `menuAlign` 控制菜单。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

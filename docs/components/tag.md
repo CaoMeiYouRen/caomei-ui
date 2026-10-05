@@ -27,8 +27,6 @@
     ssg="true"
 />
 
-> 迁移映射（PrimeVue → caomei-ui）：`severity` → `tone`，其中 `secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`、`info` → `primary`（`secondary` / `contrast` / `info` 均为**有损近似**，`info` tone 见[设计规范 §9 未决项](../design/design-spec.md)）；Tag 无 `error` 用量，通用语义色映射见[复核台账 §4.3](../design/governance/2026-09-14-momei-usage-audit.md)；`rounded` → `rounded`；`value` → 默认插槽；字符串 `icon` → `#icon` 插槽。Tag 不新增 `severity` / `value` 别名或 prop（PrimeVue Tag 无 `outlined` prop；`variant` 为本库新增的形态表达）。
-
 ## 可关闭
 
 设置 `closable` 后显示关闭按钮，点击抛出 `close` 事件由父级处理移除。
@@ -48,13 +46,13 @@
 
 | PrimeVue | 本组件 |
 | --- | --- |
-| `severity` | `tone`（`secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`） |
+| `severity` | `tone`（`secondary` / `contrast` → `neutral`、`success` → `success`、`warn` / `warning` → `warning`、`danger` → `danger`、`info` → `primary`） |
 | `value` | 默认插槽 |
 | `icon`（字符串图标名） | `#icon` 插槽（传 `@lucide/vue` 组件） |
 | `rounded` | `rounded` |
 | 无 | `variant`（`soft` / `solid` / `outline`）、`size`（`sm` / `md` / `lg`）、`closable`（含 `close` 事件）为本库新增 |
 
-**已知差异（有意）**：不提供 `severity` / `value` 的别名或 prop——语义色走 `tone`、内容走默认插槽；`variant`（`soft` / `solid` / `outline`）为本库新增的形态表达，`secondary` / `contrast` / `info` 的色级映射为有损近似。
+**已知差异（有意）**：不提供 `severity` / `value` 的别名或 prop——语义色走 `tone`、内容走默认插槽；`variant`（`soft` / `solid` / `outline`）为本库新增的形态表达，`secondary` / `contrast` / `info` 的色级映射为有损近似；Tag 无 `error` 用量（通用语义色映射见[复核台账 §4.3](../design/governance/2026-09-14-momei-usage-audit.md)）；PrimeVue Tag 无 `outlined` prop（其功能 props 仅 `value` / `severity` / `rounded` / `icon`，`variant` 为本库新增的形态表达）；`info` tone 见[设计规范 §9 未决项](../design/design-spec.md)。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

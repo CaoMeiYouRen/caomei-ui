@@ -44,8 +44,6 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 - The calendar inside the panel inherits the keyboard and accessibility behavior of [Calendar](./calendar). Esc closes the panel.
 - When `invalid`, it outputs `aria-invalid="true"`.
 
-> Migration map: PrimeVue `show-icon` → `showIcon`; `icon-display="input"` matches this component's default (icon inside the trigger); `date-format` → `dateFormat`; `show-time` → `showTime`; `hour-format` → `hourFormat`; `show-seconds` → `showSeconds`; `fluid` (fill the container width) is dropped when migrating, and true full width is obtained by setting `--caomei-date-picker-max-width` to `none` (the default cap is `20rem`). Range selection (`selection-mode`) is not implemented: it has no downstream usage and was deferred by user decision; see the [backlog](/plan/backlog) (Chinese).
-
 ## Style customization
 
 | Variable | Default | Description |
@@ -76,7 +74,7 @@ PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) f
 
 **Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` only controls the date/calendar language and is independent of the built-in text language — pass it explicitly when they must match.
 
-**Not implemented**: `selectionMode` (`multiple` / `range`; see §7 and the [Backlog](/plan/backlog), Chinese), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding.
+**Not implemented**: `selectionMode` (`multiple` / `range`; no downstream usage, deferred by user decision — see §7 and the [Backlog](/plan/backlog), Chinese), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

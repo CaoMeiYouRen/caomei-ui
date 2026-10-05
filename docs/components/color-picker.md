@@ -29,8 +29,6 @@
 - `showInput`：是否显示十六进制输入框，默认 `true`。
 - `disabled` / `invalid`：禁用与校验失败态。
 
-> 迁移映射（PrimeVue → caomei-ui）：`format` → `format`（取值一致）；`disabled` → `disabled`；`inline` → `inline`；`invalid` → `invalid`；`appendTo` / `overlayClass` / `panelClass` 未实现（面板经 Portal 挂载、层级与外观由库管理）。**已知行为差异**：PrimeVue `format="hex"` 的 `v-model` 为**不带 `#`** 的 6 位十六进制（momei 现以 `replace('#', '')` / 补 `#` 适配），本库统一使用**标准 CSS 颜色字符串**（`#rrggbb`），迁移时可移除该适配包装；PrimeVue `format="rgb"` / `"hsb"` 的 `v-model` 为 `{ r, g, b }` / `{ h, s, b }` **对象**，本库统一为**字符串**（`rgb(r, g, b)` / `hsb(h, s%, b%)`）；`alpha` 通道不支持（带 alpha 输入按 6 位十六进制处理）。
-
 ## 无障碍
 
 - 触发按钮可访问名优先级为 `label` > 透传 `aria-label` > 内建「颜色」文案；`invalid` 时标注 `aria-invalid`。

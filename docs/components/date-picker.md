@@ -44,8 +44,6 @@
 - 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
 - `invalid` 时输出 `aria-invalid="true"`。
 
-> 迁移映射：PrimeVue `show-icon` → `showIcon`；`icon-display="input"` 对应本组件默认（图标在触发器内）；`date-format` → `dateFormat`；`show-time` → `showTime`；`hour-format` → `hourFormat`；`show-seconds` → `showSeconds`；`fluid`（撑满容器宽度）迁移时删除，需要真正全宽时把 `--caomei-date-picker-max-width` 覆盖为 `none`（本组件默认带 `20rem` 上限）。范围选择（`selection-mode`）未实现：momei 零用量，经用户决策延后，见 [Backlog](../plan/backlog.md) §1.1。
-
 ## 样式定制
 
 | 变量 | 默认 | 说明 |
@@ -76,7 +74,7 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 
 **已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入。
 
-**未实现**：`selectionMode`（`multiple` / `range` 多选与范围，见 §7 与 [Backlog](../plan/backlog.md)）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
+**未实现**：`selectionMode`（`multiple` / `range` 多选与范围，零下游用量、经用户决策延后，见 §7 与 [Backlog](../plan/backlog.md) §1.1）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

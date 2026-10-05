@@ -29,8 +29,6 @@ The model accepts `#rgb` / `#rrggbb` / `#rrggbbaa`, `rgb()` / `rgba()`, `hsl()` 
 - `showInput`: whether to show the hex input, defaults to `true`.
 - `disabled` / `invalid`: disabled and invalid states.
 
-> Migration mapping (PrimeVue → caomei-ui): `format` → `format` (same values); `disabled` → `disabled`; `inline` → `inline`; `invalid` → `invalid`; `appendTo` / `overlayClass` / `panelClass` are not implemented (the panel is portaled and its layering/appearance are managed by the library). **Known differences**: PrimeVue's `format="hex"` model is a 6-digit hex string **without `#`** (momei currently adapts with `replace('#', '')` / re-prefixing), whereas this library uses **standard CSS color strings** (`#rrggbb`), so that adapter can be removed during migration. PrimeVue's `format="rgb"` / `"hsb"` models are `{ r, g, b }` / `{ h, s, b }` **objects**, while this library uses **strings** (`rgb(r, g, b)` / `hsb(h, s%, b%)`). The `alpha` channel is not supported (inputs carrying alpha are normalized to 6-digit hex).
-
 ## Accessibility
 
 - The trigger button's accessible name resolves as `label` > forwarded `aria-label` > the built-in "Color" text; `invalid` marks `aria-invalid`.

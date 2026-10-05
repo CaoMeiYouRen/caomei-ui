@@ -82,8 +82,8 @@ const ICON_ONLY_PROPS = ['width', 'height', 'padding-top', 'padding-right', 'pad
 const ICON_ONLY_ICON_PROPS = ['margin-top', 'margin-right', 'margin-bottom', 'margin-left']
 const FOCUS_PROPS = ['box-shadow', 'border-top-color']
 const TRIGGER_PROPS = ['height', 'padding-left', 'border-top-width', 'border-top-left-radius', 'background-color', 'color', 'font-size']
-const DRAWER_PROPS = ['width', 'height', 'animation-duration', 'transition-duration', 'z-index']
-const DIALOG_PROPS = ['width', 'z-index']
+const DRAWER_PROPS = ['width', 'height', 'animation-duration', 'transition-duration', 'z-index', 'background-color']
+const DIALOG_PROPS = ['width', 'z-index', 'background-color']
 const Z_PROPS = ['z-index']
 /**
  * Switch 轨道与滑块：档位几何（宽高 / 内边距 / 圆角 / 边框）与回退 token 的解析值。
@@ -98,6 +98,15 @@ const SWITCH_THUMB_PROPS = ['width', 'height', 'border-top-left-radius', 'backgr
  */
 const TOAST_VIEWPORT_PROPS = ['position', 'z-index', 'gap', 'flex-direction', 'width', 'max-height']
 const TOAST_ROOT_PROPS = ['background-color', 'color', 'border-top-color', 'border-left-color', 'border-left-width', 'border-top-left-radius', 'box-shadow']
+
+/**
+ * 锚定浮层面板（浮层视觉契约固化）：锁定面板背景 token（`bg-elevated`）、
+ * Popover 面板圆角（`radius-lg`）与 AutoComplete / DatePicker 面板阴影（`shadow-md`）。
+ * 面板由采样脚本点击触发器逐个开合（排在 Toast 之前、模态浮层之前）。
+ */
+const PANEL_BG_PROPS = ['background-color']
+const PANEL_POPOVER_PROPS = ['background-color', 'border-top-left-radius']
+const PANEL_SHADOW_PROPS = ['background-color', 'box-shadow']
 
 /**
  * 采样面声明：`{ key, selector, props }`，逐条对应夹具中的 `data-cap` 标记。
@@ -239,7 +248,22 @@ export const TOAST_SAMPLES = [
     ]),
 ]
 
-/** 全部声明式采样项（静态 + 按钮聚焦态 + 状态 + 焦点层叠 + Toast + 浮层）；触发器属性快照另按 `TRIGGER_SAMPLES` 生成。 */
+/**
+ * 锚定浮层面板采样：逐个点击触发器 → 读面板计算样式 → Escape 关闭。
+ * 选择器对应夹具 `[data-cap="panel:<name>"]`；`props` 按面板契约区分（背景 / 圆角 / 阴影）。
+ * 不采样面板尺寸 / 位置——由内容与视口决定，非本批契约。
+ */
+export const PANEL_SAMPLES = [
+    { name: 'select', trigger: '[data-cap="panel:select"] .caomei-select', panel: '.caomei-select__content', props: PANEL_BG_PROPS },
+    { name: 'multi-select', trigger: '[data-cap="panel:multi-select"] .caomei-multi-select', panel: '.caomei-multi-select__content', props: PANEL_BG_PROPS },
+    { name: 'auto-complete', trigger: '[data-cap="panel:auto-complete"] .caomei-auto-complete', panel: '.caomei-auto-complete__content', props: PANEL_SHADOW_PROPS },
+    { name: 'date-picker', trigger: '[data-cap="panel:date-picker"] .caomei-date-picker', panel: '.caomei-date-picker__content', props: PANEL_SHADOW_PROPS },
+    { name: 'color-picker', trigger: '[data-cap="panel:color-picker"] .caomei-color-picker__trigger', panel: '.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)', props: PANEL_BG_PROPS },
+    { name: 'popover', trigger: '[data-cap="panel:popover"] .caomei-popover__trigger', panel: '.caomei-popover__content', props: PANEL_POPOVER_PROPS },
+    { name: 'dropdown-menu', trigger: '[data-cap="panel:dropdown-menu"] .caomei-dropdown-menu__trigger', panel: '.caomei-dropdown-menu__content', props: PANEL_BG_PROPS },
+]
+
+/** 全部声明式采样项（静态 + 按钮聚焦态 + 状态 + 焦点层叠 + Toast + 锚定面板 + 浮层）；触发器属性快照另按 `TRIGGER_SAMPLES` 生成。 */
 export function declaredKeys() {
     return [
         ...STATIC_SAMPLES.map((item) => item.key),
@@ -247,6 +271,8 @@ export function declaredKeys() {
         ...STATE_SAMPLES.map((item) => item.key),
         ...FOCUS_WITHIN_SAMPLES.map((item) => item.key),
         ...TOAST_SAMPLES.map((item) => item.key),
+        ...PANEL_SAMPLES.map((item) => `panel.${item.name}`),
+        'confirm-dialog.content',
         ...OVERLAY_SAMPLES.map((item) => item.key),
         ...TRIGGER_SAMPLES.flatMap((item) => [`trigger.${item.name}.attrs`, `trigger.${item.name}.style`, `trigger.${item.name}.open`, `trigger.${item.name}.closed`]),
     ]
@@ -419,6 +445,16 @@ async function collect(page, cdp, rootNodeId) {
         await readAttrs(`trigger.${sample.name}.closed`, sample.selector)
     }
 
+    // ── 锚定浮层面板：背景 / 圆角 / 阴影（浮层视觉契约固化；点击类交互须排在 Toast 之前）──
+    for (const sample of PANEL_SAMPLES) {
+        await page.locator(sample.trigger).first().click()
+        await page.waitForSelector(sample.panel, { state: 'visible' })
+        await sleep(SETTLE_MS)
+        await readStyle(`panel.${sample.name}`, sample.panel, sample.props)
+        await page.keyboard.press('Escape')
+        await page.waitForSelector(sample.panel, { state: 'detached' })
+    }
+
     // ── Toast：入队常驻提示后读视口层级与各语气强调色 ────────────────
     // 不变量：点击类交互必须排在 Toast 之前（提示视口固定右上角、逐条 pointer-events: auto）。
     await page.evaluate(() => {
@@ -443,6 +479,14 @@ async function collect(page, cdp, rootNodeId) {
     for (const sample of OVERLAY_SAMPLES) {
         await readStyle(sample.key, sample.selector, sample.props)
     }
+
+    // ── ConfirmDialog 面板：命令式打开，与模态同属最后一段 ──────────────
+    await page.evaluate(() => {
+        window.__ui.confirm()
+    })
+    await page.waitForSelector('.caomei-confirm-dialog__content', { state: 'visible' })
+    await sleep(SETTLE_MS)
+    await readStyle('confirm-dialog.content', '.caomei-confirm-dialog__content', ['background-color'])
 
     return { entries, errors }
 }

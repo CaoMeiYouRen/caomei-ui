@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { Search } from '@lucide/vue'
 import {
     CaomeiAutoComplete,
@@ -7,16 +7,23 @@ import {
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiColorPicker,
+    CaomeiConfirmDialog,
     CaomeiDataTable,
     CaomeiDatePicker,
     CaomeiDialog,
     CaomeiDrawer,
+    CaomeiDropdownMenu,
+    CaomeiDropdownMenuContent,
+    CaomeiDropdownMenuTrigger,
     CaomeiFloatLabel,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
     CaomeiMessage,
     CaomeiMultiSelect,
+    CaomeiPopover,
+    CaomeiPopoverContent,
+    CaomeiPopoverTrigger,
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiSelect,
@@ -26,8 +33,9 @@ import {
     CaomeiTag,
     CaomeiTextarea,
     CaomeiToastProvider,
-    useToast,
 } from '@/index'
+import { ConfirmDriver, ToastDriver } from './drivers'
+import { ui } from './ui'
 
 /*
  * 计算样式等价夹具：为样式治理改动（档位归一化 / 声明去重 / 触发器收敛 / token 归并）
@@ -35,8 +43,9 @@ import {
  * docs/design/governance/ 下的采集装置记录。
  *
  * 覆盖范围只含**声明式样式面**：尺寸档位 / 变体与语气 / 状态与几何 / 触发器结构 /
- * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位 / Switch 开关 / Toast 语气强调色。需交互或不稳定时序的
- * 采样面（浮层面板 z-index、小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
+ * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位 / Switch 开关 / Toast 语气强调色 /
+ * 锚定浮层面板背景·圆角·阴影（浮层视觉契约固化）。需不稳定时序的采样面（浮层面板 z-index、
+ * 小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
  *
  * `data-cap` 标记与运行器的采样键一一对应：新增 / 重命名标记必须同步运行器的
  * 采样面声明，否则采集的「受检面不变量」自检直接失败。
@@ -83,51 +92,13 @@ const tableColumns = [
     { key: 'note', header: '备注', width: '160px', frozen: 'right' as const },
 ]
 
-/**
- * 采集脚本驱动接口：开合浮层与按语气入队 Toast。
- * 在 setup 顶层同步挂到 `window`，确保子组件（ToastDriver）挂载时即可写入 `showToasts`。
- */
-interface CaptureUi {
-    setDrawer: (size: 'sm' | 'md' | 'lg', open: boolean) => void
-    setDialog: (size: 'sm' | 'md' | 'lg', open: boolean) => void
-    showToasts: () => void
+/** 抽屉 / 对话框开合状态接到共享驱动接口（`ui` 见 `./ui.ts`；无渲染驱动组件见 `./drivers.ts`）。 */
+ui.setDrawer = (size, open) => {
+    drawerOpen[size] = open
 }
-
-const ui: CaptureUi = {
-    setDrawer: (size, open) => {
-        drawerOpen[size] = open
-    },
-    setDialog: (size, open) => {
-        dialogOpen[size] = open
-    },
-    showToasts: () => {
-        // 占位：ToastDriver 挂载后覆写；未被覆写即调用属夹具装配错误，fail-closed 而非静默无操作
-        throw new Error('[capture] ToastDriver 尚未挂载，无法入队提示')
-    },
+ui.setDialog = (size, open) => {
+    dialogOpen[size] = open
 }
-;(window as unknown as { __ui: CaptureUi }).__ui = ui
-
-/**
- * Toast 驱动：在 Provider 后代中取得 `useToast()`，把「按语气各入队一条常驻提示」
- * 暴露给采集脚本（`duration: 0` 表示不自动关闭，保证末段采样时提示仍在）。
- * 不渲染任何节点；提示本体由 Provider 经 Teleport 注入 `.caomei-toast-viewport`。
- */
-const ToastDriver = defineComponent({
-    name: 'CaptureToastDriver',
-    setup() {
-        const toast = useToast()
-        onMounted(() => {
-            ui.showToasts = () => {
-                toast.show({ tone: 'neutral', title: '中性', duration: 0 })
-                toast.show({ tone: 'primary', title: '主要', duration: 0 })
-                toast.show({ tone: 'success', title: '成功', duration: 0 })
-                toast.show({ tone: 'warning', title: '警告', duration: 0 })
-                toast.show({ tone: 'danger', title: '危险', duration: 0 })
-            }
-        })
-        return () => null
-    },
-})
 </script>
 
 <template>
@@ -488,6 +459,60 @@ const ToastDriver = defineComponent({
                 <ToastDriver />
             </CaomeiToastProvider>
         </section>
+
+        <!-- 12. 锚定浮层面板：浮层视觉契约的面板背景 / 圆角 / 阴影（由采样脚本逐个开合） -->
+        <section>
+            <div class="case" data-cap="panel:select">
+                <CaomeiSelect
+                    v-model="selectValue"
+                    :options="options"
+                    placeholder="选择"
+                    label="选择"
+                />
+            </div>
+            <div class="case" data-cap="panel:multi-select">
+                <CaomeiMultiSelect
+                    v-model="multiValue"
+                    :options="options"
+                    placeholder="多选"
+                    label="多选"
+                />
+            </div>
+            <div class="case" data-cap="panel:auto-complete">
+                <CaomeiAutoComplete
+                    v-model="autoValue"
+                    :options="options"
+                    placeholder="搜索"
+                    label="搜索"
+                />
+            </div>
+            <div class="case" data-cap="panel:date-picker">
+                <CaomeiDatePicker
+                    v-model="dateValue"
+                    placeholder="选择日期"
+                    label="日期"
+                />
+            </div>
+            <div class="case" data-cap="panel:color-picker">
+                <CaomeiColorPicker v-model="colorValue" label="颜色" />
+            </div>
+            <div class="case" data-cap="panel:popover">
+                <CaomeiPopover>
+                    <CaomeiPopoverTrigger>说明</CaomeiPopoverTrigger>
+                    <CaomeiPopoverContent>面板背景采集。</CaomeiPopoverContent>
+                </CaomeiPopover>
+            </div>
+            <div class="case" data-cap="panel:dropdown-menu">
+                <CaomeiDropdownMenu>
+                    <CaomeiDropdownMenuTrigger>更多</CaomeiDropdownMenuTrigger>
+                    <CaomeiDropdownMenuContent :model="dropItems" />
+                </CaomeiDropdownMenu>
+            </div>
+        </section>
+
+        <CaomeiConfirmDialog>
+            <ConfirmDriver />
+        </CaomeiConfirmDialog>
     </main>
 </template>
 

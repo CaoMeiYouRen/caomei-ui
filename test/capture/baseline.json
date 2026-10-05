@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-02T04:16:33.482Z",
+    "capturedAt": "2026-10-05T10:00:17.358Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1847,6 +1847,30 @@
         "trigger.split-button-menu.closed": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
         },
+        "panel.select": {
+            "background-color": "rgb(247, 247, 248)"
+        },
+        "panel.multi-select": {
+            "background-color": "rgb(247, 247, 248)"
+        },
+        "panel.auto-complete": {
+            "background-color": "rgb(247, 247, 248)",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "panel.date-picker": {
+            "background-color": "rgb(247, 247, 248)",
+            "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
+        },
+        "panel.color-picker": {
+            "background-color": "rgb(247, 247, 248)"
+        },
+        "panel.popover": {
+            "background-color": "rgb(247, 247, 248)",
+            "border-top-left-radius": "12px"
+        },
+        "panel.dropdown-menu": {
+            "background-color": "rgb(247, 247, 248)"
+        },
         "toast.viewport": {
             "position": "fixed",
             "z-index": "1100",
@@ -1920,21 +1944,24 @@
             "height": "800px",
             "animation-duration": "0.2s",
             "transition-duration": "0s",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "drawer.md.content": {
             "width": "420px",
             "height": "800px",
             "animation-duration": "0.2s",
             "transition-duration": "0s",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "drawer.lg.content": {
             "width": "560px",
             "height": "800px",
             "animation-duration": "0.2s",
             "transition-duration": "0s",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "drawer.overlay": {
             "animation-duration": "0.2s",
@@ -1943,18 +1970,24 @@
         },
         "dialog.sm.content": {
             "width": "360px",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "dialog.md.content": {
             "width": "480px",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "dialog.lg.content": {
             "width": "640px",
-            "z-index": "1001"
+            "z-index": "1001",
+            "background-color": "rgb(247, 247, 248)"
         },
         "dialog.overlay": {
             "z-index": "1000"
+        },
+        "confirm-dialog.content": {
+            "background-color": "rgb(247, 247, 248)"
         }
     },
     "errors": []

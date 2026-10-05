@@ -8,19 +8,29 @@ import { CaomeiButton } from '@/components/button'
         <h4>基础用法</h4>
         <div class="demo-row">
             <CaomeiButton icon-only label="搜索">
-                <Search />
+                <template #icon>
+                    <Search />
+                </template>
             </CaomeiButton>
             <CaomeiButton icon-only label="设置">
-                <Settings />
+                <template #icon>
+                    <Settings />
+                </template>
             </CaomeiButton>
             <CaomeiButton icon-only label="菜单">
-                <Menu />
+                <template #icon>
+                    <Menu />
+                </template>
             </CaomeiButton>
             <CaomeiButton icon-only label="通知">
-                <Bell />
+                <template #icon>
+                    <Bell />
+                </template>
             </CaomeiButton>
             <CaomeiButton icon-only label="用户">
-                <User />
+                <template #icon>
+                    <User />
+                </template>
             </CaomeiButton>
         </div>
     </div>
@@ -33,21 +43,27 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="主要"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 variant="secondary"
                 icon-only
                 label="次要"
             >
-                <ArrowRight />
+                <template #icon>
+                    <ArrowRight />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 variant="ghost"
                 icon-only
                 label="幽灵"
             >
-                <Settings />
+                <template #icon>
+                    <Settings />
+                </template>
             </CaomeiButton>
         </div>
     </div>
@@ -60,35 +76,45 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="主要色调"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 tone="success"
                 icon-only
                 label="成功色调"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 tone="warning"
                 icon-only
                 label="警告色调"
             >
-                <ArrowRight />
+                <template #icon>
+                    <ArrowRight />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 tone="danger"
                 icon-only
                 label="危险色调"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 tone="neutral"
                 icon-only
                 label="中性色调"
             >
-                <Settings />
+                <template #icon>
+                    <Settings />
+                </template>
             </CaomeiButton>
         </div>
     </div>
@@ -101,21 +127,27 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="小"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 size="md"
                 icon-only
                 label="中"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 size="lg"
                 icon-only
                 label="大"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
         </div>
     </div>
@@ -128,21 +160,27 @@ import { CaomeiButton } from '@/components/button'
                 label="禁用"
                 disabled
             >
-                <Settings />
+                <template #icon>
+                    <Settings />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 icon-only
                 label="加载中"
                 loading
             >
-                <Settings />
+                <template #icon>
+                    <Settings />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 icon-only
                 label="圆角"
                 rounded
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
         </div>
     </div>
@@ -156,7 +194,9 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="主色"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 variant="secondary"
@@ -164,7 +204,9 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="危险描边"
             >
-                <Plus />
+                <template #icon>
+                    <Plus />
+                </template>
             </CaomeiButton>
             <CaomeiButton
                 variant="ghost"
@@ -172,7 +214,9 @@ import { CaomeiButton } from '@/components/button'
                 icon-only
                 label="成功幽灵"
             >
-                <ArrowRight />
+                <template #icon>
+                    <ArrowRight />
+                </template>
             </CaomeiButton>
         </div>
     </div>

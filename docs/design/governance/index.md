@@ -18,6 +18,8 @@
 
 ## 当前条目
 
+- [2026-10-06-phase19-m6-1-downstream-version-alignment.md](./2026-10-06-phase19-m6-1-downstream-version-alignment.md)：**Phase 19 M6-1：下游协同版本口径消缺（Backlog §1.8 实测核对与回扫）**。**Backlog §1.8「下游 0.5.0 升级护航」行的重写已在登记批次（`9613eb5`）就地完成**（就地重写、未迁出候选池），本批为**实测复核 + 同类口径回扫**：两仓实测（2026-10-06）dependfix `apps/platform` = `0.5.0`、momei 根 = `0.3.0`，与行口径一致；为可审计性在 §1.8 行补两仓**实测时点**。**活载体旧口径零残留**（`零下游消费` / `均锁` / `代差` 只存在于点时治理记录及其索引摘要，按规划规范 §9 不回改）；`todo.md` / `roadmap.md` / `backlog.md` / README 口径均与实测一致。下层仓库**只读**、未写入。`governance:check` exit 0。
+
 - [2026-10-06-phase19-m4-governance-constraint-carriers.md](./2026-10-06-phase19-m4-governance-constraint-carriers.md)：**Phase 19 M4：治理约束载体落地（`.session` 阶段态同步触发点 + `todo.md` 完成态回填次序）**。两条治理约束固化到 `todo-manager` skill（可被 Review Gate 直接引用，不再只停留在经验记录）：**M4-1** Step 3.5「阶段态必同步触发点」——阶段**登记 / 归档 / 范围变更**三类事件后必须同批同步 `.session` 阶段态（依据[规划规范 §3.8](../../standards/planning.md) 的 `.session` 回扫面）；**M4-2** Step 1.7「完成态回填次序」——`todo.md` 完成态不得早于该条目 Review Gate 结论、两者同批落地。两项在「常见检查」与「交付前检查」各加引用行；**未新增机检守卫**（`.session` git-ignored、完成态次序为流程约束）。`ai:check` / `governance:check` / `lint:md:check` exit 0。平台镜像为符号链接、单一源。
 
 - [2026-10-06-phase19-m3-3-button-icon-only-example.md](./2026-10-06-phase19-m3-3-button-icon-only-example.md)：**Phase 19 M3-3：Button `iconOnly` 示例形态修复（图标改走 `#icon` 插槽）**。按 D6 **只改示例**：`docs/examples/button/icon-only.vue` 的 22 个纯图标按钮由默认插槽图标改为 `#icon` 插槽（组件 `iconOnly` 本就不渲染默认插槽，缺陷在示例）。**V 阶段**（文档站真实 Chromium）：纯图标按钮有可见内容 **22/22**、空白 **0**（模拟修复前空白 `搜索`）。**守卫**：新增 `test/contracts/button-icon-only-example.test.ts`（5 passed，含受检面下界；负向对照 1 failed）。**中英共用同一示例源**，一处修复双语生效；**组件库零 `src/**` 改动，单测 / `types.ts` JSDoc / 组件语义未动**。`docs:check` 11 段 exit 0。

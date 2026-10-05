@@ -16,8 +16,10 @@ import { expect, test as base } from '@playwright/test'
  *    常驻断言不用滚轮：列表不可纵向滚动时滚轮会链式交给祖先，Chromium 的滚动锁存会让后续滚轮继续命中
  *    祖先，滚轮断言在本仓夹具上不稳定（实测）。
  *
- * 前置条件由断言显式守卫：夹具必须真的构造出「纵向 1px 可滚动溢出」与「横向溢出」两个压力形态
- * （见 `test/e2e/fixtures/app.vue` 的 `#tabs-list-overflow`），否则本用例无判别力。
+ * 前置条件由断言显式守卫：夹具必须真的构造出「横向溢出」压力形态（见 `test/e2e/fixtures/app.vue` 的
+ * `#tabs-list-overflow`）。**本批（选项卡指示条修复）起**：横向分隔线改由「内容盒之下 1px 内边距 + 内阴影」表达，
+ * 触发器的 1px 越界落在内边距盒内，**纵向不再产生可滚动溢出**（结构上消除了本用例原本针对的
+ * 1px 溢出条件）；本用例仍守卫横向可滚动、`overflow-y` 不可滚动与纵向无溢出。
  */
 
 const HORIZONTAL = '#tabs-horizontal .caomei-tabs__list'
@@ -62,15 +64,17 @@ test('横向 TabList 无纵向滚动条（纵向不可滚动，横向滚动保�
         }
     })
 
-    // 前置条件：夹具确已构造出触发条件（纵向 1px 可滚动溢出）与横向溢出，否则断言无判别力
-    expect(
-        state.scrollHeight,
-        '夹具须构造出纵向 1px 溢出（触发器 margin-bottom: -1px 的越界），否则本用例无判别力',
-    ).toBeGreaterThan(state.clientHeight)
+    // 前置条件：夹具须构造出「横向溢出」（否则横向滚动断言无判别力）。
     expect(
         state.scrollWidth,
         '夹具须构造出横向溢出，否则横向滚动断言无判别力',
     ).toBeGreaterThan(state.clientWidth)
+    // 分隔线修复后：触发器的 1px 越界落在列表**内边距盒**内，纵向不再产生可滚动溢出
+    // （结构上消除了本用例原本针对的「1px 溢出」条件；横向能力与 overflow-y 不可滚动仍受检）。
+    expect(
+        state.scrollHeight,
+        '分隔线修复后纵向不应再有可滚动溢出',
+    ).toBeLessThanOrEqual(state.clientHeight)
 
     expect(state.overflowX, '列表必须保留横向滚动能力').toBe('auto')
     expect(

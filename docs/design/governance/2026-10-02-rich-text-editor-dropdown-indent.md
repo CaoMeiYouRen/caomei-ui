@@ -115,9 +115,9 @@ grep -n -A4 "vp-doc ul" node_modules/vitepress/dist/client/theme-default/styles/
 | 项 | 状态 |
 |:---|:---|
 | 归因 | **完成**（本记录 §1~§3） |
-| 修复 | **未执行**（用户本轮只要求归因；按规划规范 §3 默认路径不自动升级为阶段条目） |
+| 修复 | **已执行（2026-10-06）**：用户裁定 D4 取 ① **文档站作用域隔离**——`caomei-demo.css` 新增 `.vp-doc .md-editor-menu` / `.vp-doc .md-editor-menu-item` 隔离规则；V 阶段实测菜单 20px→0、菜单项 8px→0、首项偏移 31→11px，正文列表无回归。见 [M3-2 修复记录](./2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md) |
 | 候选登记 | [Backlog](../../plan/backlog.md) §1.6「文档站正文列表样式泄漏进第三方内核浮层」 |
-| 待决策项 | 修复层归属：① 文档站作用域隔离（把 `.vp-doc` 正文列表样式收窄到正文选择器，或为内核浮层还原列表内边距）；② 组件层防御性覆盖（`CaomeiRichTextEditor` 以 `:deep()` 复位菜单内边距）。裁定后另立修复条目 |
+| 待决策项 | **已裁定（用户 D4）**：取 ① **文档站作用域隔离**（已执行，见 [M3-2 修复记录](./2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md)）；② 组件层防御性覆盖未采纳（保持组件库不覆盖内核菜单样式）。 |
 
 ---
 

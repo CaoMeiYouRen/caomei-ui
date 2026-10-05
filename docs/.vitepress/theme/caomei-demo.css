@@ -30,3 +30,23 @@
         font-size: 13px;
     }
 }
+
+/*
+  文档站正文排版隔离（第三方内核浮层）：`md-editor-v3`（RichTextEditor 内核）的下拉菜单**未 teleport**，
+  是正文的后代节点，会被 VitePress 的正文列表后代选择器命中——`.vp-doc ul`（0-1-1）的
+  `padding-left: 1.25rem` 压过内核自带的 `.md-editor-menu { padding-inline: 0 }`（0-1-0），
+  把菜单顶入 20px；`.vp-doc li + li` 另给菜单项加 8px 间距。
+  这里把内核浮层子树从正文列表排版中排除（选择性 0-2-0，高于 `.vp-doc ul` 的 0-1-1），
+  恢复内核自身的对齐形态，而不改动组件库 `src/**`。
+  归因、实测值与复算命令见 docs/design/governance/2026-10-02-rich-text-editor-dropdown-indent.md；
+  声明层由 test/contracts/docs-theme-prose-isolation.test.ts 守卫。
+*/
+.vp-doc .md-editor-menu {
+    padding-inline: 0;
+    margin-block: 0;
+    list-style: none;
+}
+
+.vp-doc .md-editor-menu-item {
+    margin-top: 0;
+}

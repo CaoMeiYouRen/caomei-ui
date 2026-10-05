@@ -8,15 +8,18 @@ import {
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiCalendar,
+    CaomeiCheckbox,
     CaomeiColorPicker,
     CaomeiDataTable,
     CaomeiDatePicker,
     CaomeiDialog,
+    CaomeiDrawer,
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
     CaomeiDropdownMenuTrigger,
     CaomeiInput,
     CaomeiInputGroup,
+    CaomeiInputNumber,
     CaomeiMultiSelect,
     CaomeiPopover,
     CaomeiPopoverContent,
@@ -24,6 +27,7 @@ import {
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
+    CaomeiSwitch,
     CaomeiTagsInput,
     CaomeiTabs,
     CaomeiTabList,
@@ -206,6 +210,22 @@ const sortWidthData: SortWidthRow[] = [
     { dept: '设计', name: '王五', score: 75 },
     { dept: '设计', name: '赵六', score: 81 },
 ]
+
+/**
+ * 禁用态尺寸不变用例（见 `test/e2e/disabled-size.e2e.ts`）：默认态与禁用态成对，
+ * 档位 / 内容 / 宽度宿主完全一致，仅 `disabled` 不同——两者的外盒几何必须逐值相等。
+ */
+const dsInput = ref('')
+const dsSelect = ref<string | null>(null)
+const dsTextarea = ref('')
+const dsNumber = ref<number | null>(2)
+const dsCheckbox = ref(false)
+const dsSwitch = ref(false)
+const dsOptions = [{ label: '选项一', value: 'a' }, { label: '选项二', value: 'b' }]
+
+/** Drawer 收敛用例：`lg` 档（560px）与 90vw / 90vh 取小。 */
+const drawerRightOpen = ref(false)
+const drawerBottomOpen = ref(false)
 </script>
 
 <template>
@@ -626,6 +646,118 @@ const sortWidthData: SortWidthRow[] = [
                 caption="排序列宽"
             />
         </section>
+
+        <!-- 禁用态尺寸不变：默认态 / 禁用态成对，档位与内容一致，仅 disabled 不同 -->
+        <section id="disabled-size" class="fixture__case">
+            <div id="ds-button-default" class="fixture__state">
+                <CaomeiButton>提交操作</CaomeiButton>
+            </div>
+            <div id="ds-button-disabled" class="fixture__state">
+                <CaomeiButton disabled>
+                    提交操作
+                </CaomeiButton>
+            </div>
+            <div id="ds-input-default" class="fixture__state">
+                <CaomeiInput v-model="dsInput" placeholder="请输入内容" />
+            </div>
+            <div id="ds-input-disabled" class="fixture__state">
+                <CaomeiInput
+                    v-model="dsInput"
+                    disabled
+                    placeholder="请输入内容"
+                />
+            </div>
+            <div id="ds-select-default" class="fixture__state">
+                <CaomeiSelect
+                    v-model="dsSelect"
+                    :options="dsOptions"
+                    placeholder="请选择"
+                />
+            </div>
+            <div id="ds-select-disabled" class="fixture__state">
+                <CaomeiSelect
+                    v-model="dsSelect"
+                    :options="dsOptions"
+                    disabled
+                    placeholder="请选择"
+                />
+            </div>
+            <div id="ds-textarea-default" class="fixture__state">
+                <CaomeiTextarea
+                    v-model="dsTextarea"
+                    :rows="3"
+                    placeholder="请输入内容"
+                />
+            </div>
+            <div id="ds-textarea-disabled" class="fixture__state">
+                <CaomeiTextarea
+                    v-model="dsTextarea"
+                    :rows="3"
+                    disabled
+                    placeholder="请输入内容"
+                />
+            </div>
+            <div id="ds-input-number-default" class="fixture__state">
+                <CaomeiInputNumber v-model="dsNumber" />
+            </div>
+            <div id="ds-input-number-disabled" class="fixture__state">
+                <CaomeiInputNumber v-model="dsNumber" disabled />
+            </div>
+            <div id="ds-checkbox-default" class="fixture__state">
+                <CaomeiCheckbox v-model="dsCheckbox" label="选项" />
+            </div>
+            <div id="ds-checkbox-disabled" class="fixture__state">
+                <CaomeiCheckbox
+                    v-model="dsCheckbox"
+                    disabled
+                    label="选项"
+                />
+            </div>
+            <div id="ds-switch-default" class="fixture__state">
+                <CaomeiSwitch v-model="dsSwitch" />
+            </div>
+            <div id="ds-switch-disabled" class="fixture__state">
+                <CaomeiSwitch v-model="dsSwitch" disabled />
+            </div>
+        </section>
+
+        <!-- Button 角标外扩：角标不得改变按钮外盒几何 -->
+        <section id="badge-layout" class="fixture__case">
+            <div id="badge-plain" class="fixture__state">
+                <CaomeiButton>操作</CaomeiButton>
+            </div>
+            <div id="badge-badged" class="fixture__state">
+                <CaomeiButton badge="5">
+                    操作
+                </CaomeiButton>
+            </div>
+        </section>
+
+        <!-- Drawer 收敛：lg 档（560px）与 90vw / 90vh 取小；开合 200ms，reduced-motion 关闭动画 -->
+        <section id="drawer-convergence" class="fixture__case">
+            <CaomeiButton id="drawer-open-right" @click="drawerRightOpen = true">
+                打开右侧抽屉
+            </CaomeiButton>
+            <CaomeiButton id="drawer-open-bottom" @click="drawerBottomOpen = true">
+                打开底部抽屉
+            </CaomeiButton>
+            <CaomeiDrawer
+                v-model:open="drawerRightOpen"
+                position="right"
+                size="lg"
+                title="右侧抽屉"
+            >
+                <p>抽屉内容</p>
+            </CaomeiDrawer>
+            <CaomeiDrawer
+                v-model:open="drawerBottomOpen"
+                position="bottom"
+                size="lg"
+                title="底部抽屉"
+            >
+                <p>抽屉内容</p>
+            </CaomeiDrawer>
+        </section>
     </main>
 </template>
 
@@ -717,5 +849,23 @@ const sortWidthData: SortWidthRow[] = [
 .fixture__note {
     margin: 0;
     font-size: var(--caomei-font-size-sm);
+}
+
+/*
+  禁用态尺寸不变 / 角标用例：成对定宽宿主，使组件外盒由自身决定且两侧可比。
+  定宽 15rem 同时也让 `width: 100%` 的字段族（Input / Select / Textarea / InputNumber）获得确定宽度。
+*/
+#disabled-size,
+#badge-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--caomei-space-3);
+}
+
+.fixture__state {
+    display: flex;
+    box-sizing: border-box;
+    width: 15rem;
+    max-width: 100%;
 }
 </style>

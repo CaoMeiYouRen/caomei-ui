@@ -394,7 +394,12 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 
 @media (prefers-reduced-motion: reduce) {
     .caomei-drawer__overlay,
-    .caomei-drawer__content {
+    .caomei-drawer__content,
+    /*
+      与各向 `[data-state='open'/'closed']` 规则**同特异性**（0-2-0）并置于其后：
+      仅 `.caomei-drawer__content`（0-1-0）不足以压过状态规则，reduced-motion 会在开合时失效。
+    */
+    .caomei-drawer__content[data-state] {
         animation: none;
     }
 }

@@ -1,7 +1,7 @@
 # Phase 18 M2-4：组件设计 §5 组件清单对账守卫
 
 > 创建时间：2026-10-01
-> 关联条目：[待办事项](../../plan/todo.md) Phase 18 **M2-4**（测试稳定性与质量装置消缺）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 18 **M2-4**（测试稳定性与质量装置消缺）
 > 事实源：[文档与演示站 §11](../documentation-site.md) 的组件分区登记表
 > 决策依据：用户 2026-09-30 裁定 **D4「全取」**——C36 新增 / 扩守卫对账 `docs/design/components.md` §5 与侧栏 / 总览页成员集合
 > 快照：本仓工作区（`check:design-catalog` exit 0、单测 13 passed）；**未推送**

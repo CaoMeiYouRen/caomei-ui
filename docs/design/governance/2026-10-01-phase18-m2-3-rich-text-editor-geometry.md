@@ -1,7 +1,7 @@
 # Phase 18 M2-3：富文本编辑器窄屏真实几何回归
 
 > 创建时间：2026-10-01
-> 关联条目：[待办事项](../../plan/todo.md) Phase 18 **M2-3**（测试稳定性与质量装置消缺）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 18 **M2-3**（测试稳定性与质量装置消缺）
 > 前序：`CaomeiRichTextEditor` 交付记录见 [2026-09-30 M1-3](./2026-09-30-m1-3-rich-text-editor.md)（其 V 阶段 P1 即本条目所守护的缺陷）
 > 决策依据：用户 2026-09-30 裁定 **D4「全取」**——C33 把 `CaomeiRichTextEditor` 纳入 e2e 夹具并断言 mobile 档无页级横向溢出
 > 快照：本仓工作区（`pnpm test:e2e --workers=2` 117 passed）；**未推送**

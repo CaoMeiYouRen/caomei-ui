@@ -1,7 +1,7 @@
 # Phase 18 M2-5：浮层档位装置判别力补强
 
 > 创建时间：2026-10-01
-> 关联条目：[待办事项](../../plan/todo.md) Phase 18 **M2-5**（测试稳定性与质量装置消缺）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 18 **M2-5**（测试稳定性与质量装置消缺）
 > 前序：[模态内浮层被遮挡修复记录](./2026-09-30-overlay-stacking-in-modal-fix.md)（其 §4 的三条 follow-up 即本条目范围）
 > 决策依据：用户 2026-09-30 裁定 **D4「全取」**——C38 补三条判别力（含 `PANEL_CASES` 与声明层门禁联动）
 > 快照：本仓工作区（`check-overlay-z-index` exit 0、守卫单测 41 passed、`pnpm test:e2e --workers=2` 117 passed）；**未推送**

@@ -1,7 +1,7 @@
 # Phase 19 M1-3b：capture 扩采样（§6 P1 约定 + 登记点名项）
 
 > 创建时间：2026-10-05
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3b**）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3b**）
 > 依据：[Phase 18 M3-1 评估 §5](./2026-10-01-phase18-m3-1-design-consistency-evaluation.md) P1 / [设计规范 §6](../design-spec.md)
 > 边界：只扩**计算样式采集装置**（`test/capture/**`）与其冻结基线；零 `src/**` 改动、零色值变更。
 

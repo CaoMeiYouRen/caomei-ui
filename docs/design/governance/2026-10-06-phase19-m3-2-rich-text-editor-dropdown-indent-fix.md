@@ -1,7 +1,7 @@
 # Phase 19 M3-2：RichTextEditor 下拉留白修复（文档站作用域隔离）
 
 > 创建时间：2026-10-06
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M3-2**（组件观感缺陷处置）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M3-2**（组件观感缺陷处置）
 > 依据：[下拉留白归因记录](./2026-10-02-rich-text-editor-dropdown-indent.md)；用户裁定 D4 = **文档站作用域隔离**
 > 边界：仅改文档站主题 `docs/.vitepress/theme/caomei-demo.css`；**组件库零 `src/**` 改动**。
 

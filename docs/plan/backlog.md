@@ -72,7 +72,7 @@
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 文档站浮层泄漏的常驻浏览器断言 | 文档站正文排版对第三方内核浮层的泄漏（如 `.vp-doc ul` → `md-editor-v3` 菜单）目前以「声明层契约 + 一次性真实 Chromium 探针」承载：声明层无法感知 VitePress 选择器 / 特异性漂移，升级后泄漏可静默复发。候选：把 M3-2 的探针（`test-results/m3-2/verify.mjs` 式）纳入常驻 / CI 浏览器断言（来源：`docs/design/governance/2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md`） | 低 |
+| 文档站浮层泄漏的常驻浏览器断言 | 文档站正文排版对第三方内核浮层的泄漏（如 `.vp-doc ul` → `md-editor-v3` 菜单）目前以「声明层契约 + 一次性真实 Chromium 探针」承载：声明层无法感知 VitePress 选择器 / 特异性漂移，升级后泄漏可静默复发。候选：把该次修复的一次性探针（`test-results/m3-2/verify.mjs` 式）纳入常驻 / CI 浏览器断言（来源：`docs/design/governance/2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md`） | 低 |
 
 ### 1.7 服务层候选（composables）
 

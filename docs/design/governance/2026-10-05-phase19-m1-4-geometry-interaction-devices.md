@@ -1,7 +1,7 @@
 # Phase 19 M1-4：P3 几何 / 交互层装置（M1 收口）
 
 > 创建时间：2026-10-05
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M1-4**（设计一致性口径裁定与守卫落地；本记录为 M1 的最后一条）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M1-4**（设计一致性口径裁定与守卫落地；本记录为 M1 的最后一条）
 > 依据：[Phase 18 M3-1 评估 §5](./2026-10-01-phase18-m3-1-design-consistency-evaluation.md) P3 / [设计规范 §6](../design-spec.md)
 > 边界：新增 3 条 E2E 几何 / 交互装置；**含 1 处真实缺陷修复**（Drawer reduced-motion 特异性），其余零 `src/**`。
 

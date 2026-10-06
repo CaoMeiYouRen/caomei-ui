@@ -1,7 +1,7 @@
 # Phase 19 M2-2：组件页迁移映射去重（批 2：Drawer / Message）
 
 > 创建时间：2026-10-05
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M2-2**（组件文档一致性整改 / 迁移映射去重）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M2-2**（组件文档一致性整改 / 迁移映射去重）
 > 依据：[专项评估](./2026-10-02-component-doc-migration-duplication-evaluation.md) §4 / [批 1 记录](./2026-10-05-phase19-m2-1-migration-dedup-batch1.md)
 > 边界：仅删组件页中段 `> 迁移映射` 正文块并折入末尾迁移节；不改 `src/**`、不改设计规范 §7。
 

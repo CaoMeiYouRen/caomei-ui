@@ -1,7 +1,7 @@
 # Phase 18 M2-2：计算样式采样面扩展（Toast / Switch）
 
 > 创建时间：2026-10-01
-> 关联条目：[待办事项](../../plan/todo.md) Phase 18 **M2-2**（测试稳定性与质量装置消缺）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 18 **M2-2**（测试稳定性与质量装置消缺）
 > 装置本体：`test/capture/`（夹具 / 运行器 / 冻结基线）；装置落地记录见 [2026-09-22 采集装置迁移](./2026-09-22-m3-5-computed-style-capture-landing.md)
 > 决策依据：用户 2026-09-30 裁定 **D4「全取」**——C17 把 toast / switch 纳入采样 fixture 并重冻结基线
 > 快照：本仓工作区（`pnpm capture:styles` 0 差异、`pnpm test test/capture` 全绿）；**未推送**

@@ -1,7 +1,7 @@
 # Phase 19 M4：治理约束载体落地（`.session` 阶段态同步触发点 + `todo.md` 完成态回填次序）
 
 > 创建时间：2026-10-06
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M4-1 / M4-2**（治理约束载体落地）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M4-1 / M4-2**（治理约束载体落地）
 > 依据：[规划规范 §3.8](../../standards/planning.md) / [AI 协作规范](../../standards/ai-collaboration.md)；复发记录：`.session` 阶段态未同步 3 次 warning、`todo.md` 完成态先于 RG 2 次判定
 > 载体：`todo-manager` skill（`.github/skills/todo-manager/SKILL.md`，平台镜像为符号链接、单一源）；**不为 git-ignored 载体新增机检守卫**。
 

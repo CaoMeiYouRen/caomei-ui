@@ -1,7 +1,7 @@
 # Phase 19 M1-3c：声明层契约与 checkbox 采样（M1-3 收口）
 
 > 创建时间：2026-10-05
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3c**，M1-3 至此全部交付）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3c**，M1-3 至此全部交付）
 > 依据：[Phase 18 M3-1 评估 §5](./2026-10-01-phase18-m3-1-design-consistency-evaluation.md) P2 / [设计规范 §6](../design-spec.md)
 > 边界：新增声明层契约（`test/contracts/**`）+ capture `checkbox.*`；除 §6 的 Textarea 措辞修正外**零 `src/**` 行为改动**。
 

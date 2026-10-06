@@ -1,7 +1,7 @@
 # Phase 19 M1-3a：M1-2 浮层视觉契约固化（capture 采样面扩展）
 
 > 创建时间：2026-10-05
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3a**）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M1-3**（设计一致性口径裁定与守卫落地；本记录为子批 **3a**）
 > 依据：[Phase 18 M3-1 评估 §5](./2026-10-01-phase18-m3-1-design-consistency-evaluation.md) / [Phase 19 M1-2 视觉对齐](./2026-10-05-phase19-m1-2-visual-alignment.md)
 > 边界：只扩**计算样式采集装置**（`test/capture/**`）与其冻结基线；零 `src/**` 改动、零色值变更。
 

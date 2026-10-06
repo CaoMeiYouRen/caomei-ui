@@ -1,7 +1,7 @@
 # Phase 19 M3-3：Button `iconOnly` 示例形态修复（图标改走 `#icon` 插槽）
 
 > 创建时间：2026-10-06
-> 关联条目：[待办事项](../../plan/todo.md) Phase 19 **M3-3**（组件观感缺陷处置）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 19 **M3-3**（组件观感缺陷处置）
 > 依据：用户裁定 D6 = **改示例**（组件契约不变）；[组件设计 §6 / Button](../design-spec.md)
 > 边界：只改文档站示例 `docs/examples/button/icon-only.vue`；**不改组件库 `src/**`、单测与 `types.ts` JSDoc**。
 

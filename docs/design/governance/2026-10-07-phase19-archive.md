@@ -126,6 +126,6 @@
 
 ## 11. 回填（提交号与提交后计数）
 
-- **归档批次提交**：TODO_BACKFILL_COMMITS
-- **提交后复跑（提交之后）**：TODO_BACKFILL_MEASURE
+- **归档批次提交**：29662c7（归档块 + 规划载体同步 + 归档批次记录 + 治理索引登记 + 23 份记录表头规划指针回扫）；本记录 §11 为回填提交。
+- **提交后复跑（提交 29662c7 之后）**：pnpm check:governance-records / node scripts/governance/check-docs-git-revision.mjs / pnpm docs:check:line-count 与 §8 的提交前实测逐项一致——这些守卫按**工作区文件**计数（非按 git 跟踪集），提交本身不改变计数。
 - **不计入 §2**：归档批次自身提交不计入 §2 的 28 条窗口范围。

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * check-audit-protocol：校验 AI 资产未重述审计协议的档位与数值。
+ * check-audit-protocol：校验 AI 资产未重述权威协议的档位、数值与阈值。
  *
- * 审计协议（audit-depth 分级、时间盒、轮次上限）的唯一权威定义在
- * docs/standards/ai-collaboration.md §3.1 / §3.4；其余 AI 入口只应链接引用。
- * 数值被抄写到多处后会静默漂移：本仓曾出现 skill 定义写「默认最多 2 轮」
- * 而权威规范写「默认最多 3 轮」的并存状态，且历经多轮 Review Gate 未被拦截。
+ * 权威数值的唯一声明位置：
+ * - 审计协议（audit-depth 分级、时间盒、轮次上限）→ docs/standards/ai-collaboration.md §3.1 / §3.4；
+ * - 任务粒度阈值（默认 10 文件 / 800 行新增）→ docs/standards/planning.md §5。
+ * 其余 AI 入口只应链接引用。数值被抄写到多处后会静默漂移：本仓曾出现 skill 定义写「默认最多 2 轮」
+ * 而权威规范写「默认最多 3 轮」的并存状态，且历经多轮 Review Gate 未被拦截；任务粒度阈值同样曾
+ * 散落在 skill 与多个 agent 定义中。
  *
  * 检查范围：AGENTS.md、CLAUDE.md、.github/copilot-instructions.md 与
  * .github/agents/*.agent.md、.github/skills 下的全部 .md。
@@ -44,6 +46,18 @@ export const RULES = [
         id: 'audit-duration',
         test: (line) => /\d+\s*(?:分钟|minutes?\b)/i.test(line),
         hint: '时间盒与档位时长以 AI 协作规范 §3.1 为唯一权威，此处改为链接引用',
+    },
+    {
+        /**
+         * 任务粒度阈值（默认 10 文件 / 800 行新增）：要求**同一行**同时出现「N 文件」与「NNN 行」
+         * （中英双形态）。跨行拆分（文件数一行、行数另一行）或中英混排不命中——属已知边界，
+         * 与「重述」的实际书写习惯一致（阈值总以一对出现）。
+         */
+        id: 'granularity-threshold',
+        test: (line) =>
+            (/\b\d+\s*个?\s*文件/.test(line) && /\b\d{2,4}\s*行/.test(line))
+            || (/\b\d+\s*files?\b/i.test(line) && /\b\d{2,4}\s*lines?\b/i.test(line)),
+        hint: '任务粒度阈值（默认 10 文件 / 800 行新增）以规划规范 §5 为唯一权威，此处改为链接引用',
     },
 ]
 
@@ -198,11 +212,11 @@ function report(targetRoot) {
     }
     const total = [...counts.values()].reduce((sum, count) => sum + count, 0)
     if (total === 0) {
-        process.stdout.write('[check-audit-protocol] 0 处命中：AI 资产未重述审计协议数值\n')
+        process.stdout.write('[check-audit-protocol] 0 处命中：AI 资产未重述审计协议数值 / 任务粒度阈值\n')
     } else {
         const detail = [...counts.entries()].map(([id, count]) => `${id} ${count} 处`).join(' / ')
         process.stderr.write(`[check-audit-protocol] ${total} 处命中（${results.length} 个文件）：${detail}\n`)
-        process.stderr.write('[check-audit-protocol] 审计协议数值须单点声明在 AI 协作规范 §3.1 / §3.4\n')
+        process.stderr.write('[check-audit-protocol] 审计协议数值单点声明在 AI 协作规范 §3.1 / §3.4；任务粒度阈值单点声明在规划规范 §5\n')
         process.exitCode = 1
     }
 }

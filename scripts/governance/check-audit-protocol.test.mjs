@@ -43,6 +43,7 @@ function createFixture(files) {
 
 const reviewRounds = RULES.find((rule) => rule.id === 'review-rounds')
 const auditDuration = RULES.find((rule) => rule.id === 'audit-duration')
+const granularityThreshold = RULES.find((rule) => rule.id === 'granularity-threshold')
 
 /**
  * 重述形态矩阵：覆盖「数字 ↔ 单位」两种顺序、中文与英文、分隔符与序数形态。
@@ -93,6 +94,23 @@ describe('check-audit-protocol 规则判定', () => {
     it('时长规则不误报无数值的链接引用', () => {
         expect(auditDuration.test('时间盒计算依据见 AI 协作规范 §3.1')).toBe(false)
         expect(auditDuration.test('按 evidence-template 追加轮次章节')).toBe(false)
+    })
+
+    it.each([
+        '改动超任务粒度约束（默认 10 文件或 800 行新增）时先拆分',
+        '超过阈值（默认 10 文件或 800 行新增，项目可调整）时要求说明',
+        'single batch must stay under 10 files / 800 lines',
+    ])('任务粒度规则命中重述形态：%s', (line) => {
+        expect(granularityThreshold.test(line)).toBe(true)
+    })
+
+    it('任务粒度规则不误报无数值的链接引用', () => {
+        expect(granularityThreshold.test('超过任务粒度阈值（见 [规划规范 §5](../../docs/standards/planning.md#_5-任务粒度约束)）时说明拆分依据')).toBe(false)
+        expect(granularityThreshold.test('统计变更文件数与新增行数（`git diff --stat`）')).toBe(false)
+        // 边界：仅有文件数或仅有行数不命中（阈值总以一对出现；跨行拆分不在判定面）
+        expect(granularityThreshold.test('单批不超过 10 文件')).toBe(false)
+        expect(granularityThreshold.test('单批不超过 800 行')).toBe(false)
+        expect(granularityThreshold.test('single batch under 10 files')).toBe(false)
     })
 })
 

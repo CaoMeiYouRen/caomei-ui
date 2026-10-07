@@ -15,6 +15,15 @@ withDefaults(defineProps<AccordionItemProps>(), {
     title: '',
     disabled: false,
 })
+
+/**
+ * 折叠触发器**不输出** `aria-controls`：Reka 的 `Collapsible` 把内容 id 放在非响应式上下文字段、
+ * 并在内容挂载时才赋值，导致关闭态为空串、初始即展开时保持空串、展开后收起则残留已卸载元素的旧
+ * id——三态皆为空 / 悬空引用。`aria-controls` 在 ARIA 折叠模式中为**可选**属性，触发器的
+ * `aria-expanded` 与内容 `role="region"` 的 `aria-labelledby` 已完整表达两者关系，故统一省略，
+ * 不再让不可靠的上游取值泄漏到 DOM。
+ */
+const triggerAria = { 'aria-controls': null } as const
 </script>
 
 <template>
@@ -25,7 +34,10 @@ withDefaults(defineProps<AccordionItemProps>(), {
         class="caomei-accordion__item"
     >
         <AccordionHeader class="caomei-accordion__header">
-            <AccordionTrigger class="caomei-accordion__trigger">
+            <AccordionTrigger
+                v-bind="triggerAria"
+                class="caomei-accordion__trigger"
+            >
                 <span class="caomei-accordion__title">
                     <slot name="trigger">{{ title }}</slot>
                 </span>

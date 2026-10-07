@@ -1,5 +1,5 @@
 import { DOMWrapper, enableAutoUnmount, mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { expectSettled } from '../../../test/helpers/settle'
 import type { DropdownMenuCommandEvent, DropdownMenuModelItem } from './types'
@@ -393,6 +393,114 @@ describe('CaomeiDropdownMenu', () => {
         expect(content.querySelectorAll('[role="separator"]')).toHaveLength(1)
         expect(content.querySelector('.caomei-dropdown-menu__label')?.textContent).toContain('分组标题')
         expect(content.textContent).toContain('⌘E')
+    })
+
+    it('分组无内嵌标签时不输出悬空 aria-labelledby，有标签时指向标签 id', async () => {
+        const unlabeled = mount(CaomeiDropdownMenu, {
+            props: { open: true },
+            slots: {
+                default: () => [
+                    h(CaomeiDropdownMenuContent, {}, {
+                        default: () => [
+                            h(CaomeiDropdownMenuGroup, {}, {
+                                default: () => [h(CaomeiDropdownMenuItem, {}, { default: () => '一' })],
+                            }),
+                            h(CaomeiDropdownMenuRadioGroup, {}, {
+                                default: () => [h(CaomeiDropdownMenuRadioItem, { value: 'a' }, { default: () => '甲' })],
+                            }),
+                        ],
+                    }),
+                ],
+            },
+            attachTo: document.body,
+        })
+        await flush()
+
+        const unlabeledGroups = Array.from(document.body.querySelectorAll<HTMLElement>('.caomei-dropdown-menu__group'))
+        expect(unlabeledGroups).toHaveLength(2)
+        for (const group of unlabeledGroups) {
+            expect(group.getAttribute('aria-labelledby'), '无标签分组不得输出悬空 aria-labelledby').toBeNull()
+        }
+        unlabeled.unmount()
+        document.body.innerHTML = ''
+
+        const labeled = mount(CaomeiDropdownMenu, {
+            props: { open: true },
+            slots: {
+                default: () => [
+                    h(CaomeiDropdownMenuContent, {}, {
+                        default: () => [
+                            h(CaomeiDropdownMenuGroup, {}, {
+                                default: () => [
+                                    h(CaomeiDropdownMenuLabel, {}, { default: () => '分组' }),
+                                    h(CaomeiDropdownMenuItem, {}, { default: () => '一' }),
+                                ],
+                            }),
+                        ],
+                    }),
+                ],
+            },
+            attachTo: document.body,
+        })
+        await flush()
+
+        const labeledGroup = document.body.querySelector<HTMLElement>('.caomei-dropdown-menu__group')
+        const labelledby = labeledGroup?.getAttribute('aria-labelledby')
+        expect(labelledby, '有标签分组应输出 aria-labelledby').toBeTruthy()
+        expect(document.getElementById(labelledby as string), 'aria-labelledby 应指向存在的标签').not.toBeNull()
+        labeled.unmount()
+        document.body.innerHTML = ''
+    })
+
+    it('无内嵌标签但显式透传 aria-labelledby 时以使用方取值为准', async () => {
+        const wrapper = mount(CaomeiDropdownMenu, {
+            props: { open: true },
+            slots: {
+                default: () => [
+                    h(CaomeiDropdownMenuContent, {}, {
+                        default: () => [
+                            h(CaomeiDropdownMenuGroup, { 'aria-labelledby': 'external-label' }, {
+                                default: () => [h(CaomeiDropdownMenuItem, {}, { default: () => '一' })],
+                            }),
+                        ],
+                    }),
+                ],
+            },
+            attachTo: document.body,
+        })
+        await flush()
+
+        const group = document.body.querySelector<HTMLElement>('.caomei-dropdown-menu__group')
+        expect(group?.getAttribute('aria-labelledby'), '显式透传值不得被派生空值吞掉').toBe('external-label')
+        wrapper.unmount()
+        document.body.innerHTML = ''
+    })
+
+    it('槽内标签动态增减时条件输出同步更新', async () => {
+        const Host = defineComponent({
+            components: { CaomeiDropdownMenu, CaomeiDropdownMenuContent, CaomeiDropdownMenuGroup, CaomeiDropdownMenuItem, CaomeiDropdownMenuLabel },
+            template: `<CaomeiDropdownMenu v-model:open="open"><CaomeiDropdownMenuContent>
+                <CaomeiDropdownMenuGroup>
+                    <CaomeiDropdownMenuLabel v-if="showLabel">分组</CaomeiDropdownMenuLabel>
+                    <CaomeiDropdownMenuItem>一</CaomeiDropdownMenuItem>
+                </CaomeiDropdownMenuGroup>
+            </CaomeiDropdownMenuContent></CaomeiDropdownMenu>`,
+            setup: () => ({ open: ref(true), showLabel: ref(false) }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await flush()
+
+        const group = () => document.body.querySelector<HTMLElement>('.caomei-dropdown-menu__group')
+        expect(group()?.getAttribute('aria-labelledby'), '无标签时不应输出').toBeNull()
+
+        ;(wrapper.vm as unknown as { showLabel: boolean }).showLabel = true
+        await flush()
+        const labelledby = group()?.getAttribute('aria-labelledby')
+        expect(labelledby, '标签出现后应建立关联').toBeTruthy()
+        expect(document.getElementById(labelledby as string)).not.toBeNull()
+
+        wrapper.unmount()
+        document.body.innerHTML = ''
     })
 
     it('点击条目触发 select 并关闭菜单', async () => {

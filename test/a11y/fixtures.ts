@@ -175,8 +175,8 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiDropdownMenu', root: CaomeiDropdownMenu, definition: { components: { CaomeiDropdownMenu, CaomeiDropdownMenuTrigger, CaomeiDropdownMenuContent }, template: '<CaomeiDropdownMenu><CaomeiDropdownMenuTrigger>菜单</CaomeiDropdownMenuTrigger><CaomeiDropdownMenuContent :model="[{ label: \'一\' }]" /></CaomeiDropdownMenu>' } },
     /*
      * 展开态审计单元：受控 `open` 驱动（实测展开后 500ms 内稳定保持）。覆盖面板内 8 个导出；
-     * 分组内带 `CaomeiDropdownMenuLabel`（分组无标签时的悬空 `aria-labelledby` 为已登记同类缺陷，
-     * 见治理记录，不在本夹具内重复暴露）。
+     * 分组内带 `CaomeiDropdownMenuLabel`（无标签分组已由组件层在槽内标签缺席时省略
+     * `aria-labelledby`，见组件测试与治理记录）。
      * 不渲染触发器：触发器已由关闭态夹具覆盖，而 axe 对「`aria-haspopup` + `aria-controls`」
      * 恒判 needsReview（`controlsWithinPopup`，无法判定引用是否存在于页面），与取值正确与否无关。
      */

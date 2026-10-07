@@ -64,6 +64,26 @@ describe('CaomeiAccordion', () => {
         expect(regions[0].attributes('hidden')).toBeDefined()
     })
 
+    it('触发器不输出不可靠的 aria-controls，关系由 aria-expanded 与内容 region 承载', async () => {
+        const wrapper = mountAccordion({ collapsible: true })
+
+        // 关闭态：内容缺席 → 不得输出空 / 悬空 aria-controls
+        expect(getTriggers(wrapper)[0].attributes('aria-controls')).toBeUndefined()
+
+        await getTriggers(wrapper)[0].trigger('click')
+        await expectSettled(() => {
+            expect(getTriggers(wrapper)[0].attributes('aria-expanded')).toBe('true')
+            expect(getTriggers(wrapper)[0].attributes('aria-controls')).toBeUndefined()
+            // 关联由内容 region 的 aria-labelledby ↔ 触发器 id 承担
+            expect(getRegions(wrapper)[0].attributes('aria-labelledby')).toBe(getTriggers(wrapper)[0].attributes('id'))
+        })
+
+        await getTriggers(wrapper)[0].trigger('click')
+        await expectSettled(() => {
+            expect(getTriggers(wrapper)[0].attributes('aria-controls')).toBeUndefined()
+        })
+    })
+
     it('单开模式下点击展开并在条目间切换', async () => {
         const wrapper = mountAccordion()
         const triggers = getTriggers(wrapper)

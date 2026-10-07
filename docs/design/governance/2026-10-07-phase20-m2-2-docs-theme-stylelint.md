@@ -58,7 +58,7 @@
 - **规模**：`package.json`（+2 −2）、`docs/.vitepress/theme/caomei-demo.css`（+1 −1）、`docs/.vitepress/theme/components/showcase-grid.vue`（+2 −1）、`docs/.vitepress/theme/components/theme-preset-switcher.vue`（+1 −1）、`docs/standards/development.md`（+1 −1）；文档载体（本记录 + 治理索引 + `todo.md` 状态回填）。**零组件库 `src/**` 改动**。
 - **质量门（本批实测）**：
   - `pnpm lint:css:check` **exit 0**（新增文档站主题面纳入后）；文档站主题 glob 命中 **6 文件**（主题根层 `.css` / `.vue` + 组件子层 3 个 `.vue`），`src/**` 引号化后 Stylelint 展开 **90 文件**，均 0 warning。
-  - 纳入前会命中的实证：对 `git show HEAD:<file>` 走 `stylelint --stdin-filename`，旧内容触发 **4 处**违规（与 §2.2 逐条一致）。
+  - 纳入前会命中的实证：对基线提交 `5d3ce82` 的文件内容走 `stylelint --stdin-filename`，旧内容触发 **4 处**违规（与 §2.2 逐条一致）。
   - `pnpm verify` **exit 0**（`lint:check` / `lint:css:check` / `lint:md:check` / `typecheck` / `typecheck:docs` / `test` **111 文件 / 2212 例** / `build` / `check:build` / `check:resolver` / `check:nuxt` / `docs:build` / `docs:check:i18n-routing` / `governance:check` 全绿）。
   - 记号等价（构建侧实证）：`docs:build` 产物中范围记号残留 **0**（esbuild 已降级为 `@media(max-width:959px)`），交付物无浏览器支持回归。
 - **V 阶段**：本批为 lint 配置扩面 + 记号等价修正，无可见行为变更；记号等价性由规则语义（媒体范围记号 / alpha 小数）保证，未另走 `@ui-validator`。
@@ -66,7 +66,7 @@
 
 ## 5. Review Gate 结论
 
-- **R1（第 1 轮，`standard`）`Pass`**：0 blocker / 0 warning / 3 suggest。审计方独立以「最小生效性验证命令」核实：文档站主题 glob 命中 **6 文件** 0 warning；`git show HEAD:<file>` 走 `stylelint --stdin-filename` 复现旧内容 **4 处**违规；引号化后 `src/**` 展开 **90 文件** 0 warning；构建产物范围记号残留 **0**。
+- **R1（第 1 轮，`standard`）`Pass`**：0 blocker / 0 warning / 3 suggest。审计方独立以「最小生效性验证命令」核实：文档站主题 glob 命中 **6 文件** 0 warning；基线提交 `5d3ce82` 的文件内容走 `stylelint --stdin-filename` 复现旧内容 **4 处**违规；引号化后 `src/**` 展开 **90 文件** 0 warning；构建产物范围记号残留 **0**。
 - **实测用时**：派发 `2026-10-08T00:16:10+08:00`；返回时点未单独取戳，以记录回填写入为界，**≈ 10 分钟内**（≤ 时间盒）。
 - **同批收口（记「已修复未复审」）**：
   - **RG-S1**（§1 shell 展开表述过强）：限定为「bash（未开 globstar）下部分展开」，并补实测文件数（90）。

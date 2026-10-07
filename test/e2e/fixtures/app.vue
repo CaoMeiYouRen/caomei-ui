@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { defineComponent, h, ref } from 'vue'
 import { Settings } from '@lucide/vue'
 import {
     CaomeiAccordion,
@@ -10,6 +10,7 @@ import {
     CaomeiCalendar,
     CaomeiCheckbox,
     CaomeiColorPicker,
+    CaomeiConfirmDialog,
     CaomeiDataTable,
     CaomeiDatePicker,
     CaomeiDialog,
@@ -53,6 +54,7 @@ import {
     CaomeiToolbar,
     CaomeiToolbarButton,
     CaomeiToolbarLink,
+    useConfirm,
 } from '@/index'
 
 /*
@@ -274,6 +276,31 @@ const fvFieldOptions = [
     { label: '选项一', value: 'a' },
     { label: '选项二', value: 'b' },
 ]
+
+/**
+ * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
+ * 滚动锁复位。确认框走命令式 `useConfirm()`，驱动按钮渲染在 `<CaomeiConfirmDialog>` 后代内。
+ */
+const interactionDialogOpen = ref(false)
+const interactionDialogInput = ref('')
+const ConfirmDriver = defineComponent({
+    name: 'E2eConfirmDriver',
+    setup() {
+        const confirm = useConfirm()
+        return () =>
+            h(
+                'button',
+                {
+                    id: 'confirm-open',
+                    type: 'button',
+                    onClick: () => {
+                        void confirm.confirm({ title: '确认操作', description: '是否继续？' })
+                    },
+                },
+                '打开确认框',
+            )
+    },
+})
 </script>
 
 <template>
@@ -1073,6 +1100,31 @@ const fvFieldOptions = [
                     label="选择"
                 />
             </div>
+        </section>
+
+        <!--
+          浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog / ConfirmDialog 的
+          焦点落位与滚动锁复位。确认框经 `useConfirm()` 命令式打开，驱动按钮在该组件后代内。
+        -->
+        <section id="overlay-interaction" class="fixture__case">
+            <CaomeiButton id="dialog-open" @click="interactionDialogOpen = true">
+                打开对话框
+            </CaomeiButton>
+            <CaomeiDialog
+                v-model:open="interactionDialogOpen"
+                title="对话框标题"
+                description="浮层交互用例。"
+            >
+                <p>对话框内容</p>
+                <CaomeiInput
+                    id="dialog-input"
+                    v-model="interactionDialogInput"
+                    placeholder="对话框输入"
+                />
+            </CaomeiDialog>
+            <CaomeiConfirmDialog>
+                <ConfirmDriver />
+            </CaomeiConfirmDialog>
         </section>
     </main>
 </template>

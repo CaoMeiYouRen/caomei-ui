@@ -17,7 +17,7 @@
 | M2-1 | 基建与治理守卫补口 | **a11y 同类悬空引用处置**：`CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `Label` 时 `aria-labelledby` 悬空、`CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""` | 先真实浏览器 / axe 复验再定修法（slot 形态在位检测 / 时序）；`test:a11y` 复跑；Toast 焦点哨兵等**有意例外维持现状** | 已完成 |
 | M2-2 | 基建与治理守卫补口 | **文档站主题 CSS 纳入 lint 面**：`lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 不在面内（Phase 19 M3-2 新增隔离规则仅靠人工 + 探针验证） | 文档站主题样式纳入 stylelint 或独立规则面；存量违规清零或显式登记；`verify` 全绿 | 已完成 |
 | M2-3 | 基建与治理守卫补口 | **直连 Reka 触发器的机检守卫**：存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警 | 先定告警面与误报口径；接入 `governance:check` 或显式声明仅告警；具负向对照 | 已完成 |
-| M2-4 | 基建与治理守卫补口 | **浮层交互 E2E 规格**：ConfirmDialog / Dialog 焦点落位、滚动锁复位与既有 E2E 去重 | 用例确定性强（避免链式滚动 / 滚动锁存等不稳定断言）；`test:e2e` 复跑零回归 | 待开工 |
+| M2-4 | 基建与治理守卫补口 | **浮层交互 E2E 规格**：ConfirmDialog / Dialog 焦点落位、滚动锁复位与既有 E2E 去重 | 用例确定性强（避免链式滚动 / 滚动锁存等不稳定断言）；`test:e2e` 复跑零回归 | 已完成 |
 | M2-5 | 基建与治理守卫补口 | **执行层规则重述与失效引用收敛**：`code-reviewer` SKILL.md 重述收敛（`check:audit-protocol` 当前 0 命中） | 不重复重述审计协议数值；`ai:check` / `check:audit-protocol` 全绿；失效引用清零 | 待开工 |
 | M3-1 | 下游协同与 Phase 8 评估 | **Phase 8 启动范围评估**（**评估不等于启动**）：已接入下游清单 + 跨仓库 CI 触发形态 + 容量边界 | 给出触发形态与容量边界；不建立跨仓 CI 触发实体；产出治理记录并登记索引 | 待开工 |
 | M6-1 | 发布收口 | **0.6.0 发布**：新增 [长期任务](./recurring.md) 门槛复核轮 → `pnpm verify` 全绿 → 版本句 / CHANGELOG 同步 → 本地手动发布 → 发布后校验（registry / tarball shasum / 解包冒烟） | 发布前门槛复核已留痕；`release:verify` 通过；`docs:check:version` exit 0；产出发布执行治理记录；**未推送由用户决定** | 待开工 |

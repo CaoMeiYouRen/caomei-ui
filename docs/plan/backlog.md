@@ -54,25 +54,19 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| a11y 同类悬空引用的后续处置 | 2026-09-26 M1 同类扫描发现（判定与证据见[该批治理记录](../design/governance/2026-09-26-m1-a11y-exception-disposal-and-surface.md) §6.5）：① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌 `CaomeiDropdownMenuLabel` 时 `aria-labelledby` 悬空（需 slot 形态在位检测，拟将 Stepper 机制下沉 `_shared/`）；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`、展开后收起时悬空（Reka `Collapsible` 同类时序，需独立设计）。**触发条件**：受检面扩面到相关形态，或下游反馈命中 | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
 | 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
-| 直连 Reka 触发器的机检守卫 | 存在本库包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` 等）时，组件内直连 Reka 同型触发器应告警；否则「单点生效」收益只能靠人工记忆维持（2026-09-21 触发器收敛后新增） | 低 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
-| 文档站主题 CSS 的 lint 覆盖 | `lint:css:check` 的 glob 为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 的 CSS / SFC 样式不在 stylelint 面内（2026-09-22 实测：文档站窄档收敛规则只能靠人工与浏览器验证）。候选：把文档站主题样式纳入 stylelint 或独立规则面 | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
-| 视觉回归基线 | Playwright 截图比对 | 低 |
-| 浮层交互 E2E 规格 | ConfirmDialog / Dialog 焦点落位、滚动锁复位 | 低 |
 | 治理索引与记录计数对账守卫 | 2026-09-30 浮层遮挡修复批次连续两轮 Review Gate 以「同一组计数跨载体漂移」判 blocker（记录本体计数为修复前快照 → 索引摘要计数未同步〔复发〕）。候选：对治理索引摘要与记录本体的 e2e / 测试计数做对账机检。**评估结论：高误报 / 高过拟合，未实施**——计数散落在自然语言摘要中，抽取规则易误伤；当前以「改完逐载体 `rg -o` 核对 + 记录内钉复算命令」的流程约束替代（已记 `.session/wisdom.md` 与 [AI 协作规范 §9](../standards/ai-collaboration.md)） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
-| 执行层规则重述与失效引用收敛 | code-reviewer SKILL.md 重述收敛 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 文档站浮层泄漏的常驻浏览器断言 | 文档站正文排版对第三方内核浮层的泄漏（如 `.vp-doc ul` → `md-editor-v3` 菜单）目前以「声明层契约 + 一次性真实 Chromium 探针」承载：声明层无法感知 VitePress 选择器 / 特异性漂移，升级后泄漏可静默复发。候选：把该次修复的一次性探针（`test-results/m3-2/verify.mjs` 式）纳入常驻 / CI 浏览器断言（来源：`docs/design/governance/2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md`） | 低 |
+| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **423 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 19 归档已知观察⑤「归档载体只增不减，本批接受」。候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（来源：[Phase 19 归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §8） | 低 |
 
 ### 1.7 服务层候选（composables）
 

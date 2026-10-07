@@ -17,24 +17,42 @@ import {
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
     CaomeiDropdownMenuTrigger,
+    CaomeiFileUpload,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
+    CaomeiMessage,
     CaomeiMultiSelect,
+    CaomeiPaginator,
+    CaomeiPassword,
     CaomeiPopover,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
+    CaomeiRadioButton,
+    CaomeiRadioGroup,
     CaomeiSelect,
     CaomeiSelectButton,
+    CaomeiSlider,
     CaomeiSplitButton,
+    CaomeiStepper,
+    CaomeiStepperIndicator,
+    CaomeiStepperItem,
+    CaomeiStepperList,
+    CaomeiStepperSeparator,
+    CaomeiStepperTitle,
+    CaomeiStepperTrigger,
     CaomeiSwitch,
     CaomeiTagsInput,
     CaomeiTabs,
     CaomeiTabList,
     CaomeiTabTrigger,
     CaomeiTabContent,
+    CaomeiTag,
     CaomeiTextarea,
+    CaomeiToggleButton,
     CaomeiToolbar,
+    CaomeiToolbarButton,
+    CaomeiToolbarLink,
 } from '@/index'
 
 /*
@@ -226,6 +244,27 @@ const dsOptions = [{ label: '选项一', value: 'a' }, { label: '选项二', val
 /** Drawer 收敛用例：`lg` 档（560px）与 90vw / 90vh 取小。 */
 const drawerRightOpen = ref(false)
 const drawerBottomOpen = ref(false)
+
+/**
+ * 焦点可见扩面用例（见 `test/e2e/focus-visible-expansion.e2e.ts`）：静态可驱动组件的预置状态。
+ * 覆盖非字段 / 非按钮组件中「无需交互开合即可渲染出焦点目标」的形态；需交互 / 遥测闭包的形态
+ * 不在本批（边界见治理记录）。
+ */
+const fvRadio = ref('a')
+const fvSlider = ref(40)
+const fvStep = ref(1)
+const fvSteps = ['账户', '资料', '完成']
+const fvColor = ref('#60a5fa')
+const fvPassword = ref('Abcdefg1')
+const fvMulti = ref<string[]>(['a'])
+const fvAuto = ref<string>('选项一')
+const fvTags = ref<string[]>(['苹果'])
+const fvSelect = ref<string | null>('a')
+const fvMenuItems = [{ label: '菜单项一' }]
+const fvFieldOptions = [
+    { label: '选项一', value: 'a' },
+    { label: '选项二', value: 'b' },
+]
 </script>
 
 <template>
@@ -758,6 +797,147 @@ const drawerBottomOpen = ref(false)
                 <p>抽屉内容</p>
             </CaomeiDrawer>
         </section>
+
+        <!--
+          焦点可见扩面用例（见 `test/e2e/focus-visible-expansion.e2e.ts`）：把「无需交互开合即可
+          静态渲染焦点目标」的组件纳入常驻断言（CDP 强制 `:focus-visible`）。需交互开合 / 遥测
+          闭包 / box-shadow 焦点环的形态不在本批（边界见治理记录）。
+        -->
+        <section id="focus-visible-expansion" class="fixture__case">
+            <div id="fv-toggle-button">
+                <CaomeiToggleButton>切换</CaomeiToggleButton>
+            </div>
+            <div id="fv-radio">
+                <CaomeiRadioGroup v-model="fvRadio" label="单选">
+                    <CaomeiRadioButton value="a">
+                        选项一
+                    </CaomeiRadioButton>
+                    <CaomeiRadioButton value="b">
+                        选项二
+                    </CaomeiRadioButton>
+                </CaomeiRadioGroup>
+            </div>
+            <div id="fv-slider">
+                <CaomeiSlider v-model="fvSlider" label="滑块" />
+            </div>
+            <div id="fv-stepper">
+                <CaomeiStepper v-model="fvStep" :linear="false">
+                    <template #default="stepperProps">
+                        <CaomeiStepperList>
+                            <CaomeiStepperItem
+                                v-for="(step, index) in fvSteps"
+                                :key="step"
+                                :step="index + 1"
+                            >
+                                <CaomeiStepperTrigger>
+                                    <CaomeiStepperIndicator>{{ index + 1 }}</CaomeiStepperIndicator>
+                                    <CaomeiStepperTitle>{{ step }}</CaomeiStepperTitle>
+                                </CaomeiStepperTrigger>
+                                <CaomeiStepperSeparator v-if="index < fvSteps.length - 1" />
+                            </CaomeiStepperItem>
+                        </CaomeiStepperList>
+                        <span class="fixture__note">{{ stepperProps.isNextDisabled ? '末尾' : '可前进' }}</span>
+                    </template>
+                </CaomeiStepper>
+            </div>
+            <div id="fv-paginator">
+                <CaomeiPaginator
+                    :total="40"
+                    :items-per-page="10"
+                    label="分页"
+                />
+            </div>
+            <div id="fv-toolbar">
+                <CaomeiToolbar label="工具">
+                    <CaomeiToolbarButton>按钮</CaomeiToolbarButton>
+                    <CaomeiToolbarLink href="#fv-toolbar">
+                        链接
+                    </CaomeiToolbarLink>
+                </CaomeiToolbar>
+            </div>
+            <div id="fv-popover">
+                <CaomeiPopover>
+                    <CaomeiPopoverTrigger>说明</CaomeiPopoverTrigger>
+                    <CaomeiPopoverContent>浮层内容</CaomeiPopoverContent>
+                </CaomeiPopover>
+            </div>
+            <div id="fv-dropdown">
+                <CaomeiDropdownMenu>
+                    <CaomeiDropdownMenuTrigger>更多</CaomeiDropdownMenuTrigger>
+                    <CaomeiDropdownMenuContent :model="fvMenuItems" />
+                </CaomeiDropdownMenu>
+            </div>
+            <div id="fv-color-picker">
+                <CaomeiColorPicker v-model="fvColor" label="颜色" />
+            </div>
+            <div id="fv-file-upload-advanced">
+                <CaomeiFileUpload label="上传文件" />
+            </div>
+            <div id="fv-file-upload-basic">
+                <CaomeiFileUpload
+                    mode="basic"
+                    label="上传文件"
+                />
+            </div>
+            <div id="fv-password">
+                <CaomeiPassword v-model="fvPassword" label="密码" />
+            </div>
+            <div id="fv-tags">
+                <CaomeiTag closable>
+                    可关闭标签
+                </CaomeiTag>
+                <CaomeiTag selectable>
+                    可选择标签
+                </CaomeiTag>
+            </div>
+            <div id="fv-message">
+                <CaomeiMessage title="提示" closable />
+            </div>
+            <div id="fv-tabs-content">
+                <CaomeiTabs model-value="a">
+                    <CaomeiTabList aria-label="分区">
+                        <CaomeiTabTrigger value="a">
+                            一
+                        </CaomeiTabTrigger>
+                    </CaomeiTabList>
+                    <CaomeiTabContent value="a">
+                        面板
+                    </CaomeiTabContent>
+                </CaomeiTabs>
+            </div>
+            <div id="fv-multi-select">
+                <CaomeiMultiSelect
+                    v-model="fvMulti"
+                    :options="fvFieldOptions"
+                    show-clear
+                    label="多选"
+                />
+            </div>
+            <div id="fv-auto-complete">
+                <CaomeiAutoComplete
+                    v-model="fvAuto"
+                    :options="fvFieldOptions"
+                    clearable
+                    dropdown
+                    label="搜索"
+                />
+            </div>
+            <div id="fv-tags-input">
+                <CaomeiTagsInput
+                    v-model="fvTags"
+                    show-clear
+                    label="标签"
+                />
+            </div>
+            <div id="fv-select">
+                <CaomeiSelect
+                    v-model="fvSelect"
+                    :options="fvFieldOptions"
+                    show-clear
+                    label="选择"
+                />
+            </div>
+        </section>
     </main>
 </template>
 
@@ -867,5 +1047,13 @@ const drawerBottomOpen = ref(false)
     box-sizing: border-box;
     width: 15rem;
     max-width: 100%;
+}
+
+/* 焦点可见扩面用例：静态可驱动组件纵向排列并定宽，避免长内容在窄视口撑破页面 */
+#focus-visible-expansion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-3);
+    width: min(20rem, 100%);
 }
 </style>

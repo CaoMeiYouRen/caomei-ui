@@ -10,8 +10,13 @@ import { boxOf, TOLERANCE } from './helpers/layout'
  * 2. **Button 角标以右上角外扩叠加、不参与布局**——带角标与不带角标的按钮外盒几何相等，
  *    且角标盒越出按钮外盒（确为例外的叠加元素），`pointer-events: none`。
  *
+ * 受检面：首批 7 个代表组件（Button / 字段族 / Checkbox / Switch）；本规格扩面到其余具
+ * 明确禁用标记的组件（SelectButton / RadioButton / ToggleButton / Slider / Tag / MultiSelect /
+ * AutoComplete / TagsInput / DatePicker / Password / FileUpload）。
+ *
  * 判别力保障：每对用例先断言禁用态**确有**禁用标记（`[disabled]` / `[aria-disabled]` /
- * `[data-disabled]` / `--disabled` 类），避免夹具漂移让「禁用态 == 默认态」因两侧相同而假通过。
+ * `[data-disabled]` / `--disabled` 类），默认态**不得**出现禁用标记，避免夹具漂移让「禁用态
+ * == 默认态」因两侧相同而假通过；另有受检面下界守卫防止成对数被静默收窄。
  *
  * 本套 E2E 全局以 `reducedMotion: 'reduce'` 运行（见 `playwright.config.ts`），几何测量确定性。
  * 每个用例在 mobile / tablet / desktop 三 project 下各跑一遍。
@@ -30,7 +35,22 @@ const DISABLED_PAIRS: DisabledPair[] = [
     { name: 'input-number', selector: '.caomei-input-number' },
     { name: 'checkbox', selector: '.caomei-checkbox' },
     { name: 'switch', selector: '.caomei-switch' },
+    // 扩面：其余具明确禁用标记的组件（静态成对、同内容同宿主）
+    { name: 'select-button', selector: '.caomei-select-button' },
+    { name: 'radio-button', selector: '.caomei-radio-button[value="a"]' },
+    { name: 'toggle-button', selector: '.caomei-toggle-button' },
+    { name: 'slider', selector: '.caomei-slider' },
+    { name: 'tag', selector: '.caomei-tag' },
+    { name: 'multi-select', selector: '.caomei-multi-select' },
+    { name: 'auto-complete', selector: '.caomei-auto-complete' },
+    { name: 'tags-input', selector: '.caomei-tags-input' },
+    { name: 'date-picker', selector: '.caomei-date-picker' },
+    { name: 'password', selector: '.caomei-password' },
+    { name: 'file-upload', selector: '.caomei-file-upload' },
 ]
+
+/** 受检面下界：默认 / 禁用成对数不得被静默收窄。 */
+const MIN_DISABLED_PAIRS = 18
 
 /** 禁用标记：任一存在即视为禁用态成立（不同组件形态不一）。 */
 const DISABLED_MARKER = '[disabled], [aria-disabled="true"], [data-disabled], [class*="--disabled"]'
@@ -77,6 +97,10 @@ async function expectNoDisabledMarker(wrapper: Locator, label: string): Promise<
 }
 
 test.describe('禁用态不改变布局尺寸', () => {
+    test('受检面下界守卫：默认 / 禁用成对数不得被静默收窄', () => {
+        expect(DISABLED_PAIRS.length, '禁用态几何成对数低于下界（受检面被收窄？）').toBeGreaterThanOrEqual(MIN_DISABLED_PAIRS)
+    })
+
     for (const pair of DISABLED_PAIRS) {
         test(`${pair.name}：默认态与禁用态外盒几何相等`, async ({ page }) => {
             const defaultWrapper = page.locator(`#ds-${pair.name}-default`)

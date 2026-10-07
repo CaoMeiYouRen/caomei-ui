@@ -240,6 +240,15 @@ const dsNumber = ref<number | null>(2)
 const dsCheckbox = ref(false)
 const dsSwitch = ref(false)
 const dsOptions = [{ label: '选项一', value: 'a' }, { label: '选项二', value: 'b' }]
+/** 禁用态几何扩面的预置状态：默认 / 禁用两侧同档位、同内容、同宿主，仅 disabled 不同。 */
+const dsSegment = ref('a')
+const dsRadio = ref('a')
+const dsSlider = ref(40)
+const dsMulti = ref<string[]>([])
+const dsAuto = ref<string>()
+const dsTags = ref<string[]>([])
+const dsDate = ref<Date | null>(new Date(2026, 0, 15))
+const dsPassword = ref('')
 
 /** Drawer 收敛用例：`lg` 档（560px）与 90vw / 90vh 取小。 */
 const drawerRightOpen = ref(false)
@@ -758,6 +767,133 @@ const fvFieldOptions = [
             <div id="ds-switch-disabled" class="fixture__state">
                 <CaomeiSwitch v-model="dsSwitch" disabled />
             </div>
+            <div id="ds-select-button-default" class="fixture__state">
+                <CaomeiSelectButton
+                    v-model="dsSegment"
+                    :options="dsOptions"
+                    label="分段"
+                />
+            </div>
+            <div id="ds-select-button-disabled" class="fixture__state">
+                <CaomeiSelectButton
+                    v-model="dsSegment"
+                    :options="dsOptions"
+                    disabled
+                    label="分段"
+                />
+            </div>
+            <div id="ds-radio-button-default" class="fixture__state">
+                <CaomeiRadioGroup v-model="dsRadio" label="单选">
+                    <CaomeiRadioButton value="a">
+                        选项一
+                    </CaomeiRadioButton>
+                    <CaomeiRadioButton value="b">
+                        选项二
+                    </CaomeiRadioButton>
+                </CaomeiRadioGroup>
+            </div>
+            <div id="ds-radio-button-disabled" class="fixture__state">
+                <CaomeiRadioGroup
+                    v-model="dsRadio"
+                    disabled
+                    label="单选"
+                >
+                    <CaomeiRadioButton value="a">
+                        选项一
+                    </CaomeiRadioButton>
+                    <CaomeiRadioButton value="b">
+                        选项二
+                    </CaomeiRadioButton>
+                </CaomeiRadioGroup>
+            </div>
+            <div id="ds-toggle-button-default" class="fixture__state">
+                <CaomeiToggleButton>切换</CaomeiToggleButton>
+            </div>
+            <div id="ds-toggle-button-disabled" class="fixture__state">
+                <CaomeiToggleButton disabled>
+                    切换
+                </CaomeiToggleButton>
+            </div>
+            <div id="ds-slider-default" class="fixture__state">
+                <CaomeiSlider v-model="dsSlider" label="滑块" />
+            </div>
+            <div id="ds-slider-disabled" class="fixture__state">
+                <CaomeiSlider
+                    v-model="dsSlider"
+                    disabled
+                    label="滑块"
+                />
+            </div>
+            <div id="ds-tag-default" class="fixture__state">
+                <CaomeiTag>标签</CaomeiTag>
+            </div>
+            <div id="ds-tag-disabled" class="fixture__state">
+                <CaomeiTag disabled>
+                    标签
+                </CaomeiTag>
+            </div>
+            <div id="ds-multi-select-default" class="fixture__state">
+                <CaomeiMultiSelect
+                    v-model="dsMulti"
+                    :options="dsOptions"
+                    placeholder="多选"
+                />
+            </div>
+            <div id="ds-multi-select-disabled" class="fixture__state">
+                <CaomeiMultiSelect
+                    v-model="dsMulti"
+                    :options="dsOptions"
+                    disabled
+                    placeholder="多选"
+                />
+            </div>
+            <div id="ds-auto-complete-default" class="fixture__state">
+                <CaomeiAutoComplete
+                    v-model="dsAuto"
+                    :options="dsOptions"
+                    placeholder="搜索"
+                />
+            </div>
+            <div id="ds-auto-complete-disabled" class="fixture__state">
+                <CaomeiAutoComplete
+                    v-model="dsAuto"
+                    :options="dsOptions"
+                    disabled
+                    placeholder="搜索"
+                />
+            </div>
+            <div id="ds-tags-input-default" class="fixture__state">
+                <CaomeiTagsInput v-model="dsTags" placeholder="标签" />
+            </div>
+            <div id="ds-tags-input-disabled" class="fixture__state">
+                <CaomeiTagsInput
+                    v-model="dsTags"
+                    disabled
+                    placeholder="标签"
+                />
+            </div>
+            <div id="ds-date-picker-default" class="fixture__state">
+                <CaomeiDatePicker v-model="dsDate" />
+            </div>
+            <div id="ds-date-picker-disabled" class="fixture__state">
+                <CaomeiDatePicker v-model="dsDate" disabled />
+            </div>
+            <div id="ds-password-default" class="fixture__state">
+                <CaomeiPassword v-model="dsPassword" placeholder="密码" />
+            </div>
+            <div id="ds-password-disabled" class="fixture__state">
+                <CaomeiPassword
+                    v-model="dsPassword"
+                    disabled
+                    placeholder="密码"
+                />
+            </div>
+            <div id="ds-file-upload-default" class="fixture__state">
+                <CaomeiFileUpload />
+            </div>
+            <div id="ds-file-upload-disabled" class="fixture__state">
+                <CaomeiFileUpload disabled />
+            </div>
         </section>
 
         <!-- Button 角标外扩：角标不得改变按钮外盒几何 -->
@@ -1055,5 +1191,21 @@ const fvFieldOptions = [
     flex-direction: column;
     gap: var(--caomei-space-3);
     width: min(20rem, 100%);
+}
+
+/*
+  禁用态用例宿主允许收缩（`min-width: 0`）：否则字段族子元素的内禀最小宽会把文档宽度顶到
+  视口之外，在移动端模拟的极窄探针视口下会改变布局视口宽度（影响浮层可用宽收敛的判别）。
+*/
+#disabled-size,
+#badge-layout {
+    min-width: 0;
+}
+
+#disabled-size .fixture__state,
+#badge-layout .fixture__state,
+#disabled-size .fixture__state > *,
+#badge-layout .fixture__state > * {
+    min-width: 0;
 }
 </style>

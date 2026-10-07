@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-05T10:46:41.783Z",
+    "capturedAt": "2026-10-07T12:57:40.717Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1618,6 +1618,42 @@
         },
         "checkbox-group.options.gap": {
             "gap": "8px"
+        },
+        "tabs.horizontal.list": {
+            "overflow": "auto hidden",
+            "padding-bottom": "1px",
+            "box-shadow": "rgb(229, 231, 235) 0px -1px 0px 0px inset",
+            "border-bottom-width": "0px"
+        },
+        "tabs.horizontal.trigger-active": {
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgb(37, 99, 235)",
+            "color": "rgb(37, 99, 235)",
+            "font-weight": "500"
+        },
+        "tabs.horizontal.trigger-inactive": {
+            "border-bottom-width": "2px",
+            "border-bottom-color": "rgba(0, 0, 0, 0)",
+            "color": "rgb(107, 114, 128)"
+        },
+        "tabs.vertical.list": {
+            "overflow": "visible",
+            "padding-bottom": "0px",
+            "box-shadow": "none",
+            "border-right-width": "1px"
+        },
+        "tabs.vertical.trigger-active": {
+            "border-right-width": "2px",
+            "border-right-color": "rgb(37, 99, 235)",
+            "border-bottom-width": "0px",
+            "color": "rgb(37, 99, 235)",
+            "font-weight": "500"
+        },
+        "tabs.vertical.trigger-inactive": {
+            "border-right-width": "2px",
+            "border-right-color": "rgba(0, 0, 0, 0)",
+            "border-bottom-width": "0px",
+            "color": "rgb(107, 114, 128)"
         },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""

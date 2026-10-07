@@ -116,6 +116,25 @@ const CALENDAR_SELECTED_PROPS = ['background-color', 'color']
 const CALENDAR_TODAY_PROPS = ['border-top-width', 'border-top-color']
 const CHECKBOX_CONTROL_PROPS = ['width', 'height', 'border-top-left-radius']
 
+/**
+ * Tabs：指示条几何与列表分隔线。
+ *
+ * - 指示条 = 触发器的 `border-bottom`（横向）/ `border-right`（纵向），激活态 2px 主色；
+ * - 列表以内边距盒的 1px 内阴影表达分隔线，并以 `padding-bottom: 1px` 让激活指示条整行盖住它
+ *   （`overflow` 非 `visible` 时在**内边距盒**处裁剪，故指示条越出的 1px 必须落在此内边距内）。
+ *
+ * 不采样瞬态动画属性；`color` / `border-*-color` 虽参与 `transition`，但初始渲染即为终值，
+ * 采集前 250ms 稳定等待已覆盖（无状态变更触发过渡）。声明层契约见
+ * `test/contracts/tabs-list-overflow.test.ts` / `tabs-list-separator.test.ts`，像素级对照见
+ * `test/e2e/tabs-indicator.e2e.ts`。
+ */
+const TABS_HORIZONTAL_LIST_PROPS = ['overflow', 'padding-bottom', 'box-shadow', 'border-bottom-width']
+const TABS_HORIZONTAL_ACTIVE_PROPS = ['border-bottom-width', 'border-bottom-color', 'color', 'font-weight']
+const TABS_HORIZONTAL_INACTIVE_PROPS = ['border-bottom-width', 'border-bottom-color', 'color']
+const TABS_VERTICAL_LIST_PROPS = ['overflow', 'padding-bottom', 'box-shadow', 'border-right-width']
+const TABS_VERTICAL_ACTIVE_PROPS = ['border-right-width', 'border-right-color', 'border-bottom-width', 'color', 'font-weight']
+const TABS_VERTICAL_INACTIVE_PROPS = ['border-right-width', 'border-right-color', 'border-bottom-width', 'color']
+
 /** 组件设计 §6 P1 约定采样（Card / Tag / Message simple / Password / DataTable）。 */
 const CARD_PROPS = ['background-color', 'border-top-left-radius', 'border-top-color', 'border-top-width', 'box-shadow']
 const CARD_BODY_PROPS = ['padding-top', 'padding-left']
@@ -238,6 +257,14 @@ function buildStaticSamples() {
     }
     add('checkbox-group.gap', '[data-cap="checkbox-group"] .caomei-checkbox-group', ['gap'])
     add('checkbox-group.options.gap', '[data-cap="checkbox-group"] .caomei-checkbox-group__options', ['gap'])
+
+    // Tabs：指示条几何与列表分隔线（横向 / 纵向各 3 项，激活态静态指定）
+    add('tabs.horizontal.list', '[data-cap="tabs:horizontal"] .caomei-tabs__list', TABS_HORIZONTAL_LIST_PROPS)
+    add('tabs.horizontal.trigger-active', '[data-cap="tabs:horizontal"] .caomei-tabs__trigger[data-state="active"]', TABS_HORIZONTAL_ACTIVE_PROPS)
+    add('tabs.horizontal.trigger-inactive', '[data-cap="tabs:horizontal"] .caomei-tabs__trigger:not([data-state="active"])', TABS_HORIZONTAL_INACTIVE_PROPS)
+    add('tabs.vertical.list', '[data-cap="tabs:vertical"] .caomei-tabs__list', TABS_VERTICAL_LIST_PROPS)
+    add('tabs.vertical.trigger-active', '[data-cap="tabs:vertical"] .caomei-tabs__trigger[data-state="active"]', TABS_VERTICAL_ACTIVE_PROPS)
+    add('tabs.vertical.trigger-inactive', '[data-cap="tabs:vertical"] .caomei-tabs__trigger:not([data-state="active"])', TABS_VERTICAL_INACTIVE_PROPS)
 
     return samples
 }

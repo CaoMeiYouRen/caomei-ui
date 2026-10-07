@@ -35,6 +35,10 @@ import {
     CaomeiSelectButton,
     CaomeiSplitButton,
     CaomeiSwitch,
+    CaomeiTabContent,
+    CaomeiTabList,
+    CaomeiTabs,
+    CaomeiTabTrigger,
     CaomeiTag,
     CaomeiTextarea,
     CaomeiToastProvider,
@@ -49,8 +53,8 @@ import { ui } from './ui'
  *
  * 覆盖范围只含**声明式样式面**：尺寸档位 / 变体与语气 / 状态与几何 / 触发器结构 /
  * 纯图标按钮几何 / 局部层叠 / 浮层尺寸档位 / Switch 开关 / Toast 语气强调色 /
- * 锚定浮层面板背景·圆角·阴影（浮层视觉契约固化）。需不稳定时序的采样面（浮层面板 z-index、
- * 小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
+ * 锚定浮层面板背景·圆角·阴影（浮层视觉契约固化）/ Tabs 指示条几何与列表分隔线。
+ * 需不稳定时序的采样面（浮层面板 z-index、小屏媒体查询档位）不在本夹具内，登记见采集装置记录。
  *
  * `data-cap` 标记与运行器的采样键一一对应：新增 / 重命名标记必须同步运行器的
  * 采样面声明，否则采集的「受检面不变量」自检直接失败。
@@ -645,6 +649,50 @@ ui.setDialog = (size, open) => {
                     v-model="checkboxGroupValue"
                     :options="options"
                 />
+            </div>
+        </section>
+
+        <!-- 16. Tabs：指示条几何（触发器 2px 主色下 / 右边框）与列表分隔线（内边距盒 + 内阴影）。
+              横向与纵向各一组，激活态由 `model-value` 静态指定（无交互时序，采样稳定）。 -->
+        <section>
+            <div class="case" data-cap="tabs:horizontal">
+                <CaomeiTabs model-value="account">
+                    <CaomeiTabList aria-label="横向分区">
+                        <CaomeiTabTrigger value="account">
+                            账户
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="password">
+                            密码
+                        </CaomeiTabTrigger>
+                    </CaomeiTabList>
+                    <CaomeiTabContent value="account">
+                        账户面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="password">
+                        密码面板
+                    </CaomeiTabContent>
+                </CaomeiTabs>
+            </div>
+            <div class="case" data-cap="tabs:vertical">
+                <CaomeiTabs
+                    model-value="account"
+                    orientation="vertical"
+                >
+                    <CaomeiTabList aria-label="纵向分区">
+                        <CaomeiTabTrigger value="account">
+                            账户
+                        </CaomeiTabTrigger>
+                        <CaomeiTabTrigger value="password">
+                            密码
+                        </CaomeiTabTrigger>
+                    </CaomeiTabList>
+                    <CaomeiTabContent value="account">
+                        账户面板
+                    </CaomeiTabContent>
+                    <CaomeiTabContent value="password">
+                        密码面板
+                    </CaomeiTabContent>
+                </CaomeiTabs>
             </div>
         </section>
 

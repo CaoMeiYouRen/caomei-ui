@@ -43,8 +43,8 @@ const PROJECTS = [
 export default defineConfig({
     testDir: './test/e2e',
     testMatch: '**/*.e2e.ts',
-    /** 画廊回归跑在文档站产物上（独立配置 `playwright.gallery.config.ts`），夹具 project 须排除 */
-    testIgnore: '**/gallery.e2e.ts',
+    /** 画廊回归与文档站主题隔离跑在文档站产物上（独立配置 `playwright.gallery.config.ts`），夹具 project 须排除 */
+    testIgnore: ['**/gallery.e2e.ts', '**/docs-theme-isolation.e2e.ts'],
     fullyParallel: true,
     forbidOnly: Boolean(process.env.CI),
     retries: process.env.CI ? 1 : 0,

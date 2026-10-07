@@ -3,13 +3,13 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * 组件画廊浏览器回归的专用 Playwright 配置（见 docs/design/governance/2026-09-28-m4-test-regression.md）。
+ * 组件画廊与文档站主题隔离浏览器回归的专用 Playwright 配置（见 docs/design/governance/2026-09-28-m4-test-regression.md）。
  *
- * 画廊是**文档站**页面（`/components/showcase`），不在 E2E 夹具应用里，故与
- * `playwright.config.ts`（夹具应用 + 三档视口）分离：
+ * 这两类断言作用于**文档站**页面（`/components/showcase`、`/components/rich-text-editor`），
+ * 不在 E2E 夹具应用里，故与 `playwright.config.ts`（夹具应用 + 三档视口）分离：
  * - `webServer` 先 `docs:build` 再 `vitepress preview`，断言的是**构建产物**（与 V 阶段同口径）；
  * - 单 project、单 worker、`reducedMotion: 'reduce'`，列数 / 溢出断言在用例内逐档 `setViewportSize`；
- * - 主配置以 `testIgnore` 排除 `gallery.e2e.ts`，避免夹具 project 误跑。
+ * - 主配置以 `testIgnore` 排除这两个规格，避免夹具 project 误跑。
  *
  * 命令：`pnpm test:e2e:gallery`
  */
@@ -30,7 +30,7 @@ const CHROMIUM_ARGS = [
 
 export default defineConfig({
     testDir: './test/e2e',
-    testMatch: '**/gallery.e2e.ts',
+    testMatch: ['**/gallery.e2e.ts', '**/docs-theme-isolation.e2e.ts'],
     fullyParallel: false,
     forbidOnly: Boolean(process.env.CI),
     retries: process.env.CI ? 1 : 0,

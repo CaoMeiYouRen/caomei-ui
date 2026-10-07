@@ -24,7 +24,7 @@
 
 /* 导航栏窄档（<960px）收敛：收紧导航项内边距，配合切换器隐藏标签，消除 768–959px 档的横向溢出。
    规则置于文档站全局层并用 .VPNavBar 前缀限定，避免与默认主题风格漂移。 */
-@media (max-width: 959px) {
+@media (width <= 959px) {
     .VPNavBar .VPNavBarMenuLink {
         padding: 0 5px;
         font-size: 13px;

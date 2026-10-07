@@ -214,7 +214,7 @@ const attrs = computed(() => {
 以下检查必须全部通过：
 
 - `pnpm lint`（ESLint 零 error）
-- `pnpm lint:css`（Stylelint，涉及样式时）
+- `pnpm lint:css`（Stylelint，涉及样式时；受检面含 `src/**` 与文档站主题 `docs/.vitepress/theme/**`）
 - `pnpm lint:md`（文档改动时）
 - `pnpm typecheck`（`vue-tsc --noEmit` 零 error）
 - `pnpm typecheck:docs`（文档站类型检查，`vue-tsc -p docs/tsconfig.json` 零 error）

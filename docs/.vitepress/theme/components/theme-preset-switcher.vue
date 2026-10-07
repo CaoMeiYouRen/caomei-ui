@@ -77,7 +77,7 @@ onMounted(() => {
 }
 
 /* 窄档（<960px）收敛：隐藏标签并收紧左边距，避免导航栏在 768–959px 档横向溢出 */
-@media (max-width: 959px) {
+@media (width <= 959px) {
     .theme-preset-switcher {
         margin-left: 4px;
     }

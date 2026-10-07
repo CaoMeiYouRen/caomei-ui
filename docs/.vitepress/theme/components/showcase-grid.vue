@@ -152,11 +152,12 @@ const groups = computed(() => {
 
 .caomei-showcase__card:hover {
     border-color: var(--vp-c-brand-1);
-    box-shadow: 0 6px 20px rgb(0 0 0 / 8%);
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.08);
 }
 
 .caomei-showcase__preview {
     display: flex;
+
     /*
       `height`（而非 `min-height`）是承重声明：预览区高度必须与内容无关，否则同一行卡片
       会因演示内容高低不一（如 Card 演示比 Button 高）而错开「名称 / 描述」的起始线

@@ -228,3 +228,4 @@ const attrs = computed(() => {
 - ESLint 的 type-aware 检查与 `vue-tsc` 的解析链不同：后者经 `@vue/language-core` 解析 SFC，前者走原生 TypeScript。项目未声明 `declare module '*.vue'` 时，组件导入会退化为 `any`，使 `mount()` 返回 `VueWrapper<any, any>` 并触发成片的 unsafe 族误报。
 - 通配 `*.vue` 声明是「以降低模块解析诊断换取类型链可用」的取舍：任何 `.vue` 结尾的说明符都会解析成功，路径拼错不再报 TS2307；前提是失败仍闭合（由 `pnpm build` 与 `pnpm test` 的模块解析兜底），且边界须写入声明注释。
 - ESLint 9 扁平配置**不自动读取 `.gitignore`**：构建产物目录（如 `docs/.vitepress/.temp`、`.nuxt`、`dist`）必须在 `ignores` 中显式列出，否则本地跑过一次构建后 lint 会把产物当源码扫（实测 12 万+ 报错）；CI 干净检出不会暴露，属「只在开发者本地复现」的假失败。
+- **文件末尾换行**：仓库 `.editorconfig` 声明 `[*] insert_final_newline = true`，所有受版本控制的文本文件须以 `\n` 结尾；该规格由 `check:final-newline` 守卫（接入 `governance:check`）机检。漂移有实际后果——`npm version`（`@npmcli/package-json`）改写清单时会补入末尾换行，使暂存 diff 多出一个非版本行 hunk，令 `check-review-gate-artifacts` 的「发布元数据豁免」失效并阻断发布（2026-10-08 `npm version 0.6.0` 受阻即此因）。

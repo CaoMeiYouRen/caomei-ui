@@ -1,5 +1,26 @@
 # caomei-ui
 
+# Unreleased (2026-10-08)
+
+# [0.6.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.5.0...v0.6.0) (2026-10-08)
+
+### ✨ 新功能
+
+* **governance:** 新增组件设计 §5 清单对账守卫 ([27c9700](https://github.com/CaoMeiYouRen/caomei-ui/commit/27c9700))
+* **governance:** 规划编号守卫豁免进行中阶段条目表 ([7cf0747](https://github.com/CaoMeiYouRen/caomei-ui/commit/7cf0747))
+* **governance:** 规划载体编号守卫扩面 ([5ac4100](https://github.com/CaoMeiYouRen/caomei-ui/commit/5ac4100))
+
+### 🐛 Bug 修复
+
+* **a11y:** 消除分组标签与折叠内容的悬空引用 ([5d3ce82](https://github.com/CaoMeiYouRen/caomei-ui/commit/5d3ce82))
+* **accordion:** 修正自定义触发器示例无法收起并补开合回归 ([f41a2e2](https://github.com/CaoMeiYouRen/caomei-ui/commit/f41a2e2))
+* **data-table:** 排序指示条常驻占位，列宽不再随排序变化 ([449068e](https://github.com/CaoMeiYouRen/caomei-ui/commit/449068e))
+* **docs:** 隔离文档站正文列表样式对 RichTextEditor 内核浮层的泄漏 ([35c6731](https://github.com/CaoMeiYouRen/caomei-ui/commit/35c6731))
+* **governance:** 修正 ref-attr 守卫在捕获模式下崩溃 ([a3591a0](https://github.com/CaoMeiYouRen/caomei-ui/commit/a3591a0))
+* **style:** 更新组件背景色和阴影样式 ([89c4d82](https://github.com/CaoMeiYouRen/caomei-ui/commit/89c4d82))
+* **tabs:** 修复 TabList 多余纵向滚动条 ([568b042](https://github.com/CaoMeiYouRen/caomei-ui/commit/568b042))
+* **tabs:** 修复激活指示条被裁剪并同步分隔线契约 ([7b71b2e](https://github.com/CaoMeiYouRen/caomei-ui/commit/7b71b2e))
+
 # [0.5.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.4.0...v0.5.0) (2026-09-30)
 
 ### ✨ 新功能

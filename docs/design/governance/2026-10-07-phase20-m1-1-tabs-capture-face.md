@@ -1,7 +1,7 @@
 # Phase 20 M1-1：Tabs 纳入计算样式采样面
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M1-1**（测试装置与覆盖扩面）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M1-1**（测试装置与覆盖扩面）
 > 装置本体：`test/capture/`（夹具 / 运行器 / 冻结基线）；装置落地记录见 [2026-09-22 采集装置迁移](./2026-09-22-m3-5-computed-style-capture-landing.md)
 > 依据：Phase 19 M3-1 显式声明「`capture:styles` 采样面不含 Tabs，指示条视觉变更仅由 E2E 像素断言承载」（[2026-10-06 Tabs 指示条裁剪修复](./2026-10-06-phase19-m3-1-tabs-indicator-clipping.md)）；本轮新建候选 N1
 > 快照：本仓工作区（`pnpm capture:styles` 0 差异、`pnpm test test/capture` 全绿）；**未推送**

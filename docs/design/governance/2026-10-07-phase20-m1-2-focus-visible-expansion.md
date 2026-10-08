@@ -1,7 +1,7 @@
 # Phase 20 M1-2：焦点可见扩面补全
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M1-2**（测试装置与覆盖扩面）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M1-2**（测试装置与覆盖扩面）
 > 依据：Phase 19 M1-4 的「未纳入面」——焦点可见扩面仅覆盖 5 个非字段 / 非按钮组件，其余约 30 个含 `:focus-visible` 的文件未纳入（[2026-10-05 P3 几何 / 交互层装置](./2026-10-05-phase19-m1-4-geometry-interaction-devices.md) §5）
 > 快照：本仓工作区（`test:e2e` 276 passed、`pnpm verify` exit 0）；**未推送**
 

@@ -1,7 +1,7 @@
 # M7-1 视觉回归基线立项评估
 
 > 创建时间：2026-10-08
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M7-1**（视觉回归基线立项评估）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M7-1**（视觉回归基线立项评估）
 > 依据：Phase 20 范围评估 [D9](./2026-10-07-next-stage-scope-evaluation-4.md)（2026-10-07 用户裁定「**上收 M7 立项评估**」）；[测试规范](../../standards/testing.md) §1 / §2.1 / §6；[M4 测试回归记录](./2026-09-28-m4-test-regression.md) §7（视觉回归基线当时作为独立候选延后）；Playwright 官方「Visual comparisons」文档（`https://playwright.dev/docs/test-snapshots` 与 `PageAssertions#toHaveScreenshot`，抓取于 2026-10-08）
 > **边界**：**只出立项建议**——**不建实体基线、不改代码**（零 `src/**` 零 `test/**`）。生产者侧形态与阈值按官方文档与下游实证描述，**本轮不实际生成任何基线**。
 > 快照：本仓 `ac21a46`；下游只读取证（**测量时点 2026-10-08 19:32 +08:00**）——dependfix `f48bb74`、momei `a5b8274b`（两仓工作区干净）。下游状态为**时点快照**，可能随并行会话推进。

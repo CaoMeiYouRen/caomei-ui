@@ -1,7 +1,7 @@
 # Phase 20 M2-1：a11y 同类悬空引用处置（分组标签 / 折叠内容）
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M2-1**（基建与治理守卫补口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M2-1**（基建与治理守卫补口）
 > 依据：Phase 14 M1 记录 §6.5「同类悬空引用（已登记、未修）」——① `CaomeiDropdownMenuGroup` / `CaomeiDropdownMenuRadioGroup` 无内嵌标签时 `aria-labelledby` 悬空；② `CaomeiAccordion` 折叠触发器关闭态 `aria-controls=""`（[2026-09-26 a11y 例外处置](./2026-09-26-m1-a11y-exception-disposal-and-surface.md)）
 > 快照：本仓工作区（`pnpm verify` exit 0、`test:e2e` 312 passed）；**未推送**
 

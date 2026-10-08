@@ -66,7 +66,7 @@
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **423 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 19 归档已知观察⑤「归档载体只增不减，本批接受」。候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（来源：[Phase 19 归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §8） | 低 |
+| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 20 归档已知观察「归档载体只增不减，本批接受」。候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（来源：[Phase 20 归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §8） | 低 |
 
 ### 1.7 服务层候选（composables）
 

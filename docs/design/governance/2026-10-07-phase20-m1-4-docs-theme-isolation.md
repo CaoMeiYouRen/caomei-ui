@@ -1,7 +1,7 @@
 # Phase 20 M1-4：文档站浮层泄漏的常驻浏览器断言
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M1-4**（测试装置与覆盖扩面）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M1-4**（测试装置与覆盖扩面）
 > 依据：Phase 19 M3-2 登记的边界——声明层契约（`test/contracts/docs-theme-prose-isolation.test.ts`）只校验 CSS 文本，**无法感知 VitePress 选择器 / 特异性漂移**（[2026-10-06 下拉留白修复](./2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md) §4）；本轮新建候选 B32
 > 快照：本仓工作区（`test:e2e:gallery` 11 passed、`pnpm verify` exit 0）；**未推送**
 

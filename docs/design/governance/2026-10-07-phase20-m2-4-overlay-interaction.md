@@ -1,7 +1,7 @@
 # Phase 20 M2-4：浮层交互 E2E 规格（Dialog / ConfirmDialog）
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M2-4**（基建与治理守卫补口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M2-4**（基建与治理守卫补口）
 > 依据：浮层交互（焦点落位 / 滚动锁复位）此前无常驻 E2E 覆盖；候选 B26
 > 快照：本仓工作区（`pnpm verify` exit 0、`test:e2e` 318 passed）；**未推送**
 

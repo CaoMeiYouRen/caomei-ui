@@ -1,7 +1,7 @@
 # Phase 20 M2-2：文档站主题 CSS 纳入 lint 面
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M2-2**（基建与治理守卫补口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M2-2**（基建与治理守卫补口）
 > 依据：`lint:css:check` 的 glob 原为 `src/**/*.{html,css,scss,sass,vue}`，`docs/.vitepress/theme/**` 不在面内（Phase 19 M3-2 新增的文档站隔离规则仅靠人工 + 一次性探针验证）；候选 B23
 > 快照：本仓工作区（`pnpm verify` exit 0、`pnpm lint:css:check` exit 0）；**未推送**
 

@@ -1,7 +1,7 @@
 # Phase 20 M6-1：0.6.0 发布执行与 GitHub Release 回填记录
 
 > 创建时间：2026-10-08
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M6-1**（发布收口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M6-1**（发布收口）
 > 依据：[发布指南](../../guide/release.md)；Phase 20 范围评估 [D4](./2026-10-07-next-stage-scope-evaluation-4.md)（2026-10-07 裁定「发 **0.6.0**」）；长期任务[第 22 轮门槛复核](../../plan/recurring.md)（`d22f034`）
 > 快照：发布对象 = `e996656` 起累积的 Phase 19 / 20 的 `src/**` 变更；本记录终态 HEAD `8e3c395`（= `origin/master`）。
 > 边界：**本地手动发布**（未启用 CI 自动发布）；tag 不经重指；`npm publish` 由用户本地执行。

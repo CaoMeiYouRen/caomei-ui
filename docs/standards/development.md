@@ -189,6 +189,7 @@ const attrs = computed(() => {
 - `package.json` 声明 `sideEffects`（`**/*.css`）以支持 tree-shaking。
 - 子路径导出：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`；`theme.css` 是基础层（tokens + 暗色 + `.caomei-root` + 品牌预设）唯一入口，**不提供单体全量样式**。
 - `rolldown-dts` 可能在 `dist/index.d.ts` 留下裸副作用导入；只要该包可解析且列于 `dependencies` 即可接受，不得据此宣称「公开类型面零第三方引用」。
+- **可选 peer 依赖遇字面量动态 `import()` 在消费方打包器下仍被静态解析**：`peerDependencies`（+ `peerDependenciesMeta.optional`）只解决「不装也能构建」，**不解决「用了但没装」**——字面量 `await import('pkg')` 会被 Vite / Rolldown 在消费方构建期解析，未安装即构建硬报错（与「未安装时运行期降级」的文档口径矛盾）；同理包根 `.d.ts` 若 `import type` 该 peer，未安装消费方 `tsc` 也会失败。要让「可选」名副其实须三选一：① 提升为常规 `dependencies`；② bundler-ignore / 运行期按 specifier 字符串加载并在文档明确必须安装；③ 拆分独立子路径入口。**判据**：unbundled 产物中该 peer 的 import 命中为 0 只证明**未使用**面，不证明**未安装**面——须用最小消费方 fixture 分别实测「未安装但未使用」与「未安装却使用」两条路径。
 
 ## 9. 代码生成准则
 

@@ -1,7 +1,7 @@
 # Phase 20 M2-5：执行层规则重述与失效引用收敛
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M2-5**（基建与治理守卫补口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M2-5**（基建与治理守卫补口）
 > 依据：`check-audit-protocol` 只覆盖审计协议数值（轮次 / 时长），任务粒度阈值仍散落在 skill / agent 定义中；候选 B30 的「失效引用」复核后判定 **`.github` 面原锚点有效**（`.github/**` 由 GitHub 渲染，slug 不补 `_`），无清零对象；本批同时补齐「AI 资产链接与 GitHub slug 锚点」的机检面。
 > 快照：本仓工作区（`pnpm verify` exit 0、`ai:check` / `check:audit-protocol` 全绿）；**未推送**
 

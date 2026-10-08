@@ -4,6 +4,33 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-10-09 阶段归档蒸馏（Phase 20）
+
+> 本批活跃 **22 条全部处置**：分态 `migrate 22 / compress 0 / remove 0 / keep 0`。归档摘要 **22 行**（可复算：`awk '/^## 2026-10-09 阶段归档蒸馏（Phase 20）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[AI 协作规范 §9](../../standards/ai-collaboration.md)、[测试规范 §2.1 / §4 / §7 / §10](../../standards/testing.md)、[规划规范 §9](../../standards/planning.md)、[开发规范 §8](../../standards/development.md)、[文档规范 §3](../../standards/documentation.md)；其中 **6 条**落点此前已存在（行末标「落点已存在」），**16 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。
+
+- [2026-10-08] [process] 跨仓只读取证的「HEAD / 工作区干净」断言必须带测量时点，并接受并行会话窗口内变化；凡依赖本会话不控制的外部状态，须断言只读取证的版本值 / 文件清单不受窗口内变化影响 → docs/standards/ai-collaboration.md §9
+- [2026-10-08] [pattern] 锚点 slug 随「源文件所在渲染器」而不同（`docs/**` 补 `_` / `.github` 等 GitHub 渲染面不补），须按渲染器分面校验、不能靠单一 slug 规则 → docs/standards/documentation.md §3（落点已存在）
+- [2026-10-07] [pattern] 常驻 E2E 装置扩面的统一形态：下界守卫防收窄 / 基线 diff 只含新增键 + `capturedAt` / 每新键负向对照 / 未纳入面显式登记 → docs/standards/testing.md §2.1
+- [2026-10-07] [pattern] `li + li` 类「相邻兄弟」泄漏断言必须取第二个元素（取样第一个恒过）；凡规则语义含「兄弟 / 相邻 / 非首项」，取样点须落在被命中集合内 → docs/standards/testing.md §2.1
+- [2026-10-07] [tooling] 夹具宿主的最小宽会顶宽「移动端模拟」的布局视口，使极窄探针失去判别力；加 `min-width: 0` 消除 → docs/standards/testing.md §7
+- [2026-10-07] [tooling] 文档站浏览器规格须成对维护 `playwright.gallery.config.ts` 的 `testMatch` 与 `playwright.config.ts` 的 `testIgnore` → docs/standards/testing.md §4
+- [2026-10-07] [process] 评估记录的「候选 → 主线 / 决策项」映射以「主线草案」为单一口径；提名期评估内阶段编号不写定值 → docs/standards/planning.md §9
+- [2026-10-01] [pattern] 「终局结论收口」的完整形态（逐条复算 / 唯一载体 + 改指规范指针 / 候选池无残留 / 声明终局含义） → docs/standards/planning.md §9
+- [2026-10-01] [process] 修复批次落盘后必须复跑「被修复点对应的门禁」再申报复审；记录内插入 / 重排章节后回扫编号与 `§N` 引用 → docs/standards/ai-collaboration.md §9
+- [2026-10-01] [process] 含定量复算的评估类交付 `standard` 时间盒易被低估——按复算面（行数 × 每行取证项）预估 → docs/standards/ai-collaboration.md §3.1（落点已存在）
+- [2026-10-01] [pattern] 跨文件清单联动用「JSON 单一事实源 + 双向对账」落地（缺项 / 多项 + 例外名单反向校验），新增消费点未补清单即门禁失败 → docs/standards/testing.md §10
+- [2026-10-01] [process] `todo.md` 完成态回填不得早于 Review Gate 结论，两者同批落地且提交前结论已回填 → docs/standards/planning.md §3.9（落点已存在）
+- [2026-10-01] [pattern] 对账类守卫的「命中任一即视为已登记」口径会产生假阴性——凡宣称对账集合就必须校验全部元素 → docs/standards/testing.md §10
+- [2026-10-01] [pattern] 几何 / 冻结基线类断言的判别力若依赖夹具压力形态，必须把该形态本身断言为前置守卫 → docs/standards/testing.md §10（落点已存在）
+- [2026-10-01] [tooling] `docs:check` 的 `integrity` / `interpolation` 计数只统计受版本控制 md，引用须在 `git add` 后复算 → docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-10-01] [pattern] 扩冻结基线式采样面时负向对照必须挑「默认配置下两值确实不同」的契约点（否则假阴性） → docs/standards/testing.md §2.1
+- [2026-10-01] [pattern] 「瞬时元素」不是采样面排除理由——可用「常驻化 + 程序化入队 + 与交互段排序」纳入 → docs/standards/testing.md §2.1
+- [2026-10-01] [process] 同一工作区可能被并行会话写入：动手前确认、检出后冻结、三方取证定位归属、逐载体复核 → docs/standards/ai-collaboration.md §9
+- [2026-10-01] [tooling] 解包 / 产物类校验一律落在仓库外，避免污染「扫描仓库现状」的守卫 → docs/standards/ai-collaboration.md §9
+- [2026-09-30] [process] 仓库外易变事实（registry / 远端 refs）须在定稿前重取并钉「测量时点」 → docs/standards/ai-collaboration.md §9
+- [2026-09-30] [process] 同一组计数跨载体漂移是最高频文档 blocker——改完计数须逐载体 `rg -o` 核对出现次数 → docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-09-30] [pattern] 「可选 peer」遇字面量动态 `import()` 在消费方打包器下仍被静态解析；「未安装但未使用」与「未安装却使用」须分别实测 → docs/standards/development.md §8
+
 ## 2026-09-30 阶段归档蒸馏（Phase 16）
 
 > 本批活跃 **20 条全部处置**：分态 `migrate 20 / compress 0 / remove 0 / keep 0`。归档摘要 **20 行**（可复算，快照 2026-09-30：`awk '/^## 2026-09-30 阶段归档蒸馏（Phase 16）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。本批为 **Phase 16 归档时遗漏义务的补做**（覆盖 Phase 16 执行期与本 session 累积的 20 条）；复用规则外科式写入 `testing §2.1 / §4 / §7 / §10`、`git §3`、`design-spec §3.2`、`planning §9`、`ai-collaboration §9`；其中 **7 条**落点此前已存在（行末标「落点已存在」），**13 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。

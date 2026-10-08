@@ -1,7 +1,7 @@
 # Phase 20 M2-3：直连 Reka 同型触发器的机检守卫
 
 > 创建时间：2026-10-07
-> 关联条目：[待办事项](../../plan/todo.md) Phase 20 **M2-3**（基建与治理守卫补口）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 20 **M2-3**（基建与治理守卫补口）
 > 依据：本库为部分 Reka primitive 提供包装（`CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger` / `CaomeiTabTrigger` / `CaomeiStepperTrigger`），直连同型 primitive 会绕过包装契约且无守卫可感知；候选 B19
 > 快照：本仓工作区（`pnpm verify` exit 0）；**未推送**
 

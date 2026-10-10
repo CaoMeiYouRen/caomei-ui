@@ -120,12 +120,17 @@ pnpm release:manual announce  --version=0.7.0 --yes
 - **下游修复指引**：把 `import 'caomei-ui/styles.css'` 改为 `import 'caomei-ui/theme.css'`；若此前依赖单体样式覆盖全部组件，改为「显式引入 `theme.css` + 按需引入组件」。resolver 与 Nuxt 模块会自动注入基础层，**注入点须唯一**以免重复注入与覆盖丢失。
 - **消费前提**：产物 JS 保留逐模块 CSS import，故**裸 Node ESM 不能直接 `import` 包根**（`ERR_UNKNOWN_FILE_EXTENSION: .css`），须经打包器（Vite / rolldown 系实测）或等效 CSS stub 加载器；本仓 `check:build` 的产物冒烟即使用 stub loader。
 
-## 10. 下游兼容性回归（后置）
+## 10. 下游兼容性回归
 
-- 按 Phase 5 第二阶段决策（2026-09-19），**下游接入验证后置**为发布后由下游实际迁移反馈驱动，本阶段不作为发布准入。
-- 启用条件（三者同时满足）：组件库功能基本可用、已接入至少一个下游、稳定使用一段时间后出现新的组件库改动。
-- 回归范围：已接入下游（dependfix/platform、caomei-auth、rss-impact-next、momei、afdian-linker），至少覆盖 typecheck 与 build。
-- 通过跨仓库机制（`repository_dispatch` 或 reusable workflow）触发；任一 typecheck / build 失败视为兼容性阻塞。本机制归属[路线图 Phase 8](/plan/roadmap)。
+> **历史**：本机制原为后置项（2026-09-19 决策「下游接入验证后置」）；2026-10-10 随[路线图 Phase 8](/plan/roadmap) **启动**，以 dependfix 为试点。
+
+- **机制**：对已接入下游执行跨仓库**最小兼容性检查**（`typecheck` + `build`），任一失败视为**兼容性阻塞**。
+- **库侧载体**：caomei-ui 提供 reusable workflow `.github/workflows/compat-check.yml`（`on: workflow_call`，在**调用方仓库上下文**运行、**无需跨仓 token**），供下游 `uses:` 调用。
+- **受检清单（接入即登记）**：以**实测消费面**为准（**已消费＝在受检面**），新下游**接入时增量登记**，接入前不属于受检面。
+  - **已消费（在受检面）**：`dependfix`（`apps/platform`）、`momei`（根包）。
+  - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——**接入后增量登记**。
+- **触发与容量**：每次 caomei-ui **发布（tag）触发 1 次**；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**触发方式由调用方决定**（下游 `workflow_dispatch` / 既有定时回归）——「发布即刻自动触发」需跨仓 dispatch 凭据（A 形态），**当前未启用**。
+- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；库侧 reusable workflow **已就绪**、**下游接入进行中**（dependfix 试点）。启动范围与触发形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
 
 ## 11. 相关文档
 

@@ -16,7 +16,7 @@
 | M2-2 | 发布流统一 | **发布指南 §3 同步为脚本编排说明面**（runbook 作为其文档面） | §3 与脚本实际步骤一致；tag 落点口径（版本提交 / CHANGELOG 提交）与发布元数据豁免边界写明；`docs:check` 全绿 | 已完成 |
 | M3-1 | 视觉基线落地 | **Playwright `toHaveScreenshot` 装置与首批基线**：独立 `playwright.visual.config.ts` + `__screenshots__` 随仓冻结基线 + 固定环境（chromium / 固定 viewport / DPR 1 / locale / tz / `reducedMotion: 'reduce'`）+ 双轴容差（`threshold` + 绝对 `maxDiffPixels`）+ 串行 `workers: 1` / `retries: 0` | 首批范围（按 M7-1 建议）基线入库且可复现；容差经实测标定；负向对照自证判别力；涉及渲染走 `@ui-validator`；不改组件行为 | 已完成 |
 | M3-2 | 视觉基线落地 | **CI 接入（先非阻断）与文档**：把视觉基线接入 `regression-weekly.yml`（或独立 workflow）作**非阻断**步骤；测试规范补装置口径 | 首个全绿 run 后可评估转阻断；**不进 `pnpm verify` 常驻链**；文档写明容差 / 阻断策略与转正路径 | 已完成 |
-| M4-1 | 治理口径收口 | **发布指南 §10 下游清单口径修正（接入即登记）**：把「已接入下游」改为**实测消费面**（dependfix + momei），零消费目标下游（caomei-auth / rss-impact-next / afdian-linker）标注为「接入后增量登记」 | §10 口径与实测一致；受检清单有唯一事实源 + 「接入即登记」约定；逐载体 `rg` 复核无旧口径残留 | 待执行 |
+| M4-1 | 治理口径收口 | **发布指南 §10 下游清单口径修正（接入即登记）**：把「已接入下游」改为**实测消费面**（dependfix + momei），零消费目标下游（caomei-auth / rss-impact-next / afdian-linker）标注为「接入后增量登记」 | §10 口径与实测一致；受检清单有唯一事实源 + 「接入即登记」约定；逐载体 `rg` 复核无旧口径残留 | 已完成 |
 | M4-2 | 治理口径收口 | **归档载体超阈维持的载体留痕**：`todo-archive.md` 行数超阈（warn）按 D11 **维持**，在 [Backlog](./backlog.md) 对应行同步当前计数（479 行）与维持裁定 | Backlog 计数与 `docs:check:line-count` 一致；维持裁定与其理由留痕 | 待执行 |
 
 > **非目标**：不启用**定时（cron）自动发布**；**不放开 `release.yml` publish**（提交驱动 CI 自动化维持评估，候选入 Backlog）；**不进入 1.x**（维持 0.x + 既有冻结窗口）；Phase 8 检查范围**不含** e2e / 视觉回归 / 全量单测 / 覆盖率；**不建立实体基线 / 快照库**；不修改下游仓库**业务代码**（dependfix 调用 job 属机制接入）；不为未接入目标下游建机制；**不压缩归档载体**（维持并留观察）、不纳入 B22 / B25 等其余治理候选；不纳入组件能力与长尾（B1 ~ B7）、国际化与 RTL（B9 ~ B11）；不重写已发布 tag；不做破坏性 API 变更；不引入 Tailwind / UnoCSS。

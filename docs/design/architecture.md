@@ -159,6 +159,6 @@ export default defineConfig({
 ## 7. 发布链路
 
 - Conventional Commits → semantic-release 推断版本 → 生成 CHANGELOG → 发布 npm → GitHub Release。
-- 下游兼容性回归机制（Phase 8，延迟启用）：组件库改动时同步触发已接入下游项目的 CI，验证类型与构建兼容性。
+- 下游兼容性回归机制（[Phase 8](/plan/roadmap)，**2026-10-10 启动**）：发布（tag）时对**已接入下游**（dependfix、momei）执行跨仓库 `typecheck` + `build` 兼容性检查（库侧 reusable workflow，B 形态）；受检清单以实测消费面为准、**接入即登记**（详见 [发布指南 §10](../guide/release.md)）。
 
 详见 [发布指南](../guide/release.md)。

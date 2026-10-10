@@ -59,25 +59,17 @@ It chains seven steps: `preflight → bump → changelog → publish → verify 
 - **Downstream fix**: replace `import 'caomei-ui/styles.css'` with `import 'caomei-ui/theme.css'`. The resolver and the Nuxt module inject the base layer automatically — keep a single injection point to avoid duplicate injection.
 - **Consumer requirement**: the shipped JS keeps per-module CSS imports, so plain Node ESM cannot import the package root (`ERR_UNKNOWN_FILE_EXTENSION: .css`). Use a bundler (Vite / rolldown tested) or an equivalent CSS stub loader (what our own `check:build` smoke uses).
 
-## Downstream compatibility regression (deferred)
+## Downstream compatibility regression
 
-When a component library change may affect downstream projects, run the CI of the onboarded downstream projects as well to check for compatibility issues.
+> **History**: this mechanism used to be deferred (2026-09-19 decision); it **started** with [roadmap Phase 8](/plan/roadmap) on 2026-10-10, piloted on dependfix.
 
-**Enable conditions** (all three):
-
-1. caomei-ui is basically usable;
-2. at least one downstream project is onboarded;
-3. after a period of stable use, a new library change appears.
-
-**Regression scope**: the onboarded downstream projects (dependfix/platform, caomei-auth, rss-impact-next, momei, afdian-linker), covering at least their typecheck and build.
-
-**Recommendations**:
-
-- Run key downstreams for patch changes; run all onboarded downstreams for minor / major.
-- Trigger through a cross-repo mechanism (`repository_dispatch` or a reusable workflow).
-- Any typecheck / build failure is a compatibility blocker and must not be released directly; decide by semantic versioning whether to fix the library or adapt the downstream.
-
-> This mechanism does not block project setup and early migration; it lands as an independent stage (roadmap Phase 8) after stabilization.
+- **Mechanism**: run a cross-repo **minimal compatibility check** (`typecheck` + `build`) against onboarded downstream projects; any failure is a **compatibility blocker**.
+- **Library-side carrier**: caomei-ui provides the reusable workflow `.github/workflows/compat-check.yml` (`on: workflow_call`, runs in the **caller's repository context**, **no cross-repo token**), which downstream projects call via `uses:`.
+- **Checked list (register on onboarding)**: based on the **actually consumed** set (**consumed = in scope**); a new downstream is registered **incrementally when onboarded** and is not in scope before that.
+  - **Consumed (in scope)**: `dependfix` (`apps/platform`), `momei` (root package).
+  - **Roadmap target downstreams with zero consumption today**: `caomei-auth` / `rss-impact-next` / `afdian-linker` — **register on onboarding**.
+- **Trigger and capacity**: triggered **once per caomei-ui release (tag)**; scope is at least `typecheck` + `build`, **excluding** e2e / visual regression / full unit tests / coverage. **The trigger is decided by the caller** (downstream `workflow_dispatch` / existing scheduled regression) — "auto-trigger on release" requires cross-repo dispatch credentials (form A) and is **not enabled today**.
+- **Ownership and status**: this mechanism is [roadmap Phase 8](/plan/roadmap); the library-side reusable workflow is **ready** and **downstream onboarding is in progress** (piloted on dependfix). See the Phase 8 scope evaluation record (`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`) for the trigger form and capacity boundary.
 
 ## Related docs
 

@@ -15,11 +15,15 @@ overrides:
   # GHSA-68fv-2mgg-jv7q：source-map-js < 1.2.2 存在经索引 source-map 段偏移的事件循环拒绝服务（Dependabot high）
   source-map-js: ^1.2.2
   # Phase 22 M2-2：开发作用域安全告警处置（均为传递依赖）
-  # 可修复者已覆盖；simple-git / @simple-git/argv-parser / node-forge 见治理记录（前者受阻于 @nuxt/devtools ESM 断供、后者无修复版本）
+  # 可修复者已覆盖；node-forge 无修复版本（见治理记录）
   handlebars: ^4.7.10
   shell-quote: ^1.12.0
   devalue: ^5.9.3
   serialize-javascript: ^7.1.2
+  # GHSA-x6jw-m9v5-85vh / GHSA-g4wm-2vf7-vfgr / GHSA-858h-whjf-mvg5：simple-git 3.x 全线无补丁，
+  # 唯一路径为 4.x（4.0.2 精确依赖 @simple-git/argv-parser@2.0.1，连带修复 GHSA-v5rq-49vh-5v5c）；
+  # 4.x 移除默认导出而 @nuxt/devtools 仍 `import Git from 'simple-git'`，故配套 patches/simple-git@4.0.2.patch 恢复默认导出
+  simple-git: 4.0.2
   "@humanfs/node": 0.16.8
 
 allowBuilds:
@@ -32,3 +36,6 @@ strictPeerDependencies: false
 minimumReleaseAgeExclude:
   # happy-dom 20.14.5 属新发布，同上；待冷却期后移除
   - happy-dom@20.14.5
+
+patchedDependencies:
+  simple-git@4.0.2: patches/simple-git@4.0.2.patch

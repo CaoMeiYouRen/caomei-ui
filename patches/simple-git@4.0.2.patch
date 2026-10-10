@@ -1,0 +1,11 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index f434ec5f34672a37dbd0d6ae3ff3c4b27f6abed5..9cd928a36945d41ece5d5d30b457fd765cdc56e0 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -2892,4 +2892,6 @@ export {
+   ko as pathspec,
+   wo as simpleGit
+ };
++// Restore the v3-compatible default export removed in v4 (caomei-ui compat patch).
++export default wo;
+ //# sourceMappingURL=index.mjs.map

@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * The demo uses real photos from Lorem Picsum (photos by Unsplash, under the Unsplash
- * License: free for commercial use, no attribution required).
  * The source is a 1:1 square while the container is 16:9: only when the two ratios differ
  * can the difference between the `fit` modes be seen — cover crops the top and bottom,
- * contain shows the whole photo and leaves the sides blank.
+ * contain shows the whole image and leaves the sides blank.
+ * The demo uses a built-in local placeholder (no external dependency).
  */
-const src = 'https://picsum.photos/seed/caomei-image-basic/600/600'
+const src = withBase('/demo/image-square.svg')
 </script>
 
 <template>

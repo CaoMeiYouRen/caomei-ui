@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="1:1 方形占位图">
+    <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#4f8bf7"/>
+            <stop offset="1" stop-color="#7c5cff"/>
+        </linearGradient>
+    </defs>
+    <rect width="120" height="120" fill="url(#g)"/>
+    <circle cx="60" cy="60" r="30" fill="#ffffff" fill-opacity="0.85"/>
+</svg>

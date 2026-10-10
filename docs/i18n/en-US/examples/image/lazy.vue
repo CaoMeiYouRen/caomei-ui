@@ -1,16 +1,14 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * A lazy-loading demo must use an image URL that **no other demo on this page reuses**:
- * reusing one hits the browser cache and the image appears instantly on entering the
- * viewport, so the loading step is invisible. This uses a different image plus the image
- * source's `random` parameter (its response is not cacheable and a new photo is picked
- * every time), so the loading step stays visible on repeat visits too.
- * The photo comes from Lorem Picsum (photos by Unsplash, under the Unsplash License:
- * free for commercial use, no attribution required).
+ * A lazy-loading demo uses an image URL that **no other demo on this page reuses**
+ * (a different local placeholder), so "the request starts only after entering the viewport"
+ * can be observed. Local images load fast, so use browser DevTools throttling or the network
+ * panel to see the loading step. The demo uses a built-in local placeholder (no external dependency).
  */
-const src = 'https://picsum.photos/1200/675?random=1'
+const src = withBase('/demo/image-landscape-wide.svg')
 </script>
 
 <template>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" role="img" aria-label="3:2 风景占位图">
+    <rect width="120" height="80" fill="#7dd3fc"/>
+    <circle cx="92" cy="22" r="10" fill="#fde68a"/>
+    <path d="M0 80 L34 38 L62 62 L86 44 L120 80 Z" fill="#0369a1"/>
+</svg>

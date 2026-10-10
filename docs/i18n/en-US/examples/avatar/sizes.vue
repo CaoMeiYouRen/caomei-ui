@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiAvatar } from '@/components/avatar'
 
-// The same photo is used to compare sizes and shapes so the difference is visible
-// (photo from Lorem Picsum, by Unsplash, under the Unsplash License: free for commercial use)
-const portrait = 'https://picsum.photos/seed/caomei-avatar-sizes/96/96'
+// The same avatar is used to compare sizes and shapes so the difference is visible
+// (built-in local placeholder, no external dependency)
+const portrait = withBase('/demo/avatar.svg')
 </script>
 
 <template>

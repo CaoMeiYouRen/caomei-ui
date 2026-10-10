@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 import { CaomeiAvatar } from '@/components/avatar'
 
-// 示例使用 Lorem Picsum 的真实头像照片（源自 Unsplash，遵循 Unsplash License，可商用、免署名）
-const image = 'https://picsum.photos/seed/caomei-avatar-basic/96/96'
+// 示例使用站点内置的本地头像占位图（无外链依赖）
+const image = withBase('/demo/avatar.svg')
 const broken = ref('data:image/png;base64,invalid')
 </script>
 

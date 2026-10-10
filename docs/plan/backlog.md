@@ -68,6 +68,7 @@
 | 视觉基线受检面扩面 | Phase 22 M1-2 follow-up | 首批基线仅 8 个静态组件 × 亮暗（日期 / 浮层 / 多视口 / 主题预设未纳入）；触发条件 = 转阻断后按需扩面，或下游提出具体渲染回归场景 | 低 |
 | `reka-ui` 补丁升级（2.10.5） | Phase 22 M2-3 follow-up | 2.10.5 致 `CaomeiInputNumber` 步进模型 emit 回归（4 例契约测试失败）；本仓维持 2.10.4。触发条件 = 本仓适配其行为变更，或上游确认属回归并修复 | 低 |
 | `conventional-changelog` 8 升级 | Phase 22 M2-3 follow-up | v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；维持 7.2.0。触发条件 = cmyr preset 发布支持 writer 9 的版本 | 低 |
+| 文档站示例外链图片守卫 | Phase 22 M6-5 follow-up | 缺机检防止示例重新引入 `http(s)://` 图片源（`check-example-refs` 仅存在性 / 形态、`guard-ref-attrs` 仅 ARIA）；候选为轻量守卫扫描 `docs/**/examples/**` 的图片源并接入 `docs:check`。触发条件 = 下一次文档站装置批次或用户指定 | 低 |
 
 ### 1.7 服务层候选（composables）
 

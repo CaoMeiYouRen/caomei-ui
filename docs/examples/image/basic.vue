@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * 示例使用 Lorem Picsum 的真实图片（照片源自 Unsplash，遵循 Unsplash License，可商用、免署名）。
  * 源图为 1:1 方图，容器为 16:9：只有源图与容器比例不同，才能看出 `fit` 的差异
  * —— cover 会裁掉上下，contain 则完整显示并在左右留白。
+ * 示例使用站点内置的本地占位图（无外链依赖）。
  */
-const src = 'https://picsum.photos/seed/caomei-image-basic/600/600'
+const src = withBase('/demo/image-square.svg')
 </script>
 
 <template>

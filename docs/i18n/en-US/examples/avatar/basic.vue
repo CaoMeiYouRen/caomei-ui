@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 import { CaomeiAvatar } from '@/components/avatar'
 
-// The demo uses a real photo from Lorem Picsum
-// (photo by Unsplash, under the Unsplash License: free for commercial use)
-const image = 'https://picsum.photos/seed/caomei-avatar-basic/96/96'
+// The demo uses a built-in local avatar placeholder (no external dependency)
+const image = withBase('/demo/avatar.svg')
 const broken = ref('data:image/png;base64,invalid')
 </script>
 

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ZoomIn } from '@lucide/vue'
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * 示例使用 Lorem Picsum 的真实图片（照片源自 Unsplash，遵循 Unsplash License，可商用、免署名）。
  * 源图为 3:2、容器为 16:9，放大预览时能同时看清裁切与遮罩。
+ * 示例使用站点内置的本地占位图（无外链依赖）。
  */
-const src = 'https://picsum.photos/seed/caomei-image-preview/1200/800'
+const src = withBase('/demo/image-landscape.svg')
 </script>
 
 <template>

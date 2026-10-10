@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ZoomIn } from '@lucide/vue'
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * The demo uses real photos from Lorem Picsum (photos by Unsplash, under the Unsplash
- * License: free for commercial use, no attribution required).
  * The source is 3:2 while the container is 16:9, so the crop and the overlay are both
  * visible when the preview opens.
+ * The demo uses a built-in local placeholder (no external dependency).
  */
-const src = 'https://picsum.photos/seed/caomei-image-preview/1200/800'
+const src = withBase('/demo/image-landscape.svg')
 </script>
 
 <template>

@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiImage } from '@/components/image'
 
 /*
- * 懒加载演示必须使用**本页其他示例没用过的图片地址**：
- * 复用同一地址会直接命中浏览器缓存，图片进入视口时瞬间完成，看不出加载过程。
- * 这里另用一张图，并加上图片源的 `random` 参数（该响应不可缓存、每次都会重新挑图），
- * 保证重复访问时同样能看到「进入视口才开始加载」。
- * 示例图片来自 Lorem Picsum（照片源自 Unsplash，遵循 Unsplash License，可商用、免署名）。
+ * 懒加载演示使用**本页其他示例未用过的图片地址**（另用一张不同比例的本地占位图），
+ * 以便观察「进入视口后才发起请求」。本地图片加载很快，如需看清加载过程，
+ * 可在浏览器 DevTools 中限速或查看网络面板。示例使用站点内置的本地占位图（无外链依赖）。
  */
-const src = 'https://picsum.photos/1200/675?random=1'
+const src = withBase('/demo/image-landscape-wide.svg')
 </script>
 
 <template>

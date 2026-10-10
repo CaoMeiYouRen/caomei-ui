@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiAvatar } from '@/components/avatar'
 
-// 同一个头像用于对比尺寸与形状，便于看出差异
-// （示例照片来自 Lorem Picsum，源自 Unsplash，遵循 Unsplash License，可商用、免署名）
-const portrait = 'https://picsum.photos/seed/caomei-avatar-sizes/96/96'
+// 同一个头像用于对比尺寸与形状，便于看出差异（本地占位图，无外链依赖）
+const portrait = withBase('/demo/avatar.svg')
 </script>
 
 <template>

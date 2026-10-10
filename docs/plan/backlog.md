@@ -66,6 +66,8 @@
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
 | 视觉基线受检面扩面 | Phase 22 M1-2 follow-up | 首批基线仅 8 个静态组件 × 亮暗（日期 / 浮层 / 多视口 / 主题预设未纳入）；触发条件 = 转阻断后按需扩面，或下游提出具体渲染回归场景 | 低 |
+| `reka-ui` 补丁升级（2.10.5） | Phase 22 M2-3 follow-up | 2.10.5 致 `CaomeiInputNumber` 步进模型 emit 回归（4 例契约测试失败）；本仓维持 2.10.4。触发条件 = 本仓适配其行为变更，或上游确认属回归并修复 | 低 |
+| `conventional-changelog` 8 升级 | Phase 22 M2-3 follow-up | v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；维持 7.2.0。触发条件 = cmyr preset 发布支持 writer 9 的版本 | 低 |
 
 ### 1.7 服务层候选（composables）
 

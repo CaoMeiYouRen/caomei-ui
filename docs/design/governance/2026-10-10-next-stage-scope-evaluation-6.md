@@ -135,7 +135,7 @@
 
 | # | 候选 | 来源与取证（2026-10-10） | 本阶段落点 |
 |:-:|:---|:---|:---|
-| N1 | **依赖安全告警治理** | Dependabot 16 项开着（1 runtime `source-map-js` high + 15 dev，含 4 个 critical）；属 [规划规范 §3.5](../../standards/planning.md) 插队例外 | 待裁定（D2 / D3）：运行时立即 + dev 分批 / 全量评估 |
+| N1 | **依赖安全告警治理** | Dependabot 16 项开着（1 runtime `source-map-js` high + 15 dev，含 5 个 critical / 4 个 high）；属 [规划规范 §3.5](../../standards/planning.md) 插队例外 | 待裁定（D2 / D3）：运行时立即 + dev 分批 / 全量评估 |
 | N2 | **依赖大版本升级** | 7 个 Dependabot PR 开着（`vite 5→8` / `vitest 3→4` / `typescript 5.9→6.0` / `conventional-changelog 7→8` / `vue` / `reka-ui` / `@lucide/vue`）；部分 CI failure | 待裁定（D4）：纳入 M2 / 维持登记 |
 | N3 | **视觉基线受检面扩面** | 首批仅 8 个静态组件 × 亮暗（日期 / 浮层 / 多视口 / 主题预设未纳入，见 M3-1 记录） | 待裁定（D7）：纳入 M1-2 / 维持 |
 

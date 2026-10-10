@@ -10,7 +10,7 @@
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
-| M1-1 | 下游回归机制启动（Phase 8） | **跨仓兼容检查 reusable workflow**：caomei-ui 侧新增 `on: workflow_call` 的兼容检查 workflow（另供 `workflow_dispatch` 人工贯通），执行 `pnpm install --frozen-lockfile` + `typecheck` + `build`，按 ref 版本化 | 符合 [发布指南 §10](../guide/release.md)（B reusable workflow）；无需跨仓 token；检查范围**最低 `typecheck` + `build`**、不含 e2e / 视觉 / 全量单测；可被下游 `uses:` 调用 | 待执行 |
+| M1-1 | 下游回归机制启动（Phase 8） | **跨仓兼容检查 reusable workflow**：caomei-ui 侧新增 `on: workflow_call` 的兼容检查 workflow，执行 `pnpm install --frozen-lockfile` + `typecheck` + `build`，按 ref 版本化（不带 `workflow_dispatch`；人工贯通由下游侧触发，归 M1-2） | 符合 [发布指南 §10](../guide/release.md)（B reusable workflow）；无需跨仓 token；检查范围**最低 `typecheck` + `build`**、不含 e2e / 视觉 / 全量单测；可被下游 `uses:` 调用 | 已完成 |
 | M1-2 | 下游回归机制启动（Phase 8） | **下游调用接入与最小贯通验证**：dependfix 仓库新增调用 job（`uses: CaoMeiYouRen/caomei-ui/.github/workflows/<compat>.yml@<ref>`），跑通一次真实触发并回传结论 | 一次真实触发能跑通 `typecheck` + `build`；失败语义沿用 §10「兼容性阻塞」；本仓产出贯通验证治理记录（下游仓库改动与提交在对应仓库执行） | 待执行 |
 | M2-1 | 发布流统一 | **统一手动发布流脚本编排**：新增 `scripts/release/manual-release.mjs` / `pnpm release:manual`，单入口串「前置门 → 版本 → CHANGELOG → 发布 → 后校验 → 版本句同步 → GitHub Release」 | 单入口可复算；**不引入新依赖**（复用现有 `scripts/release/*` 与 `gh` / `npm` CLI）；含单测；发布批次保持纯净以命中 `check-review-gate-artifacts` 的发布元数据豁免 | 待执行 |
 | M2-2 | 发布流统一 | **发布指南 §3 同步为脚本编排说明面**（runbook 作为其文档面） | §3 与脚本实际步骤一致；tag 落点口径（版本提交 / CHANGELOG 提交）与发布元数据豁免边界写明；`docs:check` 全绿 | 待执行 |

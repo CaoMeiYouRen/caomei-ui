@@ -1,0 +1,121 @@
+name: Downstream Compat Check
+
+# 下游兼容性回归机制（reusable workflow 形态；权威口径见 docs/guide/release.md §10 的 B 形态）。
+#
+# 用途：由已接入下游通过 `uses:` 调用，在**调用方仓库上下文**内执行其 `typecheck` + `build`，
+# 验证 caomei-ui 的新版本不破坏下游构建。检查范围**最低 `typecheck` + `build`**，
+# **不含** e2e / 视觉回归 / 全量单测 / 覆盖率（任一失败即视为兼容性阻塞）。
+#
+# 调用示例（下游仓库）：
+#   jobs:
+#     compat:
+#       uses: CaoMeiYouRen/caomei-ui/.github/workflows/compat-check.yml@<ref>
+#       with:
+#         caomei-ui-version: "0.6.0"
+#         install-target-command: pnpm --filter @scope/app add caomei-ui@$CAOMEI_UI_VERSION
+#         setup-command: pnpm --filter @scope/core build
+#         typecheck-command: pnpm --filter @scope/app typecheck
+#         build-command: pnpm --filter @scope/app build
+#
+# 边界：本 workflow 只提供「检查逻辑」，**触发方式由调用方决定**（下游手动 `workflow_dispatch`
+# 或既有定时回归）。「发布（tag）即刻自动触发」需跨仓 dispatch 凭据（属另一触发形态），当前未启用。
+# 注：`run:` 中的命令输入由调用方 workflow 文件提供（受信内部仓库），不接受不可信外部输入。
+
+on:
+  workflow_call:
+    inputs:
+      caomei-ui-version:
+        description: 被测 caomei-ui 版本（如 0.6.0）；传 lockfile 表示按调用方 lockfile 现状、不覆盖
+        required: false
+        type: string
+        default: lockfile
+      node-version:
+        description: Node.js 版本
+        required: false
+        type: string
+        default: lts/*
+      install-command:
+        description: 安装依赖命令
+        required: false
+        type: string
+        default: pnpm install --frozen-lockfile
+      install-target-command:
+        description: 把 caomei-ui 覆盖到被测版本的命令（可用环境变量 CAOMEI_UI_VERSION）；留空则跳过
+        required: false
+        type: string
+        default: ''
+      setup-command:
+        description: typecheck 前的准备命令（如构建 workspace 依赖 / nuxt prepare）；留空则跳过
+        required: false
+        type: string
+        default: ''
+      typecheck-command:
+        description: 类型检查命令
+        required: false
+        type: string
+        default: pnpm typecheck
+      build-command:
+        description: 构建命令
+        required: false
+        type: string
+        default: pnpm build
+      working-directory:
+        description: 执行目录（相对调用方仓库根）
+        required: false
+        type: string
+        default: .
+    outputs:
+      caomei-ui-version:
+        description: 实际被测版本（lockfile 模式为空）
+        value: ${{ jobs.compat.outputs.caomei-ui-version }}
+
+permissions:
+  contents: read
+
+jobs:
+  compat:
+    name: Downstream Compat (typecheck + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      caomei-ui-version: ${{ steps.target.outputs.version }}
+    steps:
+      - name: Checkout downstream
+        uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.install-command }}
+      - name: Resolve target version
+        id: target
+        shell: bash
+        run: |
+          if [ "${{ inputs.caomei-ui-version }}" = "lockfile" ]; then
+            echo "version=" >> "$GITHUB_OUTPUT"
+            echo "caomei-ui target version: (lockfile; not overridden)"
+          else
+            echo "version=${{ inputs.caomei-ui-version }}" >> "$GITHUB_OUTPUT"
+            echo "caomei-ui target version: ${{ inputs.caomei-ui-version }}"
+          fi
+      - name: Override caomei-ui to target version
+        if: ${{ inputs.install-target-command != '' && inputs.caomei-ui-version != 'lockfile' }}
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          CAOMEI_UI_VERSION: ${{ inputs.caomei-ui-version }}
+        run: ${{ inputs.install-target-command }}
+      - name: Setup before typecheck
+        if: ${{ inputs.setup-command != '' }}
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.setup-command }}
+      - name: Typecheck
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.typecheck-command }}
+      - name: Build
+        working-directory: ${{ inputs.working-directory }}
+        run: ${{ inputs.build-command }}

@@ -56,20 +56,16 @@
 |------|------|--------|
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
-| 文档站演示动画遗留项 | keyframes 副本一致性、示例样式不入 stylelint | 低 |
-| 文档站示例的外部图片依赖 | `picsum.photos` 外链风险 | 低 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
-| locale 守卫能力演进 | 解析器容忍注释等 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
-| 治理索引与记录计数对账守卫 | 2026-09-30 浮层遮挡修复批次连续两轮 Review Gate 以「同一组计数跨载体漂移」判 blocker（记录本体计数为修复前快照 → 索引摘要计数未同步〔复发〕）。候选：对治理索引摘要与记录本体的 e2e / 测试计数做对账机检。**评估结论：高误报 / 高过拟合，未实施**——计数散落在自然语言摘要中，抽取规则易误伤；当前以「改完逐载体 `rg -o` 核对 + 记录内钉复算命令」的流程约束替代（已记 `.session/wisdom.md` 与 [AI 协作规范 §9](../standards/ai-collaboration.md)） | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 | 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 21 D11 裁定**维持并留观察**——**理由**：行数仍在 **error 阈值 600 以内**（warn 可接受），归档载体只增不减属常态、压缩为预防性动作；**再评估触发 = 行数达 error 阈值 600 时强制压缩**；候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（计数口径以 `pnpm docs:check:line-count` 为准） | 低 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
-| 视觉基线转阻断评估 | 视觉回归基线装置已交付并接入周级回归（**先非阻断**）；**触发条件 = 首个 `ubuntu-latest` 全绿 run**——届时复核跨环境渲染一致性（字体 / 抗锯齿）、按需重冻结基线，再评估转阻断（来源：[装置记录](../design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md) / [接线记录](../design/governance/2026-10-10-phase21-m3-2-visual-baseline-ci-docs.md)） | 低 |
+| 视觉基线受检面扩面 | Phase 22 M1-2 follow-up | 首批基线仅 8 个静态组件 × 亮暗（日期 / 浮层 / 多视口 / 主题预设未纳入）；触发条件 = 转阻断后按需扩面，或下游提出具体渲染回归场景 | 低 |
 
 ### 1.7 服务层候选（composables）
 
@@ -83,7 +79,6 @@
 |------|------|--------|
 | 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）；momei 根 `package.json` 仍精确锁定 `caomei-ui@0.3.0`（第六十八阶段迁移实施期）〔2026-10-06 实测两仓 `package.json`：dependfix `0.5.0` / momei `0.3.0`〕。触发条件：**momei 启动 `0.5.0` 升级**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` 两个 minor），产出升级指引 / 回归关注点 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
-| 下游兼容检查首次真实贯通验证 | **待执行（Phase 21 遗留）**：上游执行的兼容检查工作流 `.github/workflows/downstream-compat.yml` 已交付并经**本地等价命令链**验证（clone dependfix → install → 覆盖 `caomei-ui@0.6.0` → 构建 → typecheck → build 全链 exit 0）；**首次 GitHub 真实触发**（发布 tag / 手动 `workflow_dispatch`）待推送后执行，以确认 Actions 运行时（表达式求值 / checkout 权限 / 缓存命中）无缺陷。触发条件 = **下次推送**（或下次发布） | 低 |
 
 ## 2. 维护约定
 

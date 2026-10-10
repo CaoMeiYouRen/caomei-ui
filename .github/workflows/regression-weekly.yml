@@ -155,6 +155,14 @@ jobs:
       - name: Check computed styles against frozen baseline
         run: pnpm run capture:styles
 
+      # 视觉回归基线：真实渲染整体像素与仓库内冻结基线比对（装置见
+      # docs/design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md）。
+      # **先非阻断**：基线生成于本地容器，需先在 ubuntu-latest 观测跨环境渲染一致性（字体 / 抗锯齿）；
+      # 首个全绿 run 后评估转阻断。沿用本 job 已装好的 Chromium。
+      - name: Run visual regression baseline
+        run: pnpm run test:visual
+        continue-on-error: true
+
       - name: Upload E2E report
         if: always()
         uses: actions/upload-artifact@v7

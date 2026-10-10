@@ -41,6 +41,7 @@
 - **「兄弟 / 相邻 / 非首项」类规则的断言取样必须落在被命中集合内**：如 VitePress `.vp-doc li + li { margin-top: 8px }` 只命中第二个及之后的 `li`，取样第一个菜单项则 `margin-top` 恒为 0（与隔离规则存在与否无关，属恒过无判别力）；须前置断言「至少 2 个成员」，并用单变量负向对照暴露。
 - **负向对照须挑「默认配置下两值确实不同」的契约点**：回退一个在默认 / 极简预设下同值的 token（如滑块前景）**不会**产生差异，据此宣称「判别力已证」是假阴性（「基线纳入某形态」≠「该形态的规则生效」）；应挑**几何 / 字面量**契约点（如宽度 `40 → 44px`、强调条 `3 → 4px`）。判据 = 回退后计算值**必然改变**。**附带不变量**：扩面后基线 diff 只含 `capturedAt` + 新增键，出现既有键值漂移须先归因。
 - **「瞬时元素」不是采样面的排除理由，可用「常驻化 + 程序化入队 + 与交互段排序」纳入**：夹具以 `duration: 0` 常驻入队（Reka `startTimer` 在 `duration <= 0` 直接 return）、暴露控制器由脚本程序化驱动、采样段排在**点击类交互之后**（瞬时元素先采会被交互「偷走」窗口 → 静默缺失且 diff 报 0 差异，属假通过）。因果表述须精确（程序化入队不受模态焦点陷阱影响）。
+- **真实渲染整体像素层（视觉回归基线）**：`pnpm test:visual` 以 Playwright 内置 `toHaveScreenshot` 与**仓库内冻结基线**（`test/visual/__screenshots__/`）比对，覆盖 `capture:styles`（声明式样式逐属性）与几何断言之外的综合渲染结果（组合 / 布局 / 字体 / 层叠）。装置口径：独立 `playwright.visual.config.ts` + 固定环境（chromium / 固定 viewport / DPR 1 / locale / tz / `reducedMotion: reduce`）+ **双轴容差**（`threshold` 色差轴 + 绝对 `maxDiffPixels` 面积轴）+ **串行 `workers: 1` / `retries: 0`**；受检面用**下界守卫**防静默收窄、判别力以**负向对照**自证（装置与首批范围见[治理记录](../design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md)）。**基线生成环境纪律**：浏览器渲染随 OS / 字体 / 浏览器版本而变，基线须在**与 CI 相同环境**生成，跨环境差异是假阳性主源。**接入策略**：不进 `pnpm verify` 常驻链，随周级回归**先非阻断**观测，首个 `ubuntu-latest` 全绿 run 后评估转阻断。
 
 ## 3. 覆盖率
 
@@ -93,6 +94,7 @@
 - E2E：`pnpm test:e2e`
 - 可访问性：`pnpm test:a11y`（组件级 axe 审计与例外清单断言；全量 `pnpm test` 已自动包含）
 - 计算样式等价：`pnpm capture:styles`（采样并与冻结基线比对，有差异 exit 1）；`pnpm capture:styles:freeze`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面）
+- 视觉回归基线：`pnpm test:visual`（真实渲染整体像素与仓库内冻结基线比对，有差异 exit 1）；`pnpm test:visual:update`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面；基线须在与 CI 相同环境生成）
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。
 

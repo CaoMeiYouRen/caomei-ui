@@ -69,6 +69,7 @@
 | 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 21 D11 裁定**维持并留观察**；候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度 | 低 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
+| 视觉基线转阻断评估 | 视觉回归基线装置已交付并接入周级回归（**先非阻断**）；**触发条件 = 首个 `ubuntu-latest` 全绿 run**——届时复核跨环境渲染一致性（字体 / 抗锯齿）、按需重冻结基线，再评估转阻断（来源：[装置记录](../design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md) / [接线记录](../design/governance/2026-10-10-phase21-m3-2-visual-baseline-ci-docs.md)） | 低 |
 
 ### 1.7 服务层候选（composables）
 

@@ -26,6 +26,7 @@ pnpm install
 | `pnpm test` | 单元测试 |
 | `pnpm test:coverage` | 覆盖率 |
 | `pnpm test:e2e` | Playwright E2E |
+| `pnpm test:visual` | Playwright 视觉回归基线（与仓库内冻结基线比对；`test:visual:update` 重写基线） |
 | `pnpm check:nuxt` | Nuxt 最小消费冒烟（需先 `pnpm build`） |
 | `pnpm test:nuxt-smoke` | 构建 + Nuxt 最小消费冒烟 |
 | `pnpm docs:dev` | 文档站开发 |

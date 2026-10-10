@@ -16,7 +16,7 @@
 | M2-2 | 依赖安全与升级治理 | **开发作用域安全告警盘点与分批处置**：15 项（**critical 5 / high 4 / medium 4 / low 2**）逐项给「修复版本 + 结论」，**critical/high 优先**；`node-forge`（无修复版本）单列结论 | 每条有复算值 + 修复版本 + 结论；可修复者处置到位；不可修复者留痕。**已修复 14 / 无补丁 1（`node-forge`）**（`simple-git` 系列经跨大版本升级至 `4.0.2` + 兼容补丁解除受阻）；告警关闭待推送后由 Dependabot 复算 | 已完成 |
 | M2-3 | 依赖安全与升级治理 | **依赖大版本升级逐项评估与达标升级**：`vitest 3→4` / `typescript 5.9→6.0` / `conventional-changelog 7→8` 等逐项评估，达标者升级；**`vite 5→8`（Rolldown）单独评估延后**；处置 7 个 open PR | 每项有迁移记录 + `pnpm verify` exit 0；不达标 / 延后者登记 Backlog。**结果：达标即升 3（`vue` / `@lucide/vue` / `typescript`〔含 tsconfig 迁移〕）+ 陈旧 PR 2（`vite` / `vitest`，本仓已达标）+ 延后 2（`reka-ui` / `conventional-changelog`，已登记 Backlog §1.6）** | 已完成 |
 | M6-1 | 治理与测试收口 | **归档载体维持的载体留痕**：`todo-archive.md` 行数超阈（warn）按 D8 **维持**，在 [Backlog](./backlog.md) 对应行同步当前计数（527 行）与维持裁定 + 再评估触发（达 error 阈值 600） | Backlog 计数与 `docs:check:line-count` 一致；维持裁定与再评估触发留痕 | 已完成 |
-| M6-2 | 治理与测试收口 | **`locale` 守卫能力演进**（B19）：扩展键集合守卫的解析器能力（如容忍注释等） | 守卫有判别力（负向对照）；`check:locale-keys` / `check:locale-ledger` 全绿 | 待执行 |
+| M6-2 | 治理与测试收口 | **`locale` 守卫能力演进**（B19）：扩展键集合守卫的解析器能力（如容忍注释等） | 守卫有判别力（负向对照）；`check:locale-keys` / `check:locale-ledger` 全绿 | 进行中 |
 | M6-3 | 治理与测试收口 | **治理索引与记录计数对账守卫**（B22）：对治理索引摘要与记录本体的 e2e / 测试计数做对账机检；**须先定告警面与误报口径**（原判「高误报 / 高过拟合」） | 误报口径经实测标定（误报 0 / 负向对照命中）；接入 `governance:check` | 待执行 |
 | M6-4 | 治理与测试收口 | **文档站演示动画遗留项**（B16）：keyframes 副本一致性、示例样式纳入 stylelint 面 | 副本一致性可复算；示例样式纳入 lint 面且不漏 | 已完成 |
 | M6-5 | 治理与测试收口 | **文档站示例外部图片依赖**（B17）：消除 `picsum.photos` 外链风险（本地占位 / 数据 URI） | 示例无外链依赖；`docs:check` 全绿、无网络 404 | 已完成 |

@@ -9,6 +9,7 @@ import {
     extractPlaceholders,
     parseLocaleRegistry,
     parseLocaleSource,
+    stripComments,
 } from './check-locale-keys.mjs'
 
 const tempDirs = []
@@ -309,5 +310,95 @@ describe('check-locale-keys 失败路径', () => {
         const result = checkLocaleKeys(dir)
         expect(result.ok).toBe(false)
         expect(result.errors.join('\n')).toContain('缺少文案注册表')
+    })
+})
+
+describe('stripComments', () => {
+    it('保留单引号字符串内的 // 与 /* */', () => {
+        expect(stripComments('a: \'x // y /* z */\',')).toBe('a: \'x // y /* z */\',')
+    })
+
+    it('移除行注释与块注释', () => {
+        expect(stripComments('a // c\n/* d */b')).toBe('a \nb')
+    })
+})
+
+describe('parseLocaleSource 注释容忍', () => {
+    it('容忍缩进 //、行尾 // 与块注释，并保留字符串内的 //', () => {
+        const source = [
+            '// 文件头说明（顶格）',
+            'import type { CaomeiLocaleMessages } from \'./types\'',
+            '',
+            'const messages: CaomeiLocaleMessages = {',
+            '    input: {',
+            '        // 缩进行注释',
+            '        clear: \'清除\', // 行尾注释',
+            '        /* 块注释 */',
+            '        placeholder: \'请输入 https://example.com 地址\',',
+            '    },',
+            '}',
+            '',
+            'export default messages',
+        ].join('\n')
+        expect(parseLocaleSource(source)).toEqual({
+            input: {
+                clear: '清除',
+                placeholder: '请输入 https://example.com 地址',
+            },
+        })
+    })
+
+    it('多行块注释内的键不产生条目', () => {
+        const source = [
+            'const messages: CaomeiLocaleMessages = {',
+            '    /*',
+            '     多行块注释',
+            '     key: \'fake\',',
+            '    */',
+            '    input: {',
+            '        clear: \'清除\',',
+            '    },',
+            '}',
+            'export default messages',
+        ].join('\n')
+        expect(parseLocaleSource(source)).toEqual({ input: { clear: '清除' } })
+    })
+
+    it('无法识别的行仍抛错（响亮失败）', () => {
+        const source = [
+            'const messages: CaomeiLocaleMessages = {',
+            '    input: {',
+            '        clear: 清除,',
+            '    },',
+            '}',
+            'export default messages',
+        ].join('\n')
+        expect(() => parseLocaleSource(source, 'zh-cn.ts')).toThrow(/无法解析的文案行/)
+    })
+
+    it('未闭合的块注释抛错', () => {
+        const source = [
+            'const messages: CaomeiLocaleMessages = {',
+            '    input: {',
+            '        /* 未闭合',
+            '        clear: \'清除\',',
+            '    },',
+            '}',
+            'export default messages',
+        ].join('\n')
+        expect(() => parseLocaleSource(source, 'zh-cn.ts')).toThrow(/未闭合的块注释/)
+    })
+
+    it('文案键出现在命名空间之外时报错', () => {
+        const source = [
+            'const messages: CaomeiLocaleMessages = {',
+            '        clear: \'清除\',',
+            '    input: {',
+            '        clear: \'清除\',',
+            '    },',
+            '}',
+            'export default messages',
+        ].join('\n')
+        expect(() => parseLocaleSource(source, 'zh-cn.ts')).toThrow(/命名空间之外/)
     })
 })

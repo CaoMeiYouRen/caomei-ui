@@ -18,8 +18,9 @@
  *
  * 维护：
  * - 新增组件文案时，需同步补齐全部已注册语种；漏译会被本脚本拦截。
- * - 文案模块允许使用**顶格（行首列 0）**的 `//` 行注释（如文件头说明）：解析器只忽略顶格 `//`，
- *   缩进 `//`、块注释与行尾注释都会被判为无法解析，属有意的响亮失败——改注释形态前须同步此处。
+ * - 文案模块允许 `//` 行注释（顶格或缩进）、行尾 `//` 注释与 `/* ... *\/` 块注释：解析前会**字符串感知**地
+ *   剥离注释（单引号字符串内的 `//` / `/*` 不会被误判为注释）。除注释与既定格式外的行仍会被判为无法解析，
+ *   属有意的响亮失败——改文案格式前须同步此处。
  * - `index.ts` / `types.ts` 与 `*.test.ts` / `*.spec.ts` 不参与注册检查。
  */
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
@@ -58,54 +59,116 @@ export function extractPlaceholders(value) {
 }
 
 /**
+ * 字符串感知地剥离注释：移除 `/* ... *\/` 块注释与 `// ...` 行注释，
+ * 但保留单引号字符串内的内容（其中的 `//` / `/*` 不被当作注释）。
+ *
+ * 词法假定：单引号即字符串起点（文案模块中的游离撇号属非法 TS，由 `typecheck` 兜底）；
+ * 未闭合的块注释会抛错（响亮失败，不静默吞掉其后内容）。
+ */
+export function stripComments(text) {
+    let output = ''
+    let index = 0
+    let inString = false
+    while (index < text.length) {
+        const char = text[index]
+        if (inString) {
+            output += char
+            if (char === '\\') {
+                output += text[index + 1] ?? ''
+                index += 2
+                continue
+            }
+            if (char === '\'') {
+                inString = false
+            }
+            index += 1
+            continue
+        }
+        if (char === '\'') {
+            inString = true
+            output += char
+            index += 1
+            continue
+        }
+        if (char === '/' && text[index + 1] === '/') {
+            while (index < text.length && text[index] !== '\n') {
+                index += 1
+            }
+            continue
+        }
+        if (char === '/' && text[index + 1] === '*') {
+            index += 2
+            let closed = false
+            while (index < text.length) {
+                if (text[index] === '*' && text[index + 1] === '/') {
+                    closed = true
+                    index += 2
+                    break
+                }
+                index += 1
+            }
+            if (!closed) {
+                throw new Error('存在未闭合的块注释')
+            }
+            continue
+        }
+        output += char
+        index += 1
+    }
+    return output
+}
+
+/**
  * 解析单个语种文案模块，返回 `{ 命名空间: { 键: 值 } }`。
  *
- * 只接受仓库既定的格式化形态（4 / 8 空格缩进、单引号字符串）；
+ * 解析前先字符串感知地剥离注释（`//` 行注释 / 行尾注释、`/* ... *\/` 块注释）；
+ * 其余只接受仓库既定的格式化形态（4 / 8 空格缩进、单引号字符串）；
  * 遇到无法识别的行直接抛错，避免「静默漏解析 → 守卫假通过」。
  */
 export function parseLocaleSource(text, file = 'locale.ts') {
     const namespaces = {}
     let current = null
 
-    const lines = text.split(/\r?\n/)
+    const lines = stripComments(text).split(/\r?\n/)
     for (const [index, line] of lines.entries()) {
-        if (line.trim() === '' || line.startsWith('//')) {
+        const code = line.trimEnd()
+        if (code.trim() === '') {
             continue
         }
 
-        const namespaceMatch = line.match(NAMESPACE_RE)
+        const namespaceMatch = code.match(NAMESPACE_RE)
         if (namespaceMatch) {
             current = namespaceMatch[1]
             namespaces[current] = {}
             continue
         }
 
-        const keyMatch = line.match(KEY_RE)
+        const keyMatch = code.match(KEY_RE)
         if (keyMatch && current !== null) {
             namespaces[current][keyMatch[1]] = unescapeValue(keyMatch[2])
             continue
         }
 
-        if (line === '}') {
+        if (code === '}') {
             // 文案对象结束；后续仅剩 `export default`。
             continue
         }
 
-        if (NAMESPACE_END_RE.test(line)) {
+        if (NAMESPACE_END_RE.test(code)) {
             current = null
             continue
         }
 
-        if (MESSAGES_HEADER_RE.test(line) || /^import\b/.test(line) || /^export default\b/.test(line)) {
+        if (MESSAGES_HEADER_RE.test(code) || /^import\b/.test(code) || /^export default\b/.test(code)) {
             current = null
             continue
         }
 
         if (keyMatch && current === null) {
-            throw new Error(`${file}:${index + 1} 文案键出现在命名空间之外：${line.trim()}`)
+            throw new Error(`${file}:${index + 1} 文案键出现在命名空间之外：${code.trim()}`)
         }
 
-        throw new Error(`${file}:${index + 1} 无法解析的文案行：${line}`)
+        throw new Error(`${file}:${index + 1} 无法解析的文案行：${code}`)
     }
 
     return namespaces

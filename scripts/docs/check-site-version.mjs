@@ -36,6 +36,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import { isDirectExecution } from '../shared/cli.mjs'
+import { CURRENT_VERSION_STATEMENTS } from '../shared/version-statements.mjs'
 import { docsProjectRoot, loadSiteNavigation } from './vitepress-site.mjs'
 
 /** 版本展示面登记表：`kind` = config（暴露单一来源）| page（消费 theme.version）。 */
@@ -63,28 +64,10 @@ export const SERIES_LITERAL_SURFACES = [
 export const SERIES_LITERAL_RE = /(?<![\d.])\d+\.\d+\.x(?![\w.])/giu
 
 /**
- * 「当前版本」声明句登记表（弱守卫面）：README（中英）与 `docs/plan/roadmap.md`。
- * 语句**必须存在**，且其中版本号须等于 `package.json` 的 `version`。
- *
- * 为什么是弱守卫：这些文件按设计保留**历史版本**叙述（各版本做了什么），故不能对文件内所有版本字面量
- * 施加相等要求；此处只锚定「当前版本 / `latest` =」这一声明句式，句式被改写会在 `statement-missing`
- * 上响亮失败（有意的防静默失效设计，代价是改措辞即红）。
+ * 「当前版本」声明句登记表（弱守卫面）：**单一事实源见** `scripts/shared/version-statements.mjs`
+ * （与发布流脚本 `manual-release.mjs` 共用，使版本句同步与守卫断言同源）。此处 re-export 维持既有导入面。
  */
-export const CURRENT_VERSION_STATEMENTS = [
-    { file: 'README.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'README「当前版本」句' },
-    { file: 'README.md', pattern: /当前最新版本为\s*`([^`\s]+)`/u, label: 'README「当前最新版本」句' },
-    {
-        file: 'README.en-US.md',
-        pattern: /Current version is\s*`([^`\s]+)`/u,
-        label: 'README (en) "Current version" statement',
-    },
-    {
-        // roadmap 写作 `latest` = 0.4.0（版本号本处未加反引号），故捕获「数字版本」而非反引号内容
-        file: 'docs/plan/roadmap.md',
-        pattern: /`latest`\s*=\s*`?([0-9]+\.[0-9]+(?:\.[0-9]+)?)`?/u,
-        label: 'roadmap §1「latest =」当前版本句',
-    },
-]
+export { CURRENT_VERSION_STATEMENTS }
 
 /**
  * 扫描版本策略页正文的系列字面量。

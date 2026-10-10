@@ -96,6 +96,7 @@
     "prepublishOnly": "node scripts/governance/check-licenses.mjs",
     "changelog": "node scripts/release/generate-changelog.mjs",
     "release": "semantic-release",
+    "release:manual": "node scripts/release/manual-release.mjs",
     "check:resolver": "node scripts/release/check-resolver.run.mjs"
   },
   "dependencies": {

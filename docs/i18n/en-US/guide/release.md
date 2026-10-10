@@ -63,13 +63,14 @@ It chains seven steps: `preflight → bump → changelog → publish → verify 
 
 > **History**: this mechanism used to be deferred (2026-09-19 decision); it **started** with [roadmap Phase 8](/plan/roadmap) on 2026-10-10, piloted on dependfix.
 
-- **Mechanism**: run a cross-repo **minimal compatibility check** (`typecheck` + `build`) against onboarded downstream projects; any failure is a **compatibility blocker**.
-- **Library-side carrier**: caomei-ui provides the reusable workflow `.github/workflows/compat-check.yml` (`on: workflow_call`, runs in the **caller's repository context**, **no cross-repo token**), which downstream projects call via `uses:`.
-- **Checked list (register on onboarding)**: based on the **actually consumed** set (**consumed = in scope**); a new downstream is registered **incrementally when onboarded** and is not in scope before that.
-  - **Consumed (in scope)**: `dependfix` (`apps/platform`), `momei` (root package).
-  - **Roadmap target downstreams with zero consumption today**: `caomei-auth` / `rss-impact-next` / `afdian-linker` — **register on onboarding**.
-- **Trigger and capacity**: triggered **once per caomei-ui release (tag)**; scope is at least `typecheck` + `build`, **excluding** e2e / visual regression / full unit tests / coverage. **The trigger is decided by the caller** (downstream `workflow_dispatch` / existing scheduled regression) — "auto-trigger on release" requires cross-repo dispatch credentials (form A) and is **not enabled today**.
-- **Ownership and status**: this mechanism is [roadmap Phase 8](/plan/roadmap); the library-side reusable workflow is **ready** and **downstream onboarding is in progress** (piloted on dependfix). See the Phase 8 scope evaluation record (`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`) for the trigger form and capacity boundary.
+- **Mechanism**: caomei-ui's own workflow **checks out the downstream source** and runs its `typecheck` + `build` on the **upstream runner** (**upstream-triggered + upstream-executed**); any failure is a **compatibility blocker**.
+- **Carrier**: `.github/workflows/downstream-compat.yml` — auto-triggered by a caomei-ui **release tag (`v*`)**, plus manual `workflow_dispatch` (with an optional target version). The downstream repository must be **public** (upstream checkout needs no extra credentials).
+- **Checked list (register on onboarding)**: registered in the workflow's `matrix` — **in scope** means it is registered in the `matrix`.
+  - **In scope**: `dependfix` (`apps/platform`, pilot).
+  - **Consumed but not onboarded** (pending incremental registration): `momei` (root package).
+  - **Roadmap target downstreams with zero consumption today**: `caomei-auth` / `rss-impact-next` / `afdian-linker` — register on onboarding.
+- **Trigger and capacity**: triggered **once per caomei-ui release tag (`v*`)** (manual runs allowed); scope is at least `typecheck` + `build`, **excluding** e2e / visual regression / full unit tests / coverage. **The downstream default branch is a moving target**: the workflow records the downstream revision (SHA) for attribution — a red run may be caused by the downstream's own changes, not a caomei-ui regression.
+- **Ownership and status**: this mechanism is [roadmap Phase 8](/plan/roadmap); the workflow is **ready**, piloted on dependfix. See the Phase 8 scope evaluation record (`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`) for the scope and form.
 
 ## Related docs
 

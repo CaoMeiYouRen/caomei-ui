@@ -275,5 +275,6 @@
 - **`backlog.md`**：纳入阶段的候选从候选池移除——**迁出 1 行**（§1.8「下游兼容性回归机制」〔B30，落 M1〕）；**新增 2 行**（§1.6「提交驱动 CI 自动发布」〔N2，D8 维持手动〕、「进入 1.x 的版本策略与冻结面确认」〔N3，D7 暂不进入〕）。**候选池净变化**：§1 在册 **30 → 31**（§1.1 5 / §1.2 2 / §1.3 1 / §1.4 3 / §1.5 2 / §1.6 **15** / §1.7 1 / §1.8 **2**）。N1 / N4 / N5 已分别落 M2 / M3 / M4，不进候选池。
 - **未纳入**：除已迁出的 B30 外，其余 **29 项**候选（B1 ~ B29）全部维持 Backlog / 条件触发 / 维持裁定，不在本阶段范围内（无删除、无静默豁免）。**复算式**：30 − 1 + 2 = **31**（逐段枚举 5 + 2 + 1 + 3 + 2 + 15 + 1 + 2 = 31）。
 - **治理索引**：同步本记录的决策 / 登记摘要。
+- **形态变更（2026-10-10 同日，用户复议）**：D2 的 **B reusable workflow** 变更为**「上游触发 + 上游执行」**——caomei-ui 自身工作流 checkout 下游源码、在上游 runner 执行 `typecheck` + `build`（无需下游改动与跨仓凭据）。M1-1 交付物随之替换（`compat-check.yml` 删除 → `downstream-compat.yml`），**M1-2 不再需要下游仓库改动**。§8.1 的 D2 时点裁定值**保留不改**（点时记录）；变更依据见[形态变更记录](./2026-10-10-phase21-m1-form-change-upstream-executed.md)。
 - **`.session` 阶段态**：同步 `current-task.yaml` 的 `current_phase` / `active_plan` / `next_steps` 与 `runtime-state.json` 的 `plan_state`（[规划规范 §3.8](../../standards/planning.md) / `todo-manager` skill（`.github/skills/todo-manager/SKILL.md`）Step 3.5 阶段登记触发点）。
 - **Review Gate**：提名期 R1 `standard` **Pass**（0 blocker / 1 warning / 2 suggest——RG-W1 下游 HEAD 日级时点 / RG-S1 跨轮基数口径 / RG-S2 默认落定说明，均同批收口）；**登记批次 R1 `standard` `Pass`**（0 blocker / 0 warning / 1 suggest——RG-S1 §7 批次范围自述与最终暂存面不一致，已同批收口）。

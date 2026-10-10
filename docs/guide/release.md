@@ -124,13 +124,14 @@ pnpm release:manual announce  --version=0.7.0 --yes
 
 > **历史**：本机制原为后置项（2026-09-19 决策「下游接入验证后置」）；2026-10-10 随[路线图 Phase 8](/plan/roadmap) **启动**，以 dependfix 为试点。
 
-- **机制**：对已接入下游执行跨仓库**最小兼容性检查**（`typecheck` + `build`），任一失败视为**兼容性阻塞**。
-- **库侧载体**：caomei-ui 提供 reusable workflow `.github/workflows/compat-check.yml`（`on: workflow_call`，在**调用方仓库上下文**运行、**无需跨仓 token**），供下游 `uses:` 调用。
-- **受检清单（接入即登记）**：以**实测消费面**为准（**已消费＝在受检面**），新下游**接入时增量登记**，接入前不属于受检面。
-  - **已消费（在受检面）**：`dependfix`（`apps/platform`）、`momei`（根包）。
-  - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——**接入后增量登记**。
-- **触发与容量**：每次 caomei-ui **发布（tag）触发 1 次**；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**触发方式由调用方决定**（下游 `workflow_dispatch` / 既有定时回归）——「发布即刻自动触发」需跨仓 dispatch 凭据（A 形态），**当前未启用**。
-- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；库侧 reusable workflow **已就绪**、**下游接入进行中**（dependfix 试点）。启动范围与触发形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
+- **机制**：caomei-ui 自身工作流 **checkout 已接入下游源码**，在**上游 runner** 上执行其 `typecheck` + `build`（**上游触发 + 上游执行**）；任一失败视为**兼容性阻塞**。
+- **载体**：`.github/workflows/downstream-compat.yml`——caomei-ui **发布 tag（`v*`）自动触发**，另可手动 `workflow_dispatch`（可传被测版本）。下游仓库须为**公开**（上游 checkout 无需额外凭据）。
+- **受检清单（接入即登记）**：登记于工作流的 `matrix`——**已在受检面**即已在 `matrix` 登记。
+  - **已在受检面**：`dependfix`（`apps/platform`，试点）。
+  - **已消费但未接入**（待增量登记）：`momei`（根包）。
+  - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——接入后增量登记。
+- **触发与容量**：caomei-ui **发布 tag（`v*`）触发 1 次**（另可手动）；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**下游默认分支为移动目标**：工作流记录下游 revision（SHA）以便归因——红可能是下游自身改动所致，非 caomei-ui 回归。
+- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪**，受检清单试点 dependfix。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
 
 ## 11. 相关文档
 

@@ -159,6 +159,6 @@ export default defineConfig({
 ## 7. 发布链路
 
 - Conventional Commits → semantic-release 推断版本 → 生成 CHANGELOG → 发布 npm → GitHub Release。
-- 下游兼容性回归机制（[Phase 8](/plan/roadmap)，**2026-10-10 启动**）：发布（tag）时对**已接入下游**（dependfix、momei）执行跨仓库 `typecheck` + `build` 兼容性检查（库侧 reusable workflow，B 形态）；受检清单以实测消费面为准、**接入即登记**（详见 [发布指南 §10](../guide/release.md)）。
+- 下游兼容性回归机制（[Phase 8](/plan/roadmap)，**2026-10-10 启动**）：caomei-ui **发布 tag 时在上游 runner checkout 已接入下游源码**并执行 `typecheck` + `build` 兼容性检查（**上游触发 + 上游执行**，`.github/workflows/downstream-compat.yml`）；受检清单**接入即登记**（**已在工作流 `matrix` 登记者方在受检面**，详见 [发布指南 §10](../guide/release.md)）。
 
 详见 [发布指南](../guide/release.md)。

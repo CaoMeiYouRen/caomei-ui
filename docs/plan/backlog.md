@@ -66,7 +66,9 @@
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 20 归档已知观察「归档载体只增不减，本批接受」。候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（来源：[Phase 20 归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §8） | 低 |
+| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 21 D11 裁定**维持并留观察**；候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度 | 低 |
+| 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
+| 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
 
 ### 1.7 服务层候选（composables）
 
@@ -80,7 +82,6 @@
 |------|------|--------|
 | 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）；momei 根 `package.json` 仍精确锁定 `caomei-ui@0.3.0`（第六十八阶段迁移实施期）〔2026-10-06 实测两仓 `package.json`：dependfix `0.5.0` / momei `0.3.0`〕。触发条件：**momei 启动 `0.5.0` 升级**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` 两个 minor），产出升级指引 / 回归关注点 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
-| 下游兼容性回归机制 | 见路线图 Phase 8，稳定使用后启用 | 延迟 |
 
 ## 2. 维护约定
 

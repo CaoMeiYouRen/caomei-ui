@@ -6,7 +6,7 @@
 
 > changesets is not used (this project is a single package, and semantic-release is the standard fit).
 
-> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; it will be enabled after npm credentials are configured (`NPM_TOKEN` or npm Trusted Publisher / OIDC).
+> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** for now (see "Manual release (local)" below). CI auto-publish will be enabled after npm credentials are configured (`NPM_TOKEN` or npm Trusted Publisher / OIDC).
 
 ## Version inference
 
@@ -26,6 +26,16 @@
    - generates / updates `CHANGELOG.md`;
    - publishes the npm package `caomei-ui`;
    - creates the GitHub Release and tag.
+
+## Manual release (local)
+
+Releases are currently performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). Use the single-entry orchestrator:
+
+```bash
+pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--yes]
+```
+
+It chains seven steps: `preflight → bump → changelog → publish → verify → sync → announce`. Mutating steps (`bump` / `changelog` / `publish` / `sync` / `announce`) require an explicit `--yes`; use `--dry-run` to preview. The script never pushes — run `git push origin master --follow-tags` yourself. See the [Chinese release guide](/guide/release) §3 for the full runbook, the tag placement note and the release-metadata exemption boundary.
 
 ## Pre-release checks
 

@@ -66,7 +66,7 @@
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
-| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 21 D11 裁定**维持并留观察**；候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度 | 低 |
+| 归档载体行数超阈压缩 | 主窗口 `todo-archive.md` **479 行**超 `docs:check:line-count` warn 阈值（warn > 400 / error > 600，非阻断）；Phase 21 D11 裁定**维持并留观察**——**理由**：行数仍在 **error 阈值 600 以内**（warn 可接受），归档载体只增不减属常态、压缩为预防性动作；**再评估触发 = 行数达 error 阈值 600 时强制压缩**；候选：压缩近线窗口（更早阶段迁深度归档）或降低单块粒度（计数口径以 `pnpm docs:check:line-count` 为准） | 低 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
 | 视觉基线转阻断评估 | 视觉回归基线装置已交付并接入周级回归（**先非阻断**）；**触发条件 = 首个 `ubuntu-latest` 全绿 run**——届时复核跨环境渲染一致性（字体 / 抗锯齿）、按需重冻结基线，再评估转阻断（来源：[装置记录](../design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md) / [接线记录](../design/governance/2026-10-10-phase21-m3-2-visual-baseline-ci-docs.md)） | 低 |

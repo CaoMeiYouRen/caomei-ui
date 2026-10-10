@@ -1,7 +1,7 @@
 # Phase 21 M1 形态变更：下游兼容检查改为「上游触发 + 上游执行」
 
 > 创建时间：2026-10-10
-> 关联条目：[待办事项](../../plan/todo.md) Phase 21 **M1-1 / M1-2**（下游回归机制启动）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 21 **M1-1 / M1-2**（下游回归机制启动）
 > 触发：用户 2026-10-10 复议——指出当前 B 形态（reusable workflow）**本身不绑定仓库**、实际由**下游**加 `uses:` 调用 job 才会执行；主张本任务应由**上游触发并执行**（上游 checkout 下游源码跑 `install` + `typecheck` + `build`），下游为开源仓库时无需额外权限。
 > 依据：[Phase 8 启动范围评估](./2026-10-08-phase8-downstream-regression-scope-evaluation.md) §4 / §5 / §7；[第五轮范围评估](./2026-10-10-next-stage-scope-evaluation-5.md) §8.1 D2；[发布指南 §10](../../guide/release.md)
 > 边界：本批为**形态变更**（替换 M1-1 交付物 + 回扫活载体口径）；**未执行真实贯通运行**（需推送触发，M1-2 待执行）。

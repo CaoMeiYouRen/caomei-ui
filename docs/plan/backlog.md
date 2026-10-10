@@ -83,6 +83,7 @@
 |------|------|--------|
 | 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）；momei 根 `package.json` 仍精确锁定 `caomei-ui@0.3.0`（第六十八阶段迁移实施期）〔2026-10-06 实测两仓 `package.json`：dependfix `0.5.0` / momei `0.3.0`〕。触发条件：**momei 启动 `0.5.0` 升级**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` 两个 minor），产出升级指引 / 回归关注点 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
+| 下游兼容检查首次真实贯通验证 | **待执行（Phase 21 遗留）**：上游执行的兼容检查工作流 `.github/workflows/downstream-compat.yml` 已交付并经**本地等价命令链**验证（clone dependfix → install → 覆盖 `caomei-ui@0.6.0` → 构建 → typecheck → build 全链 exit 0）；**首次 GitHub 真实触发**（发布 tag / 手动 `workflow_dispatch`）待推送后执行，以确认 Actions 运行时（表达式求值 / checkout 权限 / 缓存命中）无缺陷。触发条件 = **下次推送**（或下次发布） | 低 |
 
 ## 2. 维护约定
 

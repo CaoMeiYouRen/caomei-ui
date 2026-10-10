@@ -1,7 +1,7 @@
 # Phase 21 M2-1：统一手动发布流脚本编排
 
 > 创建时间：2026-10-10
-> 关联条目：[待办事项](../../plan/todo.md) Phase 21 **M2-1**（发布流统一）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 21 **M2-1**（发布流统一）
 > 依据：用户 2026-10-10 裁定 D6（统一手动发布流取**脚本编排**）/ D7（暂不进入 1.x）/ D8（自动化发布维持手动）；[发布机制评估 §3](./2026-10-08-release-flow-and-version-strategy-evaluation.md)；[发布指南 §3](../../guide/release.md)
 > 边界：本批为**脚本实现**（`scripts/release/manual-release.mjs` + 单测 + `package.json` 脚本）；[发布指南 §3](../../guide/release.md) 的文档面同步归 **M2-2**；**未执行真实发布**（不触碰 registry）；**不启动 CI 自动发布**（D8）、**不进入 1.x**（D7）。
 

@@ -1,7 +1,7 @@
 # Phase 21 M2-2：发布指南 §3 同步为脚本编排说明面
 
 > 创建时间：2026-10-10
-> 关联条目：[待办事项](../../plan/todo.md) Phase 21 **M2-2**（发布流统一）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 21 **M2-2**（发布流统一）
 > 依据：用户 2026-10-10 裁定 D6（脚本编排）；[发布机制评估 §3](./2026-10-08-release-flow-and-version-strategy-evaluation.md)；M2-1 交付 [统一手动发布流脚本编排](./2026-10-10-phase21-m2-1-manual-release-flow.md)
 > 边界：本批为**文档面同步**（`docs/guide/release.md` §3 重写 + 英文页补「Manual release」节）；不改脚本；不执行真实发布。
 

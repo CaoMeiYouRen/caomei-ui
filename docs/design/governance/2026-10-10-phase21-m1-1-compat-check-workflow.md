@@ -1,7 +1,7 @@
 # Phase 21 M1-1：下游兼容检查 reusable workflow（库侧）
 
 > 创建时间：2026-10-10
-> 关联条目：[待办事项](../../plan/todo.md) Phase 21 **M1-1**（下游回归机制启动）
+> 关联条目：[待办归档](../../plan/todo-archive.md) Phase 21 **M1-1**（下游回归机制启动）
 > 依据：用户 2026-10-10 裁定 D2 ~ D5（**启动 Phase 8 + B reusable workflow + 仅 dependfix + 沿用 §10 阻塞语义**）；[Phase 8 启动范围评估](./2026-10-08-phase8-downstream-regression-scope-evaluation.md) §4 / §5；[发布指南 §10](../../guide/release.md)
 > 边界：本批为**库侧检查逻辑落地**（caomei-ui 提供 reusable workflow）；**触发方式与下游接入属 M1-2**；不改 [发布指南 §10](../../guide/release.md)（口径修正归 M4-1）；**未执行真实贯通验证**（需下游接入 + 推送触发）。
 >

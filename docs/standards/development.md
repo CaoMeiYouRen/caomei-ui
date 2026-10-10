@@ -170,6 +170,7 @@ const attrs = computed(() => {
 - portal / popper 挂载的子组件 scoped `data-v` 落在包裹层，`.comp__content[data-v-x]` 不命中；改用命名空间化的非 scoped 规则。Reka 嵌套子组件（如 `CheckboxIndicator`）不回传父级 scoped `data-v`，可在父级默认插槽内自绘（代价：丢失 `Presence` / `forceMount` 动画）。浮层子部件的共享样式宜集中到 Content 的非 scoped 命名空间块。
 - 列表语义容器（如 Toast 视口 `<ol>`）的几何重置用叠加类（`.x.x`）提升特异性，定位 / 布局仍保持单类低特异性；`position: fixed` 元素宽度用 `100%` 而非 `100vw`，避免含滚动条导致左右留边不对称。
 - Vue scoped `<style>` 会把 `@keyframes` 名重写为 `name-<hash>`；消费层无法引用被重写的 keyframes，动画开关须由组件暴露 `animation-name` / `animation-duration` / `animation-iteration-count`。
+- 文档站动效层 `docs/.vitepress/theme/motion.css` 的 `caomei-demo-*` keyframes 是组件 scoped keyframes 的**副本**（名称不可跨文件引用），由 `check:demo-keyframes` 守卫（`governance:check` 链内，预算 0）：逐个副本须与组件源 `@keyframes` body **空白 / 注释无关地等价**、未登记的副本即失败、映射悬空（源改名）即失败、受检面下界防收窄；新增副本须在守卫的 `KEYFRAME_MAP` 登记。
 - Stylelint `selector-not-notation: complex` 要求 `:not(a, b)` 而非 `:not(a):not(b)`。
 - 组件内列表项需显式重置 `margin`：宿主列表样式（如 VitePress `.vp-doc li + li`）会渗透抬高组件 `li`。
 - 表格单元格内放 inline-flex 组件（如复选框）会因基线对齐产生约 1px 行高抖动，选中态指示器出现时更明显；用 `display: flex` 包裹容器承载可消除，单元格高度取 max 后与文本列一致。
@@ -215,7 +216,7 @@ const attrs = computed(() => {
 以下检查必须全部通过：
 
 - `pnpm lint`（ESLint 零 error）
-- `pnpm lint:css`（Stylelint，涉及样式时；受检面含 `src/**` 与文档站主题 `docs/.vitepress/theme/**`）
+- `pnpm lint:css`（Stylelint，涉及样式时；受检面含 `src/**`、文档站主题 `docs/.vitepress/theme/**` 与文档站示例 `docs/examples/**` / `docs/i18n/en-US/examples/**`）
 - `pnpm lint:md`（文档改动时）
 - `pnpm typecheck`（`vue-tsc --noEmit` 零 error）
 - `pnpm typecheck:docs`（文档站类型检查，`vue-tsc -p docs/tsconfig.json` 零 error）

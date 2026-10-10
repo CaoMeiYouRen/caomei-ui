@@ -19,7 +19,8 @@
       - 仅恢复 `animation`（入场 / 退出 / 加载），**不恢复 transition**：hover 与状态过渡继续尊重系统偏好。
 
   keyframes 说明：组件若在 scoped 样式块中定义 keyframes，其名称会被编译期重写（`caomei-*-<hash>`），
-  无法跨文件引用，故下文的 `caomei-demo-*` 与组件内定义等价（值同步自组件源码；组件动画变更时需一并更新）；
+  无法跨文件引用，故下文的 `caomei-demo-*` 与组件内定义等价（值同步自组件源码；组件动画变更时需一并更新，
+  由 `check:demo-keyframes` 机检副本与组件源 body 等价——新增副本须在守卫的 `KEYFRAME_MAP` 登记）；
   Portal 面板的 keyframes 定义在非 scoped 样式块中（名称稳定），直接引用组件名。
 */
 @media (prefers-reduced-motion: reduce) {

@@ -56,4 +56,10 @@
 
 ## 7. Review Gate
 
-（提交前回填。）
+- **结论**：R1 `standard` **`Reject`**（1 blocker / 3 warning / 2 suggest）→ **R2 `standard` `Pass`**。
+- **R1 blocker（RG-B1）**：`Setup Node.js` 的 `cache-dependency-path: downstream/pnpm-lock.yaml` 位于下游 checkout 之前，`actions/setup-node` 解析缓存路径失败会直接报错退出 → **已修**：`Checkout downstream` 前移 + 承重注释。
+- **R1 warning**：RG-W1（roadmap Phase 21 行 / `todo.md` L7 仍写 B 形态）/ RG-W2（§10 受检面与 `matrix` 不一致）/ RG-W3（`.session` 旧形态）→ 均**已修**（R2 确认；W2/W3 的同类残留随后收口：`architecture.md §7` / `todo.md` M4-1 行 / `.session` 尾部枚举）。
+- **R1 suggest**：RG-S2（被取代的 M1-1 记录缺前向指针）→ **已修**；RG-S1（Action 浮动主标签）→ **不采纳**（仓库级既有统一约定，非本批引入）。
+- **独立核验**：步骤顺序自检（downstream checkout 早于 setup-node、`id: version` 早于其引用）、YAML 解析、旧口径回扫、点时记录保留原值 + 前向指针，均通过。
+- **未覆盖边界**：未在 GitHub 真实触发（需推送，M1-2 待执行）；未独立复跑 `pnpm verify` 全链（采信调用方 exit 0）。
+- **留痕**：`artifacts/review-gate/2026-10-10-phase21-m1-form-change.md`（本地态，git-ignored）。

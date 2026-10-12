@@ -2,7 +2,7 @@
 
 > 阶段：Phase 22（机制真实贯通、依赖安全与升级治理、治理与测试收口）M1-2
 > 日期：2026-10-12
-> 范围：`.github/workflows/regression-weekly.yml`（视觉步骤移除 `continue-on-error` = 转阻断，1 处）；[测试规范 §2.1](../../standards/testing.md)（接入策略口径）；[待办事项](../../plan/todo.md) M1-2 状态；[Backlog](../../plan/backlog.md) §1.6 两行；本记录 + [治理索引](./index.md)；**不改装置 / 不改基线 / 不改组件（零 `src/**` 零 `test/**`）**
+> 范围：`.github/workflows/regression-weekly.yml`（视觉步骤移除 `continue-on-error` = 转阻断，1 处）；[测试规范 §2.1](../../standards/testing.md)（接入策略口径）；[待办事项](../../plan/todo-archive.md) M1-2 状态；[Backlog](../../plan/backlog.md) §1.6 两行；本记录 + [治理索引](./index.md)；**不改装置 / 不改基线 / 不改组件（零 `src/**` 零 `test/**`）**
 > 依据：用户 2026-10-10 裁定 **D6**（视觉基线首跑后评估转阻断）与 2026-10-12 裁定（**转阻断 + 不钉运行器镜像**，即 §4.2）；[M3-1 装置记录](./2026-10-10-phase21-m3-1-visual-baseline-device.md)（RG-W01 跨环境风险延期至首个 CI run）；[M3-2 CI 接线记录](./2026-10-10-phase21-m3-2-visual-baseline-ci-docs.md) §2.2 转正条件；[M7-1 评估](./2026-10-08-m7-1-visual-regression-baseline-evaluation.md) §5
 > 基线：`5012d94`（远端 `origin/master`；本地 M1-1 提交 `28b4873` 为纯文档差异）
 
@@ -83,7 +83,7 @@
 |:---|:---|
 | `.github/workflows/regression-weekly.yml` | 视觉步骤移除 `continue-on-error`（转阻断）+ 步骤注释更新（取证指针 + 再评估触发） |
 | [测试规范 §2.1](../../standards/testing.md) | 接入策略口径由「先非阻断观测」改为「已转阻断（2026-10-12）」+ 再评估触发 |
-| [待办事项](../../plan/todo.md) | M1-2 状态改「已完成」并回填结论 |
+| [待办事项](../../plan/todo-archive.md) | M1-2 状态改「已完成」并回填结论 |
 | [Backlog](../../plan/backlog.md) §1.6 | 「视觉基线受检面扩面」行同步转阻断达成 + 拉丁文本覆盖缺口；「CI 运行器镜像钉定」行登记视觉面裁定（不钉 + 迁移即重冻结） |
 | 本记录 + [治理索引](./index.md) | 新增记录与索引条目；**同批订正** M6-3 索引条目中「当前仓 66 条对账」的现在时口径（改为「当时仓 66 + 2026-10-12 复算 67」，因本记录新增 1 对 e2e 计数） |
 

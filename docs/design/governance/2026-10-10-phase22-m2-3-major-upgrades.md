@@ -3,7 +3,7 @@
 > 阶段：Phase 22（机制真实贯通、依赖安全与升级治理、治理与测试收口）M2-3
 > 日期：2026-10-10
 > 范围：`package.json`（依赖版本）/ `pnpm-lock.yaml` / `tsconfig.json`（TS 6 迁移）/ `THIRD-PARTY-LICENSES`（许可声明同步）；零 `src/**` 零 `test/**` 业务改动
-> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo.md) M2-3；[开发规范](../../standards/development.md) / [规划规范 §5](../../standards/planning.md)
+> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo-archive.md) M2-3；[开发规范](../../standards/development.md) / [规划规范 §5](../../standards/planning.md)
 > 基线：`50caea7`（M2-2 修复提交）
 
 ## 1. 背景与口径

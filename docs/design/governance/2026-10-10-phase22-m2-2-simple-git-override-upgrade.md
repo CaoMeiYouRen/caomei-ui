@@ -3,7 +3,7 @@
 > 阶段：Phase 22（机制真实贯通、依赖安全与升级治理、治理与测试收口）M2-2 后续
 > 日期：2026-10-10
 > 范围：`pnpm-workspace.yaml`（`overrides` + `patchedDependencies`）+ `patches/simple-git@4.0.2.patch` + `pnpm-lock.yaml`；零 `src/**` 零 `test/**`
-> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo.md) M2-2；[规划规范](../../standards/planning.md) / [安全规范](../../standards/security.md)
+> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo-archive.md) M2-2；[规划规范](../../standards/planning.md) / [安全规范](../../standards/security.md)
 > 基线：`86caf15`（Phase 22 M6-1 提交）；前置记录：[2026-10-10-phase22-m2-2-dev-alerts-remediation.md](./2026-10-10-phase22-m2-2-dev-alerts-remediation.md)
 
 ## 1. 背景与触发

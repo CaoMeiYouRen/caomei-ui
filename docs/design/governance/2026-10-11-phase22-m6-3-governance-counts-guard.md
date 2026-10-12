@@ -3,7 +3,7 @@
 > 阶段：Phase 22（机制真实贯通、依赖安全与升级治理、治理与测试收口）M6-3
 > 日期：2026-10-11
 > 范围：新增 `scripts/governance/check-governance-counts.mjs` + 单测；`package.json`（接入 `governance:check`）；`docs/standards/ai-collaboration.md` §9（机检面登记）；零 `src/**`
-> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo.md) M6-3；[AI 协作规范 §9](../../standards/ai-collaboration.md)
+> 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo-archive.md) M6-3；[AI 协作规范 §9](../../standards/ai-collaboration.md)
 > 基线：`e93c557`
 
 ## 1. 背景

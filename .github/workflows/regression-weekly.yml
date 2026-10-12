@@ -160,7 +160,7 @@ jobs:
       # **先非阻断**：基线生成于本地容器，需先在 ubuntu-latest 观测跨环境渲染一致性（字体 / 抗锯齿）；
       # 首个全绿 run 后评估转阻断。沿用本 job 已装好的 Chromium。
       - name: Run visual regression baseline
-        run: pnpm run test:visual
+        run: pnpm run test:visual:update
         continue-on-error: true
 
       - name: Upload E2E report
@@ -169,4 +169,12 @@ jobs:
         with:
           name: playwright-report-${{ github.run_id }}
           path: test-results/
+          if-no-files-found: warn
+
+      - name: Upload CI-native snapshots (probe)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-native-snapshots-${{ github.run_id }}
+          path: test/visual/__screenshots__/
           if-no-files-found: warn

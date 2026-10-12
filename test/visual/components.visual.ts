@@ -14,7 +14,7 @@ import { expect, test } from '@playwright/test'
  * 用于自证比对具判别力（不留常驻）。
  */
 
-/** 受检面登记（首批 8 个核心静态组件默认态）。 */
+/** 受检面登记（首批 8 个核心静态组件默认态 + 字体路径扩面 3 段）。 */
 const SAMPLE_SECTIONS = [
     { id: 'ds-button-default', name: 'button' },
     { id: 'ds-tag-default', name: 'tag' },
@@ -24,10 +24,19 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-input-default', name: 'input' },
     { id: 'ds-select-default', name: 'select' },
     { id: 'ds-slider-default', name: 'slider' },
+    { id: 'ds-font-latin', name: 'font-latin-button' },
+    { id: 'ds-font-latin-input', name: 'font-latin-input' },
+    { id: 'ds-font-mixed', name: 'font-mixed-button' },
 ] as const
 
+/**
+ * 字体路径受检面（拉丁字形 / 跨字体回退）：首批受检面文本全为 CJK，该路径此前零覆盖。
+ * 单独登记并在下方断言其仍在 `SAMPLE_SECTIONS` 内，防止「只保下界、悄悄删掉字体面」。
+ */
+const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
+
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 8
+const MIN_SECTIONS = 11
 
 const THEMES = ['light', 'dark'] as const
 
@@ -37,6 +46,13 @@ const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
     test('受检面登记未收窄', () => {
         expect(SAMPLE_SECTIONS.length).toBeGreaterThanOrEqual(MIN_SECTIONS)
+    })
+
+    test('字体路径受检面仍在登记表内', () => {
+        const registered = new Set(SAMPLE_SECTIONS.map((section) => section.id))
+        for (const id of FONT_PATH_SECTIONS) {
+            expect(registered.has(id)).toBe(true)
+        }
     })
 
     for (const theme of THEMES) {

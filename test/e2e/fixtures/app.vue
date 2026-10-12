@@ -252,6 +252,12 @@ const dsTags = ref<string[]>([])
 const dsDate = ref<Date | null>(new Date(2026, 0, 15))
 const dsPassword = ref('')
 
+/**
+ * 视觉基线字体路径用例（见 `test/visual/components.visual.ts`）：纯拉丁文本与 CJK + 拉丁混排，
+ * 覆盖首批受检面（文本全为 CJK）之外的拉丁字形 / 跨字体回退路径。
+ */
+const fontLatinInput = ref('')
+
 /** Drawer 收敛用例：`lg` 档（560px）与 90vw / 90vh 取小。 */
 const drawerRightOpen = ref(false)
 const drawerBottomOpen = ref(false)
@@ -1126,6 +1132,25 @@ const ConfirmDriver = defineComponent({
                 <ConfirmDriver />
             </CaomeiConfirmDialog>
         </section>
+
+        <!--
+          视觉基线字体路径用例（见 `test/visual/components.visual.ts`）：首批受检面文本全为 CJK，
+          拉丁字形与跨字体回退路径零覆盖。三段采样：
+          ① `ds-font-latin` 纯拉丁按钮文本；② `ds-font-latin-input` 纯拉丁占位符；
+          ③ `ds-font-mixed` 同一文本流内 CJK + 拉丁混排（跨字体回退）。
+          追加在模板末尾，不改动既有 DOM 顺序约定（既有用例不按顺序定位）。
+        -->
+        <section id="visual-font-path" class="fixture__case">
+            <div id="ds-font-latin" class="fixture__state">
+                <CaomeiButton>Save changes</CaomeiButton>
+            </div>
+            <div id="ds-font-latin-input" class="fixture__state">
+                <CaomeiInput v-model="fontLatinInput" placeholder="Enter your email" />
+            </div>
+            <div id="ds-font-mixed" class="fixture__state">
+                <CaomeiButton>保存 Save changes 取消 Cancel</CaomeiButton>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -1227,6 +1252,13 @@ const ConfirmDriver = defineComponent({
 #badge-layout {
     display: flex;
     flex-wrap: wrap;
+    gap: var(--caomei-space-3);
+}
+
+/* 字体路径采样：三段纵向排列并定宽，避免混排文本在窄视口撑破页面 */
+#visual-font-path {
+    display: flex;
+    flex-direction: column;
     gap: var(--caomei-space-3);
 }
 

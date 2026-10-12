@@ -157,11 +157,13 @@ jobs:
 
       # 视觉回归基线：真实渲染整体像素与仓库内冻结基线比对（装置见
       # docs/design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md）。
-      # **先非阻断**：基线生成于本地容器，需先在 ubuntu-latest 观测跨环境渲染一致性（字体 / 抗锯齿）；
-      # 首个全绿 run 后评估转阻断。沿用本 job 已装好的 Chromium。
+      # **已转阻断**（2026-10-12，Phase 22 M1-2）：首个 ubuntu-latest run 全绿，且跨环境渲染一致性经
+      # 取证达「逐字节相同」（限本次采样面 / 当次运行器镜像 / 该 Playwright 版本；三次探针 + 字体包逐包一致，见
+      # docs/design/governance/2026-10-12-phase22-m1-2-visual-baseline-first-ci-run.md）。
+      # 再评估触发：本作业 `Set up job` 的 `Image:` 出现 ubuntu-26.04（2026-10-19 起迁移）即须重冻结基线（Backlog §1.6）。
+      # 沿用本 job 已装好的 Chromium。
       - name: Run visual regression baseline
         run: pnpm run test:visual
-        continue-on-error: true
 
       - name: Upload E2E report
         if: always()

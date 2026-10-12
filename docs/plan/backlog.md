@@ -66,6 +66,7 @@
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
 | 视觉基线受检面扩面 | Phase 22 M1-2 follow-up | 首批基线仅 8 个静态组件 × 亮暗（日期 / 浮层 / 多视口 / 主题预设未纳入）；触发条件 = 转阻断后按需扩面，或下游提出具体渲染回归场景 | 低 |
+| CI 运行器镜像钉定 | Phase 22 M1-1 follow-up | `ubuntu-latest` 自 **2026-10-19** 起迁移 **Ubuntu 26.04**（2026-11-19 前完成，[runner-images#14748](https://github.com/actions/runner-images/issues/14748)），本仓 **10 处** `runs-on: ubuntu-latest`（`test.yml` ×2、`docs.yml` ×2、`regression-weekly.yml` ×3、`release.yml`、`todo.yml`、`downstream-compat.yml`）届时静默换镜像；触发条件 = M1-2 视觉基线复核或迁移落地后的 CI 出现不可归因差异 / 用户指定；候选处置 = 全仓钉固定镜像标签（如 `ubuntu-24.04`）并登记复查节奏。取证见 [Phase 22 M1-1 记录](../design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md) §4.4 | 低 |
 | `reka-ui` 补丁升级（2.10.5） | Phase 22 M2-3 follow-up | 2.10.5 致 `CaomeiInputNumber` 步进模型 emit 回归（4 例契约测试失败）；本仓维持 2.10.4。触发条件 = 本仓适配其行为变更，或上游确认属回归并修复 | 低 |
 | `conventional-changelog` 8 升级 | Phase 22 M2-3 follow-up | v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；维持 7.2.0。触发条件 = cmyr preset 发布支持 writer 9 的版本 | 低 |
 | 文档站示例外链图片守卫 | Phase 22 M6-5 follow-up | 缺机检防止示例重新引入 `http(s)://` 图片源（`check-example-refs` 仅存在性 / 形态、`guard-ref-attrs` 仅 ARIA）；候选为轻量守卫扫描 `docs/**/examples/**` 的图片源并接入 `docs:check`。触发条件 = 下一次文档站装置批次或用户指定 | 低 |
@@ -80,7 +81,7 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）；momei 根 `package.json` 仍精确锁定 `caomei-ui@0.3.0`（第六十八阶段迁移实施期）〔2026-10-06 实测两仓 `package.json`：dependfix `0.5.0` / momei `0.3.0`〕。触发条件：**momei 启动 `0.5.0` 升级**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` 两个 minor），产出升级指引 / 回归关注点 | 低 |
+| 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）。**时点快照（不回改历史值）**：2026-10-06 实测 dependfix `0.5.0` / momei `0.3.0`（当时处第六十八阶段迁移实施期）；**2026-10-12 实测两仓均已 `0.6.0`**（dependfix @ `46c6fb61`、momei @ `39e00f21`）。**由此原触发条件「momei 启动 `0.5.0` 升级」已不成立 → 候选处置待一次条件重评估（用户裁定）**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` / `0.6.0` 三个 minor），产出升级指引 / 回归关注点。取证见 [Phase 22 M1-1 记录](../design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md) §4.5 | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
 
 ## 2. 维护约定

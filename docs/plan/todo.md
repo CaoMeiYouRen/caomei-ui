@@ -10,7 +10,7 @@
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
-| M1-1 | 机制真实贯通 | **下游兼容检查首次真实触发**：以 `workflow_dispatch` 触发 `.github/workflows/downstream-compat.yml`（dependfix 试点，按需传被测版本），确认 Actions 运行时（表达式求值 / checkout 权限 / 缓存 / 下游复刻构建链）无缺陷，并将结论回传治理记录 | 一次真实 run 跑通 `typecheck` + `build` 并回传结论；记录下游 SHA 归因；受检清单按「接入即登记」维护（[发布指南 §10](../guide/release.md)） | 待执行 |
+| M1-1 | 机制真实贯通 | **下游兼容检查首次真实触发**：以 `workflow_dispatch` 触发 `.github/workflows/downstream-compat.yml`（dependfix 试点，按需传被测版本），确认 Actions 运行时（表达式求值 / checkout 权限 / 缓存 / 下游复刻构建链）无缺陷，并将结论回传治理记录 | 一次真实 run 跑通 `typecheck` + `build` 并回传结论；记录下游 SHA 归因；受检清单按「接入即登记」维护（[发布指南 §10](../guide/release.md)）。**run #1（2026-10-12 `workflow_dispatch`，`master @ 5012d94`）成功：`Compat / dependfix` 1 分 46 秒、12 步骤全绿；被测 `caomei-ui@0.6.0`、下游归因 `dependfix @ 46c6fb61`；未覆盖 = 显式版本入参分支 / tag 自动触发分支 / 版本差判别力；受检清单无变化** | 已完成 |
 | M1-2 | 机制真实贯通 | **视觉基线首个 CI run 复核与转阻断评估**：触发 `regression-weekly.yml`（`workflow_dispatch` 或下次定时）产生视觉基线首个 `ubuntu-latest` run，复核跨环境渲染一致性（字体 / 抗锯齿），按 D6 给出转阻断判定 | 首个 CI run 结论落到治理记录；转阻断 / 维持二选一并写明理由与再评估触发；涉及渲染走 `@ui-validator` | 待执行 |
 | M2-1 | 依赖安全与升级治理 | **运行时安全告警插队处置**：`source-map-js`（high，锁定修复 `1.2.2`）修复（`pnpm-workspace.yaml` 的 `overrides`），`pnpm-lock.yaml` 同提交 | 告警关闭（`gh api .../dependabot/alerts` 复核）；`pnpm verify` exit 0；库产物冒烟。**本地已锁定修复到 `1.2.2`、`pnpm verify` exit 0；告警关闭待推送后由 Dependabot 复算** | 已完成 |
 | M2-2 | 依赖安全与升级治理 | **开发作用域安全告警盘点与分批处置**：15 项（**critical 5 / high 4 / medium 4 / low 2**）逐项给「修复版本 + 结论」，**critical/high 优先**；`node-forge`（无修复版本）单列结论 | 每条有复算值 + 修复版本 + 结论；可修复者处置到位；不可修复者留痕。**已修复 14 / 无补丁 1（`node-forge`）**（`simple-git` 系列经跨大版本升级至 `4.0.2` + 兼容补丁解除受阻）；告警关闭待推送后由 Dependabot 复算 | 已完成 |
@@ -27,9 +27,9 @@
 
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。
 
-- **等待外部反馈**：dependfix `apps/platform`（消费 `0.5.0`、可升级 `0.6.0`）与 momei 第六十八阶段的迁移由对应仓库执行、本仓等待反馈；两仓当前均无未回传本仓的新反馈（2026-10-10 实测）。
+- **等待外部反馈**：dependfix `apps/platform` 与 momei 根包的迁移由对应仓库执行、本仓等待反馈；两仓 `caomei-ui` 实测均已为 **`0.6.0`**（2026-10-12：dependfix @ `46c6fb61` / momei @ `39e00f21`），均无未回传本仓的新反馈。
 - **条件触发候选**（触发后按「条件触发 → 再评估 → 决策」处理，不自动进入阶段）：组件增强与长尾（ColorPicker 色板导航 / DatePicker 范围选择 / DataTable 滚动高度 / Paginator 页码报表 / `Select` `null` 开发期告警 / Sidebar / ScrollPanel）、Toast 焦点哨兵与 `aria-hidden-focus` 冲突、文档站多版本托管 / 首页 hydration、语言矩阵长期与 RTL、locale 组织治理、`@iconify/vue` 可选接入、CHANGELOG 生成器健壮性收口、视觉基线受检面扩面、提交驱动 CI 自动发布、进入 1.x 的版本策略与冻结面确认等；逐条触发条件、复算值与取证入口见 [Backlog](./backlog.md)。
-- **已发布版本**：registry `latest` = **0.6.0**（2026-10-08 发布；`time['0.6.0']` = `2026-10-08T13:08:41Z`）。**git 侧提交与 tag 均已推送**（`origin/master` = HEAD = `e48834e`、远端 `v0.1.0` ~ `v0.6.0` **6 个** annotated tag）；**GitHub Release 已回填** `v0.1.0` ~ `v0.6.0`（`v0.6.0` = Latest）。**本阶段若产生 `src/**` 行为变更，阶段末统一收口时再登记发布条目（D14）**。
+- **已发布版本**：registry `latest` = **0.6.0**（2026-10-08 发布；`time['0.6.0']` = `2026-10-08T13:08:41Z`）。**git 侧提交与 tag 均已推送**（`origin/master` = `5012d94`〔2026-10-12 实测〕、远端 `v0.1.0` ~ `v0.6.0` **6 个** annotated tag）；**GitHub Release 已回填** `v0.1.0` ~ `v0.6.0`（`v0.6.0` = Latest）。**本阶段若产生 `src/**` 行为变更，阶段末统一收口时再登记发布条目（D14）**。
 - **长期任务待执行批次**：见[长期任务](./recurring.md) §2（**第 24 轮门槛复核已于 2026-10-10 执行**〔Phase 21 收口前〕：两组任务均无待执行批次；条件触发 1 项与已判定不纳入 5 项维持。**Phase 22 收口前须再触发一轮**）。
 - **未纳入任何阶段的候选**：见 [Backlog](./backlog.md)（组件增强、长尾组件、国际化与 RTL、移动端与响应式、基建与治理、服务层、下游协同等分组）。
 - **已完成阶段的遗留项与已知偏差**：见[待办归档](./todo-archive.md)各归档块（含[深度归档](./archive/)）的「遗留与后续候选」与「已知观察」段，其中仍待决策者已在 [Backlog](./backlog.md) 在册。

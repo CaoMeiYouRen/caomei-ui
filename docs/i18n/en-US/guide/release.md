@@ -70,7 +70,7 @@ It chains seven steps: `preflight → bump → changelog → publish → verify 
   - **Consumed but not onboarded** (pending incremental registration): `momei` (root package).
   - **Roadmap target downstreams with zero consumption today**: `caomei-auth` / `rss-impact-next` / `afdian-linker` — register on onboarding.
 - **Trigger and capacity**: triggered **once per caomei-ui release tag (`v*`)** (manual runs allowed); scope is at least `typecheck` + `build`, **excluding** e2e / visual regression / full unit tests / coverage. **The downstream default branch is a moving target**: the workflow records the downstream revision (SHA) for attribution — a red run may be caused by the downstream's own changes, not a caomei-ui regression.
-- **Ownership and status**: this mechanism is [roadmap Phase 8](/plan/roadmap); the workflow is **ready**, piloted on dependfix. See the Phase 8 scope evaluation record (`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`) for the scope and form.
+- **Ownership and status**: this mechanism is [roadmap Phase 8](/plan/roadmap); the workflow is **ready and verified by its first real run** (the 2026-10-12 `workflow_dispatch` run #1 succeeded: target `caomei-ui@0.6.0`, downstream attribution `dependfix @ 46c6fb61`, `typecheck` + `build` passed; see `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md` for the conclusion and uncovered boundaries). See the Phase 8 scope evaluation record (`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`) for the scope and form.
 
 ## Related docs
 

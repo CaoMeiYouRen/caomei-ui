@@ -131,7 +131,7 @@ pnpm release:manual announce  --version=0.7.0 --yes
   - **已消费但未接入**（待增量登记）：`momei`（根包）。
   - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——接入后增量登记。
 - **触发与容量**：caomei-ui **发布 tag（`v*`）触发 1 次**（另可手动）；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**下游默认分支为移动目标**：工作流记录下游 revision（SHA）以便归因——红可能是下游自身改动所致，非 caomei-ui 回归。
-- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪**，受检清单试点 dependfix。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
+- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪并经首次真实触发验证**（2026-10-12 `workflow_dispatch` run #1 成功：被测 `caomei-ui@0.6.0`、下游归因 `dependfix @ 46c6fb61`、`typecheck` + `build` 跑通；结论与未覆盖边界见 `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md`）。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
 
 ## 11. 相关文档
 

@@ -51,7 +51,7 @@ export default defineConfig({
             /** 色差轴（pixelmatch YIQ 感知色差）：收敛到 0.1 以检出实底色变（下游实证） */
             threshold: 0.1,
             /** 面积轴：绝对像素数，避免被视口比例吞掉细粒度改动 */
-            maxDiffPixels: 100,
+            maxDiffPixels: 0,
             /** 渲染确定化：停 CSS 动画 / 过渡 / Web Animations；隐藏光标；CSS 像素一图点 */
             animations: 'disabled',
             caret: 'hide',

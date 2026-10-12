@@ -46,3 +46,6 @@ docs/.vitepress/data
 
 # dependfix 安全报告（临时态，不进入版本库）
 /dependfix-reports
+
+# TypeScript 增量构建信息（本地构建产物）
+*.tsbuildinfo

@@ -1151,6 +1151,28 @@ const ConfirmDriver = defineComponent({
                 <CaomeiButton>保存 Save changes 取消 Cancel</CaomeiButton>
             </div>
         </section>
+
+        <!--
+          视口轴采样（见 `test/visual/components.visual.ts`）：行宽 100%（随视口变化）+ 折行，
+          覆盖窄视口（768）下的比例布局与换行路径。12 个 3 字按钮的自然宽介于 768 与 1280
+          可用宽之间——768 下折为多行、1280 下为单行（用例内有折行前置守卫）。
+        -->
+        <section id="visual-viewport" class="fixture__case">
+            <div id="ds-viewport-row" class="fixture__state">
+                <CaomeiButton>保存</CaomeiButton>
+                <CaomeiButton>取消</CaomeiButton>
+                <CaomeiButton>删除</CaomeiButton>
+                <CaomeiButton>导出</CaomeiButton>
+                <CaomeiButton>重试</CaomeiButton>
+                <CaomeiButton>提交</CaomeiButton>
+                <CaomeiButton>关闭</CaomeiButton>
+                <CaomeiButton>重置</CaomeiButton>
+                <CaomeiButton>复制</CaomeiButton>
+                <CaomeiButton>粘贴</CaomeiButton>
+                <CaomeiButton>刷新</CaomeiButton>
+                <CaomeiButton>分享</CaomeiButton>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -1253,6 +1275,13 @@ const ConfirmDriver = defineComponent({
     display: flex;
     flex-wrap: wrap;
     gap: var(--caomei-space-3);
+}
+
+/* 视口轴采样：行宽随视口变化 + 允许折行（窄视口下折为多行） */
+#visual-viewport .fixture__state {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--caomei-space-2);
 }
 
 /* 字体路径采样：三段纵向排列并定宽，避免混排文本在窄视口撑破页面 */

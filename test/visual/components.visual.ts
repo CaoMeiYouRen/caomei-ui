@@ -43,6 +43,82 @@ const THEMES = ['light', 'dark'] as const
 /** 负向对照开关（仅用于判别力自证，非常驻）。 */
 const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 
+/**
+ * 常驻负向对照的注入样式（三类目标各一条规则，缺一则对应面**不会**报差异）：
+ * - `.fixture__state`：组件面与视口 / 预设轴面（`#app` 内）；
+ * - `#calendar-inline`：日期轴面（该段为 `fixture__case`，不含 `.fixture__state`）；
+ * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）。
+ */
+const NEGATIVE_CONTROL_CSS = [
+    '#app .fixture__state { padding: 24px !important; }',
+    '#calendar-inline { padding: 24px !important; }',
+    '.caomei-dialog__content { padding: 0 !important; }',
+].join('\n')
+
+/**
+ * 形态轴扩面（见 `docs/design/governance/2026-10-13-phase23-m1-2-visual-form-axis-expansion.md`）：
+ * 视口 / 预设 / 日期 / 浮层四条**形态轴**，各自独立重冻结基线。
+ *
+ * 门槛（与治理记录同口径）：① 渲染结果可确定化（无实时日期 / 无随机 / 无网络）；② 覆盖既有
+ * 面未覆盖的渲染路径；③ 每批 ≤ 8 张新基线。未纳入的形态（其余视口 / `caomei` 预设 / 日期
+ * 面板与其余浮层组件）在记录中显式登记触发条件，不静默省略。
+ *
+ * - `viewport`：`#ds-viewport-row`（宽 100% + 折行行）在 768×800 下渲染（窄视口比例布局与折行路径；
+ *   用例内断言该视口下**确实折行**，否则该面无判别力）；
+ * - `preset`：`ds-button-default` 在 `data-preset="momei"` 下渲染（非缺省预设的 token 路径）；
+ * - `clock`：`#calendar-inline` 在**固定时钟**（2026-01-15）下渲染（日历网格 + 「今日」高亮）；
+ * - `dialog`：`#dialog-open` 点击后的 `.caomei-dialog__content`（portal 浮层合成路径）。
+ */
+const FORM_AXIS_CASES = [
+    { key: 'viewport-768-wrap-row', label: '折行行@768 视口', target: '#ds-viewport-row', setup: 'viewport' },
+    { key: 'preset-momei-button', label: 'button@momei 预设', target: '#ds-button-default', setup: 'preset' },
+    { key: 'date-calendar-fixed', label: 'calendar@固定时钟', target: '#calendar-inline', setup: 'clock' },
+    { key: 'overlay-dialog-open', label: 'dialog@打开态', target: '.caomei-dialog__content', setup: 'dialog' },
+] as const
+
+/** 形态轴面下界守卫：轴面被静默移除即失败。 */
+const MIN_FORM_AXIS = 4
+
+/** 固定时钟（日期轴确定化）：月 / 日 / 「今日」高亮均由该时刻派生。 */
+const FIXED_CLOCK = new Date('2026-01-15T09:30:00+08:00')
+
+/** 窄视口（视口轴）：与主视口 1280×800 区分，覆盖换行 / 折行布局路径。 */
+const NARROW_VIEWPORT = { width: 768, height: 800 }
+
+/** 非缺省预设（预设轴）：缺省为 `minimal`（不设 `data-preset`）。 */
+const NON_DEFAULT_PRESET = 'momei'
+
+async function prepareFormAxis(page: import('@playwright/test').Page, setup: string, theme: string): Promise<void> {
+    if (setup === 'clock') {
+        await page.clock.setFixedTime(FIXED_CLOCK)
+    }
+    await page.goto('/')
+    if (setup === 'viewport') {
+        await page.setViewportSize(NARROW_VIEWPORT)
+        // 前置守卫：768 下必须确实折行（≥2 行），否则该面对视口宽度无判别力
+        const lines = await page.locator('#ds-viewport-row > *').evaluateAll((els) =>
+            new Set(els.map((el) => Math.round(el.getBoundingClientRect().top))).size)
+        expect(lines).toBeGreaterThanOrEqual(2)
+    }
+    if (setup === 'preset') {
+        await page.evaluate((preset) => {
+            document.documentElement.setAttribute('data-preset', preset)
+        }, NON_DEFAULT_PRESET)
+    }
+    if (setup === 'dialog') {
+        await page.click('#dialog-open')
+        await page.waitForSelector('.caomei-dialog__content')
+    }
+    if (theme === 'dark') {
+        await page.evaluate(() => {
+            document.documentElement.setAttribute('data-theme', 'dark')
+        })
+    }
+    if (NEGATIVE_CONTROL) {
+        await page.addStyleTag({ content: NEGATIVE_CONTROL_CSS })
+    }
+}
+
 test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
     test('受检面登记未收窄', () => {
         expect(SAMPLE_SECTIONS.length).toBeGreaterThanOrEqual(MIN_SECTIONS)
@@ -53,6 +129,10 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
         for (const id of FONT_PATH_SECTIONS) {
             expect(registered.has(id)).toBe(true)
         }
+    })
+
+    test('形态轴受检面未收窄', () => {
+        expect(FORM_AXIS_CASES.length).toBeGreaterThanOrEqual(MIN_FORM_AXIS)
     })
 
     for (const theme of THEMES) {
@@ -66,9 +146,20 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
                     })
                 }
                 if (NEGATIVE_CONTROL) {
-                    await page.addStyleTag({ content: '#app .fixture__state { padding: 24px !important; }' })
+                    await page.addStyleTag({ content: NEGATIVE_CONTROL_CSS })
                 }
                 await expect(page.locator(`#${id}`)).toHaveScreenshot(`${name}-${theme}.png`)
+            })
+        }
+    }
+})
+
+test.describe('形态轴扩面（视口 / 预设 / 日期 / 浮层）', () => {
+    for (const theme of THEMES) {
+        for (const { key, label, target, setup } of FORM_AXIS_CASES) {
+            test(`${label}（${theme}）`, async ({ page }) => {
+                await prepareFormAxis(page, setup, theme)
+                await expect(page.locator(target)).toHaveScreenshot(`${key}-${theme}.png`)
             })
         }
     }

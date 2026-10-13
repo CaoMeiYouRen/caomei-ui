@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 import { CaomeiRichTextEditor } from '@/components/rich-text-editor'
 
 const content = ref('')
 
+// 演示 uploader 契约：返回值直接写入 Markdown；示例返回站点内置的本地占位图（无外链依赖）
 const uploader = (files: File[]): Promise<string[]> =>
-    Promise.resolve(files.map((file) => `https://cdn.example.com/${encodeURIComponent(file.name)}`))
+    Promise.resolve(files.map(() => withBase('/demo/image-square.svg')))
 </script>
 
 <template>

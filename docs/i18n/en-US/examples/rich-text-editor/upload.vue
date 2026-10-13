@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 import { CaomeiRichTextEditor } from '@/components/rich-text-editor'
 
 const content = ref('')
 
+// Demo uploader contract: the returned values are written into the Markdown; this example returns a bundled local placeholder (no external dependency)
 const uploader = (files: File[]): Promise<string[]> =>
-    Promise.resolve(files.map((file) => `https://cdn.example.com/${encodeURIComponent(file.name)}`))
+    Promise.resolve(files.map(() => withBase('/demo/image-square.svg')))
 </script>
 
 <template>

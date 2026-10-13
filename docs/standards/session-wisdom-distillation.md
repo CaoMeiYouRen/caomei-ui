@@ -46,6 +46,7 @@
 | `[test]` | `docs/standards/testing.md` | 可复用测试写法 |
 | `[process]` | `docs/standards/ai-collaboration.md`、`docs/standards/testing.md` 或 `docs/design/` | 协作/评审/验证流程 |
 | `[dependency]` | `docs/standards/development.md` 或 `docs/design/architecture.md` | 依赖的 API/用法变更 |
+| `[fact]` | 按内容就近归属（同 `[pattern]` / `[process]`） | 外部事实 / 工具行为的测定结论（如某守卫的覆盖边界、平台限制） |
 
 每条获得结论之一：`migrate`（迁移并保留摘要+链接）/ `keep`（保留）/ `remove`（删除）/ `compress`（压缩为一行）。
 

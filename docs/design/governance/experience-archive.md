@@ -4,6 +4,32 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-10-13 阶段归档蒸馏（Phase 23）
+
+> 本批活跃 **21 条全部处置**：分态 `migrate 21 / compress 0 / remove 0 / keep 0`。归档摘要 **21 行**（可复算：`awk '/^## 2026-10-13 阶段归档蒸馏（Phase 23）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[AI 协作规范 §9](../../standards/ai-collaboration.md)、[测试规范 §2 / §10](../../standards/testing.md)（§2.1 两条落点已存在）、[规划规范 §3 / §4 / §7](../../standards/planning.md)、[Git 规范 §3](../../standards/git.md)、[文档与演示站设计 §13](../documentation-site.md)；其中 **6 条**落点此前已存在（行末标「落点已存在」）。`wisdom.md` 活跃段清空并保留指针。
+
+- [2026-10-11] [process] 治理记录承载的计数须在**全部产物 staged 后**复算回写（记录自身索引条目让对账数 +1、修复点落地改变用例数） → docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-10-10] [pattern] 阶段规划的决策提问「**少而关键**」（D 项 ≤ 5 问、每问 ≤ 5 选项；已裁决 / 可推断者按默认落定并显式标注） → docs/standards/planning.md §3
+- [2026-10-10] [fact] 规划回扫须核实 git 推送态：一律以 `git ls-remote` 实时为准，不采信任务态的历史表述 → docs/standards/planning.md §7
+- [2026-10-12] [process] 负命题须**就地**给出可复现检索口径（命令 + 关键词集 + 时点 + 命中归因），不得转引到不含该口径的载体 → docs/standards/ai-collaboration.md §9
+- [2026-10-12] [fact] `check-docs-git-revision` 不覆盖 `rev-list`（以 `HEAD` 为端点的非持久区间不被拦下；端点一律钉持久 ref / 提交哈希） → docs/standards/ai-collaboration.md §9
+- [2026-10-12] [pattern] 登记前须确认 `todo.md` 满足「进行中豁免」前置（`当前进行中阶段：` 声明 + `## Phase N 原子条目` 段标题 + 段内表格行 + 段外无编号） → docs/standards/planning.md §7
+- [2026-10-12] [pattern] `todo.md` 条目编号按**阶段内顺序**、与提名期主线标签解耦，登记节须写显式映射并回扫治理索引摘要与 `.session` → docs/standards/planning.md §4
+- [2026-10-13] [pattern] 视觉基线受检面须覆盖**不同字体解析路径**（CDP `CSS.getPlatformFontsForNode` 取证新面与旧面不同源） → docs/standards/testing.md §2.1（落点已存在）
+- [2026-10-13] [pattern] 「字体路径」类负向对照须**同时覆盖两条消费链**（只覆盖一条时实测 4 / 6 失败） → docs/standards/testing.md §2.1（落点已存在）
+- [2026-10-13] [pattern] 采样面判别力须在**最严容差轴**下自证（差异低于 `maxDiffPixels` 即无判别力） → docs/standards/testing.md §2
+- [2026-10-13] [process] 工具 / 平台能力类技术前提须**先取证或显式标「未实测」**（未验证结论扩散会被独立复算证伪并判 blocker） → docs/standards/ai-collaboration.md §9
+- [2026-10-13] [process] **修复后必须 `git add`**：复审读索引版，改后未暂存会被判 blocker（`AM` / `MM` 零命中自检） → docs/standards/ai-collaboration.md §9（落点已存在）
+- [2026-10-13] [pattern] 常驻负向对照的**注入面须与「宣称覆盖的面」一一对应**（处置宜扩展装置使声明为真，而非下调数字） → docs/standards/testing.md §10
+- [2026-10-13] [pattern] 元素裁剪截图（`toHaveScreenshot(locator)`）**对视口轴无判别力**（须取「宽 100% + 折行」形态 + 折行前置守卫） → docs/standards/testing.md §10
+- [2026-10-13] [process] `test:visual:update` **不得在临时负向对照仍注入时执行**（正确次序 5 步：移除对照 → 重生成 → 复跑 0 差异 → 注入验证 → 再移除并复核） → docs/standards/testing.md §2
+- [2026-10-13] [fact] `check-interpolation` 拦「**围栏外**」字面双花括号且**行内代码不豁免**（要保留表达式原文须放围栏代码块） → docs/design/documentation-site.md §13（落点已存在）
+- [2026-10-13] [process] 拆提交（临时还原后一条目改动）时**每次还原 / 恢复后须重新 touch 审计工件**（`check-review-gate-artifacts` 按 mtime 判新鲜） → docs/standards/git.md §3
+- [2026-10-13] [fact] **深度归档迁移会静默打断「指向迁出块」的历史指针**（机检盲区：编号在目标文件任何语境出现即有效） → docs/standards/ai-collaboration.md §9
+- [2026-10-13] [process] 归档载体压缩的**正确次序**：机械迁出 → `diff` 实证零改写 → 修机检 → 枚举人工面 + 声明未处理面 → 回填各项载体 → docs/standards/planning.md §7
+- [2026-10-13] [fact] `docs:check:links` 会把**协议片段误判为本地绝对路径**（描述 URL 结构须改用文字表述） → docs/design/documentation-site.md §13
+- [2026-10-13] [fact] 新增守卫脚本的**文件头注释同样受 `check-planning-numbers` 管辖**（改用带文档路径的导航指针） → docs/standards/planning.md §4（落点已存在）
+
 ## 2026-10-09 阶段归档蒸馏（Phase 20）
 
 > 本批活跃 **22 条全部处置**：分态 `migrate 22 / compress 0 / remove 0 / keep 0`。归档摘要 **22 行**（可复算：`awk '/^## 2026-10-09 阶段归档蒸馏（Phase 20）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[AI 协作规范 §9](../../standards/ai-collaboration.md)、[测试规范 §2.1 / §4 / §7 / §10](../../standards/testing.md)、[规划规范 §9](../../standards/planning.md)、[开发规范 §8](../../standards/development.md)、[文档规范 §3](../../standards/documentation.md)；其中 **6 条**落点此前已存在（行末标「落点已存在」），**16 条**为本批新增落点。`wisdom.md` 活跃段清空并保留指针。

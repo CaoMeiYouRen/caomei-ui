@@ -31,6 +31,8 @@
 
 > **`lint-staged` 会对 staged 的整个文件跑 `eslint --fix` 后 `git add` 整文件**：用 `git add -p` 做部分暂存后提交，未暂存的同文件 hunk 会被一并 stage。需同文件分提交时，先临时还原后一 hunk、提交、再重新应用。（注：`lint-staged` 只匹配其 glob，未匹配的文件如 `package.json` 可安全部分暂存。）
 
+> **拆提交时的审计工件新鲜度**：按「临时还原同文件内另一条目的改动 → 提交 → 恢复」拆提交会**再次改写共享文件**，而本地 `check-review-gate-artifacts` 按「工件 mtime ≥ 受检文件 mtime」判新鲜——故**每次还原 / 恢复后都要重新 touch 审计工件**，否则第二个提交会被 `pre-commit` 拦下。
+
 ## 4. 推送纪律
 
 - **禁止擅自推送**：`git commit` 后不得自动 `git push`，除非用户明确要求「推送」「push」「推到远端」。

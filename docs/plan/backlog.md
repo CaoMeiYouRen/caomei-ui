@@ -64,6 +64,8 @@
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 进入 1.x 的版本策略与冻结面确认 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4.2 / §4.5）——Phase 21 D7 **暂不进入 1.x**，维持 0.x + 既有冻结窗口；进入闸门 = 下游全量稳定消费 + 冻结面逐项确认 + 自动化发布就绪（须先定「意外升 `1.0.0`」策略 / 拦截） | 低 |
+| 暂存区卫生机检（拒绝 `AM` / `MM` 提交） | Phase 23 M2-1 follow-up | 「改后未 `git add`」使**索引版与工作区不一致**，复审会读到旧快照而「已修复」声明不成立（本 session R3 判 blocker；同类此前亦判过 blocker）。候选为在提交路径加轻量守卫：`git status --porcelain` 出现 `AM` / `MM`（同一文件既有暂存又有未暂存改动）即失败，并附「受检文件数下界」防静默失效。**触发条件 = 下一次治理装置批次，或用户指定** | 低 |
+| 下游兼容检查：校验实际安装版本步骤 | Phase 23 M2-1 follow-up | 工作流的 override 步骤当前**不校验实际安装版本**（本仓 run #2 只能由「版本差 + `+1 −1` + 命令语义」推断重装生效）。候选为在 override 后断言 `caomei-ui` 实际版本 == 目标版本（fail-closed）并把结果写入 job summary。**触发条件 = 下次发布前后可在真实 run 中验证时**（workflow 改动只能在真实 run 中验证，未验证前不入库） | 低 |
 | 视觉基线阻断远端生效复核 | Phase 23 D2 follow-up | 转阻断提交（`422bc20`）**尚未推送**，远端 `regression-weekly.yml` 仍为非阻断形态 → 该提交推送后**首个周级 run** 才是远端阻断形态的首个真实执行（须确认失败面可归因、无人值守下的告警路径可用）。**触发条件 = 用户推送该提交后首个周级 run 出现**；取证见 [第七轮范围评估](../design/governance/2026-10-12-next-stage-scope-evaluation-7.md) §1 / §8.1 D2 | 低 |
 | `reka-ui` 补丁升级（2.10.5） | Phase 22 M2-3 follow-up | 2.10.5 致 `CaomeiInputNumber` 步进模型 emit 回归（4 例契约测试失败）；本仓维持 2.10.4。触发条件 = 本仓适配其行为变更，或上游确认属回归并修复 | 低 |
 | `conventional-changelog` 8 升级 | Phase 22 M2-3 follow-up | v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；维持 7.2.0。触发条件 = cmyr preset 发布支持 writer 9 的版本 | 低 |
@@ -79,6 +81,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 下游 0.5.0 升级护航 | **条件候选**：dependfix `apps/platform` 已于 2026-10-01 完成 `caomei-ui` `0.3.0 → 0.5.0` 升级（M34.2 / M34 归档，自行处置未需本仓护航）。**时点快照（不回改历史值）**：2026-10-06 实测 dependfix `0.5.0` / momei `0.3.0`（当时处第六十八阶段迁移实施期）；**2026-10-12 实测两仓均已 `0.6.0`**（dependfix @ `46c6fb61`、momei @ `39e00f21`）。**由此原触发条件「momei 启动 `0.5.0` 升级」已不成立 → 候选处置待一次条件重评估（用户裁定）**；届时按 `CHANGELOG.md` 重取差异清单（隔 `0.4.0` / `0.5.0` / `0.6.0` 三个 minor），产出升级指引 / 回归关注点。取证见 [Phase 22 M1-1 记录](../design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md) §4.5 | 低 |
+| momei 根包接入下游兼容检查 | Phase 23 M2-1 follow-up | `momei` 已消费 `caomei-ui@0.6.0`（根包）但**未接入** `downstream-compat.yml` 的 `matrix`。**单条阻塞**：`momei` 的 `build`（`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`）在上游 runner 的**无凭据可行性未验证**（`typecheck` = `nuxt typecheck` 相对轻量；`pnpm --filter <name>` 可**按根包名选中根工程**，override 步骤无需参数化）。**触发条件 = 该验证通过，或用户指定** | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
 
 ## 2. 维护约定

@@ -128,10 +128,11 @@ pnpm release:manual announce  --version=0.7.0 --yes
 - **载体**：`.github/workflows/downstream-compat.yml`——caomei-ui **发布 tag（`v*`）自动触发**，另可手动 `workflow_dispatch`（可传被测版本）。下游仓库须为**公开**（上游 checkout 无需额外凭据）。
 - **受检清单（接入即登记）**：登记于工作流的 `matrix`——**已在受检面**即已在 `matrix` 登记。
   - **已在受检面**：`dependfix`（`apps/platform`，试点）。
-  - **已消费但未接入**（待增量登记）：`momei`（根包）。
+  - **已消费但未接入**（待增量登记）：`momei`（根包）——**单条阻塞**：`momei` 的 `build`（`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`）在上游 runner 的**无凭据可行性未验证**（`typecheck` = `nuxt typecheck` 相对轻量；`pnpm --filter <name>` 可**按根包名选中根工程**，现有 override 步骤无需参数化）。触发条件 = 该验证通过，或用户指定。
   - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——接入后增量登记。
 - **触发与容量**：caomei-ui **发布 tag（`v*`）触发 1 次**（另可手动）；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**下游默认分支为移动目标**：工作流记录下游 revision（SHA）以便归因——红可能是下游自身改动所致，非 caomei-ui 回归。
-- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪并经首次真实触发验证**（2026-10-12 `workflow_dispatch` run #1 成功：被测 `caomei-ui@0.6.0`、下游归因 `dependfix @ 46c6fb61`、`typecheck` + `build` 跑通；结论与未覆盖边界见 `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md`）。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
+- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪并经两次真实触发验证**——run #1（2026-10-12，registry latest `0.6.0`，`dependfix @ 46c6fb61`，见 `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md`）与 **run #2（2026-10-13，显式版本入参 `0.5.0`，与下游锁定版本构成**版本差**，`dependfix @ edbe5e04…`，见 `docs/design/governance/2026-10-13-phase23-m2-1-downstream-compat-explicit-version-run.md`）**。
+- **判别力口径（避免把「绿 run」读成「兼容性已验证」）**：**管道贯通**（运行时无缺陷 / 可归因）与**重装生效**（override 确实换了版本）**已成立**；**回归判别力**（区分「新版本破坏下游」与「不破坏」）**尚未成立**——需**被测版本新于下游锁定版本**（下一次发布由 tag 触发）或一次负向对照（安装已知不兼容版本应报红）。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
 
 ## 11. 相关文档
 

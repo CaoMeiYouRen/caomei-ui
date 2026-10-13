@@ -278,18 +278,18 @@
 
 ### M2 依赖安全与升级治理（3 条）
 
-- **M2-1 运行时安全告警插队处置**（提交 `6e80f9a`）：`source-map-js`（high；GHSA-68fv-2mgg-jv7q）经 `pnpm-workspace.yaml` 的 `overrides: source-map-js: ^1.2.2` 强制修复（pnpm 11 不再读取 `package.json` 的 `pnpm` 字段）；lockfile 解析 `1.2.1 → 1.2.2`、无旧版残留。RG `deep` **Pass**。**库内无治理记录**（RG 结论仅存本地态工件，见「已知观察」②）。
+- **M2-1 运行时安全告警插队处置**（提交 `6e80f9a`）：`source-map-js`（high；GHSA-68fv-2mgg-jv7q）经 `pnpm-workspace.yaml` 的 `overrides: source-map-js: ^1.2.2` 强制修复（pnpm 11 不再读取 `package.json` 的 `pnpm` 字段）；lockfile 解析 `1.2.1 → 1.2.2`、无旧版残留。RG `deep` **Pass**。**库内记录见 [Phase 23 M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)**（原结论仅存本地态工件，偏差见「已知观察」②）。
 - **M2-2 开发作用域安全告警盘点与分批处置**（提交 `50caea7`；记录见 [M2-2](../design/governance/2026-10-10-phase22-m2-2-dev-alerts-remediation.md)）：Dependabot **dev 作用域告警 15 项**逐项给「受影响区间 + 补丁版本 + 传递链 + 结论」——**已修复 10**（`handlebars` / `devalue` / `shell-quote` / `serialize-javascript` / `brace-expansion`，经 `overrides`）+ **受阻 4**（`simple-git` 3.x 全线无补丁 + `@simple-git/argv-parser`）+ **无修复版本 1**（`node-forge`）。RG：R1 `deep` **Reject**（1 blocker：残留扫描证据）→ 修复 → R2 `deep` **Pass**。
 - **M2-2 后续：`simple-git` 跨大版本升级与兼容补丁**（提交 `56aea73`；记录见 [后续记录](../design/governance/2026-10-10-phase22-m2-2-simple-git-override-upgrade.md)）：由 `3.36.0` 升至精确 `4.0.2`（`overrides`）+ `patchedDependencies` + `patches/simple-git@4.0.2.patch`（397 B，仅恢复 v4 移除的默认导出，修复 `@nuxt/devtools` 的 `import Git from 'simple-git'`）；处置 4 项告警 → M2-2 收敛为**已修复 14 / 无补丁 1**。
 - **M2-3 依赖大版本升级逐项评估与达标升级**（提交 `e01f301`；记录见 [M2-3](../design/governance/2026-10-10-phase22-m2-3-major-upgrades.md)）：处置 7 个 open PR（D4「逐项评估、达标即升」）——**达标即升 3**（`vue 3.5.43` / `@lucide/vue ^1.48.0` + `THIRD-PARTY-LICENSES` 同步 / `typescript 6.0.3` 含 tsconfig 迁移 `moduleResolution: Node → Bundler`）；**陈旧 PR 2**（`vite` / `vitest`，本仓已达标）；**延后 2**（`reka-ui 2.10.5` 致 `input-number` 步进回归、`conventional-changelog 8` 与 writer 9 不兼容）→ 登记 Backlog §1.6。RG `deep` R1 **Pass**。
 
 ### M6 治理与测试收口（5 条）
 
-- **M6-1 归档载体维持的载体留痕**（提交 `86caf15`）：`todo-archive.md` 行数超阈按 D8 **维持**，Backlog §1.6 对应行同步计数（527）与维持裁定 + 再评估触发（达 error 阈值 600 强制压缩）。门禁 `lint:md:check` / `docs:check` / `governance:check` 均 exit 0。RG `quick` **Pass**。**库内无治理记录**。
-- **M6-2 `locale` 守卫能力演进**（提交 `e93c557`）：`check-locale-keys` 解析器容忍注释（字符串感知剥离注释、未闭合块注释响亮失败、容忍缩进 / 行尾 / 块注释）+ 单测 28 例；`check:locale-keys` / `check:locale-ledger` 全绿；`development.md` §7 / §11 同步。RG `standard` **Pass**。**库内无治理记录**。
+- **M6-1 归档载体维持的载体留痕**（提交 `86caf15`）：`todo-archive.md` 行数超阈按 D8 **维持**，Backlog §1.6 对应行同步计数（527）与维持裁定 + 再评估触发（达 error 阈值 600 强制压缩）。门禁 `lint:md:check` / `docs:check` / `governance:check` 均 exit 0。RG `quick` **Pass**。**库内记录见 [Phase 23 M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)**。
+- **M6-2 `locale` 守卫能力演进**（提交 `e93c557`）：`check-locale-keys` 解析器容忍注释（字符串感知剥离注释、未闭合块注释响亮失败、容忍缩进 / 行尾 / 块注释）+ 单测 28 例；`check:locale-keys` / `check:locale-ledger` 全绿；`development.md` §7 / §11 同步。RG `standard` **Pass**。**库内记录见 [Phase 23 M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)**。
 - **M6-3 治理索引与记录计数对账守卫**（提交 `5012d94`；记录见 [M6-3](../design/governance/2026-10-11-phase22-m6-3-governance-counts-guard.md)）：新增 `check-governance-counts`（治理索引摘要 ↔ 记录本体的测试 / e2e / 记录 / 文档取证命令计数对账；**误报实测 0**、受检面下界 40）+ 11 例单测 + 接入 `governance:check` + [AI 协作规范 §9](../standards/ai-collaboration.md) 机检面登记。RG：R1 `standard` **Reject**（1 blocker：对账计数自引用陷阱）→ R2 **Reject**（同根因复发）→ **R3 `Pass`**。
-- **M6-4 文档站演示动画遗留项**（提交 `47e2084`）：新增 `check-demo-keyframes`（14 个演示区 keyframes 副本 ↔ 组件源 body 等价 + 未登记 / 悬空 + 受检面下界）+ 9 例单测；`lint:css` 受检面纳入 `docs/examples`；`development.md` §7 / §11 同步。RG `standard` **Pass**。**库内无治理记录**。
-- **M6-5 文档站示例外部图片依赖消除**（提交 `59c1073`）：10 个示例（zh / en）改用**本地占位图** + `withBase`，移除 `picsum.photos`；新增 `docs/public/demo/*.svg` ×4；构建产物 4 资源 HTTP 200、示例无外链。RG `standard` **Pass**（RG-W01 已收口、相关 suggest 转 Backlog「文档站示例外链图片守卫」）。**库内无治理记录**。
+- **M6-4 文档站演示动画遗留项**（提交 `47e2084`）：新增 `check-demo-keyframes`（14 个演示区 keyframes 副本 ↔ 组件源 body 等价 + 未登记 / 悬空 + 受检面下界）+ 9 例单测；`lint:css` 受检面纳入 `docs/examples`；`development.md` §7 / §11 同步。RG `standard` **Pass**。**库内记录见 [Phase 23 M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)**。
+- **M6-5 文档站示例外部图片依赖消除**（提交 `59c1073`）：10 个示例（zh / en）改用**本地占位图** + `withBase`，移除 `picsum.photos`；新增 `docs/public/demo/*.svg` ×4；构建产物 4 资源 HTTP 200、示例无外链。RG `standard` **Pass**（RG-W01 已收口、相关 suggest 转 Backlog「文档站示例外链图片守卫」）。**库内记录见 [Phase 23 M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)**。
 
 ### 附带交付（非阶段条目）
 
@@ -305,7 +305,7 @@
 - **回扫口径（三段式）**：见[归档批次记录](../design/governance/2026-10-12-phase22-archive.md) §4（机检面 / 人工面 / 未处理面）。
 - **wisdom 蒸馏**：**3 条活跃条目**（阈值 20，**未达阈值、不蒸馏**）；`check:distill-archive` 段数见批次记录 §8。
 - **归档批次审计**：经 `@code-reviewer` Review Gate **单分区 `standard`**——结论见本块末「归档批次 Review Gate」段。
-- **已知观察**：① Phase 22 **零 `src/**` 行为改动**（全部为依赖 / CI / 治理守卫 / 文档），**未发布新版本**（`latest` 仍为 0.6.0）→ 按 D14 无需登记发布条目；② **5 条条目库内无治理记录**（M2-1 / M6-1 / M6-2 / M6-4 / M6-5）——其 Review Gate 结论只存于本地态工件 `artifacts/review-gate/`（git-ignored），**属已知偏差、本批不补造路径**；③ 归档载体行数（Phase 22 块后）超 `docs:check:line-count` warn 阈值（**非阻断**）——归档载体只增不减；④ `docs:check:integrity` 对 `todo.md` 报「H1/H2 结构标题减少」告警——属归档正常移除面，**预期、非阻断**；⑤ 回扫三段式结论见批次记录 §4；⑥ `origin/master` = `28b4873`（M1-1 已由用户推送）、本阶段末条提交 `422bc20`（M1-2）**未推送**，归档提交亦未推送；⑦ 一次性取证探针分支（`probe/visual-cross-env-2026-10-12`）**已删除**（远端 + 本地），留痕在本地态工件。
+- **已知观察**：① Phase 22 **零 `src/**` 行为改动**（全部为依赖 / CI / 治理守卫 / 文档），**未发布新版本**（`latest` 仍为 0.6.0）→ 按 D14 无需登记发布条目；② **5 条条目库内无治理记录**（M2-1 / M6-1 / M6-2 / M6-4 / M6-5）——其 Review Gate 结论只存于本地态工件 `artifacts/review-gate/`（git-ignored），**属已知偏差、本批不补造路径**；**（2026-10-13 前向指针）该偏差已由 Phase 23 M5-2 补录消解**，五条结论的库内载体见 [M5-2 补录](../design/governance/2026-10-13-phase23-m5-2-phase22-record-backfill.md)；③ 归档载体行数（Phase 22 块后）超 `docs:check:line-count` warn 阈值（**非阻断**）——归档载体只增不减；④ `docs:check:integrity` 对 `todo.md` 报「H1/H2 结构标题减少」告警——属归档正常移除面，**预期、非阻断**；⑤ 回扫三段式结论见批次记录 §4；⑥ `origin/master` = `28b4873`（M1-1 已由用户推送）、本阶段末条提交 `422bc20`（M1-2）**未推送**，归档提交亦未推送；⑦ 一次性取证探针分支（`probe/visual-cross-env-2026-10-12`）**已删除**（远端 + 本地），留痕在本地态工件。
 - **遗留与后续候选**：视觉基线受检面扩面（含**拉丁 / `system-ui` 回退字体零覆盖**缺口）、CI 运行器镜像钉定（10 处 `ubuntu-latest`；视觉面已裁定「不钉 + 迁移即重冻结」）、文档站示例外链图片守卫、`reka-ui` 补丁升级（2.10.5）、`conventional-changelog` 8 升级、归档载体行数超阈压缩（达 error 阈值 600 时强制压缩）；下游 0.5.0 升级护航（两仓实测均已 `0.6.0`，处置待裁定）；其余见 [Backlog](./backlog.md)。
 
 ### 归档批次 Review Gate

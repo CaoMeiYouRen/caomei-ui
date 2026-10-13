@@ -28,18 +28,21 @@
 |------|------|------|:-:|
 | Sidebar | momei 使用面（标签级统计未命中，待复核） | — 。**下游反馈（2026-09-22，dependfix `1a73abc`）**：`apps/platform` 1 处用 `Sidebar`，其迁移评估确认可由 `CaomeiDrawer` 机械承接（`v-model:open` + `title` / `#header` + `position="right"`），**不构成阻塞**。触发条件：出现 Drawer 语义不适配的用例 | 低 |
 | ScrollPanel 型滚动面板 | dependfix 迁移反馈 | **评估结论：不自研**。下游 2 处（`repo-history-dialog.vue` / `run-detail-dialog.vue`，取证 2026-09-22）均为 `height: 200px` 固定高度日志区，原生滚动容器 + CSS 足以覆盖。触发条件：出现视口检测 / 滚动条定制 / 虚拟滚动等原生无法覆盖的用例。采纳「不自研」时须同步 [组件设计 §5](../design/components.md) 的 `ScrollArea` 候选行，避免两处口径并存 | 低 |
+| `Form` / `FormItem`（表单容器与校验） | 三仓实测（2026-10-13，[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §3.1） | `timing-push-admin` 用 `el-form` / `el-form-item`、`timing-push-web` 用 `v-form`，`rss-impact-web` 有自建 `CrudForm.vue`；本库为**字段组件 + 外部表单**形态。**须先出专项评估**（校验规则 / 布局 / 与字段契约的耦合 / 与既有 `FieldProps` 家族的关系）再定实现形态 | 低 |
+| `BackTop`（回到顶部） | 三仓实测（同上） | `rss-impact-web` 用 `el-backtop` 1 处。触发条件 = 下游迁移排期出现 | 低 |
+| `Rating`（评分） | 三仓实测（同上） | `timing-push-web` 用 `v-rating` 1 处（该仓为 Vue 2 / gitee 停更仓，仅作缺口面参考）。触发条件 = 下游迁移排期出现 | 低 |
+| `TimePicker`（独立时间选择） | 三仓实测（同上） | `timing-push-web` 用 `v-time-picker` 2 处；本库 `DatePicker` 面板内已含时间选择。触发条件 = 出现「只要时间、不要日期」的独立用例 | 低 |
 
 ### 1.3 不纳入自研的能力（外购建议）
 
-| 能力 | 来源 | 说明 | 优先级 |
-|------|------|------|--------|
-| 图表库封装 | 用户 2026-09-29 口径 | 维持**外购不自研**（候选 ECharts 等）；**暂未使用**，等出现真实用例后再按「外购不自研 + 先暗色 / 国际化联动、后兼容主题」同口径评估（口径来源见[下一阶段范围评估](../design/governance/2026-09-30-next-stage-scope-evaluation.md) §3.3 / §8.1 D5） | 低 |
+> **本组暂无在册候选**：原「图表库封装」行已于 2026-10-13 随 Phase 24 范围变更**纳入阶段**（裁定取「轻量封装 + 依赖作可选 peer」，触发条件「出现真实用例」已由 `rss-impact-web` 的图表页成立），决策与登记见[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10。
 
 ### 1.4 国际化候选
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 语言矩阵 - 长期 | 用户需求 | 追加俄语、法语、德语、西班牙语、葡萄牙语 | 低 |
+| 国际化深化（一期 5 语 + 分包方案 A） | 用户 2026-10-13 口径（[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10.1 D5） | **一期语言集 = `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`**（覆盖主流非中文 / 非英语语种）+ **分包方案 A**（按语言子路径导出 `caomei-ui/locale/<lang>`，保留根入口全量导出、additive）+ 守卫与台账同步（`check:locale-keys` / `check:locale-ledger` + 组件文档语言清单）。规模实测（2026-10-13）：现 5 语 854 行、每语言 138 行 → 10 语约 1,544 行。**用户口径：本阶段（Phase 24）不做，下阶段做**。触发条件 = 下阶段规划启动 | 低 |
+| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 由「追加俄、法、德、西、葡」修订——该 5 语已上收为一期候选，见上一行） | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
 | locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载 | 低 |
 
@@ -49,6 +52,7 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | 触摸目标增强（≥44px 命中区） | 用户决策 | 用户裁定**暂不提升**，维持现状 | 低 |
+| 移动端与响应式优化（三项） | 用户 2026-10-13 口径（[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10.1 D4 / §5.2） | **范围三项**：① 大块组件窄屏形态收敛（`DataTable` / `Dialog` / `Drawer` / `Tabs` / `Toolbar` / `Paginator` / `DataView`）在[响应式设计](../design/responsive.md) 中逐条落为可断言口径 + 可机检者纳入常驻 E2E 视口矩阵；② **触摸目标复核**（以真实命中区数据复核「暂不提升」的原裁定，不预设结论）；③ 新增移动端使用指南页（用法 → 断点 → 常见陷阱）。上下文：三仓 `@media` 用量均为 0（响应式由 UI 库栅格承载）；本库 `@media` 窄口径 37 处（34 `.vue` + 3 `.css`）。**用户口径：本阶段（Phase 24）不做，下阶段做**。触发条件 = 下阶段规划启动 | 低 |
 
 ### 1.6 基建与治理候选
 
@@ -99,3 +103,4 @@
 | 诉求 | 来源 | 结论与理由 |
 |------|------|------------|
 | Select 选项 `null` 值支持（以独立哨兵区分「未选择」） | momei 迁移反馈 2026-09-25 §1.2 | **不纳入**：`optionValue` 收窄为 `string \| number` 属有意契约（对齐 Reka 可稳定比较子集），非字符串 / 数字选项不渲染已在[设计规范 §7](../design/design-spec.md) 与 Select 组件页声明；支持 `null` 会改变「未选择」语义，须另立契约。开发期告警已作为条件候选登记于 §1.1，评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) |
+| App Shell / `Overlay` / `Fab` / `List`（应用外壳与组合件） | 三仓实测（2026-10-13，[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §3.1 / §3.2） | **不纳入**：`v-app` / `v-main` / `v-toolbar` 属**应用层外壳**（本库以组件为单位提供，`Toolbar` 已覆盖工具栏语义）；`v-overlay` 与既有 Dialog / Drawer / Popover 的遮罩机制重复；`v-fab-transition`（悬浮按钮）与 `v-list`（列表）均可用既有容器 + 样式承接（@lucide/vue 提供图标）。触发条件 = 出现既有能力无法覆盖的真实用例时再评估 |

@@ -51,7 +51,7 @@
 ## 5. 载体同步
 
 - `docs/standards/testing.md` §2.1（视觉回归基线条）：受检面构成与「字体路径面」口径同步。
-- `docs/plan/todo.md`：M1-1 状态回填（与本节 Review Gate 结论同批）。
+- `docs/plan/todo-archive.md`：M1-1 状态回填（与本节 Review Gate 结论同批）。
 - `docs/design/governance/index.md`：本记录登记。
 - `test/visual/__screenshots__/components.visual.ts/`：**新增 6 张冻结基线**随仓库提交。
 - Backlog：§1.6「视觉基线受检面扩面」已随 Phase 23 登记迁出（本条目 + M1-2 承载），不新增行。

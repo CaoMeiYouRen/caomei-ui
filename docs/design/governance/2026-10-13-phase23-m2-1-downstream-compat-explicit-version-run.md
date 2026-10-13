@@ -68,7 +68,7 @@
 
 - [发布指南 §10](../../guide/release.md)（中英）：现状句补本 run 与「版本差重装已生效 / 回归判别力待发布后」口径；受检清单 momei 行补**单条阻塞**与触发条件。
 - [Backlog](../../plan/backlog.md)：新增 **3 行**（§1.6「下游兼容检查：校验实际安装版本步骤」、§1.6「暂存区卫生机检（拒绝 `AM` / `MM` 提交）」、§1.8「momei 根包接入下游兼容检查」）→ 在册 29 → **32**。
-- `docs/plan/todo.md`：M2-1 状态回填（与本节 Review Gate 结论同批）。
+- `docs/plan/todo-archive.md`：M2-1 状态回填（与本节 Review Gate 结论同批）。
 - `docs/design/governance/index.md`：本记录登记。
 
 ## 8. 质量门

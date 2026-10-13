@@ -74,7 +74,7 @@
 ## 5. 载体同步
 
 - `docs/standards/testing.md` §2.1：受检面构成句由「8 组件面 + 3 字体路径面」更新为**「+ 4 条形态轴面」**（视口 / 预设 / 日期 / 浮层），并登记「形态轴面须带可确定化前置（固定时钟 / 固定视口 / 固定预设）与折行类前置守卫」。
-- `docs/plan/todo.md`：M1-2 状态回填（与本节 Review Gate 结论同批）。
+- `docs/plan/todo-archive.md`：M1-2 状态回填（与本节 Review Gate 结论同批）。
 - `docs/design/governance/index.md`：本记录登记。
 - `test/visual/__screenshots__/components.visual.ts/`：**新增 8 张冻结基线**随仓库提交。
 - Backlog：无新增行（「视觉基线受检面扩面」已随 Phase 23 登记迁出，由 M1-1 / M1-2 承载；未纳入形态见 §6 的触发条件，作为本记录内的登记项）。

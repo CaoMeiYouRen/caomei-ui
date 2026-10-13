@@ -119,4 +119,4 @@ git grep -niE "keydown|keyup|keypress" -- ':!node_modules' ':!.nuxt' ':!dist' ':
 
 **建议：选 A** —— G1 / G2 规则一旦落地，预算 0 是唯一可维护形态（warning 通道会被忽略）；且 dialog / confirm-dialog 与 drawer 是同型缺陷，只修一半会留下「同缺陷两套写法」。
 
-**用户裁定（2026-09-20）**：① **选 A（全面收敛）**——G1 / G2 / G4 按 §3.5 的扩张面执行，并将局部层叠 token 补登[设计规范 §2.5](../design-spec.md)；已在 [待办事项归档 M2](../../plan/todo-archive.md) 登记范围扩张。② **AutoComplete 严格选项模式：纳入**——登记为 [待办事项归档](../../plan/todo-archive.md) **M3-5**（组件能力增强，非 M2 范围：M2 非目标明确「不改组件公开 props」），Backlog 对应候选已迁出。
+**用户裁定（2026-09-20）**：① **选 A（全面收敛）**——G1 / G2 / G4 按 §3.5 的扩张面执行，并将局部层叠 token 补登[设计规范 §2.5](../design-spec.md)；已在 [待办事项归档 M2](../../plan/todo-archive.md) 登记范围扩张。② **AutoComplete 严格选项模式：纳入**——登记为[待办归档（深度归档）](../../plan/archive/phase-13-17.md) **M3-5**（组件能力增强，非 M2 范围：M2 非目标明确「不改组件公开 props」），Backlog 对应候选已迁出。

@@ -9,6 +9,7 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCheckbox,
+    CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
@@ -31,6 +32,7 @@ import {
     CaomeiPopoverTrigger,
     CaomeiRadioButton,
     CaomeiRadioGroup,
+    CaomeiRow,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSlider,
@@ -145,6 +147,9 @@ const calendarValue = ref<Date | null>(null)
  */
 const dialogBreakpointsOpen = ref(false)
 const dialogBreakpoints = { '1199px': '85vw', '575px': '95vw' }
+
+/** 栅格断点夹具：列 B 在 lg 档的完整覆盖（`span` + `offset` + `order` 三字段齐备，offset 取非 0 使运行时也判别 offset 覆盖） */
+const gridColumnBLg = { span: 12, offset: 12, order: 2 }
 
 /** 无头部用例：`showHeader=false` 时头部与关闭按钮不渲染，标题转为视觉隐藏的可访问名 */
 const dialogHeaderlessOpen = ref(false)
@@ -436,6 +441,36 @@ const ConfirmDriver = defineComponent({
             >
                 <p>视口 ≤1199px 时面板宽 85vw，≤575px 时 95vw。</p>
             </CaomeiDialog>
+        </section>
+
+        <!--
+            栅格断点夹具：断点取值按「宽 → 窄」覆盖，`sm`（≤640）/ `md`（≤768）/ `lg`（≤1024）三档
+            在窄视口同时命中时由**最窄档**最终生效；列 B 的 `md` 只声明 `span`，用于回归
+            「断点对象部分字段回退到基础档取值」的契约（非逐档级联）。
+            gutter 取 8：横向间距总宽 23 × 8 = 184px，窄于移动端档的容器宽，避免夹具自身
+            因「`23 × gutter` 宽于容器」而撑出横向溢出（该约束见组件页与类型 JSDoc）。
+        -->
+        <section id="grid-breakpoint" class="fixture__case">
+            <CaomeiRow :gutter="[8, 8]">
+                <CaomeiCol
+                    id="grid-col-a"
+                    :span="24"
+                    :lg="12"
+                    :md="8"
+                    :sm="24"
+                >
+                    A
+                </CaomeiCol>
+                <CaomeiCol
+                    id="grid-col-b"
+                    :span="24"
+                    :lg="gridColumnBLg"
+                    :md="8"
+                    :sm="24"
+                >
+                    B
+                </CaomeiCol>
+            </CaomeiRow>
         </section>
 
         <section id="dialog-headerless" class="fixture__case">

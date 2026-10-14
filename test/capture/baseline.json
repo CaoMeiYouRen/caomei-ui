@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-07T12:57:40.717Z",
+    "capturedAt": "2026-10-14T17:27:37.171Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1654,6 +1654,29 @@
             "border-right-color": "rgba(0, 0, 0, 0)",
             "border-bottom-width": "0px",
             "color": "rgb(107, 114, 128)"
+        },
+        "grid.row": {
+            "display": "grid",
+            "column-gap": "16px",
+            "row-gap": "8px"
+        },
+        "grid.col.first": {
+            "grid-column-start": "1",
+            "grid-column-end": "span 4",
+            "order": "0"
+        },
+        "grid.col.offset": {
+            "grid-column-start": "5",
+            "grid-column-end": "span 4",
+            "order": "0"
+        },
+        "grid.col.order": {
+            "grid-column-start": "1",
+            "grid-column-end": "span 8",
+            "order": "2"
+        },
+        "grid.tracks": {
+            "grid-template-columns": "20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px"
         },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""

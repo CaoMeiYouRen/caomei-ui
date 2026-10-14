@@ -10,6 +10,7 @@ import {
     CaomeiCard,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
+    CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
@@ -31,6 +32,7 @@ import {
     CaomeiPopoverTrigger,
     CaomeiRadioButton,
     CaomeiRadioGroup,
+    CaomeiRow,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSplitButton,
@@ -693,6 +695,45 @@ ui.setDialog = (size, open) => {
                         密码面板
                     </CaomeiTabContent>
                 </CaomeiTabs>
+            </div>
+        </section>
+
+        <!-- 15. 栅格：24 栏轨道 / gutter 落在 gap / 列定位落在 grid-column 与 order -->
+        <section>
+            <div
+                class="case"
+                data-cap="grid:basic"
+            >
+                <CaomeiRow
+                    :gutter="[16, 8]"
+                    style="width: 480px"
+                >
+                    <CaomeiCol :span="4">
+                        A
+                    </CaomeiCol>
+                    <CaomeiCol
+                        :span="4"
+                        :offset="4"
+                    >
+                        B
+                    </CaomeiCol>
+                    <CaomeiCol
+                        :span="8"
+                        :order="2"
+                    >
+                        C
+                    </CaomeiCol>
+                </CaomeiRow>
+            </div>
+            <div
+                class="case"
+                data-cap="grid:tracks"
+            >
+                <CaomeiRow style="width: 480px">
+                    <CaomeiCol :span="24">
+                        轨道
+                    </CaomeiCol>
+                </CaomeiRow>
             </div>
         </section>
 

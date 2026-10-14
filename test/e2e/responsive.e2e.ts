@@ -67,6 +67,53 @@ function resolvedDialogBreakpointPercent(viewportWidth: number): number | undefi
 const NARROW_PROBE_WIDTH = 200
 const SHORT_PROBE_HEIGHT = 420
 
+/** §2 的 sm 档：≤640px 时 sm 规则命中，且窄于 md 档 */
+const SM_BREAKPOINT = 640
+/** §2 的 lg 档：≤1024px 时 lg 规则命中（`sm` / `md` 均为「不窄于自身」的下界之上） */
+const LG_BREAKPOINT = 1024
+
+/**
+ * 栅格断点用例（响应式设计 §3 矩阵 #18）的期望值：三档断点同时命中时**最窄档最终生效**。
+ *
+ * 本表是「窄档覆盖宽档」契约的可判定载体——列 A 仅声明 `span`，列 B 的 `md` 只声明 `span`，
+ * 用于回归「断点对象只声明部分字段时，其余字段回退到**基础档**取值」的契约（非逐档级联：
+ * 列 B 落到 md 档时 `order` 应回到基础值 `0`，而非沿用 lg 档的 `2`）。
+ */
+const GRID_BREAKPOINT_EXPECTATIONS = [
+    {
+        width: 1280,
+        label: `>${LG_BREAKPOINT}（无媒体查询命中）`,
+        a: { start: '1', end: 'span 24', order: '0' },
+        b: { start: '1', end: 'span 24', order: '0' },
+    },
+    {
+        width: LG_BREAKPOINT,
+        label: `≤${LG_BREAKPOINT}（lg）`,
+        a: { start: '1', end: 'span 12', order: '0' },
+        b: { start: '13', end: 'span 12', order: '2' },
+    },
+    {
+        width: MD_BREAKPOINT,
+        label: `≤${MD_BREAKPOINT}（md 覆盖 lg）`,
+        a: { start: '1', end: 'span 8', order: '0' },
+        b: { start: '1', end: 'span 8', order: '0' },
+    },
+    {
+        width: SM_BREAKPOINT,
+        label: `≤${SM_BREAKPOINT}（sm 覆盖 md / lg）`,
+        a: { start: '1', end: 'span 24', order: '0' },
+        b: { start: '1', end: 'span 24', order: '0' },
+    },
+]
+
+/** 读列的计算定位（`grid-column-start` / `grid-column-end` / `order`）。 */
+async function readGridPlacement(locator: Locator) {
+    return locator.evaluate((element) => {
+        const style = getComputedStyle(element)
+        return { start: style.gridColumnStart, end: style.gridColumnEnd, order: style.order }
+    })
+}
+
 interface PanelCase {
     name: string
     /** 触发器选择器（限定在所属 section 内） */
@@ -180,6 +227,7 @@ const CASE_SECTION_IDS = [
     'calendar-inline',
     'dialog-breakpoints',
     'dialog-headerless',
+    'grid-breakpoint',
 ]
 
 /**
@@ -394,6 +442,22 @@ test.describe('浮层断点宽度（Dialog.breakpoints）', () => {
 
         await page.keyboard.press('Escape')
         await expect(panel).toBeHidden()
+    })
+})
+
+test.describe('栅格断点：窄档覆盖宽档', () => {
+    test('列定位与排序按视口断点覆盖，窄档最终生效', async ({ page }) => {
+        const columnA = page.locator('#grid-col-a')
+        const columnB = page.locator('#grid-col-b')
+        await expect(columnA).toBeVisible()
+
+        // 由宽到窄逐档收窄：证明取值随断点被**覆盖**（而非停留初始值）
+        for (const { width, label, a, b } of GRID_BREAKPOINT_EXPECTATIONS) {
+            await page.setViewportSize({ width, height: 900 })
+
+            expect(await readGridPlacement(columnA), `视口 ${width}（${label}）列 A 定位`).toEqual(a)
+            expect(await readGridPlacement(columnB), `视口 ${width}（${label}）列 B 定位`).toEqual(b)
+        }
     })
 })
 

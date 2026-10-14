@@ -18,6 +18,15 @@
         }
     },
     {
+        "name": "Row",
+        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "example": "row/basic.vue",
+        "description": {
+            "zh": "基于 CSS Grid 的 24 栏栅格行，配合 Col 完成列间距、偏移、排序与响应式排版。",
+            "en": "A 24-column CSS Grid row that, together with Col, handles gutter, offset, order and responsive layout."
+        }
+    },
+    {
         "name": "Tag",
         "group": { "zh": "基础与布局", "en": "Basics & Layout" },
         "example": "tag/basic.vue",

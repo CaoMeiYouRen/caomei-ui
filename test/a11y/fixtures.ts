@@ -12,6 +12,7 @@ import {
     CaomeiCard,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
+    CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
@@ -51,6 +52,7 @@ import {
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiRichTextEditor,
+    CaomeiRow,
     CaomeiSelect,
     CaomeiSelectButton,
     CaomeiSelectGroup,
@@ -164,6 +166,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiCard', root: CaomeiCard, definition: { components: { CaomeiCard }, template: '<CaomeiCard title="卡片">内容</CaomeiCard>' } },
     { name: 'CaomeiCheckbox', root: CaomeiCheckbox, definition: { components: { CaomeiCheckbox }, template: '<CaomeiCheckbox label="同意" />' } },
     { name: 'CaomeiCheckboxGroup', root: CaomeiCheckboxGroup, definition: { components: { CaomeiCheckboxGroup }, template: '<CaomeiCheckboxGroup label="多选" :options="options" />', setup: () => ({ options }) } },
+    { name: 'CaomeiCol', root: CaomeiCol, definition: { components: { CaomeiCol }, template: '<CaomeiCol :span="12">内容</CaomeiCol>' } },
     { name: 'CaomeiColorPicker', root: CaomeiColorPicker, definition: { components: { CaomeiColorPicker }, template: '<CaomeiColorPicker label="颜色" />' } },
     { name: 'CaomeiConfirmDialog', root: CaomeiConfirmDialog, definition: ConfirmHost },
     { name: 'CaomeiDataTable', root: CaomeiDataTable, definition: { components: { CaomeiDataTable }, template: '<CaomeiDataTable :columns="columns" :data="rows" row-key="name" row-group-mode="subheader" group-rows-by="type" expandable-row-groups />', setup: () => ({ columns, rows }) }, requiredSelectors: ['.caomei-data-table__row-group-toggle'] },
@@ -241,6 +244,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRadioGroup', root: CaomeiRadioGroup, definition: { components: { CaomeiRadioGroup, CaomeiRadioButton }, template: '<CaomeiRadioGroup label="单选" model-value="a"><CaomeiRadioButton value="a">甲</CaomeiRadioButton><CaomeiRadioButton value="b">乙</CaomeiRadioButton></CaomeiRadioGroup>' } },
     { name: 'CaomeiRichTextEditor', root: CaomeiRichTextEditor, definition: { components: { CaomeiRichTextEditor }, template: '<CaomeiRichTextEditor label="正文" :model-value="content" />', setup: () => ({ content: '# 标题' }) } },
+    { name: 'CaomeiRow', root: CaomeiRow, definition: { components: { CaomeiRow, CaomeiCol }, template: '<CaomeiRow :gutter="16"><CaomeiCol :span="12">甲</CaomeiCol><CaomeiCol :span="12">乙</CaomeiCol></CaomeiRow>' } },
     { name: 'CaomeiSelect', root: CaomeiSelect, definition: { components: { CaomeiSelect }, template: '<CaomeiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiSelectButton', root: CaomeiSelectButton, definition: { components: { CaomeiSelectButton }, template: '<CaomeiSelectButton label="分段" :options="options" model-value="a" />', setup: () => ({ options }) } },
     /*
@@ -319,4 +323,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 52
+export const A11Y_FIXTURE_BUDGET = 54

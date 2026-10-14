@@ -150,6 +150,11 @@ const DATA_TABLE_CELL_PROPS = ['border-bottom-color']
 const CARD_VARIANTS = ['outlined', 'elevated', 'filled']
 const PASSWORD_LEVELS = ['weak', 'medium', 'strong']
 
+/** 栅格行：`gap` 承载 gutter（精确 px，非百分比派生，跨版本稳定）。 */
+const ROW_PROPS = ['display', 'column-gap', 'row-gap']
+/** 栅格列：定位与排序均为整数 / `span n`，不含亚像素。 */
+const COL_PROPS = ['grid-column-start', 'grid-column-end', 'order']
+
 /**
  * 采样面声明：`{ key, selector, props }`，逐条对应夹具中的 `data-cap` 标记。
  *
@@ -265,6 +270,17 @@ function buildStaticSamples() {
     add('tabs.vertical.list', '[data-cap="tabs:vertical"] .caomei-tabs__list', TABS_VERTICAL_LIST_PROPS)
     add('tabs.vertical.trigger-active', '[data-cap="tabs:vertical"] .caomei-tabs__trigger[data-state="active"]', TABS_VERTICAL_ACTIVE_PROPS)
     add('tabs.vertical.trigger-inactive', '[data-cap="tabs:vertical"] .caomei-tabs__trigger:not([data-state="active"])', TABS_VERTICAL_INACTIVE_PROPS)
+
+    /*
+     * 栅格：行承载 gutter（gap）与 24 栏轨道，列承载定位（offset + 1 起始线）与排序。
+     * `grid-template-columns` 单列一档：取无 gutter + 定宽（480px → 24 × 20px）形态，
+     * 解析值为整数 px，规避百分比派生亚像素的跨版本 flaky；带 gutter 形态另测 gap。
+     */
+    add('grid.row', '[data-cap="grid:basic"] .caomei-row', ROW_PROPS)
+    add('grid.col.first', '[data-cap="grid:basic"] .caomei-col:nth-child(1)', COL_PROPS)
+    add('grid.col.offset', '[data-cap="grid:basic"] .caomei-col:nth-child(2)', COL_PROPS)
+    add('grid.col.order', '[data-cap="grid:basic"] .caomei-col:nth-child(3)', COL_PROPS)
+    add('grid.tracks', '[data-cap="grid:tracks"] .caomei-row', ['grid-template-columns'])
 
     return samples
 }

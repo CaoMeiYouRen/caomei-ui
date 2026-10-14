@@ -223,7 +223,7 @@
 - **未复验项**：N1 / N2 依据 Dependabot 告警与 open PR 的**实时快照**（`gh api`），本轮**未复现**依赖树修复后的构建结果；B26 行数取自 `docs:check:line-count` 本轮实测；B22 / B25 依据 Backlog 既有结论，本轮未复现误报面；B33 / B29 的运行时状态取自 `gh run list` 实时查询，未逐 run 下载日志。
 - **`source-map-js` 作用域口径边界**：Dependabot 将其标为 `runtime`；`pnpm why source-map-js --prod` 显示其经 `vue` → `@vue/compiler-*` 的可达路径，**实际运行期是否被消费未经运行时取证**（编译器链多为构建期）。用户裁定「运行时 1 项立即插队处置」，本记录按**锁定修复优先**处理（不因作用域争议延后）。
 - **本轮实测发现（硬事实）**：
-  - **Phase 21 提交已推送**：`origin/master` = `e48834e` = 工作区 HEAD；`git rev-list --count origin/master..e48834e` → **0**；`git ls-remote --tags origin | wc -l` → **12**；`npm view caomei-ui version dist-tags` → **0.6.0** / `{ latest: '0.6.0' }`；工作区干净。
+  - **Phase 21 提交已推送**：`origin/master` = `e48834e` = 工作区 HEAD；`git rev-list --count e48834e..e48834e` → **0**；`git ls-remote --tags origin | wc -l` → **12**；`npm view caomei-ui version dist-tags` → **0.6.0** / `{ latest: '0.6.0' }`；工作区干净。
   - **`.session` 状态过期**：`runtime-state.json` / `current-task.yaml` 仍写「未推送」——与实时 `git ls-remote` 不符（该载体 git-ignored、无机检守卫；应在登记 / 收尾批次同步修正）。
   - **两套装置均未真实运行**：`downstream-compat.yml` **0 条运行**；`regression-weekly` 上次运行 **2026-10-09**（早于 M3-2 接线）。
   - **依赖安全**：16 项开着告警（1 runtime + 15 dev）；7 个 open PR。

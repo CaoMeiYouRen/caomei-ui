@@ -12,7 +12,7 @@
 - [2026-10-10] [pattern] 阶段规划的决策提问「**少而关键**」（D 项 ≤ 5 问、每问 ≤ 5 选项；已裁决 / 可推断者按默认落定并显式标注） → docs/standards/planning.md §3
 - [2026-10-10] [fact] 规划回扫须核实 git 推送态：一律以 `git ls-remote` 实时为准，不采信任务态的历史表述 → docs/standards/planning.md §7
 - [2026-10-12] [process] 负命题须**就地**给出可复现检索口径（命令 + 关键词集 + 时点 + 命中归因），不得转引到不含该口径的载体 → docs/standards/ai-collaboration.md §9
-- [2026-10-12] [fact] `check-docs-git-revision` 不覆盖 `rev-list`（以 `HEAD` 为端点的非持久区间不被拦下；端点一律钉持久 ref / 提交哈希） → docs/standards/ai-collaboration.md §9
+- [2026-10-12] [fact] `check-docs-git-revision` 不覆盖 `rev-list`（以 `HEAD` 为端点的非持久区间不被拦下；端点一律钉持久 ref / 提交哈希）——**该判据已于 2026-10-14 失效**：受检子命令扩至含 `rev-list` / `reflog`（端点非持久 → `non-persistent-revision`；`reflog` 族改由**同行「本地瞬态」标注**约束，未标注 → `unlabeled-transient`） → docs/standards/ai-collaboration.md §9
 - [2026-10-12] [pattern] 登记前须确认 `todo.md` 满足「进行中豁免」前置（`当前进行中阶段：` 声明 + `## Phase N 原子条目` 段标题 + 段内表格行 + 段外无编号） → docs/standards/planning.md §7
 - [2026-10-12] [pattern] `todo.md` 条目编号按**阶段内顺序**、与提名期主线标签解耦，登记节须写显式映射并回扫治理索引摘要与 `.session` → docs/standards/planning.md §4
 - [2026-10-13] [pattern] 视觉基线受检面须覆盖**不同字体解析路径**（CDP `CSS.getPlatformFontsForNode` 取证新面与旧面不同源） → docs/standards/testing.md §2.1（落点已存在）

@@ -16,18 +16,28 @@
  * - **零 rev 的 `git log` / `git show` / `git diff`**——缺省作用于 `HEAD` / 工作区，属**有意不在面内**
  *   （它们是「看当前状态」的 prose 示例形态；若作计数取证须显式写 rev）。这是**已知边界**，不是「无 rev 概念」；
  * - 反引用的 prose 提及：代码区内仅写命令名（`git diff`）的说明性片段。
+ * - **`reflog` 的 ref 参数与子命令**：`git reflog show origin/master` / `git reflog expire --all` ——
+ *   reflog 是**本机瞬态**事实源，ref 不受持久性约束、子命令不是 revision；该族改由**标注**约束（T6）。
  * - **引号内的 revision**：引号内容会被剥离（避免把 `-S'.x'` / `--grep='^feat'` 当 rev），故引号内的
  *   **HEAD 会另行检出并判违规**（fail-closed）；引号内的**非 HEAD 非持久 ref**（如 `"main"`）仍不在面内（已知边界）。
  * - **含 `/` 的令牌**：仅当它是**仓库内已存在路径**或带文件扩展名时按 pathspec 处理；否则按 ref 判定
  *   （`origin/main` / `feature/foo` 等非持久 ref 会被拦下）——避免「路径启发式」成为 fail-open 通道。
  *
- * 规则（T1~T5）：
+ * 规则（T1~T6）：
  * - T1 `head-revision`——revision 位出现 `HEAD`（`HEAD~n` / `HEAD^n` / `@` 同）即违规。
- * - T2 `non-persistent-revision`——revision 位出现非持久形态（裸分支名 / `@{u}` 等）即违规。
+ * - T2 `non-persistent-revision`——revision 位出现非持久形态（裸分支名 / `origin/master` / `@{u}` 等）即违规。
+ *   **区间端点同样适用**：`git rev-list --count origin/master..<hash>` 以移动 ref 为端点，提交落地后不可复算 ——
+ *   领先计数须写**两端解析后的哈希**（本仓既有做法见 `docs/design/governance/2026-10-13-next-stage-scope-evaluation-8.md`）。
  * - T3 `unverifiable-shape`——命令含命令替换 / 变量展开（`$(` / 反引号 / `$VAR`）时 fail-closed：
  *   无法判定 rev 位置，须改写为可静态判定的形态。
  * - T4 `exempt-rot`——豁免清单**反向校验**：豁免项不再命中任何命令即报错（防永久豁免）。
  * - T5 `scope-narrowed`——受检面下界（md 文件数 / 代码区行数 / 命中命令数），防静默收窄。
+ * - T6 `unlabeled-transient`——`reflog` 类**本地瞬态取证**未标注即违规：`git reflog` 读的是本机 reflog
+ *   （`<ref>@{n}` 本质**不可跨机器复算**），故其 ref 参数**豁免持久性判定**，代之以**同一行标注**
+ *   标记 `本地瞬态`（口径见 `docs/standards/ai-collaboration.md` §9）。行内核对按**源行**（围栏行 / 行内码所在行）判定，不跨行。
+ *   **受检面含无参形态**：`reflog` 族不存在「零 rev 作用于工作区」的等价形态，故**不适用** `log` / `show` / `diff`
+ *   的零 rev 边界 —— 连 prose 提及也须标注（该取舍由 §9 明文承担，见其「已知边界」处的 ③）。
+ *   标注匹配为**启发式**：`(?<!非)` 只挡紧邻否定前缀，复杂否定表述仍可绕过（Review Gate 必查项兜底）。
  *
  * 边界：
  * - 只扫描 `docs/**` 的**代码区**（围栏代码块 + 行内代码段），逐行解析、**不跨行**——规避同类守卫
@@ -36,18 +46,28 @@
  * - `src/**` / `scripts/**` / 仓库根 md 不在面内（本条只治理 `docs/` 的取证命令）。
  *
  * 用法：
- *   node scripts/governance/check-docs-git-revision.mjs   # 有违规 exit 1
+ *   node scripts/governance/check-docs-git-revision.mjs              # 默认受检根 `docs/`；有违规 exit 1
+ *   node scripts/governance/check-docs-git-revision.mjs --root <dir> # 负向对照专用（见下）
+ *
+ * `--root` 的**用途边界**：它只用于**负向对照**（令违规命令在合成根上 exit 1）与「默认根之外的整仓复扫」。
+ * 该入口**不提供**下界 / 豁免覆盖，故在「干净合成根」上恒 exit 1（T4 豁免反向校验 + T5 下界）。
+ * 需要「通过态」的合成受检面时用**模块 API**：`checkDocsGitRevision(root, { exemptions: [], bounds: { files: 1, codeLines: 1, commands: 1 } })`。
  */
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const DOCS_DIR = join(REPO_ROOT, 'docs')
 
-/** 受检子命令。 */
-export const GIT_SUBCOMMANDS = ['log', 'show', 'diff', 'grep']
+/**
+ * 受检子命令（**单点定义**）。
+ *
+ * `docs/standards/ai-collaboration.md` §9 的「机检面」句只说「清单见脚本文件头」而不复述 ——
+ * 增删受检子命令**只改此处**，别再引入第二份枚举（防跨载体漂移）。
+ */
+export const GIT_SUBCOMMANDS = ['log', 'show', 'diff', 'grep', 'rev-list', 'reflog']
 
 /**
  * 豁免命令清单（逐条写明理由，受 T4 反向校验）。
@@ -78,12 +98,25 @@ export const HEAD_RE = /^(HEAD([~^]\d*)?|@)$/
 export const FILE_EXT_RE = /\.[a-z0-9]{1,5}$/i
 /** 命令替换 / 变量展开（fail-closed）。 */
 export const UNVERIFIABLE_RE = /\$\(|`|\$\{?[A-Za-z_]/
+/**
+ * `reflog` 类**本地瞬态取证**的标注标记（须出现在命令的源行）。
+ *
+ * `(?<!非)` 只挡**紧邻否定前缀**（「非本地瞬态」）这一伪标注形态 —— 是**启发式**而非否定解析器，
+ * 更复杂的否定表述（如「并非……本地瞬态」）仍可绕过（已知边界，靠 Review Gate 必查项兜底）。
+ */
+export const TRANSIENT_MARKER_RE = /(?<!非)本地瞬态/
 /** 行内分隔符：命令在此截断，避免把管道右侧的 `grep` 误当 git 子命令。 */
 const SEPARATOR_RE = /\||&&|;|#/
-/** 受检面下界（防静默收窄）。 */
+
+/**
+ * 受检面下界（防静默收窄）。
+ *
+ * 取值口径：按**扩面后**实跑规模取同数量级的保守值（加子命令会抬高命中命令数，故下界随扩面上调）；
+ * 实跑值只出现在运行时输出，**不在注释里复述**。
+ */
 export const MIN_SCANNED_FILES = 200
 export const MIN_CODE_LINES = 3000
-export const MIN_COMMANDS = 30
+export const MIN_COMMANDS = 50
 
 const toRel = (file) => relative(REPO_ROOT, file).split('\\').join('/')
 
@@ -103,7 +136,10 @@ function walkMarkdown(dir, acc = []) {
  * 抽取 markdown 的代码区：围栏代码块内的整行 + 行内代码段。
  * 逐行产出（围栏行本身不计），保证行号可回溯且解析不跨行。
  *
- * @returns {Array<{ line: number, text: string, kind: 'fence' | 'inline' }>}
+ * `source` 为该段的**源行全文**（围栏块的原始行；行内码为所在 md 行）——
+ * T6 `unlabeled-transient` 的标注核对需要看到围栏内注释与行内码两侧的正文。
+ *
+ * @returns {Array<{ line: number, text: string, kind: 'fence' | 'inline', source: string }>}
  */
 export function extractCodeRegions(source) {
     const segments = []
@@ -115,11 +151,11 @@ export function extractCodeRegions(source) {
             return
         }
         if (inFence) {
-            segments.push({ line: index + 1, text: line, kind: 'fence' })
+            segments.push({ line: index + 1, text: line, kind: 'fence', source: line })
             return
         }
         for (const match of line.matchAll(/`([^`]+)`/g)) {
-            segments.push({ line: index + 1, text: match[1], kind: 'inline' })
+            segments.push({ line: index + 1, text: match[1], kind: 'inline', source: line })
         }
     })
     return segments
@@ -137,7 +173,7 @@ const stripQuoted = (text) => text.replace(/"[^"]*"|'[^']*'/g, QUOTED_PLACEHOLDE
 /**
  * 从代码区行中解析 git 命令。
  *
- * @returns {Array<{ line: number, text: string, sub: string, args: string }>}
+ * @returns {Array<{ line: number, text: string, sub: string, args: string, sourceLine: string }>}
  */
 export function findGitCommands(segments) {
     const commands = []
@@ -156,6 +192,7 @@ export function findGitCommands(segments) {
             text,
             sub: match[1],
             args: text.slice(subcommandOffset + match[1].length).trim(),
+            sourceLine: segment.source ?? '',
             // 引号片段连同其**前置 flag** 一起记录：`--grep='HEAD'` 是模式文本，不是 revision
             quoted: [...segment.text.matchAll(/(\S+)\s*("[^"]*"|'[^']*')/g)].map((item) => ({
                 value: item[2].slice(1, -1),
@@ -179,8 +216,16 @@ export const VALUE_FLAGS = new Set([
     '--grep', '--format', '--pretty', '--date', '--diff-filter', '--word-diff-regex', '-S', '-G',
 ])
 
-/** 取命令的 revision 候选（单层：`grep` 的首个非 flag 令牌是 pattern，不算 revision）。 */
+/**
+ * 取命令的 revision 候选（单层：`grep` 的首个非 flag 令牌是 pattern，不算 revision）。
+ *
+ * `reflog` 返回**空集**：reflog 读的是本机日志（`<ref>@{n}` 不可跨机器复算），其 ref 参数与子命令
+ * （`show` / `expire` / `delete` / `exists`）都不在持久性判定面内 —— 该族的约束是**标注**（T6）。
+ */
 export function revisionCandidates(sub, args) {
+    if (sub === 'reflog') {
+        return []
+    }
     const tokens = args.split(/\s+/).filter(Boolean)
     const separator = tokens.indexOf('--')
     const head = separator === -1 ? tokens : tokens.slice(0, separator)
@@ -250,10 +295,11 @@ export function inspectRevisionToken(token, { pathExists } = {}) {
  * 引号内容中的 HEAD（引号剥离后仍需检出，避免 `git show 'HEAD:x'` 绕过）。
  *
  * 只认「引号整体即 rev 或 `rev:path`」的形态（`HEAD` / `HEAD~1` / `HEAD:x` / `@:x`），
- * 避免把 `--grep='HEAD is banned'` 这类**模式文本**误判；`git grep` 的引号内容默认按 pattern 看待。
+ * 避免把 `--grep='HEAD is banned'` 这类**模式文本**误判；`git grep` 的引号内容默认按 pattern 看待，
+ * `git reflog` 整体在持久性面外（`HEAD@{n}` 是其**原生**语法，改由标注口径 T6 约束）。
  */
 export function findQuotedHead(quoted = [], sub) {
-    if (sub === 'grep') {
+    if (sub === 'grep' || sub === 'reflog') {
         return null
     }
     for (const entry of quoted) {
@@ -294,6 +340,16 @@ export function scanDocument(file, source, { exemptions = EXEMPT_COMMANDS, pathE
 
     for (const command of commands) {
         if (isExempt(pathForMatch(file, root ?? dirname(file)), command.text, exemptions)) {
+            continue
+        }
+        // T6：reflog 类本地瞬态取证须在**同一行**标注（标注形态见 TRANSIENT_MARKER_RE）
+        if (command.sub === 'reflog' && !TRANSIENT_MARKER_RE.test(command.sourceLine)) {
+            violations.push({
+                file: toRel(file),
+                line: command.line,
+                type: 'unlabeled-transient',
+                text: command.text,
+            })
             continue
         }
         const quotedHead = findQuotedHead(command.quoted, command.sub)
@@ -340,6 +396,9 @@ function describeViolation(hit) {
     }
     if (hit.type === 'unverifiable-shape') {
         return '命令含命令替换 / 变量展开，无法静态判定 revision：须改写为可复算的显式形态'
+    }
+    if (hit.type === 'unlabeled-transient') {
+        return '`reflog` 类本地瞬态取证未标注：须在同一行写明「本地瞬态」（该命令**不可跨机器复算**，不得当作跨机证据）'
     }
     return `revision「${hit.token}」非持久形态：须钉 commit hash / tag / \`<base>..<end>\` / 占位符`
 }
@@ -409,7 +468,20 @@ export function checkDocsGitRevision(root = DOCS_DIR, { exemptions = EXEMPT_COMM
 }
 
 if (isDirectExecution(import.meta.url)) {
-    const result = checkDocsGitRevision()
+    const args = process.argv.slice(2)
+    let root = DOCS_DIR
+    if (args.length > 0) {
+        if (args.length !== 2 || args[0] !== '--root' || !args[1]) {
+            console.error(`[check-docs-git-revision] 不支持的参数：${args.join(' ')}（仅接受 --root <dir>）`)
+            process.exit(2)
+        }
+        root = resolve(args[1])
+    }
+    if (!existsSync(root) || !statSync(root).isDirectory()) {
+        console.error(`[check-docs-git-revision] 目标目录不存在或不是目录：${root}`)
+        process.exit(2)
+    }
+    const result = checkDocsGitRevision(root)
     if (result.ok) {
         console.info(
             `[check-docs-git-revision] 通过：${result.details.files} md / ${result.details.codeLines} 代码区行 / `

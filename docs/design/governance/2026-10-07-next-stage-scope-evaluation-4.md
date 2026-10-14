@@ -213,7 +213,7 @@
 - **技术方案的深度核对分工**：本记录为**范围评估**，对候选的技术可行性只做「仓储级取证」（源码位置、token 钩子、守卫覆盖、依赖清单、提交范围、下游只读状态）。凡涉及**上游行为**的引用（Reka / VitePress / `md-editor-v3` 行为、下游迁移方案细节）均标注为**下游反馈 / 记录口径**，**本轮未复核上游实现**——深度核对在对应条目进入实现前单独执行并留痕。
 - **未复验项**：B14（a11y 悬空引用）依据 Phase 14 M1 记录 §6.5 的判定与证据，本轮**未复验**（相关属性由 Reka 合成，需真实浏览器 / axe 面复现）；N1 ~ N3 依据 Phase 19 M3-1 / M1-4 记录 §5、§8 的「未纳入面」，本轮**未复验**其行号与实现现状。
 - **本轮实测发现（硬事实）**：
-  - **发布面闭环**：`git rev-parse --short HEAD` = `83ff5b4`；`git rev-list --count origin/master..HEAD` → **0**；`git ls-remote --tags origin | wc -l` → **10**（= 5 annotated tag + 5 peeled ref）；`npm view caomei-ui version` → **0.5.0**。
+  - **发布面闭环**：`git rev-parse --short HEAD` = `83ff5b4`；`git rev-list --count 83ff5b4..83ff5b4` → **0**；`git ls-remote --tags origin | wc -l` → **10**（= 5 annotated tag + 5 peeled ref）；`npm view caomei-ui version` → **0.5.0**。
   - **候选池 +1**：`backlog.md` §1 在册由 35（Phase 19 登记后）增至 **36**（Phase 19 M3-2 衍生候选，合法新候选）。
   - **本轮新建 N1 ~ N4**：均为 Phase 19 交付显式声明的「未纳入面」或已知观察；N5 与 B11 同面、不重复计数。
   - **归档载体超阈**：`todo-archive.md` **423 行**（`docs:check:line-count` warn > 400 / error > 600，非阻断）。

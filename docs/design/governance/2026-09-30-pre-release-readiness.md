@@ -44,7 +44,7 @@
 | # | 检查项 | 命令 / 口径 | 实测 | 结论 |
 | :--- | :--- | :--- | :--- | :--- |
 | 1 | 工作区状态 | `git status --short` | 空（改动前） | ✅ |
-| 2 | 上游同步 | `git rev-list --count origin/master..29a7693`；`git ls-remote --tags origin \| wc -l` | **27** 领先 / 远端 tag **0** | ⚠️ 待授权推送 |
+| 2 | 上游同步 | `git rev-list --count e2f2793..29a7693`（`e2f2793` = 当时 `origin/master`）；`git ls-remote --tags origin \| wc -l` | **27** 领先 / 远端 tag **0** | ⚠️ 待授权推送 |
 | 3 | 全链路质量门 | `pnpm verify` | **exit 0**（102 文件 / **2126** 例；lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check 全绿） | ✅ |
 | 4 | 样式等价回归 | `pnpm capture:styles` | **245 项 0 差异**（对冻结基线） | ✅ |
 | 5 | 无障碍 | `pnpm test:a11y` | **59 passed** | ✅ |

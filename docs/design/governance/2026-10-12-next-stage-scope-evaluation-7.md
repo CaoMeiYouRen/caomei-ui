@@ -12,7 +12,7 @@
 - **库侧**：Phase 22（机制真实贯通、依赖安全与升级治理、治理与测试收口）已于 2026-10-12 交付**全部 10 条原子条目**并完成阶段归档（3 条主线：M1 2 / M2 3 / M6 5），**当前无进行中阶段**；`todo.md` 无在册条目、仅存「未完成项汇总」状态指针。Phase 22 **零 `src/**` 行为变更、未发布新版本**。
 - **发布面（本轮新变量：归档批次与 M1-2 转阻断尚未推送）**（测量时点 2026-10-12 22:23 +08:00）：
   - registry `latest` = **0.6.0**（`npm view caomei-ui version dist-tags`）。
-  - `origin/master` = **`28b4873`**（`git ls-remote origin refs/heads/master` 实时确认）；工作区 HEAD = `2849296`；`git rev-list --count origin/master..2849296` → **2**（`422bc20` 视觉基线转阻断 + `2849296` 归档批次）。
+  - `origin/master` = **`28b4873`**（`git ls-remote origin refs/heads/master` 实时确认）；工作区 HEAD = `2849296`；`git rev-list --count 28b4873..2849296` → **2**（`422bc20` 视觉基线转阻断 + `2849296` 归档批次）。
   - `git ls-remote --tags origin` → **12 行**（6 annotated tag + 6 peeled ref）——远端 tag 面与第六轮一致，**无新增 tag**。
   - **推送态的直接后果**：M1-2 的「视觉基线转阻断」（移除 `regression-weekly.yml` 视觉步骤的 `continue-on-error`）**仅在推送后于远端生效**；当前远端 `regression-weekly.yml` 仍是**非阻断**形态，即「转阻断」目前只在本地提交中成立。
   - **无在途 `src/**` 行为变更**：`git log --oneline v0.6.0..2849296 -- src/` 仅命中 1 条非行为提交（`e14edc0` 末尾换行归一），故本阶段**无「补发版本」的必选项**。
@@ -224,7 +224,7 @@
 - **技术方案的深度核对分工**：本记录为**范围评估**，对候选的技术可行性只做「仓储级取证」（源码位置、工作流定义、守卫覆盖、依赖清单、提交范围、下游只读状态、Dependabot / PR 快照、CI run 列表）。凡涉及**上游行为**的引用（Reka UI / VitePress / Playwright / semantic-release / Dependabot / runner-images 行为、下游迁移方案细节）均标注为**工具快照口径**，**本轮未复核上游实现**——深度核对在对应条目进入实现前单独执行并留痕。
 - **未复验项**：N1 依据 `gh pr list` 与 `gh api .../dependabot/alerts` 的**实时快照**，本轮**未复现**任一 PR 的 CI 结论与依赖树修复后的构建结果；B26 依据 runner-images 公告与 `grep -c` 的处数统计，未实跑迁移后镜像矩阵；B22 行数取自 `pnpm docs:check:line-count` 本轮实测；N4 依据 Phase 22 归档批次的**已登记偏差**，未逐条追溯其本地态工件；N2 / N3 的运行时状态取自 `gh run list` / 工作流定义判读，未逐 run 下载日志。
 - **本轮实测发现（硬事实）**：
-  - **未推送 2 提交**：`git rev-list --count origin/master..2849296` → **2**（`422bc20` + `2849296`）；`origin/master` = `28b4873`；`git ls-remote --tags origin | wc -l` → **12**。
+  - **未推送 2 提交**：`git rev-list --count 28b4873..2849296` → **2**（`422bc20` + `2849296`）；`origin/master` = `28b4873`；`git ls-remote --tags origin | wc -l` → **12**。
   - **registry `latest` = 0.6.0**（`npm view caomei-ui version dist-tags`）。
   - **装置均已真实运行**：`Downstream Compat` **1 条运行**（`38238208301`，success，dispatch，2026-10-12T10:44:25Z）；`Weekly Regression` 2026-10-12 多次 dispatch 全 success；`test:visual` **17 passed**。
   - **依赖安全大幅收敛**：开着告警 **1 项**（`node-forge` high / dev / 无修复版本）；open PR **4 个**（2 陈旧 + 2 延后）。

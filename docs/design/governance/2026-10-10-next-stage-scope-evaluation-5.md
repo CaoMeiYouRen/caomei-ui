@@ -217,7 +217,7 @@
 - **技术方案的深度核对分工**：本记录为**范围评估**，对候选的技术可行性只做「仓储级取证」（源码位置、CI 定义、守卫覆盖、依赖清单、提交范围、下游只读状态）。凡涉及**上游行为**的引用（Reka / VitePress / Playwright / semantic-release 行为、下游迁移方案细节）均标注为**下游反馈 / 记录口径**，**本轮未复核上游实现**——深度核对在对应条目进入实现前单独执行并留痕。
 - **未复验项**：N1 ~ N5 均依据 Phase 20 三份评估记录（已提交 `2c803e0` / `c4f2e3f` / `6d992d8`）的结论与取证，本轮**未复验**其实现现状；B26 行数取自 `docs:check:line-count` 本轮实测；B22 / B25 依据 Backlog 既有结论，本轮未复现误报面。
 - **本轮实测发现（硬事实）**：
-  - **发布面闭环**：`git rev-parse --short HEAD` = `ba9587f`；`git rev-list --count origin/master..HEAD` → **0**；`git ls-remote --tags origin | wc -l` → **12**（= 6 annotated tag + 6 peeled ref）；`npm view caomei-ui version dist-tags` → **0.6.0** / `{ latest: '0.6.0' }`；工作区干净（`git status --porcelain` 0 行）。
+  - **发布面闭环**：`git rev-parse --short HEAD` = `ba9587f`；`git rev-list --count ba9587f..ba9587f` → **0**；`git ls-remote --tags origin | wc -l` → **12**（= 6 annotated tag + 6 peeled ref）；`npm view caomei-ui version dist-tags` → **0.6.0** / `{ latest: '0.6.0' }`；工作区干净（`git status --porcelain` 0 行）。
   - **无在途 `src/**` 变更**：`git log --oneline v0.6.0..ba9587f -- src/` 仅命中 1 条非行为提交（`e14edc0`），故本阶段**无「补发版本」的必选项**。
   - **候选池 −6**：`backlog.md` §1 在册由 36（第四轮）减至 **30**（Phase 20 登记迁出 7 + 新增 1）。
   - **本轮新建 N1 ~ N5**：均为 Phase 20 交付的三份评估（Phase 8 / 发布机制 / 视觉基线）与 §9 follow-up 产生的合法新候选。

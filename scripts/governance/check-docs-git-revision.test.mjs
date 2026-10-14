@@ -1,10 +1,14 @@
+import { spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
     EXEMPT_COMMANDS,
     GIT_SUBCOMMANDS,
+    MIN_CODE_LINES,
+    MIN_COMMANDS,
+    MIN_SCANNED_FILES,
     checkDocsGitRevision,
     extractCodeRegions,
     findGitCommands,
@@ -14,6 +18,7 @@ import {
     scanDocument,
 } from './check-docs-git-revision.mjs'
 
+const SCRIPT = resolve(dirname(new URL(import.meta.url).pathname), 'check-docs-git-revision.mjs')
 const tempDirs = []
 const tinyBounds = { files: 1, codeLines: 1, commands: 1 }
 
@@ -40,13 +45,19 @@ function scanInline(command, { pathExists } = {}) {
     return scanDocument('/repo/docs/x.md', source, { pathExists, root: '/repo/docs' })
 }
 
+/** 同行带「本地瞬态」标注的行内命令（reflog 标注口径的正例形态）。 */
+function scanLabeled(command) {
+    const source = `说明。\`${command}\`（**本地瞬态取证**、非跨机器可复现证据）`
+    return scanDocument('/repo/docs/x.md', source, { root: '/repo/docs' })
+}
+
 describe('extractCodeRegions', () => {
     it('区分围栏与行内，且围栏行本身不计入', () => {
         const source = ['前文 `git diff` 后文', '', '```sh', 'git log x', '```'].join('\n')
         const segments = extractCodeRegions(source)
         expect(segments).toEqual([
-            { line: 1, text: 'git diff', kind: 'inline' },
-            { line: 4, text: 'git log x', kind: 'fence' },
+            { line: 1, text: 'git diff', kind: 'inline', source: '前文 `git diff` 后文' },
+            { line: 4, text: 'git log x', kind: 'fence', source: 'git log x' },
         ])
     })
 
@@ -65,8 +76,8 @@ describe('findGitCommands', () => {
         expect(command.text).toBe('git diff 2f8dc00 --numstat')
     })
 
-    it('只识别登记的四个子命令', () => {
-        expect(GIT_SUBCOMMANDS).toEqual(['log', 'show', 'diff', 'grep'])
+    it('只识别登记的子命令（含 rev-list / reflog 扩面）', () => {
+        expect(GIT_SUBCOMMANDS).toEqual(['log', 'show', 'diff', 'grep', 'rev-list', 'reflog'])
         expect(findGitCommands(extractCodeRegions('```sh\ngit status\n```'))).toEqual([])
     })
 
@@ -186,10 +197,14 @@ describe('checkDocsGitRevision（合成受检面）', () => {
 
 describe('仓库不变量', () => {
     it('当前仓库零取证命令 revision 违规且受检面未收窄', () => {
+        // 绝对下界：独立于代码常量 —— 常量被下调时本断言仍会红（防「下界被静默放宽」）
+        expect(MIN_SCANNED_FILES).toBeGreaterThanOrEqual(200)
+        expect(MIN_CODE_LINES).toBeGreaterThanOrEqual(3000)
+        expect(MIN_COMMANDS).toBeGreaterThanOrEqual(50)
         const result = checkDocsGitRevision()
         expect(result.errors).toEqual([])
-        expect(result.details.files).toBeGreaterThanOrEqual(200)
-        expect(result.details.commands).toBeGreaterThanOrEqual(30)
+        expect(result.details.files).toBeGreaterThanOrEqual(MIN_SCANNED_FILES)
+        expect(result.details.commands).toBeGreaterThanOrEqual(MIN_COMMANDS)
     })
 
     it('豁免清单为 2 条且均带理由', () => {
@@ -266,4 +281,100 @@ describe('scanDocument 新增边界（W1~W4 修复后）', () => {
             expect(scanInline(command).violations).toEqual([])
         },
     )
+})
+
+describe('取证命令守卫扩面（rev-list 端点 / reflog 本地瞬态标注）', () => {
+    it.each([
+        ['git rev-list --count origin/master..4773f7e', 'non-persistent-revision'],
+        ['git rev-list --count origin/master..HEAD', 'non-persistent-revision'],
+        ['git rev-list --count origin/main..b1da270', 'non-persistent-revision'],
+    ])('rev-list 区间端点非持久即命中：%s → %s', (command, type) => {
+        const { violations } = scanInline(command, { pathExists: () => false })
+        expect(violations).toHaveLength(1)
+        expect(violations[0].type).toBe(type)
+    })
+
+    it.each([
+        'git rev-list --count 4773f7e..4773f7e',
+        'git rev-list --count 64a45d8~1..e56ea2f',
+        'git rev-list -n 1 v0.2.0',
+        'git rev-list --count <base>..<end>',
+    ])('rev-list 合法形态不误报：%s', (command) => {
+        expect(scanInline(command).violations).toEqual([])
+    })
+
+    it('reflog 的 ref 参数与子命令都不是 revision 候选', () => {
+        expect(revisionCandidates('reflog', 'show origin/master --date=iso')).toEqual([])
+        expect(revisionCandidates('reflog', '--all')).toEqual([])
+    })
+
+    it('无参 reflog 的 prose 提及同样须标注（该族不适用零 rev 边界）', () => {
+        const { violations } = scanInline('git reflog')
+        expect(violations).toHaveLength(1)
+        expect(violations[0].type).toBe('unlabeled-transient')
+    })
+
+    it('紧邻否定前缀（非本地瞬态）不构成标注', () => {
+        const { violations } = scanDocument('/repo/docs/x.md', '说明。`git reflog show origin/master`（非本地瞬态可复算）', { root: '/repo/docs' })
+        expect(violations).toHaveLength(1)
+        expect(violations[0].type).toBe('unlabeled-transient')
+    })
+
+    it('reflog 未标注本地瞬态即命中 unlabeled-transient', () => {
+        const { violations } = scanInline('git reflog show origin/master --date=iso')
+        expect(violations).toHaveLength(1)
+        expect(violations[0].type).toBe('unlabeled-transient')
+    })
+
+    it.each([
+        'git reflog show origin/master --date=iso',
+        'git reflog -n 5',
+        'git reflog show \'HEAD@{1}\'',
+    ])('reflog 同行标注本地瞬态即放行（含 HEAD@{n} 原生语法）：%s', (command) => {
+        expect(scanLabeled(command).violations).toEqual([])
+    })
+})
+
+describe('CLI 负向对照（以引用名为端点的命令）', () => {
+    it('以 origin/master 为端点的 rev-list 令 CLI exit 1', () => {
+        const root = makeTree({
+            'a.md': ['```sh', 'git rev-list --count origin/master..4773f7e', '```'].join('\n'),
+        })
+        const result = spawnSync('node', [SCRIPT, '--root', root], { encoding: 'utf8' })
+        expect(result.status).toBe(1)
+        expect(result.stderr).toContain('[non-persistent-revision]')
+    })
+
+    it('未标注的 reflog 令 CLI exit 1', () => {
+        const root = makeTree({ 'a.md': ['```sh', 'git reflog show origin/master', '```'].join('\n') })
+        const result = spawnSync('node', [SCRIPT, '--root', root], { encoding: 'utf8' })
+        expect(result.status).toBe(1)
+        expect(result.stderr).toContain('[unlabeled-transient]')
+    })
+
+    it('端点已钉哈希且 reflog 已标注时合成受检面判通过', () => {
+        const root = makeTree({
+            'a.md': [
+                '```sh',
+                'git rev-list --count 4773f7e..4773f7e',
+                'git reflog show origin/master --date=iso  # 本地瞬态',
+                '```',
+            ].join('\n'),
+        })
+        const result = checkDocsGitRevision(root, { exemptions: [], bounds: tinyBounds })
+        expect(result.errors).toEqual([])
+        expect(result.ok).toBe(true)
+    })
+
+    it('默认受检根（仓库 docs/）exit 0', () => {
+        expect(spawnSync('node', [SCRIPT], { encoding: 'utf8' }).status).toBe(0)
+    })
+
+    it('未知参数 / 目标不存在 / 目标是文件 / 尾随多余参数 exit 2', () => {
+        const file = join(makeTree({ 'a.md': '# x\n' }), 'a.md')
+        expect(spawnSync('node', [SCRIPT, '--bogus'], { encoding: 'utf8' }).status).toBe(2)
+        expect(spawnSync('node', [SCRIPT, '--root', join(tmpdir(), 'nope-xyz')], { encoding: 'utf8' }).status).toBe(2)
+        expect(spawnSync('node', [SCRIPT, '--root', file], { encoding: 'utf8' }).status).toBe(2)
+        expect(spawnSync('node', [SCRIPT, '--root', tmpdir(), '--bogus'], { encoding: 'utf8' }).status).toBe(2)
+    })
 })

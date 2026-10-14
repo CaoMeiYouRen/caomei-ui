@@ -213,7 +213,7 @@
 - **本轮实测发现（待复核项）**：
   - **N1 下游升级口径滞后（硬事实）**：`grep '"caomei-ui"' /root/projects/dependfix/apps/platform/package.json` → `"caomei-ui": "0.5.0"`；dependfix `docs/plan/roadmap.md` §M34 载 M34.2「caomei-ui `0.3.0 → 0.5.0`」且 M34 于 2026-10-01 闭环归档。`backlog.md` §1.8 行仍写「零下游消费 / 隔两个 minor」→ 须重写。
   - **N2 迁移映射去重行计数 / 结构断言不准**：`rg -l '^> 迁移映射' docs/components/*.md | wc -l` → **6**；`rg -l '^> Migration map' docs/i18n/en-US/components/*.md | wc -l` → **6**（**两语均含 `date-picker`**）。该行原记「英文 5 / `date-picker` 英文页缺正文块」与实测不符 → 登记为 N2，整改时同批修正。
-  - **N3 发布面唯一未闭环动作**：`git rev-parse --short HEAD` = `4a2d910`；`git rev-list --count origin/master..HEAD` → **0**（提交已推送）；`git ls-remote --tags origin | wc -l` → **0**（远端无 tag）。推送 tag 须用户授权（D11）。
+  - **N3 发布面唯一未闭环动作**：`git rev-parse --short HEAD` = `4a2d910`；`git rev-list --count 4a2d910..4a2d910` → **0**（提交已推送）；`git ls-remote --tags origin | wc -l` → **0**（远端无 tag）。推送 tag 须用户授权（D11）。
   - **N4 设计一致性前置阻塞**：Phase 18 M3-1 记录 §4 的 D1 ~ D7 为「守卫落地前的必须裁定项」，本轮**未复验证**其行号 / 实现现状（沿用该记录 2026-10-01 实测），实施批须复取。
 - **Phase 8 前置复核（本轮更新）**：dependfix 已完成 `0.3.0 → 0.5.0` 升级并归档 M34；momei 第六十八阶段仍在实施。第三项「稳定使用一段时间后出现新改动」**仍不成立**（dependfix 窗口 < 1 天、momei 锁 0.3.0）。是否出范围评估见 D8；启动前范围仍须单独评估并登记。
 - **下游只读**：dependfix `9596b14`、momei `02346816` 的引用均为**只读取证**，未修改、未回写任何下游文件。**目标仓工作区状态（披露；测量时点 2026-10-02）**：`git -C /root/projects/dependfix status --porcelain` → **0 行**、`git -C /root/projects/momei status --porcelain` → **0 行**（两仓均干净）。**「两仓均无尚未回传本仓的新反馈」为负命题，检索口径可复现**：范围为两仓 `docs/` 全文（2026-10-02 快照），关键词集 7 项——`待反馈` / `反馈给` / `未反馈` / `待回传` / `尚未反馈` / `upstream feedback` / `上游反馈` 逐条核对，**未见指向本仓且尚未处置的新增反馈**；dependfix 侧新增的「上游组件问题归因与 issue 上报流程」（M34.3）为**流程建设**，未产生指向本仓的具体 issue。

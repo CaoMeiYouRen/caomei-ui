@@ -211,3 +211,10 @@ grep -rn "@media" src | wc -l ; grep -rn "\$t(" src --include=*.vue --include=*.
 - **治理索引**：本记录条目追加「裁定与登记」段。
 - **`.session` 阶段态**：本批命中**阶段范围变更**触发点（[规划规范 §3.9](../../standards/planning.md) / todo-manager Step 3.5）→ 同批同步 `current-task.yaml` 的 `current_phase` / `active_plan` / `next_steps` 与 `runtime-state.json` 的 `plan_state`。
 - **Review Gate**：本记录提名期 R1 `standard` **`Pass`**（0 blocker / 3 warning / 3 suggest；实测约 **17 分 20 秒**，**超 10 分钟时间盒**，归因跨仓取证 + 组件用量矩阵与语言体量逐项复算，按 [AI 协作规范 §3.3](../../standards/ai-collaboration.md) 仅作**分级校准信号**）；3 warning / 3 suggest **已同批收口**（`1,634` → `1,544` 行（按每语言 138 行）/ 移除误列的 `Scrollbar` / P0② 依据拆分为「含停更仓的跨仓共识」/ `@media` 双口径 37 与 45 / 弱化全称断言 / 改引 §3.1 / §3.2 + §3.9）；**范围变更登记批次的 Review Gate 结论见本记录 §10.2 末行同批回填**。
+
+### 10.3 执行期追加（2026-10-14，第二次）
+
+- **触发**：用户在 M3-2 交付后提出「计数漂移体现在哪 / 这些数字是否必要」并指令排查 → 裁定**方案 A**（减少优先）并**授权插队**。
+- **追加内容**：Phase 24 追加 **2 条治理装置条目**（M3-6 门禁读数不复述 / M3-7 读数对账装置换族）→ **5 条主线 / 16 条原子条目**。
+- **时点值保留**：§10 的「5 条主线 / 14 条原子条目」（2026-10-13 范围变更后）为**时点值**，不回改。
+- **载体**：[计数漂移排查与方案 A 落地](./2026-10-14-count-drift-investigation-and-method-a.md)、`todo.md`、`roadmap.md`、[第八轮范围评估 §8.3](./2026-10-13-next-stage-scope-evaluation-8.md)、本记录索引摘要。

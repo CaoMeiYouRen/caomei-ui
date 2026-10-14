@@ -287,3 +287,10 @@
 - **治理索引**：同步本记录的决策 / 登记摘要。
 - **`.session` 阶段态**：本批命中**阶段登记**触发点（[规划规范 §3.8](../../standards/planning.md) / todo-manager Step 3.5）→ 同批同步 `current-task.yaml` 的 `current_phase` / `active_plan` / `next_steps` 与 `runtime-state.json` 的 `plan_state`。
 - **Review Gate**：提名期 R1 `standard` **`Reject`**（1 blocker / 2 warning / 1 suggest）→ 修复 → R2（delta）`standard` **`Pass`**（4 条全闭合；2 条 follow-up 同批采纳，记「已修复未复审」）；**登记批次 R1 `standard` `Pass`**（0 blocker / 1 warning〔RG-W01 本记录对登记批次 RG 结论的指向含**不存在载体**（`todo.md` 无 RG 行）→ 已改为完整 RG 结论摘要〕/ 2 suggest〔`todo.md` M3-3 括注补「登记前实测」时点 / `backlog.md` 新增首行补复算口径〕；实测约 4 分 30 秒，未超 10 分钟时间盒）——三条 findings 同批收口 → **登记批次 R2（delta）`standard` `Pass`**（0 blocker；3 条 findings **全部关闭**、无新范围、无 follow-up；实测约 2 分 15 秒，未超 5 分钟时间盒）（[规划规范 §7](../../standards/planning.md) / todo-manager Step 1.7：完成态不得早于 Review Gate 结论；**RG 结论落治理记录与归档块，不落 live `todo.md`**）。
+
+### 8.3 执行期追加（2026-10-14）
+
+- **触发**：用户在 M3-2 交付后提出「计数漂移体现在哪 / 这些数字是否必要」两问并指令排查 → 裁定**方案 A**（减少优先）并**授权插队**（理由：持续影响后续条目的开发与审计）。
+- **追加内容**：Phase 24 追加 **2 条治理装置条目**（M3-6 门禁读数不复述 / M3-7 读数对账装置换族）→ **5 条主线 / 16 条原子条目**（构成对账 2 + 1 + 7 + 4 + 2 = 16）。
+- **时点值保留**：§8.2 的「3 条主线 / 8 条原子条目」为 **2026-10-13 登记时点值**，不回改。
+- **载体**：[计数漂移排查与方案 A 落地](./2026-10-14-count-drift-investigation-and-method-a.md)（排查结论 + 裁定 + 登记）、`todo.md`、`roadmap.md`、[范围扩展评估 §10](./2026-10-13-phase24-scope-extension-evaluation.md)、本记录索引摘要。

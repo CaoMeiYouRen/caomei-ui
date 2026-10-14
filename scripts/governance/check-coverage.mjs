@@ -20,7 +20,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export const projectRoot = resolve(__dirname, '..', '..')
 export const coverageSummaryPath = join(projectRoot, 'coverage', 'coverage-summary.json')
 
-/** 默认阈值（基于 2026-09-20 基线：statements 93.99%, branches 85.72%, functions 94.95%, lines 93.41%） */
+/**
+ * 默认阈值（防静默劣化）。
+ * 取值口径：按上线时**实跑的覆盖率**取向下取整的低位整数，留出合理裕度；
+ * 实跑值随测试面变化、**不在注释里复述**，复算命令见本文件头「用法」。
+ */
 export const DEFAULT_THRESHOLDS = {
     statements: 90,
     branches: 80,

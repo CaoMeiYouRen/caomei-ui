@@ -32,7 +32,10 @@ export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 
 /** 二进制探测窗口（字节）。 */
 export const BINARY_PROBE_BYTES = 8192
 
-/** 受检面下界（防静默收窄；2026-10-08 实测受检 1169 文件）。 */
+/**
+ * 受检面下界（防静默收窄）。
+ * 取值口径：按上线时**实跑的受检规模**取同数量级的保守值（只拦「数量级收窄」、不追求贴身）；实跑值随仓库增长、**不在注释里复述**，复算命令见本文件头「用法」。
+ */
 export const SCOPE_FLOOR = { files: 1000 }
 
 /** 哨兵文件：必须在受检面内。 */

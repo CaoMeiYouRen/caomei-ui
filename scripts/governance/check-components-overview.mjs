@@ -35,7 +35,7 @@ const GROUP_HEADER_RE = /^##\s+(.+)$/
 /**
  * 解析中文总览页：返回 { groupZh -> [componentNames] }
  * 组件名按链接 basename 推导（kebab-case -> 英文名还原，如 button-group -> ButtonGroup）
- * 排除 "能力说明" 分组（非组件组；§11 登记的**组件分组**才参与对账——当前 7 组，含 2026-09-30 追加的「高级组件」）
+ * 排除 "能力说明" 分组（非组件组；§11 登记的**组件分组**才参与对账；分组数随组件扩充增长、**不在注释里复述**）
  */
 function parseOverviewZh(filepath) {
     const content = readFileSync(filepath, 'utf-8')

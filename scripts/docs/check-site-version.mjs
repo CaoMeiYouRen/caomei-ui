@@ -21,7 +21,7 @@
  *    0.4.0 期间正文仍写 0.3.x）。**已知边界**：`0.x`（仅 major）是冻结窗口的概念性区间、非系列号，
  *    1.0 时随该节语义重写，故不命中；`0.4` 这类两段式非 `x` 形态亦不在面内。
  * 7. `current-version-statement`（**弱守卫**）——**对外可读的「当前版本」句**须存在且等于
- *    `package.json` 的 `version`：仓库根 README（中 2 处 + 英 1 处）与 `docs/plan/roadmap.md` §1 的
+ *    `package.json` 的 `version`：仓库根 README（中英两版）与 `docs/plan/roadmap.md` §1 的
  *    `` `latest` = <version> `` 句；句式被改写即 `statement-missing`。
  *    这三个文件都按设计保留**历史版本叙述**（各版本做了什么），故不能对全文件版本字面量施加相等要求,
  *    只锚定声明句式——`roadmap` 与 README 采用**同一套窄锚策略**（不因"规划载体每次阶段重写"而豁免）。

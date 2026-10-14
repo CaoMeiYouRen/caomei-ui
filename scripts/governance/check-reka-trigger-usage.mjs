@@ -53,7 +53,10 @@ export const WRAPPED_REKA_TRIGGERS = [
 /** 允许直连的例外（`{ reka, file, reason }`）；受 T2 反向校验，条目须仍被实际豁免。 */
 export const ALLOWED_DIRECT_USERS = []
 
-/** 受检面下界（防静默收窄）：受检文件数、导入 reka-ui 的文件数（2026-10 基线 197 / 65，取下界留合理裕度）。 */
+/**
+ * 受检面下界（防静默收窄）：受检文件数、导入 reka-ui 的文件数。
+ * 取值口径：按上线时**实跑的受检规模**取同数量级的保守值（只拦「数量级收窄」、不追求贴身）；实跑值随仓库增长、**不在注释里复述**，复算命令见本文件头「用法」。
+ */
 export const SCOPE_FLOOR = { files: 150, rekaImporters: 40 }
 
 /** 从源码文本抽取 `import { … } from 'reka-ui'` 的具名导入。 */

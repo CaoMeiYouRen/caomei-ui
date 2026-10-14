@@ -49,7 +49,10 @@ export const EXAMPLE_SEGMENT = 'examples/'
 /** 外部 URL 字面量（含协议，排除被引号 / 括号 / 中文标点截断的情形）。 */
 export const EXTERNAL_URL_RE = /https?:\/\/[^\s"'`)>\]}，。；、]+/u
 
-/** 受检示例文件数下界（当前 363，防 glob / 过滤被静默收窄）。 */
+/**
+ * 受检示例文件数下界（防 glob / 过滤被静默收窄）。
+ * 取值口径：按上线时**实跑的受检规模**取同数量级的保守值（只拦「数量级收窄」、不追求贴身）；实跑值随仓库增长、**不在注释里复述**，复算命令见本文件头「用法」。
+ */
 export const MIN_SCANNED_EXAMPLES = 300
 
 /**

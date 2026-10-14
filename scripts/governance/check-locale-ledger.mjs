@@ -209,7 +209,9 @@ export function checkLocaleLedger(root = REPO_ROOT) {
     errors.push(...compareLedgerWithTypes(ledgerEn, types, '英文台账表'))
 
     // 受检面下界校验（防静默收窄）
-    const MIN_NAMESPACES = 25 // 下界（防止受检面被静默收窄）；当前实际 27 个命名空间
+    // 下界（防止受检面被静默收窄）；取值口径：按上线时实跑的命名空间数取同数量级的保守值，
+    // 实跑值随语种/命名空间扩充增长、不在注释里复述（运行时会打印实跑读数）。
+    const MIN_NAMESPACES = 25
     if (Object.keys(types).length < MIN_NAMESPACES) {
         errors.push(`types.ts 命名空间数 ${Object.keys(types).length} 低于下界 ${MIN_NAMESPACES}：怀疑受检面被静默收窄`)
     }

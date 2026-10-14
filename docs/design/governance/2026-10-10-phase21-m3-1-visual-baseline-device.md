@@ -31,7 +31,7 @@ chromium（Playwright 1.63.0 绑定）· viewport **1280×800** · `deviceScaleF
 ### 2.3 受检面与判别力纪律（评估 §7）
 
 - **受检面登记**：`SAMPLE_SECTIONS`（8 个核心静态组件默认态：Button / Tag / Checkbox / Switch / RadioButton / Input / Select / Slider）× 亮暗。
-- **下界守卫**：`MIN_SECTIONS = 8`——登记表被静默收窄即失败。
+- **下界守卫**：`MIN_SECTIONS`（**写录时点取值为 8**，后随受检面扩面调整）——登记表被静默收窄即失败。
 - **抽样原则**：只取**静态、确定性**默认态，避开日期 / 随机内容；日期类组件（Calendar / DatePicker）不在首批。
 - **负向对照**：`VISUAL_NEGATIVE_CONTROL=1` 注入结构性覆盖（`.fixture__state` padding），应使全部截图用例报差异——用于自证比对具判别力（**非常驻**）。
 - **互补定位**：`capture:styles` 管声明式样式逐属性等价、E2E 管几何 / 交互，本套管**真实渲染整体像素**。

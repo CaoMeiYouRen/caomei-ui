@@ -29,7 +29,7 @@
 
 > 相邻改动行无法用 `git add -p` 拆 hunk 时，可临时移除同文件内另一条目的改动先行提交本条目，再恢复后提交（等价于手工拆 hunk）。
 
-> **`lint-staged` 会对 staged 的整个文件跑 `eslint --fix` 后 `git add` 整文件**：用 `git add -p` 做部分暂存后提交，未暂存的同文件 hunk 会被一并 stage。需同文件分提交时，先临时还原后一 hunk、提交、再重新应用。（注：`lint-staged` 只匹配其 glob，未匹配的文件如 `package.json` 可安全部分暂存。）
+> **`lint-staged` 会对 staged 的整个文件跑 `eslint --fix` 后 `git add` 整文件**：用 `git add -p` 做部分暂存后提交，未暂存的同文件 hunk 会被一并 stage。需同文件分提交时，先临时还原后一 hunk、提交、再重新应用。（注：`lint-staged` 只匹配其 glob，未匹配的文件如 `package.json` **不会**被它整文件 stage；但**部分暂存本身会被 `pre-commit` 的 `check:staging-hygiene` 阻断**——凡「索引与工作区同时有改动」（`AM` / `MM` / `RM` / `MD` / `AD` 等）一律判 `partial-stage`，规则见 [AI 协作规范 §9](./ai-collaboration.md) 与该脚本文件头。故 non-glob 文件同样不能借部分暂存分提交，同文件分提交一律走本段的「临时还原 → 提交 → 恢复」流程。）
 
 > **拆提交时的审计工件新鲜度**：按「临时还原同文件内另一条目的改动 → 提交 → 恢复」拆提交会**再次改写共享文件**，而本地 `check-review-gate-artifacts` 按「工件 mtime ≥ 受检文件 mtime」判新鲜——故**每次还原 / 恢复后都要重新 touch 审计工件**，否则第二个提交会被 `pre-commit` 拦下。
 

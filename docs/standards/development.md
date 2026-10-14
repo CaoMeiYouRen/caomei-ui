@@ -231,3 +231,4 @@ const attrs = computed(() => {
 - 通配 `*.vue` 声明是「以降低模块解析诊断换取类型链可用」的取舍：任何 `.vue` 结尾的说明符都会解析成功，路径拼错不再报 TS2307；前提是失败仍闭合（由 `pnpm build` 与 `pnpm test` 的模块解析兜底），且边界须写入声明注释。
 - ESLint 9 扁平配置**不自动读取 `.gitignore`**：构建产物目录（如 `docs/.vitepress/.temp`、`.nuxt`、`dist`）必须在 `ignores` 中显式列出，否则本地跑过一次构建后 lint 会把产物当源码扫（实测 12 万+ 报错）；CI 干净检出不会暴露，属「只在开发者本地复现」的假失败。
 - **文件末尾换行**：仓库 `.editorconfig` 声明 `[*] insert_final_newline = true`，所有受版本控制的文本文件须以 `\n` 结尾；该规格由 `check:final-newline` 守卫（接入 `governance:check`）机检。漂移有实际后果——`npm version`（`@npmcli/package-json`）改写清单时会补入末尾换行，使暂存 diff 多出一个非版本行 hunk，令 `check-review-gate-artifacts` 的「发布元数据豁免」失效并阻断发布（2026-10-08 `npm version 0.6.0` 受阻即此因）。
+- **暂存区卫生**：提交前**索引版必须等于工作区版**（同一文件不得「既有暂存又有未暂存改动」，即 `AM` / `MM` 族形态）；规则的**单点定义**在 [AI 协作规范 §9](./ai-collaboration.md) 的「复审 / 提交前的暂存区卫生」，机检由 `check:staging-hygiene` 守卫承担（`pre-commit` 钩子内、与 `check-review-gate-artifacts` 同层；**不接入** `governance:check`——它只在提交路径有意义，CI 干净检出必然跳过），判别规则与失败码见该脚本文件头。

@@ -2,4 +2,6 @@
 
 # Review Gate 落盘阻断守卫（本地态；CI 环境自动跳过）
 node scripts/governance/check-review-gate-artifacts.mjs
+# 暂存区卫生守卫（拒绝 AM / MM；须在 lint-staged 之前，检测作者留下的「改后未 git add」状态）
+node scripts/governance/check-staging-hygiene.mjs
 npx --no-install lint-staged

@@ -369,7 +369,9 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             text: 'Navigation & Actions',
                             items: [
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
+                                { text: 'Breadcrumb', link: '/en-US/components/breadcrumb' },
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
+                                { text: 'Menu', link: '/en-US/components/menu' },
                                 { text: 'Stepper', link: '/en-US/components/stepper' },
                                 { text: 'Tabs', link: '/en-US/components/tabs' },
                                 { text: 'Toolbar', link: '/en-US/components/toolbar' },
@@ -565,7 +567,9 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     text: '导航与操作',
                     items: [
                         { text: 'Accordion 折叠面板', link: '/components/accordion' },
+                        { text: 'Breadcrumb 面包屑', link: '/components/breadcrumb' },
                         { text: 'DropdownMenu 下拉菜单', link: '/components/dropdown-menu' },
+                        { text: 'Menu 导航菜单', link: '/components/menu' },
                         { text: 'Stepper 步骤条', link: '/components/stepper' },
                         { text: 'Tabs 选项卡', link: '/components/tabs' },
                         { text: 'Toolbar 工具条', link: '/components/toolbar' },

@@ -228,6 +228,7 @@ const CASE_SECTION_IDS = [
     'dialog-breakpoints',
     'dialog-headerless',
     'grid-breakpoint',
+    'menu-navigation',
 ]
 
 /**

@@ -60,6 +60,11 @@ import {
     CaomeiTooltipContent,
     CaomeiTooltipProvider,
     CaomeiTooltipTrigger,
+    CaomeiBreadcrumb,
+    CaomeiBreadcrumbItem,
+    CaomeiMenu,
+    CaomeiMenuItem,
+    CaomeiSubMenu,
     useConfirm,
 } from '@/index'
 
@@ -667,6 +672,41 @@ const ConfirmDriver = defineComponent({
                     </div>
                 </div>
             </CaomeiDialog>
+        </section>
+
+        <!--
+          导航骨架用例（见 `test/e2e/menu-navigation.e2e.ts`）：纵向菜单 = 两个顶层项 + 一个含两项的
+          子菜单，用于回归方向键导航与子菜单开合；`current` 项用于回归 `aria-current`。
+        -->
+        <section id="menu-navigation" class="fixture__case">
+            <CaomeiMenu label="主导航">
+                <CaomeiMenuItem
+                    href="#menu-navigation"
+                    current
+                >
+                    概览
+                </CaomeiMenuItem>
+                <CaomeiSubMenu label="设置">
+                    <CaomeiMenuItem href="#menu-navigation">
+                        账户
+                    </CaomeiMenuItem>
+                    <CaomeiMenuItem href="#menu-navigation">
+                        通知
+                    </CaomeiMenuItem>
+                </CaomeiSubMenu>
+                <CaomeiMenuItem>退出</CaomeiMenuItem>
+            </CaomeiMenu>
+            <CaomeiBreadcrumb label="面包屑">
+                <CaomeiBreadcrumbItem href="#menu-navigation">
+                    首页
+                </CaomeiBreadcrumbItem>
+                <CaomeiBreadcrumbItem href="#menu-navigation">
+                    内容管理
+                </CaomeiBreadcrumbItem>
+                <CaomeiBreadcrumbItem current>
+                    当前页
+                </CaomeiBreadcrumbItem>
+            </CaomeiBreadcrumb>
         </section>
 
         <section id="inline-color-picker" class="fixture__case">

@@ -47,6 +47,9 @@ export const WRAPPED_REKA_TRIGGERS = [
     { reka: 'PopoverTrigger', wrapper: 'popover/popover-trigger.vue' },
     { reka: 'DropdownMenuTrigger', wrapper: 'dropdown-menu/dropdown-menu-trigger.vue' },
     { reka: 'TooltipTrigger', wrapper: 'tooltip/tooltip-trigger.vue' },
+    // 内部规范消费者（非对外包装）：`menu/sub-menu.vue` 复用 `CollapsibleTrigger` 承载子菜单展开，
+    // 本库未导出 `CaomeiCollapsibleTrigger`；登记用于阻止其它组件直连同名 primitive。
+    { reka: 'CollapsibleTrigger', wrapper: 'menu/sub-menu.vue' },
     { reka: 'TabsTrigger', wrapper: 'tabs/tabs-trigger.vue' },
     { reka: 'StepperTrigger', wrapper: 'stepper/stepper-trigger.vue' },
 ]

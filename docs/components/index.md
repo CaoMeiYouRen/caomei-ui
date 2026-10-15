@@ -65,7 +65,9 @@
 ## 导航与操作
 
 - [Accordion 折叠面板](./accordion)：折叠面板将内容分节收纳，点击标题逐项展开 / 收起，基于 Reka UI Accordion 封装。
+- [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
+- [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。
 - [Stepper 步骤条](./stepper)：步骤条展示多步流程的进度，并在步骤之间导航。基于 Reka UI Stepper（稳定 primitive）封装，采用与 Tabs 一致的组合式 API。
 - [Tabs 选项卡](./tabs)：选项卡在一组同级内容间切换，同一时刻只展示一个面板，基于 Reka UI Tabs 封装。
 - [Toolbar 工具条](./toolbar)：工具条用于将一组操作控件组织为单一键盘导航区域，基于 Reka UI Toolbar 封装，由 `CaomeiToolbar` 与 `CaomeiToolbarButton` / `CaomeiToolbarLink` / `CaomeiToolbarSeparator` / `CaomeiToolbarToggleGroup` / `CaomeiToolbarToggleItem` 组合使用。

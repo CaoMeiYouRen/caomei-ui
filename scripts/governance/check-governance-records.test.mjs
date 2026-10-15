@@ -5,11 +5,14 @@ import { dirname, join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
     INDEX_FILE,
+    REVIEW_GATE_ADJACENT_LOWER_BOUND,
+    REVIEW_GATE_POINTER_LOWER_BOUND,
     checkGovernanceIndex,
     collectIndexEntries,
     collectMarkdownFiles,
     collectPlanningPointerIssues,
     collectRecordFiles,
+    collectReviewGatePointerIssues,
     collectTrailingIdentifiers,
     resolveLinkTarget,
     resolveTargetRoot,
@@ -349,6 +352,120 @@ describe('CLI 退出码', () => {
     })
 })
 
+describe('索引结论指针章节号机检（复发转机检，双规则）', () => {
+    const noBound = { lowerBound: 0, adjacentLowerBound: 0 }
+
+    it('RG 邻近指针命中 Review Gate 节时不报错', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录甲](./record-a.md)：说明。**Review Gate**：结论见该记录 §7。\n',
+            'docs/design/governance/record-a.md': '# 记录甲\n\n## 6. 规模\n\n## 7. Review Gate\n\n- 结论：Pass\n',
+        })
+        const { issues, pointers, adjacent, entries } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toEqual([])
+        expect(pointers).toBe(1)
+        expect(adjacent).toBe(1)
+        expect(entries).toBe(1)
+    })
+
+    it('长式条目同样受检：RG 字样相距数百字符仍计为受检指针', () => {
+        const filler = '中长期记录摘述。'.repeat(40)
+        const root = createFixture({
+            [INDEX_FILE]: `# 治理索引\n\n## 当前条目\n\n- [记录甲](./record-a.md)：**Review Gate**：R1 收口内容。${filler}（结论见该记录 §7）\n`,
+            'docs/design/governance/record-a.md': '# 记录甲\n\n## 6. 长期任务\n\n## 7. Review Gate\n\n- 结论：Pass\n',
+        })
+        const { issues, pointers, adjacent } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toEqual([])
+        expect(pointers).toBe(1)
+        expect(adjacent).toBe(0)
+    })
+
+    it('长式条目指向不存在的章节号时判失败（负向对照）', () => {
+        const filler = '中长期记录摘述。'.repeat(40)
+        const root = createFixture({
+            [INDEX_FILE]: `# 治理索引\n\n## 当前条目\n\n- [记录甲](./record-a.md)：**Review Gate**：R1 收口内容。${filler}（结论见该记录 §9）\n`,
+            'docs/design/governance/record-a.md': '# 记录甲\n\n## 7. Review Gate\n\n- 结论：Pass\n',
+        })
+        const { issues } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].type).toBe('rg-pointer-section-missing')
+    })
+
+    it('标题含 Review Gate 的具名小节（「Review Gate 记录」形态）同样算命中', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录乙](./record-b.md)：**Review Gate**：见该记录 §9。\n',
+            'docs/design/governance/record-b.md': '# 记录乙\n\n## 8. 质量门\n\n## 9. Review Gate 记录\n',
+        })
+        expect(collectReviewGatePointerIssues(root, noBound).issues).toEqual([])
+    })
+
+    it('RG 邻近指针指向非 Review Gate 节时判失败（负向对照）', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录甲](./record-a.md)：**Review Gate**：结论见该记录 §6。\n',
+            'docs/design/governance/record-a.md': '# 记录甲\n\n## 6. 登记状态\n\n## 7. Review Gate\n',
+        })
+        const { issues } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].type).toBe('rg-pointer-section-mismatch')
+        expect(issues[0].line).toBe(5)
+        expect(issues[0].message).toContain('§6')
+        expect(issues[0].message).toContain('§7')
+    })
+
+    it('目标记录无 Review Gate 节时判失败（负向对照）', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录丙](./record-c.md)：**Review Gate**：结论见该记录 §2。\n',
+            'docs/design/governance/record-c.md': '# 记录丙\n\n## 1. 范围\n\n## 2. 结论\n',
+        })
+        const { issues } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].message).toContain('无以 Review Gate 命名')
+    })
+
+    it('判别力对照：「用户裁定结论见 §N」语义不纳入 RG 归属面', () => {
+        const root = createFixture({
+            [INDEX_FILE]:
+                '# 治理索引\n\n## 当前条目\n\n'
+                + '- [记录丁](./record-d.md)：**Review Gate**：R1 `Reject` → R2 `Pass`（4 项全闭合；2 条 follow-up 同批采纳）；登记批次 R1 `standard` 结论见该记录 §8。\n',
+            'docs/design/governance/record-d.md': '# 记录丁\n\n## 7. Review Gate\n\n- 结论：Pass\n\n## 8. 决策结果与登记结果\n\n- 说明\n',
+        })
+        const { issues, pointers, adjacent } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toEqual([])
+        expect(pointers).toBe(1)
+        expect(adjacent).toBe(0)
+    })
+
+    it('指针指向尚未回填的占位节且条目未标「同批回填」时判失败（负向对照）', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录戊](./record-e.md)：**Review Gate**：结论见该记录 §7。\n',
+            'docs/design/governance/record-e.md': '# 记录戊\n\n## 7. Review Gate\n\n> 待 Review Gate 执行后同批回填。\n',
+        })
+        const { issues } = collectReviewGatePointerIssues(root, noBound)
+        expect(issues).toHaveLength(1)
+        expect(issues[0].type).toBe('rg-pointer-target-pending')
+    })
+
+    it('条目标注「同批回填」时允许指针暂指占位节（判别力对照）', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录戊](./record-e.md)：**Review Gate**：结论见该记录 §7（同批回填）。\n',
+            'docs/design/governance/record-e.md': '# 记录戊\n\n## 7. Review Gate\n\n> 待 Review Gate 执行后同批回填。\n',
+        })
+        expect(collectReviewGatePointerIssues(root, noBound).issues).toEqual([])
+    })
+
+    it('受检面低于下界时判失败（覆盖面 / 归属面各一例）', () => {
+        const root = createFixture({
+            [INDEX_FILE]: '# 治理索引\n\n## 当前条目\n\n- [记录甲](./record-a.md)：**Review Gate**：结论见该记录 §7。\n',
+            'docs/design/governance/record-a.md': '# 记录甲\n\n## 7. Review Gate\n\n- 结论：Pass\n',
+        })
+        const surface = collectReviewGatePointerIssues(root, { lowerBound: 5, adjacentLowerBound: 0 })
+        expect(surface.pointers).toBe(1)
+        expect(surface.issues.map((issue) => issue.type)).toEqual(['rg-pointer-surface-below-bound'])
+        const adjacentBound = collectReviewGatePointerIssues(root, { lowerBound: 0, adjacentLowerBound: 3 })
+        expect(adjacentBound.adjacent).toBe(1)
+        expect(adjacentBound.issues.map((issue) => issue.type)).toEqual(['rg-pointer-adjacent-below-bound'])
+    })
+})
+
 describe('仓库不变量', () => {
     it('受检范围未被静默收窄', () => {
         const records = collectRecordFiles(PROJECT_ROOT)
@@ -367,8 +484,11 @@ describe('仓库不变量', () => {
     })
 
     it('当前仓库治理索引与历史规划指针零问题', () => {
-        const { indexIssues, pointerIssues } = runGovernanceRecordsCheck(PROJECT_ROOT)
+        const { indexIssues, pointerIssues, rgPointerIssues, rgPointers, rgPointerAdjacent } = runGovernanceRecordsCheck(PROJECT_ROOT)
         expect(indexIssues).toEqual([])
         expect(pointerIssues).toEqual([])
+        expect(rgPointerIssues).toEqual([])
+        expect(rgPointers).toBeGreaterThanOrEqual(REVIEW_GATE_POINTER_LOWER_BOUND)
+        expect(rgPointerAdjacent).toBeGreaterThanOrEqual(REVIEW_GATE_ADJACENT_LOWER_BOUND)
     })
 })

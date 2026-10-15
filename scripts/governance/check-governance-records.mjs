@@ -21,7 +21,7 @@
  * 用法：
  *   node scripts/governance/check-governance-records.mjs [仓库根目录]
  */
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
@@ -67,6 +67,39 @@ export const MD_LINK_RE = /\[([^\]]*)\]\(([^)]+)\)/g
  * 与 check-planning-numbers 的形态矩阵同族，但只用于**链接文字**匹配，故不做代码词法切分。
  */
 export const PLANNING_ID_RE = /Phase\s+\d+|(?<![A-Za-z0-9])[A-Z]{1,3}\d{1,3}(?:-\d{1,3})?(?![A-Za-z0-9])/g
+
+/**
+ * 索引条目里的「结论」指针形态：`结论见该记录 §N` / `结论见本记录 §N`（**全量覆盖面**）。
+ *
+ * 语义锚（动词「结论见」+「该 / 本记录」）用于覆盖**长式条目**——`Review Gate` 字样与指针相距数百字符的写法，
+ * 而长式恰含上一批复发载体本身的写法（邻近窗口版实测漏检 12 条）。
+ */
+export const REVIEW_GATE_POINTER_RE = /结论见(?:该|本)记录\s*§\s*(\d+)/g
+
+/**
+ * 「结论」指针的 **RG 归属面**：`Review Gate` / `RG` 字样之后 12 字符内紧跟「（结论）见该 / 本记录 §N」。
+ *
+ * 只用语义锚会把「用户裁定**结论**见该记录 §N」一并纳入（实测 2 例误判：指向「决策结果与登记结果」节），
+ * 故归属面取「RG 字样紧邻」这一可判定特征：该面内的指针必须指向 Review Gate 节（复发对的写法正在此面内）。
+ * 三种候选形态实测（索引全量）：仅「结论见」= 5 条命中；含「见」的 12 字符版 = **12 条命中、0 误判**（本实现）；
+ * 放宽到 20 字符不再增加命中。
+ */
+export const REVIEW_GATE_ADJACENT_RE = /(?:Review Gate|RG)[^\n]{0,12}?(?:结论)?见(?:该|本)记录\s*§\s*(\d+)/g
+
+/** 受检面下界：索引内受检的「结论」指针少于该值即判失败（防约定写法消失后静默空转）。 */
+export const REVIEW_GATE_POINTER_LOWER_BOUND = 12
+
+/** 归属面下界：RG 邻近指针少于该值即判失败（复发对所在面被削弱时不得静默通过）。 */
+export const REVIEW_GATE_ADJACENT_LOWER_BOUND = 10
+
+/** 章节切分（可选编号 + 标题），用于取 Review Gate 节正文以判定是否仍为占位。 */
+export const MD_HEADING_RE = /^#{1,6}[ \t]*(?:(\d+)\s*[.．、:：][ \t]*)?(.*)$/gm
+
+/** 尚未执行审计的占位正文（`待 Review Gate 执行后同批回填` 一类）。 */
+export const REVIEW_GATE_PLACEHOLDER_RE = /待\s*Review Gate\s*执行后同批回填/
+
+/** 索引条目里「结论稍后回填」的显式标记（有此标记时允许指针暂指占位节）。 */
+export const REVIEW_GATE_PENDING_MARK_RE = /同批回填/
 
 /** 链接闭合符与「紧邻标识」之间允许的分隔符（空白 / 括号 / 常见标点 / 表格与强调标记）。 */
 const TRAILING_SEPARATOR_RE = /^[\s)）】:：,，。、·|*_—-]*/
@@ -277,6 +310,149 @@ export function collectPlanningPointerIssues(root = projectRoot, files = collect
 }
 
 /**
+ * 索引条目的「Review Gate 结论指针」章节号校验。
+ *
+ * 背景：索引摘要常写「**Review Gate**：结论见该记录 §7」。章节号是治理台账的可追溯锚点
+ * （[规划规范 §9](../../docs/standards/planning.md)「台账里引用『某文档 §某节』时必须逐条回查实际改动位置」）；
+ * 写错等于把「待回填」读成「已放行」，且**同类错误曾在相邻两批重复发生**（部分归档批次与范围评估批次），
+ * 故由人工回查升级为机检约束。
+ *
+ * 判据：指针指向的章节号必须对应目标记录里**以 `Review Gate` 命名**的小节
+ * （排除「条目小节标题里恰好含 Review Gate 字样」这类小节的做法是**逐指针比对标题**，而非全文件取「唯一 RG 节」）；
+ * 且该节**不得仍是占位正文**（写「待 Review Gate 执行后同批回填」而索引未标「同批回填」＝把待回填读成已放行）。
+ *
+ * @param {string} root 仓库根目录
+ * @param {{ lowerBound?: number }} [options] 受检面下界（默认取 `REVIEW_GATE_POINTER_LOWER_BOUND`）
+ * @returns {{ issues: Array<{ type: string, file: string, line: number, message: string, hint: string }>, pointers: number, entries: number }}
+ */
+export function collectReviewGatePointerIssues(root = projectRoot, options = {}) {
+    const lowerBound = options.lowerBound ?? REVIEW_GATE_POINTER_LOWER_BOUND
+    const adjacentLowerBound = options.adjacentLowerBound ?? REVIEW_GATE_ADJACENT_LOWER_BOUND
+    const issues = []
+    const indexPath = join(root, INDEX_FILE)
+    if (!existsSync(indexPath)) {
+        return { issues, pointers: 0, adjacent: 0, entries: 0 }
+    }
+    const content = readFileSync(indexPath, 'utf8')
+    const dir = dirname(indexPath)
+    const sectionCache = new Map()
+    const sectionsOf = (target) => {
+        if (!sectionCache.has(target)) {
+            const sections = new Map()
+            const absolute = join(root, target)
+            if (existsSync(absolute)) {
+                const fileContent = readFileSync(absolute, 'utf8')
+                const headings = [...fileContent.matchAll(MD_HEADING_RE)]
+                for (let index = 0; index < headings.length; index += 1) {
+                    const [, number, title] = headings[index]
+                    if (!number) {
+                        continue
+                    }
+                    const bodyStart = (headings[index].index ?? 0) + headings[index][0].length
+                    const bodyEnd = index + 1 < headings.length ? (headings[index + 1].index ?? fileContent.length) : fileContent.length
+                    const body = fileContent.slice(bodyStart, bodyEnd)
+                    const isReviewGate = /Review Gate/i.test(title ?? '')
+                    sections.set(number, {
+                        isReviewGate,
+                        pending: isReviewGate && (body.trim().length === 0 || REVIEW_GATE_PLACEHOLDER_RE.test(body)),
+                    })
+                }
+            }
+            sectionCache.set(target, sections)
+        }
+        return sectionCache.get(target)
+    }
+
+    let pointers = 0
+    let adjacent = 0
+    let entries = 0
+    for (const match of content.matchAll(MD_LINK_RE)) {
+        const raw = match[2]
+        if (/^(?:https?:|mailto:|tel:|#)/.test(raw)) {
+            continue
+        }
+        const pathPart = raw.split('#')[0].trim().split(/\s+/)[0]
+        if (!pathPart) {
+            continue
+        }
+        const rel = relative(root, resolve(dir, pathPart)).replaceAll('\\', '/')
+        if (rel === INDEX_FILE || !rel.startsWith(`${GOVERNANCE_DIR}/`) || rel.slice(GOVERNANCE_DIR.length + 1).includes('/')) {
+            continue
+        }
+        const linkOffset = match.index ?? 0
+        const lineStart = content.lastIndexOf('\n', linkOffset) + 1
+        const lineEnd = content.indexOf('\n', linkOffset)
+        const line = content.slice(lineStart, lineEnd === -1 ? content.length : lineEnd)
+        const lineNumber = lineOf(content, linkOffset)
+        entries += 1
+        const markedPending = REVIEW_GATE_PENDING_MARK_RE.test(line)
+        const adjacentNumbers = new Set([...line.matchAll(REVIEW_GATE_ADJACENT_RE)].map((item) => item[1]))
+        adjacent += adjacentNumbers.size
+        for (const pointer of line.matchAll(REVIEW_GATE_POINTER_RE)) {
+            pointers += 1
+            const section = pointer[1]
+            const sections = sectionsOf(rel)
+            const target = sections.get(section)
+            if (!target) {
+                issues.push({
+                    type: 'rg-pointer-section-missing',
+                    file: INDEX_FILE,
+                    line: lineNumber,
+                    message: `索引条目称「结论见该记录 §${section}」，但 ${rel} 无 §${section}（现有章节：§${[...sections.keys()].join(' / §')}）`,
+                    hint: '把指针改指目标记录真实存在的章节号',
+                })
+                continue
+            }
+            if (!target.isReviewGate) {
+                if (!adjacentNumbers.has(section)) {
+                    continue
+                }
+                const rgSections = [...sections.entries()].filter(([, value]) => value.isReviewGate).map(([key]) => key)
+                issues.push({
+                    type: 'rg-pointer-section-mismatch',
+                    file: INDEX_FILE,
+                    line: lineNumber,
+                    message: rgSections.length === 0
+                        ? `索引条目的 Review Gate 结论指针指向 §${section}，但 ${rel} 无以 Review Gate 命名的章节`
+                        : `索引条目的 Review Gate 结论指针指向 §${section}，但 ${rel} 的 Review Gate 节为 §${rgSections.join(' / §')}`,
+                    hint: '把指针改指目标记录中 Review Gate 所在章节号，或在该记录补 `## N. Review Gate` 节',
+                })
+                continue
+            }
+            if (target.pending && !markedPending) {
+                issues.push({
+                    type: 'rg-pointer-target-pending',
+                    file: INDEX_FILE,
+                    line: lineNumber,
+                    message: `索引条目的 Review Gate 指针指向 ${rel} 尚未回填的 §${section}，且条目未标「同批回填」`,
+                    hint: '在索引条目补「同批回填」标记，或等记录 §Review Gate 回填结论后再登记',
+                })
+            }
+        }
+    }
+
+    if (pointers < lowerBound) {
+        issues.push({
+            type: 'rg-pointer-surface-below-bound',
+            file: INDEX_FILE,
+            line: null,
+            message: `受检「结论」指针 ${pointers} 条，低于下界 ${lowerBound}：拒绝以空扫描通过`,
+            hint: '索引条目的结论指针写成「结论见该记录 §N」（含 RG 结论写在 Review Gate 字样之后）',
+        })
+    }
+    if (adjacent < adjacentLowerBound) {
+        issues.push({
+            type: 'rg-pointer-adjacent-below-bound',
+            file: INDEX_FILE,
+            line: null,
+            message: `RG 邻近指针 ${adjacent} 条，低于下界 ${adjacentLowerBound}：RG 归属面被削弱，拒绝静默通过`,
+            hint: 'RG 结论写成「**Review Gate**：结论见该记录 §N」，使 RG 归属可机检',
+        })
+    }
+    return { issues, pointers, adjacent, entries }
+}
+
+/**
  * 解析 Markdown 链接目标为仓库相对路径（兼容省略 `.md` 的写法）。
  *
  * @param {string} root 仓库根目录
@@ -320,16 +496,28 @@ function lineOf(content, offset) {
 }
 
 /**
- * 执行两类检查。
+ * 执行三类检查。
+ *
+ * `options.rgPointerLowerBound` / `options.rgPointerAdjacentLowerBound` 省略时取对应常量；CLI 对
+ * **非默认根**（最小夹具 / 第三方仓库）传 0 —— 夹具只覆盖判据本身，不含「结论见该记录 §N」的仓库级约定写法。
  *
  * @param {string} root 仓库根目录
- * @returns {{ indexIssues: Array<object>, pointerIssues: Array<object>, recordFiles: number, markdownFiles: number }} 检查结果
+ * @param {{ rgPointerLowerBound?: number, rgPointerAdjacentLowerBound?: number }} [options] 受检面下界覆盖
+ * @returns {{ indexIssues: Array<object>, pointerIssues: Array<object>, rgPointerIssues: Array<object>, rgPointers: number, rgPointerAdjacent: number, rgPointerEntries: number, recordFiles: number, markdownFiles: number }} 检查结果
  */
-export function runGovernanceRecordsCheck(root = projectRoot) {
+export function runGovernanceRecordsCheck(root = projectRoot, options = {}) {
     const files = collectMarkdownFiles(root)
+    const reviewGate = collectReviewGatePointerIssues(root, {
+        lowerBound: options.rgPointerLowerBound ?? REVIEW_GATE_POINTER_LOWER_BOUND,
+        adjacentLowerBound: options.rgPointerAdjacentLowerBound ?? REVIEW_GATE_ADJACENT_LOWER_BOUND,
+    })
     return {
         indexIssues: checkGovernanceIndex(root),
         pointerIssues: collectPlanningPointerIssues(root, files),
+        rgPointerIssues: reviewGate.issues,
+        rgPointers: reviewGate.pointers,
+        rgPointerAdjacent: reviewGate.adjacent,
+        rgPointerEntries: reviewGate.entries,
         recordFiles: collectRecordFiles(root).length,
         markdownFiles: files.length,
     }
@@ -361,18 +549,31 @@ if (isDirectExecution(import.meta.url)) {
         process.stderr.write(`[check-governance-records] ${rootError}\n`)
         process.exitCode = 1
     } else {
-        const { indexIssues, pointerIssues, recordFiles, markdownFiles } = runGovernanceRecordsCheck(targetRoot)
-        const issues = [...indexIssues, ...pointerIssues]
+        // 受检面下界只在仓库自身生效：夹具 / 第三方根不含「结论见该记录 §N」的仓库级约定写法。
+        // 用 realpath 归一后比较，避免以符号链接 / 别名路径传仓库根时静默豁免下界。
+        const realpath = (target) => {
+            try {
+                return realpathSync(target)
+            } catch {
+                return resolve(target)
+            }
+        }
+        const isDefaultRoot = realpath(targetRoot) === realpath(projectRoot)
+        if (!isDefaultRoot) {
+            process.stderr.write(`[check-governance-records] 注意：${targetRoot} 非仓库自身，RG 指针受检面下界未生效\n`)
+        }
+        const { indexIssues, pointerIssues, rgPointerIssues, rgPointers, rgPointerAdjacent, recordFiles, markdownFiles } = runGovernanceRecordsCheck(targetRoot, isDefaultRoot ? {} : { rgPointerLowerBound: 0, rgPointerAdjacentLowerBound: 0 })
+        const issues = [...indexIssues, ...pointerIssues, ...rgPointerIssues]
         if (issues.length > 0) {
             for (const issue of issues) {
                 const location = issue.line === null ? issue.file : `${issue.file}:${issue.line}`
                 process.stderr.write(`${location}:${issue.type}: ${issue.message}\n`)
                 process.stderr.write(`  修复方向：${issue.hint}\n`)
             }
-            process.stderr.write(`[check-governance-records] ${issues.length} 处问题（索引 ${indexIssues.length} / 规划指针 ${pointerIssues.length}）\n`)
+            process.stderr.write(`[check-governance-records] ${issues.length} 处问题（索引 ${indexIssues.length} / 规划指针 ${pointerIssues.length} / RG 指针 ${rgPointerIssues.length}）\n`)
             process.exitCode = 1
         } else {
-            process.stdout.write(`[check-governance-records] OK：${recordFiles} 个治理记录与索引一致，${markdownFiles} 个 md 的历史规划指针无失效\n`)
+            process.stdout.write(`[check-governance-records] OK：${recordFiles} 个治理记录与索引一致，${markdownFiles} 个 md 的历史规划指针无失效，${rgPointers} 条索引结论指针（其中 RG 邻近 ${rgPointerAdjacent} 条）章节号一致\n`)
         }
     }
 }

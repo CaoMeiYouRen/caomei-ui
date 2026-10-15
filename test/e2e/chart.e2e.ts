@@ -28,9 +28,10 @@ const MIN_INK_RATIO = 0.005
  * 因此「彩色占比」才是「系列确实按需注册并绘制」的判别探针——只注册坐标轴组件时，
  * 墨迹占比仍会因轴线与文字而达标（**实测该口径不具判别力**，首版即因此漏过负向对照）。
  *
- * 下界由实测校准（desktop project，同一夹具）：
- * - 注册 `BarChart` 时 0.00173；去掉 `BarChart` 的负向对照为 0.0000391（仅剩抗锯齿边缘的彩色噪声）；
- * - 取 0.0005：高于负值 12.8 倍、低于正值 3.5 倍，两侧均有余量。
+ * 下界由实测校准（desktop project，同一夹具；主题派生后系列色为宿主主色、饱和度更高）：
+ * - 注册 `BarChart` 时 **0.21**；去掉 `BarChart` 的负向对照为 **0.000143**（仅剩抗锯齿边缘的彩色噪声）；
+ * - 取 0.0005：高于负值 3.5 倍、低于正值 400 倍以上，两侧均有余量。
+ *   （早期未派生主题时的口径为 0.00173 / 0.0000391，阈值对两套配色均成立。）
  *
  * **改色板（含后续由 `--caomei-*` token 派生主题的批次）后必须重校准**：饱和度门（`max - min > 24`）与
  * 下界都绑定在「系列色为饱和色」这一前提上，低饱和 / 灰阶友好色板可能跌破门限而**误杀正确实现**。
@@ -124,7 +125,14 @@ test.describe('图表封装', () => {
         expect(canvas.width).toBeGreaterThan(0)
         expect(canvas.height).toBeGreaterThan(0)
         expect(canvas.inkRatio, '画布为空白：内核未绘制任何内容').toBeGreaterThan(MIN_INK_RATIO)
-        expect(canvas.colorRatio, '画布无彩色像素：系列未注册或未绘制').toBeGreaterThan(MIN_COLOR_RATIO)
+        /*
+         * 主题与语言缺省值在挂载后才派生，内核会据此重建实例 ⇒ 存在「画布已建立、系列尚未绘制」的
+         * 中间态（表现为只有坐标轴的墨迹）。故以轮询等待彩色像素出现，而非一次性取样。
+         */
+        await expect.poll(async () => (await readCanvas(page, CANVAS)).colorRatio, {
+            message: '画布无彩色像素：系列未注册或未绘制',
+            timeout: 10_000,
+        }).toBeGreaterThan(MIN_COLOR_RATIO)
 
         // 默认高度取 `--caomei-chart-height` 回退值 20rem
         const box = await root.boundingBox()
@@ -134,7 +142,8 @@ test.describe('图表封装', () => {
     test('容器宽度变化后画布自动跟随（autoresize 默认开启）', async ({ page }) => {
         await expect(page.locator(CANVAS)).toBeVisible()
         const before = await readCanvas(page, CANVAS)
-        expect(before.inkRatio).toBeGreaterThan(MIN_INK_RATIO)
+        await expect.poll(async () => (await readCanvas(page, CANVAS)).colorRatio)
+            .toBeGreaterThan(MIN_COLOR_RATIO)
 
         const hostWidth = await page.locator(HOST).evaluate((element) => element.getBoundingClientRect().width)
         await page.locator(HOST).evaluate((element, width) => {
@@ -144,8 +153,9 @@ test.describe('图表封装', () => {
         await expect.poll(async () => (await readCanvas(page, CANVAS)).cssWidth)
             .toBeLessThan(before.cssWidth - 20)
 
-        const after = await readCanvas(page, CANVAS)
-        expect(after.inkRatio, 'resize 后画布不得空白').toBeGreaterThan(MIN_INK_RATIO)
+        await expect.poll(async () => (await readCanvas(page, CANVAS)).colorRatio, {
+            message: 'resize 后画布不得空白',
+        }).toBeGreaterThan(MIN_COLOR_RATIO)
 
         await page.locator(HOST).evaluate((element) => {
             element.style.width = ''

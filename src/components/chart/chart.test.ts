@@ -81,12 +81,95 @@ describe('CaomeiChart', () => {
         const chart = wrapper.getComponent(VChartStub)
         expect(chart.props('option')).toStrictEqual(option)
         expect(chart.props('theme')).toBe('dark')
-        expect(chart.props('initOptions')).toStrictEqual({ renderer: 'svg' })
+        // 注入跟随宿主语言的 locale，其余键原样透传（显式 locale 的优先级由专门用例覆盖）
+        expect(chart.props('initOptions')).toStrictEqual({ locale: 'ZH', renderer: 'svg' })
         expect(chart.props('updateOptions')).toStrictEqual({ notMerge: true })
         expect(chart.props('group')).toBe('overview')
         expect(chart.props('loading')).toBe(true)
 
         wrapper.unmount()
+    })
+
+    it('缺省时透传按宿主 token 派生的主题对象，显式 theme 优先', async () => {
+        const derived = mountChart()
+        await flushPromises()
+        const derivedTheme = derived.getComponent(VChartStub).props('theme') as Record<string, unknown>
+        // happy-dom 下 token 未定义 ⇒ 色板为空、其余取值为空串；此处只锚定「控件收到的是主题对象」
+        expect(typeof derivedTheme).toBe('object')
+        expect(derivedTheme).toHaveProperty('backgroundColor', 'transparent')
+        derived.unmount()
+
+        const explicit = mountChart({ theme: 'dark' })
+        await flushPromises()
+        expect(explicit.getComponent(VChartStub).props('theme')).toBe('dark')
+        explicit.unmount()
+    })
+
+    it('运行期切换 theme prop 后内核收到新主题', async () => {
+        const wrapper = mountChart({ theme: 'dark' })
+        await flushPromises()
+        expect(wrapper.getComponent(VChartStub).props('theme')).toBe('dark')
+
+        await wrapper.setProps({ theme: 'light' })
+
+        expect(wrapper.getComponent(VChartStub).props('theme')).toBe('light')
+        wrapper.unmount()
+    })
+
+    it('显式 theme 置空后回落到派生主题', async () => {
+        document.documentElement.style.setProperty('--caomei-color-primary', '#123456')
+        const wrapper = mountChart({ theme: 'dark' })
+        await flushPromises()
+        expect(wrapper.getComponent(VChartStub).props('theme')).toBe('dark')
+
+        try {
+            await wrapper.setProps({ theme: undefined })
+
+            const derived = wrapper.getComponent(VChartStub).props('theme') as { color: string[] }
+            expect(Array.isArray(derived.color)).toBe(true)
+            expect(derived.color).toContain('#123456')
+        } finally {
+            document.documentElement.style.removeProperty('--caomei-color-primary')
+            wrapper.unmount()
+        }
+    })
+
+    it('根元素主题属性变化后按新 token 重算派生主题', async () => {
+        document.documentElement.style.setProperty('--caomei-color-primary', '#123456')
+        const wrapper = mountChart()
+        await flushPromises()
+
+        try {
+            await nextTick()
+            const before = wrapper.getComponent(VChartStub).props('theme') as { color: string[] }
+            expect(before.color).toContain('#123456')
+
+            // 触发根元素属性变化（观察器 → revision → 重算）；以轮询等待而非手工时序，避免绑定观察器调度
+            document.documentElement.style.setProperty('--caomei-color-primary', '#654321')
+            document.documentElement.dataset.preset = 'caomei'
+
+            await vi.waitFor(() => {
+                const after = wrapper.getComponent(VChartStub).props('theme') as { color: string[] }
+                expect(after.color).toContain('#654321')
+                expect(after.color).not.toContain('#123456')
+            })
+        } finally {
+            delete document.documentElement.dataset.preset
+            document.documentElement.style.removeProperty('--caomei-color-primary')
+            wrapper.unmount()
+        }
+    })
+
+    it('initOptions 注入跟随宿主语言的 locale，显式传入者优先', async () => {
+        const injected = mountChart()
+        await flushPromises()
+        expect(injected.getComponent(VChartStub).props('initOptions')).toEqual({ locale: 'ZH' })
+        injected.unmount()
+
+        const explicit = mountChart({ initOptions: { locale: 'EN', renderer: 'svg' } })
+        await flushPromises()
+        expect(explicit.getComponent(VChartStub).props('initOptions')).toEqual({ locale: 'EN', renderer: 'svg' })
+        explicit.unmount()
     })
 
     it('autoresize 默认开启，可显式关闭', async () => {

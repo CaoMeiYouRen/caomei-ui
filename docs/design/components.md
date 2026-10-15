@@ -95,7 +95,7 @@
 | DataView | 自建（`layout` grid / list + 插槽） | 无 | — | 列表 / 网格两态 + 加载 / 空态（**已实现**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 | TagsInput | 封装 | TagsInput | 稳定 | 标签录入：多值 `v-model`、自由文本、回车 / 分隔符提交、标签删除、数量 / 去重约束（**已实现**） |
-| Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件（**已实现**） |
+| Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
 Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Tree（Tree 为 Alpha）。

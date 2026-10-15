@@ -11,7 +11,8 @@
         "./examples/**/*.ts",
         "./examples/**/*.vue",
         "./i18n/**/*.ts",
-        "./i18n/**/*.vue"
+        "./i18n/**/*.vue",
+        "../src/**/*.d.ts"
     ],
     "exclude": [
         "./.vitepress/cache",

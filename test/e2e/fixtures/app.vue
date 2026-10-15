@@ -224,6 +224,9 @@ const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
 /*
  * 图表内核的按需注册（使用方职责）：只注册受检用例用到的渲染器 / 图表类型 / 组件，
  * 以此证明封装层不代注册、也不把全量内核带进产物。用例见 `test/e2e/chart.e2e.ts`。
+ *
+ * SVG 渲染器不在本夹具注册：需要它的轴标签文本用例走独立入口 `/chart-theme.html`
+ * （见 `chart-theme-app.vue`），以免通用夹具的渲染器注册被无关用例改变。
  */
 use([CanvasRenderer, BarChart, GridComponent, TooltipComponent])
 

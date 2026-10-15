@@ -42,9 +42,11 @@ export interface ChartProps {
      */
     group?: string
     /**
-     * `echarts.init` 的初始化参数（如 `renderer` / `locale`）；**原样透传**，本组件不注入、不合并缺省值
-     * @en Options for `echarts.init` (such as `renderer` / `locale`); forwarded **verbatim** — this
-     * component injects no defaults and merges nothing
+     * `echarts.init` 的初始化参数（如 `renderer` / `ssr`）；本组件按宿主语言注入 `locale` 缺省值，
+     * **显式传入的 `locale` 优先**，其余键原样透传
+     * @en Options for `echarts.init` (such as `renderer` / `ssr`); this component injects a default
+     * `locale` derived from the host locale, **an explicit `locale` wins**, and all other keys are
+     * forwarded verbatim
      */
     initOptions?: Record<string, unknown>
     /**
@@ -54,8 +56,11 @@ export interface ChartProps {
      */
     updateOptions?: Record<string, unknown>
     /**
-     * ECharts 主题（主题名或主题对象）；缺省不传，使用 ECharts 默认主题
-     * @en ECharts theme (a name or a theme object); when omitted, ECharts' default theme applies
+     * ECharts 主题（主题名或主题对象）。缺省由本库按宿主 `--caomei-*` token 派生（亮 / 暗 / 预设
+     * 跟随根元素标记联动），显式传入者优先
+     * @en ECharts theme (a name or a theme object). By default this library derives one from the host
+     * `--caomei-*` tokens (following the light / dark / preset markers on the root element); an
+     * explicit value wins
      */
     theme?: string | object
     /**

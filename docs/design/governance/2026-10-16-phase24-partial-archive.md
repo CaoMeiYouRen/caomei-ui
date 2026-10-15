@@ -37,7 +37,7 @@
 
 ## 5. 归档载体行数（触发条件已命中，转下一批处置）
 
-- 本批归档后主窗口 `docs/plan/todo-archive.md` = **404 行**（实测 `wc -l`），**越过 `docs:check:line-count` 的 warn 阈值 400**（error 阈值 600 未越，`docs:check` 仍通过）。按主窗口口径句的规则，此时应把**最早的阶段块**（Phase 18）机械迁入深度归档 [`archive/`](../plan/archive/)。
+- 本批归档后主窗口 `docs/plan/todo-archive.md` = **404 行**（实测 `wc -l`），**越过 `docs:check:line-count` 的 warn 阈值 400**（error 阈值 600 未越，`docs:check` 仍通过）。按主窗口口径句的规则，此时应把**最早的阶段块**（Phase 18）机械迁入深度归档 [`archive/`](../../plan/archive/)。
 - 该动作**本批未做**（属独立批次：机械迁出 + `diff` 逐字核对 + 指针回扫三段式），已在[M3-5 记录](./2026-10-15-phase24-m3-5-planning-carrier-discrepancy-cleanup.md)登记为候选「归档载体行数再评估」，其触发条件即「主窗口超 warn 阈值」——**本批使其激活**，作为下一批的既定动作；**主窗口口径句已同步标注「本批延后、下一批执行」**，避免规则空转。实测行数以 `wc -l docs/plan/todo-archive.md` 为准（本批终态 **404** 行）。
 
 ## 6. 长期任务

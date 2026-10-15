@@ -41,10 +41,11 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 国际化深化（一期 5 语 + 分包方案 A） | 用户 2026-10-13 口径（[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10.1 D5） | **一期语言集 = `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`**（覆盖主流非中文 / 非英语语种）+ **分包方案 A**（按语言子路径导出 `caomei-ui/locale/<lang>`，保留根入口全量导出、additive）+ 守卫与台账同步（`check:locale-keys` / `check:locale-ledger` + 组件文档语言清单）。规模实测（2026-10-13）：现 5 语 854 行、每语言 138 行 → 10 语约 1,544 行。**用户口径：本阶段（Phase 24）不做，下阶段做**。触发条件 = 下阶段规划启动 | 低 |
-| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 由「追加俄、法、德、西、葡」修订——该 5 语已上收为一期候选，见上一行） | 低 |
+| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 由「追加俄、法、德、西、葡」修订——该 5 语已上收为一期候选（见本组「已纳入阶段」注）） | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
 | locale 组织与注册治理 | 用户需求 | 语言数量增长后的目录组织、注册表、按需加载 | 低 |
+> **本组一处已纳入阶段**：原「国际化深化（一期 5 语 + 分包方案 A）」行已于 2026-10-16 随 [Phase 25 登记](../design/governance/2026-10-16-phase25-registration.md) **纳入阶段**（范围与验收口径以该记录为准）。
+
 
 ### 1.5 移动端与响应式候选
 
@@ -52,7 +53,8 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | 触摸目标增强（≥44px 命中区） | 用户决策 | 用户裁定**暂不提升**，维持现状 | 低 |
-| 移动端与响应式优化（三项） | 用户 2026-10-13 口径（[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10.1 D4 / §5.2） | **范围三项**：① 大块组件窄屏形态收敛（`DataTable` / `Dialog` / `Drawer` / `Tabs` / `Toolbar` / `Paginator` / `DataView`）在[响应式设计](../design/responsive.md) 中逐条落为可断言口径 + 可机检者纳入常驻 E2E 视口矩阵；② **触摸目标复核**（以真实命中区数据复核「暂不提升」的原裁定，不预设结论）；③ 新增移动端使用指南页（用法 → 断点 → 常见陷阱）。上下文：三仓 `@media` 用量均为 0（响应式由 UI 库栅格承载）；本库 `@media` 窄口径 37 处（34 `.vue` + 3 `.css`）。**用户口径：本阶段（Phase 24）不做，下阶段做**。触发条件 = 下阶段规划启动 | 低 |
+> **本组一处已纳入阶段**：原「移动端与响应式优化（三项）」行已于 2026-10-16 随 [Phase 25 登记](../design/governance/2026-10-16-phase25-registration.md) **纳入阶段**（范围与验收口径以该记录为准）。
+
 
 ### 1.6 基建与治理候选
 
@@ -72,7 +74,8 @@
 | `reka-ui` 补丁升级（2.10.5 / 2.11.0） | Phase 22 M2-3 follow-up（Phase 23 M3-2 复核） | 2.10.5 起致 `CaomeiInputNumber` 步进模型 emit 回归；本仓维持 **2.10.4**（精确钉定）。**2026-10-13 实测复核**：以 `reka-ui@2.11.0` 覆盖后 `pnpm vitest run src/components/input-number/input-number.test.ts` **4 例失败 / 45 例通过** → 回归未消除（失败面 = 点击增加按钮按 step 步进并应用 precision / 点击减少按钮按 step 步进并钳制 / `step` 非正时回退为 1 / 步进按 step 累加且不被吸附到 step 整数倍）。**触发条件（可判定）= 在 `reka-ui` ≥ `2.11.0` 下该命令 4 例全过**，**或**本仓显式适配其步进行为变更 | 低 |
 | `conventional-changelog` 8 升级 | Phase 22 M2-3 follow-up（Phase 23 M3-2 复核） | v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；本仓维持 **7.2.0**。**2026-10-13 复核**：`npm view conventional-changelog-cmyr-config version` 仍为 **3.0.0**（未发布支持 writer 9 的新版）。**触发条件（可判定）= 该命令返回值 > 3.0.0 且其模板 API 兼容 writer 9**（届时复跑 `pnpm changelog` 无 `headerPartial is not a function`） | 低 |
 | 文档站示例外链守卫漏判面扩展 | Phase 23 M5-1 follow-up（第八轮 N2） | 现行守卫为**整文件 fail-closed**（`docs/**/examples/**` 出现 `http(s)://` 即判 `external-image-source` 失败），无法区分「图片源」与「合法非图片外链」。**触发条件 = 出现合法非图片外链用例**（如示例中引用外部 API / 文档链接）时需重新划面；**复算 = `pnpm docs:check:demo-external-images`**（受检面 363 个示例文件 / 下界 `MIN_SCANNED_EXAMPLES = 300`，含中英两侧示例目录覆盖断言）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 低 |
-| 归档载体行数再评估 | Phase 23 M4-1 follow-up（第八轮 N3） | Phase 23 M4-1 压缩后主窗口 314 行、Phase 23 归档块 41 行 → 现 **355 行**（`pnpm docs:check:line-count`，**低于 warn 400**），原「超阈压缩」候选的触发前提已变化。**触发条件 = 主窗口超 `docs:check:line-count` 的 warn 阈值 400**（下一阶段归档预计 +40 ~ 60 行将再次越阈；迁出规则已写入主窗口口径句：近线窗口 = 最近 5 个已完成阶段）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 低 |
+> **本组一处已纳入阶段**：原「归档载体行数再评估」行已于 2026-10-16 随 [Phase 25 登记](../design/governance/2026-10-16-phase25-registration.md) **纳入阶段**（触发条件已命中：主窗口 404 行越 warn 阈值）。
+
 
 ### 1.7 服务层候选（composables）
 

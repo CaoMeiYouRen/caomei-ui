@@ -28,6 +28,9 @@ function createGitRepo() {
     const dir = mkdtempSync(join(tmpdir(), 'check-staging-hygiene-'))
     tempDirs.push(dir)
     spawnSync('git', ['init', '-q'], { cwd: dir })
+    // 夹具自带身份：CI 运行器的 git 无法从系统账号推导用户（空 ident），提交会直接失败。
+    spawnSync('git', ['config', 'user.email', 'fixture@example.com'], { cwd: dir })
+    spawnSync('git', ['config', 'user.name', 'fixture'], { cwd: dir })
     return dir
 }
 

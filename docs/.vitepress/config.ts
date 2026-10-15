@@ -351,6 +351,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Message', link: '/en-US/components/message' },
                                 { text: 'Popover', link: '/en-US/components/popover' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
+                                { text: 'Tooltip', link: '/en-US/components/tooltip' },
                             ],
                         },
                         {
@@ -546,6 +547,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Message 提示条', link: '/components/message' },
                         { text: 'Popover 浮层', link: '/components/popover' },
                         { text: 'Toast 轻提示', link: '/components/toast' },
+                        { text: 'Tooltip 工具提示', link: '/components/tooltip' },
                     ],
                 },
                 {

@@ -65,7 +65,7 @@
 
 **用例 1「面板必须渲染在模态内容之上」**：
 
-- **受检面**：`PANEL_CASES` = 7 类面板（`MIN_PANEL_CASES = 7`，即 portal 浮层面板全集；受检面下界断言防清单被静默收窄后「全部通过」变成空真）。ColorPicker 的选择器带 `:not(--inline)`——面板挂 `body`、无法用祖先限定，而 `inline` 形态复用同一基类，不排除会命中两个元素。
+- **受检面**：`PANEL_CASES` = 7 类面板（`MIN_PANEL_CASES = 7` —— **写录时点快照**，当批 portal 浮层面板全集；下界断言防清单被静默收窄后「全部通过」变成空真；后续新增 portal 浮层组件会同步抬升该下界）。ColorPicker 的选择器带 `:not(--inline)`——面板挂 `body`、无法用祖先限定，而 `inline` 形态复用同一基类，不排除会命中两个元素。
 - **前置守卫**：面板矩形必须与模态内容矩形**真实重叠**，否则命中测试无判别力。
 - **机制断言**：面板计算 `z-index` 必须高于 `.caomei-dialog__content`。
 - **最终判据**：重叠区中心的**绘制顺序命中**必须落在面板内。
@@ -89,7 +89,7 @@
 - **未覆盖**：嵌套模态（模态内再开模态）与 Drawer 内的面板未单独设用例——两者与 Dialog 同用 `--caomei-z-modal`，机制同源，由常驻用例的 Dialog 路径代表。
 - **未覆盖**：`inline` ColorPicker 面板与模态**同屏重叠**时的绘制顺序未做命中测试（只断言其计算 `z-index` 为 `auto`，即「不参与浮层层叠」这一充分条件）；该形态在页面流内，与居中模态的几何重叠随滚动位置变化，命中测试的几何前置不可靠。该面由 `check:overlay-z-index` 的 T6（声明层）与 T3（`--caomei-z-modal` 选择器白名单）部分补强。
 - **未覆盖**：`check:overlay-z-index` 只判「档位声明形态与选择器语义」，不判「元素是否真的在 portal 中渲染」——T6 的静态变体判定依据是「选择器未用 `:not()` 排除该变体类 + 模板存在同名 `--<修饰符>` 变体」，若变体命名不含 `--`（如 `is-inline`）则不在其规则面；该面由常驻 E2E 的真实渲染兜底。
-- **未覆盖（流程边界）**：E2E 的 `PANEL_CASES` 与声明层门禁**未联动**——新增 portal 浮层组件时，门禁单测的精确计数（浮层声明数 10）会失败并强制复核，但不会强制把新组件补进 E2E 清单（`MIN_PANEL_CASES = 7` 为下界）；跨文件耦合成本高于收益，登记为已知流程边界（Review Gate RG-R1′-S04）。
+- **未覆盖（流程边界）**：E2E 的 `PANEL_CASES` 与声明层门禁**未联动**——新增 portal 浮层组件时，门禁单测的精确计数（浮层声明数 10）会失败并强制复核，但不会强制把新组件补进 E2E 清单（`MIN_PANEL_CASES = 7` 为下界 —— **写录时点快照**）；跨文件耦合成本高于收益，登记为已知流程边界（Review Gate RG-R1′-S04）。
 - **未覆盖**：`check:overlay-z-index` 的 T6 只覆盖「同一文件内」的变体复用；跨文件复用同一基类（如消费方在宿主页面复用组件类名）不在其规则面。
 - **观察项 O2（非本批缺陷）**：`check:overlay-z-index` 首跑即命中 `image.vue` 的 `[static-variant]` 误报——原因是类名正则未含 `_`（`caomei-image__preview-overlay` 被截断为 `caomei-image`）。已修正正则并在单测中固化「模板提取只取 `<template>` 内容」边界；该误报说明**守卫自身的规则面也需要负向语料**。
 - **观察项 O1（非本批缺陷）**：首次 `pnpm verify` 的全量单测出现 1 例偶发失败（`src/components/auto-complete/auto-complete.test.ts:480` 的 `aria-controls` 面板查找，报 `Cannot call element on an empty DOMWrapper`）。按 [测试规范 §6.1](../../standards/testing.md) 处置：隔离复跑该文件 **30 / 30 通过**、全量复跑两次均全通过（**当轮口径** 93 文件 / 1931 例；终态见 §5），判为并行负载下的偶发，与改动无因果；本批**未**改该用例；该实例已按触发条件登记 [Backlog §1.6](../../plan/backlog.md)（第二次出现 → 触发「定位根因并修」）。

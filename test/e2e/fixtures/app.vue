@@ -56,6 +56,10 @@ import {
     CaomeiToolbar,
     CaomeiToolbarButton,
     CaomeiToolbarLink,
+    CaomeiTooltip,
+    CaomeiTooltipContent,
+    CaomeiTooltipProvider,
+    CaomeiTooltipTrigger,
     useConfirm,
 } from '@/index'
 
@@ -638,6 +642,28 @@ const ConfirmDriver = defineComponent({
                             </CaomeiDropdownMenuTrigger>
                             <CaomeiDropdownMenuContent :model="overlayMenuItems" />
                         </CaomeiDropdownMenu>
+                    </div>
+                    <!--
+                      工具提示用例：**打开走 hover 路径**——Playwright 的 `click()` 会先派发 `pointermove`，
+                      Reka 的 `handlePointerMove` → 触发器进入 → 按 `delay-duration` 展开（夹具取 0 ⇒ 立即）；
+                      `disable-closing-trigger` 只负责让随后的 click / pointerdown **不关闭**已展开的面板
+                      （Reka 缺省为「展开态点击触发器即收起」）。即 click 本身从不开面板，与其余浮层的
+                      click 开合用例不同源；其余用例的交互路径不受影响。
+                    -->
+                    <div id="overlay-tooltip">
+                        <CaomeiTooltipProvider>
+                            <CaomeiTooltip
+                                :delay-duration="0"
+                                disable-closing-trigger
+                            >
+                                <CaomeiTooltipTrigger>
+                                    扫描范围
+                                </CaomeiTooltipTrigger>
+                                <CaomeiTooltipContent>
+                                    扫描范围为所选仓库的全部开放依赖告警。
+                                </CaomeiTooltipContent>
+                            </CaomeiTooltip>
+                        </CaomeiTooltipProvider>
                     </div>
                 </div>
             </CaomeiDialog>

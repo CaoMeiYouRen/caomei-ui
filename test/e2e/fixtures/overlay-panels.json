@@ -7,6 +7,7 @@
         { "name": "color-picker", "trigger": "#overlay-color-picker .caomei-color-picker__trigger", "panel": ".caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)" },
         { "name": "date-picker", "trigger": "#overlay-date-picker .caomei-date-picker", "panel": ".caomei-date-picker__content" },
         { "name": "popover", "trigger": "#overlay-popover .caomei-popover__trigger", "panel": ".caomei-popover__content" },
-        { "name": "dropdown-menu", "trigger": "#overlay-dropdown-menu .caomei-dropdown-menu__trigger", "panel": ".caomei-dropdown-menu__content" }
+        { "name": "dropdown-menu", "trigger": "#overlay-dropdown-menu .caomei-dropdown-menu__trigger", "panel": ".caomei-dropdown-menu__content" },
+        { "name": "tooltip", "trigger": "#overlay-tooltip .caomei-tooltip__trigger", "panel": ".caomei-tooltip__content" }
     ]
 }

@@ -59,15 +59,17 @@ describe('check-overlay-z-index 仓库不变量', () => {
             '.caomei-confirm-dialog__content',
             '.caomei-drawer__content',
         ]))
-        expect(RESERVED_TIERS.has('tooltip')).toBe(true)
+        expect(RESERVED_TIERS.has('sticky')).toBe(true)
+        // `tooltip` 档自 Tooltip 组件落地后已有消费点，必须移出预留面（T7 反向校验）
+        expect(RESERVED_TIERS.has('tooltip')).toBe(false)
         expect(HOOK_NAME_EXCEPTIONS.get('src/components/image/image.vue')).toBe('--caomei-image-preview-z-index')
     })
 
     it('浮层档位声明数与受检面下界一致（防清单被静默收窄）', () => {
         const result = runChecks()
         expect(result.counts.floatingDeclarations).toBeGreaterThanOrEqual(MIN_FLOATING_DECLARATIONS)
-        // 7 个 portal 面板 + Image 预览遮罩 + 预览内容 + Toast 视口
-        expect(result.counts.floatingDeclarations).toBe(10)
+        // 8 个 portal 面板 + Image 预览遮罩 + 预览内容 + Toast 视口
+        expect(result.counts.floatingDeclarations).toBe(11)
     })
 })
 
@@ -278,12 +280,12 @@ describe('check-overlay-z-index 受检面守卫（T7）', () => {
     })
 
     it('反例：预留档位出现消费点', () => {
-        const issues = findScopeIssues({ files: 99, rules: 999, floatingDeclarations: 9, consumedTiers: new Set(['tooltip']) })
+        const issues = findScopeIssues({ files: 99, rules: 999, floatingDeclarations: 9, consumedTiers: new Set(['sticky']) })
         expect(issues[0]).toContain('[reserved-tier-consumed]')
     })
 
     it('正例：现行受检面通过', () => {
-        expect(findScopeIssues({ files: 83, rules: 796, floatingDeclarations: 9, consumedTiers: new Set(['overlay', 'modal', 'dropdown', 'toast']) })).toEqual([])
+        expect(findScopeIssues({ files: 83, rules: 796, floatingDeclarations: 9, consumedTiers: new Set(['overlay', 'modal', 'dropdown', 'tooltip', 'toast']) })).toEqual([])
     })
 })
 

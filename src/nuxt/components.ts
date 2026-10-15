@@ -93,6 +93,11 @@ export const caomeiComponents = [
     'CaomeiToolbarSeparator',
     'CaomeiToolbarToggleGroup',
     'CaomeiToolbarToggleItem',
+    'CaomeiTooltip',
+    'CaomeiTooltipArrow',
+    'CaomeiTooltipContent',
+    'CaomeiTooltipProvider',
+    'CaomeiTooltipTrigger',
 ] as const
 
 export type CaomeiComponentName = (typeof caomeiComponents)[number]

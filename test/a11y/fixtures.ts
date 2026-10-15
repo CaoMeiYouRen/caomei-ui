@@ -83,6 +83,11 @@ import {
     CaomeiToolbarSeparator,
     CaomeiToolbarToggleGroup,
     CaomeiToolbarToggleItem,
+    CaomeiTooltip,
+    CaomeiTooltipArrow,
+    CaomeiTooltipContent,
+    CaomeiTooltipProvider,
+    CaomeiTooltipTrigger,
     useConfirm,
     useToast,
 } from '../../src/index'
@@ -272,6 +277,22 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
+    /* 工具提示：根组件在缺 `CaomeiTooltipProvider` 时会抛错（Reka 契约），故夹具统一自带 Provider。 */
+    { name: 'CaomeiTooltip', root: CaomeiTooltip, definition: { components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent }, template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent>扫描范围为所选仓库的全部开放依赖告警。</CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>' } },
+    /*
+     * 展开态审计单元：受控 `open` 在 happy-dom 下不可稳定驱动，改以公开属性 `force-mount`
+     * 稳定渲染面板内容；面板内两导出（内容 / 箭头）由此进入受检面。可访问描述元素
+     * （`role="tooltip"`，id 即触发器 `aria-describedby` 的指向）随之渲染。
+     */
+    {
+        name: 'CaomeiTooltipContent',
+        root: CaomeiTooltipContent,
+        definition: {
+            components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent, CaomeiTooltipArrow },
+            template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent force-mount><span>扫描范围</span><CaomeiTooltipArrow /></CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>',
+        },
+        requiredSelectors: ['.caomei-tooltip__content', '[role="tooltip"]'],
+    },
 ]
 
 /**
@@ -307,6 +328,8 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiDropdownMenuSeparator', component: CaomeiDropdownMenuSeparator, fixture: 'CaomeiDropdownMenuContent' },
     { name: 'CaomeiPopoverArrow', component: CaomeiPopoverArrow, fixture: 'CaomeiPopoverContent' },
     { name: 'CaomeiPopoverClose', component: CaomeiPopoverClose, fixture: 'CaomeiPopoverContent' },
+    { name: 'CaomeiTooltipTrigger', component: CaomeiTooltipTrigger, fixture: 'CaomeiTooltip' },
+    { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
 /**
@@ -320,7 +343,8 @@ export const INTERACTION_ONLY_EXPORTS: { name: string, reason: string }[] = []
 /** 不渲染自有 DOM 的对外导出（逐条登记理由，避免静默豁免）。 */
 export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
     { name: 'CaomeiConfigProvider', reason: '不渲染自有 DOM（仅 provide 上下文并透传插槽），单独挂载时审计对象是插槽内容而非组件本身' },
+    { name: 'CaomeiTooltipProvider', reason: '不渲染自有 DOM（仅 provide 工具提示上下文并透传插槽），单独挂载时审计对象是插槽内容而非组件本身' },
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 54
+export const A11Y_FIXTURE_BUDGET = 56

@@ -51,6 +51,7 @@
 - [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息（单组件同时承载 Message / Alert 语义）。
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
 - [Toast 轻提示](./toast)：轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
+- [Tooltip 工具提示](./tooltip)：工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；由应用根部一次的 `CaomeiTooltipProvider` 与触发器 / 面板组合使用，不构成焦点陷阱。
 
 ## 数据展示
 

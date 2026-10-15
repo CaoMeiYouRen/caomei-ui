@@ -46,6 +46,7 @@ const COMPONENTS_DIR = join(REPO_ROOT, 'src', 'components')
 export const WRAPPED_REKA_TRIGGERS = [
     { reka: 'PopoverTrigger', wrapper: 'popover/popover-trigger.vue' },
     { reka: 'DropdownMenuTrigger', wrapper: 'dropdown-menu/dropdown-menu-trigger.vue' },
+    { reka: 'TooltipTrigger', wrapper: 'tooltip/tooltip-trigger.vue' },
     { reka: 'TabsTrigger', wrapper: 'tabs/tabs-trigger.vue' },
     { reka: 'StepperTrigger', wrapper: 'stepper/stepper-trigger.vue' },
 ]

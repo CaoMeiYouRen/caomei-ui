@@ -51,6 +51,7 @@ export * from './components/textarea'
 export * from './components/toast'
 export * from './components/toggle-button'
 export * from './components/toolbar'
+export * from './components/tooltip'
 
 export type { OptionFieldAccessor, OptionValue } from './components/_shared/option'
 

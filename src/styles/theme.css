@@ -63,7 +63,7 @@
     --caomei-z-pinned: 2;
     --caomei-z-pinned-header: 3;
 
-    /* 浮层层级：全局统一，替代 z-index 字面量（sticky / tooltip 为词表预留，暂无消费点） */
+    /* 浮层层级：全局统一，替代 z-index 字面量（sticky 为词表预留，暂无消费点） */
     --caomei-z-sticky: 10;
     --caomei-z-overlay: 1000;
     --caomei-z-modal: 1001;

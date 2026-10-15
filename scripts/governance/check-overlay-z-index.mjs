@@ -20,8 +20,8 @@
  * 6. 静态变体不得继承浮层档位（T6）：浮层档位规则的选择器若是纯类选择器，而同一组件模板中
  *    存在该类的 `--<修饰符>` 变体（如 `ColorPicker` 的 `--inline`），则报错——`z-index` 对
  *    flex item 同样生效，静态形态被抬到模态之上即视觉缺陷（`ColorPicker` 的原始形态）；
- * 7. 抗静默收窄（T7）：受检文件 / 规则 / 浮层声明条目数不得低于下界；预留档位（`sticky` /
- *    `tooltip`）须在册（有消费点时自动移出预留面）；
+ * 7. 抗静默收窄（T7）：受检文件 / 规则 / 浮层声明条目数不得低于下界；预留档位（`sticky`）须在册
+ *    （有消费点时自动移出预留面）；
  * 8. E2E 面板清单联动（T10）：`src` 中声明锚定浮层档位的组件集合，必须与 E2E 受检清单
  *    （`test/e2e/fixtures/overlay-panels.json`）逐一对应——新增 portal 浮层组件而未补 E2E
  *    清单（或反之）即报错；非面板消费点（`toast` 视口 / `image` 预览灯箱）以显式名单排除并受
@@ -66,7 +66,7 @@ export const HOOK_NAME_EXCEPTIONS = new Map([
 ])
 
 /** 无消费点的预留档位（有消费点时必须移出本表，否则 T7 判「预留档位已有消费点」）。 */
-export const RESERVED_TIERS = new Set(['sticky', 'tooltip'])
+export const RESERVED_TIERS = new Set(['sticky'])
 
 /**
  * 声明浮层档位但**不是锚定浮层面板**的组件（不参与 E2E 面板清单联动，T10）。
@@ -78,7 +78,7 @@ export const NON_PANEL_FLOATING_COMPONENTS = new Set(['toast', 'image'])
 /** 受检面下界：防扫描器 / 入口静默收窄后「零违规」变成空真。 */
 export const MIN_COMPONENT_FILES = 60
 export const MIN_COMPONENT_RULES = 600
-export const MIN_FLOATING_DECLARATIONS = 7
+export const MIN_FLOATING_DECLARATIONS = 8
 
 /** 浮层档位（须高于模态内容）。 */
 const FLOATING_TIERS = new Set(['dropdown', 'tooltip', 'toast'])

@@ -230,6 +230,7 @@ const CASE_SECTION_IDS = [
     'grid-breakpoint',
     'menu-navigation',
     'alert-contrast',
+    'chart',
 ]
 
 /**

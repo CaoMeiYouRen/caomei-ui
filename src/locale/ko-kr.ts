@@ -10,6 +10,10 @@ const koKR: CaomeiLocaleMessages = {
         next: '다음 달',
         label: '달력',
     },
+    chart: {
+        loading: '차트를 불러오는 중…',
+        loadFailed: '차트를 불러오지 못했습니다. vue-echarts 설치를 확인하세요',
+    },
     checkbox: {
         selectAll: '전체 선택',
     },

@@ -11,6 +11,10 @@ export interface CaomeiLocaleMessages {
         empty: string
         open: string
     }
+    chart: {
+        loading: string
+        loadFailed: string
+    }
     calendar: {
         prev: string
         next: string

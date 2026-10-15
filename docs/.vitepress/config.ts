@@ -382,6 +382,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             // 第 7 组：外部依赖内核类组件（2026-09-30 用户决策，见 documentation-site §11）
                             text: 'Advanced',
                             items: [
+                                { text: 'Chart', link: '/en-US/components/chart' },
                                 { text: 'RichTextEditor', link: '/en-US/components/rich-text-editor' },
                             ],
                         },
@@ -581,6 +582,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     // 第 7 组：外部依赖内核类组件（2026-09-30 用户决策，见 documentation-site §11）
                     text: '高级组件',
                     items: [
+                        { text: 'Chart 图表', link: '/components/chart' },
                         { text: 'RichTextEditor 富文本编辑器', link: '/components/rich-text-editor' },
                     ],
                 },

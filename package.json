@@ -132,6 +132,7 @@
     "conventional-changelog-cmyr-config": "3.0.0",
     "cross-env": "^10.0.0",
     "cz-conventional-changelog-cmyr": "^2.0.0",
+    "echarts": "6.1.0",
     "esbuild": "^0.28.2",
     "eslint": "^9.34.0",
     "eslint-config-cmyr": "^2.3.1",
@@ -156,18 +157,27 @@
     "vitest": "^4.1.11",
     "vue": "^3.5.43",
     "vue-component-meta": "^3.3.11",
+    "vue-echarts": "8.3.2",
     "vue-tsc": "^3.3.11"
   },
   "peerDependencies": {
     "@nuxt/kit": "^4.0.0",
     "md-editor-v3": "^7.1.0",
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "echarts": "^6.0.0",
+    "vue-echarts": "^8.0.0"
   },
   "peerDependenciesMeta": {
     "@nuxt/kit": {
       "optional": true
     },
     "md-editor-v3": {
+      "optional": true
+    },
+    "echarts": {
+      "optional": true
+    },
+    "vue-echarts": {
       "optional": true
     }
   },

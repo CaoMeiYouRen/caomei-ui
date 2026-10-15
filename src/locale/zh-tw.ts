@@ -10,6 +10,10 @@ const zhTW: CaomeiLocaleMessages = {
         next: '下個月',
         label: '日曆',
     },
+    chart: {
+        loading: '正在載入圖表…',
+        loadFailed: '圖表載入失敗，請確認已安裝 vue-echarts',
+    },
     checkbox: {
         selectAll: '全選',
     },

@@ -10,6 +10,10 @@ const jaJP: CaomeiLocaleMessages = {
         next: '翌月',
         label: 'カレンダー',
     },
+    chart: {
+        loading: 'グラフを読み込み中…',
+        loadFailed: 'グラフの読み込みに失敗しました。vue-echarts がインストールされているか確認してください',
+    },
     checkbox: {
         selectAll: 'すべて選択',
     },

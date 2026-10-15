@@ -75,6 +75,7 @@
 
 ## 高级组件
 
+- [Chart 图表](./chart)：图表封装用于渲染 ECharts 图表，`option` 原样透传、容器自适应、内核按需加载并在缺失时降级为占位；`vue-echarts` 与 `echarts` 为**可选 peer 依赖**（**使用前须先安装**）。
 - [RichTextEditor 富文本编辑器](./rich-text-editor)：富文本编辑器是 `md-editor-v3` 的轻量封装，`v-model` 绑定 Markdown 源，暗色与语言跟随宿主状态自动联动；内核为可选 peer 依赖、按需加载（**使用前须先安装 `md-editor-v3`**）。
 
 ## 能力说明

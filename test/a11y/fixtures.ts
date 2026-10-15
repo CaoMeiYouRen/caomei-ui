@@ -13,6 +13,7 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCard,
+    CaomeiChart,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
     CaomeiCol,
@@ -97,6 +98,13 @@ import {
     useConfirm,
     useToast,
 } from '../../src/index'
+
+/** 图表夹具的配置对象（内核在 a11y 审计中被替换为桩，故只需形状合法）。 */
+const chartOption = {
+    xAxis: { type: 'category', data: ['一月', '二月', '三月'] },
+    yAxis: { type: 'value' },
+    series: [{ type: 'bar', data: [12, 20, 15] }],
+}
 
 /** 夹具数据（选项 / 表格列）。 */
 const options = [
@@ -257,6 +265,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRadioGroup', root: CaomeiRadioGroup, definition: { components: { CaomeiRadioGroup, CaomeiRadioButton }, template: '<CaomeiRadioGroup label="单选" model-value="a"><CaomeiRadioButton value="a">甲</CaomeiRadioButton><CaomeiRadioButton value="b">乙</CaomeiRadioButton></CaomeiRadioGroup>' } },
+    { name: 'CaomeiChart', root: CaomeiChart, definition: { components: { CaomeiChart }, template: '<CaomeiChart label="月度趋势" height="12rem" :option="option" />', setup: () => ({ option: chartOption }) } },
     { name: 'CaomeiRichTextEditor', root: CaomeiRichTextEditor, definition: { components: { CaomeiRichTextEditor }, template: '<CaomeiRichTextEditor label="正文" :model-value="content" />', setup: () => ({ content: '# 标题' }) } },
     { name: 'CaomeiRow', root: CaomeiRow, definition: { components: { CaomeiRow, CaomeiCol }, template: '<CaomeiRow :gutter="16"><CaomeiCol :span="12">甲</CaomeiCol><CaomeiCol :span="12">乙</CaomeiCol></CaomeiRow>' } },
     { name: 'CaomeiSelect', root: CaomeiSelect, definition: { components: { CaomeiSelect }, template: '<CaomeiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
@@ -359,4 +368,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 59
+export const A11Y_FIXTURE_BUDGET = 60

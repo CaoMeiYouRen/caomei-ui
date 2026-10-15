@@ -31,6 +31,7 @@ export const REQUIRED_RUNTIME_EXPORTS = [
     'CaomeiInput',
     'CaomeiSelect',
     'CaomeiDialog',
+    'CaomeiChart',
     'CaomeiDataTable',
     'CaomeiRichTextEditor',
     'caomeiLocales',

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { defineComponent, h, ref } from 'vue'
 import { Settings } from '@lucide/vue'
+import { BarChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent } from 'echarts/components'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
 import {
     CaomeiAccordion,
     CaomeiAccordionItem,
@@ -9,6 +13,7 @@ import {
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiCalendar,
+    CaomeiChart,
     CaomeiCheckbox,
     CaomeiCol,
     CaomeiColorPicker,
@@ -215,6 +220,18 @@ const overlayAutoValue = ref<string>()
 const overlayColorValue = ref('#60a5fa')
 const overlayDateValue = ref<Date | null>(null)
 const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
+
+/*
+ * 图表内核的按需注册（使用方职责）：只注册受检用例用到的渲染器 / 图表类型 / 组件，
+ * 以此证明封装层不代注册、也不把全量内核带进产物。用例见 `test/e2e/chart.e2e.ts`。
+ */
+use([CanvasRenderer, BarChart, GridComponent, TooltipComponent])
+
+const chartOption = ref({
+    xAxis: { type: 'category', data: ['一月', '二月', '三月'] },
+    yAxis: { type: 'value' },
+    series: [{ type: 'bar', data: [12, 20, 15] }],
+})
 
 /* 对比度受检面：5 色调 × 3 变体（见 `test/e2e/alert-contrast.e2e.ts`）。 */
 const alertTones = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
@@ -1298,6 +1315,19 @@ const ConfirmDriver = defineComponent({
                 :data-alert-tone="combo.tone"
                 :data-alert-variant="combo.variant"
             />
+        </section>
+        <!--
+          图表用例（见 `test/e2e/chart.e2e.ts`）：内核按需加载 + 画布实际绘制 + 容器尺寸变化后的自动 resize。
+          与对比度受检面同属「追加在模板末尾」的约定，不改动既有元素绝对位置。
+        -->
+        <section id="chart" class="fixture__case">
+            <div id="chart-resize-host" class="fixture__state">
+                <CaomeiChart
+                    id="chart-basic"
+                    label="月度趋势"
+                    :option="chartOption"
+                />
+            </div>
         </section>
     </main>
 </template>

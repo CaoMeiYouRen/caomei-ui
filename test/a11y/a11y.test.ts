@@ -37,6 +37,24 @@ vi.mock('../../src/components/rich-text-editor/editor-language', async (importOr
 })
 
 /**
+ * 图表内核为可选 peer `vue-echarts`：真实内核在 happy-dom 下无法取得 2D 画布上下文，审计结果
+ * 不确定。口径同富文本编辑器——把内核替换为最小桩组件，**保留包装层自身产出的 DOM
+ * （容器 / `role="group"` / `aria-label` / 占位角色）**作为审计对象；内核自身的可访问性不在本库职责内。
+ */
+vi.mock('../../src/components/chart/chart-loader', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('../../src/components/chart/chart-loader')>()
+    const VChartStub = defineComponent({
+        name: 'VChartA11yStub',
+        props: { option: { type: Object, required: true } },
+        setup: () => () => h('div', { class: 'v-chart-a11y-stub' }),
+    })
+    return {
+        ...actual,
+        loadChart: () => Promise.resolve({ VChart: VChartStub }),
+    }
+})
+
+/**
  * 组件级 a11y 审计（axe-core × happy-dom）。
  *
  * 定位：本文件**消费并机检** `exceptions.ts` 的既有例外清单（逐组件打印违规 / 待复核项供对账），

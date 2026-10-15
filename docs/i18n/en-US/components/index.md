@@ -59,6 +59,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Stepper](/en-US/components/stepper)
 - [Tabs](/en-US/components/tabs)
 - [Toolbar](/en-US/components/toolbar)
+- [Chart](/en-US/components/chart)
 - [RichTextEditor](/en-US/components/rich-text-editor)
 
 Until a page is translated, refer to the Chinese documentation.
@@ -127,4 +128,5 @@ Chinese pages are the primary reference. The Chinese pages for the components ab
 - [Stepper 步骤条](/components/stepper)
 - [Tabs 选项卡](/components/tabs)
 - [Toolbar 工具条](/components/toolbar)
+- [Chart 图表](/components/chart)
 - [RichTextEditor 富文本编辑器](/components/rich-text-editor)

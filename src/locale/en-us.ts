@@ -10,6 +10,10 @@ const enUS: CaomeiLocaleMessages = {
         next: 'Next month',
         label: 'Calendar',
     },
+    chart: {
+        loading: 'Loading chart…',
+        loadFailed: 'Failed to load the chart. Make sure vue-echarts is installed.',
+    },
     checkbox: {
         selectAll: 'Select all',
     },

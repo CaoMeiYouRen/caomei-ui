@@ -138,7 +138,7 @@ docs/
 | 基础与布局 | Basics & Layout | Avatar、Badge、Button、ButtonGroup、Card、Col、Divider、Image、Row、SplitButton、Tag |
 | 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Input、InputGroup、InputNumber、Password、RadioGroup、Slider、Switch、TagsInput、Textarea |
 | 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、MultiSelect、Select、SelectButton、ToggleButton |
-| 反馈与浮层 | Feedback & Overlays | ConfirmDialog、Dialog、Drawer、Message、Popover、Toast、Tooltip |
+| 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、Dialog、Drawer、Message、Popover、Toast、Tooltip |
 | 数据展示 | Data Display | DataTable、DataView、Paginator、ProgressBar、ProgressSpinner、Skeleton |
 | 导航与操作 | Navigation & Actions | Accordion、Breadcrumb、DropdownMenu、Menu、Stepper、Tabs、Toolbar |
 | 高级组件 | Advanced | RichTextEditor |

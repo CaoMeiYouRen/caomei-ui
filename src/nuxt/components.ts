@@ -12,6 +12,7 @@ export const CAOMEI_COMPONENT_EXPORT_PREFIX = 'Caomei'
 export const caomeiComponents = [
     'CaomeiAccordion',
     'CaomeiAccordionItem',
+    'CaomeiAlert',
     'CaomeiAutoComplete',
     'CaomeiAvatar',
     'CaomeiBadge',

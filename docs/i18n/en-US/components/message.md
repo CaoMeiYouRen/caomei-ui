@@ -1,6 +1,8 @@
 # Message
 
-A message shows a context-relevant piece of feedback within the current page (a single component carries both Message and Alert semantics).
+A message shows a context-relevant piece of feedback within the current page and carries **live region announcements** (the content layer is `role="status"` by default, switchable to `role="alert"` for errors / warnings).
+
+For **persistent inline notices that must not announce on page load**, use [Alert](./alert) — it is a **semantic preset wrapper** over this component (static tier, no `simple` variant) sharing the very same appearance layer and tokens.
 
 ## Basic usage
 
@@ -49,7 +51,7 @@ Switch between `sm` / `md` (default) / `lg` with `size`; it affects font size an
 
 ## Accessibility
 
-- The message content layer is `role="status"` by default (polite announcement); in error / warning cases it can be changed to `role="alert"` for an immediate announcement. The role sits on the content layer, so the close button and `#actions` are outside the live region, avoiding interactive controls being merged into the announcement.
+- The message content layer is `role="status"` by default (polite announcement); error / warning cases can use `role="alert"` for an immediate announcement, while `role="none"` renders **no `role`** (outside any live region, for static persistent content — `CaomeiAlert` uses this tier). The role sits on the content layer, so the close button and `#actions` are outside the live region, avoiding interactive controls being merged into the announcement.
 - It can only carry semantics as plain text; if interactive controls are needed inside the message, use a non-live-region presentation instead.
 - The semantic icon is chosen by `tone` and marked `aria-hidden`; the `#icon` slot content is likewise treated as decorative (the whole thing is `aria-hidden`), so put any semantics in the text content.
 - With `closable`, the close button has an accessible name (default "Close", overridable via `closeLabel`).

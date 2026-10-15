@@ -3,6 +3,7 @@ import { defineComponent, h, ref } from 'vue'
 import {
     CaomeiAccordion,
     CaomeiAccordionItem,
+    CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiAvatar,
     CaomeiBadge,
@@ -166,6 +167,7 @@ export interface A11yFixture {
 }
 
 export const A11Y_FIXTURES: A11yFixture[] = [
+    { name: 'CaomeiAlert', root: CaomeiAlert, definition: { components: { CaomeiAlert }, template: '<CaomeiAlert tone="warning" title="环境提示" description="当前为沙箱环境，数据不会写入生产库。" />' } },
     { name: 'CaomeiAccordion', root: CaomeiAccordion, definition: { components: { CaomeiAccordion, CaomeiAccordionItem }, template: '<CaomeiAccordion><CaomeiAccordionItem title="一">内容</CaomeiAccordionItem></CaomeiAccordion>' } },
     { name: 'CaomeiAutoComplete', root: CaomeiAutoComplete, definition: { components: { CaomeiAutoComplete }, template: '<CaomeiAutoComplete label="搜索" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiAvatar', root: CaomeiAvatar, definition: { components: { CaomeiAvatar }, template: '<CaomeiAvatar label="甲" />' } },
@@ -357,4 +359,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 58
+export const A11Y_FIXTURE_BUDGET = 59

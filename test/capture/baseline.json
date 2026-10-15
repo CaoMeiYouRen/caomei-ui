@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-14T17:27:37.171Z",
+    "capturedAt": "2026-10-15T11:25:14.515Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -393,7 +393,7 @@
             "padding-right": "0px"
         },
         "variant.message.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
+            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.04)",
             "color": "rgb(107, 114, 128)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -473,7 +473,7 @@
             "border-left-width": "1px"
         },
         "variant.message.primary.soft": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.04)",
             "color": "rgb(37, 99, 235)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -553,7 +553,7 @@
             "border-left-width": "1px"
         },
         "variant.message.success.soft": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.04)",
             "color": "rgb(21, 128, 61)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -633,7 +633,7 @@
             "border-left-width": "1px"
         },
         "variant.message.warning.soft": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.04)",
             "color": "rgb(180, 83, 9)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
@@ -713,7 +713,7 @@
             "border-left-width": "1px"
         },
         "variant.message.danger.soft": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.04)",
             "color": "rgb(220, 38, 38)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",

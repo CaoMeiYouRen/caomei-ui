@@ -345,6 +345,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         {
                             text: 'Feedback & Overlays',
                             items: [
+                                { text: 'Alert', link: '/en-US/components/alert' },
                                 { text: 'ConfirmDialog', link: '/en-US/components/confirm-dialog' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'Drawer', link: '/en-US/components/drawer' },
@@ -543,6 +544,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                 {
                     text: '反馈与浮层',
                     items: [
+                        { text: 'Alert 提示框', link: '/components/alert' },
                         { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Drawer 抽屉', link: '/components/drawer' },

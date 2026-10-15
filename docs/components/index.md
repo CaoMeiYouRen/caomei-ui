@@ -45,10 +45,11 @@
 
 ## 反馈与浮层
 
+- [Alert 提示框](./alert)：提示框用于展示内联常驻提示（环境说明、配置警告、整体错误汇总），是 [Message](./message) 的语义预设包装：共用同一外观层，默认不进 live region。
 - [ConfirmDialog 确认对话框](./confirm-dialog)：确认对话框用于中断用户当前操作并获取明确确认，基于 Reka UI AlertDialog 封装，并提供 `useConfirm()` 服务式调用。弹层强制模态、锁定页面滚动，且**点击遮罩不会关闭**——用户必须显式选择确认或取消（Esc 视为取消）。
 - [Dialog 对话框](./dialog)：对话框用于在当前页面之上承载需要用户聚焦处理的内容，基于 Reka UI Dialog 封装。
 - [Drawer 抽屉](./drawer)：抽屉从页面边缘滑出，用于承载次要内容、设置面板或导航；封装 Reka UI 的 Dialog primitive，并提供四向 `position`。
-- [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息（单组件同时承载 Message / Alert 语义）。
+- [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 live region 播报（默认 `role="status"`，可切 `alert`）；内联常驻提示请用 Alert。
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
 - [Toast 轻提示](./toast)：轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
 - [Tooltip 工具提示](./tooltip)：工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；由应用根部一次的 `CaomeiTooltipProvider` 与触发器 / 面板组合使用，不构成焦点陷阱。

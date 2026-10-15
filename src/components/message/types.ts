@@ -9,9 +9,16 @@ export type MessageVariant = 'soft' | 'solid' | 'outline' | 'simple'
 
 /**
  * 消息内容层的语义角色
- * @en Semantic role of the message content layer
+ *
+ * - `status` / `alert`：live region，礼貌 / 立即播报（默认 `status`）；
+ * - `none`：**不渲染 `role`**，即不进 live region——静态常驻内容在文档序中被读取即可，
+ *   无需「建立 / 内容变更即播报」的 live region 语义（`CaomeiAlert` 取此档）。
+ * @en Semantic role of the message content layer. `status` / `alert` are live regions (polite /
+ * immediate announcements, `status` by default); `none` renders **no `role`** at all — the content
+ * stays out of any live region and is read in document order instead, so it is neither announced on
+ * page load nor re-announced on every re-render (`CaomeiAlert` uses this档).
  */
-export type MessageRole = 'status' | 'alert'
+export type MessageRole = 'status' | 'alert' | 'none'
 
 export interface MessageProps {
     /**
@@ -55,8 +62,8 @@ export interface MessageProps {
      */
     closeLabel?: string
     /**
-     * 消息内容层的语义角色：`status` 礼貌播报，`alert` 立即播报
-     * @en Semantic role of the message content layer: `status` announces politely, `alert` announces immediately
+     * 消息内容层的语义角色：`status` 礼貌播报、`alert` 立即播报、`none` 不进 live region
+     * @en Semantic role of the message content layer: `status` announces politely, `alert` announces immediately, `none` stays out of any live region
      */
     role?: MessageRole
 }

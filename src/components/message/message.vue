@@ -68,8 +68,9 @@ const rootClass = computed(() => [
         <!--
           role 施加在内容层而非根节点：关闭按钮与 #actions 等交互内容位于
           live region 之外，避免其可访问名被并入整条消息的播报。
+          `role="none"` 档**不渲染 `role`**（静态常驻内容不进 live region）。
         -->
-        <div class="caomei-message__body" :role="role">
+        <div class="caomei-message__body" :role="role === 'none' ? undefined : role">
             <p v-if="title" class="caomei-message__title">
                 {{ title }}
             </p>
@@ -149,8 +150,15 @@ const rootClass = computed(() => [
 }
 
 .caomei-message--soft {
-    /* soft 底取 8%（非 12%）：保证 primary 文本在亮色下 ≥ 4.5:1（12% 时仅 4.37:1），其余 tone 只升不降 */
-    background: color-mix(in srgb, var(--caomei-message-tone) 8%, transparent);
+    /*
+      soft 底比例（`--caomei-message-soft-mix`）以**实测**为判据：正文（14px 常规）在**实际合成
+      背景**上须 ≥ 4.5:1 **且留可维护裕度**（装置 `test/e2e/alert-contrast.e2e.ts`，亮色 + 暗色两档）。
+      8% 时实测 `neutral` / `danger` 仅 4.38 / 4.27（低于阈值）、`success` / `warning` 4.507 / 4.506
+      （贴线，任何 token 微调即翻档），故统一取 **4%**（暗色下同样达标，最低约 4.6:1）。
+      注意 `soft` 底是半透明色，其对比度取决于**与页面底色逐层合成**的结果，与元素自身
+      `background-color` 不同——调整此值后须复跑上述装置并重冻结计算样式基线。
+    */
+    background: color-mix(in srgb, var(--caomei-message-tone) var(--caomei-message-soft-mix, 4%), transparent);
     color: var(--caomei-message-tone);
 }
 

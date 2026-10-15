@@ -1,6 +1,8 @@
 # Message 提示条
 
-提示条用于在当前页面内展示一条与上下文相关的反馈信息（单组件同时承载 Message / Alert 语义）。
+提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 **live region 播报**（内容层默认 `role="status"`，错误 / 警告场景可切 `role="alert"`）。
+
+需要**内联常驻、加载时不播报**的提示框请用 [Alert 提示框](./alert)——它是本组件同一外观层的**语义预设包装**（静态档、变体去掉 `simple`），样式与 token 完全共用。
 
 ## 基础用法
 
@@ -49,7 +51,7 @@
 
 ## 无障碍
 
-- 消息内容层默认 `role="status"`（礼貌播报），错误 / 警告场景可改为 `role="alert"` 立即播报；该角色位于内容层，关闭按钮与 `#actions` 在 live region 之外，避免交互控件被并入播报。
+- 消息内容层默认 `role="status"`（礼貌播报），错误 / 警告场景可改为 `role="alert"` 立即播报，`role="none"` 则**不渲染 `role`**（不进 live region，用于静态常驻内容——`CaomeiAlert` 取此档）；该角色位于内容层，关闭按钮与 `#actions` 在 live region 之外，避免交互控件被并入播报。
 - 只能以纯文本承载语义；若消息内需要交互控件，建议由使用方改用非 live region 的展示方式。
 - 语义图标默认按 `tone` 选择并标记 `aria-hidden`；`#icon` 插槽内容同样视为装饰（整体 `aria-hidden`），如需承载语义请写在文本内容中。
 - `closable` 时关闭按钮具备可访问名（默认「关闭」，可用 `closeLabel` 覆盖）。

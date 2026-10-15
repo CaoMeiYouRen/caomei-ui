@@ -4,6 +4,7 @@ import { Settings } from '@lucide/vue'
 import {
     CaomeiAccordion,
     CaomeiAccordionItem,
+    CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiButton,
     CaomeiButtonGroup,
@@ -214,6 +215,11 @@ const overlayAutoValue = ref<string>()
 const overlayColorValue = ref('#60a5fa')
 const overlayDateValue = ref<Date | null>(null)
 const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
+
+/* 对比度受检面：5 色调 × 3 变体（见 `test/e2e/alert-contrast.e2e.ts`）。 */
+const alertTones = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
+const alertVariants = ['soft', 'solid', 'outline'] as const
+const alertCombos = alertTones.flatMap((tone) => alertVariants.map((variant) => ({ tone, variant })))
 
 /**
  * 内联 ColorPicker 用例（见 `test/e2e/overlay-stacking.e2e.ts` 第二个用例）：`inline` 形态是
@@ -1274,6 +1280,25 @@ const ConfirmDriver = defineComponent({
                 <CaomeiButton>分享</CaomeiButton>
             </div>
         </section>
+
+        <!--
+          对比度受检面（见 `test/e2e/alert-contrast.e2e.ts`）：5 色调 × 3 变体 = 15 条 Alert，
+          用于在真实 Chromium 中按 WCAG 相对亮度计算「文本 / 实际合成背景」对比度（亮色 + 暗色两档）。
+          **置于夹具末尾并采用紧凑网格**：新增受检面不得改变既有用例元素的绝对位置——页面高度
+          增长会推移其后元素，使 `overlay-stacking` 等对滚动位置敏感的用例失去几何前置。
+        -->
+        <section id="alert-contrast" class="fixture__case">
+            <CaomeiAlert
+                v-for="combo in alertCombos"
+                :key="`${combo.tone}-${combo.variant}`"
+                :tone="combo.tone"
+                :variant="combo.variant"
+                title="环境提示"
+                description="当前为沙箱环境，数据不会写入生产库。"
+                :data-alert-tone="combo.tone"
+                :data-alert-variant="combo.variant"
+            />
+        </section>
     </main>
 </template>
 
@@ -1288,6 +1313,13 @@ const ConfirmDriver = defineComponent({
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
+}
+
+/* 对比度受检面：紧凑网格（15 条尽量同屏、降低页面增高幅度） */
+#alert-contrast {
+    display: grid;
+    gap: var(--caomei-space-2);
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
 }
 
 /*

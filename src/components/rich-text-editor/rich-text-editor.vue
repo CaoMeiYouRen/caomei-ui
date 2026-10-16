@@ -12,6 +12,7 @@ import {
 } from './editor-language'
 import type { RichTextEditorProps } from './types'
 import { useEditorTheme } from './use-editor-theme'
+import { warnDev } from '../../_shared/dev-warn'
 
 defineOptions({ name: 'CaomeiRichTextEditor', inheritAttrs: false })
 
@@ -46,21 +47,10 @@ let languageRequest = 0
 
 async function applyLanguage(module: EditorModule, code: CaomeiLocale): Promise<void> {
     const request = ++languageRequest
-    const language = await registerEditorLanguage(module, code, devWarn)
+    const language = await registerEditorLanguage(module, code, warnDev)
     if (request === languageRequest) {
         activeLanguage.value = language
     }
-}
-
-function devWarn(message: string): void {
-    // 逐级可选访问：兼容消费者注入「不含 env 的 process shim」，保证告警路径自身不抛错。
-    // 代价是无法依赖打包器静态替换 process.env.NODE_ENV 做生产裁剪——消费者未定义
-    // globalThis.process 时按非生产处理、照常输出（仅用于故障诊断）。
-    const env = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env
-    if (env?.NODE_ENV === 'production') {
-        return
-    }
-    console.warn(message)
 }
 
 function handleChange(value: string): void {
@@ -78,7 +68,7 @@ function handleUploadImg(files: File[], callBack: (urls: string[]) => void): voi
             callBack(urls)
         })
         .catch((error: unknown) => {
-            devWarn(`[CaomeiRichTextEditor] 图片上传失败：${String(error)}`)
+            warnDev(`[CaomeiRichTextEditor] 图片上传失败：${String(error)}`)
             callBack([])
         })
 }
@@ -91,7 +81,7 @@ onMounted(async () => {
         status.value = 'ready'
     } catch (error) {
         status.value = 'failed'
-        devWarn(
+        warnDev(
             `[CaomeiRichTextEditor] 富文本编辑器加载失败，请确认已安装可选依赖 md-editor-v3。${String(error)}`,
         )
     }

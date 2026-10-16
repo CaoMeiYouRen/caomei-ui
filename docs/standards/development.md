@@ -24,6 +24,7 @@
 src/
 ├─ components/<name>/     # 单个组件（kebab-case 目录 + kebab-case.vue + types.ts + index.ts）
 ├─ composables/           # useToast / useConfirm / useTheme / useLocale / provideLocale
+├─ _shared/               # 跨层内部工具（composables 与 components 共用；与 components/_shared/ 的区别见下）
 ├─ locale/                # 组件内建文案（zh-CN / en-US / zh-TW / ja-JP / ko-KR）
 ├─ styles/                # tokens 与基础样式
 ├─ icons/                 # 图标封装
@@ -32,6 +33,8 @@ src/
 ├─ types.ts
 └─ index.ts
 playground/               # 本地开发/演示环境（不发布）
+
+> `src/_shared/` 与 `src/components/_shared/` 的分工：前者供 **composables 与 components 跨层共用**（置于 components 之下会使 composables 反向依赖 components），后者只供组件之间复用。
 docs/                     # VitePress 文档站
 examples/                 # 集成示例（不发布）
 test/                     # 单元与 E2E 测试

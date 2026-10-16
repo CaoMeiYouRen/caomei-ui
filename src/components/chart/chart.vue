@@ -7,6 +7,7 @@ import { loadChart } from './chart-loader'
 import { registerChartLocale, resolveChartLocale } from './chart-locale'
 import { buildChartTheme, readChartThemeTokensFromElement } from './chart-theme'
 import type { ChartProps } from './types'
+import { warnDev } from '../../_shared/dev-warn'
 
 defineOptions({ name: 'CaomeiChart', inheritAttrs: false })
 
@@ -85,15 +86,6 @@ const mergedInitOptions = computed<Record<string, unknown> | undefined>(() => {
 
 const chartStyle = computed(() => (props.height ? { height: props.height } : undefined))
 
-function devWarn(message: string): void {
-    // 逐级可选访问：兼容消费者注入「不含 env 的 process shim」，保证告警路径自身不抛错。
-    const env = (globalThis as { process?: { env?: { NODE_ENV?: string } } }).process?.env
-    if (env?.NODE_ENV === 'production') {
-        return
-    }
-    console.warn(message)
-}
-
 onMounted(async () => {
     localeKey.value = await applyLocale(localeCode.value)
 
@@ -103,7 +95,7 @@ onMounted(async () => {
         status.value = 'ready'
     } catch (error) {
         status.value = 'failed'
-        devWarn(
+        warnDev(
             `[CaomeiChart] 图表内核加载失败，请确认已安装可选依赖 vue-echarts 及其 peer echarts。${String(error)}`,
         )
     }
@@ -115,7 +107,7 @@ async function applyLocale(code: Parameters<typeof resolveChartLocale>[0]): Prom
     try {
         return await registerChartLocale(key)
     } catch (error) {
-        devWarn(`[CaomeiChart] 图表语言包注册失败，回落内置语言：${String(error)}`)
+        warnDev(`[CaomeiChart] 图表语言包注册失败，回落内置语言：${String(error)}`)
         return key === 'JA' || key === 'KO' ? 'EN' : key
     }
 }

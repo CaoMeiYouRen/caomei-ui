@@ -57,3 +57,14 @@
 - **复核证据**：`check:governance-records` exit 0（187 个治理记录与索引一致 / 392 个 md 指针无失效 / 18 条结论指针，其中 RG 邻近 13 条）；`check:candidate-anchors` 受检 17 行；`check-planning-numbers` 0 处；`check-archive-rg-counts` 受检 38 / 可比对 15 / 无矛盾；`check-docs-git-revision` 通过；`lint:md` 通过；`pnpm docs:check` exit 0（含 `docs:check:line-count` 无 error）。
 - **未覆盖边界**：未改 `src/**`（无组件行为改动，未跑 E2E / 视觉基线）；未复跑全量 `pnpm verify`；Phase 24 两条遗留条目的复核不在本批。
 - **复查基线**：本记录 §1 / §2 / §4 / §6 + `docs/plan/todo.md`（当前状态 / Phase 24 原子条目的遗留段 / 未完成项汇总）+ `docs/plan/backlog.md` §1.4 + `docs/design/governance/index.md`。
+
+## 7. 条目构成变更登记（2026-10-16，追加）
+
+> 本节晚于 §6（Review Gate），为该次审查之后发生的**条目构成变更**登记；原登记的「4 条主线 / 7 条原子条目」按[规划规范 §9](../../standards/planning.md) 的**点时值口径不回改**，本节只登记变更与依据。
+
+- **触发**：用户 2026-10-16 指令「M3 的改动比较大，先做方案设计；我认为在增加新的语言之前，最好先处理分包方案」→ 交付[locale 分包方案设计](./2026-10-16-phase25-m3-1-package-split-design.md)（含实测与候选对比）→ 用户就其间 D1 ~ D5 逐项裁定。
+- **变更**：**M3-1 拆为 M3-1a（包形态：locale 子路径导出 + 注册表预注册收敛 + 守卫 + 文档 + 体积前后对照）与 M3-1b（一期 5 语落地）**。阶段构成由 **4 条主线 / 7 条原子条目 → 4 条主线 / 8 条**（归档与规划载体收口 1 / 移动端与响应式优化 3 / **国际化深化一期 3** / 发布收口 1；构成对账 1 + 3 + 3 + 1 = 8）。
+- **依据**：用户裁定 D2 ①（见[设计记录 §6](./2026-10-16-phase25-m3-1-package-split-design.md)）；切分理由是形态变更（含分发与破坏性面）与语言内容（纯机械）属两类风险，各自 Review Gate 面更清晰。
+- **口径要点（冻结面）**：D1 ② 保留 `zh-CN` + `en-US` 内建、其余 3 语下沉；D3 ① `CaomeiLocale` 保持内建语言字面量联合；D4 ① Nuxt 模块不提供语言选项（文档给插件示例）；D5 ② 台账用独立「按需引入」章节承载子路径清单。
+- **载体同步**：`docs/plan/todo.md`（当前状态句构成对账 + 条目表 M3-1a / M3-1b + M3-2 验收补「内建集合与子路径清单在册」）、`docs/plan/roadmap.md` Phase 25 行（构成与条目数）、本记录 §7。
+- **未改**：本阶段其余条目范围与验收口径；`src/**` / `package.json` / 构建配置（实施动作在 M3-1a 开工后落地）。

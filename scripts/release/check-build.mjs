@@ -22,6 +22,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
+import { MIN_SUBPATH_LOCALES, SUBPATH_EXPORT_PREFIX } from '../governance/check-locale-keys.mjs'
 
 export const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 
@@ -146,6 +147,102 @@ export function findMissingCssImports(root, minComponentCssImports = 1) {
     return problems
 }
 
+/**
+ * 语言子路径导出的产物校验（按需引入形态的承重断言）。
+ *
+ * 五条不变量：
+ * 1. `exports` 中 `./locale/<code>` 的数量不得低于下界（防按需引入能力被静默移除）；
+ * 2. 每条子路径的**产物目标与语言标识同源**（防「按 A 的路径拿到 B 的文案」而按键名判定的检查全绿）；
+ * 3. 每个子路径产物存在且**带默认导出**（消费方以 `import messages from 'caomei-ui/locale/<code>'` 取用）；
+ * 4. **注册表产物不得静态引入按需语言**（`dist/locale/index.js` 出现真实的 `./<code>.js` 引入即意味着
+ *    按需语言被重新拉回主包，按需引入的体积收益归零——此断言是该形态的核心承重面；按**语句级**匹配，
+ *    注释中的示例代码不算引入）；
+ * 5. **无孤儿语言产物**：`dist/locale/` 下不得存在既未被注册表引入、也未登记为子路径导出的语言产物。
+ *
+ * 边界：③ / ⑤ 硬依赖构建器当前的 emit 形态（双引号 + 显式 `.js` 扩展名）；构建器升级时须一并复核。
+ *
+ * @param {string} root 仓库根
+ * @param {number} minSubpaths 语言子路径导出的最低数量
+ * @returns {string[]} 问题列表（空数组表示通过）
+ */
+export function findLocaleSubpathProblems(root, minSubpaths = MIN_SUBPATH_LOCALES, pkg) {
+    const problems = []
+    const manifest = pkg ?? JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
+    const exportsField = manifest.exports ?? {}
+    const codes = Object.keys(exportsField)
+        .filter((key) => key.startsWith(SUBPATH_EXPORT_PREFIX))
+        .map((key) => key.slice(SUBPATH_EXPORT_PREFIX.length))
+        .sort()
+
+    if (codes.length < minSubpaths) {
+        problems.push(`语言子路径导出数量不足：${codes.length} < ${minSubpaths}（按需引入能力是否被移除？）`)
+    }
+
+    // 声明面同源：`./locale/<code>` 的产物目标必须是同名语言产物，
+    // 否则下游会「按 A 语言的路径拿到 B 语言的文案」，而按键名判定的检查全绿。
+    for (const code of codes) {
+        const targets = collectExportFiles(exportsField[`${SUBPATH_EXPORT_PREFIX}${code}`])
+        const expected = `./dist/locale/${code}.js`
+        if (!targets.includes(expected)) {
+            problems.push(
+                `语言子路径 ${SUBPATH_EXPORT_PREFIX}${code} 的产物目标与语言标识不同源：`
+                + `期望 ${expected}，实际 ${targets.filter((file) => file.endsWith('.js')).join(' / ') || '（无）'}`,
+            )
+        }
+    }
+
+    const registryPath = join(root, 'dist', 'locale', 'index.js')
+    const registrySource = existsSync(registryPath) ? readFileSync(registryPath, 'utf8') : ''
+
+    for (const code of codes) {
+        const file = join(root, 'dist', 'locale', `${code}.js`)
+        if (!existsSync(file)) {
+            problems.push(`语言子路径产物缺失：dist/locale/${code}.js`)
+            continue
+        }
+        const source = readFileSync(file, 'utf8')
+        if (!/export\s*\{\s*[\w$]+\s+as\s+default\s*\}/.test(source)) {
+            problems.push(`语言子路径产物缺少默认导出：dist/locale/${code}.js`)
+        }
+        // 语句级匹配（非裸 `includes`）：注释中的示例代码不得被判为真实引入；
+        // 亦不剥离注释——产物为双引号，`stripComments` 只识别单引号会引入新假阴性。
+        // 边界：仅匹配 `./<code>.js` 字面形态（`"./ja-jp"` / 自引用等形态由 runtime smoke 兜底，
+        // 见 JSDoc）。
+        const importRe = new RegExp(`^\\s*(?:import|export)\\b[^\\n]*["']\\./${code}\\.js["']`, 'm')
+        if (importRe.test(registrySource)) {
+            problems.push(
+                `注册表静态引入了按需语言 dist/locale/${code}.js：`
+                + '按需引入的产物体积收益失效（非预注册语言不得进入包根依赖图）',
+            )
+        }
+    }
+
+    // 反向断言：产物目录不得存在「既非预注册、又无子路径登记」的孤儿语言产物
+    // （孤儿产物意味着守卫清单与真实产物脱节）。
+    const localeDir = join(root, 'dist', 'locale')
+    if (existsSync(localeDir)) {
+        // 与 ③ 同一语句级口径：仅统计真实的 import / export 语句（注释中的路径不算注册，
+        // 否则会漏判孤儿产物——fail-open）。
+        const registered = new Set(
+            [...registrySource.matchAll(/^\s*(?:import|export)\b[^\n]*["']\.\/([a-z-]+)\.js["']/gm)]
+                .map((match) => match[1]),
+        )
+        for (const file of readdirSync(localeDir)) {
+            if (!file.endsWith('.js') || file === 'index.js') {
+                continue
+            }
+            const code = file.slice(0, -3)
+            if (!registered.has(code) && !codes.includes(code)) {
+                problems.push(
+                    `孤儿语言产物 dist/locale/${file}：既未被注册表引入、也未登记为子路径导出`,
+                )
+            }
+        }
+    }
+
+    return problems
+}
+
 /** 执行全部产物冒烟校验，返回 `{ ok, errors, details }`。 */
 export function checkBuild(root = REPO_ROOT) {
     const errors = []
@@ -169,6 +266,13 @@ export function checkBuild(root = REPO_ROOT) {
     details.cssImportProblems = cssImportProblems
     if (missing.length === 0 && empty.length === 0) {
         errors.push(...cssImportProblems)
+    }
+
+    // 语言子路径（按需引入形态）的承重断言：见 findLocaleSubpathProblems 的说明。
+    if (missing.length === 0 && empty.length === 0) {
+        const localeProblems = findLocaleSubpathProblems(root, MIN_SUBPATH_LOCALES, pkg)
+        details.localeSubpathProblems = localeProblems
+        errors.push(...localeProblems)
     }
 
     if (missing.length === 0 && empty.length === 0) {
@@ -203,7 +307,7 @@ if (isDirectExecution(import.meta.url)) {
 
     if (result.ok) {
         console.info(
-            `[check-build] 通过：${result.details.exportFiles.length} 个 exports 产物齐全，index / resolver / nuxt 入口可加载`,
+            `[check-build] 通过：${result.details.exportFiles.length} 个 exports 产物齐全，index / resolver / nuxt 入口可加载，语言子路径与导出目标同源且未被注册表静态引入`,
         )
         process.exit(0)
     }

@@ -22,7 +22,7 @@ export const DISABLED_RULES: { id: string, reason: string }[] = [
     // 依赖布局引擎：无布局引擎下结果无效（axe 官方建议在 JSDOM 下关闭）
     { id: 'color-contrast', reason: '对比度计算依赖布局与 canvas，无布局引擎下不可用（对比度遗留项见 Backlog）' },
     { id: 'color-contrast-enhanced', reason: '同 color-contrast（AAA 档）' },
-    { id: 'target-size', reason: '触摸目标尺寸依赖布局与视口' },
+    { id: 'target-size', reason: '触摸目标尺寸依赖布局与视口；真实渲染下的逐组件命中区读数由 `docs/design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md` 承担（本环境无布局引擎，规则不可判定）' },
     { id: 'focus-order-semantics', reason: '焦点顺序依赖布局与滚动' },
     { id: 'scrollable-region-focusable', reason: '滚动可达性依赖布局与溢出计算' },
     { id: 'css-orientation-lock', reason: '依赖媒体查询与布局' },

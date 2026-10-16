@@ -11,6 +11,7 @@
 | [phase-00-06.md](./phase-00-06.md) | Phase 0（立项与 POC）、Phase 1 ~ Phase 4（Tier 0 ~ Tier 3 组件）、Phase 5 第一阶段（文档站增强）、Phase 6（组件库补全与规范化） |
 | [phase-07-12.md](./phase-07-12.md) | Phase 7 第一阶段（迁移就绪）、Phase 9（发布前收口）、Phase 10（国际化与移动端）、Phase 7 第二阶段（库侧迁移就绪与交接）、Phase 5 第二阶段（首版发布）、Phase 11（样式按需化与能力增强）、Phase 12（发布就绪与一致性收官） |
 | [phase-13-17.md](./phase-13-17.md) | Phase 13（组件能力补齐与 dependfix 迁移解阻）、Phase 14（质量与一致性收口）、Phase 15（治理收口深化 + 组件能力补齐 + 下游迁移护航文档）、Phase 16（质量收口与治理装置落地）、Phase 17（极简主题预设与富文本封装 + 治理补口） |
+| [phase-18.md](./phase-18.md) | Phase 18（发布收口、测试稳定性与一致性治理） |
 
 > `phase-07-12.md` 另含各阶段块之间的「跨阶段预落地条目」等过渡段，随迁入一并保留。
 
@@ -18,3 +19,4 @@
 
 - 2026-09-30（Phase 17 归档批次）：主窗口自 Phase 0 起累计至 594 行（`docs:check:line-count` warn > 400 持续累积、error > 600 逼近），按用户决策压缩为「近线窗口（Phase 13 ~ Phase 17）+ 归档索引」，Phase 0 ~ Phase 12 迁入本目录。
 - 2026-10-13（Phase 23 M4-1 压缩批次）：主窗口累计至 574 行（`docs:check:line-count` warn > 400），按用户决策 D6 二次压缩为「近线窗口（**Phase 18 ~ Phase 22**，口径 = 最近 5 个已完成阶段）+ 归档索引」，Phase 13 ~ Phase 17 迁入本目录 [phase-13-17.md](./phase-13-17.md)（迁移为机械操作，仅链接深度 `../` → `../../`，正文不改写）。
+- 2026-10-16（Phase 25 M1-1 压缩批次）：主窗口累计至 404 行（`docs:check:line-count` warn > 400，Phase 18 ~ Phase 23 共 6 块 + Phase 24 部分归档块），按「近线窗口 = 最近 5 个已完成阶段」口径三次压缩为「近线窗口（**Phase 19 ~ Phase 23**）+ 归档索引」，Phase 18 迁入本目录 [phase-18.md](./phase-18.md)（迁移为机械操作，仅链接深度 `../` → `../../`，正文不改写）。**批次口径载体见[治理记录](../../design/governance/2026-10-16-phase25-m1-1-todo-archive-deep-migration.md)**。

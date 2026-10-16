@@ -39,7 +39,7 @@
 | 面 | 动作 |
 |:---|:---|
 | `scripts/governance/check-locale-keys.mjs` | 规则 1 重写为**等值 + 双向**：① 注册表字面量键集合 **==** `PRE_REGISTERED_LOCALES`（仅下界会被静默归零）；② 联合 ↔ 语言文件一一对应（双向）；③ 非预注册成员须同时登记于 `package.json` `exports` 与 `tsdown.config.ts` 入口，且双向判悬空；④ **规则 2 ~ 4（命名空间 / 键 / 占位符）的遍历集合改为「联合的全部成员」**——按需语言退出注册表后仍逐条比对（否则键位守卫会从 5 语静默收窄到 2 语）；⑤ 受检面下界（`MIN_UNION_LOCALES` / `MIN_SUBPATH_LOCALES`） |
-| `scripts/governance/check-locale-keys.test.mjs` | 夹具改写为新注册表形态（+ `package.json` / `tsdown.config.ts` 桩）；**用例 28 → 43**（逐点复算：`3250806^` = 28 → 批次① 后 39 → 批次② 后 43；另含唯一性、注释入口、缺件响亮失败、下界钉定），新增负向对照：注册表多出预注册语种 / 预注册未登记 / 缺 `exports` 子路径 / 缺构建入口 / 悬空子路径 / 联合低于下界 / 子路径低于下界 / 按需语种仍逐条比对基准 / 导入文件与标识错配 / 构建入口键不同源 |
+| `scripts/governance/check-locale-keys.test.mjs` | 夹具改写为新注册表形态（+ `package.json` / `tsdown.config.ts` 桩）；**用例 28 → 43**（逐点复算：`1eb562b^` = 28 → `8206b01` = 43；**批次① 未含本夹具改写**——该改写随批次② 落地。另注两点留痕：① 被撤销重建前的同内容提交 `3250806` 曾测得 39，该提交因钩子把未提交文件卷入而撤销重建，**不作为可达历史**；② 批次② 的提交信息写「24 → 43」为错值，**提交信息不可回改**，以本处复算值为准）。另含唯一性、注释入口、缺件响亮失败、下界钉定，新增负向对照：注册表多出预注册语种 / 预注册未登记 / 缺 `exports` 子路径 / 缺构建入口 / 悬空子路径 / 联合低于下界 / 子路径低于下界 / 按需语种仍逐条比对基准 / 导入文件与标识错配 / 构建入口键不同源 |
 | `scripts/release/check-build.mjs` | 新增 `findLocaleSubpathProblems`（**五条不变量**）：① 子路径数量下界；② **导出目标与语言标识同源**（防「按 A 的路径拿到 B 的文案」）；③ 子路径产物存在且**带默认导出**；④ **注册表产物不得静态引入按需语言**（语句级匹配，注释示例不算；该断言是形态的核心承重面）；⑤ **无孤儿语言产物**。下界常量与子路径前缀**从治理守卫导入**（单点定义） |
 | `scripts/release/check-build.test.mjs` | 用例 7 → **15**，负向对照覆盖：数量不足 / 缺默认导出 / 注册表静态引入（含 `export … from`、动态 `import()`、单引号形态）/ 产物缺失 / 目标不同源 / 注释示例不误红 / 孤儿产物 |
 | `src/composables/use-locale.test.ts` | 用例 24 → 33：按需语言注册后生效 / 未注册回落 / 注册表初值只含预注册 / 告警内容与次数 / 预注册与未指定不告警 / **时序契约**（先注册后 provider 生效、先 provider 后注册不回溯、provider 语言后续切换仍按注册表解析）；provideLocale 告警粒度（双消费者只告警一次）；并给两处既有注入用例补「先注册」前置 |
@@ -82,11 +82,13 @@
 
 | 批次 | 提交 | 审计链 | 结论 |
 |:---|:---|:---|:---|
-| ① 共享 `warnDev` | `3250806` | R1 `standard` **`Reject`**（2 blocker：staged 落后于工作区 ⇒ index blob 过不了 lint；`development.md` 声明了本批尚不存在的子路径能力）→ 收口 → R2 `quick` **`Pass`** → 刷新确认 **`Pass`** | Pass |
+| ① 共享 `warnDev` | `1eb562b` | R1 `standard` **`Reject`**（2 blocker：staged 落后于工作区 ⇒ index blob 过不了 lint；`development.md` 声明了本批尚不存在的子路径能力）→ 收口 → R2 `quick` **`Pass`** → 刷新确认 **`Pass`** | Pass |
 | ② 运行时形态 + 台账守卫 | `8206b01` | R1 **并发分区**（§3.2：>8 文件且跨模块）——分区 1「运行时与导出面」**`Reject`**（1 blocker：内部工具 `resolveRegisteredMessages` 经 barrel **泄漏进公开导出面**，与设计 §6 冻结面冲突；2 warning / 2 suggest）＋ 分区 2「台账守卫」**`Pass`**（0 blocker / 2 warning / 4 suggest）⇒ 汇总取最严 | 收口后 **Pass** |
 |  |  | R2 delta（合并去重）**`Pass`**（0 blocker；8/8 条闭合；`provideLocale` 语义与改前等价经核对） |  |
 | ③a 产物面断言 | `d9949f3` | R1 `standard` **`Pass`**（0 blocker / 2 warning / 6 suggest）→ R2 delta `quick` **`Pass`** → 刷新确认 **`Pass`** | Pass |
 | ③b 文档与记录 | 本批 | R1 `standard` **`Reject`**（1 blocker：**既有下游示例把改义后的注册表当「内建语种清单」**⇒ 示例静默失效；6 warning / 5 suggest）→ 收口（示例改写含注册前置、措辞全仓回扫为「非生产环境告警」、计数改逐点复算值、`M4-1` 补 `BREAKING CHANGE:` 义务、`roadmap §1` 同步新公开面）→ R2 delta **`Reject`**（1 blocker：**命名空间 / 消费组件计数两套口径**——实测真值 **28 个命名空间 / 29 个消费组件**）→ 收口（中英组件页 + `roadmap` 同值校正）→ **收口确认**（`quick`；结论以审计工件为准，本记录不复述） | Pass |
+
+**批次① 的提交 provenance**：其首次提交（`3250806`）因 `lint-staged` 的全仓 `eslint . --fix` 把工作区未提交文件自动入暂存而被污染（6 文件 / 331 行），故撤销并仅按本批 5 文件重建，最终哈希 **`1eb562b`**（5 文件 / 99 行）。审计针对重建前的同名内容执行，**结论不受影响**；被撤销对象已成为 dangling 对象（**当前仍可解析**，`gc` 回收后其取证命令将不可复现）。
 
 **actor 侧独立复算（审计方实跑）**：② 的 R2 复跑 `check-locale-keys` exit 0、`vitest` **112 passed**、逐条核 `provideLocale` 语义等价；③a 的 R2 用真实产物副本注入探针，验证「注释示例不误红」「目标不同源 RED」「孤儿产物 RED」「真实产物基线 0 条」；③a 的红蓝对照另证 `export … from` / 动态 `import()` / 单引号三种引入形态**均可判出**。
 

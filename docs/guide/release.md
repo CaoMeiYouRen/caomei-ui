@@ -114,10 +114,15 @@ pnpm release:manual announce  --version=0.7.0 --yes
 ## 9. 包形态与兼容性
 
 - 单包 ESM：`package.json` 为 `"type": "module"`，`exports` 仅提供 `import` 条件，无 `require` 入口；下游按 ESM 使用（Nuxt 4 / Vite 场景）。
-- 子路径导出：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`。
+- 子路径导出：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`，以及按需语言包 `caomei-ui/locale/<code>`（`zh-tw` / `ja-jp` / `ko-kr`，见下）。
 - `files` 仅分发 `dist` 与 `THIRD-PARTY-LICENSES`；发布前以 `check:build` 确认产物齐全。
 - **0.2.0 起为破坏性形态变更**：移除 `caomei-ui/styles.css`（旧单体全量样式）子路径导出，改为 `caomei-ui/theme.css`（基础层：tokens + 暗色 + `.caomei-root` + 品牌预设）。产物不再提供单体全量样式，组件样式随模块自带（`sideEffects: ["**/*.css"]`，由打包器按需 tree-shaking）。
 - **下游修复指引**：把 `import 'caomei-ui/styles.css'` 改为 `import 'caomei-ui/theme.css'`；若此前依赖单体样式覆盖全部组件，改为「显式引入 `theme.css` + 按需引入组件」。resolver 与 Nuxt 模块会自动注入基础层，**注入点须唯一**以免重复注入与覆盖丢失。
+- **按需语言包（未发布版本起为破坏性形态变更）**：内建语言拆为**预注册**（`zh-CN` / `en-US`，随包根可用）与**按需引入**（`zh-TW` / `ja-JP` / `ko-KR`）两类；`caomeiLocales` 由「内置全量」变为**已注册表**（初值 = `PRE_REGISTERED_LOCALES`）。
+- **下游修复指引（语言）**：若使用了 `zh-TW` / `ja-JP` / `ko-KR`，请在应用入口先注册再挂载 provider：
+  `import jaJP from 'caomei-ui/locale/ja-jp'` + `registerLocale('ja-JP', jaJP)`。
+  `zh-CN` / `en-US` 无需改动；直接读 `caomeiLocales['ja-JP']` 的写法应改为经 `registerLocale` 后读取注册表（或改用 `useLocale`）。
+  详见[内建文案与语言](../components/locale.md) 的「按需引入语言」。
 - **消费前提**：产物 JS 保留逐模块 CSS import，故**裸 Node ESM 不能直接 `import` 包根**（`ERR_UNKNOWN_FILE_EXTENSION: .css`），须经打包器（Vite / rolldown 系实测）或等效 CSS stub 加载器；本仓 `check:build` 的产物冒烟即使用 stub loader。
 
 ## 10. 下游兼容性回归

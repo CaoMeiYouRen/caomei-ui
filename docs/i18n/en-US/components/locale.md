@@ -9,12 +9,14 @@ Some components show user-facing text (accessible names, empty states, button la
 ```ts
 import {
   CaomeiConfigProvider,
+  PRE_REGISTERED_LOCALES,
   caomeiLocaleCodeKey,
   caomeiLocaleKey,
   caomeiLocales,
   defaultLocale,
   defaultLocaleMessages,
   provideLocale,
+  registerLocale,
   useLocale,
   useLocaleCode,
   type CaomeiLocale,
@@ -26,10 +28,12 @@ import {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | Built-in message resources (`zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`) |
+| `caomeiLocales` | `Partial<Record<CaomeiLocale, CaomeiLocaleMessages>>` | **Registered** message table: initial value = `PRE_REGISTERED_LOCALES`; other locales are added via `registerLocale` |
+| `PRE_REGISTERED_LOCALES` | `readonly ['zh-CN', 'en-US']` (`as const` tuple) | Locales registered with the package root (usable without registration) |
+| `registerLocale` | `(code: CaomeiLocale, messages: CaomeiLocaleMessages) => void` | Registers one built-in locale's messages (call before `provideLocale`; see "On-demand locales") |
 | `defaultLocale` | `CaomeiLocale` | Default locale, currently `'zh-CN'` |
 | `defaultLocaleMessages` | `CaomeiLocaleMessages` | Full message object of the default locale |
-| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | Built-in locale id |
+| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | Built-in locale id (**not** the same as "registered": `zh-TW` / `ja-JP` / `ko-KR` must be imported and registered) |
 | `CaomeiLocaleMessages` | interface | Full message shape, useful for typing custom messages |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | Per-namespace partial overrides |
 | `CaomeiConfigProvider` | component | Renderless provider (default slot only); props: `locale` / `messages` |
@@ -41,7 +45,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 27 namespaces by component area, covering 28 consuming components:
+`CaomeiLocaleMessages` is split into 28 namespaces by component area, covering 29 consuming components:
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -103,6 +107,72 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 </template>
 ```
 
+## On-demand locales
+
+Built-in locales come in two groups: **pre-registered** and **on-demand**. Apps that use one or two locales do not have to bundle the rest.
+
+| Group | Locales | How to use |
+| --- | --- | --- |
+| Pre-registered (available from the package root) | `zh-CN`, `en-US` | Use `locale="en-US"` directly; see `PRE_REGISTERED_LOCALES` |
+| On-demand | `zh-TW`, `ja-JP`, `ko-KR` | Import the subpath, then call `registerLocale()` |
+
+Each subpath maps to a locale id (lowercase, hyphenated):
+
+| Locale id | Subpath |
+| --- | --- |
+| `zh-TW` | `caomei-ui/locale/zh-tw` |
+| `ja-JP` | `caomei-ui/locale/ja-jp` |
+| `ko-KR` | `caomei-ui/locale/ko-kr` |
+
+Synchronous registration (recommended): register in the app entry, then mount the provider.
+
+```ts
+import { createApp } from 'vue'
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+import App from './App.vue'
+
+registerLocale('ja-JP', jaJP)
+
+createApp(App).mount('#app')
+```
+
+Asynchronous registration (lazy-loading a locale, switching at runtime):
+
+```ts
+import { registerLocale } from 'caomei-ui'
+import type { CaomeiLocaleMessages } from 'caomei-ui'
+
+const loaders = {
+  'zh-TW': () => import('caomei-ui/locale/zh-tw'),
+  'ja-JP': () => import('caomei-ui/locale/ja-jp'),
+  'ko-KR': () => import('caomei-ui/locale/ko-kr'),
+} as const
+
+export async function loadLocale(code: keyof typeof loaders): Promise<void> {
+  const module = await loaders[code]()
+  registerLocale(code, module.default as CaomeiLocaleMessages)
+}
+```
+
+Nuxt: register in a plugin. The `caomei-ui/nuxt` module only handles component and composable auto-imports; it does not register locales.
+
+```ts
+// app/plugins/caomei-locale.ts
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+
+export default defineNuxtPlugin(() => {
+  registerLocale('ja-JP', jaJP)
+})
+```
+
+### Ordering and fallback
+
+- **Register first, provide second**: call `registerLocale()` before `provideLocale()` / `<CaomeiConfigProvider>`. An already-created provider does **not** recompute after a later registration, so `await` the registration before rendering the provider when loading lazily.
+- **Using an unregistered locale**: the locale falls back to `zh-CN` (no throw) and a **non-production warning** points to the subpath to import and the registration call (`NODE_ENV === 'production'` silences it; browser production bundles keep the warning code because `globalThis.process` cannot be statically replaced).
+- **Type is not availability**: `CaomeiLocale` lists the locales the package ships messages for. Passing an unregistered on-demand locale type-checks fine but still follows the fallback path above.
+
 ## Merging and fallback
 
 - **Shallow merge per namespace**: overrides are merged namespace by namespace onto the base locale; in the example above `pagination` only overrides `label` and keeps the base text for the remaining keys.
@@ -154,20 +224,40 @@ const messages = useLocale()
 
 momei is a Nuxt 4 + vue-i18n downstream project with five locales — `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` — the same set caomei-ui builds in. The example below maps vue-i18n's current locale to caomei-ui's `locale`, so switching the language takes effect immediately (caomei-ui does not depend on vue-i18n; this is only an integration demo).
 
+> Note: `caomeiLocales` is the **registered table** (initially only the pre-registered `zh-CN` / `en-US`), so it must **not** be used as a "built-in locale list" — on-demand locales have to be imported and registered first, otherwise they silently fall back to `zh-CN` (see "On-demand locales"). Use `CaomeiLocale` or `PRE_REGISTERED_LOCALES` for availability checks; the example below registers the three on-demand locales up front.
+
+```ts
+// app/plugins/caomei-locale.ts (Nuxt plugin form)
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+import koKR from 'caomei-ui/locale/ko-kr'
+import zhTW from 'caomei-ui/locale/zh-tw'
+
+registerLocale('zh-TW', zhTW)
+registerLocale('ja-JP', jaJP)
+registerLocale('ko-KR', koKR)
+```
+
 ```vue
 <!-- app.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CaomeiConfigProvider, caomeiLocales, defaultLocale, type CaomeiLocale } from 'caomei-ui'
+import { CaomeiConfigProvider, PRE_REGISTERED_LOCALES, defaultLocale, type CaomeiLocale } from 'caomei-ui'
 
 const { locale } = useI18n()
 
-// the built-in ids come from the registry instead of a hand-written list; ids added downstream fall back to the default locale
-const builtInLocales = Object.keys(caomeiLocales) as CaomeiLocale[]
+// Available locales = pre-registered set ∪ the on-demand locales registered above;
+// the registry keys (`caomeiLocales`) are exactly the registered set.
+const availableLocales: CaomeiLocale[] = [
+  ...PRE_REGISTERED_LOCALES,
+  'zh-TW',
+  'ja-JP',
+  'ko-KR',
+]
 
 const caomeiLocale = computed<CaomeiLocale>(() =>
-  builtInLocales.includes(locale.value as CaomeiLocale)
+  availableLocales.includes(locale.value as CaomeiLocale)
     ? (locale.value as CaomeiLocale)
     : defaultLocale,
 )
@@ -180,14 +270,14 @@ const caomeiLocale = computed<CaomeiLocale>(() =>
 </template>
 ```
 
-- All five languages use the built-in text directly, so no `messages` are needed.
+- Once registered, all five languages use the built-in text directly, so no `messages` are needed; a locale that is not registered falls back to `zh-CN` with a non-production warning.
 - When only a few strings need adjusting (brand wording, for example), `messages` still works as a minimal override: `{ pagination: { label: '頁面' } }`, with uncovered keys falling back to that locale's own text.
 - `locale` is a `computed`, so caomei-ui's built-in text updates as soon as vue-i18n switches language, with no extra `watch`.
 
 ## Constraints and notes
 
 - Values in `messages` must be non-blank strings. For example, injecting a blank string for `toast.label` is rejected by Reka's `ToastProvider`, which throws (`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`); omit keys you do not cover instead of passing an empty string.
-- `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` are built in; other locales are injected by the downstream project, either as a full replacement or as partial overrides.
-- New component text must be added to every built-in locale: `pnpm check:locale-keys` checks namespaces, key sets and placeholders against the `zh-CN` baseline (a missing translation, a stray key, or a dropped `{page}`-style placeholder fails the check).
+- Five built-in locales: `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`. `zh-CN` and `en-US` are pre-registered with the package root; the other three are imported on demand from `caomei-ui/locale/<code>` (see "On-demand locales"). Locales outside the library are injected by the downstream project, either as a full replacement or as partial overrides.
+- New component text must be added to every built-in locale: `pnpm check:locale-keys` checks namespaces, key sets and placeholders against the `zh-CN` baseline (a missing translation, a stray key, or a dropped `{page}`-style placeholder fails the check), and compares the on-demand locales row by row as well (independent of whether they are pre-registered).
 - Built-in component text and the documentation site's `docs/i18n` page translation do not affect each other; this page describes runtime message injection.
 - See also: [Composables](/en-US/components/composables), [ConfirmDialog](/en-US/components/confirm-dialog), and [Paginator](/en-US/components/paginator).

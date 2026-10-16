@@ -17,6 +17,7 @@ const { theme } = useData()
 ## 0.x 兼容策略
 
 - 0.x 阶段**不承诺**语义化版本的兼容性：`minor` 版本可能包含破坏性变更（例如样式入口由 `caomei-ui/styles.css` 改为 `caomei-ui/theme.css`，产物不再提供单体全量样式）。
+- **语言包形态变更（未发布版本起）**：内建语言拆为「预注册」与「按需引入」两类，`zh-TW` / `ja-JP` / `ko-KR` 须经 `caomei-ui/locale/<code>` 子路径引入并 `registerLocale()` 注册；`caomeiLocales` 语义随之改为「已注册表」。修复指引见[发布指南 §9](./release.md) 与[内建文案与语言](../components/locale.md)。
 - 破坏性变更一律在 CHANGELOG 的 `BREAKING CHANGES` 段与[发布指南](./release.md)中披露，并给出下游修复指引；进入 1.0 的时机须单独决策。
 - `patch` 版本只包含修复与不改变公开契约的内部调整。
 

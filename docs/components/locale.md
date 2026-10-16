@@ -9,12 +9,14 @@
 ```ts
 import {
   CaomeiConfigProvider,
+  PRE_REGISTERED_LOCALES,
   caomeiLocaleCodeKey,
   caomeiLocaleKey,
   caomeiLocales,
   defaultLocale,
   defaultLocaleMessages,
   provideLocale,
+  registerLocale,
   useLocale,
   useLocaleCode,
   type CaomeiLocale,
@@ -26,10 +28,12 @@ import {
 
 | 名称 | 类型 | 说明 |
 | --- | --- | --- |
-| `caomeiLocales` | `Record<CaomeiLocale, CaomeiLocaleMessages>` | 内建文案资源（`zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`） |
+| `caomeiLocales` | `Partial<Record<CaomeiLocale, CaomeiLocaleMessages>>` | **已注册**语言表：初值 = `PRE_REGISTERED_LOCALES`，其余语言经 `registerLocale` 扩展 |
+| `PRE_REGISTERED_LOCALES` | `readonly ['zh-CN', 'en-US']`（`as const` 窄元组） | 随包根**预注册**的语言（无需注册即可用） |
+| `registerLocale` | `(code: CaomeiLocale, messages: CaomeiLocaleMessages) => void` | 注册一门内建语言的文案（须在 `provideLocale` 之前调用，见「按需引入语言」） |
 | `defaultLocale` | `CaomeiLocale` | 默认语言，当前为 `'zh-CN'` |
 | `defaultLocaleMessages` | `CaomeiLocaleMessages` | 默认语言的完整文案对象 |
-| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | 内建语言标识 |
+| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | 内建语言标识（**不等于已注册**：`zh-TW` / `ja-JP` / `ko-KR` 须按需引入并注册） |
 | `CaomeiLocaleMessages` | 接口 | 完整文案结构，可用于类型化自定义文案 |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | 按命名空间的部分覆盖 |
 | `CaomeiConfigProvider` | 组件 | renderless provider（仅默认插槽），props：`locale` / `messages` |
@@ -41,7 +45,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 27 个命名空间，对应 28 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 28 个命名空间，对应 29 个消费组件：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -103,6 +107,72 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 </template>
 ```
 
+## 按需引入语言
+
+内建语言分为**预注册**与**按需引入**两类：只用一两门语言的应用不必打包其余语言包。
+
+| 类别 | 语言 | 取用方式 |
+| --- | --- | --- |
+| 预注册（随包根可用） | `zh-CN`、`en-US` | 直接 `locale="en-US"`；清单见 `PRE_REGISTERED_LOCALES` |
+| 按需引入 | `zh-TW`、`ja-JP`、`ko-KR` | 经子路径 `import` 后调用 `registerLocale()` |
+
+子路径与语言标识一一对应（小写 + 连字符）：
+
+| 语言标识 | 子路径 |
+| --- | --- |
+| `zh-TW` | `caomei-ui/locale/zh-tw` |
+| `ja-JP` | `caomei-ui/locale/ja-jp` |
+| `ko-KR` | `caomei-ui/locale/ko-kr` |
+
+同步注册（推荐）：在应用入口先注册，再挂载 provider。
+
+```ts
+import { createApp } from 'vue'
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+import App from './App.vue'
+
+registerLocale('ja-JP', jaJP)
+
+createApp(App).mount('#app')
+```
+
+异步注册（按需加载语言包、运行期切换）：
+
+```ts
+import { registerLocale } from 'caomei-ui'
+import type { CaomeiLocaleMessages } from 'caomei-ui'
+
+const loaders = {
+  'zh-TW': () => import('caomei-ui/locale/zh-tw'),
+  'ja-JP': () => import('caomei-ui/locale/ja-jp'),
+  'ko-KR': () => import('caomei-ui/locale/ko-kr'),
+} as const
+
+export async function loadLocale(code: keyof typeof loaders): Promise<void> {
+  const module = await loaders[code]()
+  registerLocale(code, module.default as CaomeiLocaleMessages)
+}
+```
+
+Nuxt：在插件中注册。`caomei-ui/nuxt` 模块只负责组件与 composables 自动导入，不处理语言注册。
+
+```ts
+// app/plugins/caomei-locale.ts
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+
+export default defineNuxtPlugin(() => {
+  registerLocale('ja-JP', jaJP)
+})
+```
+
+### 时序与回退
+
+- **先注册、后提供**：`registerLocale()` 须在 `provideLocale()` / `<CaomeiConfigProvider>` 之前调用；已创建的 provider **不会**因后续注册而重算，异步注册请先 `await` 注册完成再渲染 provider。
+- **未注册即使用**：`locale` 指向未注册语言时**回落 `zh-CN`**（不抛错），并输出一条**非生产环境告警**，提示应引入的子路径与注册写法（`NODE_ENV === 'production'` 时静默；浏览器生产包中因 `globalThis.process` 无法被静态替换，告警代码仍会保留在产物内）。
+- **类型不等于可用**：`CaomeiLocale` 表示「本库随包提供文案的语言」，把 `locale` 设为未注册的按需语言不会报类型错误，但运行期仍走上面的回落路径。
+
 ## 合并与回退
 
 - **按命名空间浅合并**：覆盖文案逐命名空间合并到基准语言之上；上例中 `pagination` 只覆盖 `label`，其余键仍取基准语言。
@@ -154,20 +224,40 @@ const messages = useLocale()
 
 momei 是 Nuxt 4 + vue-i18n 的下游项目，包含 `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` 五种语言，与 caomei-ui 的内建语种一致。下面把 vue-i18n 的当前语言映射为 caomei-ui 的 `locale`，语言切换即生效（caomei-ui 本身不依赖 vue-i18n，此处仅是对接演示）。
 
+> 注意：`caomeiLocales` 是**已注册表**（初值只有预注册的 `zh-CN` / `en-US`），**不能**当作「内建语种清单」使用——按需语言须先引入子路径并注册，否则会静默回落 `zh-CN`（见「按需引入语言」）。可用性判断请用 `CaomeiLocale` 或 `PRE_REGISTERED_LOCALES`；下面的示例按序注册三门口径语言。
+
+```ts
+// app/plugins/caomei-locale.ts（Nuxt 插件形态）
+import { registerLocale } from 'caomei-ui'
+import jaJP from 'caomei-ui/locale/ja-jp'
+import koKR from 'caomei-ui/locale/ko-kr'
+import zhTW from 'caomei-ui/locale/zh-tw'
+
+registerLocale('zh-TW', zhTW)
+registerLocale('ja-JP', jaJP)
+registerLocale('ko-KR', koKR)
+```
+
 ```vue
 <!-- app.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CaomeiConfigProvider, caomeiLocales, defaultLocale, type CaomeiLocale } from 'caomei-ui'
+import { CaomeiConfigProvider, PRE_REGISTERED_LOCALES, defaultLocale, type CaomeiLocale } from 'caomei-ui'
 
 const { locale } = useI18n()
 
-// 内建语种清单取自注册表，无需手写；下游新增语种时回退到默认语言
-const builtInLocales = Object.keys(caomeiLocales) as CaomeiLocale[]
+// 已可用的语言 = 预注册集合 ∪ 上方已注册的按需语言；
+// 判断「是否已注册」也可直接读 `caomeiLocales`（其键即已注册集合）。
+const availableLocales: CaomeiLocale[] = [
+  ...PRE_REGISTERED_LOCALES,
+  'zh-TW',
+  'ja-JP',
+  'ko-KR',
+]
 
 const caomeiLocale = computed<CaomeiLocale>(() =>
-  builtInLocales.includes(locale.value as CaomeiLocale)
+  availableLocales.includes(locale.value as CaomeiLocale)
     ? (locale.value as CaomeiLocale)
     : defaultLocale,
 )
@@ -180,14 +270,14 @@ const caomeiLocale = computed<CaomeiLocale>(() =>
 </template>
 ```
 
-- 五种语言均直接使用内建文案，无需再传 `messages`。
+- 五门语言**注册后**均直接使用内建文案，无需再传 `messages`；`locale` 指向未注册语言时会回落 `zh-CN` 并给出非生产环境告警。
 - 只需微调个别文案（如品牌措辞）时，仍可用 `messages` 做 minimal overrides：例如 `{ pagination: { label: '頁面' } }`，未覆盖的键回退该语种自身文案。
 - `locale` 为 `computed`，vue-i18n 切换语言后 caomei-ui 内建文案随之更新，无需额外 `watch`。
 
 ## 约束与提示
 
 - `messages` 的值必须是非空白字符串。例如向 `toast.label` 注入空白字符串会被 Reka `ToastProvider` 拒绝并抛错（`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`）；未覆盖的键请直接省略，不要传空串。
-- 内建 `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` 五语；其余语种由下游注入，可为完整替换或部分覆盖。
-- 新增组件文案须同步补齐全部内建语种：`pnpm check:locale-keys` 以 `zh-CN` 为基准校验命名空间、键集合与占位符（漏译 / 错键 / 漏写 `{page}` 一类占位符即失败）。
+- 内建 `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` 五语；其中 `zh-CN` / `en-US` 随包根预注册，其余三门经 `caomei-ui/locale/<code>` 子路径按需引入（见「按需引入语言」）；本库之外的语种由下游注入，可为完整替换或部分覆盖。
+- 新增组件文案须同步补齐全部内建语种：`pnpm check:locale-keys` 以 `zh-CN` 为基准校验命名空间、键集合与占位符（漏译 / 错键 / 漏写 `{page}` 一类占位符即失败），并按需语种逐条比对（不受「是否预注册」影响）。
 - 组件内建文案与文档站 `docs/i18n` 的页面翻译互不影响；本页描述的是运行时文案注入。
 - 相关阅读：[组合式 API](./composables.md)、[ConfirmDialog 确认对话框](/components/confirm-dialog)、[Paginator 分页](/components/paginator)。

@@ -48,7 +48,7 @@
 
 | 方案 | 形态 | 体积收益 | 破坏性 | 工程面 |
 |:---|:---|:---|:---|:---|
-| **A1** 子路径 + 基线注册表瘦身（**推荐 / 已采形态**） | `caomei-ui/locale/<code>` 逐语言导出；注册表初值只含基线；新增 `registerLocale()`；`provideLocale({ locale })` 未注册 ⇒ 回落基线 + 开发期告警 | **最大**（provider 消费方默认只带内建语言，10 语场景省约 17 KB min / 约 6 KB gzip） | **有**（下沉语言需注册；`caomeiLocales` 语义收窄；`CaomeiLocale` 类型面见 D3） | 中：构建入口 + `exports` + 守卫规则 1 改写 + 文档接入方式 |
+| **A1** 子路径 + 基线注册表瘦身（**推荐 / 已采形态**） | `caomei-ui/locale/<code>` 逐语言导出；注册表初值只含基线；新增 `registerLocale()`；`provideLocale({ locale })` 未注册 ⇒ 回落基线 + 非生产环境告警 | **最大**（provider 消费方默认只带内建语言，10 语场景省约 17 KB min / 约 6 KB gzip） | **有**（下沉语言需注册；`caomeiLocales` 语义收窄；`CaomeiLocale` 类型面见 D3） | 中：构建入口 + `exports` + 守卫规则 1 改写 + 文档接入方式 |
 | **A1'** 子路径 + 部分瘦身（折中） | 同上，但**保留现有 5 语内建**、仅新增语言走子路径 | 一半（新 5 语按需；旧 5 语仍全量） | **无** | 同 A1（注册表语义不变，守卫改动更小） |
 | **A2** 子路径 additive | 只加 `exports` + 构建入口，注册表**保持全量** | **零**（provider 消费方仍带全部语言） | 无 | 小：仅构建与分发面 |
 | **A3** A1 + 异步加载引导 | 在 A1 上补文档引导 `await import('caomei-ui/locale/<code>')` + `registerLocale`（SSR / 运行期切换场景） | 同 A1（且可按需延后到运行期） | 同 A1 | 小：文档 + 示例 |
@@ -91,7 +91,7 @@ export const <camelCaseCode>       // 同名具名导出（两种写法皆可）
 | **预注册语言** | `zh-CN` + `en-US` | 随包根入手即用（不传 `locale` 的既有消费方零回归） |
 | **需注册语言** | `zh-TW` / `ja-JP` / `ko-KR` + 一期新增 5 语 | 需 `import` 子路径 + `registerLocale` 后方可 `provideLocale({ locale })` |
 
-> **类型联合 ≠ 预注册集合**：`CaomeiLocale` 表示「本库随包提供文案的语言」，不表示「已注册」。未注册语言传入时按 §3.1 要点 3 回落基线并告警——该差异须在文档与开发期告警两处同时可见。
+> **类型联合 ≠ 预注册集合**：`CaomeiLocale` 表示「本库随包提供文案的语言」，不表示「已注册」。未注册语言传入时按 §3.1 要点 3 回落基线并告警——该差异须在文档与非生产环境告警两处同时可见。
 
 **消费方接入（目标形态）**：
 
@@ -107,7 +107,7 @@ provideLocale({ locale: 'es-ES' })
 
 1. **内建语言不动其可用性**：`zh-CN`（基线）与 `en-US` 仍随包根提供 ⇒「不传 `locale`」与「传 `en-US`」的既有消费方**零回归**（D1 ② 的收敛点）。
 2. **注册表语义**：`caomeiLocales` 由「内置全量」改为「**已注册表**」（`check:build` 的 `REQUIRED_RUNTIME_EXPORTS` 已含该名，保留可避免守卫面改写）。
-3. **静默失败防护**：`provideLocale({ locale: 'xx-XX' })` 而该语言未注册时——回落基线 + **开发期告警**（不抛错，保持 0.x 向后兼容的容错口径），避免「语言没生效但无人察觉」。
+3. **静默失败防护**：`provideLocale({ locale: 'xx-XX' })` 而该语言未注册时——回落基线 + **非生产环境告警**（不抛错，保持 0.x 向后兼容的容错口径），避免「语言没生效但无人察觉」。
 4. **注册时序契约（须在文档与测试中显式覆盖）**：`registerLocale` 须**先于** `provideLocale` 调用；已创建的 provider 不会因后续注册而重算（`provideLocale` 的 `computed` 依赖注册表快照）。文档示例与单测须覆盖「先注册后 provider」与「未注册即 provider」两条路径。
 5. **物理目录不变**：语言文件仍在 `src/locale/<code>.ts`（不新建 `src/locale/packs/` 之类），避免 `check-locale-keys` 的目录枚举与既有治理面连带改动；子路径只体现在**构建入口**与**分发**两层。
 6. **A3（异步）**：文档给 `await import(...)` + `registerLocale` 的写法，用于 SSR / 运行期切换；不新增运行时 API（异步场景同样受第 4 点的时序约束）。

@@ -27,18 +27,48 @@ const CHROMIUM_ARGS = [
 ]
 
 /**
- * 响应式设计 §4 的验收视口（mobile 390×844 / tablet 768×1024 / desktop 1280×800）。
- * 每个视口一个 project、常驻用例跑三遍；desktop 档同时承担形态回归。
+ * 响应式设计 §4 的验收视口（mobile 390×844 / tablet 768×1024 / desktop 1280×800），
+ * 另加两条**定向**档（mobile-320 / gap-900，只承载响应式用例）。每个视口一个 project、
+ * 常驻用例跑三遍；desktop 档同时承担形态回归。
  *
  * 设备描述符取对应形态（手机 / 平板 / 桌面），视口按 §4 覆盖——库内断点只消费视口宽度，
  * 但 UA / 触摸 / DPR 保持形态一致，避免「名为手机实为桌面 UA」的失真（`isMobile` 影响
  * meta viewport 与滚动条渲染）。
+ *
+ * **定向档（`only: 'responsive'`）的成本口径**：`testMatch` 收窄到 `responsive.e2e.ts`，
+ * 故只放大响应式用例、不放大其余 E2E 用例（全量档仍为 3 条）。
  */
-const PROJECTS = [
-    { name: 'mobile', device: 'Pixel 5', width: 390, height: 844 },
-    { name: 'tablet', device: 'Galaxy Tab S4', width: 768, height: 1024 },
-    { name: 'desktop', device: 'Desktop Chrome', width: 1280, height: 800 },
-] as const
+interface E2EProject {
+    name: string
+    device: keyof typeof devices
+    width: number
+    height: number
+    /** 定向承载面：`responsive` = 只跑响应式 spec（矩阵扩面档，非全量回归档） */
+    only?: 'responsive'
+}
+
+/**
+ * 矩阵档视口（配置侧的单点定义）：`PROJECTS` 由本表展开。
+ * 装置侧（`test/e2e/responsive.e2e.ts`）不跨项目 import 本文件（composite 项目的 TS6305），
+ * 改由该文件内的「矩阵档口径」用例在运行时读回 `test.info().config.projects` 对账。
+ */
+export const MATRIX_VIEWPORTS = {
+    mobile: { width: 390, height: 844 },
+    tablet: { width: 768, height: 1024 },
+    desktop: { width: 1280, height: 800 },
+    /** 极窄档：现实最小手机宽度（sm 档内部点） */
+    mobile320: { width: 320, height: 568 },
+    /** 空档档：`sm` / `md` 命名之外的 769–1023px 区间内部点 */
+    gap900: { width: 900, height: 1024 },
+} as const
+
+const PROJECTS: E2EProject[] = [
+    { name: 'mobile', device: 'Pixel 5', ...MATRIX_VIEWPORTS.mobile },
+    { name: 'tablet', device: 'Galaxy Tab S4', ...MATRIX_VIEWPORTS.tablet },
+    { name: 'desktop', device: 'Desktop Chrome', ...MATRIX_VIEWPORTS.desktop },
+    { name: 'mobile-320', device: 'Galaxy S9+', ...MATRIX_VIEWPORTS.mobile320, only: 'responsive' },
+    { name: 'gap-900', device: 'Galaxy Tab S4', ...MATRIX_VIEWPORTS.gap900, only: 'responsive' },
+]
 
 export default defineConfig({
     testDir: './test/e2e',
@@ -66,8 +96,10 @@ export default defineConfig({
          */
         reducedMotion: 'reduce',
     },
-    projects: PROJECTS.map(({ name, device, width, height }) => ({
+    projects: PROJECTS.map(({ name, device, width, height, only }) => ({
         name,
+        /** 定向档只跑响应式 spec（矩阵扩面），其余 project 保持全量匹配 */
+        ...(only === 'responsive' ? { testMatch: '**/responsive.e2e.ts' } : {}),
         use: {
             ...devices[device],
             viewport: { width, height },

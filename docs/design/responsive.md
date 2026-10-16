@@ -5,6 +5,8 @@
 > **现状快照（2026-09-16）**：`src/` 内共 33 处 `@media` —— 28 处 `prefers-reduced-motion`、3 处 `prefers-color-scheme`（暗色）、**仅 2 处宽度类**（`src/components/dialog/dialog.vue:202`、`src/components/confirm-dialog/confirm-dialog.vue:187`，均为 `@media (width <= 640px)`；行号以快照日期为准）。库内无 `breakpoint` / `responsive` props，亦无基于视口宽度的 `matchMedia` 监听（`src/composables/use-theme.ts` 的 `matchMedia` 用于暗色模式，与视口宽度无关）。
 >
 > **2026-09-18 更新**：新增 `Dialog.breakpoints`（使用方传入视口上限 → 生成媒体查询），仍**无 JS 视口分支**、无 `matchMedia` 视口监听；见 §2 使用方断点数据与 §3 矩阵 #17。
+>
+> **2026-10-16 更新**：验收视口由 3 档扩为 **3 档全量 + 2 档定向**（`mobile-320` 320×568 / `gap-900` 900×1024，只承载响应式用例）——`gap-900` 命中 §2 所述「769–1023px 无档可用」区间，扩面后据实测登记 **ButtonGroup / SplitButton 的收敛档为 lg（≤1024px）**（矩阵 #7），见 §2 / §3 / §4。
 
 ## 1. 目标与边界
 
@@ -38,6 +40,7 @@
 - **方向**：桌面优先。收敛统一用 `@media (width <= <断点>)`；同一组件内不得用 `min-width` 表达同一条件。确需在更宽视口切换增强形态时，须在该组件内注释说明理由。
 - **字面量白名单**：宽度查询只允许 `640` / `768` / `1024`。`@media` 不支持 CSS 自定义属性，故不使用 token（同[设计规范 §2.3](./design-spec.md)）。该白名单在[开发规范 §7](../standards/development.md) 与[设计规范 §2.3](./design-spec.md) 中作为实现约束复述，三处取值须一致，变更时同步。
 - **使用方断点数据**：`Dialog.breakpoints` 的键由使用方传入（属使用方数据、非库内静态规则），不受上条字面量白名单约束；库建议取 640 / 768 / 1024，迁移期实测用量为 `1199px` / `575px`，均按 `width <=` 语义处理。命中多个断点时以最窄档为准（与键顺序无关）。
+- **档位选择与「更宽覆盖档」的登记方式（2026-10-16 登记）**：组件的收敛档按其**实际放不下**的区间选取；当矩阵承诺的窄屏行为覆盖到比 md 更宽的区间（如 #7 的「平板 641–1023」）时，组件可**直接用 lg 档（`@media (width <= 1024px)`）收敛**——这是 §2「如需覆盖须显式登记理由」的落地形态，登记须同时落在本表与矩阵对应行。已登记：**ButtonGroup / SplitButton**（矩阵 #7）——理由是 md 档只到 768px，若按 md 收敛则 769–1023px 为空档，容器的 `overflow` 保持 `visible`，成员越出容器并**撑宽页面**（属 §1 的库内职责「多成员布局的换行或滚动」）；改用 lg 档后桌面（>1024px）契约不变。
 - **消费侧断点配置（例外，2026-10-15 登记）**：`CaomeiRow` / `CaomeiCol` 的断点**取值**（`CaomeiCol` 的 `sm` / `md` / `lg` 配置）由使用方在模板中声明（属使用方数据、非库内静态规则）；其**断点阈值**仍是库内常量 `640` / `768` / `1024`，受上条字面量白名单约束。三者均为 `width <=` 上限，窄档覆盖宽档（源序：`1024 → 768 → 640`，最窄者最终生效），不使用 `matchMedia` / 视口监听。**与上表档位命名的关系须显式区分**——上表的 `lg` 指「≥1024px 的**默认形态**（不写媒体查询）」，而 props 的 `lg` 指「≤1024px 的**覆盖档**」：两者绑定同一数值的不同方向；`md` 行「769–1023px 无档可用」仅就上表 sm / md 两档命名约定而言，`CaomeiCol` 经本条登记后其 ≤1024 覆盖档**覆盖**该区间。「未传断点 = 桌面（默认）取值」正对应上表的 lg 档语义。消费侧未传某断点时**不做逐档级联**，该断点下未声明的字段回退到**基础档（最宽视口）取值**。
 - **与下游对齐**：三个值与下游 momei 的断点变量一致（`styles/_variables.scss` 的 `$breakpoint-sm/md/lg` = 640 / 768 / 1024）。momei 另有 960 / 1200 / 1280 等布局断点，属使用方页面布局职责，库不跟进。
 - **降级原则**：窄屏只收敛形态，不隐藏功能。信息可被截断（省略号）或被收纳进滚动容器，但不得出现「桌面可见、窄屏消失且无替代路径」的功能。
@@ -54,7 +57,7 @@
 | 4 | 选择器浮层面板 | Select / MultiSelect / AutoComplete | 面板宽取 `max(触发器宽, 内容宽)` 且不超过可用宽；选项文本省略号 | 同左 | `min-width` = 触发器宽 | 已实现（`select.vue:363-364`、`multi-select.vue:331-332`、`auto-complete.vue:568-569`：`max-width` 取 `--reka-{select,combobox}-content-available-width`，`min-width` 以 `min(触发器宽, 可用宽)` 同步收敛；文本省略号见 `select.vue:394`、`multi-select.vue:365`、`auto-complete.vue:602`） |
 | 5 | 定宽复合面板 | ColorPicker | `min(260px, 可用宽)`（可用宽由 popper 给出，含碰撞内边距，故面板始终落在视口内） | 260px | 260px | 已实现（`color-picker.vue:190` portal 形态 `min(260px, var(--reka-popover-content-available-width, 260px))`；`:172` 内联形态 `min(260px, 100%)` 跟随容器） |
 | 6 | 含日历面板 | DatePicker / Calendar | 面板落在视口内（内容定宽，最多占满可用宽 / 高） | 同左 | 内容定宽 `max-content` | 已实现（`date-picker.vue:261-263`：portal 面板 `max-width` / `max-height` 取 `--reka-popover-content-available-{width,height}`（回退 `none`）+ `overflow: auto` 滚动降级；内联 Calendar 为 `inline-block` 内容驱动 198×213）。**已知边界**：内联日历**容器宽 < 198px（内容宽）**时撑出容器——使用方需保证容器 ≥ 198px 或自行约束宽度；组件未暴露多月份配置。实测与基线见[批次 3 记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md) |
-| 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | Toolbar 换行；ButtonGroup / SplitButton 组内横向滚动（换行会破坏拼接边框 / 圆角）；成员不裁切、不压缩到不可读，超出部分横向滚动可达 | 同手机（md 档，仅在实际放不下时生效） | `inline-flex` 单行 | 已实现（`toolbar.vue:110-123` 横向形态 `flex-wrap: wrap` + `max-width: 100%`，并含三分区容器各自的 `flex-wrap`；`button-group.vue:59-75` `max-width: 100%` + `overflow: auto hidden`（简写：横向滚动 / 纵向裁切），成员焦点环内缩（点出 `.caomei-button` 使特异性 0-4-0 压过 Button 的 scoped 规则）；SplitButton 经 `CaomeiButtonGroup` 继承） |
+| 7 | 横向操作条 | Toolbar / ButtonGroup / SplitButton | Toolbar 换行；ButtonGroup / SplitButton 组内横向滚动（换行会破坏拼接边框 / 圆角）；成员不裁切、不压缩到不可读，超出部分横向滚动可达 | 1) ButtonGroup / SplitButton 组内横向滚动（**lg 档 ≤1024px**，2026-10-16 登记，见 §2；含 769–1023 子区间）2) Toolbar 在 **≤768 子区间**换行，**769–1023 维持单行且不设容器约束**（与 1) 同源的 md 档空档；夹具内容在该区间可容、未致溢出，缺口本身已登记候选，见 [Backlog §1.5](../plan/backlog.md)） | Toolbar `inline-flex` 单行；ButtonGroup / SplitButton `inline-flex` 单行、不滚动（**>1024px**；**恰好 1024px 命中 lg 档 ⇒ 组内滚动**） | 已实现（`toolbar.vue:110-123` 横向形态 `flex-wrap: wrap` + `max-width: 100%`（**在 md 档内**；769–1023 不命中），并含三分区容器各自的 `flex-wrap`；`button-group.vue:67-88` `max-width: 100%` + `overflow: auto hidden`（简写：横向滚动 / 纵向裁切），成员焦点环内缩（点出 `.caomei-button` 使特异性 0-4-0 压过 Button 的 scoped 规则）；SplitButton 经 `CaomeiButtonGroup` 继承） |
 | 8 | 分段选择 | SelectButton | 选项按内容宽换行、行内均分剩余空间（**宽度不再严格相等**），且纵向不得裁切（容器高度随行数增长） | 同手机（md 档，仅在实际放不下时生效） | 单行等宽分段 | 已实现（`select-button.vue:178-198`：`flex-wrap: wrap` + `height: auto` + 选项 `flex: 1 1 auto` + 按 size 档位补 `min-height`（减 2px 抵消根边框，单行高度不变）；`flex-basis` 为 0 时选项永远排在一行并被裁切）。**已知边界**：单个约 35 字的超长选项在 320px 视口下自身即超宽、页面仍会横向溢出——批次前同用例实测一致（非本批引入），自动化用例应取现实标签长度，或由使用方对超长选项自行约束宽度 |
 | 9 | 宽表格 | DataTable | 容器横向滚动 + 表头不换行 | 同左 | 按列宽展示 | 已实现（`data-table.vue:580`）；卡片化归使用方 |
 | 10 | 横向步骤条 | Stepper（`orientation="row"`） | 不内建自动转换：随容器压缩；需纵向时由使用方改 `orientation="vertical"` | 同左 | 等宽横向 | 维持（`stepper-list.vue:27` 固定 `flex-direction: row`，无自动转换；随容器压缩由 `stepper-item.vue:31,34` 的 `flex: 1 1 0` + `min-width: 0` 承担；决策见 §5） |
@@ -69,7 +72,17 @@
 
 ## 4. 验收标准
 
-**视口**：mobile 390×844、tablet 768×1024、desktop 1280×800（≥1024 位作为形态回归）。
+**视口**：
+
+| 档 | 视口 | 设备描述符 | 承载面 |
+| --- | --- | --- | --- |
+| mobile | 390×844 | Pixel 5 | 全部 E2E 用例 |
+| tablet | 768×1024 | Galaxy Tab S4 | 全部 E2E 用例 |
+| desktop | 1280×800（≥1024 位作为形态回归） | Desktop Chrome | 全部 E2E 用例 |
+| mobile-320（定向） | 320×568 | Galaxy S9+ | 只跑 `responsive.e2e.ts` —— sm 档（≤640）**内部点** |
+| gap-900（定向） | 900×1024 | Galaxy Tab S4 | 只跑 `responsive.e2e.ts` —— 769–1023px「无档可用」区间的**内部点** |
+
+**矩阵档的三项口径**：① 设备描述符取对应形态（手机 / 平板 / 桌面）后再覆盖 viewport，UA / 触摸 / DPR 与形态一致；② 两档定向档取**档内内部点**（非仅断点端点），用于拦「按精确宽度或反向方向（`min-width`）误写」的规则；③ 定向档只承载响应式用例（`playwright.config.ts` 的 `only: 'responsive'`），不放大其余 E2E 用例量级。**自驱视口探针**（用例内 `setViewportSize` 到 200px 宽 / 420px 高）只随**全量档**运行——其视口由用例自身设定、不随矩阵档变化，重复承载只会引入 DPR 取整的刀刃差异。
 
 **断言**（对每个进入批次的组件，按其矩阵行的期望行为）：
 
@@ -89,7 +102,7 @@
 
 浮层组件另须通过[测试规范 §5.1](../standards/testing.md) 的页面稳定性测量（遮罩完整、`in-flow` 不位移、CLS 归因）。
 
-**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，三个 project 对应本节视口。
+**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，**档位与承载面以上表为准（单一事实源）**。**§4 断言 1 的受检面（section 清单）设下界守卫**（`responsive.e2e.ts` 的 `MIN_SECTIONS`）——清单被整体删项或解析失效时用例会失败而非静默变绿。
 
 **验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。断言 4 的**「改动前基线」**（改动前数值表 + 计算样式快照 + 已知边界）落 `docs/design/governance/[YYYY-MM-DD]-<批次>-baseline.md`（可提交），取证脚本与原始 JSON 落 `test-results/<批次>/`（gitignored，供复现）；示例见[批次 3 基线记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md)。自 2026-09-17 起，断言 1 / 2 / 3（含键盘聚焦子句，按分档口径）/ 5 / 6 由常驻 Playwright 用例承载（`test/e2e/**`），批次交付以 `pnpm test:e2e` 为可复现基线；**断言 4 仍需批次自身的基线归档**，常驻用例只覆盖其形态回归部分（如窄屏规则在桌面不生效）。
 

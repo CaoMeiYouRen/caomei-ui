@@ -32,7 +32,11 @@ import {
  * 可见边时不再介入，故「无条件完整可见」不作为验收标准，增强候选见仓库 backlog）。窄屏下硬性要求
  * 「完全在滚动区外」的分支被触发，避免该口径静默失去覆盖。
  *
- * 每个用例在 mobile / tablet / desktop 三个 project 下各跑一遍（见 playwright.config.ts）。
+ * **自驱视口探针**（用例内 `setViewportSize` 到 200px 宽 / 420px 高）只随**全量档**运行：其视口由用例
+ * 自身设定、不随矩阵档变化，重复承载只会把 DPR 取整造成的刀刃差异带进来（已有用例注释声明「刀刃敏感」）；
+ * 矩阵扩面档（`playwright.config.ts` 的 `only: 'responsive'`）承载矩阵敏感用例，不重复承载自驱探针。
+ *
+ * 每个用例在 mobile / tablet / desktop 三个全量档下各跑一遍，矩阵扩面档再各跑一遍（见 playwright.config.ts）。
  */
 
 /** 响应式设计 §2 的 md 档：≤768px 时组件的收敛规则生效 */
@@ -71,6 +75,20 @@ const SHORT_PROBE_HEIGHT = 420
 const SM_BREAKPOINT = 640
 /** §2 的 lg 档：≤1024px 时 lg 规则命中（`sm` / `md` 均为「不窄于自身」的下界之上） */
 const LG_BREAKPOINT = 1024
+/**
+ * 矩阵扩面档的视口宽度与档名（**与 `playwright.config.ts` 一致性由本文件下方的漂移守卫对账**，见
+ * 「矩阵档口径」用例——不跨项目 import `playwright.config.ts`：它属 composite 的 `tsconfig.node.json`，
+ * 跨项目引用会触发 TS6305（输出 `.d.ts` 未构建），故改在运行时从 Playwright 全量配置读回对账）。
+ */
+const NARROW_320_PROJECT = 'mobile-320'
+const GAP_900_PROJECT = 'gap-900'
+const NARROW_320_WIDTH = 320
+const GAP_900_WIDTH = 900
+
+/**
+ * 承载**自驱视口探针**的档（矩阵扩面档不承载，口径见文件头）；由漂移守卫对账。
+ */
+const FULL_MATRIX_PROJECTS: readonly string[] = ['mobile', 'tablet', 'desktop']
 
 /**
  * 栅格断点用例（响应式设计 §3 矩阵 #18）的期望值：三档断点同时命中时**最窄档最终生效**。
@@ -93,6 +111,13 @@ const GRID_BREAKPOINT_EXPECTATIONS = [
         b: { start: '13', end: 'span 12', order: '2' },
     },
     {
+        /** 空档档内部点：`sm` / `md` 命名之外的 769–1023px 应维持 lg（≤1024）形态 */
+        width: GAP_900_WIDTH,
+        label: `769–1023 空档（lg 仍命中）`,
+        a: { start: '1', end: 'span 12', order: '0' },
+        b: { start: '13', end: 'span 12', order: '2' },
+    },
+    {
         width: MD_BREAKPOINT,
         label: `≤${MD_BREAKPOINT}（md 覆盖 lg）`,
         a: { start: '1', end: 'span 8', order: '0' },
@@ -101,6 +126,13 @@ const GRID_BREAKPOINT_EXPECTATIONS = [
     {
         width: SM_BREAKPOINT,
         label: `≤${SM_BREAKPOINT}（sm 覆盖 md / lg）`,
+        a: { start: '1', end: 'span 24', order: '0' },
+        b: { start: '1', end: 'span 24', order: '0' },
+    },
+    {
+        /** 极窄档内部点：320px 仍在 sm 档内，取值须与 640px 一致（拦「按精确宽度 / 反向方向」误写的规则） */
+        width: NARROW_320_WIDTH,
+        label: `极窄 ${NARROW_320_WIDTH}（sm 仍命中）`,
         a: { start: '1', end: 'span 24', order: '0' },
         b: { start: '1', end: 'span 24', order: '0' },
     },
@@ -140,7 +172,12 @@ interface ScrollCase {
     name: string
     container: string
     members: string
-    /** 窄屏下内容是否确实超宽（「确有滚动量」）；不超宽的组件同样命中 md 档规则但不要求滚动条 */
+    /**
+     * 形态收敛档上限（与组件实现中的 `@media (width <= N)` 一致，见响应式设计 §2 / §3 矩阵 #7）：
+     * 视口不宽于该值时容器转为横向滚动，宽于该值时维持桌面单行形态。
+     */
+    convergeAt: number
+    /** 收敛档下内容是否确实超宽（「确有滚动量」）；不超宽的组件同样命中档位规则但不要求滚动条 */
     scrollableWhenNarrow: boolean
     /**
      * DOM 顺序上紧邻容器的可聚焦元素，用于「键盘进入容器」用例。
@@ -194,6 +231,7 @@ const SCROLL_CASES: ScrollCase[] = [
         name: 'ButtonGroup',
         container: '#scroll-button-group .caomei-button-group',
         members: '#scroll-button-group .caomei-button-group > .caomei-button',
+        convergeAt: LG_BREAKPOINT,
         scrollableWhenNarrow: true,
         entryFrom: (page) => page.locator('#wrap-dialog-footer button').first(),
     },
@@ -201,6 +239,7 @@ const SCROLL_CASES: ScrollCase[] = [
         name: 'SplitButton',
         container: '#scroll-split-button .caomei-split-button',
         members: '#scroll-split-button .caomei-split-button > .caomei-button',
+        convergeAt: LG_BREAKPOINT,
         scrollableWhenNarrow: false,
     },
 ]
@@ -234,6 +273,15 @@ const CASE_SECTION_IDS = [
 ]
 
 /**
+ * §4 断言 1 的**受检面下界**（防「清单被静默删项 / 解析失效 ⇒ 用例仍全绿」）。
+ *
+ * 取值口径 = **当前受检面长度本身（贴身下界）**：语义只覆盖「清单被整体删项 ⇒ 循环跑 0 次仍变绿」
+ * 一类静默收窄，不追求余量；配合下方逐 section 的「存在且唯一」断言补上「夹具 section 被移除」方向。
+ * **清单扩项时须同步上调本值**（下界低于实际长度才拦得住删项）。
+ */
+const MIN_SECTIONS = 17
+
+/**
  * 自动 fixture：每个用例独立收集 console error / page error（§4 断言 5），
  * 并完成统一导航。用 test-scoped 状态取代模块级可变变量，隔离交给框架。
  */
@@ -258,16 +306,52 @@ test.afterEach(({ pageErrors }) => {
     expect(pageErrors, '页面不得产生 console error').toEqual([])
 })
 
-async function isNarrowViewport(page: Page): Promise<boolean> {
+async function isWithinConverge(convergeAt: number, page: Page): Promise<boolean> {
     const viewport = await viewportOf(page)
-    return viewport.width <= MD_BREAKPOINT
+    return viewport.width <= convergeAt
 }
+
+test.describe('矩阵档口径', () => {
+    /*
+      漂移守卫：装置侧的档名 / 档内内部点常量与 `playwright.config.ts` 的 project 视口必须一致。
+      数值的唯一改动入口是配置表；本用例把「手写重复」变成**机检**（不一致即失败），
+      这也是「矩阵口径写入单一事实源」在装置侧的兜底。
+    */
+    test('扩面档的档名、视口宽度与承载面与配置一致', () => {
+        const projects = test.info().config.projects
+        const projectOf = (name: string) => projects.find((project) => project.name === name)
+        const viewportWidthOf = (name: string) => projectOf(name)?.use.viewport?.width
+        const projectNames = projects.map((project) => project.name)
+
+        expect(viewportWidthOf(NARROW_320_PROJECT), `${NARROW_320_PROJECT} 档的视口宽度`).toBe(NARROW_320_WIDTH)
+        expect(viewportWidthOf(GAP_900_PROJECT), `${GAP_900_PROJECT} 档的视口宽度`).toBe(GAP_900_WIDTH)
+        // 承载面同样对账：删掉 `only: 'responsive'` 会让定向档回到全量匹配（成本口径漂移）
+        expect(
+            projectOf(NARROW_320_PROJECT)?.testMatch,
+            `${NARROW_320_PROJECT} 档应只承载响应式 spec`,
+        ).toBe('**/responsive.e2e.ts')
+        expect(
+            projectOf(GAP_900_PROJECT)?.testMatch,
+            `${GAP_900_PROJECT} 档应只承载响应式 spec`,
+        ).toBe('**/responsive.e2e.ts')
+        expect(
+            [...FULL_MATRIX_PROJECTS],
+            '全量档名单应等于配置中除两个定向档之外的 project（定向档名单与上面两处引用同源）',
+        ).toEqual(projectNames.filter((name) => ![NARROW_320_PROJECT, GAP_900_PROJECT].includes(name)))
+    })
+})
 
 test.describe('页面与用例容器无横向溢出', () => {
     test('页面与各用例 section 均无横向溢出', async ({ page }) => {
+        expect(
+            CASE_SECTION_IDS.length,
+            '§4 断言 1 的受检面不得收窄到清单被静默删项（下界口径见 MIN_SECTIONS）',
+        ).toBeGreaterThanOrEqual(MIN_SECTIONS)
+
         await expectPageNoHorizontalOverflow(page)
 
         for (const sectionId of CASE_SECTION_IDS) {
+            await expect(page.locator(`#${sectionId}`), `夹具 section #${sectionId} 应存在且唯一`).toHaveCount(1)
             await expectLocatorNoHorizontalOverflow(page.locator(`#${sectionId}`), `#${sectionId}`)
         }
     })
@@ -321,6 +405,11 @@ test.describe('含日历面板：落在视口内且内容不裁切', () => {
 
 test.describe('含日历面板：可用宽上限生效路径', () => {
     test('极窄视口下面板收敛到可用宽且内容可滚动可达', async ({ page }) => {
+        test.skip(
+            !FULL_MATRIX_PROJECTS.includes(test.info().project.name),
+            '自驱视口探针只随全量档运行（视口由用例自身设定，口径见文件头）',
+        )
+
         const trigger = page.locator('#panel-date-picker .caomei-date-picker')
         const panel = page.locator(DATE_PICKER_PANEL)
 
@@ -364,6 +453,11 @@ test.describe('含日历面板：可用宽上限生效路径', () => {
     })
 
     test('极矮视口下面板收敛到可用高且内容可纵向滚动可达', async ({ page }) => {
+        test.skip(
+            !FULL_MATRIX_PROJECTS.includes(test.info().project.name),
+            '自驱视口探针只随全量档运行（视口由用例自身设定，口径见文件头）',
+        )
+
         const trigger = page.locator('#panel-date-picker .caomei-date-picker')
         const panel = page.locator(DATE_PICKER_PANEL)
 
@@ -515,20 +609,20 @@ test.describe('换行类容器：纵向不裁切', () => {
 test.describe('滚动类容器：成员不被裁切', () => {
     for (const scrollCase of SCROLL_CASES) {
         test(`${scrollCase.name} 成员自身不被裁切`, async ({ page }) => {
-            const narrow = await isNarrowViewport(page)
+            const scrolling = await isWithinConverge(scrollCase.convergeAt, page)
             const container = page.locator(scrollCase.container)
 
             await expectScrollContainerMembersNotClipped(
                 container,
                 page.locator(scrollCase.members),
                 {
-                    overflowX: narrow ? 'auto' : 'visible',
-                    scrollable: narrow && scrollCase.scrollableWhenNarrow,
+                    overflowX: scrolling ? 'auto' : 'visible',
+                    scrollable: scrolling && scrollCase.scrollableWhenNarrow,
                 },
                 scrollCase.name,
             )
 
-            if (!narrow) {
+            if (!scrolling) {
                 await expectLocatorNoHorizontalOverflow(container, `${scrollCase.name} 桌面`)
             }
         })
@@ -558,7 +652,7 @@ test.describe('滚动类容器：键盘聚焦滚入', () => {
         })
 
         test(`${scrollCase.name} 键盘从容器外进入时成员完整滚入`, async ({ page }) => {
-            const narrow = await isNarrowViewport(page)
+            const scrolling = await isWithinConverge(scrollCase.convergeAt, page)
             const container = page.locator(scrollCase.container)
             await expect(container).toBeVisible()
 
@@ -575,17 +669,43 @@ test.describe('滚动类容器：键盘聚焦滚入', () => {
                 scrollCase.name,
             )
 
-            // 窄屏下必须构造出「聚焦前完全在滚动区外」，否则分档口径的完整滚入分支失去覆盖（恒真用例）
-            if (narrow) {
+            const strictPossible = await (async () => {
+                const scrollRange = await container.evaluate((element) => element.scrollWidth - element.clientWidth)
+                const firstMemberWidth = (await boxOf(page.locator(scrollCase.members).first())).width
+                return { scrollRange, firstMemberWidth }
+            })()
+
+            /*
+              收敛档内应尽量构造「聚焦前完全在滚动区外」的前置状态（分档口径的严格分支）。
+              但该前置状态**几何上可构造**的前提是「可滚动量 ≥ 首个成员宽」——档内可用宽越大，滚动量越小
+              （如 900px 档：可用宽 852 / 内容 967 ⇒ 滚动量 115px < 首个成员宽 150px），此时严格分支
+              不可能触发，按「聚焦后仍相交」的分档口径退化并记 observation；同时断言该档确有滚动量。
+            */
+            if (scrolling) {
                 expect(
-                    wasFullyOutside,
-                    `${scrollCase.name} 在窄屏下应构造出「聚焦前完全在滚动区外」的前置状态`,
-                ).toBe(true)
+                    strictPossible.scrollRange,
+                    `${scrollCase.name} 在收敛档内应有滚动量（档位规则生效）`,
+                ).toBeGreaterThan(0)
+
+                if (strictPossible.scrollRange >= strictPossible.firstMemberWidth) {
+                    expect(
+                        wasFullyOutside,
+                        `${scrollCase.name} 在收敛档内应构造出「聚焦前完全在滚动区外」的前置状态`
+                        + `（可滚动量 ${strictPossible.scrollRange} ≥ 首个成员宽 ${strictPossible.firstMemberWidth}）`,
+                    ).toBe(true)
+                } else {
+                    test.info().annotations.push({
+                        type: 'observation',
+                        description: `${scrollCase.name}：可滚动量 ${strictPossible.scrollRange}px < 首个成员宽 `
+                            + `${strictPossible.firstMemberWidth}px，本档无法构造「完全在滚动区外」的前置状态，`
+                            + '分档口径退化为「聚焦后仍相交」',
+                    })
+                }
             } else {
-                // 桌面档无滚动量，本用例退化为「焦点落位 + 成员落在容器内」的形态回归
+                // 收敛档外无滚动量，本用例退化为「焦点落位 + 成员落在容器内」的形态回归
                 test.info().annotations.push({
                     type: 'observation',
-                    description: `${scrollCase.name}：桌面档无滚动量，按焦点落位与成员可见性回归`,
+                    description: `${scrollCase.name}：收敛档外无滚动量，按焦点落位与成员可见性回归`,
                 })
             }
         })

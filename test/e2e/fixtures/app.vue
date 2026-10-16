@@ -1352,7 +1352,12 @@ const ConfirmDriver = defineComponent({
 #alert-contrast {
     display: grid;
     gap: var(--caomei-space-2);
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    /*
+      轨道最小宽用 `min(20rem, 100%)` 收敛：`20rem`（320px）在极窄档（如 320px 视口下 section 内宽
+      272px）宽于可用宽，会让**夹具自身**成为页面横向溢出源（同 `.fixture__case` 下方注释的约定）；
+      组件侧无此问题（`CaomeiMessage` 实测 min-content 远小于可用宽）。
+    */
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
 }
 
 /*

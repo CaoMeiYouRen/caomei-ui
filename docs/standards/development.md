@@ -25,7 +25,7 @@ src/
 ├─ components/<name>/     # 单个组件（kebab-case 目录 + kebab-case.vue + types.ts + index.ts）
 ├─ composables/           # useToast / useConfirm / useTheme / useLocale / provideLocale
 ├─ _shared/               # 跨层内部工具（composables 与 components 共用；与 components/_shared/ 的区别见下）
-├─ locale/                # 组件内建文案（zh-CN / en-US / zh-TW / ja-JP / ko-KR）
+├─ locale/                # 组件内建文案（5 语；预注册 zh-CN / en-US，其余经 locale/<code> 子路径按需引入）
 ├─ styles/                # tokens 与基础样式
 ├─ icons/                 # 图标封装
 ├─ resolver/              # unplugin-vue-components resolver
@@ -34,11 +34,12 @@ src/
 └─ index.ts
 playground/               # 本地开发/演示环境（不发布）
 
-> `src/_shared/` 与 `src/components/_shared/` 的分工：前者供 **composables 与 components 跨层共用**（置于 components 之下会使 composables 反向依赖 components），后者只供组件之间复用。
 docs/                     # VitePress 文档站
 examples/                 # 集成示例（不发布）
 test/                     # 单元与 E2E 测试
 ```
+
+> `src/_shared/` 与 `src/components/_shared/` 的分工：前者供 **composables 与 components 跨层共用**（置于 `components/` 之下会使 composables 反向依赖 components），后者只供组件之间复用。
 
 ## 3. 命名约定
 
@@ -207,7 +208,7 @@ const attrs = computed(() => {
 
 - **抽取门槛**：同一模式在 ≥3 处出现且语义一致，并且抽取后净收益为正（一致性 / 可测性提升大于新增的间接层）；三项同时成立才实施。
 - **不得为抽取而抽取**：仅「写法相似」而语义、契约或可访问名不同的模式不合并；未达门槛的候选按长期任务制度登记，不立即实施。
-- **落点**：组件间共享落 `src/components/_shared/`；对外公开的能力落 `src/composables/` 并从包根导出。两者均使用显式返回类型。
+- **落点**：组件间共享落 `src/components/_shared/`；**跨层（composables 与 components）共享**落 `src/_shared/`（置于 `components/` 之下会形成层级回路）；对外公开的能力落 `src/composables/` 并从包根导出。三者均使用显式返回类型。
 - **行为不变**：抽取不得改变对外 props / emits / slots 与渲染结果（DOM 结构与可访问属性逐项不变）；需要调整行为时按独立条目处理。
 - **单点定义**：同一契约只在一处定义（如类名拼接顺序、ARIA 透传优先级、布尔假值处理），引用处不得重新内联。
 - **引用点同步**：抽取后清理全部内联副本，禁止新旧实现并存；但**不同值档位不得顺手归并**（如 `0.5` 并入 `0.6`）——那是视觉 / 行为变更，须独立验收与用户裁决。

@@ -15,6 +15,7 @@ import {
     type CaomeiLocaleMessageOverrides,
     type CaomeiLocaleMessages,
 } from '../locale'
+import { warnDev } from '../_shared/dev-warn'
 
 /** `provideLocale` / `<CaomeiConfigProvider>` 的选项。 */
 export interface ProvideLocaleOptions {
@@ -41,14 +42,25 @@ const fallbackLocale: ComputedRef<CaomeiLocaleMessages> = computed(() => default
 const fallbackLocaleCode: ComputedRef<CaomeiLocale> = computed(() => defaultLocale)
 
 /**
- * 归一化语言标识：未知值（含原型链键）回退默认语言，与 `resolveLocaleMessages` 的口径一致。
+ * 归一化语言标识：未注册（含未知值与原型链键）回退默认语言，并在开发期给出可操作告警。
+ *
+ * 告警的必要性：`CaomeiLocale` 是「随包提供文案的语言」集合，**不等于「已注册」**——
+ * 非预注册语言须先 `import` 子路径并 `registerLocale` 后方可生效，否则会静默回落。
  *
  * 内部工具：仅供 `provideLocale` / 测试使用，不在包根导出面内。
  */
 export function resolveLocaleCode(locale?: CaomeiLocale): CaomeiLocale {
-    return locale && Object.prototype.hasOwnProperty.call(caomeiLocales, locale)
-        ? locale
-        : defaultLocale
+    if (locale && Object.prototype.hasOwnProperty.call(caomeiLocales, locale) && caomeiLocales[locale]) {
+        return locale
+    }
+    if (locale) {
+        warnDev(
+            `[caomei-ui] 语言 '${locale}' 未注册，已回落默认语言 '${defaultLocale}'。`
+            + `内建语言需按需引入并注册（须在 provideLocale 之前）：`
+            + `import messages from 'caomei-ui/locale/${locale.toLowerCase()}'; registerLocale('${locale}', messages)。`,
+        )
+    }
+    return defaultLocale
 }
 
 /**
@@ -74,7 +86,7 @@ export function mergeLocaleMessages(
 }
 
 /**
- * 解析基准语言与覆盖文案，得到完整文案对象；未知语言回退默认文案。
+ * 解析基准语言与覆盖文案，得到完整文案对象；未注册语言回退默认文案（见 `resolveLocaleCode`）。
  *
  * 内部工具：仅供 `provideLocale` / 测试使用，不在包根导出面内。
  */
@@ -82,7 +94,8 @@ export function resolveLocaleMessages(
     locale?: CaomeiLocale,
     overrides?: CaomeiLocaleMessageOverrides,
 ): CaomeiLocaleMessages {
-    return mergeLocaleMessages(caomeiLocales[resolveLocaleCode(locale)], overrides)
+    const code = resolveLocaleCode(locale)
+    return mergeLocaleMessages(caomeiLocales[code] ?? defaultLocaleMessages, overrides)
 }
 
 /**
@@ -94,10 +107,12 @@ export function resolveLocaleMessages(
 export function provideLocale(
     options: ProvideLocaleOptions = {},
 ): ComputedRef<CaomeiLocaleMessages> {
-    const messages = computed(() =>
-        resolveLocaleMessages(toValue(options.locale), toValue(options.messages)),
-    )
+    // 语言标识只解析一次：两个注入值共用同一 `computed`，
+    // 避免同一次解析触发两条未注册告警（同时消费 `useLocale` 与 `useLocaleCode` 的组件会各读一次）。
     const code = computed(() => resolveLocaleCode(toValue(options.locale)))
+    const messages = computed(() =>
+        mergeLocaleMessages(caomeiLocales[code.value] ?? defaultLocaleMessages, toValue(options.messages)),
+    )
     provide(caomeiLocaleKey, messages)
     provide(caomeiLocaleCodeKey, code)
     return messages

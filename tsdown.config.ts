@@ -14,6 +14,13 @@ export default defineConfig({
         index: 'src/index.ts',
         resolver: 'src/resolver/index.ts',
         nuxt: 'src/nuxt/module.ts',
+        // 语言子路径入口：产出 `dist/locale/<code>.js` 与同名 `.d.ts`，
+        // 经 `package.json` 的 `./locale/<code>` 子路径导出，供按需引入语言包。
+        // 预注册语言（`PRE_REGISTERED_LOCALES`）由 `src/locale/index.ts` 静态引入，
+        // 不在此登记；此处只登记需按需引入的内建语言。
+        'locale/zh-tw': 'src/locale/zh-tw.ts',
+        'locale/ja-jp': 'src/locale/ja-jp.ts',
+        'locale/ko-kr': 'src/locale/ko-kr.ts',
     },
     format: ['esm'],
     platform: 'neutral',

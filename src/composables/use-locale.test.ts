@@ -1,9 +1,21 @@
 import { mount } from '@vue/test-utils'
 import { computed, defineComponent, h, inject, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CaomeiConfigProvider } from '../components/config-provider'
-import { caomeiLocales, defaultLocaleMessages, type CaomeiLocale } from '../locale'
+import {
+    PRE_REGISTERED_LOCALES,
+    caomeiLocales,
+    defaultLocaleMessages,
+    registerLocale,
+    type CaomeiLocale,
+} from '../locale'
+import jaJP from '../locale/ja-jp'
+
+/** 空实现：替代内联空箭头，避免 `no-empty-function` 告警。 */
+const noop = (): undefined => undefined
+import koKR from '../locale/ko-kr'
+import zhTW from '../locale/zh-tw'
 import {
     caomeiLocaleCodeKey,
     caomeiLocaleKey,
@@ -14,6 +26,31 @@ import {
     useLocale,
     useLocaleCode,
 } from './use-locale'
+
+/** 按需引入语言对象（默认未注册，与消费方经子路径引入后的用法一致）。 */
+const ON_DEMAND_LOCALES = { 'zh-TW': zhTW, 'ja-JP': jaJP, 'ko-KR': koKR } as const
+
+/** 在测试内注册按需语言，并在用例结束后恢复注册表初值。 */
+function withOnDemandLocales(codes: (keyof typeof ON_DEMAND_LOCALES)[]): void {
+    for (const code of codes) {
+        registerLocale(code, ON_DEMAND_LOCALES[code])
+    }
+}
+
+afterEach(() => {
+    for (const code of Object.keys(ON_DEMAND_LOCALES) as (keyof typeof ON_DEMAND_LOCALES)[]) {
+        if (!(PRE_REGISTERED_LOCALES as readonly string[]).includes(code)) {
+            delete caomeiLocales[code]
+        }
+    }
+    vi.restoreAllMocks()
+})
+
+// 未注册语言会走开发期告警（真实行为）：默认静音以保持用例输出可读，
+// 断言告警的用例再显式检查 console.warn 的调用。
+beforeEach(() => {
+    vi.spyOn(console, 'warn').mockImplementation(noop)
+})
 
 /** 通过 useLocale 读取文案的探针组件 */
 const Probe = defineComponent({
@@ -61,15 +98,21 @@ describe('resolveLocaleMessages', () => {
         expect(resolveLocaleMessages('fr-FR' as CaomeiLocale)).toBe(defaultLocaleMessages)
     })
 
-    it('新增内建语种按自身文案解析', () => {
+    it('按需引入的语种注册后按自身文案解析', () => {
+        withOnDemandLocales(['zh-TW', 'ja-JP', 'ko-KR'])
         // 断言钉住的是内建译文原文：人工复核改动译文时需同步更新
         expect(resolveLocaleMessages('zh-TW').pagination.label).toBe('分頁')
         expect(resolveLocaleMessages('ja-JP').input.clear).toBe('クリア')
         expect(resolveLocaleMessages('ko-KR').input.clear).toBe('지우기')
     })
 
-    it('注册表包含五个内建语种', () => {
-        expect(Object.keys(caomeiLocales)).toEqual(['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR'])
+    it('未注册的按需语种回落默认文案', () => {
+        expect(resolveLocaleMessages('ja-JP')).toBe(defaultLocaleMessages)
+    })
+
+    it('注册表初值只含预注册语言（按需语种不随包根注册）', () => {
+        expect(Object.keys(caomeiLocales)).toEqual([...PRE_REGISTERED_LOCALES])
+        expect([...PRE_REGISTERED_LOCALES]).toEqual(['zh-CN', 'en-US'])
     })
 
     it('原型链键不被当作内建语言', () => {
@@ -90,12 +133,93 @@ describe('resolveLocaleCode', () => {
         expect(resolveLocaleCode()).toBe('zh-CN')
     })
 
-    it('内建语言原样返回，未知语言（含原型链键）回退默认', () => {
+    it('预注册语言原样返回，未注册与未知语言（含原型链键）回退默认', () => {
         expect(resolveLocaleCode('en-US')).toBe('en-US')
-        expect(resolveLocaleCode('ja-JP')).toBe('ja-JP')
+        expect(resolveLocaleCode('ja-JP')).toBe('zh-CN')
         expect(resolveLocaleCode('fr-FR' as CaomeiLocale)).toBe('zh-CN')
         expect(resolveLocaleCode('constructor' as CaomeiLocale)).toBe('zh-CN')
         expect(resolveLocaleCode('toString' as CaomeiLocale)).toBe('zh-CN')
+    })
+
+    it('已注册的按需语言原样返回', () => {
+        withOnDemandLocales(['ja-JP'])
+        expect(resolveLocaleCode('ja-JP')).toBe('ja-JP')
+    })
+})
+
+describe('未注册语言的开发期告警', () => {
+    it('未注册语言触发一条可操作告警（含子路径与注册示例）', () => {
+        resolveLocaleCode('ja-JP')
+        const warn = vi.mocked(console.warn)
+        expect(warn).toHaveBeenCalledTimes(1)
+        const message = String(warn.mock.calls[0][0])
+        expect(message).toContain('语言 \'ja-JP\' 未注册')
+        expect(message).toContain('caomei-ui/locale/ja-jp')
+        expect(message).toContain('registerLocale')
+    })
+
+    it('预注册语言与未指定语言不告警', () => {
+        resolveLocaleCode('en-US')
+        resolveLocaleCode()
+        expect(vi.mocked(console.warn)).not.toHaveBeenCalled()
+    })
+
+    it('按需语言注册后不再告警', () => {
+        withOnDemandLocales(['ko-KR'])
+        resolveLocaleCode('ko-KR')
+        expect(vi.mocked(console.warn)).not.toHaveBeenCalled()
+    })
+})
+
+describe('未注册语言的告警粒度', () => {
+    it('provideLocale 解析未注册语言时只告警一次（两个注入值共用一次解析）', () => {
+        const Root = defineComponent({
+            setup() {
+                provideLocale({ locale: 'ja-JP' })
+                // 后代同时消费文案与语言标识（两处 inject）也不应重复告警
+                return () => h('div', [h(CodeProbe), h(KeyProbe), h(Probe)])
+            },
+        })
+        const wrapper = mount(Root)
+        expect(wrapper.text()).toContain('zh-CN')
+        expect(vi.mocked(console.warn)).toHaveBeenCalledTimes(1)
+        wrapper.unmount()
+    })
+})
+
+describe('registerLocale 时序契约', () => {
+    /** 在 setup 中以 props 驱动的 provider 探针（语言切换经 computed 传播）。 */
+    const ProviderProbe = defineComponent({
+        name: 'LocaleProviderProbe',
+        props: { locale: { type: String, required: true } },
+        setup(props) {
+            const messages = provideLocale({ locale: computed(() => props.locale as CaomeiLocale) })
+            return () => h('span', messages.value.input.clear)
+        },
+    })
+
+    it('先注册后 provider 时按注册文案生效', () => {
+        withOnDemandLocales(['ja-JP'])
+        expect(mount(ProviderProbe, { props: { locale: 'ja-JP' } }).text()).toBe('クリア')
+    })
+
+    it('先 provider 后注册不回溯生效（时序约束已在文档声明）', async () => {
+        const wrapper = mount(ProviderProbe, { props: { locale: 'ja-JP' } })
+        expect(wrapper.text()).toBe('清除')
+
+        withOnDemandLocales(['ja-JP'])
+        await nextTick()
+        // 注册表为非响应式对象：已完成解析的 provider 不因后续注册而重算。
+        expect(wrapper.text()).toBe('清除')
+    })
+
+    it('provider 语言后续切换仍按注册表解析', async () => {
+        withOnDemandLocales(['ja-JP'])
+        const wrapper = mount(ProviderProbe, { props: { locale: 'en-US' } })
+        expect(wrapper.text()).toBe('Clear')
+
+        await wrapper.setProps({ locale: 'ja-JP' })
+        expect(wrapper.text()).toBe('クリア')
     })
 })
 
@@ -105,6 +229,8 @@ describe('useLocaleCode', () => {
     })
 
     it('读取 provideLocale 提供的语言标识', () => {
+        // 按需语种须先注册：未注册时会回落默认语言（见「未注册语言的开发期告警」）
+        withOnDemandLocales(['ko-KR'])
         const Root = defineComponent({
             setup() {
                 provideLocale({ locale: 'ko-KR' })
@@ -133,6 +259,7 @@ describe('useLocaleCode', () => {
     })
 
     it('CaomeiConfigProvider 向后代提供语言标识', async () => {
+        withOnDemandLocales(['ja-JP', 'zh-TW'])
         const wrapper = mount(CaomeiConfigProvider, {
             props: { locale: 'ja-JP' },
             slots: { default: () => h(CodeProbe) },

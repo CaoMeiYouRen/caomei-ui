@@ -2,6 +2,10 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CaomeiConfigProvider } from '../config-provider'
+import { caomeiLocales, registerLocale } from '../../locale'
+import jaJP from '../../locale/ja-jp'
+import koKR from '../../locale/ko-kr'
+import zhTW from '../../locale/zh-tw'
 import CaomeiRichTextEditor from './rich-text-editor.vue'
 
 /**
@@ -21,6 +25,12 @@ vi.mock('./editor-language', async (importOriginal) => {
 vi.mock('@vavt/cm-extension/dist/locale/zh-TW.js', () => ({ default: { id: 'zh-TW-stub' } }))
 vi.mock('@vavt/cm-extension/dist/locale/jp-JP.js', () => ({ default: { id: 'jp-JP-stub' } }))
 vi.mock('@vavt/cm-extension/dist/locale/ko-KR.js', () => ({ default: { id: 'ko-KR-stub' } }))
+
+// 语言映射用例涉及按需引入的语种：须先注册（未注册会回落 zh-CN，见「按需引入语言」）。
+// 该注册为文件级副作用，vitest 默认按文件隔离模块注册表，不影响其它用例。
+registerLocale('zh-TW', zhTW)
+registerLocale('ja-JP', jaJP)
+registerLocale('ko-KR', koKR)
 
 const MdEditorStub = defineComponent({
     name: 'MdEditorStub',
@@ -224,6 +234,26 @@ describe('CaomeiRichTextEditor 国际化联动', () => {
         expect(mocks.config).toHaveBeenCalledWith({
             editorConfig: { languageUserDefined: { 'jp-JP': { id: 'jp-JP-stub' } } },
         })
+    })
+
+    it('未注册的按需语言回落 zh-CN 且不加载扩展语言', async () => {
+        // 语义契约：`CaomeiLocale` 含该语言 ≠ 已注册；未注册时 provider 回落默认语言，
+        // 编辑器因此按 zh-CN 取值、且不发起扩展语言注册（见「按需引入语言」）。
+        const saved = caomeiLocales['zh-TW']
+        delete caomeiLocales['zh-TW']
+        try {
+            const host = mount(CaomeiConfigProvider, {
+                props: { locale: 'zh-TW' },
+                slots: { default: () => h(CaomeiRichTextEditor) },
+            })
+            await flushPromises()
+
+            expect(host.findComponent({ name: 'MdEditorStub' }).props('language')).toBe('zh-CN')
+        } finally {
+            if (saved) {
+                caomeiLocales['zh-TW'] = saved
+            }
+        }
     })
 
     it('zh-TW / ko-KR 注册对应扩展语言', async () => {

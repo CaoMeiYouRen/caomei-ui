@@ -12,6 +12,18 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./dist/styles/index.css",
+    "./locale/zh-tw": {
+      "types": "./dist/locale/zh-tw.d.ts",
+      "import": "./dist/locale/zh-tw.js"
+    },
+    "./locale/ja-jp": {
+      "types": "./dist/locale/ja-jp.d.ts",
+      "import": "./dist/locale/ja-jp.js"
+    },
+    "./locale/ko-kr": {
+      "types": "./dist/locale/ko-kr.d.ts",
+      "import": "./dist/locale/ko-kr.js"
+    },
     "./resolver": {
       "types": "./dist/resolver.d.ts",
       "import": "./dist/resolver.js"

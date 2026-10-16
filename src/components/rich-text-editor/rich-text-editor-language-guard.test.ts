@@ -2,6 +2,10 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { CaomeiConfigProvider } from '../config-provider'
+import { registerLocale } from '../../locale'
+import jaJP from '../../locale/ja-jp'
+import koKR from '../../locale/ko-kr'
+import zhTW from '../../locale/zh-tw'
 import CaomeiRichTextEditor from './rich-text-editor.vue'
 
 /**
@@ -35,6 +39,12 @@ vi.mock('./editor-language', async (importOriginal) => {
             }),
     }
 })
+
+// 语言映射用例涉及按需引入的语种：须先注册（未注册会回落 zh-CN，见「按需引入语言」）。
+// 该注册为文件级副作用，vitest 默认按文件隔离模块注册表，不影响其它用例。
+registerLocale('zh-TW', zhTW)
+registerLocale('ja-JP', jaJP)
+registerLocale('ko-KR', koKR)
 
 beforeEach(() => {
     mocks.pending.length = 0

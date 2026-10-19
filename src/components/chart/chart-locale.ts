@@ -16,6 +16,12 @@ export const CHART_LOCALE_BY_LOCALE: Record<CaomeiLocale, string> = {
     'en-US': 'EN',
     'ja-JP': 'JA',
     'ko-KR': 'KO',
+    'es-ES': 'ES',
+    'fr-FR': 'FR',
+    'de-DE': 'DE',
+    'ru-RU': 'RU',
+    // ECharts 的巴西葡语键名带小写地区段
+    'pt-BR': 'PT-br',
 }
 
 /**
@@ -30,6 +36,11 @@ export const CHART_BUILTIN_LOCALES = ['EN', 'ZH'] as const
 const EXTRA_LOCALE_LOADERS: Partial<Record<string, () => Promise<unknown>>> = {
     JA: () => import('echarts/i18n/langJA'),
     KO: () => import('echarts/i18n/langKO'),
+    ES: () => import('echarts/i18n/langES'),
+    FR: () => import('echarts/i18n/langFR'),
+    DE: () => import('echarts/i18n/langDE'),
+    RU: () => import('echarts/i18n/langRU'),
+    'PT-br': () => import('echarts/i18n/langPT-br'),
 }
 
 /**

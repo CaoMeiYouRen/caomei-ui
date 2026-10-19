@@ -84,7 +84,7 @@ describe('findMissingCssImports', () => {
 
 /** 构造含语言子路径导出的产物夹具。 */
 function createLocaleFixture({
-    subpaths = ['zh-tw', 'ja-jp', 'ko-kr'],
+    subpaths = ['zh-tw', 'ja-jp', 'ko-kr', 'es-es', 'fr-fr', 'de-de', 'ru-ru', 'pt-br'],
     registryImports = [],
     defaultExport = true,
     exportTargets,
@@ -139,10 +139,12 @@ describe('findLocaleSubpathProblems', () => {
     it('子路径产物缺失时报错', () => {
         const dir = createFixture({
             'package.json': JSON.stringify({
-                exports: Object.fromEntries(['zh-tw', 'ja-jp', 'ko-kr'].map((code) => [
-                    `./locale/${code}`,
-                    { import: `./dist/locale/${code}.js` },
-                ])),
+                exports: Object.fromEntries(
+                    ['zh-tw', 'ja-jp', 'ko-kr', 'es-es', 'fr-fr', 'de-de', 'ru-ru', 'pt-br'].map((code) => [
+                        `./locale/${code}`,
+                        { import: `./dist/locale/${code}.js` },
+                    ]),
+                ),
             }),
             'dist/locale/index.js': 'export {};',
         })
@@ -167,7 +169,7 @@ describe('findLocaleSubpathProblems', () => {
 
     it('孤儿语言产物时报错（既未注册、也无子路径登记）', () => {
         const dir = createLocaleFixture()
-        writeFileSync(join(dir, 'dist/locale/fr-fr.js'), 'export default {};\n')
+        writeFileSync(join(dir, 'dist/locale/it-it.js'), 'export default {};\n')
         expect(findLocaleSubpathProblems(dir).join('\n')).toContain('孤儿语言产物')
     })
 })

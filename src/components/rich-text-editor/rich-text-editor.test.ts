@@ -3,8 +3,13 @@ import { defineComponent, h, nextTick } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CaomeiConfigProvider } from '../config-provider'
 import { caomeiLocales, registerLocale } from '../../locale'
+import deDE from '../../locale/de-de'
+import esES from '../../locale/es-es'
+import frFR from '../../locale/fr-fr'
 import jaJP from '../../locale/ja-jp'
 import koKR from '../../locale/ko-kr'
+import ptBR from '../../locale/pt-br'
+import ruRU from '../../locale/ru-ru'
 import zhTW from '../../locale/zh-tw'
 import CaomeiRichTextEditor from './rich-text-editor.vue'
 
@@ -25,12 +30,22 @@ vi.mock('./editor-language', async (importOriginal) => {
 vi.mock('@vavt/cm-extension/dist/locale/zh-TW.js', () => ({ default: { id: 'zh-TW-stub' } }))
 vi.mock('@vavt/cm-extension/dist/locale/jp-JP.js', () => ({ default: { id: 'jp-JP-stub' } }))
 vi.mock('@vavt/cm-extension/dist/locale/ko-KR.js', () => ({ default: { id: 'ko-KR-stub' } }))
+vi.mock('@vavt/cm-extension/dist/locale/es-ES.js', () => ({ default: { id: 'es-ES-stub' } }))
+vi.mock('@vavt/cm-extension/dist/locale/fr-FR.js', () => ({ default: { id: 'fr-FR-stub' } }))
+vi.mock('@vavt/cm-extension/dist/locale/de-DE.js', () => ({ default: { id: 'de-DE-stub' } }))
+vi.mock('@vavt/cm-extension/dist/locale/ru.js', () => ({ default: { id: 'ru-stub' } }))
+vi.mock('@vavt/cm-extension/dist/locale/pt-BR.js', () => ({ default: { id: 'pt-BR-stub' } }))
 
 // 语言映射用例涉及按需引入的语种：须先注册（未注册会回落 zh-CN，见「按需引入语言」）。
 // 该注册为文件级副作用，vitest 默认按文件隔离模块注册表，不影响其它用例。
 registerLocale('zh-TW', zhTW)
 registerLocale('ja-JP', jaJP)
 registerLocale('ko-KR', koKR)
+registerLocale('es-ES', esES)
+registerLocale('fr-FR', frFR)
+registerLocale('de-DE', deDE)
+registerLocale('ru-RU', ruRU)
+registerLocale('pt-BR', ptBR)
 
 const MdEditorStub = defineComponent({
     name: 'MdEditorStub',
@@ -256,10 +271,15 @@ describe('CaomeiRichTextEditor 国际化联动', () => {
         }
     })
 
-    it('zh-TW / ko-KR 注册对应扩展语言', async () => {
+    it('zh-TW / ko-KR 与一期新增 5 语注册对应扩展语言', async () => {
         for (const [locale, key, stub] of [
             ['zh-TW', 'zh-TW', 'zh-TW-stub'],
             ['ko-KR', 'ko-KR', 'ko-KR-stub'],
+            ['es-ES', 'es-ES', 'es-ES-stub'],
+            ['fr-FR', 'fr-FR', 'fr-FR-stub'],
+            ['de-DE', 'de-DE', 'de-DE-stub'],
+            ['ru-RU', 'ru', 'ru-stub'],
+            ['pt-BR', 'pt-BR', 'pt-BR-stub'],
         ] as const) {
             mocks.config.mockClear()
             const host = mount(CaomeiConfigProvider, {

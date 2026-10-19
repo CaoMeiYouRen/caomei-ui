@@ -17,6 +17,12 @@ export const EDITOR_LANGUAGE_BY_LOCALE: Record<CaomeiLocale, string> = {
     // 扩展包使用 `jp-JP` 键名，与本库的 `ja-JP` 不同，须显式转换
     'ja-JP': 'jp-JP',
     'ko-KR': 'ko-KR',
+    'es-ES': 'es-ES',
+    'fr-FR': 'fr-FR',
+    'de-DE': 'de-DE',
+    // 扩展包使用 `ru` 键名，与本库的 `ru-RU` 不同，须显式转换
+    'ru-RU': 'ru',
+    'pt-BR': 'pt-BR',
 }
 
 /** 未登记语种的回退语言键。 */
@@ -49,6 +55,11 @@ const EXTENSION_LOCALE_LOADERS: Partial<Record<CaomeiLocale, () => Promise<Local
     'zh-TW': () => import('@vavt/cm-extension/dist/locale/zh-TW.js'),
     'ja-JP': () => import('@vavt/cm-extension/dist/locale/jp-JP.js'),
     'ko-KR': () => import('@vavt/cm-extension/dist/locale/ko-KR.js'),
+    'es-ES': () => import('@vavt/cm-extension/dist/locale/es-ES.js'),
+    'fr-FR': () => import('@vavt/cm-extension/dist/locale/fr-FR.js'),
+    'de-DE': () => import('@vavt/cm-extension/dist/locale/de-DE.js'),
+    'ru-RU': () => import('@vavt/cm-extension/dist/locale/ru.js'),
+    'pt-BR': () => import('@vavt/cm-extension/dist/locale/pt-BR.js'),
 }
 
 /** 该 locale 是否依赖扩展包提供文案。 */

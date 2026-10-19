@@ -7,3 +7,8 @@
  */
 declare module 'echarts/i18n/langJA'
 declare module 'echarts/i18n/langKO'
+declare module 'echarts/i18n/langES'
+declare module 'echarts/i18n/langFR'
+declare module 'echarts/i18n/langDE'
+declare module 'echarts/i18n/langRU'
+declare module 'echarts/i18n/langPT-br'

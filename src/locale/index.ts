@@ -14,7 +14,17 @@ export type { CaomeiLocaleMessageOverrides, CaomeiLocaleMessages } from './types
  * 注意：**类型联合不等于「已可用」**——成员只表示本库随包提供该语言的文案文件；
  * 实际可用与否取决于是否已注册（见 `PRE_REGISTERED_LOCALES`）。
  */
-export type CaomeiLocale = 'zh-CN' | 'en-US' | 'zh-TW' | 'ja-JP' | 'ko-KR'
+export type CaomeiLocale =
+    | 'zh-CN'
+    | 'en-US'
+    | 'zh-TW'
+    | 'ja-JP'
+    | 'ko-KR'
+    | 'es-ES'
+    | 'fr-FR'
+    | 'de-DE'
+    | 'ru-RU'
+    | 'pt-BR'
 
 /**
  * 随包根**预注册**的语言：无需注册即可 `provideLocale({ locale })` / `<CaomeiConfigProvider locale>`。

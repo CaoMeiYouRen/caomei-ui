@@ -53,10 +53,10 @@ export const PRE_REGISTERED_CONST = 'PRE_REGISTERED_LOCALES'
 export const SUBPATH_EXPORT_PREFIX = './locale/'
 
 /** 受检面下界：联合成员数不得低于此值（防内建语言集合被静默收窄）。 */
-export const MIN_UNION_LOCALES = 5
+export const MIN_UNION_LOCALES = 10
 
 /** 受检面下界：语言子路径登记数不得低于此值（防按需引入能力被静默移除）。 */
-export const MIN_SUBPATH_LOCALES = 3
+export const MIN_SUBPATH_LOCALES = 8
 
 /** 不参与「已注册文案文件」检查的模块：注册表、类型定义与同目录测试。 */
 const NON_LOCALE_FILE_RE = /^(?:index|types)\.ts$|\.(?:test|spec)\.ts$/
@@ -74,8 +74,8 @@ const REGISTRY_ENTRY_RE = /^ {4}'([^']+)': ([A-Za-z_$][\w$]*),$/gm
 /** 预注册集合声明：`export const PRE_REGISTERED_LOCALES = ['zh-CN', 'en-US'] as const ...`。 */
 const PRE_REGISTERED_RE = /^export const PRE_REGISTERED_LOCALES = \[([^\]]*)\](?: as const[^\n]*)?$/m
 
-/** 显式语言联合声明：`export type CaomeiLocale = 'zh-CN' | 'en-US'`。 */
-const LOCALE_UNION_RE = /^export type CaomeiLocale = ([^\n]+)$/m
+/** 显式语言联合声明：支持单行 / 多行，并允许后接注释或其它声明。 */
+const LOCALE_UNION_RE = /(?:^|\n)export type CaomeiLocale =([\s\S]*?)(?=\n\s*(?:export|const|let|var|function|interface|type)\b|\n\s*\n|$)/
 
 /** 联合成员的字面量（单引号字符串）。 */
 const UNION_MEMBER_RE = /'([^']+)'/g
@@ -228,12 +228,14 @@ export function parseLocaleSource(text, file = 'locale.ts') {
  * - `union`：`CaomeiLocale` 显式联合的字面量成员（按声明顺序）。
  */
 export function parseLocaleRegistry(text, file = 'src/locale/index.ts') {
+    // 字符串感知地剥离注释：联合 / 注册表附近的注释不得贡献伪语言成员。
+    const source = stripComments(text)
     const imports = new Map()
-    for (const match of text.matchAll(IMPORT_RE)) {
+    for (const match of source.matchAll(IMPORT_RE)) {
         imports.set(match[1], match[2])
     }
 
-    const block = text.match(REGISTRY_RE)
+    const block = source.match(REGISTRY_RE)
     if (!block) {
         throw new Error(`${file} 未找到 caomeiLocales 注册表`)
     }
@@ -251,17 +253,17 @@ export function parseLocaleRegistry(text, file = 'src/locale/index.ts') {
         locales.push({ id: match[1], file: `${importPath.slice(2)}.ts` })
     }
 
-    const preRegisteredBlock = text.match(PRE_REGISTERED_RE)
+    const preRegisteredBlock = source.match(PRE_REGISTERED_RE)
     const preRegistered = preRegisteredBlock
         ? [...preRegisteredBlock[1].matchAll(UNION_MEMBER_RE)].map((match) => match[1])
         : []
 
-    const unionBlock = text.match(LOCALE_UNION_RE)
+    const unionBlock = source.match(LOCALE_UNION_RE)
     const union = unionBlock
         ? [...unionBlock[1].matchAll(UNION_MEMBER_RE)].map((match) => match[1])
         : []
 
-    const defaultLocale = text.match(DEFAULT_LOCALE_RE)?.[1]
+    const defaultLocale = source.match(DEFAULT_LOCALE_RE)?.[1]
     if (!defaultLocale) {
         throw new Error(`${file} 未找到 defaultLocale 声明`)
     }

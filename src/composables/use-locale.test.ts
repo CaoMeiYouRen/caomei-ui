@@ -10,12 +10,17 @@ import {
     registerLocale,
     type CaomeiLocale,
 } from '../locale'
+import deDE from '../locale/de-de'
+import esES from '../locale/es-es'
+import frFR from '../locale/fr-fr'
 import jaJP from '../locale/ja-jp'
+import koKR from '../locale/ko-kr'
+import ptBR from '../locale/pt-br'
+import ruRU from '../locale/ru-ru'
+import zhTW from '../locale/zh-tw'
 
 /** 空实现：替代内联空箭头，避免 `no-empty-function` 告警。 */
 const noop = (): undefined => undefined
-import koKR from '../locale/ko-kr'
-import zhTW from '../locale/zh-tw'
 import {
     caomeiLocaleCodeKey,
     caomeiLocaleKey,
@@ -28,7 +33,16 @@ import {
 } from './use-locale'
 
 /** 按需引入语言对象（默认未注册，与消费方经子路径引入后的用法一致）。 */
-const ON_DEMAND_LOCALES = { 'zh-TW': zhTW, 'ja-JP': jaJP, 'ko-KR': koKR } as const
+const ON_DEMAND_LOCALES = {
+    'zh-TW': zhTW,
+    'ja-JP': jaJP,
+    'ko-KR': koKR,
+    'es-ES': esES,
+    'fr-FR': frFR,
+    'de-DE': deDE,
+    'ru-RU': ruRU,
+    'pt-BR': ptBR,
+} as const
 
 /** 在测试内注册按需语言，并在用例结束后恢复注册表初值。 */
 function withOnDemandLocales(codes: (keyof typeof ON_DEMAND_LOCALES)[]): void {
@@ -95,7 +109,7 @@ describe('resolveLocaleMessages', () => {
 
     it('按语言标识选择内建文案，未知语言回退默认', () => {
         expect(resolveLocaleMessages('en-US').input.clear).toBe('Clear')
-        expect(resolveLocaleMessages('fr-FR' as CaomeiLocale)).toBe(defaultLocaleMessages)
+        expect(resolveLocaleMessages('it-IT' as CaomeiLocale)).toBe(defaultLocaleMessages)
     })
 
     it('按需引入的语种注册后按自身文案解析', () => {
@@ -104,6 +118,15 @@ describe('resolveLocaleMessages', () => {
         expect(resolveLocaleMessages('zh-TW').pagination.label).toBe('分頁')
         expect(resolveLocaleMessages('ja-JP').input.clear).toBe('クリア')
         expect(resolveLocaleMessages('ko-KR').input.clear).toBe('지우기')
+    })
+
+    it('一期新增 5 语注册后按自身文案解析', () => {
+        withOnDemandLocales(['es-ES', 'fr-FR', 'de-DE', 'ru-RU', 'pt-BR'])
+        expect(resolveLocaleMessages('es-ES').input.clear).toBe('Borrar')
+        expect(resolveLocaleMessages('fr-FR').input.clear).toBe('Effacer')
+        expect(resolveLocaleMessages('de-DE').input.clear).toBe('Löschen')
+        expect(resolveLocaleMessages('ru-RU').input.clear).toBe('Очистить')
+        expect(resolveLocaleMessages('pt-BR').input.clear).toBe('Limpar')
     })
 
     it('未注册的按需语种回落默认文案', () => {
@@ -136,7 +159,7 @@ describe('resolveLocaleCode', () => {
     it('预注册语言原样返回，未注册与未知语言（含原型链键）回退默认', () => {
         expect(resolveLocaleCode('en-US')).toBe('en-US')
         expect(resolveLocaleCode('ja-JP')).toBe('zh-CN')
-        expect(resolveLocaleCode('fr-FR' as CaomeiLocale)).toBe('zh-CN')
+        expect(resolveLocaleCode('it-IT' as CaomeiLocale)).toBe('zh-CN')
         expect(resolveLocaleCode('constructor' as CaomeiLocale)).toBe('zh-CN')
         expect(resolveLocaleCode('toString' as CaomeiLocale)).toBe('zh-CN')
     })

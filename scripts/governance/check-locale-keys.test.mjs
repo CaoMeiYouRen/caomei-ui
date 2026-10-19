@@ -55,11 +55,11 @@ function importNameOf(id) {
  * 默认形态对齐仓库现状意图：`union` 为显式联合，`preRegistered` 随包根注册，
  * 其余成员须登记语言子路径（`package.json` 的 `exports` 与 `tsdown.config.ts` 的入口）。
  *
- * 默认值刻意**满足受检面下界**（5 语 / 3 子路径）：负向对照用例只应命中被测规则，
+ * 默认值刻意**满足受检面下界**（10 语 / 8 子路径）：负向对照用例只应命中被测规则，
  * 不应被下界噪声污染；下界本身由专门的用例覆盖（传入更小的集合）。
  */
 function createFixture({
-    union = ['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR'],
+    union = ['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR', 'es-ES', 'fr-FR', 'de-DE', 'ru-RU', 'pt-BR'],
     preRegistered = ['zh-CN', 'en-US'],
     registryEntries,
     sources = {},
@@ -176,7 +176,7 @@ describe('check-locale-keys 仓库不变量', () => {
         })
 
         const ids = result.details.locales.map((locale) => locale.id)
-        expect(ids).toEqual(['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR'])
+        expect(ids).toEqual(['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR', 'es-ES', 'fr-FR', 'de-DE', 'ru-RU', 'pt-BR'])
         for (const locale of result.details.locales) {
             expect({ namespaces: locale.namespaces, keys: locale.keys }).toEqual({
                 namespaces: 28,
@@ -190,14 +190,18 @@ describe('check-locale-keys 仓库不变量', () => {
         expect(result.details.preRegistered).toEqual(['zh-CN', 'en-US'])
         expect(result.details.locales.filter((locale) => locale.preRegistered).map((locale) => locale.id))
             .toEqual(['zh-CN', 'en-US'])
-        expect(result.details.subpaths.exports).toEqual(['zh-tw', 'ja-jp', 'ko-kr'])
-        expect(result.details.subpaths.entries).toEqual(['zh-tw', 'ja-jp', 'ko-kr'])
+        expect(result.details.subpaths.exports).toEqual([
+            'zh-tw', 'ja-jp', 'ko-kr', 'es-es', 'fr-fr', 'de-de', 'ru-ru', 'pt-br',
+        ])
+        expect(result.details.subpaths.entries).toEqual([
+            'zh-tw', 'ja-jp', 'ko-kr', 'es-es', 'fr-fr', 'de-de', 'ru-ru', 'pt-br',
+        ])
     })
 
     it('内建语言集合与受检面下界钉定（下界等于现状，且不得被下调）', () => {
         const result = checkLocaleKeys()
-        expect(MIN_UNION_LOCALES).toBe(5)
-        expect(MIN_SUBPATH_LOCALES).toBe(3)
+        expect(MIN_UNION_LOCALES).toBe(10)
+        expect(MIN_SUBPATH_LOCALES).toBe(8)
         expect(result.details.union.length).toBe(MIN_UNION_LOCALES)
         expect(result.details.subpaths.exports.length).toBe(MIN_SUBPATH_LOCALES)
     })
@@ -225,6 +229,63 @@ describe('check-locale-keys 仓库不变量', () => {
         expect(preRegistered).toEqual(['zh-CN'])
         expect(union).toEqual(['zh-CN', 'zh-TW'])
         expect(locales).toEqual([{ id: 'zh-CN', file: 'zh-cn.ts' }])
+    })
+
+    it('parseLocaleRegistry 支持多行显式联合', () => {
+        const { union } = parseLocaleRegistry(
+            [
+                'import zhCN from \'./zh-cn\'',
+                '',
+                'export type CaomeiLocale =',
+                '    | \'zh-CN\'',
+                '    | \'en-US\'',
+                '    | \'fr-FR\'',
+                '',
+                'export const caomeiLocales: Partial<Record<CaomeiLocale, CaomeiLocaleMessages>> = {',
+                '    \'zh-CN\': zhCN,',
+                '}',
+                '',
+                'export const defaultLocale: CaomeiLocale = \'zh-CN\'',
+            ].join('\n'),
+        )
+
+        expect(union).toEqual(['zh-CN', 'en-US', 'fr-FR'])
+    })
+
+    it('联合后紧邻注释时不把注释中的语言字面量计为成员', () => {
+        const { union } = parseLocaleRegistry(
+            [
+                'import zhCN from \'./zh-cn\'',
+                '',
+                'export type CaomeiLocale = \'zh-CN\' | \'en-US\'',
+                '// note: \'fr-FR\' is not builtin',
+                'export const caomeiLocales: Partial<Record<CaomeiLocale, CaomeiLocaleMessages>> = {',
+                '    \'zh-CN\': zhCN,',
+                '}',
+                '',
+                'export const defaultLocale: CaomeiLocale = \'zh-CN\'',
+            ].join('\n'),
+        )
+
+        expect(union).toEqual(['zh-CN', 'en-US'])
+    })
+
+    it('联合位于文件末尾时可解析', () => {
+        const { union } = parseLocaleRegistry(
+            [
+                'import zhCN from \'./zh-cn\'',
+                '',
+                'export const caomeiLocales: Partial<Record<CaomeiLocale, CaomeiLocaleMessages>> = {',
+                '    \'zh-CN\': zhCN,',
+                '}',
+                '',
+                'export const defaultLocale: CaomeiLocale = \'zh-CN\'',
+                '',
+                'export type CaomeiLocale = \'zh-CN\' | \'en-US\'',
+            ].join('\n'),
+        )
+
+        expect(union).toEqual(['zh-CN', 'en-US'])
     })
 })
 
@@ -368,11 +429,11 @@ describe('check-locale-keys 失败路径：结构一致性', () => {
 
     it('语言文件不在联合中时报错', () => {
         const dir = createBaseFixture({
-            extraFiles: { 'fr-fr.ts': buildSource(BASE_NAMESPACES, 'frFR') },
+            extraFiles: { 'it-it.ts': buildSource(BASE_NAMESPACES, 'itIT') },
         })
         const result = checkLocaleKeys(dir)
         expect(result.errors.join('\n')).toContain(
-            'src/locale/fr-fr.ts 未在 src/locale/index.ts 的 CaomeiLocale 联合中声明',
+            'src/locale/it-it.ts 未在 src/locale/index.ts 的 CaomeiLocale 联合中声明',
         )
     })
 
@@ -476,10 +537,10 @@ describe('check-locale-keys 失败路径：预注册集合与分发登记（负�
     })
 
     it('悬空的 exports 子路径时报错', () => {
-        const dir = createBaseFixture({ subpathExports: ['zh-tw', 'fr-fr'] })
+        const dir = createBaseFixture({ subpathExports: ['zh-tw', 'it-it'] })
         const result = checkLocaleKeys(dir)
         expect(result.ok).toBe(false)
-        expect(result.errors.join('\n')).toContain('exports 子路径 ./locale/fr-fr 不在「非预注册内建语言」集合内')
+        expect(result.errors.join('\n')).toContain('exports 子路径 ./locale/it-it 不在「非预注册内建语言」集合内')
     })
 
     it('内建语言集合低于下界时报错', () => {
@@ -492,14 +553,14 @@ describe('check-locale-keys 失败路径：预注册集合与分发登记（负�
             },
         })
         const result = checkLocaleKeys(dir)
-        expect(MIN_UNION_LOCALES).toBe(5)
+        expect(MIN_UNION_LOCALES).toBe(10)
         expect(result.errors.join('\n')).toContain('低于受检面下界')
     })
 
     it('语言子路径登记低于下界时报错', () => {
         const dir = createBaseFixture({ subpathExports: [], subpathEntries: [] })
         const result = checkLocaleKeys(dir)
-        expect(MIN_SUBPATH_LOCALES).toBe(3)
+        expect(MIN_SUBPATH_LOCALES).toBe(8)
         expect(result.errors.join('\n')).toContain('语言子路径登记仅 0 项，低于受检面下界')
     })
 })

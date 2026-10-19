@@ -24,6 +24,26 @@
       "types": "./dist/locale/ko-kr.d.ts",
       "import": "./dist/locale/ko-kr.js"
     },
+    "./locale/es-es": {
+      "types": "./dist/locale/es-es.d.ts",
+      "import": "./dist/locale/es-es.js"
+    },
+    "./locale/fr-fr": {
+      "types": "./dist/locale/fr-fr.d.ts",
+      "import": "./dist/locale/fr-fr.js"
+    },
+    "./locale/de-de": {
+      "types": "./dist/locale/de-de.d.ts",
+      "import": "./dist/locale/de-de.js"
+    },
+    "./locale/ru-ru": {
+      "types": "./dist/locale/ru-ru.d.ts",
+      "import": "./dist/locale/ru-ru.js"
+    },
+    "./locale/pt-br": {
+      "types": "./dist/locale/pt-br.d.ts",
+      "import": "./dist/locale/pt-br.js"
+    },
     "./resolver": {
       "types": "./dist/resolver.d.ts",
       "import": "./dist/resolver.js"

@@ -25,7 +25,7 @@ src/
 ├─ components/<name>/     # 单个组件（kebab-case 目录 + kebab-case.vue + types.ts + index.ts）
 ├─ composables/           # useToast / useConfirm / useTheme / useLocale / provideLocale
 ├─ _shared/               # 跨层内部工具（composables 与 components 共用；与 components/_shared/ 的区别见下）
-├─ locale/                # 组件内建文案（5 语；预注册 zh-CN / en-US，其余经 locale/<code> 子路径按需引入）
+├─ locale/                # 组件内建文案（10 语；预注册 zh-CN / en-US，其余经 locale/<code> 子路径按需引入）
 ├─ styles/                # tokens 与基础样式
 ├─ icons/                 # 图标封装
 ├─ resolver/              # unplugin-vue-components resolver

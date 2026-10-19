@@ -69,7 +69,7 @@
 
 ## 语言与数据格式联动
 
-- **内核界面文案**：`locale` 由 `useLocaleCode()` 派生并经 `initOptions` 注入（`zh-CN` / `zh-TW` → `ZH`、`en-US` → `EN`、`ja-JP` → `JA`、`ko-KR` → `KO`；后两者的语言包按需动态导入，注册失败回落内置语言）。**语言切换会重建图表实例**——`locale` 是 `echarts.init` 的初始化参数、无法热更新，实例内的缩放 / 高亮等临时状态会随之重置。
+- **内核界面文案**：`locale` 由 `useLocaleCode()` 派生并经 `initOptions` 注入（`zh-CN` / `zh-TW` → `ZH`、`en-US` → `EN`、`ja-JP` → `JA`、`ko-KR` → `KO`、`es-ES` → `ES`、`fr-FR` → `FR`、`de-DE` → `DE`、`ru-RU` → `RU`、`pt-BR` → `PT-br`；除内置 `ZH` / `EN` 外的 7 门语言包按需动态导入，注册失败回落内置语言）。**语言切换会重建图表实例**——`locale` 是 `echarts.init` 的初始化参数、无法热更新，实例内的缩放 / 高亮等临时状态会随之重置。
 - **数据文本**：数字 / 百分比 / 日期 / 单位由 `useChartFormat()` 提供，跟随宿主语言，把它接进 `option` 的回调即可联动：
 
     ```ts

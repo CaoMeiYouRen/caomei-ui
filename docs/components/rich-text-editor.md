@@ -22,7 +22,7 @@
 ## 暗色与国际化联动
 
 - **暗色**：包装层观察根元素上的 `.dark` / `.light` class、`data-scheme="auto"` 与手工设定的 `data-theme`——与 `useTheme()` 共用同一事实源——并把解析结果驱动编辑器的 `theme`。宿主切换暗色后编辑器自动跟随，无需重建组件。
-- **国际化**：包装层经 `useLocaleCode()` 读取宿主语言标识，映射到编辑器语言键：`zh-CN` / `en-US` / `zh-TW` 同名直用、`ja-JP` → `jp-JP`（键名转换）、`ko-KR` 同名直用；`zh-TW` / `ja-JP` / `ko-KR` 的文案由 `@vavt/cm-extension` 按需加载。运行期切换 `<CaomeiConfigProvider>` 的 `locale` 会即时更新编辑器语言。
+- **国际化**：包装层经 `useLocaleCode()` 读取宿主语言标识，映射到编辑器语言键：`zh-CN` / `en-US` / `zh-TW` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `pt-BR` 同名直用，`ja-JP` → `jp-JP`、`ru-RU` → `ru`（键名转换）；除 `zh-CN` / `en-US` 外的 8 门语言，其文案由 `@vavt/cm-extension` 按需加载。运行期切换 `<CaomeiConfigProvider>` 的 `locale` 会即时更新编辑器语言。
 - 未登记语种回落 `zh-CN` 并在控制台告警；`theme` prop 仅作逃生舱，用于绕过自动派生。
 
 ## 只读与预览
@@ -48,7 +48,7 @@
 
 ## 依赖与样式定制
 
-- `md-editor-v3`（内核）为**可选 peer 依赖**：使用本组件前需自行安装（`pnpm add md-editor-v3`）。`@vavt/cm-extension`（扩展语言包）随本库安装，用于 `zh-TW` / `ja-JP` / `ko-KR`，无需手工安装。
+- `md-editor-v3`（内核）为**可选 peer 依赖**：使用本组件前需自行安装（`pnpm add md-editor-v3`）。`@vavt/cm-extension`（扩展语言包）随本库安装，用于除 `zh-CN` / `en-US` 外的 8 门按需语言（`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`），无需手工安装。
 - `md-editor-v3` 未安装时：**引入本组件**会在打包期报「无法解析 md-editor-v3」（Vite / Rolldown 实测，2026-09-30）；**未使用本组件**的下游不受影响（包根不静态引用内核，模块被 tree-shaking 丢弃）。组件内的占位降级覆盖内核**运行期加载失败**（如 SSR 将 peer 外部化、资源加载失败），此时渲染 `role="alert"` 占位并给出控制台告警。
 - 内核样式与文案由组件**按需加载**（`md-editor-v3/lib/style.css` 等），宿主无需手工 `import`。
 - 覆盖钩子：`--caomei-rich-text-editor-radius`（圆角）、`--caomei-rich-text-editor-min-height`（占位最小高度）。
@@ -60,7 +60,7 @@
 | mavon-editor 集成写法 | 本组件 |
 | --- | --- |
 | `v-model`（Markdown 源） | 同名（`string`） |
-| `language` 手工逐分支映射（`ja-JP → ja`、`ko-KR` 无原生支持回落 `en`） | 由宿主 `locale` 自动派生，本库 5 语种全覆盖（`ja-JP → jp-JP`） |
+| `language` 手工逐分支映射（`ja-JP → ja`、`ko-KR` 无原生支持回落 `en`） | 由宿主 `locale` 自动派生，本库 10 语种全覆盖（`ja-JP → jp-JP`、`ru-RU → ru`） |
 | `toolbarsBackground` / `editorBackground` / `previewBackground` 逐项注入暗色背景 | 由宿主暗色状态自动派生 `theme`，删除手工背景注入 |
 | `patchMavonEditorComponent` 覆写内部方法 | 无需（内核为 Vue 3 原生实现） |
 | `defineAsyncComponent` + `.client.vue` + 手工 `import 'mavon-editor/dist/css/index.css'` | 组件内按需加载内核与样式，SSR 下渲染占位、客户端挂载后再加载 |

@@ -33,7 +33,7 @@ import {
 | `registerLocale` | `(code: CaomeiLocale, messages: CaomeiLocaleMessages) => void` | Registers one built-in locale's messages (call before `provideLocale`; see "On-demand locales") |
 | `defaultLocale` | `CaomeiLocale` | Default locale, currently `'zh-CN'` |
 | `defaultLocaleMessages` | `CaomeiLocaleMessages` | Full message object of the default locale |
-| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR'` | Built-in locale id (**not** the same as "registered": `zh-TW` / `ja-JP` / `ko-KR` must be imported and registered) |
+| `CaomeiLocale` | `'zh-CN' \| 'en-US' \| 'zh-TW' \| 'ja-JP' \| 'ko-KR' \| 'es-ES' \| 'fr-FR' \| 'de-DE' \| 'ru-RU' \| 'pt-BR'` | Built-in locale id (**not** the same as "registered": every locale except `zh-CN` / `en-US` must be imported and registered) |
 | `CaomeiLocaleMessages` | interface | Full message shape, useful for typing custom messages |
 | `CaomeiLocaleMessageOverrides` | `{ [K in keyof CaomeiLocaleMessages]?: Partial<CaomeiLocaleMessages[K]> }` | Per-namespace partial overrides |
 | `CaomeiConfigProvider` | component | Renderless provider (default slot only); props: `locale` / `messages` |
@@ -114,7 +114,7 @@ Built-in locales come in two groups: **pre-registered** and **on-demand**. Apps 
 | Group | Locales | How to use |
 | --- | --- | --- |
 | Pre-registered (available from the package root) | `zh-CN`, `en-US` | Use `locale="en-US"` directly; see `PRE_REGISTERED_LOCALES` |
-| On-demand | `zh-TW`, `ja-JP`, `ko-KR` | Import the subpath, then call `registerLocale()` |
+| On-demand | `zh-TW`, `ja-JP`, `ko-KR`, `es-ES`, `fr-FR`, `de-DE`, `ru-RU`, `pt-BR` | Import the subpath, then call `registerLocale()` |
 
 Each subpath maps to a locale id (lowercase, hyphenated):
 
@@ -123,6 +123,11 @@ Each subpath maps to a locale id (lowercase, hyphenated):
 | `zh-TW` | `caomei-ui/locale/zh-tw` |
 | `ja-JP` | `caomei-ui/locale/ja-jp` |
 | `ko-KR` | `caomei-ui/locale/ko-kr` |
+| `es-ES` | `caomei-ui/locale/es-es` |
+| `fr-FR` | `caomei-ui/locale/fr-fr` |
+| `de-DE` | `caomei-ui/locale/de-de` |
+| `ru-RU` | `caomei-ui/locale/ru-ru` |
+| `pt-BR` | `caomei-ui/locale/pt-br` |
 
 Synchronous registration (recommended): register in the app entry, then mount the provider.
 
@@ -147,6 +152,11 @@ const loaders = {
   'zh-TW': () => import('caomei-ui/locale/zh-tw'),
   'ja-JP': () => import('caomei-ui/locale/ja-jp'),
   'ko-KR': () => import('caomei-ui/locale/ko-kr'),
+  'es-ES': () => import('caomei-ui/locale/es-es'),
+  'fr-FR': () => import('caomei-ui/locale/fr-fr'),
+  'de-DE': () => import('caomei-ui/locale/de-de'),
+  'ru-RU': () => import('caomei-ui/locale/ru-ru'),
+  'pt-BR': () => import('caomei-ui/locale/pt-br'),
 } as const
 
 export async function loadLocale(code: keyof typeof loaders): Promise<void> {
@@ -222,9 +232,9 @@ const messages = useLocale()
 
 ## Downstream example: momei
 
-momei is a Nuxt 4 + vue-i18n downstream project with five locales — `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` — the same set caomei-ui builds in. The example below maps vue-i18n's current locale to caomei-ui's `locale`, so switching the language takes effect immediately (caomei-ui does not depend on vue-i18n; this is only an integration demo).
+momei is a Nuxt 4 + vue-i18n downstream project with five locales — `zh-CN` / `zh-TW` / `en-US` / `ja-JP` / `ko-KR` — all of which are built into caomei-ui (a subset of its ten locales). The example below maps vue-i18n's current locale to caomei-ui's `locale`, so switching the language takes effect immediately (caomei-ui does not depend on vue-i18n; this is only an integration demo).
 
-> Note: `caomeiLocales` is the **registered table** (initially only the pre-registered `zh-CN` / `en-US`), so it must **not** be used as a "built-in locale list" — on-demand locales have to be imported and registered first, otherwise they silently fall back to `zh-CN` (see "On-demand locales"). Use `CaomeiLocale` or `PRE_REGISTERED_LOCALES` for availability checks; the example below registers the three on-demand locales up front.
+> Note: `caomeiLocales` is the **registered table** (initially only the pre-registered `zh-CN` / `en-US`), so it must **not** be used as a "built-in locale list" — on-demand locales have to be imported and registered first, otherwise they silently fall back to `zh-CN` (see "On-demand locales"). Use `CaomeiLocale` or `PRE_REGISTERED_LOCALES` for availability checks; the example below registers three on-demand locales up front (the same applies to the rest).
 
 ```ts
 // app/plugins/caomei-locale.ts (Nuxt plugin form)
@@ -277,7 +287,7 @@ const caomeiLocale = computed<CaomeiLocale>(() =>
 ## Constraints and notes
 
 - Values in `messages` must be non-blank strings. For example, injecting a blank string for `toast.label` is rejected by Reka's `ToastProvider`, which throws (`Invalid prop \`label\` supplied to \`ToastProvider\`. Expected non-empty \`string\`.`); omit keys you do not cover instead of passing an empty string.
-- Five built-in locales: `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR`. `zh-CN` and `en-US` are pre-registered with the package root; the other three are imported on demand from `caomei-ui/locale/<code>` (see "On-demand locales"). Locales outside the library are injected by the downstream project, either as a full replacement or as partial overrides.
+- Ten built-in locales: `zh-CN` / `en-US` / `zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`. `zh-CN` and `en-US` are pre-registered with the package root; the other eight are imported on demand from `caomei-ui/locale/<code>` (see "On-demand locales"). Locales outside the library are injected by the downstream project, either as a full replacement or as partial overrides.
 - New component text must be added to every built-in locale: `pnpm check:locale-keys` checks namespaces, key sets and placeholders against the `zh-CN` baseline (a missing translation, a stray key, or a dropped `{page}`-style placeholder fails the check), and compares the on-demand locales row by row as well (independent of whether they are pre-registered).
 - Built-in component text and the documentation site's `docs/i18n` page translation do not affect each other; this page describes runtime message injection.
 - See also: [Composables](/en-US/components/composables), [ConfirmDialog](/en-US/components/confirm-dialog), and [Paginator](/en-US/components/paginator).

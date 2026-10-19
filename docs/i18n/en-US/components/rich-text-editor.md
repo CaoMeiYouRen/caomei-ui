@@ -22,7 +22,7 @@ A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor:
 ## Theme and locale linkage
 
 - **Theme**: the wrapper observes the root element's `.dark` / `.light` classes, `data-scheme="auto"` and the manually set `data-theme` — the same source of truth as `useTheme()` — and drives the editor's `theme` from it. Switching the host theme updates the editor in place, with no remount.
-- **Locale**: the wrapper reads the host locale id through `useLocaleCode()` and maps it to the editor language key: `zh-CN` / `en-US` / `zh-TW` and `ko-KR` pass through, `ja-JP` maps to `jp-JP` (key renaming). The `zh-TW` / `ja-JP` / `ko-KR` texts are loaded on demand from `@vavt/cm-extension`. Changing `<CaomeiConfigProvider>`'s `locale` at runtime updates the editor language immediately.
+- **Locale**: the wrapper reads the host locale id through `useLocaleCode()` and maps it to the editor language key: `zh-CN` / `en-US` / `zh-TW` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `pt-BR` pass through, while `ja-JP` maps to `jp-JP` and `ru-RU` maps to `ru` (key renaming). Every locale except `zh-CN` / `en-US` loads its text on demand from `@vavt/cm-extension`. Changing `<CaomeiConfigProvider>`'s `locale` at runtime updates the editor language immediately.
 - Unregistered locales fall back to `zh-CN` with a console warning; the `theme` prop is an escape hatch only, for bypassing the derivation.
 
 ## Read-only and preview
@@ -48,7 +48,7 @@ A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor:
 
 ## Dependencies and styling
 
-- `md-editor-v3` (kernel) is an **optional peer dependency**: install it before using this component (`pnpm add md-editor-v3`). `@vavt/cm-extension` (extra locale pack) ships with this library for `zh-TW` / `ja-JP` / `ko-KR`; no manual install needed.
+- `md-editor-v3` (kernel) is an **optional peer dependency**: install it before using this component (`pnpm add md-editor-v3`). `@vavt/cm-extension` (extra locale pack) ships with this library for the eight on-demand locales other than `zh-CN` / `en-US` (`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`); no manual install needed.
 - When `md-editor-v3` is not installed: **importing this component** fails at build time with "cannot resolve md-editor-v3" (Vite / Rolldown, measured 2026-09-30); consumers that **do not use this component** are unaffected (the package root does not statically import the kernel, so the module is tree-shaken away). The component's placeholder covers **runtime load failures** of the kernel (for example when SSR externalizes the peer, or the assets fail to load): it renders a `role="alert"` placeholder and emits a console warning.
 - The kernel styles and texts are loaded **on demand** by the component (`md-editor-v3/lib/style.css` and friends); the host does not need to `import` them manually.
 - Override hooks: `--caomei-rich-text-editor-radius` (radius), `--caomei-rich-text-editor-min-height` (placeholder min height).
@@ -60,7 +60,7 @@ A downstream project currently uses `mavon-editor`, which required five manual c
 | mavon-editor integration | This component |
 | --- | --- |
 | `v-model` (Markdown source) | Same name (`string`) |
-| `language` mapped branch by branch (`ja-JP → ja`, `ko-KR` unsupported and falling back to `en`) | Derived from the host `locale`, covering all five built-in locales (`ja-JP → jp-JP`) |
+| `language` mapped branch by branch (`ja-JP → ja`, `ko-KR` unsupported and falling back to `en`) | Derived from the host `locale`, covering all ten built-in locales (`ja-JP → jp-JP`, `ru-RU → ru`) |
 | `toolbarsBackground` / `editorBackground` / `previewBackground` injected per item | `theme` derived from the host dark state; no manual background injection |
 | `patchMavonEditorComponent` overriding internal methods | Not needed (the kernel is a native Vue 3 implementation) |
 | `defineAsyncComponent` + `.client.vue` + manual `import 'mavon-editor/dist/css/index.css'` | The component loads the kernel and styles on demand; SSR renders a placeholder and the kernel loads after client mount |

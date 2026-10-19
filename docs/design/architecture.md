@@ -51,11 +51,11 @@
 |------|------|
 | `caomei-ui` | 组件 + composables + 类型（**含组件样式**：产物保留逐模块 CSS import，打包器按需取用；**不含基础层**，见下） |
 | `caomei-ui/theme.css` | 基础层样式：tokens + 暗色选择器 + `.caomei-root` + 两个品牌预设 |
-| `caomei-ui/locale/<code>` | 单门内建语言的文案对象（默认导出）：`zh-tw` / `ja-jp` / `ko-kr`（按需引入语言包，见下） |
+| `caomei-ui/locale/<code>` | 单门内建语言的文案对象（默认导出）：`zh-tw` / `ja-jp` / `ko-kr` / `es-es` / `fr-fr` / `de-de` / `ru-ru` / `pt-br`（按需引入语言包，见下） |
 | `caomei-ui/resolver` | unplugin-vue-components resolver |
 | `caomei-ui/nuxt` | Nuxt 模块 |
 
-> **语言子路径语义（2026-10-16 起，Phase 25 M3-1a 落地）**：内建语言分**预注册**（`zh-CN` / `en-US`，随包根可用，清单见 `PRE_REGISTERED_LOCALES`）与**按需引入**（`zh-TW` / `ja-JP` / `ko-KR`，经 `caomei-ui/locale/<code>` 子路径 + `registerLocale()` 注册）两类。动机：注册表原为「静态全量」，任何使用 `provideLocale` / `<CaomeiConfigProvider>` 的消费方都会把**全部语言**打入产物（esbuild 单点实测：5 语注册表 11,548 B min / gzip 4,178 B；不使用 provider 的消费方则只带基线，未用语言已被 tree-shake）——按需化后，provider 消费方的注册表成本降到「预注册集合」量级（**落地实测**：`CaomeiConfigProvider` 12,317 → 5,398 B min / gzip 4,413 → 2,479，−56% min；设计期以 2 语合成注册表对照为 4,235 B min / 1,801 gzip），且语言数量增长不再线性推高成本。**未注册语言回落 `zh-CN` 并给非生产环境告警**（不抛错）。口径与实测见 [locale 分包方案设计](./governance/2026-10-16-phase25-m3-1-package-split-design.md) 与落地记录。
+> **语言子路径语义（2026-10-16 起，Phase 25 M3-1a 落地；2026-10-20 M3-1b 扩至 10 语）**：内建语言分**预注册**（`zh-CN` / `en-US`，随包根可用，清单见 `PRE_REGISTERED_LOCALES`）与**按需引入**（`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`，经 `caomei-ui/locale/<code>` 子路径 + `registerLocale()` 注册）两类。动机：注册表原为「静态全量」，任何使用 `provideLocale` / `<CaomeiConfigProvider>` 的消费方都会把**全部语言**打入产物（esbuild 单点实测：5 语注册表 11,548 B min / gzip 4,178 B；不使用 provider 的消费方则只带基线，未用语言已被 tree-shake）——按需化后，provider 消费方的注册表成本降到「预注册集合」量级（**落地实测**：`CaomeiConfigProvider` 12,317 → 5,398 B min / gzip 4,413 → 2,479，−56% min；设计期以 2 语合成注册表对照为 4,235 B min / 1,801 gzip），且语言数量增长不再线性推高成本。**未注册语言回落 `zh-CN` 并给非生产环境告警**（不抛错）。口径与实测见 [locale 分包方案设计](./governance/2026-10-16-phase25-m3-1-package-split-design.md)、[M3-1a 落地记录](./governance/2026-10-16-phase25-m3-1a-locale-subpath-exports.md) 与 [M3-1b 落地记录](./governance/2026-10-20-phase25-m3-1b-five-locales.md)。
 
 > **样式入口语义（2026-09-20 起，Phase 11 M1-2 确认）**：产物改为 `unbundle` + `css.inject`，**不再提供单体全量 `styles.css`**。按需由消费方打包器对逐模块 CSS import 做 tree-shaking 达成；`theme.css` 是唯一的基础层入口，供「只需要 tokens / 预设」或「组件从子路径导入」的场景显式引用。依据见 [M1-1 构建路径 POC](../design/governance/2026-09-20-m1-1-build-path-poc.md) 与 [M1-2 入口语义与 dts 验证](../design/governance/2026-09-20-m1-2-entry-semantics-and-dts-verification.md)。
 >

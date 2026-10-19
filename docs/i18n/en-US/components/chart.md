@@ -69,7 +69,7 @@ Linkage covers **dark mode** and **theme presets**: the component watches the ro
 
 ## Locale and data-format linkage
 
-- **Kernel UI strings**: `locale` is derived from `useLocaleCode()` and injected through `initOptions` (`zh-CN` / `zh-TW` → `ZH`, `en-US` → `EN`, `ja-JP` → `JA`, `ko-KR` → `KO`; the latter two language packs are loaded on demand and fall back to a built-in locale if registration fails). **Switching the locale recreates the chart instance** — `locale` is an `echarts.init` parameter and cannot be updated in place, so instance-local state such as zoom and highlights resets.
+- **Kernel UI strings**: `locale` is derived from `useLocaleCode()` and injected through `initOptions` (`zh-CN` / `zh-TW` → `ZH`, `en-US` → `EN`, `ja-JP` → `JA`, `ko-KR` → `KO`, `es-ES` → `ES`, `fr-FR` → `FR`, `de-DE` → `DE`, `ru-RU` → `RU`, `pt-BR` → `PT-br`; the seven language packs other than the built-in `ZH` / `EN` are loaded on demand and fall back to a built-in locale if registration fails). **Switching the locale recreates the chart instance** — `locale` is an `echarts.init` parameter and cannot be updated in place, so instance-local state such as zoom and highlights resets.
 - **Data text**: numbers, percentages, dates and units come from `useChartFormat()`, which follows the host locale. Wire it into `option` callbacks and the linkage is automatic:
 
     ```ts

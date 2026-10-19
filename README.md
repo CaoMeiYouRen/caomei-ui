@@ -149,7 +149,7 @@ pnpm verify         # 运行全部质量门
 src/
 ├─ components/    # 组件（kebab-case 目录 + kebab-case.vue）
 ├─ composables/   # useToast / useConfirm / useTheme / useLocale / provideLocale
-├─ locale/        # 组件内建文案（zh-CN / en-US / zh-TW / ja-JP / ko-KR）
+├─ locale/        # 组件内建文案（10 语；预注册 zh-CN / en-US，其余按需引入）
 ├─ styles/        # tokens 与基础样式
 ├─ icons/         # 图标封装（@lucide/vue）
 ├─ resolver/      # unplugin-vue-components resolver

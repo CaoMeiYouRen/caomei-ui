@@ -142,7 +142,7 @@ const attrs = computed(() => {
 
 **SSR 取舍**：服务端 HTML 不带引用型属性（关闭态面板未挂载），水合后由客户端建立；`capture:styles` 夹具须同步此口径（SSR 构建不跑浏览器验证，E2E 负责覆盖）。
 
-- **新增 locale 文案键有 3 处载体**：`src/locale/types.ts`（类型）+ 5 个语种文件（`check-locale-keys` 覆盖结构与条数）+ `docs/components/locale.md` 及英文页的「命名空间 → 文案键」穷尽式索引表（**无任何机检**）。加键前先 `rg` 台账行并同批更新，否则 `docs:check` / `check-locale-keys` 全绿而 Review Gate 判 blocker（台账 ↔ `src/locale` 对账守卫见 [Backlog](../plan/backlog.md)）。
+- **新增 locale 文案键有 3 处载体**：`src/locale/types.ts`（类型）+ 10 个语种文件（`check-locale-keys` 覆盖结构与占位符）+ `docs/components/locale.md` 及英文页的「命名空间 → 文案键」穷尽式索引表（`check-locale-ledger` 对账）。加键前先 `rg` 台账行并同批更新；台账守卫会拦截漏列 / 多列。
 
 ## 6. 组件 API 设计约定
 

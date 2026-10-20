@@ -127,7 +127,7 @@
 
 ### 组件实现（→ [开发规范 §5](../../standards/development.md)）
 
-- [2026-09-23] [gotcha] 新增 locale 文案键有 3 处载体，其中 `docs/components/locale.md` 中英台账**无任何机检**；加键前先 `rg` 台账行并同批更新 → docs/standards/development.md §5
+- [2026-09-23] [gotcha] 新增 locale 文案键有 3 处载体，其中 `docs/components/locale.md` 中英台账**无任何机检**（**该判据已于 2026-10-20 失效**：`check-locale-ledger` 已对账中英台账 ↔ `types.ts` 与语言 / 子路径表）；加键前先 `rg` 台账行并同批更新 → docs/standards/development.md §5
 - [2026-09-23] [pattern] Vue 3.5 `defineModel` 是「本地值 + prop 同步」而非「受控必须回写」；断言「受控不回写 → 渲染冻结」必然失败 → docs/standards/development.md §5
 - [2026-09-23] [gotcha] Reka primitive 会在 `role=generic` 上输出命名属性（ARIA 1.2 禁止）；包装层改显式 `role="group"`（允许命名且无必需父级）即可免登记例外 → docs/standards/development.md §5
 - [2026-09-23] [pattern] `aria-controls` 只在目标元素实际渲染时输出，否则形成悬空 idref（`aria-expanded` 则恒定输出） → docs/standards/development.md §5

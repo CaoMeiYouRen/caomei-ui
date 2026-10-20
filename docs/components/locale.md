@@ -45,7 +45,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 28 个命名空间，对应 29 个消费组件：
+`CaomeiLocaleMessages` 按组件域划分为 28 个命名空间，对应 29 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -109,7 +109,7 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 ## 按需引入语言
 
-内建语言分为**预注册**与**按需引入**两类：只用一两门语言的应用不必打包其余语言包。
+内建语言分为**预注册**与**按需引入**两类：只用一两门语言的应用不必打包其余语言包。下列两张表（语言清单与子路径）由 `check-locale-ledger` 与 `src/locale/index.ts` 对账。
 
 | 类别 | 语言 | 取用方式 |
 | --- | --- | --- |

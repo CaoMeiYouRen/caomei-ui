@@ -45,7 +45,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 28 namespaces by component area, covering 29 consuming components:
+`CaomeiLocaleMessages` is split into 28 namespaces by component area, covering 29 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -109,7 +109,7 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 ## On-demand locales
 
-Built-in locales come in two groups: **pre-registered** and **on-demand**. Apps that use one or two locales do not have to bundle the rest.
+Built-in locales come in two groups: **pre-registered** and **on-demand**. Apps that use one or two locales do not have to bundle the rest. The tables below are checked against `src/locale/index.ts` by `check-locale-ledger`.
 
 | Group | Locales | How to use |
 | --- | --- | --- |

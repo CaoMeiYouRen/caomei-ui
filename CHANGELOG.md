@@ -1,6 +1,28 @@
 # caomei-ui
 
-# Unreleased (2026-10-08)
+# [0.7.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.6.0...v0.7.0) (2026-10-20)
+
+### ✨ 新功能
+
+* **components:** Chart 主题与语言联动（token 派生 + 格式跟随） ([052c840](https://github.com/CaoMeiYouRen/caomei-ui/commit/052c840))
+* **components:** 新增 Alert 提示框并复核正文对比度 ([caecc1c](https://github.com/CaoMeiYouRen/caomei-ui/commit/caecc1c))
+* **components:** 新增 Chart 图表封装（可选 peer 按需加载） ([3f7ae73](https://github.com/CaoMeiYouRen/caomei-ui/commit/3f7ae73))
+* **components:** 新增 Tooltip 工具提示封装 ([0e297a4](https://github.com/CaoMeiYouRen/caomei-ui/commit/0e297a4))
+* **components:** 新增导航骨架 Menu 与 Breadcrumb ([6012e7a](https://github.com/CaoMeiYouRen/caomei-ui/commit/6012e7a))
+* **components:** 新增栅格与布局族 CaomeiRow / CaomeiCol ([27f0bf3](https://github.com/CaoMeiYouRen/caomei-ui/commit/27f0bf3))
+* **docs:** Phase 23 M5-1 文档站示例外部图片源守卫 ([5e76d82](https://github.com/CaoMeiYouRen/caomei-ui/commit/5e76d82))
+* **governance:** 扩展 locale 台账与子路径清单对账 ([aaf5f7d](https://github.com/CaoMeiYouRen/caomei-ui/commit/aaf5f7d))
+* **locale:** 内建语言改为预注册加按需子路径，并重写台账守卫 ([8206b01](https://github.com/CaoMeiYouRen/caomei-ui/commit/8206b01))
+* **locale:** 新增一期 5 语并接入按需子路径 ([8a6ddf9](https://github.com/CaoMeiYouRen/caomei-ui/commit/8a6ddf9))
+* **release:** 新增统一手动发布流单入口脚本 ([05d830c](https://github.com/CaoMeiYouRen/caomei-ui/commit/05d830c))
+
+### 🐛 Bug 修复
+
+* **responsive:** 修复 769–1023px 空档并扩面视口矩阵 ([0b4849c](https://github.com/CaoMeiYouRen/caomei-ui/commit/0b4849c))
+
+### 📦 代码重构
+
+* **shared:** 提取跨层共享的开发期告警工具 warnDev ([1eb562b](https://github.com/CaoMeiYouRen/caomei-ui/commit/1eb562b))
 
 # [0.6.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.5.0...v0.6.0) (2026-10-08)
 

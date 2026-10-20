@@ -163,7 +163,7 @@
     "conventional-changelog": "7.2.0",
     "conventional-changelog-cmyr-config": "3.0.0",
     "cross-env": "^10.0.0",
-    "cz-conventional-changelog-cmyr": "^2.0.0",
+    "cz-conventional-changelog-cmyr": "^2.0.1",
     "echarts": "6.1.0",
     "esbuild": "^0.28.2",
     "eslint": "^9.34.0",
@@ -194,9 +194,9 @@
   },
   "peerDependencies": {
     "@nuxt/kit": "^4.0.0",
+    "echarts": "^6.0.0",
     "md-editor-v3": "^7.1.0",
     "vue": "^3.5.0",
-    "echarts": "^6.0.0",
     "vue-echarts": "^8.0.0"
   },
   "peerDependenciesMeta": {

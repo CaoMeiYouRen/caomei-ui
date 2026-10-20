@@ -4,14 +4,19 @@ import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import {
+    buildPublishArgs,
     extractChangelogSection,
+    formatLocalTagNotPushed,
     parseArgs,
+    parseRemoteTagSha,
     planVersionStatementSync,
+    resolveTagState,
     readUnpackedPackage,
     replacePackageVersion,
     replaceVersionInStatement,
     sha1File,
     validateDate,
+    validateOtp,
     validateVersion,
 } from './manual-release.mjs'
 
@@ -48,6 +53,16 @@ describe('manual-release parseArgs', () => {
         expect(parseArgs(['run', '--version=0.7.0', '--dry-run'])).toMatchObject({ step: 'run', dryRun: true })
     })
 
+    it('解析 --otp', () => {
+        expect(parseArgs(['publish', '--version=0.7.0', '--otp=123456', '--yes'])).toMatchObject({
+            step: 'publish',
+            version: '0.7.0',
+            otp: '123456',
+            yes: true,
+            error: null,
+        })
+    })
+
     it('拒绝未知参数 / 未知 step / 缺 step', () => {
         expect(parseArgs(['bump', '--version=0.7.0', '--nope']).error).toMatch(/不支持的参数/u)
         expect(parseArgs(['nope', '--version=0.7.0']).error).toMatch(/未知 step/u)
@@ -68,6 +83,75 @@ describe('manual-release 校验', () => {
         expect(validateDate('2026-10-10')).toBe('2026-10-10')
         expect(validateDate(undefined)).toBeUndefined()
         expect(() => validateDate('2026/10/10')).toThrow(/Invalid --date/u)
+    })
+
+    it('validateOtp 接受 6-8 位数字，未提供时返回 undefined', () => {
+        expect(validateOtp('123456')).toBe('123456')
+        expect(validateOtp('12345678')).toBe('12345678')
+        expect(validateOtp(undefined)).toBeUndefined()
+        for (const otp of ['12345', '987654321', 'abcdef']) {
+            expect(() => validateOtp(otp)).toThrow('Invalid --otp（期望 6-8 位数字）')
+            try {
+                validateOtp(otp)
+            } catch (error) {
+                // 错误日志不得回显 OTP 输入值
+                expect(error.message).not.toContain(otp)
+            }
+        }
+    })
+})
+
+describe('manual-release publish 参数', () => {
+    it('无 OTP 时不追加 --otp', () => {
+        expect(buildPublishArgs(undefined)).toEqual(['publish'])
+    })
+
+    it('有 OTP 时追加 --otp=<code>', () => {
+        expect(buildPublishArgs('123456')).toEqual(['publish', '--otp=123456'])
+    })
+})
+
+describe('manual-release tag 同步', () => {
+    it('parseRemoteTagSha 取 tag 对象行，忽略 peeled 行；兼容 lightweight tag', () => {
+        const tagSha = 'a'.repeat(40)
+        const peeledSha = 'b'.repeat(40)
+        const outputText = `${tagSha}\trefs/tags/v0.7.0\n${peeledSha}\trefs/tags/v0.7.0^{}\n`
+        expect(parseRemoteTagSha(outputText)).toBe(tagSha)
+        expect(parseRemoteTagSha(`${tagSha}\trefs/tags/v0.7.0\n`)).toBe(tagSha)
+        expect(parseRemoteTagSha('')).toBeNull()
+    })
+
+    it('本地 tag 未推送时提示先 push 再重试 announce', () => {
+        const message = formatLocalTagNotPushed('0.7.0', 'a'.repeat(40))
+        expect(message).toContain('本地已有 tag v0.7.0')
+        expect(message).toContain('git push origin v0.7.0')
+        expect(message).toContain('重试 announce')
+    })
+
+    it('resolveTagState 覆盖四种本地 / 远程组合', () => {
+        const shaA = 'a'.repeat(40)
+        const shaB = 'b'.repeat(40)
+
+        expect(resolveTagState({ version: '0.7.0', localSha: null, remoteSha: null })).toMatchObject({
+            ok: false,
+            error: expect.stringContaining('请先运行 bump'),
+        })
+        expect(resolveTagState({ version: '0.7.0', localSha: shaA, remoteSha: null })).toMatchObject({
+            ok: false,
+            error: expect.stringContaining('git push origin v0.7.0'),
+        })
+        expect(resolveTagState({ version: '0.7.0', localSha: null, remoteSha: shaA })).toMatchObject({
+            ok: false,
+            error: expect.stringContaining('git fetch --tags'),
+        })
+        expect(resolveTagState({ version: '0.7.0', localSha: shaA, remoteSha: shaB })).toMatchObject({
+            ok: false,
+            error: expect.stringContaining('不一致'),
+        })
+        expect(resolveTagState({ version: '0.7.0', localSha: shaA, remoteSha: shaA })).toEqual({
+            ok: true,
+            error: null,
+        })
     })
 })
 

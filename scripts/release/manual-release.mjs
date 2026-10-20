@@ -46,10 +46,11 @@ export const MUTATING_STEPS = new Set(['bump', 'changelog', 'publish', 'sync', '
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u
 
-const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--date=YYYY-MM-DD] [--yes] [--dry-run]
+const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--date=YYYY-MM-DD] [--otp=<code>] [--yes] [--dry-run]
 steps：${STEPS.join(' | ')} | run
   --version  目标版本（semver，如 0.7.0）
   --date     可选，固定 CHANGELOG 发布日期（YYYY-MM-DD）
+  --otp      可选，npm 一次性密码（6-8 位数字；仅 publish 使用；未提供时由 npm 交互提示）
   --yes      确认执行变更型步骤（非交互环境必须显式给出）
   --dry-run  只打印计划动作，不落盘 / 不改 git / 不发布`
 
@@ -63,9 +64,10 @@ export function parseArgs(argv) {
     let step = null
     let version
     let date
+    let otp
     let yes = false
     let dryRun = false
-    const unknown = (error) => ({ step: '', version, date, yes, dryRun, error })
+    const unknown = (error) => ({ step: '', version, date, otp, yes, dryRun, error })
     for (const arg of argv) {
         if (arg === '--yes') {
             yes = true
@@ -75,6 +77,8 @@ export function parseArgs(argv) {
             version = arg.slice('--version='.length)
         } else if (arg.startsWith('--date=')) {
             date = arg.slice('--date='.length)
+        } else if (arg.startsWith('--otp=')) {
+            otp = arg.slice('--otp='.length)
         } else if (arg.startsWith('--')) {
             return unknown(`不支持的参数：${arg}`)
         } else if (step === null) {
@@ -89,7 +93,7 @@ export function parseArgs(argv) {
     if (![...STEPS, 'run'].includes(step)) {
         return unknown(`未知 step：${step}（可用：${[...STEPS, 'run'].join(' | ')}）`)
     }
-    return { step, version, date, yes, dryRun, error: null }
+    return { step, version, date, otp, yes, dryRun, error: null }
 }
 
 /**
@@ -119,6 +123,25 @@ export function validateDate(date) {
         throw new Error(`Invalid --date: ${date}（期望 YYYY-MM-DD）`)
     }
     return date
+}
+
+/**
+ * 校验 npm 一次性密码（OTP）。
+ *
+ * npm 通常为 6 位数字，兼容 6-8 位；未提供时返回 undefined，由 npm 在 publish 时交互提示。
+ *
+ * @param {string | undefined} otp
+ * @returns {string | undefined}
+ */
+export function validateOtp(otp) {
+    if (otp === undefined) {
+        return undefined
+    }
+    if (!/^\d{6,8}$/u.test(otp)) {
+        // 不回显输入值：OTP 属一次性凭据，错误日志也不应留下接近完整的验证码。
+        throw new Error('Invalid --otp（期望 6-8 位数字）')
+    }
+    return otp
 }
 
 /**
@@ -249,7 +272,9 @@ function spawnOptions(options) {
 function run(command, args, options = {}) {
     const result = spawnSync(command, args, spawnOptions(options))
     if (result.status !== 0) {
-        throw new Error(`命令失败（exit ${result.status}）：${command} ${args.join(' ')}`)
+        // 允许调用方提供脱敏后的展示参数（如 --otp=***），避免错误日志泄露 OTP。
+        const displayArgs = options.displayArgs ?? args
+        throw new Error(`命令失败（exit ${result.status}）：${command} ${displayArgs.join(' ')}`)
     }
 }
 
@@ -353,12 +378,24 @@ function stepChangelog(ctx) {
     run('git', ['commit', '-m', `docs(changelog): ${version}`], { cwd: root })
 }
 
+/**
+ * 构造 `npm publish` 参数；提供 OTP 时追加 `--otp=<code>`。
+ *
+ * @param {string | undefined} otp
+ * @returns {string[]}
+ */
+export function buildPublishArgs(otp) {
+    return otp ? ['publish', `--otp=${otp}`] : ['publish']
+}
+
 function stepPublish(ctx) {
+    const args = buildPublishArgs(ctx.otp)
+    const displayArgs = buildPublishArgs(ctx.otp ? '***' : undefined)
     if (ctx.dryRun) {
-        process.stdout.write(`[publish] dry-run：npm publish（${PACKAGE_NAME}@${ctx.version}）\n`)
+        process.stdout.write(`[publish] dry-run：npm ${displayArgs.join(' ')}（${PACKAGE_NAME}@${ctx.version}）\n`)
         return
     }
-    run('npm', ['publish'], { cwd: ctx.root })
+    run('npm', args, { cwd: ctx.root, displayArgs })
 }
 
 function stepVerify(ctx) {
@@ -437,6 +474,55 @@ async function stepSync(ctx) {
     }
 }
 
+/**
+ * 解析 `git ls-remote --tags` 输出中的 tag 对象 SHA。
+ *
+ * annotated tag 会同时输出 tag 对象行与 peeled `^{}` 行；这里取 tag 对象行，
+ * 与本地 `git rev-parse refs/tags/<tag>` 的返回值同源。
+ *
+ * @param {string} outputText
+ * @returns {string | null}
+ */
+export function parseRemoteTagSha(outputText) {
+    const line = outputText
+        .split(/\r?\n/u)
+        .map((item) => item.trim())
+        .find((item) => item !== '' && !item.includes('^{}'))
+    return line ? line.split(/\s+/u)[0] ?? null : null
+}
+
+/** 本地 tag 已存在、远程缺失时的可操作提示。 */
+export function formatLocalTagNotPushed(version, localSha) {
+    return `本地已有 tag v${version}（${localSha.slice(0, 12)}…），但远程尚无该 tag；`
+        + `请先执行 git push origin v${version}（或 git push origin ${RELEASE_BRANCH} --follow-tags）后重试 announce。`
+}
+
+/**
+ * 根据本地 / 远程 tag SHA 判定 announce 的下一步。
+ *
+ * @param {{ version: string, localSha: string | null, remoteSha: string | null }} state
+ * @returns {{ ok: boolean, error: string | null }}
+ */
+export function resolveTagState({ version, localSha, remoteSha }) {
+    if (!localSha && !remoteSha) {
+        return { ok: false, error: `tag v${version} 不存在；请先运行 bump 步骤创建 tag。` }
+    }
+    if (!localSha && remoteSha) {
+        return { ok: false, error: `远程已有 tag v${version}，但本地没有；请先执行 git fetch --tags 后重试 announce。` }
+    }
+    if (localSha && !remoteSha) {
+        return { ok: false, error: formatLocalTagNotPushed(version, localSha) }
+    }
+    if (localSha !== remoteSha) {
+        return {
+            ok: false,
+            error: `本地 tag v${version}（${localSha.slice(0, 12)}…）与远程（${remoteSha.slice(0, 12)}…）不一致；`
+                + '请先核对 / 同步 tag 后再发布（不要直接覆盖已发布 tag）。',
+        }
+    }
+    return { ok: true, error: null }
+}
+
 function stepAnnounce(ctx) {
     const { root, version, dryRun } = ctx
     const notes = extractChangelogSection(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'), version)
@@ -448,9 +534,22 @@ function stepAnnounce(ctx) {
         throw new Error(`CHANGELOG.md 未找到 v${version} 段落，无法生成 GitHub Release note`)
     }
     if (dryRun) {
-        process.stdout.write(`[announce] dry-run：gh release create v${version} --verify-tag（note ${notes.split('\n').length} 行）\n`)
+        process.stdout.write(`[announce] dry-run：校验本地 / 远程 tag v${version} → gh release create v${version} --verify-tag（note ${notes.split('\n').length} 行）\n`)
         return
     }
+
+    const localResult = capture('git', ['rev-parse', '-q', '--verify', `refs/tags/v${version}`], { cwd: root })
+    const localSha = localResult.status === 0 ? output(localResult) : null
+    const remoteResult = capture('git', ['ls-remote', '--tags', 'origin', `refs/tags/v${version}`], { cwd: root })
+    if (remoteResult.status !== 0) {
+        throw new Error(`无法查询远程 tag v${version}：${output(remoteResult) || 'git ls-remote 失败'}（是否已配置 origin？）`)
+    }
+    const remoteSha = parseRemoteTagSha(output(remoteResult))
+    const tagState = resolveTagState({ version, localSha, remoteSha })
+    if (!tagState.ok) {
+        throw new Error(tagState.error)
+    }
+
     const tmp = mkdtempSync(join(tmpdir(), 'caomei-notes-'))
     try {
         const notesFile = join(tmp, 'notes.md')
@@ -459,7 +558,7 @@ function stepAnnounce(ctx) {
     } finally {
         rmSync(tmp, { recursive: true, force: true })
     }
-    process.stdout.write(`[announce] OK。推送由用户执行：git push origin ${RELEASE_BRANCH} --follow-tags\n`)
+    process.stdout.write(`[announce] OK。若 ${RELEASE_BRANCH} 尚未推送，请执行：git push origin ${RELEASE_BRANCH}\n`)
 }
 
 const STEP_RUNNERS = {
@@ -489,7 +588,15 @@ async function main() {
     }
     validateVersion(options.version)
     validateDate(options.date)
-    const ctx = { root: REPO_ROOT, version: options.version, date: options.date, yes: options.yes, dryRun: options.dryRun }
+    validateOtp(options.otp)
+    const ctx = {
+        root: REPO_ROOT,
+        version: options.version,
+        date: options.date,
+        otp: options.otp,
+        yes: options.yes,
+        dryRun: options.dryRun,
+    }
     if (options.step === 'run') {
         for (const step of STEPS) {
             await runStep(step, ctx)

@@ -15,13 +15,13 @@
 
 ## 3. 发布流程（本地手动）
 
-> **单入口编排**：`pnpm release:manual <step> --version=<v>`（脚本 `scripts/release/manual-release.mjs`）把本节流程串成一条可复算链路，消除「命令分散 / 隐式前置 / 后置文档同步易漏 / GitHub Release 手工」四类易错点。
+> **单入口编排**：`pnpm release:manual <step> --version=<v>`（脚本 `scripts/release/manual-release.mjs`，publish 可选 `--otp=<code>`）把本节流程串成一条可复算链路，消除「命令分散 / 隐式前置 / 后置文档同步易漏 / GitHub Release 手工」四类易错点。
 > 变更型步骤（`bump` / `changelog` / `publish` / `sync` / `announce`）**必须显式 `--yes`**，否则以 `--dry-run` 预览。
 
 ### 3.1 一键执行（推荐）
 
 ```bash
-pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--yes]
+pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
 ```
 
 `run` 依序执行 7 步：`preflight → bump → changelog → publish → verify → sync → announce`。
@@ -32,7 +32,7 @@ pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--yes]
 pnpm release:manual preflight --version=0.7.0
 pnpm release:manual bump      --version=0.7.0 --yes
 pnpm release:manual changelog --version=0.7.0 --yes
-pnpm release:manual publish   --version=0.7.0 --yes
+pnpm release:manual publish   --version=0.7.0 [--otp=<code>] --yes
 pnpm release:manual verify    --version=0.7.0
 pnpm release:manual sync      --version=0.7.0 --yes
 pnpm release:manual announce  --version=0.7.0 --yes
@@ -44,14 +44,14 @@ pnpm release:manual announce  --version=0.7.0 --yes
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 提交在其后——**tag 视图不含 CHANGELOG 段属正常形态**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。
 3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）
-4. **发布（`publish`）**：`npm publish`；`prepublishOnly` 自动复跑许可校验（见 §7）。
+4. **发布（`publish`）**：`npm publish`；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。
 5. **后校验（`verify`）**：registry `latest` = 目标版本；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合。
 6. **文档同步（`sync`）**：更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`。
-7. **GitHub Release（`announce`）**：从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`。
+7. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`。
 
 > **落痕（人工，脚本未覆盖）**：发布结论与关键实测值（registry 版本 / tarball shasum / 解包与冒烟结果 / GitHub Release）应落到可提交位置（发布执行治理记录或提交信息）。
 
-> **推送**：`git push origin master --follow-tags`（`--follow-tags` **只推送 annotated tag**；若用轻量 tag 须显式 `git push origin v0.1.0`）。按 [Git 规范](/standards/git) 须用户明确授权，**脚本不自动推送**。
+> **推送**：`git push origin master --follow-tags`（`--follow-tags` **只推送 annotated tag**；若用轻量 tag 须显式 `git push origin v0.1.0`）。按 [Git 规范](/standards/git) 须用户明确授权，**脚本不自动推送**；`announce` 检测到本地 tag 未推送时会中止并给出上述命令，推送后重试 `announce` 即可。
 
 ### 3.4 提交构成与发布元数据豁免（重要）
 
@@ -73,13 +73,13 @@ pnpm release:manual announce  --version=0.7.0 --yes
 
 ### 3.6 CHANGELOG 生成口径
 
-`pnpm changelog`（`scripts/release/generate-changelog.mjs`）基于 `conventional-changelog` 与 `conventional-changelog-cmyr-config` 预设生成 / 重写 `CHANGELOG.md`；分组标题、commit 链接与模板均来自该预设（`package.json` 的 `changelog.language` 为 `zh`），生成口径与 semantic-release 一致。脚本对预设做两处定向补丁：① 预置 `headerPattern` 不识别 `type(scope)!: …`，会整条丢弃 `BREAKING CHANGE` 提交（semantic-release 走同一预设，行为相同），补 `!?` 后恢复；② 本仓提交正文含 Vue 插槽名（`#option`）与十六进制色值（`#60a5fa`），会被 GitHub 的 issue 前缀规则误判为引用，故关闭引用抽取。已知残留：预设 writer 仍会把**提交标题**中的 `#<数字>` 渲染为 issue 链接（当前历史 0 命中，出现时需补丁或改用其他标题写法）。另注意：**tag 建立后不可再用同名 `--version=` 重生成该段**——与已存在 tag 同名时会触发 `Unreleased` 置换（如需修复历史发布说明，应改名或改期另发）。依赖 `conventional-changelog@7.2.0` 与 `conventional-changelog-cmyr-config@3.0.0` 精确钉定：预设的字符串模板配套 `conventional-changelog-writer@8`，升到内置 writer@9 的 `conventional-changelog@8` 会在运行期抛 `headerPartial is not a function`。
+`pnpm changelog`（`scripts/release/generate-changelog.mjs`）基于 `conventional-changelog` 与 `conventional-changelog-cmyr-config` 预设生成 / 重写 `CHANGELOG.md`；分组标题、commit 链接与模板均来自该预设（`package.json` 的 `changelog.language` 为 `zh`），生成口径与 semantic-release 一致。脚本对预设做两处定向补丁：① 预置 `headerPattern` 不识别 `type(scope)!: …`，会整条丢弃 `BREAKING CHANGE` 提交（semantic-release 走同一预设，行为相同），补 `!?` 后恢复；② 本仓提交正文含 Vue 插槽名（`#option`）与十六进制色值（`#60a5fa`），会被 GitHub 的 issue 前缀规则误判为引用，故关闭引用抽取。已知残留：预设 writer 仍会把**提交标题**中的 `#<数字>` 渲染为 issue 链接（当前历史 0 命中，出现时需补丁或改用其他标题写法）。指定 `--version=` 时脚本会剥离**空**的 `# Unreleased` 段（同名 tag 已存在时重生成不会再产生「Unreleased + 目标版本」双标题）；有内容的 Unreleased 段（尚未发布的提交）保持原样。依赖 `conventional-changelog@7.2.0` 与 `conventional-changelog-cmyr-config@3.0.0` 精确钉定：预设的字符串模板配套 `conventional-changelog-writer@8`，升到内置 writer@9 的 `conventional-changelog@8` 会在运行期抛 `headerPartial is not a function`。
 
 ## 4. 凭据与本地运行
 
 - 本地运行 semantic-release 需 `--no-ci`（跳过 CI 环境校验），并设置 `NPM_TOKEN` 与 `GH_TOKEN`。
 - **本阶段首发使用 `npm publish`**（见 §3）；本地 semantic-release 仅作机制说明与后续备选——它会额外触发 `@semantic-release/git`（提交 `package.json` / `CHANGELOG.md`）与 `@semantic-release/github`（创建 GitHub Release），与「本地手动发布」的当前决策不同，未经决策不要执行 `pnpm release`。
-- 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。
+- 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。启用 2FA 时用 `--otp=<code>` 传入一次性密码；脚本在日志与错误信息中对 OTP 做脱敏。注意 OTP 仍会进入进程参数与 Shell history，优先在受控环境使用，或省略 `--otp` 让 npm 交互提示。
 - **版本已发布过**时 `npm publish` 会以 `403`（`You cannot publish over the previously published versions: <version>`）失败——npm 不允许覆盖同名版本。处理：确认 `package.json` 的 `version` 是否已递增；确需修复已发布版本时**改发新 patch 版本**（不要尝试 unpublish，见 §8）。
 - `prepublishOnly` 失败（如许可声明过期）会中止发布且不产生 tarball——按报错补齐后重跑即可，无需处理 registry 状态。
 - 当前为本地手动发布，故**无需**配置 CI secret。
@@ -135,9 +135,9 @@ pnpm release:manual announce  --version=0.7.0 --yes
   - **已在受检面**：`dependfix`（`apps/platform`，试点）。
   - **已消费但未接入**（待增量登记）：`momei`（根包）——**单条阻塞**：`momei` 的 `build`（`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`）在上游 runner 的**无凭据可行性未验证**（`typecheck` = `nuxt typecheck` 相对轻量；`pnpm --filter <name>` 可**按根包名选中根工程**，现有 override 步骤无需参数化）。触发条件 = 该验证通过，或用户指定。
   - **路线图目标下游但当前零消费**：`caomei-auth` / `rss-impact-next` / `afdian-linker`——接入后增量登记。
-- **触发与容量**：caomei-ui **发布 tag（`v*`）触发 1 次**（另可手动）；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**下游默认分支为移动目标**：工作流记录下游 revision（SHA）以便归因——红可能是下游自身改动所致，非 caomei-ui 回归。
-- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪并经三次真实触发验证**——run #1（2026-10-12，registry latest `0.6.0`，`dependfix @ 46c6fb61`，见 `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md`）、**run #2（2026-10-13，显式版本入参 `0.5.0`，与下游锁定版本构成**版本差**，`dependfix @ edbe5e04…`，见 `docs/design/governance/2026-10-13-phase23-m2-1-downstream-compat-explicit-version-run.md`）** 与 **run #3（2026-10-13 UTC / 本地 2026-10-14，**负向对照**：显式入参 `0.2.0` 的已知不兼容版本 → `Typecheck downstream` **红**，`dependfix @ 1a6aca15…`，见 `docs/design/governance/2026-10-14-phase24-m1-2-downstream-compat-negative-control.md`）**。
-- **判别力口径（避免把「绿 run」读成「兼容性已验证」）**：**管道贯通**（运行时无缺陷 / 可归因）与**重装生效**（override 确实换了版本）**已成立**；**回归判别力**（区分「新版本破坏下游」与「不破坏」）**已由负向对照路径成立**——run #3 安装已知不兼容的 `0.2.0` 后期望红、实际红，失败面 6 条 TS 诊断逐条归因到 `0.3.0` 才补齐的 `DataTable` 多列排序 / 行分组 / 行展开能力面。**正向方向仍待验证**：**被测版本新于下游锁定版本**的用例（下一次发布由 tag 触发）尚未执行。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
+- **触发与容量**：caomei-ui **发布 tag（`v*`）触发 1 次**（另可手动）；检查范围最低 `typecheck` + `build`，**不含** e2e / 视觉回归 / 全量单测 / 覆盖率。**下游默认分支为移动目标**：工作流记录下游 revision（SHA）以便归因——红可能是下游自身改动所致，非 caomei-ui 回归。**刚发布版本的安装**：下游可能启用 pnpm 11 的 `minimumReleaseAge`，会拒绝「过新」的版本；`Override caomei-ui to target version` 步骤以 `--config.minimumReleaseAge=0` 关闭该门槛，确保兼容检查能安装刚发布的包。该开关对本次 `pnpm add` 的整张依赖解析图生效（不只 `caomei-ui` 本身）；下游 lockfile 已在上一 step 以默认门槛安装。
+- **归属与现状**：本机制为[路线图 Phase 8](/plan/roadmap)；工作流**已就绪并经三次真实触发验证**——run #1（2026-10-12，registry latest `0.6.0`，`dependfix @ 46c6fb61`，见 `docs/design/governance/2026-10-12-phase22-m1-1-downstream-compat-first-run.md`）、**run #2（2026-10-13，显式版本入参 `0.5.0`，与下游锁定版本构成**版本差**，`dependfix @ edbe5e04…`，见 `docs/design/governance/2026-10-13-phase23-m2-1-downstream-compat-explicit-version-run.md`）** 与 **run #3（2026-10-13 UTC / 本地 2026-10-14，**负向对照**：显式入参 `0.2.0` 的已知不兼容版本 → `Typecheck downstream` **红**，`dependfix @ 1a6aca15…`，见 `docs/design/governance/2026-10-14-phase24-m1-2-downstream-compat-negative-control.md`）**。**run #4（2026-10-20，tag `v0.7.0`）** 在 `Override caomei-ui to target version` 被下游 pnpm 11 `minimumReleaseAge` 拒绝（版本刚发布 10 分钟），属发布年龄门槛而非兼容性回归；已在本批 workflow 以 `--config.minimumReleaseAge=0` 修复，待下一次 tag 触发复验。
+- **判别力口径（避免把「绿 run」读成「兼容性已验证」）**：**管道贯通**（运行时无缺陷 / 可归因）与**重装生效**（override 确实换了版本）**已成立**；**回归判别力**（区分「新版本破坏下游」与「不破坏」）**已由负向对照路径成立**——run #3 安装已知不兼容的 `0.2.0` 后期望红、实际红，失败面 6 条 TS 诊断逐条归因到 `0.3.0` 才补齐的 `DataTable` 多列排序 / 行分组 / 行展开能力面。**正向方向仍待验证**：run #4 已走到版本覆盖但被 `minimumReleaseAge` 中止，尚未进入 `typecheck` / `build`；下一次 tag 触发将验证正向方向。启动范围与形态见 Phase 8 启动范围评估记录（`docs/design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md`）。
 
 ## 11. 相关文档
 

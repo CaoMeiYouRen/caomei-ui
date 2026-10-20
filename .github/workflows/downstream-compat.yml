@@ -100,7 +100,11 @@ jobs:
         working-directory: downstream
         env:
           CAOMEI_UI_VERSION: ${{ steps.version.outputs.version }}
-        run: pnpm --filter ${{ matrix.target-package }} add "caomei-ui@$CAOMEI_UI_VERSION"
+        # 被测版本通常是刚发布的 tag；下游可能配置了 minimumReleaseAge（pnpm 11），
+        # 会拒绝安装「过新」的版本。兼容检查必须能安装刚发布的包，故对本步骤关闭该门槛。
+        # 注意：该开关对本次 pnpm add 的整张依赖解析图生效（不只 caomei-ui 本身）；
+        # 下游 lockfile 已在上一 step 以默认门槛安装，常规安装未削弱。
+        run: pnpm --filter ${{ matrix.target-package }} add "caomei-ui@$CAOMEI_UI_VERSION" --config.minimumReleaseAge=0
       - name: Setup downstream build chain
         working-directory: downstream
         run: ${{ matrix.setup-command }}

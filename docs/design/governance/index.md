@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-20-manual-release-otp-tag-changelog-fixes.md](./2026-10-20-manual-release-otp-tag-changelog-fixes.md)：**手动发布链路加固：空 Unreleased、OTP 与 tag 预检**。`generate-changelog` 指定版本时剥离空 `# Unreleased` 段（保留有内容段）；`manual-release` 新增 `--otp`（日志脱敏）与 `announce` 的本地 / 远程 tag 预检（本地有、远程无时提示先 push 后重试）；Downstream Compat 的版本覆盖步骤以 `--config.minimumReleaseAge=0` 允许安装刚发布的包。**Review Gate**：结论见本记录 §3。
+
 - [2026-10-20-phase25-m3-2-locale-ledger-alignment.md](./2026-10-20-phase25-m3-2-locale-ledger-alignment.md)：**Phase 25 M3-2：locale 台账、守卫与子路径导出对齐**。`check-locale-ledger` 由「中英台账 ↔ `types.ts`」扩为三维：另对账中英文档的「预注册 / 按需引入」语言表与子路径表 ↔ `CaomeiLocale` 联合 + `PRE_REGISTERED_LOCALES`；新增命名空间 / 预注册 / 按需 / 子路径四项受检面下界；补齐 19 例正反面对照；同批消除 `development.md` 与 `experience-archive.md` 的「5 语 / 台账无机检」旧口径（后者保留点时语义并标注失效），并在中英 locale 页标注守卫契约。**Review Gate**：结论见本记录 §3。
 
 - [2026-10-20-phase25-m3-1b-five-locales.md](./2026-10-20-phase25-m3-1b-five-locales.md)：**Phase 25 M3-1b：一期 5 语落地**。新增 `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR` 五套完整文案（28 命名空间 / 80 条，键位与占位符对齐 `zh-CN`）；`CaomeiLocale` 扩为 10 语显式联合，预注册集合维持 `zh-CN` / `en-US`；`tsdown` + `exports` 增 5 条子路径（按需语言合计 8 条）；补 ECharts 5 语映射（`pt-BR → PT-br`）与 RTE 5 语映射（`ru-RU → ru`）；`check-locale-keys` 下界提升为 10 语 / 8 子路径并支持多行联合；中英文档同步。译文由 AI 生成、待用户复核。**Review Gate**：结论见本记录 §3。

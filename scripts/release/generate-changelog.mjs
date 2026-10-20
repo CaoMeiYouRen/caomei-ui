@@ -72,6 +72,10 @@ export async function generateChangelog({ version, date, root } = {}) {
         issuePrefixes: ['\u0000'],
     }
 
+    // `outputUnreleased` 必须保持 true：指定版本时，conventional-changelog 把目标版本
+    // 也作为「未发布段」输出，关掉会退回只输出最近一个已发布 tag 的段落。
+    // 指定版本时在生成后剥掉**空**的 Unreleased 段（0.7.0 实测：同名 tag 已存在时
+    // 重生成会得到「# Unreleased」+「# [0.7.0]」）；有内容的 Unreleased 段保留。
     const generator = new ConventionalChangelog(repoRoot)
         .readPackage(join(repoRoot, 'package.json'))
         .config(preset)
@@ -95,7 +99,31 @@ export async function generateChangelog({ version, date, root } = {}) {
         body += chunk
     }
 
-    return `# ${pkgName}\n\n${body}`.replace(/\n{3,}/gu, '\n\n')
+    const content = `# ${pkgName}\n\n${body}`.replace(/\n{3,}/gu, '\n\n')
+    return version === undefined ? content : stripEmptyUnreleasedSection(content)
+}
+
+/**
+ * 移除 CHANGELOG 中**空**的 `# Unreleased (...)` 段。
+ *
+ * conventional-changelog 在指定版本、且同名 tag 已存在时，会把目标版本作为已发布段输出，
+ * 同时在前面留一个空的 Unreleased 标题。空段不承载信息，保留会让同一份 CHANGELOG 出现
+ * 两个版本标题；有内容的 Unreleased 段（预览尚未发布的提交）保持原样。
+ *
+ * @param {string} content CHANGELOG 全文
+ * @returns {string}
+ */
+export function stripEmptyUnreleasedSection(content) {
+    return content.replace(
+        /^(# [^\n]+\n\n)#\s+Unreleased[^\n]*\n([\s\S]*?)(?=\n#\s+|$)/u,
+        (match, header, sectionBody) => {
+            const meaningful = sectionBody
+                .split(/\r?\n/u)
+                .map((line) => line.trim())
+                .filter((line) => line && !/^-{3,}$/u.test(line))
+            return meaningful.length === 0 ? header : match
+        },
+    ).replace(/\n{3,}/gu, '\n\n')
 }
 
 async function main() {

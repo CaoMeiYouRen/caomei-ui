@@ -52,12 +52,18 @@ export function parseArgs(argv = process.argv) {
  */
 export function getThresholds(args = parseArgs()) {
     const global = args.globalThreshold
-    return {
+    const thresholds = {
         statements: args.statements ?? global ?? DEFAULT_THRESHOLDS.statements,
         branches: args.branches ?? global ?? DEFAULT_THRESHOLDS.branches,
         functions: args.functions ?? global ?? DEFAULT_THRESHOLDS.functions,
         lines: args.lines ?? global ?? DEFAULT_THRESHOLDS.lines,
     }
+    for (const [metric, value] of Object.entries(thresholds)) {
+        if (!Number.isFinite(value) || value < 0 || value > 100) {
+            throw new Error(`阈值 ${metric} 非法：${value}（须为 0 ~ 100 的有限数字）`)
+        }
+    }
+    return thresholds
 }
 
 /**
@@ -116,9 +122,8 @@ export function checkCoverage(summaryPath = coverageSummaryPath, thresholds = ge
 }
 
 function main() {
-    const thresholds = getThresholds()
-
     try {
+        const thresholds = getThresholds()
         const { passed, errors, actual } = checkCoverage(coverageSummaryPath, thresholds)
 
         // 输出实际覆盖率

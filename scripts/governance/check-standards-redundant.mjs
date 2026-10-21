@@ -22,6 +22,12 @@ const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 export const DEFAULT_KEYWORDS = ['教训', '经验', '实证', '实战', '背景']
 export const OPTIONAL_KEYWORDS = ['沉淀']
 
+/**
+ * 受检面下界：规范文件被误删 / 目录改名时直接失败，避免「没有可扫文件 ⇒ 0 命中通过」。
+ * 新增规范文档时无需调整（只设下界）；删除规范文档须同步复核本值。
+ */
+export const MIN_STANDARDS_FILES = 9
+
 export function scanFile(file, keywords = DEFAULT_KEYWORDS) {
     const lines = readFileSync(file, 'utf8').split(/\r?\n/)
     const hits = []
@@ -55,12 +61,16 @@ export function scanFile(file, keywords = DEFAULT_KEYWORDS) {
 
 export function scanStandards(repoRoot, options = {}) {
     const standardsDir = join(repoRoot, 'docs/standards')
-    const keywords = options.includeSediment
+    const { includeSediment = false, minFiles = 0 } = options
+    const keywords = includeSediment
         ? [...DEFAULT_KEYWORDS, ...OPTIONAL_KEYWORDS]
         : DEFAULT_KEYWORDS
     const files = readdirSync(standardsDir)
         .filter((f) => f.endsWith('.md'))
         .map((f) => join(standardsDir, f))
+    if (files.length < minFiles) {
+        throw new Error(`受检面收窄：docs/standards 仅 ${files.length} 个 md，低于下界 ${minFiles}`)
+    }
     const results = []
     for (const file of files) {
         const hits = scanFile(file, keywords)
@@ -74,7 +84,7 @@ export function scanStandards(repoRoot, options = {}) {
 if (isDirectExecution(import.meta.url)) {
     const strict = process.argv.includes('--strict')
     const includeSediment = process.argv.includes('--include-sediment')
-    const results = scanStandards(REPO_ROOT, { includeSediment })
+    const results = scanStandards(REPO_ROOT, { includeSediment, minFiles: MIN_STANDARDS_FILES })
     let total = 0
     for (const { file, hits } of results) {
         for (const hit of hits) {

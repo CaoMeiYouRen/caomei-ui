@@ -21,6 +21,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export const projectRoot = path.resolve(__dirname, '..', '..')
 export const DEFAULT_MODE = 'error'
 
+/**
+ * 受检面下界：目标清单被误删 / 静默收窄时直接失败，避免「没有目标 ⇒ 全部通过」。
+ * 新增关键文档时同步抬高本值（清单长度不得低于此值）。
+ */
+export const MIN_TARGETS = 9
+
 export const LINE_COUNT_TARGETS = [
     {
         file: 'README.md',
@@ -94,21 +100,34 @@ export function countLines(content) {
     return content.split(/\r?\n/u).length
 }
 
+/**
+ * 按阈值对行数分级（严格大于才命中；等于阈值仍属上一档）。
+ *
+ * @param {{ warningLimit: number, errorLimit: number }} target
+ * @param {number} lines
+ * @returns {'pass' | 'warning' | 'error'}
+ */
+export function classifyLineCount(target, lines) {
+    if (lines > target.errorLimit) {
+        return 'error'
+    }
+    if (lines > target.warningLimit) {
+        return 'warning'
+    }
+    return 'pass'
+}
+
 export async function inspectTarget(target) {
     const absolutePath = path.join(projectRoot, target.file)
     const content = await readFile(absolutePath, 'utf8')
     const lines = countLines(content)
-
-    if (lines > target.errorLimit) {
-        return { ...target, lines, severity: 'error' }
-    }
-    if (lines > target.warningLimit) {
-        return { ...target, lines, severity: 'warning' }
-    }
-    return { ...target, lines, severity: 'pass' }
+    return { ...target, lines, severity: classifyLineCount(target, lines) }
 }
 
 export async function collectLineCountReport() {
+    if (LINE_COUNT_TARGETS.length < MIN_TARGETS) {
+        throw new Error(`受检面收窄：LINE_COUNT_TARGETS 仅 ${LINE_COUNT_TARGETS.length} 项，低于下界 ${MIN_TARGETS}`)
+    }
     const results = await Promise.all(LINE_COUNT_TARGETS.map(inspectTarget))
     return {
         errors: results.filter((item) => item.severity === 'error'),
@@ -119,7 +138,15 @@ export async function collectLineCountReport() {
 
 export async function main(argv = process.argv) {
     const { mode } = parseArgs(argv)
-    const { errors, results, warnings } = await collectLineCountReport()
+    let report
+    try {
+        report = await collectLineCountReport()
+    } catch (error) {
+        console.error(`[docs-line-count] ✖ ${error.message}`)
+        process.exitCode = 1
+        return
+    }
+    const { errors, results, warnings } = report
 
     for (const result of results) {
         let prefix = '[docs-line-count] ok'

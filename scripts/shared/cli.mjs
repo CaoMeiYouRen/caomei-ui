@@ -26,6 +26,31 @@ export function ensureAllowedValue(value, allowedValues, invalidMessage) {
     throw new Error(typeof invalidMessage === 'function' ? invalidMessage(value) : invalidMessage)
 }
 
+/**
+ * 把命令行原始字符串转换为声明值。
+ *
+ * `type: 'number'` 走 fail-closed：空串 / 非数字 / `Infinity` 一律抛错，避免
+ * `NaN` 参与阈值比较时恒为 false 而静默放行（`check-coverage --threshold=abc`）。
+ *
+ * @param {string} optionName
+ * @param {{ parse?: (raw: string) => unknown, type?: string }} definition
+ * @param {string} rawValue
+ * @returns {unknown}
+ */
+function coerceOptionValue(optionName, definition, rawValue) {
+    if (definition.parse) {
+        return definition.parse(rawValue)
+    }
+    if (definition.type === 'number') {
+        const value = rawValue.trim() === '' ? Number.NaN : Number(rawValue)
+        if (!Number.isFinite(value)) {
+            throw new Error(`Unsupported value for ${optionName}: ${rawValue}（期望有限数字）`)
+        }
+        return value
+    }
+    return rawValue
+}
+
 export function parseCliOptions(argv, config = {}) {
     const cliArgs = getCliArgs(argv)
     const defaults = config.defaults ?? {}
@@ -61,7 +86,7 @@ export function parseCliOptions(argv, config = {}) {
                 throw new Error(`Unsupported argument: ${arg}`)
             }
 
-            const nextValue = definition.parse ? definition.parse(rawValue) : rawValue
+            const nextValue = coerceOptionValue(optionName, definition, rawValue)
 
             if (definition.allowedValues) {
                 ensureAllowedValue(nextValue, definition.allowedValues, definition.invalidMessage ?? ((value) => `Unsupported value for ${optionName}: ${value}`))

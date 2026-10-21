@@ -245,9 +245,8 @@
     "language": "zh"
   },
   "lint-staged": {
-    "*.{js,ts,vue}": [
-      "npm run lint",
-      "git add"
+    "*.{js,mjs,cjs,ts,vue}": [
+      "cross-env NODE_ENV=production eslint --fix"
     ]
   }
 }

@@ -22,6 +22,10 @@
 
 ## 当前条目
 
+- [2026-10-21-phase25-archive.md](./2026-10-21-phase25-archive.md)：**Phase 25 归档批次**。`todo.md` 移除 Phase 25 条目并回到「无进行中阶段」；Phase 25 完整块迁入[待办归档](../../plan/todo-archive.md)；`roadmap.md` 四处同步完成态；长期任务第 27 轮门槛复核；M4-1 发布 0.7.0 / BREAKING CHANGES 补正 / Downstream Compat 修复同批收口。**Review Gate**：结论见本记录 §5。
+
+- [2026-10-21-phase25-m4-1-release-execution.md](./2026-10-21-phase25-m4-1-release-execution.md)：**Phase 25 M4-1：0.7.0 发布执行与收口**。registry `latest` = `0.7.0`、tarball shasum 与 `dist.shasum` 一致、exports 13 键；GitHub Release `v0.7.0` 已发布；`origin/master` = 工作区 HEAD；在 CHANGELOG 与 GitHub Release 说明补齐语言包按需化的 `💥 BREAKING CHANGES` 段（不改 tag、不发新版本）；Downstream Compat run #4 因 `minimumReleaseAge` 中止，非兼容性回归。**Review Gate**：结论见本记录 §5。
+
 - [2026-10-20-manual-release-otp-tag-changelog-fixes.md](./2026-10-20-manual-release-otp-tag-changelog-fixes.md)：**手动发布链路加固：空 Unreleased、OTP 与 tag 预检**。`generate-changelog` 指定版本时剥离空 `# Unreleased` 段（保留有内容段）；`manual-release` 新增 `--otp`（日志脱敏）与 `announce` 的本地 / 远程 tag 预检（本地有、远程无时提示先 push 后重试）；Downstream Compat 的版本覆盖步骤以 `--config.minimumReleaseAge=0` 允许安装刚发布的包。**Review Gate**：结论见本记录 §3。
 
 - [2026-10-20-phase25-m3-2-locale-ledger-alignment.md](./2026-10-20-phase25-m3-2-locale-ledger-alignment.md)：**Phase 25 M3-2：locale 台账、守卫与子路径导出对齐**。`check-locale-ledger` 由「中英台账 ↔ `types.ts`」扩为三维：另对账中英文档的「预注册 / 按需引入」语言表与子路径表 ↔ `CaomeiLocale` 联合 + `PRE_REGISTERED_LOCALES`；新增命名空间 / 预注册 / 按需 / 子路径四项受检面下界；补齐 19 例正反面对照；同批消除 `development.md` 与 `experience-archive.md` 的「5 语 / 台账无机检」旧口径（后者保留点时语义并标注失效），并在中英 locale 页标注守卫契约。**Review Gate**：结论见本记录 §3。

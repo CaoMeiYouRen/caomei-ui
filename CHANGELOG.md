@@ -24,6 +24,14 @@
 
 * **shared:** 提取跨层共享的开发期告警工具 warnDev ([1eb562b](https://github.com/CaoMeiYouRen/caomei-ui/commit/1eb562b))
 
+### 💥 BREAKING CHANGES
+
+* **locale:** 内建语言改为「预注册 + 按需引入」：`zh-CN` / `en-US` 随包根可用，
+  其余语言（`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`）
+  须经 `caomei-ui/locale/<code>` 子路径引入并 `registerLocale()` 注册；`caomeiLocales`
+  变为已注册表。未注册语言回落 `zh-CN` 并给非生产环境告警。迁移见发布指南 §9 与
+  [内建文案与语言](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/docs/components/locale.md)。
+
 # [0.6.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.5.0...v0.6.0) (2026-10-08)
 
 ### ✨ 新功能

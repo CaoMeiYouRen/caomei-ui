@@ -27,7 +27,7 @@ metadata:
   - [ ] 2.3 读取 `.session/wisdom.md`（跨 session 可复用发现）。
   - [ ] 2.4 读取 `docs/plan/todo.md`，对齐阶段级上下文。
 - [ ] Step 3: Session 收尾更新 ⚠️ REQUIRED
-  - [ ] 3.1 更新 `.session/current-task.yaml` 的 `progress` / `next_steps` / `cognitive` / `session.updated_at`。
+  - [ ] 3.1 更新 `.session/current-task.yaml` 的 `progress` / `next_steps` / `cognitive` / `session.updated_at`。**任务态只写当前状态**：`progress.completed` 不追加逐条交付日志（摘要 + 指针到 `todo-archive` / 治理记录 / git），历史 `next_steps` 不保留；`current-task.yaml` 超过 50KB、`runtime-state.json` 超过 32KB 时先按「当前态 + 指针」压缩再继续。
   - [ ] 3.2 追加可复用发现到 `.session/wisdom.md`。
   - [ ] 3.3 若活跃条目 >= 20，提醒执行蒸馏（见 [Session Wisdom 蒸馏机制](../../../docs/standards/session-wisdom-distillation.md)）。
   - [ ] 3.4 更新 `.session/runtime-state.json` 的 `last_verification`。
@@ -40,6 +40,7 @@ metadata:
 - `todo.md` 完成态是否与 Review Gate 结论**同批落地**（完成态不得早于 RG 结论，提交前记录结论已回填）——Step 1.7。
 - 阶段**登记 / 归档 / 范围变更**三类事件后 `.session` 阶段态（`current-task.yaml` + `runtime-state.json`）是否已同步——Step 3.5（git-ignored，无脚本守卫，由 Review Gate 引用）。
 - 认知状态（`cognitive`）是否记录了本 session 的失败与模式切换。
+- 任务态是否只含当前状态（无逐条交付日志 / 历史 `next_steps`），且未越过体量阈值（`current-task.yaml` 50KB / `runtime-state.json` 32KB）。
 - 归档后 `todo.md` / `backlog.md` 是否已清空全部完成项（无交付摘要、无归档指针、无「闭环整理」段）；`recurring.md` 是否只剩可反复执行的任务。
 - 长期任务的阶段收口 / 发布前触发义务是否已执行并留痕（未留痕视为未执行）。
 
@@ -54,6 +55,7 @@ metadata:
 ## 反模式
 
 - 用聊天历史替代结构化 `.session/` 文件恢复上下文。
+- 把 `.session/` 当交付日志：在 `progress.completed` 追加逐条批次摘要，或保留历代 `next_steps`（文件持续膨胀，恢复时噪声大于信号）。
 - 只更新 `todo.md` 而不同步 session 协议，或反之。
 - 达到阈值仍不蒸馏，导致 wisdom 无限膨胀。
 - 在 `todo.md` / `backlog.md` 里为已完成 / 已归档条目保留交付摘要或归档指针（消耗阅读成本且与归档重复）。
@@ -61,6 +63,7 @@ metadata:
 ## 交付前检查
 
 - [ ] `.session/` 三文件与 `todo.md` 状态一致。
+- [ ] 任务态未越过体量阈值，且 `completed` 未累积交付日志。
 - [ ] `todo.md` 完成态未早于 Review Gate 结论，且提交前结论已回填（Step 1.7）。
 - [ ] 阶段登记 / 归档 / 范围变更后 `.session` 阶段态已同步（Step 3.5；git-ignored，无脚本守卫）。
 - [ ] 新增事项有明确落点，未越阶段容量私自扩容。

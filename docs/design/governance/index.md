@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-21-doc-cleanup-and-infra-governance.md](./2026-10-21-doc-cleanup-and-infra-governance.md)：**文档清理与基建治理批次**（用户指令「开始进行一轮文档清理和基建治理」）。提交钩子收窄为暂存文件 + 移除裸 `git add`；三个门禁脚本补单测（其中两个补受检面下界），并修复 `type: 'number'` 未生效导致的阈值 fail-open；`.session` 任务态按「当前态 + 指针」压缩并写入体量阈值；规划载体清除已完成阶段的过渡注记、空列与重复索引。质量门全通过。**Review Gate**：R1 `deep` → R2 `standard` → R3 `quick` 均 Pass（记录载体另经 R4 / R5 `quick` 复审），结论见该记录 §6；提交 `78330c9` / `97c8664` / `21b1308` / `40231c9`，未推送。
+
 - [2026-10-21-phase25-archive.md](./2026-10-21-phase25-archive.md)：**Phase 25 归档批次**。`todo.md` 移除 Phase 25 条目并回到「无进行中阶段」；Phase 25 完整块迁入[待办归档](../../plan/todo-archive.md)；`roadmap.md` 四处同步完成态；长期任务第 27 轮门槛复核；M4-1 发布 0.7.0 / BREAKING CHANGES 补正 / Downstream Compat 修复同批收口。**Review Gate**：结论见本记录 §5。
 
 - [2026-10-21-phase25-m4-1-release-execution.md](./2026-10-21-phase25-m4-1-release-execution.md)：**Phase 25 M4-1：0.7.0 发布执行与收口**。registry `latest` = `0.7.0`、tarball shasum 与 `dist.shasum` 一致、exports 13 键；GitHub Release `v0.7.0` 已发布；`origin/master` = 工作区 HEAD；在 CHANGELOG 与 GitHub Release 说明补齐语言包按需化的 `💥 BREAKING CHANGES` 段（不改 tag、不发新版本）；Downstream Compat run #4 因 `minimumReleaseAge` 中止，非兼容性回归。**Review Gate**：结论见本记录 §5。

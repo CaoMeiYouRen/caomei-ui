@@ -22,6 +22,10 @@
 
 ## 当前条目
 
+- [2026-10-22-phase26-registration.md](./2026-10-22-phase26-registration.md)：**Phase 26 登记批次**（用户就第十轮评估 §3 回「按推荐来」）。取 **A + B + C + D** 四条主线，构成 **4 条主线 / 13 条原子条目**（冻结面终审与 1.x 承诺 4 / 行为收口与准破坏性变更 4 / 发布链路就绪与 1.0 交付 3 / 下游复验与质量确认 2）；裁定 D2 ① rc → 转正维持手动、D3 ① DataTable 主项 + ①②③ 全做、D4 ① `Form` 只评估、D5 ③ 发布时 API 差分。载体同步：`todo.md` / `roadmap.md` / `backlog.md`（移出 3 行、新增 1 行条件候选，36 → 34）/ 本索引；Phase 24 遗留两条回填并留待独立归档批次。**Review Gate**：结论见本记录 §6。
+
+- [2026-10-22-next-stage-scope-evaluation-10.md](./2026-10-22-next-stage-scope-evaluation-10.md)：**下一阶段范围评估（第十轮）：1.0 发布前收尾**（用户指令「下阶段先处理 1.0 前收尾，包括进一步评估 API 与组件接口固定」）。**产出时点尚未授权启动**，阶段编号待裁定后取当时最大编号 + 1。**候选盘点**：backlog 在册 **36** 条按能力归并为 10 组，另列 Phase 24 遗留 2 条（属 Phase 24）、近期批次 follow-up 2 条、1.0 专项缺口 8 条；逐条有落点、无静默豁免。**主线草案**：4 条主线 / **13** 条原子条目——A 冻结面终审与 1.x 承诺落地（4）/ B 行为收口与准破坏性变更（4，含 DataTable 全选作用域与 `engines` 提升）/ C 发布链路就绪与 1.0 交付（3，含预发布 `--tag` 与里程碑段）/ D 下游复验与质量确认（2）。**待决策 D1 ~ D5**：主线取舍 / 1.0 交付形态与触发 / DataTable 处置范围 / `Form` 评估深度 / 冻结面执行形态。**关键取证**：`exports` 实为 13 键而 `version-policy` 仍写 5 键；1.0.0 生成段只会出现一条 `fix(release)`；手动流无 `--tag`。**Review Gate**：结论见本记录 §6。**决策与登记（2026-10-22）**：用户回「按推荐来」，取 ④①①①③；分配 **Phase 26**（4 条主线 / 13 条原子条目），登记口径见[登记记录](./2026-10-22-phase26-registration.md)。
+
 - [2026-10-21-doc-cleanup-and-infra-governance.md](./2026-10-21-doc-cleanup-and-infra-governance.md)：**文档清理与基建治理批次**（用户指令「开始进行一轮文档清理和基建治理」）。提交钩子收窄为暂存文件 + 移除裸 `git add`；三个门禁脚本补单测（其中两个补受检面下界），并修复 `type: 'number'` 未生效导致的阈值 fail-open；`.session` 任务态按「当前态 + 指针」压缩并写入体量阈值；规划载体清除已完成阶段的过渡注记、空列与重复索引。质量门全通过。**Review Gate**：R1 `deep` → R2 `standard` → R3 `quick` 均 Pass（记录载体另经 R4 / R5 `quick` 复审），结论见该记录 §6；提交 `78330c9` / `97c8664` / `21b1308` / `40231c9`，未推送。
 
 - [2026-10-21-phase25-archive.md](./2026-10-21-phase25-archive.md)：**Phase 25 归档批次**。`todo.md` 移除 Phase 25 条目并回到「无进行中阶段」；Phase 25 完整块迁入[待办归档](../../plan/todo-archive.md)；`roadmap.md` 四处同步完成态；长期任务第 27 轮门槛复核；M4-1 发布 0.7.0 / BREAKING CHANGES 补正 / Downstream Compat 修复同批收口。**Review Gate**：结论见本记录 §5。

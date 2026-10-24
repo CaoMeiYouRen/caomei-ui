@@ -6,7 +6,7 @@
 
 > changesets is not used (this project is a single package, and semantic-release is the standard fit).
 
-> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** for now (see "Manual release (local)" below). CI auto-publish will be enabled after npm credentials are configured (`NPM_TOKEN` or npm Trusted Publisher / OIDC).
+> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the plan is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. **The rc channel requires `--tag` support, which lands with the release-pipeline item; until then, do not publish an rc** (plain `npm publish` would target `latest`). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
 
 ## Version inference
 
@@ -19,6 +19,8 @@
 
 ## Release flow
 
+> This is the CI flow for the eventual auto-publish path; it is **not used for 1.0**, which stays on the local manual flow below.
+
 1. Commits follow Conventional Commits (via the `conventional-committer` skill).
 2. Pushing to `master` triggers semantic-release in `release.yml` (the publish step is currently disabled).
 3. Once enabled, it automatically:
@@ -29,13 +31,13 @@
 
 ## Manual release (local)
 
-Releases are currently performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). Use the single-entry orchestrator:
+Releases are performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. The rc step is available only after `--tag` support lands (see the status note above). Use the single-entry orchestrator:
 
 ```bash
 pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--yes]
 ```
 
-It chains seven steps: `preflight → bump → changelog → publish → verify → sync → announce`. Mutating steps (`bump` / `changelog` / `publish` / `sync` / `announce`) require an explicit `--yes`; use `--dry-run` to preview. The script never pushes — run `git push origin master --follow-tags` yourself. See the [Chinese release guide](/guide/release) §3 for the full runbook, the tag placement note and the release-metadata exemption boundary.
+It chains seven steps: `preflight → bump → changelog → publish → verify → sync → announce`. Mutating steps (`bump` / `changelog` / `publish` / `sync` / `announce`) require an explicit `--yes`; use `--dry-run` to preview. If the release deprecates public API, add a `Deprecations` section to the CHANGELOG manually (the generator does not group it yet). The script never pushes — run `git push origin master --follow-tags` yourself. See the [Chinese release guide](/guide/release) §3 for the full runbook, the tag placement note and the release-metadata exemption boundary.
 
 ## Pre-release checks
 

@@ -12,7 +12,7 @@ const { theme } = useData()
 pnpm add caomei-ui
 ```
 
-> The latest version is **v{{ theme.version }}** (style entry: `caomei-ui/theme.css`; see [Versioning & Compatibility](/en-US/guide/version-policy) for the breaking package-format change and downstream fixes). 0.x, so the API and directory layout may still change before 1.0; Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
+> The latest version is **v{{ theme.version }}** (style entry: `caomei-ui/theme.css`; see [Versioning & Compatibility](/en-US/guide/version-policy) for the breaking package-format change and downstream fixes). From 1.x on the library follows semantic versioning (breaking changes ship only in `major`; see that page for the frozen surfaces and the deprecation policy); Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
 
 Vue 3.5+ must be installed by your project. On top of that, **some components carry optional peer dependencies** (currently the editor core `md-editor-v3` for `CaomeiRichTextEditor`): downstreams that do not use those components neither install them nor are affected, while using them requires installing the peer first (`pnpm add md-editor-v3`) — otherwise the build fails with "cannot resolve md-editor-v3".
 

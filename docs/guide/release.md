@@ -3,15 +3,17 @@
 ## 1. 发布方式与当前状态
 
 - 版本推断与发布工具为 **semantic-release**，依据 Conventional Commits 自动推断版本并发布。
-- **当前决策（Phase 5 第二阶段，2026-09-19 授权启动）**：首版停在 **0.x**；采用**本地手动发布**；**暂不启动 CI 自动发布流程**。
+- **当前决策（1.0 收尾，2026-10）**：采用**本地手动发布**；**暂不启动 CI 自动发布流程**。1.0 计划走「rc 预发布 → 正式版」两步：预发布发 npm `next`，正式版发 `latest`。**预发布通道（`--tag`）由发布链路就绪条目落地；当前 `manual-release.mjs` 尚不支持 `--tag`，在该条目交付前不得发布 rc**（否则 `npm publish` 默认落到 `latest`）。
 
 > 不使用 changesets（本项目为单包，semantic-release 是标准场景）。
 
-## 2. 为什么 0.x 首版要手工发布
+## 2. 为什么首版采用手工发布（历史）
 
-- semantic-release 的首版**恒为 `1.0.0`**（内置常量 `FIRST_RELEASE`，且**没有** `initialVersion` 选项），无法直接产出 0.x。
-- 停在 0.x 的做法：**手工发布首个 0.x 版本并建立基线 tag**（如 `v0.1.0`）。此后 semantic-release 以该 tag 为基线，按 Conventional Commits 在 0.x 递增（`fix` → `0.1.1`，`feat` → `0.2.0`）。
-- 注意：一旦出现 `BREAKING CHANGE` / `!`，semantic-release 仍会直接升到 `1.0.0`；是否进入 1.0.0 须单独决策。
+首版基线（1.0 之前的版本）的形态如下，属历史决策；1.0 仍维持本地手动发布。
+
+- semantic-release 的首版**恒为 `1.0.0`**（内置常量 `FIRST_RELEASE`，且**没有** `initialVersion` 选项），无法直接产出 1.0 之前的版本。
+- 建立基线 tag 的做法：**手工发布首个 1.0 之前的版本并建立基线 tag**（如 `v0.1.0`）。此后 semantic-release 以该 tag 为基线，按 Conventional Commits 递增（`fix` → patch，`feat` → minor）。
+- 注意：一旦出现 `BREAKING CHANGE` / `!`，semantic-release 仍会直接升到 `1.0.0`；是否进入 1.0 须单独决策。
 
 ## 3. 发布流程（本地手动）
 
@@ -43,9 +45,9 @@ pnpm release:manual announce  --version=0.7.0 --yes
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 提交在其后——**tag 视图不含 CHANGELOG 段属正常形态**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。
-3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）
-4. **发布（`publish`）**：`npm publish`；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。
-5. **后校验（`verify`）**：registry `latest` = 目标版本；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合。
+3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。
+4. **发布（`publish`）**：`npm publish`；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**rc 期须待 `--tag` 落地后改用 `--tag=next`；正式版用 `--tag=latest`。**
+5. **后校验（`verify`）**：目标 dist-tag 指向目标版本（rc 期断言 `next`、正式版断言 `latest`）；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合。
 6. **文档同步（`sync`）**：更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`。
 7. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`。
 
@@ -88,6 +90,7 @@ pnpm release:manual announce  --version=0.7.0 --yes
 
 - `.github/workflows/release.yml` 保持「仅执行 `pnpm verify`」，发布步骤注释保留、不放开。
 - 后续启用条件：配置 `NPM_TOKEN` secret，或使用 npm **Trusted Publisher（OIDC）**，再放开发布步骤。
+- **1.0 决策**：1.0 的 rc 与正式版均按本地手动发布执行；rc 通道以 `--tag` 落地为前提（见 §1）；提交驱动的自动发布在 1.0 后单独立项，本阶段不放开发布步骤。
 
 ## 6. 版本推断（基线建立后）
 
@@ -106,6 +109,8 @@ pnpm release:manual announce  --version=0.7.0 --yes
 - `prepublishOnly` 会在发布前自动执行同一校验，声明缺失或不一致将中止发布。
 
 ## 8. 回滚与弃用
+
+> 本节「弃用」指 **npm 版本标记**（`npm deprecate`），与[版本与兼容策略](./version-policy.md)的 **API 弃用政策**不同名不同义。
 
 - 标记问题版本：`npm deprecate caomei-ui@<version> "<reason>"`。
 - npm 的 `unpublish` 受发布时长（一般 72 小时）、依赖方数量、下载量与所有权等政策约束，且可能被拒绝；超期或已被广泛安装时**不建议** unpublish，改用 deprecate + 修复后 patch。

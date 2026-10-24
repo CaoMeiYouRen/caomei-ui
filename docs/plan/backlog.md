@@ -32,6 +32,7 @@
 | `BackTop`（回到顶部） | 三仓实测（同上） | `rss-impact-web` 用 `el-backtop` 1 处。触发条件 = 下游迁移排期出现 | 低 |
 | `Rating`（评分） | 三仓实测（同上） | `timing-push-web` 用 `v-rating` 1 处（该仓为 Vue 2 / gitee 停更仓，仅作缺口面参考）。触发条件 = 下游迁移排期出现 | 低 |
 | `TimePicker`（独立时间选择） | 三仓实测（同上） | `timing-push-web` 用 `v-time-picker` 2 处；本库 `DatePicker` 面板内已含时间选择。触发条件 = 出现「只要时间、不要日期」的独立用例 | 低 |
+| `Form` / `FormItem` | Phase 26 M1-2 评估（只评估） | **形态已评估、实现后置**：推荐「独立组合层 + 插槽作用域」；1.x 不扩既有字段契约；组型控件用 `aria-labelledby`，`Switch` 暂无校验态。触发条件 = 1.0 后用户决策，或下游出现真实表单编排需求 | 低 |
 
 ### 1.3 不纳入自研的能力（外购建议）
 

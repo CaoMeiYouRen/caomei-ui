@@ -15,7 +15,7 @@
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
 | M1-1 | 冻结面终审与 1.x 承诺落地 | **冻结面清单终审与 1.0 决策记录**：四类面逐项确认（组件公开 props / events / slots 名称与语义；`exports` 13 键；包根导出名；`--caomei-*` token 冻结档位〔全局 68 / 全量 146 二选一裁定〕；10 语 locale 命名空间与注册形态；`reka-ui` 下 `InputNumber` 的 `step` 语义按 2.10.4 冻结） | 清单逐项可复算；例外流程（安全 / 正确性必须破坏时）成文；「最后一破」归零确认；`version-policy` 的「`exports` 5 键」陈旧口径修正；结论落治理记录 | **已完成（2026-10-24）**：token 档位经用户裁定取「全量 146 + 已披露钩子」（有效冻结面 371）；六类面与复算命令、例外 / 弃用流程、「最后一破」口径见[冻结面终审记录](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) §1 ~ §4；`version-policy` 中英「5 键」已改 13 键 |
-| M1-2 | 冻结面终审与 1.x 承诺落地 | **`Form` / `FormItem` 形态与字段契约影响评估（只评估）**：校验规则 / 布局 / 与 `FieldProps` 家族的关系 / `id` · `name` · `aria-describedby` 注入点 | 评估记录给出形态建议与「是否扩既有字段契约」的结论；**不实现**；现存 12 个继承契约 / 35 个含内联同名字段的 `types.ts` 逐项取证 | 待执行 |
+| M1-2 | 冻结面终审与 1.x 承诺落地 | **`Form` / `FormItem` 形态与字段契约影响评估（只评估）**：校验规则 / 布局 / 与 `FieldProps` 家族的关系 / `id` · `name` · `aria-describedby` 注入点 | 评估记录给出形态建议与「是否扩既有字段契约」的结论；**不实现**；现存 12 个继承契约 / 35 个含内联同名字段的 `types.ts` 逐项取证 | **已完成（2026-10-24）**：结论为 1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；12 / 35（交集 8）/ 8 个 `required` 与 12 个继承者的 `id` 落点 / 可访问名 / 校验态逐项取证见[评估记录](../design/governance/2026-10-24-phase26-m1-2-form-field-contract-evaluation.md) §2 ~ §4；组型控件需 `aria-labelledby`、`Switch` 无校验态；未实现组件 |
 | M1-3 | 冻结面终审与 1.x 承诺落地 | **API 表面基线形态评估（只评估）**：对比「仅文档声明 / 提交态快照 / 发布时与上一已发布版本差分」三形态 | 给出成本、判别力与推荐；说明 `docs/.vitepress/data/component-meta.json` 为 gitignored 生成物的限制；**不落地守卫** | 待执行 |
 | M1-4 | 冻结面终审与 1.x 承诺落地 | **1.x 承诺载体改写**：中英 `version-policy` / `getting-started` / `README` / `release.md` §1 · §2 · §5；删除「0.x 阶段 API 与目录结构在 1.0 前可能调整」类表述 | 1.x 兼容承诺与弃用政策成文；`0.x` 活载体零残留（历史记录按点时快照不回改）；`pnpm docs:check` 全绿 | **已完成（2026-10-24）**：中英版本策略页改写为「1.x 兼容策略 / 冻结面 / 弃用政策 / 预发布通道 / 例外与流程」，冻结面与 [M1-1 记录](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) 对齐；`getting-started`、`README`、`release.md` §1 · §2 · §5 同步；活载体 `0.x` 关键词回扫为 0（`docs/design/documentation-site.md` 一处历史表述改为「1.0 之前的开发期」） |
 | M2-1 | 行为收口与准破坏性变更 | **DataTable 行选择全选作用域收口（方案 A）**：表头全选只作用当前页；客户端分页保留跨页选择；表头状态用 `getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`，切换用 `toggleAllPageRowsSelected`；`lazy` 仍为当前页；受控全表由父级写 `selection`，不新增 prop；可访问名改「全选当前页」（10 语） | 分页 × 选择测试；中英组件页、PrimeVue 迁移差异、CHANGELOG 与 GitHub Release 四处披露；`selectAll` / `selectAllScope` 契约仅登记不实现 | 待执行 |
@@ -51,6 +51,7 @@
 | 下游兼容检查的实际安装版本校验步骤 | 下次发布前后可在真实 run 中验证时 | `实际安装版本` |
 | momei 根包接入下游兼容检查 | 该验证通过或用户指定 | `momei 根包接入` |
 | 组件增强与长尾 | 下游出现真实用量 | `ColorPicker`、`DatePicker`、`Paginator`、`Sidebar`、`ScrollPanel` |
+| `Form` / `FormItem` | 1.0 后按用户决策；形态已评估 | `Form`、`FormItem` |
 | Toast 焦点哨兵与 `aria-hidden-focus` 冲突 | 既有裁定：维持现状 | `Toast 焦点哨兵` |
 | 文档站多版本托管 / 首页 hydration | 用户裁定暂不启动 / 待定位上游行为 | `文档站多版本托管`、`首页 hydration` |
 | 语言矩阵 - 长期（二期语言集）与 RTL | 语言数量增长 / RTL 单独立项 | `语言矩阵 - 长期`、`RTL` |

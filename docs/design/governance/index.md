@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-24-phase26-m1-2-form-field-contract-evaluation.md](./2026-10-24-phase26-m1-2-form-field-contract-evaluation.md)：**Phase 26 M1-2 `Form` / `FormItem` 形态与字段契约影响评估（只评估）**。取证 12 个共享契约继承者 / 35 个宽口径内联同名字段（交集 8）/ 8 个显式 `required`；逐项核对 `id` / `name` / `aria-describedby` / `aria-invalid` 注入点。结论：1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；组型控件需 `aria-labelledby`，`Switch` 无校验态；provide/inject 自动注入与内建 rules 引擎均后置。**Review Gate**：结论见本记录 §7。
+
 - [2026-10-24-phase26-m1-1-freeze-final-review.md](./2026-10-24-phase26-m1-1-freeze-final-review.md)：**Phase 26 M1-1 冻结面终审与 1.0 决策记录**。终审六类面并以复算命令固化：组件公开契约（56 组件目录 / 94 根导出组件名 / API 面 516 props · 85 events · 70 slots · 16 exposed）、`exports` 13 键、包根导出名 324（`Caomei*` 98 / `use*`·`provide*` 7 / 其余 219）、token 有效冻结面 371（146 默认声明 ∪ 288 已披露覆盖钩子；15 个仅消费的内部变量不冻结）、10 语 locale（每语 28 命名空间 / 80 键，2 语预注册 + 8 条子路径）、`InputNumber` 的 `step` 按 `reka-ui` 2.10.4 冻结。冻结自 `1.0.0-rc.1` 生效；例外与弃用流程成文；「最后一破」= M2-1 ~ M2-4，须在 rc 前归零；修正 `version-policy` 的「`exports` 5 键」陈旧口径。**Review Gate**：结论见本记录 §7。
 
 - [2026-10-22-phase26-registration.md](./2026-10-22-phase26-registration.md)：**Phase 26 登记批次**（用户就第十轮评估 §3 回「按推荐来」）。取 **A + B + C + D** 四条主线，构成 **4 条主线 / 13 条原子条目**（冻结面终审与 1.x 承诺 4 / 行为收口与准破坏性变更 4 / 发布链路就绪与 1.0 交付 3 / 下游复验与质量确认 2）；裁定 D2 ① rc → 转正维持手动、D3 ① DataTable 主项 + ①②③ 全做、D4 ① `Form` 只评估、D5 ③ 发布时 API 差分。载体同步：`todo.md` / `roadmap.md` / `backlog.md`（移出 3 行、新增 1 行条件候选，36 → 34）/ 本索引；Phase 24 遗留两条回填并留待独立归档批次。**Review Gate**：结论见本记录 §6。

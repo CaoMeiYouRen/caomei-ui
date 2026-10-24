@@ -33,7 +33,7 @@ The following **names and semantics** are frozen for 1.x. Additions are backward
 - **Root export names**: all **324** names importable from the package root (components, icon, composables, component-level types, locale runtime / types, chart helpers, injection keys, shared types).
 - **Token contracts**: the names and purposes of **371** `--caomei-*` tokens (146 with default declarations plus 288 component-page "Style customization" override hooks, 371 after de-duplication; 15 internal-only variables that are not documented are not frozen). Default color and size values may change; pixel-level appearance is not guaranteed.
 - **Locale form**: 10 locales, each with 28 namespaces / 80 messages; `zh-CN` / `en-US` are pre-registered and the other 8 are registered on demand via subpaths; namespace names and existing key names / semantics are frozen.
-- **`InputNumber` `step` semantics**: frozen to the `NumberField` behavior listed in the [freeze final review record](../../../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) §2.6; upgrading `reka-ui` in a way that changes it is a breaking change (or requires a compatibility layer): defaults to 1, falls back to 1 for non-positive values, does not snap to multiples of `step`, and rounds by precision before clamping to min / max.
+- **`InputNumber` `step` semantics**: frozen to the `NumberField` behavior listed in the [freeze final review record](/design/governance/2026-10-24-phase26-m1-1-freeze-final-review) §2.6; upgrading `reka-ui` in a way that changes it is a breaking change (or requires a compatibility layer): defaults to 1, falls back to 1 for non-positive values, does not snap to multiples of `step`, and rounds by precision before clamping to min / max.
 
 **Not frozen**:
 
@@ -41,7 +41,7 @@ The following **names and semantics** are frozen for 1.x. Additions are backward
 - Implementation and styling details: internal implementation, DOM structure, class names, computed styles and pixel-level appearance, examples and documentation wording.
 - Internal modules that are not exported from the package root, the 15 undocumented internal tokens, and transitive dependencies other than `reka-ui`.
 
-The item-by-item list, recomputation commands and rationale are in the [freeze final review record](../../../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) (the record is in Chinese only).
+The item-by-item list, recomputation commands and rationale are in the [freeze final review record](/design/governance/2026-10-24-phase26-m1-1-freeze-final-review) (the record is in Chinese only).
 
 ## Deprecation policy
 

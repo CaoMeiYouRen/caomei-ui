@@ -122,7 +122,7 @@ const enUS: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'No data',
-        selectAll: 'Select all',
+        selectAll: 'Select current page',
         selectRow: 'Select row',
         expandRowGroup: 'Expand row group',
         collapseRowGroup: 'Collapse row group',

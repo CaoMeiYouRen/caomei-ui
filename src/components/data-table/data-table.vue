@@ -2,6 +2,7 @@
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
 import { ChevronDown, ChevronRight, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
+import { warnDev } from '../../_shared/dev-warn'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
@@ -104,6 +105,22 @@ function resolveRowKey(row: T, index: number): string {
     return String(index)
 }
 
+/*
+ * `lazy` 下 `props.data` 只含当前页，缺省 `rowKey` 会退化为**页内索引**：翻页后同一索引可能
+ * 指向不同行，选择 / 展开状态因此会串页。自持态在翻页时已丢弃（见下方 watcher），但受控
+ * `expandedRows` 无法区分页，故在开发期要求显式提供稳定 `rowKey`。
+ * `lazy` 需在挂载时确定，这里只判定一次。
+ */
+if (
+    props.lazy
+    && props.rowKey === undefined
+    && (props.selectionMode !== undefined || props.columns.some((column) => column.expander))
+) {
+    warnDev(
+        '[CaomeiDataTable] lazy 模式下未提供 rowKey：行 id 将按页内索引生成，翻页后选择 / 展开状态会重置，受控 expandedRows 也无法稳定跨页。请提供能唯一标识行的 rowKey。',
+    )
+}
+
 /** 支持 `a.b.c` 点号嵌套取值。 */
 function getByPath(row: T, path: string): unknown {
     return path.split('.').reduce<unknown>((acc, segment) => {
@@ -203,6 +220,22 @@ const rowSelectionState = computed<RowSelectionState>(() => {
  */
 const internalSorting = ref<SortingState>(sortingState.value)
 const internalSelection = ref<RowSelectionState>(rowSelectionState.value)
+
+/*
+ * 服务端分页（`lazy`）下选择按页收敛：`props.data` 即当前页，翻页后上一页的行 id 不再对应任何行。
+ * 受控侧由 `rowSelectionState`（`indexOfRow` 只查当前页）与 emit 侧的 `props.data.filter` 保证；
+ * 自持侧在此丢弃旧页键，避免缺省索引键在新页复用而出现「翻页后自动选中」的串行现象。
+ * 需要跨页保留时由父级聚合受控 `selection`。
+ */
+watch(
+    () => props.data,
+    () => {
+        if (!props.lazy || isSelectionControlled.value) {
+            return
+        }
+        internalSelection.value = {}
+    },
+)
 
 const isPageControlled = computed(() => props.page !== undefined)
 
@@ -375,6 +408,20 @@ watch(
         }
     },
     { deep: true },
+)
+
+/*
+ * 服务端分页（`lazy`）且缺省 `rowKey` 时，展开集合的键是页内索引：翻页后必须丢弃，
+ * 否则新页同索引行会被自动展开。显式 `rowKey` 时键跨页稳定，展开态可保留。
+ */
+watch(
+    () => props.data,
+    () => {
+        if (!props.lazy || props.rowKey !== undefined || isRowExpansionControlled.value) {
+            return
+        }
+        internalExpandedRows.value = []
+    },
 )
 
 const currentExpandedRows = computed(() =>
@@ -660,18 +707,23 @@ function columnDef(key: string): DataTableColumn<T> {
 
 const bodyColspan = computed(() => Math.max(props.columns.length + (props.selectionMode ? 1 : 0), 1))
 
-const allRowsSelected = computed(() => table.getIsAllRowsSelected())
-const someRowsSelected = computed(() => table.getIsSomeRowsSelected())
+/*
+ * 表头全选只作用于**当前页**：`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`
+ * 与 `toggleAllPageRowsSelected` 都以分页后的行模型为准，客户端分页下不会跨页批量改写。
+ * 无分页时页行模型即全量行，行为与全选整表一致。
+ */
+const allPageRowsSelected = computed(() => table.getIsAllPageRowsSelected())
+const somePageRowsSelected = computed(() => table.getIsSomePageRowsSelected())
 
 function headerCheckboxModel(): boolean | 'indeterminate' {
-    if (allRowsSelected.value) {
+    if (allPageRowsSelected.value) {
         return true
     }
-    return someRowsSelected.value ? 'indeterminate' : false
+    return somePageRowsSelected.value ? 'indeterminate' : false
 }
 
-function toggleAllRows(): void {
-    table.toggleAllRowsSelected(!allRowsSelected.value)
+function toggleAllPageRows(): void {
+    table.toggleAllPageRowsSelected(!allPageRowsSelected.value)
 }
 
 function toggleRow(row: { toggleSelected: () => void }): void {
@@ -795,7 +847,7 @@ function setPageSize(rows: number): void {
                             <CaomeiCheckbox
                                 :model-value="headerCheckboxModel()"
                                 :label="selectAllLabel"
-                                @update:model-value="toggleAllRows"
+                                @update:model-value="toggleAllPageRows"
                             />
                         </div>
                     </th>

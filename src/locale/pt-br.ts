@@ -122,7 +122,7 @@ const ptBR: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'Nenhum dado',
-        selectAll: 'Selecionar tudo',
+        selectAll: 'Selecionar página atual',
         selectRow: 'Selecionar linha',
         expandRowGroup: 'Expandir grupo de linhas',
         collapseRowGroup: 'Recolher grupo de linhas',

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { h, nextTick, reactive, type DefineComponent } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { DataTableColumn, DataTableExpansionSlotProps, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
 
@@ -290,6 +290,89 @@ describe('CaomeiDataTable 行展开', () => {
         const expansionRow = bodyChildren[expansionIndex]
         expect(expansionRow.previousElementSibling?.textContent).toContain('Cara')
         expect(wrapper.get('.expansion-slot').text()).toBe('Cara 详情')
+    })
+
+    it('lazy 仅启用展开且缺省 rowKey 时给出开发期告警', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+
+        mountExpansion({
+            rowKey: undefined,
+            lazy: true,
+            paginator: true,
+            rows: 2,
+            totalRecords: 3,
+        })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('lazy 模式下未提供 rowKey'))
+        warn.mockRestore()
+    })
+
+    it('lazy 缺省 rowKey 时翻页丢弃展开态，避免页内索引串行', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const page2: ExpandRow[] = [
+            { id: 3, name: 'Cara', dept: 'B', detail: 'Cara 详情' },
+            { id: 4, name: 'Dan', dept: 'B', detail: 'Dan 详情' },
+        ]
+
+        const wrapper = mountExpansion({
+            data: expandData.slice(0, 2),
+            rowKey: undefined,
+            lazy: true,
+            paginator: true,
+            rows: 2,
+            totalRecords: 4,
+        })
+
+        await expanders(wrapper)[0].trigger('click')
+        expect(wrapper.findAll('.caomei-data-table__row-expansion')).toHaveLength(1)
+
+        await wrapper.setProps({ data: page2 })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row-expansion')).toHaveLength(0)
+        expect(expanders(wrapper)[0].attributes('aria-expanded')).toBe('false')
+        // 清空属内部收敛，不额外抛出 update:expandedRows
+        expect(wrapper.emitted('update:expandedRows')).toHaveLength(1)
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('lazy 模式下未提供 rowKey'))
+        warn.mockRestore()
+    })
+
+    it('lazy 显式 rowKey 时展开态按行标识跨页保持', async () => {
+        const page1 = expandData.slice(0, 2)
+        const page2 = expandData.slice(1, 3)
+
+        const wrapper = mountExpansion({
+            data: page1,
+            lazy: true,
+            paginator: true,
+            rows: 2,
+            totalRecords: 4,
+        })
+
+        await expanders(wrapper)[0].trigger('click')
+        expect(expanders(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+            'true',
+            'false',
+        ])
+
+        await wrapper.setProps({ data: page2 })
+        await nextTick()
+
+        // 当前页没有 id=1；id=2 / id=3 均未被展开
+        expect(expanders(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+            'false',
+            'false',
+        ])
+
+        await expanders(wrapper)[0].trigger('click')
+        await wrapper.setProps({ data: page1 })
+        await nextTick()
+
+        // 回到第一页：id=1 与 id=2 的展开态都保留
+        expect(expanders(wrapper).map((button) => button.attributes('aria-expanded'))).toEqual([
+            'true',
+            'true',
+        ])
     })
 
     it('空数据时渲染空态且不渲染切换按钮', () => {

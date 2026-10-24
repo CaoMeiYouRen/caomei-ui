@@ -122,7 +122,7 @@ const frFR: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'Aucune donnée',
-        selectAll: 'Tout sélectionner',
+        selectAll: 'Sélectionner la page actuelle',
         selectRow: 'Sélectionner la ligne',
         expandRowGroup: 'Développer le groupe de lignes',
         collapseRowGroup: 'Réduire le groupe de lignes',

@@ -122,7 +122,7 @@ const deDE: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'Keine Daten',
-        selectAll: 'Alle auswählen',
+        selectAll: 'Aktuelle Seite auswählen',
         selectRow: 'Zeile auswählen',
         expandRowGroup: 'Zeilengruppe erweitern',
         collapseRowGroup: 'Zeilengruppe einklappen',

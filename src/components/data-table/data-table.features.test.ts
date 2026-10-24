@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { mount } from '@vue/test-utils'
 import { nextTick, reactive, type DefineComponent } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { CaomeiPaginator } from '../paginator'
 import type { DataTableColumn, DataTableProps } from './types'
 import { CaomeiDataTable } from './index'
@@ -54,6 +54,63 @@ describe('CaomeiDataTable 交互特性', () => {
         await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].trigger('click')
 
         expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(baseData)
+    })
+
+    it('客户端分页下表头全选只作用当前页，跨页选择保留', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                paginator: true,
+                rows: 2,
+            },
+        })
+
+        const header = () =>
+            wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0]
+
+        await header().trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(manyData.slice(0, 2))
+        expect(header().attributes('aria-checked')).toBe('true')
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 2)
+        await nextTick()
+
+        // 第二页没有选中行：表头状态只看当前页
+        expect(header().attributes('aria-checked')).toBe('false')
+
+        await header().trigger('click')
+
+        const selections = wrapper.emitted('update:selection')
+        expect(selections?.[selections.length - 1]?.[0]).toEqual(manyData.slice(0, 4))
+        expect(header().attributes('aria-checked')).toBe('true')
+
+        // 回到第一页：先前的跨页选择仍在
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 1)
+        await nextTick()
+
+        expect(header().attributes('aria-checked')).toBe('true')
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(2)
+    })
+
+    it('客户端分页下当前页部分选中时表头为 indeterminate', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                paginator: true,
+                rows: 2,
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[1].trigger('click')
+
+        expect(
+            wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].attributes('aria-checked'),
+        ).toBe('mixed')
     })
 
     it('selectionMode=single 仅保留单行且无表头全选框', async () => {
@@ -198,6 +255,9 @@ describe('CaomeiDataTable 交互特性', () => {
         expect(boxes[1].attributes('aria-label')).toMatch(/^选择 /)
     })
 
+})
+
+describe('CaomeiDataTable 分页与冻结列', () => {
     it('客户端分页按 rows 切片并抛出 update:page / page', async () => {
         const wrapper = mount(DataTable, {
             props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2 },
@@ -355,6 +415,171 @@ describe('CaomeiDataTable 交互特性', () => {
 
         expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(5)
         expect(wrapper.find('.caomei-paginator').exists()).toBe(true)
+    })
+
+    it('lazy 受控 selection 只映射当前页行，emit 也只含当前页行', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const page1: Row[] = [
+            { name: 'A', age: 1 },
+            { name: 'B', age: 2 },
+        ]
+        const page2: Row[] = [
+            { name: 'C', age: 3 },
+            { name: 'D', age: 4 },
+        ]
+
+        const wrapper = mount(DataTable, {
+            props: {
+                data: page1,
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 4,
+                page: 1,
+                selection: [page1[0]],
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(1)
+
+        await wrapper.setProps({ data: page2, page: 2 })
+        await nextTick()
+
+        // 受控值仍指向上页对象：当前页找不到对应行，不标记、表头也不半选
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(0)
+        expect(
+            wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].attributes('aria-checked'),
+        ).toBe('false')
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[1].trigger('click')
+
+        const selections = wrapper.emitted('update:selection')
+        expect(selections?.[selections.length - 1]?.[0]).toEqual([page2[0]])
+        warn.mockRestore()
+    })
+
+    it('lazy 自持 selection 翻页后丢弃上一页选择', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const page1: Row[] = [
+            { name: 'A', age: 1 },
+            { name: 'B', age: 2 },
+        ]
+        const page2: Row[] = [
+            { name: 'C', age: 3 },
+            { name: 'D', age: 4 },
+        ]
+
+        const wrapper = mount(DataTable, {
+            props: {
+                data: page1,
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 4,
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[1].trigger('click')
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(1)
+
+        await wrapper.setProps({ data: page2 })
+        await nextTick()
+
+        // 索引键在新页会复用，自持态必须随页丢弃，避免自动选中
+        expect(wrapper.findAll('.caomei-data-table__row--selected')).toHaveLength(0)
+        // 清空属内部收敛，不额外抛出 update:selection
+        expect(wrapper.emitted('update:selection')).toHaveLength(1)
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[2].trigger('click')
+
+        const selections = wrapper.emitted('update:selection')
+        expect(selections?.[selections.length - 1]?.[0]).toEqual([page2[1]])
+        warn.mockRestore()
+    })
+
+    it('lazy 表头全选只抛出当前页行', async () => {
+        const page: Row[] = [
+            { name: 'C', age: 3 },
+            { name: 'D', age: 4 },
+        ]
+
+        const wrapper = mount(DataTable, {
+            props: {
+                data: page,
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                rowKey: 'name',
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 4,
+            },
+        })
+
+        await wrapper.findAll('.caomei-data-table__select-cell .caomei-checkbox__control')[0].trigger('click')
+
+        expect(wrapper.emitted('update:selection')?.[0]?.[0]).toEqual(page)
+    })
+
+    it('lazy 缺省 rowKey 且启用选择时给出开发期告警', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+
+        mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 5,
+            },
+        })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('lazy 模式下未提供 rowKey'))
+        warn.mockRestore()
+    })
+
+    it('lazy 提供 rowKey 时不告警', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+
+        mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                selectionMode: 'multiple',
+                rowKey: 'name',
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 5,
+            },
+        })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
+    it('lazy 未启用选择 / 展开时不告警', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+
+        mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                lazy: true,
+                paginator: true,
+                rows: 2,
+                totalRecords: 5,
+            },
+        })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
     })
 
     it('未启用 paginator 时渲染全部行（默认不下发切片）', () => {

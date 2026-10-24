@@ -122,7 +122,7 @@ const zhCN: CaomeiLocaleMessages = {
     },
     table: {
         empty: '暂无数据',
-        selectAll: '全选',
+        selectAll: '全选当前页',
         selectRow: '选择该行',
         expandRowGroup: '展开分组',
         collapseRowGroup: '收起分组',

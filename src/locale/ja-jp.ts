@@ -122,7 +122,7 @@ const jaJP: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'データがありません',
-        selectAll: 'すべて選択',
+        selectAll: '現在のページをすべて選択',
         selectRow: '行を選択',
         expandRowGroup: 'グループを展開',
         collapseRowGroup: 'グループを折りたたむ',

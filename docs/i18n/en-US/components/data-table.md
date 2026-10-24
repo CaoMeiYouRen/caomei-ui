@@ -131,7 +131,7 @@ Mark a column with `expander: true` and that column's body cells render an **exp
 - Emits `rowExpand` / `rowCollapse` with the payload `{ originalEvent, data }`, where `data` is the row.
 - The **`#expansion` slot is required** for visible expansion content; without it the expansion state and events still work (same as PrimeVue).
 - The expansion row spans all data columns (including the selection and expander columns), so it **does not take part in frozen-column pinning**; give the expander column an explicit px `width`.
-- **Providing `rowKey` is recommended**: without it keys come from the row index and expansion drifts once `data` is replaced wholesale (server pagination / lazy loading / a data refresh); sorting and client-side pagination only reorder row references and do not change the keys.
+- **`rowKey` is required under `lazy`**: server-paginated `data` holds only the current page, and without it keys come from the **page-local index**, colliding with ids on other pages. When omitted, component-managed expansion resets whenever the `data` reference is replaced (without emitting `update:expandedRows`) and controlled `expandedRows` cannot identify rows stably across pages (a development warning is emitted). Outside `lazy`, **providing `rowKey` is recommended**: without it keys come from the row index and expansion drifts once `data` is replaced wholesale (a data refresh); sorting and client-side pagination only reorder row references and do not change the keys.
 
 | Slot | Scope | Description |
 |------|-------|-------------|
@@ -146,7 +146,7 @@ Mark a column with `expander: true` and that column's body cells render an **exp
 
 ## Row selection
 
-When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header. Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled.
+When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header that **applies to the current page only**: with client-side pagination, moving between pages keeps selections made on other pages, and the header state (all / partial) reflects the current page only; the same holds under `lazy`; without pagination it behaves like selecting the whole table. To select every row at once, have the parent write the target rows into the controlled `selection` (there is no extra whole-table / server-side select-all prop). Under `lazy`, pass an explicit `rowKey` (the default page-local index cannot identify rows stably across pages). Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled.
 
 <demo
     vue="../examples/data-table/selection.vue"
@@ -155,7 +155,7 @@ When `selectionMode` is `multiple` or `single`, a selection column is rendered f
 
 ## Pagination
 
-`paginator` shows the paginator and `rows` sets rows per page; bind the current page with `v-model:page` (controlled). Providing `rowsPerPageOptions` renders a rows-per-page selector in the paginator; switching it emits `update:rows` (use with `v-model:rows`) and derives the page again by preserving the current first-row offset (in controlled pagination it also emits `update:page`, leaving slicing to the parent). Without `paginator` no slicing happens and all rows are rendered. With `lazy`, pagination is server-side: the provided `data` is not sliced further (it should already be the current page) and the page count comes from `totalRecords` (defaulting to `data.length`, which yields a single page — pass it for server-side pagination). Page changes emit `page` (`{ page, rows, first, pageCount }`). `lazy` must be set at mount.
+`paginator` shows the paginator and `rows` sets rows per page; bind the current page with `v-model:page` (controlled). Providing `rowsPerPageOptions` renders a rows-per-page selector in the paginator; switching it emits `update:rows` (use with `v-model:rows`) and derives the page again by preserving the current first-row offset (in controlled pagination it also emits `update:page`, leaving slicing to the parent). Without `paginator` no slicing happens and all rows are rendered. With `lazy`, pagination is server-side: the provided `data` is not sliced further (it should already be the current page) and the page count comes from `totalRecords` (defaulting to `data.length`, which yields a single page — pass it for server-side pagination). Page changes emit `page` (`{ page, rows, first, pageCount }`). `lazy` must be set at mount. Under `lazy`, row selection is **page-scoped**: the controlled `selection` maps only rows on the current page, and `update:selection` likewise contains only current-page rows; when uncontrolled, replacing the `data` reference (a page change or a same-page refresh) clears the internal selection without emitting `update:selection`, while mutating the same array in place does not trigger it (replace the reference instead). To keep selections across pages, have the parent aggregate the controlled `selection`.
 
 > The pagination container is right-aligned by default (`flex-end`), unlike PrimeVue's centered paginator; to center it or use another alignment, override `--caomei-data-table-pagination-justify` (see "Style customization") instead of adding a selector-level override.
 
@@ -241,6 +241,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | Table-level `<template #header>` / `#footer` | No table-level header / footer slot; use `caption` for the title and place the action area outside the table container |
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'` (one field expresses both frozen state and docking side) |
 | `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
+| Header select-all scope (client-side pagination) | **Current page** (selections on other pages are kept; whole-table selection is written by the parent into `selection`); PrimeVue's header select-all under client-side pagination covers the whole table |
 | `rows-per-page-options` | The same-named `rowsPerPageOptions`; switching emits `update:rows` and derives the page by preserving the first-row offset |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"` (same field shape, plus `pageCount`) |
 | `rowGroupMode="subheader"` + `groupRowsBy` | The same-named `rowGroupMode` + `groupRowsBy`; splits on contiguous equal values and renders the group column as a blank placeholder in data rows (the value is not repeated) |
@@ -249,7 +250,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `expandableRowGroups` | The same-named prop; each group header row renders a built-in toggle button (native `button` + `aria-expanded` + accessible name) |
 | `v-model:expandedRowGroups` | The same-named prop (a `string[]` of group keys); controlled takes precedence, component-managed by default, and all groups start collapsed without it |
 | `@rowgroup-expand` / `@rowgroup-collapse` | `@rowgroup-expand` / `@rowgroup-collapse`; payload `{ originalEvent, data }` where `data` is the group key (PrimeVue passes the raw group field value) |
-| `v-model:expandedRows` (+ `dataKey`) | `v-model:expandedRows` (a `string[]` of row keys) + `rowKey`; only the row-key array form is supported (PrimeVue also accepts an array of row objects and a `{ [key]: true }` record) |
+| `v-model:expandedRows` (+ `dataKey`) | `v-model:expandedRows` (a `string[]` of row keys) + `rowKey`; only the row-key array form is supported (PrimeVue also accepts an array of row objects and a `{ [key]: true }` record); `rowKey` is required under `lazy` |
 | `<Column expander>` | An entry in the `columns` array: `{ key, expander: true }`; that column's header is left blank |
 | `#expansion="slotProps"` | `#expansion="{ data, index }"` (`data` matches; `index` is the display index, unlike the source index of `#cell-{key}`) |
 | `@row-expand` / `@row-collapse` | `@row-expand` / `@row-collapse`; payload `{ originalEvent, data }` where `data` is the row |

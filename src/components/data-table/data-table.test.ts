@@ -357,7 +357,7 @@ describe('CaomeiDataTable', () => {
         })
 
         const controls = wrapper.findAll('.caomei-checkbox__control')
-        expect(controls[0].attributes('aria-label')).toBe('Select all')
+        expect(controls[0].attributes('aria-label')).toBe('Select current page')
         expect(controls[1].attributes('aria-label')).toBe('Select row 0')
     })
 

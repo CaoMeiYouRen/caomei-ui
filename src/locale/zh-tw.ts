@@ -122,7 +122,7 @@ const zhTW: CaomeiLocaleMessages = {
     },
     table: {
         empty: '暫無資料',
-        selectAll: '全選',
+        selectAll: '全選本頁',
         selectRow: '選擇此列',
         expandRowGroup: '展開分組',
         collapseRowGroup: '收合分組',

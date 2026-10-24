@@ -122,7 +122,7 @@ const ruRU: CaomeiLocaleMessages = {
     },
     table: {
         empty: 'Нет данных',
-        selectAll: 'Выбрать все',
+        selectAll: 'Выбрать текущую страницу',
         selectRow: 'Выбрать строку',
         expandRowGroup: 'Развернуть группу строк',
         collapseRowGroup: 'Свернуть группу строк',

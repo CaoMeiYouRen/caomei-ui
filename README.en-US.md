@@ -33,7 +33,7 @@
 
 ## 📦 Requirements
 
-- Node.js >= 20
+- Node.js >= 22
 - pnpm (version from root `package.json` `packageManager` field)
 
 ## 🚀 Installation

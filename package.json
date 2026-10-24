@@ -230,7 +230,7 @@
     "THIRD-PARTY-LICENSES"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "homepage": "https://github.com/CaoMeiYouRen/caomei-ui#readme",
   "repository": {

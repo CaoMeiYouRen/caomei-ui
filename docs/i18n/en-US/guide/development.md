@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node.js >= 20
+- Node.js >= 22
 - pnpm (use the version pinned by `packageManager` in the root `package.json`)
 
 ## Setup

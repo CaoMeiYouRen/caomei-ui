@@ -36,7 +36,7 @@
 
 ## 📦 依赖要求
 
-- Node.js >= 20
+- Node.js >= 22
 - pnpm（版本以根 `package.json` 的 `packageManager` 为准）
 
 ## 🚀 安装

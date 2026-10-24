@@ -85,10 +85,10 @@
   - 交付：`--tag` 透传（`next` / `latest`）+ dry-run 与日志同步 + 单测；`preflight` 纳入 `test:coverage` + `check:coverage`（或留等价证据）。
   - 验收：`pnpm release:manual run --version=1.0.0-rc.1 --tag=next --dry-run` 输出正确命令。
 - **C-2 1.0.0 CHANGELOG 里程碑段与 GitHub Release note**
-  - **现状取证**：`git log --format=%s v0.7.0..HEAD | sed 's/(.*//'` → **11** 个提交（docs 6 / fix 1 / build 2 / chore 1 / test 1）。生成器只收 feat / fix / refactor 等，因此 1.0.0 段**不会为空，但只会出现一条 `fix(release)` 工具修复**，不足以承载里程碑说明。
+  - **现状取证**：`git log --format=%s v0.7.0..10de6e8^ | sed 's/(.*//'` → **11** 个提交（docs 6 / fix 1 / build 2 / chore 1 / test 1）。生成器只收 feat / fix / refactor 等，因此 1.0.0 段**不会为空，但只会出现一条 `fix(release)` 工具修复**，不足以承载里程碑说明。
   - 交付：人工里程碑段（1.x 承诺、冻结面、`engines` 调整、locale 与 DataTable 行为说明）+ 验证 `announce` 能从 CHANGELOG 正确抽取。
 - **C-3 1.0 交付执行**
-  - 顺序：推送本地 5 个提交（2026-10-22 实测 `origin/master..HEAD`）→ `1.0.0-rc.1` 发 `next` → 下游复验（D-1）→ `1.0.0` 发 `latest` → 发布后校验（registry / tarball shasum / 解包 / `exports` 13 键）→ 版本句同步 → GitHub Release。
+  - 顺序：推送本地 5 个提交（2026-10-22 实测 `origin/master..10de6e8^`）→ `1.0.0-rc.1` 发 `next` → 下游复验（D-1）→ `1.0.0` 发 `latest` → 发布后校验（registry / tarball shasum / 解包 / `exports` 13 键）→ 版本句同步 → GitHub Release。
   - 验收：发布执行记录；registry `latest` = `1.0.0`；`v1.0.0` tag 与 GitHub Release。
 
 ### D 下游复验与质量确认（2 条）

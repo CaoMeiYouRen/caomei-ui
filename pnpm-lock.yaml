@@ -114,8 +114,8 @@ importers:
         specifier: ^10.11.0
         version: 10.11.1(@stylistic/eslint-plugin@5.10.0(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2)))(@typescript-eslint/parser@8.70.0(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2))(vue-eslint-parser@10.4.0(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))
       happy-dom:
-        specifier: ^20.14.5
-        version: 20.14.5
+        specifier: ^21.0.4
+        version: 21.0.4
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -166,7 +166,7 @@ importers:
         version: 1.8.0(shiki@2.5.0)(vitepress@1.6.4(@algolia/client-search@5.59.0)(@types/node@26.6.3)(fuse.js@7.5.0)(jiti@2.7.0)(lightningcss@1.33.0)(postcss@8.5.28)(sass@1.105.0)(search-insights@2.17.3)(terser@5.51.2)(typescript@6.0.3)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1))
+        version: 4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@21.0.4)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1))
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)
@@ -2287,6 +2287,9 @@ packages:
   '@types/node@26.6.3':
     resolution: {integrity: sha512-dsqMQQoeTLqu9wynDD00q573mNzso3IdQOAfHRJqLCcmCFPoGo9A1bDpUcv/9tnKpErQWv9uKeGfl37EIS02Yg==}
 
+  '@types/node@26.6.5':
+    resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
+
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -2305,8 +2308,8 @@ packages:
   '@types/whatwg-mimetype@3.0.2':
     resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
 
-  '@types/ws@8.18.1':
-    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
+  '@types/ws@8.18.2':
+    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
   '@typescript-eslint/eslint-plugin@8.70.0':
     resolution: {integrity: sha512-/v8HZt6RlyIZxB3ntehELOcUcfxKPVGWXnQdJuHRmzrqgF8nQypcC/oxGW+Ot4VGKDq81XugPKxx0n5PBtf9PA==}
@@ -4284,7 +4287,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-directory@4.0.1:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
@@ -4351,8 +4354,8 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  happy-dom@20.14.5:
-    resolution: {integrity: sha512-x/RzkpWO40bTjIoT30iQtt64FLLmH/iRcUCN2X//bLx7H3ifkdfPXyqsro/OYtqzIAhiLMMA7mmiOR9C3NOKjQ==}
+  happy-dom@21.0.4:
+    resolution: {integrity: sha512-tFm+GaLBgo6o0awHnvHaNoraVo27qJ+2tZEtZ+cIa08hXbeitrxAJajLI05hsUy/2/YTKcUjQYzHe5mCcraLBw==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -7611,6 +7614,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.22.0:
+    resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   wsl-utils@1.0.0:
     resolution: {integrity: sha512-Hl0ZOAs672vg+06kfujwRhoS6/jehvULrlFkuF2dRu6pHgA8U06h3xqNIqNNU1LTXPcedxByAR4GS6pwQK0mgA==}
     engines: {node: '>=20'}
@@ -10095,6 +10110,10 @@ snapshots:
     dependencies:
       undici-types: 8.9.0
 
+  '@types/node@26.6.5':
+    dependencies:
+      undici-types: 8.9.0
+
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/resolve@1.20.2': {}
@@ -10107,9 +10126,9 @@ snapshots:
 
   '@types/whatwg-mimetype@3.0.2': {}
 
-  '@types/ws@8.18.1':
+  '@types/ws@8.18.2':
     dependencies:
-      '@types/node': 26.6.3
+      '@types/node': 26.6.5
 
   '@typescript-eslint/eslint-plugin@8.70.0(@typescript-eslint/parser@8.70.0(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@9.39.2(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
@@ -10356,7 +10375,7 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1))
+      vitest: 4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@21.0.4)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1))
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -11023,7 +11042,7 @@ snapshots:
 
   buffer-image-size@0.6.4:
     dependencies:
-      '@types/node': 26.6.3
+      '@types/node': 26.6.5
 
   buffer@5.7.1:
     dependencies:
@@ -12431,15 +12450,15 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  happy-dom@20.14.5:
+  happy-dom@21.0.4:
     dependencies:
-      '@types/node': 26.6.3
+      '@types/node': 26.6.5
       '@types/whatwg-mimetype': 3.0.2
-      '@types/ws': 8.18.1
+      '@types/ws': 8.18.2
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.21.3
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -15722,7 +15741,7 @@ snapshots:
       - universal-cookie
       - yaml
 
-  vitest@4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@20.14.5)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1)):
+  vitest@4.1.11(@types/node@26.6.3)(@vitest/coverage-v8@4.1.11)(happy-dom@21.0.4)(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1)):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(vite@8.3.4(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(yaml@2.9.1))
@@ -15747,7 +15766,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 26.6.3
       '@vitest/coverage-v8': 4.1.11(vitest@4.1.11)
-      happy-dom: 20.14.5
+      happy-dom: 21.0.4
     transitivePeerDependencies:
       - msw
 
@@ -15953,6 +15972,8 @@ snapshots:
 
   ws@8.21.3: {}
 
+  ws@8.22.0: {}
+
   wsl-utils@1.0.0:
     dependencies:
       is-wsl: 3.1.1
@@ -16102,7 +16123,6 @@ time:
   eslint-config-cmyr@2.3.1: '2026-06-21T11:36:14.312Z'
   eslint-plugin-vue@10.11.1: '2026-09-24T01:09:50.484Z'
   eslint@9.39.2: '2025-12-12T22:44:54.630Z'
-  happy-dom@20.14.5: '2026-09-12T00:07:47.688Z'
   husky@9.1.7: '2024-11-18T15:28:26.026Z'
   lint-staged@17.6.0: '2026-09-26T06:01:39.503Z'
   md-editor-v3@7.1.0: '2026-09-28T07:05:03.064Z'

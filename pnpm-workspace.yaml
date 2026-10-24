@@ -8,8 +8,14 @@ overrides:
   brace-expansion@^5: ^5.0.7
   ajv@^6: ^6.14.0
   js-yaml: 4.3.2
-  # vitepress 1.6.4 依赖 vite ^5，而 vite 5 线无法修复 esbuild 安全公告，故跨大版本覆盖到已修复的 6.4.3
-  vite@^5: ^6.4.3
+  # vitepress 1.6.4 依赖 vite ^5，而 vite 5 线无法修复 esbuild 安全公告，故跨大版本覆盖到 6.x；
+  # 6.4.4 起修复 launch-editor 相关三条开发作用域公告（GHSA-587h-7wmj-h5pm / GHSA-r825-w8mm-5pxw / GHSA-698v-4r3x-3vcv）
+  vite@^5: ^6.4.4
+  # GHSA-gfr2-rv44-r23c（high）/ GHSA-vfgh-jcmw-g37q（low）：markdown-it < 14.3.3 的二次复杂度拒绝服务
+  # 传递链 md-editor-v3（富文本可选 peer）→ markdown-it；属运行时作用域，须保持清零
+  markdown-it@<14.3.3: 14.3.3
+  # GHSA-587h-7wmj-h5pm / GHSA-r825-w8mm-5pxw / GHSA-698v-4r3x-3vcv：launch-editor <= 2.14.1
+  launch-editor@<2.14.2: 2.14.2
   flatted: ^3.4.2
   postcss: ^8.5.18
   # GHSA-68fv-2mgg-jv7q：source-map-js < 1.2.2 存在经索引 source-map 段偏移的事件循环拒绝服务（Dependabot high）

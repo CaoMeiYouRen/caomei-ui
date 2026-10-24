@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-24-phase26-m2-behavior-convergence.md](./2026-10-24-phase26-m2-behavior-convergence.md)：**Phase 26 M2 行为收口与准破坏性变更**。DataTable 表头全选收口为**只作用当前页**（`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected` / `toggleAllPageRowsSelected`；客户端分页跨页选择保留、`lazy` 只作用当前页；整表由父级写 `selection`），10 语可访问名改「全选当前页」；`lazy` 选择在受控输入与 emit 两侧按页收敛、自持态翻页清空；`lazy` 缺省 `rowKey` 为页内索引，启用选择 / 展开时开发期要求显式 `rowKey`（自持展开态翻页重置、受控 `expandedRows` 同口径）；`engines.node` 提升到 `>=22` 并同步文档。CHANGELOG / GitHub Release 文案由 M3-2 承载。**Review Gate**：结论见本记录 §7。
+
 - [2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md](./2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md)：**Phase 26 M1-3 API 表面基线形态评估（只评估）**。对比「仅文档声明 / 提交态快照 / 发布时与上一已发布版本差分」；取证 `component-meta.json` 约 189 KB / 56 组件 / 516·85·70·16 且为 gitignored 生成物，现有 `verify` 只校验 exports。推荐 **③ 发布时差分**（preflight 对比上一版 `dist/*.d.ts`；删除 / required 收紧 = breaking，类型变化 = warning），① 保留为承诺载体，② 暂不采用。**不落地守卫**；实现登记为 Backlog 条件候选。**Review Gate**：结论见本记录 §8。
 
 - [2026-10-24-phase26-m1-2-form-field-contract-evaluation.md](./2026-10-24-phase26-m1-2-form-field-contract-evaluation.md)：**Phase 26 M1-2 `Form` / `FormItem` 形态与字段契约影响评估（只评估）**。取证 12 个共享契约继承者 / 35 个宽口径内联同名字段（交集 8）/ 8 个显式 `required`；逐项核对 `id` / `name` / `aria-describedby` / `aria-invalid` 注入点。结论：1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；组型控件需 `aria-labelledby`，`Switch` 无校验态；provide/inject 自动注入与内建 rules 引擎均后置。**Review Gate**：结论见本记录 §7。

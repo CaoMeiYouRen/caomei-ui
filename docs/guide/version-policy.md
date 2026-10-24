@@ -28,7 +28,7 @@ const { theme } = useData()
 **1.0 前不再做破坏性变更的面（冻结面）**：
 
 - **组件公开契约**：既有组件的公开 props / events / slots 的**名称与语义**（新增可选 props / events / slots 属向后兼容增量，不算破坏）。
-- **子路径导出**：`caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt` 的集合与语义，以及 `./package.json` 约定入口——即 `package.json` 的 `exports` 全部 5 键。
+- **子路径导出**：包根 `caomei-ui`、`caomei-ui/theme.css`、`caomei-ui/resolver`、`caomei-ui/nuxt`、8 条语言子路径与 `./package.json` 约定入口——即 `package.json` 的 `exports` 全部 **13 键**（逐键清单与冻结语义见[冻结面终审记录](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) §2.2）。
 - **公开导出名**：包根导出的组件名（`Caomei*`）、composables（`use*`）、locale 类型与内建文案的命名空间（既有键的名称与语义；**新增**键属向后兼容增量，**删除 / 重命名**既有键属破坏性变更）。
 - **token 契约**：语义化 `--caomei-*` token 的**名称与用途**（色值可调，名称与语义冻结）。
 

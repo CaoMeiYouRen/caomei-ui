@@ -27,7 +27,7 @@ Latest version: **v{{ theme.version }}**
 **Frozen until 1.0 (no breaking changes)**:
 
 - **Component public contracts**: names and semantics of the existing components' public props / events / slots (adding optional props / events / slots is a backward-compatible increment, not a break).
-- **Subpath exports**: the set and semantics of `caomei-ui`, `caomei-ui/theme.css`, `caomei-ui/resolver`, `caomei-ui/nuxt`, plus the `./package.json` convention entry — i.e. all 5 keys of `package.json` `exports`.
+- **Subpath exports**: the root `caomei-ui`, `caomei-ui/theme.css`, `caomei-ui/resolver`, `caomei-ui/nuxt`, the 8 locale subpaths, plus the `./package.json` convention entry — i.e. all **13 keys** of `package.json` `exports` (the key-by-key list and freeze semantics are in the [freeze final review record](../../../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) §2.2; that record is in Chinese only).
 - **Public export names**: root-exported component names (`Caomei*`), composables (`use*`), locale types and the built-in message namespaces (names and semantics of **existing** keys; **adding** keys is a backward-compatible increment, while **removing / renaming** existing keys is a break).
 - **Token contracts**: names and purposes of the semantic `--caomei-*` tokens (values may change; names and semantics are frozen).
 

@@ -66,6 +66,7 @@
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
 | CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
+| 发布时 API 表面差分（根导出 + 组件声明面） | Phase 26 登记时评估（只评估） | 推荐形态：发布 preflight 对比上一已发布版本的 `dist/*.d.ts`（根导出名 + 组件 props / events / slots / exposed，归一化后比较；删除 / required 收紧 = breaking，类型变化 = warning）。触发条件 = 发布链路 `--tag` 落地后，或用户指定 | 中 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）建议的演进形态——放开 `release.yml` publish + semantic-release + npm **Trusted Publisher（OIDC）**；Phase 21 D8 **维持手动**、本轮仅做统一手动流脚本编排；风险：breaking 提交会直接升 `1.0.0`、发布不可逆 | 低 |
 | 下游兼容检查：校验实际安装版本步骤 | Phase 23 M2-1 follow-up | 工作流的 override 步骤当前**不校验实际安装版本**（本仓 run #2 只能由「版本差 + `+1 −1` + 命令语义」推断重装生效）。候选为在 override 后断言 `caomei-ui` 实际版本 == 目标版本（fail-closed）并把结果写入 job summary。**触发条件 = 下次发布前后可在真实 run 中验证时**（workflow 改动只能在真实 run 中验证，未验证前不入库） | 低 |
 | `reka-ui` 补丁升级（2.10.5 / 2.11.0） | Phase 22 M2-3 follow-up（Phase 23 M3-2 复核） | 2.10.5 起致 `CaomeiInputNumber` 步进模型 emit 回归；本仓维持 **2.10.4**（精确钉定）。**2026-10-13 实测复核**：以 `reka-ui@2.11.0` 覆盖后 `pnpm vitest run src/components/input-number/input-number.test.ts` **4 例失败 / 45 例通过** → 回归未消除（失败面 = 点击增加按钮按 step 步进并应用 precision / 点击减少按钮按 step 步进并钳制 / `step` 非正时回退为 1 / 步进按 step 累加且不被吸附到 step 整数倍）。**触发条件（可判定）= 在 `reka-ui` ≥ `2.11.0` 下该命令 4 例全过**，**或**本仓显式适配其步进行为变更 | 低 |

@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md](./2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md)：**Phase 26 M1-3 API 表面基线形态评估（只评估）**。对比「仅文档声明 / 提交态快照 / 发布时与上一已发布版本差分」；取证 `component-meta.json` 约 189 KB / 56 组件 / 516·85·70·16 且为 gitignored 生成物，现有 `verify` 只校验 exports。推荐 **③ 发布时差分**（preflight 对比上一版 `dist/*.d.ts`；删除 / required 收紧 = breaking，类型变化 = warning），① 保留为承诺载体，② 暂不采用。**不落地守卫**；实现登记为 Backlog 条件候选。**Review Gate**：结论见本记录 §8。
+
 - [2026-10-24-phase26-m1-2-form-field-contract-evaluation.md](./2026-10-24-phase26-m1-2-form-field-contract-evaluation.md)：**Phase 26 M1-2 `Form` / `FormItem` 形态与字段契约影响评估（只评估）**。取证 12 个共享契约继承者 / 35 个宽口径内联同名字段（交集 8）/ 8 个显式 `required`；逐项核对 `id` / `name` / `aria-describedby` / `aria-invalid` 注入点。结论：1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；组型控件需 `aria-labelledby`，`Switch` 无校验态；provide/inject 自动注入与内建 rules 引擎均后置。**Review Gate**：结论见本记录 §7。
 
 - [2026-10-24-phase26-m1-1-freeze-final-review.md](./2026-10-24-phase26-m1-1-freeze-final-review.md)：**Phase 26 M1-1 冻结面终审与 1.0 决策记录**。终审六类面并以复算命令固化：组件公开契约（56 组件目录 / 94 根导出组件名 / API 面 516 props · 85 events · 70 slots · 16 exposed）、`exports` 13 键、包根导出名 324（`Caomei*` 98 / `use*`·`provide*` 7 / 其余 219）、token 有效冻结面 371（146 默认声明 ∪ 288 已披露覆盖钩子；15 个仅消费的内部变量不冻结）、10 语 locale（每语 28 命名空间 / 80 键，2 语预注册 + 8 条子路径）、`InputNumber` 的 `step` 按 `reka-ui` 2.10.4 冻结。冻结自 `1.0.0-rc.1` 生效；例外与弃用流程成文；「最后一破」= M2-1 ~ M2-4，须在 rc 前归零；修正 `version-policy` 的「`exports` 5 键」陈旧口径。**Review Gate**：结论见本记录 §7。

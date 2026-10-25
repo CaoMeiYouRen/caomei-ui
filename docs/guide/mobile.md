@@ -28,6 +28,29 @@
 - **步骤条方向**：`CaomeiStepper` 横向形态在窄屏随容器压缩，需要纵向时请改 `orientation="vertical"`。
 - **超长文案**：单条超长选项可能自身超宽（例如极窄视口下的长枚举），请在文案长度或容器宽度上约束。
 
+## 触摸优化覆盖（尺寸 token）
+
+主题预设只承载视觉气质，**不随视口变化**；如果应用同时面向桌面与手机，建议在窄屏容器或媒体查询内覆盖尺寸类 token，而不是期待某个预设自动切换：
+
+```css
+@media (width <= 768px) {
+    :root {
+        --caomei-control-height-sm: 36px;
+        --caomei-control-height-md: 44px;
+        --caomei-control-height-lg: 52px;
+        --caomei-font-size-sm: 14px;
+        --caomei-font-size-md: 16px;
+        --caomei-font-size-lg: 18px;
+        --caomei-input-number-max-width: none;
+        --caomei-select-max-width: none;
+    }
+}
+```
+
+- `font-size-md: 16px` 可避免 iOS 对小于 16px 的输入框聚焦缩放，但会改变按钮 / 表格行高，需按下方自测清单回归。
+- 该覆盖**不会**扩大 Checkbox / RadioButton / Switch / icon 按钮的命中区；触摸密集区仍需在使用层用 `padding` 或包装元素扩大可点区域。
+- 为什么不提供 `data-preset="mobile"`：预设与明暗正交、且不感知视口；把尺寸塞进预设会让桌面端同样放大，也无法处理断点与命中区。评估与候选方案见[手机端优先主题预设评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
+
 ## 触摸目标
 
 库内关键控件的**命中区**（2026-10-16 实测，390×844 与 320×568 两档）：

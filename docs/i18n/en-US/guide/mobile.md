@@ -28,6 +28,29 @@ The library is **desktop-first**: the default form is the desktop form, and narr
 - **Stepper direction** — the horizontal form compresses with the container; switch to `orientation="vertical"` when a vertical layout is required.
 - **Long text** — a single very long option can overflow by itself (e.g. long enums at the narrowest viewports), so constrain copy length or container width.
 
+## Touch-friendly size overrides (size tokens)
+
+Theme presets carry visual character only and **do not change with the viewport**. If your app targets both desktop and phones, override the size tokens inside a narrow-screen container or media query instead of expecting a preset to switch automatically:
+
+```css
+@media (width <= 768px) {
+    :root {
+        --caomei-control-height-sm: 36px;
+        --caomei-control-height-md: 44px;
+        --caomei-control-height-lg: 52px;
+        --caomei-font-size-sm: 14px;
+        --caomei-font-size-md: 16px;
+        --caomei-font-size-lg: 18px;
+        --caomei-input-number-max-width: none;
+        --caomei-select-max-width: none;
+    }
+}
+```
+
+- `font-size-md: 16px` avoids iOS zoom when focusing inputs smaller than 16px, but it changes button / table-row heights — run the self-check below.
+- This override does **not** enlarge the hit areas of Checkbox / RadioButton / Switch / icon buttons; use consumer-level `padding` or a wrapper for finger-heavy areas.
+- Why there is no `data-preset="mobile"`: presets are orthogonal to colour scheme and viewport-agnostic; putting sizes into a preset would also enlarge desktop controls and still would not cover breakpoints or hit areas. See the [mobile-first preset evaluation](/design/governance/2026-10-25-mobile-first-preset-evaluation) (Chinese).
+
 ## Touch targets
 
 Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):

@@ -8,6 +8,8 @@
 
 **Phase 24 遗留**：两条已于 2026-10-22 回填（视觉基线 = 2026-10-16 周级 run success；CI 镜像 = 未命中），状态见下节；**待独立归档批次**把 Phase 24 块迁入[待办归档](./todo-archive.md)（该批需一并处置 `docs:check:line-count` 的 warn 阈值，见[规划规范 §7](../standards/planning.md)）。
 
+**执行期追加（2026-10-26）**：用户指令的主题预设同步与扩面已交付，不计入本阶段 13 条原子条目——`momei` 预设按 momei 运行时口径同步；新增 `sakura` / `forest` / `ink` 三套设计向预设；手机端优先预设评估完成并登记 Backlog。依据见[主题预设同步与扩面记录](../design/governance/2026-10-26-theme-preset-expansion.md)与[手机端优先评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
+
 ## Phase 26 原子条目
 
 > 4 条主线 / 13 条原子条目（M1 4 / M2 4 / M3 3 / M4 2；对账 4 + 4 + 3 + 2 = 13）。决策：**D1 ④**（A+B+C+D）/ **D2 ①**（rc → 转正，维持手动）/ **D3 ①**（DataTable 主项 + ①②③ 全做）/ **D4 ①**（`Form` 只评估）/ **D5 ③**（发布时 API 差分）。
@@ -23,7 +25,7 @@
 | M2-3 | 行为收口与准破坏性变更 | **`rowKey` 缺省按索引在 `lazy` 下撞 id**：给出修复或显式契约（要求显式 `rowKey`） | 选择 / 展开在 `lazy` 跨页不串行；测试覆盖；若改为显式契约须同步文档与迁移说明 | **已完成（2026-10-24）**：`lazy` + 缺省 `rowKey` 为页内索引，自持展开态随页重置；启用选择 / 展开时 `warnDev` 要求显式 `rowKey`，受控 `expandedRows` 同口径；中英组件页、迁移表与设计规范 §7 已同步；见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §4 |
 | M2-4 | 行为收口与准破坏性变更 | **`engines.node` 由 `>=20` 提升到 `>=22`**（Node 20 已于 2026-04 EOL） | `package.json` 与文档同步；CI 仍 `lts/*`；1.0.0 发布说明列为发布前调整（1.0 后同类调整须走 major） | **已完成（2026-10-24）**：`engines.node` = `>=22`；README 中英、开发指南中英、文档站设计文档同步；CI 仍 `lts/*`；发布文案见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §5.1 |
 | M3-1 | 发布链路就绪与 1.0 交付 | **预发布通道与覆盖率前置**：`manual-release.mjs` 支持 `--tag`（`next` / `latest`），dry-run 与日志同步；`preflight` 纳入 `test:coverage` + `check:coverage`（或等价证据）；同步回写 `release.md` §3.3 的 publish / verify 口径为按目标 dist-tag 断言 | `release:manual run --version=1.0.0-rc.1 --tag=next --dry-run` 输出正确；单测覆盖；预发布不再落到 `latest`；`release.md` 中英同步 | 待执行 |
-| M3-2 | 发布链路就绪与 1.0 交付 | **1.0.0 CHANGELOG 里程碑段与 GitHub Release note**：人工补 1.x 承诺 / 冻结面 / `engines` / locale / DataTable 行为说明 | 1.0.0 段有可读里程碑内容；`announce` 能从 CHANGELOG 正确抽取 note | 待执行 |
+| M3-2 | 发布链路就绪与 1.0 交付 | **1.0.0 CHANGELOG 里程碑段与 GitHub Release note**：人工补 1.x 承诺 / 冻结面 / `engines` / locale / DataTable 行为说明 / 主题预设（`momei` 取值同步 + `sakura` / `forest` / `ink` 新增） | 1.0.0 段有可读里程碑内容；`announce` 能从 CHANGELOG 正确抽取 note | 待执行 |
 | M3-3 | 发布链路就绪与 1.0 交付 | **1.0 交付执行**：推送 → `1.0.0-rc.1` 发 `next` → 下游复验（M4-1）→ `1.0.0` 发 `latest` → 发布后校验 → 版本句同步 → GitHub Release | registry `latest` = `1.0.0`；tarball shasum / 解包 / `exports` 13 键校验留痕；`v1.0.0` tag 与 GitHub Release 到位 | 待执行 |
 | M4-1 | 下游复验与质量确认 | **下游正向复验**：dependfix 升级到 `0.7.0`（或 rc）跑 `typecheck` + `build`；或 `workflow_dispatch` compat 并传版本 | 一次绿 run 且记录下游 revision；若真实 run 可验证「实际安装版本校验」则顺手落地 | 待执行 |
 | M4-2 | 下游复验与质量确认 | **一期 5 语译文复核状态确认**（Phase 25 M3-1b 记录「待用户复核」） | 复核结论（通过 / 修订清单）落治理记录；未复核则显式声明边界、不带默认承诺 | 待执行 |

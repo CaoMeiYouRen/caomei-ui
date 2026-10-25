@@ -22,6 +22,10 @@
 
 ## 当前条目
 
+- [2026-10-26-theme-preset-expansion.md](./2026-10-26-theme-preset-expansion.md)：**主题预设同步与扩面**。按 momei 运行时口径同步 `momei` 预设（暗色面层 `#0c1020` / `#151929`、`primary-solid` 随 `primary-700` 派生、primitive 500 状态色、`radius 4/8/16`），登记 `primary-solid` 稳定例外与 `bg-elevated` 上的 4.40 / 4.33 对比度缺口；新增 `sakura` / `forest` / `ink` 三套设计向预设（暖粉 / 松绿 / 水墨，圆角与投影同步分化）并补预设清单 / token / 对比度契约测试。手机端优先评估见同日记录。**Review Gate**：R1 `standard` **Pass**（0 blocker / 5 warning / 6 suggest，warning 已收口）。
+
+- [2026-10-25-mobile-first-preset-evaluation.md](./2026-10-25-mobile-first-preset-evaluation.md)：**手机端优先主题预设评估（只评估）**。事实：颜色 / 圆角 / 阴影 / 控件高度 / 字号 / 控件宽度上限可由 `--caomei-*` 覆盖，但触摸命中区（Checkbox / Radio 18px、Switch 40×22、icon 按钮 13.33px；289 个受检目标中 87 个 <24×24）、断点字面量与布局行为不在 token 面。结论：`data-preset` **不新增 `mobile` 预设**；推荐 1.0 后采用独立 **`data-density="touch"`** 密度轴 + `--caomei-hit-target-min` 不可见命中区，与颜色预设正交；短期以移动端指南的 CSS 覆盖配方承接。候选登记 [Backlog §1.5](../../plan/backlog.md)。
+
 - [2026-10-24-phase26-m2-behavior-convergence.md](./2026-10-24-phase26-m2-behavior-convergence.md)：**Phase 26 M2 行为收口与准破坏性变更**。DataTable 表头全选收口为**只作用当前页**（`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected` / `toggleAllPageRowsSelected`；客户端分页跨页选择保留、`lazy` 只作用当前页；整表由父级写 `selection`），10 语可访问名改「全选当前页」；`lazy` 选择在受控输入与 emit 两侧按页收敛、自持态翻页清空；`lazy` 缺省 `rowKey` 为页内索引，启用选择 / 展开时开发期要求显式 `rowKey`（自持展开态翻页重置、受控 `expandedRows` 同口径）；`engines.node` 提升到 `>=22` 并同步文档。CHANGELOG / GitHub Release 文案由 M3-2 承载。**Review Gate**：结论见本记录 §7。
 
 - [2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md](./2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md)：**Phase 26 M1-3 API 表面基线形态评估（只评估）**。对比「仅文档声明 / 提交态快照 / 发布时与上一已发布版本差分」；取证 `component-meta.json` 约 189 KB / 56 组件 / 516·85·70·16 且为 gitignored 生成物，现有 `verify` 只校验 exports。推荐 **③ 发布时差分**（preflight 对比上一版 `dist/*.d.ts`；删除 / required 收紧 = breaking，类型变化 = warning），① 保留为承诺载体，② 暂不采用。**不落地守卫**；实现登记为 Backlog 条件候选。**Review Gate**：结论见本记录 §8。

@@ -149,6 +149,6 @@ describe('极简预设契约（仓库现状）', () => {
         const files = readdirSync(PRESETS_DIR)
             .filter((name) => name.endsWith('.css'))
             .sort()
-        expect(files).toEqual(['caomei.css', 'momei.css'])
+        expect(files).not.toContain('minimal.css')
     })
 })

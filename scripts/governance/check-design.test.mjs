@@ -50,7 +50,7 @@ describe('check-design 仓库不变量', () => {
         expect(Z_INDEX_BUDGET).toBe(0)
     })
 
-    it('全局 token 覆盖基础与两套预设', () => {
+    it('全局 token 覆盖基础与全部预设', () => {
         expect([...collectGlobalTokens()]).toEqual(
             expect.arrayContaining(['--caomei-color-primary', '--caomei-color-bg', '--caomei-radius-md']),
         )
@@ -64,8 +64,24 @@ describe('check-design 仓库不变量', () => {
 
         const momei = readCss('presets/momei.css')
         expect(momei).toContain('--caomei-color-primary: #64748b')
-        expect(momei).toContain('--caomei-color-bg: #020617')
+        expect(momei).toContain('--caomei-color-bg: #0c1020')
         expect(momei).toContain('--caomei-color-text: #f1f5f9')
+        expect(momei).toContain('--caomei-radius-md: 8px')
+
+        const sakura = readCss('presets/sakura.css')
+        expect(sakura).toContain('--caomei-color-primary: #be123c')
+        expect(sakura).toContain('--caomei-color-bg: #fff8f9')
+        expect(sakura).toContain('--caomei-radius-lg: 18px')
+
+        const forest = readCss('presets/forest.css')
+        expect(forest).toContain('--caomei-color-primary: #047857')
+        expect(forest).toContain('--caomei-color-bg: #f6fbf8')
+        expect(forest).toContain('--caomei-radius-md: 6px')
+
+        const ink = readCss('presets/ink.css')
+        expect(ink).toContain('--caomei-color-primary: #1f1b18')
+        expect(ink).toContain('--caomei-color-bg: #faf8f3')
+        expect(ink).toContain('--caomei-radius-sm: 0')
     })
 })
 

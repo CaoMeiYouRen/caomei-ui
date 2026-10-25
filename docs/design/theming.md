@@ -70,7 +70,7 @@
   - `.dark` class（默认，便于 SSR 与手动切换）；
   - `[data-theme="dark"]` 属性；
   - 系统跟随（`prefers-color-scheme: dark`）：需在根元素显式加 `data-scheme="auto"`。
-- 预设：根元素 `data-preset="minimal"` / `"caomei"` / `"momei"`；**缺省即 `minimal`（极简）**——未指定与显式 `minimal` 渲染逐值一致，见 [设计规范 §5](./design-spec.md)。
+- 预设：根元素 `data-preset="minimal"` / `"caomei"` / `"momei"` / `"sakura"` / `"forest"` / `"ink"`；**缺省即 `minimal`（极简）**——未指定与显式 `minimal` 渲染逐值一致，见 [设计规范 §5](./design-spec.md)。
 - Nuxt 模块可配置 `darkMode: 'class' | 'media' | false`（`media` 时模块写入 `data-scheme="auto"` 跟随系统），并可用 `theme` 覆盖 token，详见[架构设计 §5](./architecture.md)。
 - 提供 `useTheme()` composable 管理当前主题与切换。
 
@@ -79,7 +79,7 @@
 优先级由低到高：
 
 1. 样式随包自带（需要单独引入基础层时用 `caomei-ui/theme.css`）；
-2. 选择预设（根元素 `data-preset="minimal"` / `"caomei"` / `"momei"`；缺省为 `minimal`）；
+2. 选择预设（根元素 `data-preset="minimal"` / `"caomei"` / `"momei"` / `"sakura"` / `"forest"` / `"ink"`；缺省为 `minimal`）；
 3. 覆盖 `--caomei-*` CSS variables 调整视觉；
 4. 通过组件 `class` / 样式透传做局部覆盖。
 

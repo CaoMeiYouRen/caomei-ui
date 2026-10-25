@@ -1,6 +1,9 @@
 @import './theme.css';
 @import './presets/caomei.css';
 @import './presets/momei.css';
+@import './presets/sakura.css';
+@import './presets/forest.css';
+@import './presets/ink.css';
 @import './field-shell.css';
 
 .caomei-root {

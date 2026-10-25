@@ -7,6 +7,9 @@ const presets = [
     { value: 'minimal', label: 'minimal' },
     { value: 'caomei', label: 'caomei' },
     { value: 'momei', label: 'momei' },
+    { value: 'sakura', label: 'sakura' },
+    { value: 'forest', label: 'forest' },
+    { value: 'ink', label: 'ink' },
 ] as const
 
 const { lang } = useData()

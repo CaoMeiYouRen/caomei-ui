@@ -9,7 +9,8 @@
  * 2. `[data-theme="dark"]` 属性；
  * 3. 系统跟随：在根元素加 `data-scheme="auto"`，可再以 `.light` / `[data-theme="light"]` 临时锁定亮色。
  *
- * 品牌预设见 `presets/`（`[data-preset="caomei"]` / `[data-preset="momei"]`）；
+ * 品牌 / 设计预设见 `presets/`：`caomei` / `momei` / `sakura` / `forest` / `ink`
+ * （`primary-solid` 的跨主题稳定例外见 docs/design/design-spec.md §5.2）；
  * 预设与暗色需挂在**同一元素**上（通常为 `<html>`）。
  *
  * 组件样式禁令：`-solid` 实底不得与 `--caomei-color-primary-foreground` 交叉配对。

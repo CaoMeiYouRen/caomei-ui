@@ -1,0 +1,69 @@
+/**
+ * ink 主题预设（设计向，源：caomei-ui）。
+ *
+ * 用法：在根元素设置 `data-preset="ink"`；暗色沿用 `.dark` / `[data-theme="dark"]`，系统跟随需 `data-scheme="auto"`。
+ *
+ * 设计意图：宣纸底 + 水墨近黑主色 + 方角与极弱投影，适合阅读 / 文档 / 编辑型界面；
+ * 是唯一无彩主色预设——主色只承担层级与对比，不引入第二品牌色。
+ * 对比度：主色配对亮 17.10:1 / 暗 16.26:1；实底配对 17.10:1；正文 16.52:1 / 16.72:1；次要文字 5.51:1 / 7.44:1。
+ */
+[data-preset='ink'] {
+    --caomei-color-primary: #1f1b18;
+    --caomei-color-primary-foreground: #fff;
+    --caomei-color-primary-solid: #1f1b18;
+    --caomei-color-success: #15803d;
+    --caomei-color-success-solid: #166534;
+    --caomei-color-warning: #a16207;
+    --caomei-color-warning-solid: #854d0e;
+    --caomei-color-danger: #b91c1c;
+    --caomei-color-danger-solid: #991b1b;
+    --caomei-color-neutral-solid: #292524;
+    --caomei-color-bg: #faf8f3;
+    --caomei-color-bg-elevated: #f1eee6;
+    --caomei-color-text: #1b1917;
+    --caomei-color-text-muted: #6b6459;
+    --caomei-color-border: #d9d3c7;
+    --caomei-radius-sm: 0;
+    --caomei-radius-md: 2px;
+    --caomei-radius-lg: 4px;
+    --caomei-shadow-xs: 0 1px 2px rgb(31 27 24 / 0.18);
+    --caomei-shadow-sm: 0 2px 4px rgb(31 27 24 / 0.10);
+    --caomei-shadow-md: 0 4px 8px rgb(31 27 24 / 0.12);
+    --caomei-shadow-lg: 0 8px 16px rgb(31 27 24 / 0.16);
+}
+
+:is([data-preset='ink'].dark, [data-preset='ink'][data-theme='dark']) {
+    --caomei-color-primary: #f4f1ea;
+    --caomei-color-primary-foreground: #171412;
+    --caomei-color-bg: #121110;
+    --caomei-color-bg-elevated: #1c1a17;
+    --caomei-color-text: #f4f1ea;
+    --caomei-color-text-muted: #a9a294;
+    --caomei-color-border: #3a3733;
+    --caomei-color-success: #4ade80;
+    --caomei-color-warning: #fbbf24;
+    --caomei-color-danger: #f87171;
+    --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+    --caomei-shadow-sm: 0 2px 4px rgb(0 0 0 / 0.40);
+    --caomei-shadow-md: 0 4px 8px rgb(0 0 0 / 0.45);
+    --caomei-shadow-lg: 0 8px 16px rgb(0 0 0 / 0.50);
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-preset='ink'][data-scheme='auto']:not(.light, [data-theme='light']) {
+        --caomei-color-primary: #f4f1ea;
+        --caomei-color-primary-foreground: #171412;
+        --caomei-color-bg: #121110;
+        --caomei-color-bg-elevated: #1c1a17;
+        --caomei-color-text: #f4f1ea;
+        --caomei-color-text-muted: #a9a294;
+        --caomei-color-border: #3a3733;
+        --caomei-color-success: #4ade80;
+        --caomei-color-warning: #fbbf24;
+        --caomei-color-danger: #f87171;
+        --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+        --caomei-shadow-sm: 0 2px 4px rgb(0 0 0 / 0.40);
+        --caomei-shadow-md: 0 4px 8px rgb(0 0 0 / 0.45);
+        --caomei-shadow-lg: 0 8px 16px rgb(0 0 0 / 0.50);
+    }
+}

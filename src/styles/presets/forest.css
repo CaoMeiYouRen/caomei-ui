@@ -1,0 +1,69 @@
+/**
+ * forest 主题预设（设计向，源：caomei-ui）。
+ *
+ * 用法：在根元素设置 `data-preset="forest"`；暗色沿用 `.dark` / `[data-theme="dark"]`，系统跟随需 `data-scheme="auto"`。
+ *
+ * 设计意图：薄荷纸面 + 松绿主色 + 小圆角与紧凑投影，适合工具型 / 数据型界面；
+ * 与 sakura（暖粉 / 大圆角）和 ink（无彩 / 方角）形成「自然、温和、锐利」三档气质。
+ * 对比度：主色配对亮 5.48:1 / 暗 8.93:1；实底配对 7.68:1；正文 13.65:1 / 17.41:1；次要文字 5.63:1 / 9.75:1。
+ */
+[data-preset='forest'] {
+    --caomei-color-primary: #047857;
+    --caomei-color-primary-foreground: #fff;
+    --caomei-color-primary-solid: #065f46;
+    --caomei-color-success: #15803d;
+    --caomei-color-success-solid: #166534;
+    --caomei-color-warning: #b45309;
+    --caomei-color-warning-solid: #9a3412;
+    --caomei-color-danger: #b91c1c;
+    --caomei-color-danger-solid: #991b1b;
+    --caomei-color-neutral-solid: #3f4a42;
+    --caomei-color-bg: #f6fbf8;
+    --caomei-color-bg-elevated: #eaf5ef;
+    --caomei-color-text: #103024;
+    --caomei-color-text-muted: #4c6b5d;
+    --caomei-color-border: #cfe3d7;
+    --caomei-radius-sm: 2px;
+    --caomei-radius-md: 6px;
+    --caomei-radius-lg: 10px;
+    --caomei-shadow-xs: 0 1px 2px rgb(6 95 70 / 0.18);
+    --caomei-shadow-sm: 0 2px 6px rgb(6 95 70 / 0.12);
+    --caomei-shadow-md: 0 6px 16px rgb(6 95 70 / 0.14);
+    --caomei-shadow-lg: 0 10px 24px rgb(6 95 70 / 0.18);
+}
+
+:is([data-preset='forest'].dark, [data-preset='forest'][data-theme='dark']) {
+    --caomei-color-primary: #34d399;
+    --caomei-color-primary-foreground: #032018;
+    --caomei-color-bg: #06180f;
+    --caomei-color-bg-elevated: #0d2619;
+    --caomei-color-text: #ecfdf5;
+    --caomei-color-text-muted: #9dc6b3;
+    --caomei-color-border: #1f4a36;
+    --caomei-color-success: #4ade80;
+    --caomei-color-warning: #fbbf24;
+    --caomei-color-danger: #f87171;
+    --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+    --caomei-shadow-sm: 0 2px 6px rgb(0 0 0 / 0.40);
+    --caomei-shadow-md: 0 6px 16px rgb(0 0 0 / 0.45);
+    --caomei-shadow-lg: 0 10px 24px rgb(0 0 0 / 0.50);
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-preset='forest'][data-scheme='auto']:not(.light, [data-theme='light']) {
+        --caomei-color-primary: #34d399;
+        --caomei-color-primary-foreground: #032018;
+        --caomei-color-bg: #06180f;
+        --caomei-color-bg-elevated: #0d2619;
+        --caomei-color-text: #ecfdf5;
+        --caomei-color-text-muted: #9dc6b3;
+        --caomei-color-border: #1f4a36;
+        --caomei-color-success: #4ade80;
+        --caomei-color-warning: #fbbf24;
+        --caomei-color-danger: #f87171;
+        --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+        --caomei-shadow-sm: 0 2px 6px rgb(0 0 0 / 0.40);
+        --caomei-shadow-md: 0 6px 16px rgb(0 0 0 / 0.45);
+        --caomei-shadow-lg: 0 10px 24px rgb(0 0 0 / 0.50);
+    }
+}

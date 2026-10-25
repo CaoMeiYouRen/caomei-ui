@@ -8,7 +8,7 @@
 
 - **组件与样式解耦**：组件只消费 `--caomei-*` 语义 token，不硬编码品牌色 / 尺寸。现状：组件样式块内无 `#hex` / `rgb()` / `rgba()` 字面量（`check:design` 预算 0）；elevation 阴影与遮罩由 §2.6 token 承载。尚未收敛的一类：AutoComplete / DatePicker 面板的自适应阴影，以及各输入类控件的焦点环（`color-mix()` 就地组合，后者随 §2.5 规划的 `--caomei-color-focus-ring` 落地）。
 - **100% 可覆盖**：所有视觉由 token 决定，消费者可整体覆盖。
-- **两套默认预设**：`caomei`（源 caomei-auth）与 `momei`（源 momei），均含亮 / 暗两态。
+- **多套预设**：`minimal`（极简，缺省）、`caomei`（源 caomei-auth）、`momei`（源 momei）与设计向的 `sakura` / `forest` / `ink`，均含亮 / 暗两态。
 - **不引入 Tailwind / UnoCSS**。
 
 ## 2. Token 体系
@@ -41,6 +41,8 @@
 | `--caomei-color-border` | 边框 / 分隔线 | `#e5e7eb` | `#2a2a2e` |
 
 > `--caomei-color-<tone>` 随主题自适应；`--caomei-color-<tone>-solid` 跨主题稳定，保证实底与 `--caomei-color-on-solid` 的对比度；**替换品牌色时需同时覆盖对应的 `-solid`**。若自定义强调色会被当作底色承载文字 / 图标（`primary` 作底的按钮、选中态等），还需同时覆盖 `--caomei-color-primary-foreground`——它随主题变化（暗色为深色 `#0b0b0d`），只改 `primary` 不改它会与自定义色失配；Nuxt 模块可用 `primary-foreground` 别名覆盖——注意别名写入的是**单条 `:root` 声明**（同一值跨明暗），需要按明暗分别取值时仍以 CSS 覆盖为准。
+>
+> 已登记的稳定例外：`momei` 预设的 `primary-solid` 按源保真随明暗取 `primary-700`（`#3c4653` / `#59626e`），不满足跨主题稳定；两种形态配 `on-solid` 白字分别为 9.58:1 / 6.18:1，见 §5.2。
 
 ### 2.3 尺寸 token（已实现）
 
@@ -135,6 +137,7 @@
     - **soft 底口径**：soft 变体底为半透明 `color-mix(in srgb, <tone> 8%, transparent)`，对比度按页面底 `--caomei-color-bg` 合成；在抬升面 `--caomei-color-bg-elevated` 上会更低（primary 8% 约 **4.34:1**，未达标），属半透明底的固有边界。
     - **维持（终局）**：`caomei` 预设 `danger` `#ef4444` 作为前景色时：纯白底约 **3.76:1**、soft 变体的 `color-mix(tone 8%)` 底约 **3.39:1**（消费点为 soft / outline 文本；invalid 描边属图形、3:1 阈值下达标，无需改动；实底仍走 `danger-solid`）。
     - **维持（终局，2026-09-30 D4 裁定「全部维持登记（不修色）」）**：默认预设 soft 变体 `danger` **4.28:1** / `neutral` **4.39:1**（8% 底）与 `caomei` / `momei` 预设 primary soft **3.73:1** / **4.32:1** 仍 < 4.5:1；逐条结论（复算值 + 阈值 + 依据）见 [M4-2 对比度终局结论](./governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md) §3。
+    - **momei 运行时面层（2026-10-26 随预设同步登记）**：`primary` 在 `bg-elevated` 上 **4.40:1**（消费点含 Toast action 文本）、`text-muted` 同面 **4.33:1**；由 momei 的 `color-mix(surface-card 96%, text 4%)` 面层派生引入，按源保真维持；需要严格 AA 时在使用层覆盖 `--caomei-color-bg-elevated` 或对应前景 token。
     - `.caomei-calendar__weekday` 亮色 **4.83:1**（on `bg`）/ 4.52:1（on `bg-elevated`）库内达标，历史值 4.48:1 系站点 `--vp-c-bg-soft` 口径（见 [M2 一致性收口记录](./governance/2026-09-26-m2-style-token-consistency.md) §3 #6）。
 - 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
 - **在册盘点须覆盖全集而非被点名项**：数值 / 对比度类盘点若只覆盖被点名的条目，修复共享公式时会遗漏同根因缺口。修复共享公式前须对全 tone / 全预设复算；超出授权范围的残余缺口转载体行登记，不静默扩面（实例见 [M2 对比度与配色口径收口记录](./governance/2026-09-28-m2-contrast-and-pairing.md)）。
@@ -145,14 +148,14 @@
   - `.dark` class；
   - `[data-theme="dark"]` 属性；
   - 系统跟随为**显式开启**：根元素加 `data-scheme="auto"`，再以 `.light` / `[data-theme="light"]` 可临时锁定亮色。
-- 预设通过根元素 `data-preset` 切换：`minimal`（极简，**缺省**——未指定时即它）/ `caomei` / `momei`；`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，故显式指定与缺省渲染逐值一致；预设与明暗正交组合，且需挂在**同一元素**上（通常为 `<html>`）。
+- 预设通过根元素 `data-preset` 切换：`minimal`（极简，**缺省**——未指定时即它）/ `caomei` / `momei` / `sakura` / `forest` / `ink`；`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，故显式指定与缺省渲染逐值一致；预设与明暗正交组合，且需挂在**同一元素**上（通常为 `<html>`）。
 - `useTheme()` 读取模式与暗色状态（`auto` 时读取系统偏好），见 [主题与样式设计 §3](./theming.md)。
 
 ## 5. 主题预设（已实现）
 
-实现位置：`src/styles/theme.css`（**基础层 = 极简 `minimal` 预设**）与 `src/styles/presets/caomei.css`、`src/styles/presets/momei.css`；随基础层 `caomei-ui/theme.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
+实现位置：`src/styles/theme.css`（**基础层 = 极简 `minimal` 预设**）与 `src/styles/presets/` 下的 `caomei.css`、`momei.css`、`sakura.css`、`forest.css`、`ink.css`；随基础层 `caomei-ui/theme.css` 一起分发，经根元素 `data-preset` 激活。文档站顶栏提供演示切换。
 
-**预设清单**：`minimal`（极简，**缺省预设**——`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，显式指定与缺省渲染逐值一致）、`caomei`（§5.1）、`momei`（§5.2）。
+**预设清单**：`minimal`（极简，**缺省预设**——`:root` 与 `[data-preset="minimal"]` 共享同一 token 规则，显式指定与缺省渲染逐值一致）、`caomei`（§5.1）、`momei`（§5.2）、`sakura` / `forest` / `ink`（§5.3）。`caomei` / `momei` 两套为下游品牌源，后三套为设计向预设；六套共享同一 token 契约，差异通过色温、面层、圆角与投影表达。
 
 ### 5.1 caomei 预设（源：caomei-auth）
 
@@ -183,28 +186,58 @@
 
 ### 5.2 momei 预设（源：momei）
 
-来源：`momei` 的运行时主题 `PRESETS.default`（`composables/use-theme.ts`）与静态 `MomeiPreset`（`nuxt.config.ts`）。momei 主色为墨色 slate、点缀色为梅红 rose，暗色 surface 为反相 slate。
+来源：`momei` 的运行时主题 `PRESETS.default`（`composables/use-theme.ts`）、运行时色阶派生与 `styles/main.scss` 的 `--p-*` → `--caomei-*` 桥接。momei 主色为墨色 slate、点缀色为梅红 rose；**暗色面层不是静态 surface-0**，而是 `surface-card = surface-100`（surface-0 混 4% 白）与桥接派的 `bg-elevated`。
 
 | token | 亮色 | 暗色 | 来源 |
 | --- | --- | --- | --- |
 | `--caomei-color-primary` | `#64748b`（slate-500） | `#94a3b8`（slate-400） | use-theme PRESETS.default |
 | `--caomei-color-primary-foreground` | `#ffffff` | `#000000` | use-theme primary.contrast |
-| `--caomei-color-primary-solid` | `#64748b` | `#64748b` | 跨主题稳定 |
-| `--caomei-color-success` | `#22c55e` | `#4ade80` | Aura button green |
-| `--caomei-color-warning` | `#f97316` | `#fb923c` | Aura button orange |
-| `--caomei-color-danger` | `#ef4444` | `#f87171` | Aura button red |
-| `--caomei-color-bg` | `#ffffff`（亮 surface-0） | `#020617`（暗 surface-0） | use-theme `PRESETS.default.surface` |
-| `--caomei-color-bg-elevated` | `#f8fafc`（亮 surface-50） | `#0f172a`（暗 surface-50） | MomeiPreset `colorScheme.surface`（静态值；运行时由 `color-mix` 微调） |
+| `--caomei-color-primary-solid` | `#3c4653`（primary-700） | `#59626e`（primary-700） | 桥接 `--p-primary-700`（随明暗派生） |
+| `--caomei-color-success` | `#22c55e` | `#22c55e` | 桥接 `--p-green-500`（primitive，不随明暗浅化） |
+| `--caomei-color-warning` | `#f97316` | `#f97316` | 桥接 `--p-orange-500` |
+| `--caomei-color-danger` | `#ef4444` | `#ef4444` | 桥接 `--p-red-500` |
+| `--caomei-color-bg` | `#ffffff`（surface-0） | `#0c1020`（surface-card = surface-100） | 桥接 `--p-surface-card` |
+| `--caomei-color-bg-elevated` | `#f5f6f6` | `#151929` | 桥接 `color-mix(surface-card 96%, text 4%)` |
 | `--caomei-color-text` | `#0f172a`（slate-900） | `#f1f5f9`（slate-100） | use-theme `PRESETS.default.text` |
-| `--caomei-color-text-muted` | `#64748b` | `#64748b` | MomeiPreset `text.mutedColor`（亮 `surface.500` / 暗 `surface.400`；暗色 surface 为反相色阶，二者同为 `#64748b`）；运行时为 `color-mix(text, surface 40%)` 近似值 |
-| `--caomei-color-border` | `#e2e8f0`（亮 surface-200） | `#334155`（暗 surface-200） | MomeiPreset `colorScheme.surface` + 运行时 `content-border-color = surface-200` |
-| `--caomei-radius-sm/md/lg` | `4 / 6 / 12` | 同 | 控件 6px / 卡片与浮层 12px |
+| `--caomei-color-text-muted` | `#6f747f` | `#91959f` | 运行时 `color-mix(text, surface 40%)` |
+| `--caomei-color-border` | `#ebebeb`（surface-200） | `#161a2a`（surface-200） | 运行时 `content-border-color = surface-200` |
+| `--caomei-radius-sm/md/lg` | `4 / 8 / 16` | 同 | 运行时 `content-border-radius = 0.5rem` 及其 0.5× / 2× 派生 |
 
-> 规划新增 `--caomei-color-accent`（momei 点缀色 rose `#f43f5e` / `#fb7185`）作为可选品牌强调色；是否纳入需评估（当前组件集无 accent 语义）。
+> `primary-solid` 是本预设对「`-solid` 跨主题稳定」的**有意例外**：momei 桥接把它映射到随明暗派生的 `--p-primary-700`，这里按源保真。两种形态配 `--caomei-color-on-solid` 白字的对比度分别为 **9.58:1** / **6.18:1**，均达标。
 >
-> `-solid` 系列（`success` / `warning` / `danger` / `neutral`）未在表中单列，预设实现时按同 tone 深阶覆盖并保证实底前景（`on-solid`）对比度；未列出的 token 继承 `theme.css` 默认值。
+> `text-muted` 在 `bg-elevated` 上的对比度为 **4.33:1**（`bg` 上 4.69:1），`primary` 在同面为 **4.40:1**（`bg` 上 4.76:1），均沿用 momei 运行时取值；如需严格 AA，可在使用层覆盖 `--caomei-color-text-muted` / `--caomei-color-bg-elevated`。
 >
-> momei 的代码高亮 / 阅读器皮肤（Primer 色系、sepia 等）**不属于主题预设**，不纳入。
+> 状态色取 PrimeVue primitive 500，暗色不另作浅化；`-solid` 系列（`success` / `warning` / `danger` / `neutral`）仍按同 tone 深阶覆盖并保证 `on-solid` 对比度。未列出的 token 继承 `theme.css` 默认值。
+>
+> momei 的代码高亮 / 阅读器皮肤（Primer 色系、sepia 等）与运行时点缀色 accent（`#f43f5e` / `#fb7185`）**不属于主题预设**，不纳入；当前组件集无 accent 语义。
+
+### 5.3 设计向预设：sakura / forest / ink（源：caomei-ui）
+
+三者不绑定下游品牌，目的是让 `data-preset` 在 **primary 之外**也产生可感知差异：同时改变中性面温度、正文 / 边框色、圆角阶梯与投影。三者都定义了完整的亮 / 暗颜色 token，未列出的 token 继承 `theme.css` 默认值。
+
+| 预设 | 中文名 | 设计意图 | 形状 |
+| --- | --- | --- | --- |
+| `sakura` | 梅樱 | 暖白纸面 + 梅红主色；柔和的 ToC / 内容站气质 | `radius 6 / 12 / 18`；梅色半透明投影 |
+| `forest` | 松林 | 薄荷纸面 + 松绿主色；克制、紧凑的工具型气质 | `radius 2 / 6 / 10`；小半径绿色投影 |
+| `ink` | 水墨 | 宣纸底 + 水墨近黑主色；唯一不以彩色为主色的预设，阅读 / 文档 / 编辑气质 | `radius 0 / 2 / 4`；极弱投影 |
+
+**亮色关键 token**：
+
+| 预设 | `primary` | `bg` | `bg-elevated` | `text` | `text-muted` | `border` |
+| --- | --- | --- | --- | --- | --- | --- |
+| `sakura` | `#be123c` | `#fff8f9` | `#ffeef2` | `#3b1725` | `#7d4b5b` | `#f2d3da` |
+| `forest` | `#047857` | `#f6fbf8` | `#eaf5ef` | `#103024` | `#4c6b5d` | `#cfe3d7` |
+| `ink` | `#1f1b18` | `#faf8f3` | `#f1eee6` | `#1b1917` | `#6b6459` | `#d9d3c7` |
+
+**暗色关键 token**：
+
+| 预设 | `primary` | `bg` | `bg-elevated` | `text` | `text-muted` | `border` |
+| --- | --- | --- | --- | --- | --- | --- |
+| `sakura` | `#fb7185` | `#1a0c12` | `#28131b` | `#fdf2f4` | `#c8a2ac` | `#45212c` |
+| `forest` | `#34d399` | `#06180f` | `#0d2619` | `#ecfdf5` | `#9dc6b3` | `#1f4a36` |
+| `ink` | `#f4f1ea` | `#121110` | `#1c1a17` | `#f4f1ea` | `#a9a294` | `#3a3733` |
+
+**实底与外层**：三套预设的 `primary-solid` 分别为 `#9f1239` / `#065f46` / `#1f1b18`（跨明暗稳定），配 `--caomei-color-on-solid` 白字的对比度为 **8.02:1** / **7.68:1** / **17.10:1**。主色配对（`primary` × `primary-foreground`）亮 / 暗分别为 **6.29 / 6.78**、**5.48 / 8.93**、**17.10 / 16.26**；正文与次要文字均满足 AA。状态色在 `bg` 上满足 AA，在 `bg-elevated` 上沿用库内既有口径（部分 tone 可能低于 4.5:1），未纳入本次下界断言。完整值以对应 CSS 文件为准。
 
 ## 6. 组件风格约定
 

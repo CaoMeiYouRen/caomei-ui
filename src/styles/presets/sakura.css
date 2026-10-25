@@ -1,0 +1,69 @@
+/**
+ * sakura 主题预设（设计向，源：caomei-ui）。
+ *
+ * 用法：在根元素设置 `data-preset="sakura"`；暗色沿用 `.dark` / `[data-theme="dark"]`，系统跟随需 `data-scheme="auto"`。
+ *
+ * 设计意图：暖白纸面 + 梅红主色 + 大圆角与柔和梅色投影，适合内容型 ToC 站点；
+ * 与 caomei（正红 / 冷灰面）和 momei（墨色 / 中性面）在色温、圆角与阴影三个维度同时拉开差异。
+ * 对比度：主色配对亮 6.29:1 / 暗 6.78:1；实底配对 8.02:1；正文 15.01:1 / 17.36:1；次要文字 6.62:1 / 8.34:1（均按 WCAG 2.x 相对亮度计算）。
+ */
+[data-preset='sakura'] {
+    --caomei-color-primary: #be123c;
+    --caomei-color-primary-foreground: #fff;
+    --caomei-color-primary-solid: #9f1239;
+    --caomei-color-success: #15803d;
+    --caomei-color-success-solid: #166534;
+    --caomei-color-warning: #b45309;
+    --caomei-color-warning-solid: #9a3412;
+    --caomei-color-danger: #b91c1c;
+    --caomei-color-danger-solid: #991b1b;
+    --caomei-color-neutral-solid: #52525b;
+    --caomei-color-bg: #fff8f9;
+    --caomei-color-bg-elevated: #ffeef2;
+    --caomei-color-text: #3b1725;
+    --caomei-color-text-muted: #7d4b5b;
+    --caomei-color-border: #f2d3da;
+    --caomei-radius-sm: 6px;
+    --caomei-radius-md: 12px;
+    --caomei-radius-lg: 18px;
+    --caomei-shadow-xs: 0 1px 2px rgb(159 18 57 / 0.16);
+    --caomei-shadow-sm: 0 6px 16px rgb(159 18 57 / 0.10);
+    --caomei-shadow-md: 0 12px 28px rgb(159 18 57 / 0.14);
+    --caomei-shadow-lg: 0 18px 40px rgb(159 18 57 / 0.18);
+}
+
+:is([data-preset='sakura'].dark, [data-preset='sakura'][data-theme='dark']) {
+    --caomei-color-primary: #fb7185;
+    --caomei-color-primary-foreground: #2b0912;
+    --caomei-color-bg: #1a0c12;
+    --caomei-color-bg-elevated: #28131b;
+    --caomei-color-text: #fdf2f4;
+    --caomei-color-text-muted: #c8a2ac;
+    --caomei-color-border: #45212c;
+    --caomei-color-success: #4ade80;
+    --caomei-color-warning: #fbbf24;
+    --caomei-color-danger: #f87171;
+    --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+    --caomei-shadow-sm: 0 6px 16px rgb(0 0 0 / 0.40);
+    --caomei-shadow-md: 0 12px 28px rgb(0 0 0 / 0.45);
+    --caomei-shadow-lg: 0 18px 40px rgb(0 0 0 / 0.50);
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-preset='sakura'][data-scheme='auto']:not(.light, [data-theme='light']) {
+        --caomei-color-primary: #fb7185;
+        --caomei-color-primary-foreground: #2b0912;
+        --caomei-color-bg: #1a0c12;
+        --caomei-color-bg-elevated: #28131b;
+        --caomei-color-text: #fdf2f4;
+        --caomei-color-text-muted: #c8a2ac;
+        --caomei-color-border: #45212c;
+        --caomei-color-success: #4ade80;
+        --caomei-color-warning: #fbbf24;
+        --caomei-color-danger: #f87171;
+        --caomei-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.50);
+        --caomei-shadow-sm: 0 6px 16px rgb(0 0 0 / 0.40);
+        --caomei-shadow-md: 0 12px 28px rgb(0 0 0 / 0.45);
+        --caomei-shadow-lg: 0 18px 40px rgb(0 0 0 / 0.50);
+    }
+}

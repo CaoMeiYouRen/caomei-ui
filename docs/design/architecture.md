@@ -50,7 +50,7 @@
 | 入口 | 用途 |
 |------|------|
 | `caomei-ui` | 组件 + composables + 类型（**含组件样式**：产物保留逐模块 CSS import，打包器按需取用；**不含基础层**，见下） |
-| `caomei-ui/theme.css` | 基础层样式：tokens + 暗色选择器 + `.caomei-root` + 两个品牌预设 |
+| `caomei-ui/theme.css` | 基础层样式：tokens + 暗色选择器 + `.caomei-root` + 品牌 / 设计预设 |
 | `caomei-ui/locale/<code>` | 单门内建语言的文案对象（默认导出）：`zh-tw` / `ja-jp` / `ko-kr` / `es-es` / `fr-fr` / `de-de` / `ru-ru` / `pt-br`（按需引入语言包，见下） |
 | `caomei-ui/resolver` | unplugin-vue-components resolver |
 | `caomei-ui/nuxt` | Nuxt 模块 |

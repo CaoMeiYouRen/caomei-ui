@@ -1,15 +1,23 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { spawnSync } from 'node:child_process'
 import { afterAll, describe, expect, it } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import {
+    buildAnnounceArgs,
     buildPublishArgs,
+    checkDistTagState,
     extractChangelogSection,
     formatLocalTagNotPushed,
+    isPrereleaseVersion,
+    isValidShasum,
     parseArgs,
+    parseDistTags,
     parseRemoteTagSha,
     planVersionStatementSync,
+    resolveDistTag,
     resolveTagState,
     readUnpackedPackage,
     replacePackageVersion,
@@ -63,6 +71,17 @@ describe('manual-release parseArgs', () => {
         })
     })
 
+    it('解析 --tag', () => {
+        expect(parseArgs(['run', '--version=1.0.0-rc.1', '--tag=next', '--dry-run'])).toMatchObject({
+            step: 'run',
+            version: '1.0.0-rc.1',
+            tag: 'next',
+            dryRun: true,
+            error: null,
+        })
+        expect(parseArgs(['publish', '--version=1.0.0', '--tag=latest']).tag).toBe('latest')
+    })
+
     it('拒绝未知参数 / 未知 step / 缺 step', () => {
         expect(parseArgs(['bump', '--version=0.7.0', '--nope']).error).toMatch(/不支持的参数/u)
         expect(parseArgs(['nope', '--version=0.7.0']).error).toMatch(/未知 step/u)
@@ -101,13 +120,128 @@ describe('manual-release 校验', () => {
     })
 })
 
+describe('manual-release dist-tag', () => {
+    it('isPrereleaseVersion 按 semver 后缀判定', () => {
+        expect(isPrereleaseVersion('1.0.0-rc.1')).toBe(true)
+        expect(isPrereleaseVersion('1.0.0-beta.2')).toBe(true)
+        expect(isPrereleaseVersion('1.0.0')).toBe(false)
+        expect(isPrereleaseVersion('0.7.0')).toBe(false)
+    })
+
+    it('resolveDistTag 按版本推断默认通道', () => {
+        expect(resolveDistTag('1.0.0-rc.1', undefined)).toBe('next')
+        expect(resolveDistTag('1.0.0', undefined)).toBe('latest')
+        expect(resolveDistTag('0.7.0', undefined)).toBe('latest')
+    })
+
+    it('resolveDistTag 接受显式 next / latest，拒绝未知 tag', () => {
+        expect(resolveDistTag('1.0.0-rc.1', 'next')).toBe('next')
+        expect(resolveDistTag('1.0.0', 'latest')).toBe('latest')
+        expect(resolveDistTag('1.0.0', 'next')).toBe('next')
+        expect(() => resolveDistTag('1.0.0-rc.1', 'beta')).toThrow(/Invalid --tag/u)
+    })
+
+    it('预发布版本禁止发布到 latest（安全不变量）', () => {
+        expect(() => resolveDistTag('1.0.0-rc.1', 'latest')).toThrow(/不得发布到 latest/u)
+    })
+
+    it('parseDistTags 解析 npm 输出，非法输入回落空对象', () => {
+        expect(parseDistTags('{"latest":"0.7.0","next":"1.0.0-rc.1"}')).toEqual({
+            latest: '0.7.0',
+            next: '1.0.0-rc.1',
+        })
+        expect(parseDistTags('not json')).toEqual({})
+        expect(parseDistTags('[]')).toEqual({})
+        expect(parseDistTags('')).toEqual({})
+    })
+
+    it('checkDistTagState 断言目标 dist-tag，且 latest 上不得出现任何预发布版本', () => {
+        expect(checkDistTagState({
+            version: '1.0.0-rc.1',
+            tag: 'next',
+            distTags: { latest: '0.7.0', next: '1.0.0-rc.1' },
+        })).toEqual({ ok: true, error: null })
+
+        expect(checkDistTagState({
+            version: '1.0.0-rc.1',
+            tag: 'next',
+            distTags: { latest: '0.7.0', next: '1.0.0-rc.2' },
+        })).toMatchObject({ ok: false, error: expect.stringContaining('不一致') })
+
+        expect(checkDistTagState({
+            version: '1.0.0-rc.1',
+            tag: 'next',
+            distTags: { latest: '1.0.0-rc.1', next: '1.0.0-rc.1' },
+        })).toMatchObject({ ok: false, error: expect.stringContaining('latest dist-tag') })
+
+        // 历史 rc 占用 latest 同样失败（不只拦目标版本）
+        expect(checkDistTagState({
+            version: '1.0.0-rc.1',
+            tag: 'next',
+            distTags: { latest: '1.0.0-rc.0', next: '1.0.0-rc.1' },
+        })).toMatchObject({ ok: false, error: expect.stringContaining('latest dist-tag') })
+
+        expect(checkDistTagState({
+            version: '1.0.0',
+            tag: 'latest',
+            distTags: { latest: '1.0.0', next: '1.0.0-rc.1' },
+        })).toEqual({ ok: true, error: null })
+    })
+})
+
+describe('manual-release shasum 形态', () => {
+    it('isValidShasum 只接受 40 位小写十六进制', () => {
+        expect(isValidShasum('a'.repeat(40))).toBe(true)
+        expect(isValidShasum('5b59e41aa400b0e59ade6f6f10984ebf1faf3622')).toBe(true)
+        expect(isValidShasum('A'.repeat(40))).toBe(false)
+        expect(isValidShasum('abc')).toBe(false)
+        expect(isValidShasum('')).toBe(false)
+    })
+})
+
+describe('manual-release CLI 安全不变量', () => {
+    const script = join(dirname(fileURLToPath(import.meta.url)), 'manual-release.mjs')
+    const runCli = (args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
+
+    it('rc + latest 在参数层拒绝，且不执行 publish', () => {
+        const result = runCli(['publish', '--version=1.0.0-rc.1', '--tag=latest', '--dry-run'])
+        expect(result.status).toBe(1)
+        expect(result.stderr).toContain('不得发布到 latest')
+        expect(result.stdout).not.toContain('npm publish')
+    })
+
+    it('rc + next dry-run 输出 --tag=next', () => {
+        const result = runCli(['publish', '--version=1.0.0-rc.1', '--tag=next', '--dry-run'])
+        expect(result.status).toBe(0)
+        expect(result.stdout).toContain('npm publish --tag=next')
+    })
+})
+
 describe('manual-release publish 参数', () => {
-    it('无 OTP 时不追加 --otp', () => {
-        expect(buildPublishArgs(undefined)).toEqual(['publish'])
+    it('必须显式带目标 dist-tag', () => {
+        expect(buildPublishArgs(undefined, 'next')).toEqual(['publish', '--tag=next'])
+        expect(buildPublishArgs(undefined, 'latest')).toEqual(['publish', '--tag=latest'])
+        expect(() => buildPublishArgs(undefined, undefined)).toThrow(/缺少目标 dist-tag/u)
     })
 
     it('有 OTP 时追加 --otp=<code>', () => {
-        expect(buildPublishArgs('123456')).toEqual(['publish', '--otp=123456'])
+        expect(buildPublishArgs('123456', 'latest')).toEqual(['publish', '--tag=latest', '--otp=123456'])
+        expect(buildPublishArgs('123456', 'next')).toEqual(['publish', '--tag=next', '--otp=123456'])
+    })
+})
+
+describe('manual-release GitHub Release 参数', () => {
+    it('预发布标记 --prerelease，非 latest 通道标记 --latest=false', () => {
+        expect(buildAnnounceArgs('1.0.0-rc.1', 'next', '/tmp/notes.md')).toEqual([
+            'release', 'create', 'v1.0.0-rc.1', '--title', '1.0.0-rc.1', '--verify-tag', '--prerelease', '--latest=false', '--notes-file', '/tmp/notes.md',
+        ])
+        expect(buildAnnounceArgs('1.0.0', 'latest', '/tmp/notes.md')).toEqual([
+            'release', 'create', 'v1.0.0', '--title', '1.0.0', '--verify-tag', '--notes-file', '/tmp/notes.md',
+        ])
+        expect(buildAnnounceArgs('1.0.0', 'next', undefined)).toEqual([
+            'release', 'create', 'v1.0.0', '--title', '1.0.0', '--verify-tag', '--latest=false',
+        ])
+        expect(() => buildAnnounceArgs('1.0.0', undefined, undefined)).toThrow(/缺少目标 dist-tag/u)
     })
 })
 

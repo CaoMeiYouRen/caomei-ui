@@ -6,7 +6,7 @@
 
 > changesets is not used (this project is a single package, and semantic-release is the standard fit).
 
-> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the plan is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. **The rc channel requires `--tag` support, which lands with the release-pipeline item; until then, do not publish an rc** (plain `npm publish` would target `latest`). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
+> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the flow is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. `manual-release.mjs` supports `--tag=next|latest`; the default is inferred from the version (pre-release → `next`, stable → `latest`), and **a pre-release combined with `latest` is rejected**. The channel contract and evidence are recorded in [the M3-1 release record](/design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
 
 ## Version inference
 
@@ -31,17 +31,21 @@
 
 ## Manual release (local)
 
-Releases are performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. The rc step is available only after `--tag` support lands (see the status note above). Use the single-entry orchestrator:
+Releases are performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. Use the single-entry orchestrator:
 
 ```bash
-pnpm release:manual run --version=0.7.0 [--date=YYYY-MM-DD] [--yes]
+# rc pre-release -> npm next
+pnpm release:manual run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
+# final release -> npm latest
+pnpm release:manual run --version=1.0.0 --tag=latest [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
 ```
 
-It chains seven steps: `preflight → bump → changelog → publish → verify → sync → announce`. Mutating steps (`bump` / `changelog` / `publish` / `sync` / `announce`) require an explicit `--yes`; use `--dry-run` to preview. If the release deprecates public API, add a `Deprecations` section to the CHANGELOG manually (the generator does not group it yet). The script never pushes — run `git push origin master --follow-tags` yourself. See the [Chinese release guide](/guide/release) §3 for the full runbook, the tag placement note and the release-metadata exemption boundary.
+It chains seven steps: `preflight → bump → changelog → publish → verify → sync → announce`. Omitting `--tag` infers the channel from the version (a pre-release with a `-` suffix → `next`, a stable version → `latest`); a pre-release with an explicit `--tag=latest` stops during argument validation. `preflight` runs `pnpm verify`, then `pnpm test:coverage` + `pnpm check:coverage` for coverage evidence. `publish` passes the target dist-tag explicitly, and `verify` reads the registry `dist-tags` to assert `dist-tags.<tag>` equals the published version; `latest` must never point at a pre-release. For pre-release versions `announce` passes `--prerelease`, and for any non-`latest` channel it passes `--latest=false`, so an rc or a staged release does not become the GitHub Latest Release. Mutating steps (`bump` / `changelog` / `publish` / `sync` / `announce`) require an explicit `--yes`; use `--dry-run` to preview. If the release deprecates public API, add a `Deprecations` section to the CHANGELOG manually (the generator does not group it yet). The script never pushes — run `git push origin master --follow-tags` yourself. See the [Chinese release guide](/guide/release) §3 for the full runbook, the tag placement note and the release-metadata exemption boundary.
 
 ## Pre-release checks
 
 - All quality gates pass (lint / typecheck / test / build).
+- Coverage evidence is generated and checked with `pnpm test:coverage` + `pnpm check:coverage` (also part of `preflight`).
 - Build output smoke test: confirm ESM, type declarations, CSS and subpath exports work.
 - Public API changes are confirmed backward compatible or a major is planned.
 - The docs site builds.

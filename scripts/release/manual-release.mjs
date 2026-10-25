@@ -17,12 +17,15 @@
  *
  * 用法（须在仓库根运行）：
  *   node scripts/release/manual-release.mjs preflight --version=0.7.0
- *   node scripts/release/manual-release.mjs run --version=0.7.0 [--date=YYYY-MM-DD] [--yes] [--dry-run]
- *   pnpm release:manual <step> --version=<v>
+ *   node scripts/release/manual-release.mjs run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--yes] [--dry-run]
+ *   pnpm release:manual <step> --version=<v> [--tag=next|latest]
  * steps：preflight | bump | changelog | publish | verify | sync | announce | run
  *
  * 变更型步骤（bump / changelog / publish / sync / announce）**必须显式给出 `--yes`**
  * （或以 `--dry-run` 预览），避免误触发不可逆动作。
+ *
+ * dist-tag 不变量：预发布版本（含 `-` 后缀）默认发 `next` 且**禁止**发 `latest`；
+ * 正式版默认发 `latest`。`preflight` 另生成覆盖率证据（`test:coverage` + `check:coverage`）。
  */
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -37,6 +40,13 @@ export const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 export const PACKAGE_NAME = 'caomei-ui'
 export const RELEASE_BRANCH = 'master'
 
+/** 允许的 npm dist-tag：预发布 → `next`，正式版 → `latest`。 */
+export const DIST_TAGS = ['next', 'latest']
+/** 预发布版本默认 dist-tag。 */
+export const DEFAULT_PRERELEASE_TAG = 'next'
+/** 正式版默认 dist-tag。 */
+export const DEFAULT_STABLE_TAG = 'latest'
+
 /** 全流程步骤（顺序即执行顺序）。 */
 export const STEPS = ['preflight', 'bump', 'changelog', 'publish', 'verify', 'sync', 'announce']
 
@@ -46,9 +56,10 @@ export const MUTATING_STEPS = new Set(['bump', 'changelog', 'publish', 'sync', '
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u
 
-const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--date=YYYY-MM-DD] [--otp=<code>] [--yes] [--dry-run]
+const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--tag=next|latest] [--date=YYYY-MM-DD] [--otp=<code>] [--yes] [--dry-run]
 steps：${STEPS.join(' | ')} | run
-  --version  目标版本（semver，如 0.7.0）
+  --version  目标版本（semver，如 1.0.0-rc.1 / 1.0.0）
+  --tag      npm dist-tag（next | latest）；缺省按版本推断：预发布 → next，正式版 → latest
   --date     可选，固定 CHANGELOG 发布日期（YYYY-MM-DD）
   --otp      可选，npm 一次性密码（6-8 位数字；仅 publish 使用；未提供时由 npm 交互提示）
   --yes      确认执行变更型步骤（非交互环境必须显式给出）
@@ -58,16 +69,17 @@ steps：${STEPS.join(' | ')} | run
  * 解析命令行参数。
  *
  * @param {string[]} argv 参数列表（不含 node / 脚本名）
- * @returns {{ step: string, version: string | undefined, date: string | undefined, yes: boolean, dryRun: boolean, error: string | null }}
+ * @returns {{ step: string, version: string | undefined, tag: string | undefined, date: string | undefined, otp: string | undefined, yes: boolean, dryRun: boolean, error: string | null }}
  */
 export function parseArgs(argv) {
     let step = null
     let version
+    let tag
     let date
     let otp
     let yes = false
     let dryRun = false
-    const unknown = (error) => ({ step: '', version, date, otp, yes, dryRun, error })
+    const unknown = (error) => ({ step: '', version, tag, date, otp, yes, dryRun, error })
     for (const arg of argv) {
         if (arg === '--yes') {
             yes = true
@@ -75,6 +87,8 @@ export function parseArgs(argv) {
             dryRun = true
         } else if (arg.startsWith('--version=')) {
             version = arg.slice('--version='.length)
+        } else if (arg.startsWith('--tag=')) {
+            tag = arg.slice('--tag='.length)
         } else if (arg.startsWith('--date=')) {
             date = arg.slice('--date='.length)
         } else if (arg.startsWith('--otp=')) {
@@ -93,7 +107,7 @@ export function parseArgs(argv) {
     if (![...STEPS, 'run'].includes(step)) {
         return unknown(`未知 step：${step}（可用：${[...STEPS, 'run'].join(' | ')}）`)
     }
-    return { step, version, date, otp, yes, dryRun, error: null }
+    return { step, version, tag, date, otp, yes, dryRun, error: null }
 }
 
 /**
@@ -110,6 +124,38 @@ export function validateVersion(version) {
         throw new Error(`Invalid --version: ${version}（期望 semver，如 0.7.0）`)
     }
     return version
+}
+
+/**
+ * 判断版本是否为预发布（semver 预发布后缀，如 `1.0.0-rc.1`）。
+ *
+ * @param {string} version
+ * @returns {boolean}
+ */
+export function isPrereleaseVersion(version) {
+    return version.includes('-')
+}
+
+/**
+ * 解析并校验目标 npm dist-tag。
+ *
+ * 安全不变量：预发布版本**不得**发布到 `latest`（否则 rc 会覆盖正式版通道）。
+ * 未显式给出 `--tag` 时按版本推断：预发布 → `next`，正式版 → `latest`。
+ *
+ * @param {string} version 目标版本（已通过 validateVersion）
+ * @param {string | undefined} tag 显式 dist-tag
+ * @returns {string}
+ */
+export function resolveDistTag(version, tag) {
+    if (tag !== undefined && !DIST_TAGS.includes(tag)) {
+        throw new Error(`Invalid --tag: ${tag}（可用：${DIST_TAGS.join(' | ')}）`)
+    }
+    const prerelease = isPrereleaseVersion(version)
+    const resolved = tag ?? (prerelease ? DEFAULT_PRERELEASE_TAG : DEFAULT_STABLE_TAG)
+    if (prerelease && resolved === 'latest') {
+        throw new Error(`预发布版本 ${version} 不得发布到 latest（请改用 --tag=next）`)
+    }
+    return resolved
 }
 
 /**
@@ -259,6 +305,50 @@ export function readUnpackedPackage(unpackDir) {
     return { name: pkg.name, version: pkg.version, exports: Object.keys(pkg.exports ?? {}) }
 }
 
+/**
+ * 解析 `npm view <pkg> dist-tags --json` 输出。
+ *
+ * @param {string} text 命令输出（JSON 对象）
+ * @returns {Record<string, string>} dist-tag → version；非法输入返回空对象
+ */
+export function parseDistTags(text) {
+    try {
+        const parsed = JSON.parse(text)
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+            return {}
+        }
+        return parsed
+    } catch {
+        return {}
+    }
+}
+
+/**
+ * 校验目标 dist-tag 指向目标版本，并守住「预发布不进 latest」。
+ *
+ * `latest` 上出现**任何**预发布版本（含历史 rc）都判失败——该通道只应指向正式版。
+ *
+ * @param {{ version: string, tag: string, distTags: Record<string, string> }} state
+ * @returns {{ ok: boolean, error: string | null }}
+ */
+export function checkDistTagState({ version, tag, distTags }) {
+    const actual = typeof distTags?.[tag] === 'string' ? distTags[tag] : null
+    if (actual !== version) {
+        return {
+            ok: false,
+            error: `dist-tag ${tag} = ${actual ?? '（缺失）'}，与目标版本 ${version} 不一致`,
+        }
+    }
+    const latest = typeof distTags?.latest === 'string' ? distTags.latest : null
+    if (latest && isPrereleaseVersion(latest)) {
+        return {
+            ok: false,
+            error: `预发布版本 ${latest} 出现在 latest dist-tag 上（预发布只能发 next）`,
+        }
+    }
+    return { ok: true, error: null }
+}
+
 /* ── 执行层 ─────────────────────────────────────────────────────────── */
 
 function spawnOptions(options) {
@@ -320,13 +410,16 @@ function stepPreflight(ctx) {
     } else if (Number(output(aheadResult)) > 0) {
         process.stdout.write(`[preflight] 提示：本地领先 origin/${RELEASE_BRANCH} ${output(aheadResult)} 个提交（发布前建议先推送）\n`)
     }
-    process.stdout.write(`[preflight] 当前 package.json version = ${readPackageVersion(root)}，目标 = ${ctx.version}\n`)
+    process.stdout.write(`[preflight] 当前 package.json version = ${readPackageVersion(root)}，目标 = ${ctx.version}（dist-tag = ${ctx.tag}）\n`)
     process.stdout.write('[preflight] 人工确认项：长期任务门槛复核轮已执行并留痕（发布前触发义务）\n')
     if (ctx.dryRun) {
-        process.stdout.write('[preflight] dry-run：跳过 pnpm verify / npm 凭据与版本探测\n')
+        process.stdout.write('[preflight] dry-run：跳过 pnpm verify / test:coverage / check:coverage / npm 凭据与版本探测\n')
         return
     }
     run('pnpm', ['verify'], { cwd: root })
+    // 覆盖率证据：verify 不含覆盖率校验，故在预检内单独生成并断言（发布前置）。
+    run('pnpm', ['test:coverage'], { cwd: root })
+    run('pnpm', ['check:coverage'], { cwd: root })
     const probe = capture('npm', ['view', `${PACKAGE_NAME}@${ctx.version}`, 'version'], { cwd: root })
     const published = output(probe)
     if (probe.status === 0 && published && !/E404|not found|No match/iu.test(published)) {
@@ -379,36 +472,70 @@ function stepChangelog(ctx) {
 }
 
 /**
- * 构造 `npm publish` 参数；提供 OTP 时追加 `--otp=<code>`。
+ * 校验 npm `dist.shasum` 形态（40 位小写十六进制 sha1）。
+ *
+ * @param {string} value
+ * @returns {boolean}
+ */
+export function isValidShasum(value) {
+    return typeof value === 'string' && /^[0-9a-f]{40}$/u.test(value)
+}
+
+/**
+ * 构造 `npm publish` 参数；必须显式带目标 dist-tag，提供 OTP 时追加 `--otp=<code>`。
  *
  * @param {string | undefined} otp
+ * @param {string} tag 目标 dist-tag（next / latest）
  * @returns {string[]}
  */
-export function buildPublishArgs(otp) {
-    return otp ? ['publish', `--otp=${otp}`] : ['publish']
+export function buildPublishArgs(otp, tag) {
+    if (!tag) {
+        throw new Error('缺少目标 dist-tag（next | latest）')
+    }
+    const args = ['publish', `--tag=${tag}`]
+    if (otp) {
+        args.push(`--otp=${otp}`)
+    }
+    return args
 }
 
 function stepPublish(ctx) {
-    const args = buildPublishArgs(ctx.otp)
-    const displayArgs = buildPublishArgs(ctx.otp ? '***' : undefined)
+    if (!DIST_TAGS.includes(ctx.tag)) {
+        throw new Error(`缺少目标 dist-tag（next | latest）：${ctx.tag ?? '（空）'}`)
+    }
+    const args = buildPublishArgs(ctx.otp, ctx.tag)
+    const displayArgs = buildPublishArgs(ctx.otp ? '***' : undefined, ctx.tag)
     if (ctx.dryRun) {
-        process.stdout.write(`[publish] dry-run：npm ${displayArgs.join(' ')}（${PACKAGE_NAME}@${ctx.version}）\n`)
+        process.stdout.write(`[publish] dry-run：npm ${displayArgs.join(' ')}（${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}）\n`)
         return
     }
+    process.stdout.write(`[publish] 发布 ${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}\n`)
     run('npm', args, { cwd: ctx.root, displayArgs })
 }
 
 function stepVerify(ctx) {
-    const { root, version, dryRun } = ctx
+    const { root, version, tag, dryRun } = ctx
     if (dryRun) {
-        process.stdout.write('[verify] dry-run：registry 版本 / tarball shasum / 解包 / exports 校验\n')
+        process.stdout.write(`[verify] dry-run：registry dist-tags.${tag} / tarball shasum / 解包 / exports 校验\n`)
         return
     }
-    const registryVersion = output(capture('npm', ['view', PACKAGE_NAME, 'version'], { cwd: root }))
-    if (registryVersion !== version) {
-        throw new Error(`registry latest = ${registryVersion}，与目标版本 ${version} 不一致`)
+    const distTagsResult = capture('npm', ['view', PACKAGE_NAME, 'dist-tags', '--json'], { cwd: root })
+    if (distTagsResult.status !== 0) {
+        throw new Error(`无法读取 registry dist-tags：${output(distTagsResult)}`)
     }
-    const expected = output(capture('npm', ['view', `${PACKAGE_NAME}@${version}`, 'dist.shasum'], { cwd: root }))
+    const distTags = parseDistTags(distTagsResult.stdout ?? '')
+    const distTagState = checkDistTagState({ version, tag, distTags })
+    if (!distTagState.ok) {
+        throw new Error(distTagState.error)
+    }
+    const shasumResult = capture('npm', ['view', `${PACKAGE_NAME}@${version}`, 'dist.shasum'], { cwd: root })
+    if (shasumResult.status !== 0) {
+        throw new Error(`无法读取 registry dist.shasum：${output(shasumResult)}`)
+    }
+    const expected = (shasumResult.stdout ?? '').trim()
+    if (!isValidShasum(expected)) {
+        throw new Error(`registry dist.shasum 形态非法：${expected || '（空）'}`)
+    }
     const tmp = mkdtempSync(join(tmpdir(), 'caomei-release-'))
     try {
         run('npm', ['pack', `${PACKAGE_NAME}@${version}`, '--pack-destination', tmp], { cwd: root })
@@ -417,7 +544,7 @@ function stepVerify(ctx) {
             throw new Error(`未找到 tarball：${tarball}`)
         }
         const actual = sha1File(tarball)
-        if (expected && actual !== expected) {
+        if (actual !== expected) {
             throw new Error(`tarball shasum 不一致：registry ${expected} / 本地 ${actual}`)
         }
         const unpackDir = join(tmp, 'unpack')
@@ -427,7 +554,7 @@ function stepVerify(ctx) {
         if (pkg.version !== version) {
             throw new Error(`解包 package.json version = ${pkg.version}，与目标 ${version} 不一致`)
         }
-        process.stdout.write(`[verify] OK：registry ${version}、shasum ${actual.slice(0, 12)}…、exports ${pkg.exports.length} 键\n`)
+        process.stdout.write(`[verify] OK：dist-tag ${tag} = ${version}、shasum ${actual.slice(0, 12)}…、exports ${pkg.exports.length} 键\n`)
     } finally {
         rmSync(tmp, { recursive: true, force: true })
     }
@@ -523,18 +650,47 @@ export function resolveTagState({ version, localSha, remoteSha }) {
     return { ok: true, error: null }
 }
 
+/**
+ * 构造 `gh release create` 参数：
+ * - 预发布版本标记 `--prerelease`，避免 rc 被 GitHub 视为 Latest Release；
+ * - 目标 dist-tag 不是 `latest` 时标记 `--latest=false`，避免 staged release 抢 Latest。
+ *
+ * @param {string} version
+ * @param {string} tag 目标 dist-tag（next / latest）
+ * @param {string | undefined} notesFile
+ * @returns {string[]}
+ */
+export function buildAnnounceArgs(version, tag, notesFile) {
+    if (!tag) {
+        throw new Error('缺少目标 dist-tag（next | latest）')
+    }
+    const args = ['release', 'create', `v${version}`, '--title', version, '--verify-tag']
+    if (isPrereleaseVersion(version)) {
+        args.push('--prerelease')
+    }
+    if (tag !== 'latest') {
+        args.push('--latest=false')
+    }
+    if (notesFile) {
+        args.push('--notes-file', notesFile)
+    }
+    return args
+}
+
 function stepAnnounce(ctx) {
-    const { root, version, dryRun } = ctx
+    const { root, version, tag, dryRun } = ctx
     const notes = extractChangelogSection(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'), version)
     if (!notes) {
         if (dryRun) {
-            process.stdout.write(`[announce] dry-run：CHANGELOG 尚无 v${version} 段落（真实运行时由 changelog 步骤生成）\n`)
+            const preview = buildAnnounceArgs(version, tag).join(' ')
+            process.stdout.write(`[announce] dry-run：CHANGELOG 尚无 v${version} 段落（真实运行时由 changelog 步骤生成）；计划 gh ${preview}\n`)
             return
         }
         throw new Error(`CHANGELOG.md 未找到 v${version} 段落，无法生成 GitHub Release note`)
     }
     if (dryRun) {
-        process.stdout.write(`[announce] dry-run：校验本地 / 远程 tag v${version} → gh release create v${version} --verify-tag（note ${notes.split('\n').length} 行）\n`)
+        const preview = buildAnnounceArgs(version, tag).join(' ')
+        process.stdout.write(`[announce] dry-run：校验本地 / 远程 tag v${version} → gh ${preview}（note ${notes.split('\n').length} 行）\n`)
         return
     }
 
@@ -554,7 +710,7 @@ function stepAnnounce(ctx) {
     try {
         const notesFile = join(tmp, 'notes.md')
         writeFileSync(notesFile, `${notes}\n`, 'utf8')
-        run('gh', ['release', 'create', `v${version}`, '--title', version, '--verify-tag', '--notes-file', notesFile], { cwd: root })
+        run('gh', buildAnnounceArgs(version, tag, notesFile), { cwd: root })
     } finally {
         rmSync(tmp, { recursive: true, force: true })
     }
@@ -586,12 +742,21 @@ async function main() {
         process.exitCode = 1
         return
     }
-    validateVersion(options.version)
-    validateDate(options.date)
-    validateOtp(options.otp)
+    let tag
+    try {
+        validateVersion(options.version)
+        validateDate(options.date)
+        validateOtp(options.otp)
+        tag = resolveDistTag(options.version, options.tag)
+    } catch (error) {
+        process.stderr.write(`[manual-release] ${error.message}\n`)
+        process.exitCode = 1
+        return
+    }
     const ctx = {
         root: REPO_ROOT,
         version: options.version,
+        tag,
         date: options.date,
         otp: options.otp,
         yes: options.yes,

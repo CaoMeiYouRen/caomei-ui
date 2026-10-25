@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md](./2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)：**Phase 26 M3-1 预发布通道与覆盖率预检**。`manual-release.mjs` 支持 `--tag=next|latest`（缺省按版本推断：预发布 → `next`、正式版 → `latest`；**预发布 + `latest` 在参数层拒绝**）；`publish` 强制带目标 dist-tag；`verify` 断言 registry `dist-tags.<tag>` = 目标版本、`latest` 上不得出现任何预发布版本，并对 `dist.shasum` 做 fail-closed 校验；`announce` 对预发布追加 `--prerelease`、非 `latest` 通道追加 `--latest=false`；`preflight` 在 `verify` 后补 `test:coverage` + `check:coverage`；中英发布指南同步并链接本记录。**Review Gate**：结论见本记录 §5（R1 `deep` **Reject** → R2 `deep` **Pass**）。
+
 - [2026-10-26-theme-preset-expansion.md](./2026-10-26-theme-preset-expansion.md)：**主题预设同步与扩面**。按 momei 运行时口径同步 `momei` 预设（暗色面层 `#0c1020` / `#151929`、`primary-solid` 随 `primary-700` 派生、primitive 500 状态色、`radius 4/8/16`），登记 `primary-solid` 稳定例外与 `bg-elevated` 上的 4.40 / 4.33 对比度缺口；新增 `sakura` / `forest` / `ink` 三套设计向预设（暖粉 / 松绿 / 水墨，圆角与投影同步分化）并补预设清单 / token / 对比度契约测试。手机端优先评估见同日记录。**Review Gate**：R1 `standard` **Pass**（0 blocker / 5 warning / 6 suggest，warning 已收口）。
 
 - [2026-10-25-mobile-first-preset-evaluation.md](./2026-10-25-mobile-first-preset-evaluation.md)：**手机端优先主题预设评估（只评估）**。事实：颜色 / 圆角 / 阴影 / 控件高度 / 字号 / 控件宽度上限可由 `--caomei-*` 覆盖，但触摸命中区（Checkbox / Radio 18px、Switch 40×22、icon 按钮 13.33px；289 个受检目标中 87 个 <24×24）、断点字面量与布局行为不在 token 面。结论：`data-preset` **不新增 `mobile` 预设**；推荐 1.0 后采用独立 **`data-density="touch"`** 密度轴 + `--caomei-hit-target-min` 不可见命中区，与颜色预设正交；短期以移动端指南的 CSS 覆盖配方承接。候选登记 [Backlog §1.5](../../plan/backlog.md)。

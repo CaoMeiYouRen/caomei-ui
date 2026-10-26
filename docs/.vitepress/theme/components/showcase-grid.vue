@@ -99,7 +99,12 @@ const groups = computed(() => {
                     :key="item.name"
                     class="caomei-showcase__card"
                 >
-                    <div class="caomei-showcase__preview">
+                    <div
+                        class="caomei-showcase__preview"
+                        tabindex="0"
+                        role="group"
+                        :aria-label="locale === 'en' ? `${item.name} preview` : `${item.name} 预览`"
+                    >
                         <div class="caomei-showcase__stage">
                             <component
                                 :is="item.component"
@@ -174,6 +179,15 @@ const groups = computed(() => {
     overflow: auto;
     background-color: var(--vp-c-bg-soft);
     border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/*
+  预览区是横向 / 纵向溢出都可能发生的滚动区：常驻 `tabindex="0"` 让键盘用户能进入并滚动
+  （WCAG 2.1.1，axe `scrollable-region-focusable`）；焦点环内缩，避免被卡片的 `overflow: hidden` 裁掉。
+*/
+.caomei-showcase__preview:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: -2px;
 }
 
 .caomei-showcase__stage {

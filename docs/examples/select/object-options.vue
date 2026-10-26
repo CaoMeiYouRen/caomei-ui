@@ -20,6 +20,7 @@ const categories: Category[] = [
     <div class="demo-column">
         <CaomeiSelect
             v-model="value"
+            label="分类"
             :options="categories"
             option-label="name"
             option-value="id"

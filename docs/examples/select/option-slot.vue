@@ -23,6 +23,7 @@ const statuses: Status[] = [
     <div class="demo-column">
         <CaomeiSelect
             v-model="value"
+            label="发布状态"
             :options="statuses"
             option-label="name"
             option-value="id"

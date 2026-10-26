@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-27-phase26-m5-2-select-example-names-docs-axe.md](./2026-10-27-phase26-m5-2-select-example-names-docs-axe.md)：**Phase 26 M5-2 Select 示例可访问名与文档站 axe 抽检**。中文 Select 示例 7 文件 / 17 个触发器补 `label`（映射 `aria-label`，按字段用途命名）；新增 `scripts/docs/check-docs-axe.mjs`（`vitepress preview` + Chromium + axe，5 页矩阵 / 2 条 WCAG 规则，DOM 与规则两层抗静默收窄，未接入 `verify`）与 17 例单测、`docs:check:axe` 手动入口；同批把画廊预览区改为可聚焦滚动区（`role="group"` + 焦点环 + 中英 E2E），并修复上一批裸 `<caption>` 造成的 `docs:build` 阻断。zh select / showcase 的 `button-name` 与 `scrollable-region-focusable` 均为 0；全矩阵仅剩英文页违规（由 M5-3 承接）。**Review Gate**：R1 `standard` 两区并行 Pass → R2 / R3 / R4 `quick` Pass，结论见本记录 §6。
+
 - [2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md](./2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md)：**Phase 26 M5-1 DataTable 横向滚动容器键盘可达**。根滚动容器常驻 `tabindex="0"`，有 `caption` 时补 `role="group"` 并以 caption 作可访问名（无 caption 不伪造），新增 `:focus-visible` 焦点环（2px 主色）；补单测与 375px 键盘滚动 E2E（Tab 进入 / `ArrowRight` 滚动 / 焦点环三锁）。同批修复文档站 `component-api` 手写表格的可聚焦性（VitePress 只对 Markdown 表格注入 `tabindex`），属已披露的范围扩张，守卫移交 M5-2 的 `check-docs-axe.mjs`。**Review Gate**：R1 `standard` Reject → R2 / R3 `quick` Pass，结论见本记录 §6。
 
 - [2026-10-26-refactoring-ui-self-check.md](./2026-10-26-refactoring-ui-self-check.md)：**《Refactoring UI》20 条规则对照自检（初步评估，只评估）**。以真实浏览器（VitePress dev + Firefox）对文档站首页 / 组件总览 / Button / DataTable / DataView / 画廊 / Select / Tag / Message 做 token、对比度与 axe 抽检。结论：库的 token 与文本对比度治理已高于该书层级；主要缺口为**颜色角色未分离**（品牌预设 soft / outline 状态文本）、**非文本 3:1 未纳入门禁**、**Select 示例可访问名缺失**、**Button 无 hover / active**、**DataTable 滚动容器不可键盘聚焦**、**空态 / 加载态仅文本**；数值与分级见记录 §4。未改 `src/**`；提交记录见 git 历史。**Review Gate**：R1 `standard` Reject → R2 `quick` Pass → R3 `quick` Pass，结论见[规划记录](./2026-10-26-phase26-ui-gate-planning.md) §7。

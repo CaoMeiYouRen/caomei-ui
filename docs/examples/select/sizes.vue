@@ -15,18 +15,21 @@ const options = [
     <div class="demo-column">
         <CaomeiSelect
             v-model="value"
+            label="水果（小尺寸）"
             size="sm"
             :options="options"
             placeholder="小尺寸"
         />
         <CaomeiSelect
             v-model="value"
+            label="水果（中尺寸）"
             size="md"
             :options="options"
             placeholder="中尺寸（默认）"
         />
         <CaomeiSelect
             v-model="value"
+            label="水果（大尺寸）"
             size="lg"
             :options="options"
             placeholder="大尺寸"

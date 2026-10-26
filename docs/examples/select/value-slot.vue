@@ -38,6 +38,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value1"
+                label="水果（value 插槽）"
                 :options="options"
                 placeholder="选择水果"
             >
@@ -57,6 +58,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value2"
+                label="水果（value 插槽·图标）"
                 :options="starredOptions"
                 placeholder="选择收藏"
             >
@@ -75,6 +77,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value3"
+                label="水果（value 插槽·占位）"
                 :options="options"
                 placeholder="未选中时显示此文本"
             >
@@ -93,6 +96,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value4a"
+                label="水果（value 插槽·小尺寸）"
                 :options="options"
                 placeholder="默认"
                 size="sm"
@@ -104,6 +108,7 @@ const starredOptions: StarredFruit[] = [
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4b"
+                label="水果（value 插槽·中尺寸）"
                 :options="options"
                 placeholder="中等"
                 size="md"
@@ -115,6 +120,7 @@ const starredOptions: StarredFruit[] = [
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4c"
+                label="水果（value 插槽·大尺寸）"
                 :options="options"
                 placeholder="大号"
                 size="lg"
@@ -135,6 +141,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value5"
+                label="水果（value + option 插槽）"
                 :options="starredOptions"
                 placeholder="选择"
             >

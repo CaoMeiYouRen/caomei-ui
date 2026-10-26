@@ -39,7 +39,7 @@
 - **`focus-order-semantics`（best-practice / experimental，minor）**：可聚焦的非交互容器必然命中「Element does not have a widget role」，`role="group"` 与无 role 均如此。本仓组件级 a11y 审计已禁用该规则（`test/a11y/rules.ts`）；文档站取证按 **WCAG 规则面**（`scrollable-region-focusable` / `button-name`）判定，M5-2 的脚本须沿用该口径，不得用全量 best-practice 规则面。
 - **`role="group"` 而非 `role="region"`**：登记口径为 group；`region` 会为每个表格新增地标（实测同页 14 个容器），地标膨胀更差，维持 group。
 - **未做条件化**：无横向溢出时仍多一个 tab 停靠点，属登记明确的本轮非目标。
-- **`caption` 与容器名的重复播报**：聚焦时会先读「<caption> 分组」再读表格 caption；如后续要消除，可改 `aria-labelledby` 指向 `<caption>` 的 id，属打磨项。
+- **`caption` 与容器名的重复播报**：聚焦时会先读「表标题 + 分组」再读表格 caption；如后续要消除，可改 `aria-labelledby` 指向 `<caption>` 的 id，属打磨项。
 - **follow-up**：① 可把 `.caomei-data-table` 纳入 `test/e2e/focus-visible-expansion.e2e.ts` 的受检目标（当前焦点环由本条 E2E 的 `solid` / `2px` / 主色断言覆盖）；② 暗色主题下的焦点环颜色未单独断言。
 
 ## 5. 验证证据
@@ -66,3 +66,8 @@
 - 未量化全站 best-practice 规则面的违规增量（`focus-order-semantics` 属登记外的实验规则）。
 - 未验证非 Chromium 内核（Firefox / Safari）的方向键滚动步长与焦点环渲染差异。
 - 未做「删除 `:focus-visible` 规则后断言必须转红」的变异自检（R3 审计方因浏览器探针崩溃未取得 UA 默认值；`solid` / `2px` / 颜色三锁已在规则缺失时转红）。
+
+## 8. 后续补记（2026-10-27）
+
+- §4 曾把 `<caption>` 裸写在正文里，VitePress 会把 `.md` 当 Vue 模板编译并报 `Element is missing end tag`，导致 `pnpm docs:build` exit 1；该提交（`d59800a`）因此让 HEAD 处于**构建失败**状态。同批已改为不含标签的表述（「表标题 + 分组」），`pnpm docs:build` 恢复 exit 0。
+- §5 的证据清单缺 `pnpm docs:build`——它恰是唯一能拦住该问题的门禁。教训：治理记录 / 文档正文提到 HTML 标签时一律写行内代码；同类交付记录的证据清单须包含 `docs:build`。

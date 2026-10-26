@@ -183,6 +183,74 @@ for (const [locale, config] of Object.entries(LOCALES)) {
             }
         })
 
+        test('预览区键盘可达并呈现焦点环', async ({ page }) => {
+            await openGallery(page, config.page)
+
+            // 键盘可达：聚焦实际溢出的预览区，方向键应滚动它（WCAG 2.1.1）
+            const overflowIndexes = await page.locator('.caomei-showcase__preview').evaluateAll((nodes) =>
+                nodes
+                    .map((node, index) => (node.scrollHeight > node.clientHeight + 1 ? index : -1))
+                    .filter((index) => index >= 0),
+            )
+            expect(overflowIndexes.length, '应存在可滚动的预览区（否则本用例无判别力）').toBeGreaterThan(0)
+            const targetIndex = overflowIndexes[0]
+            const scrollable = page.locator('.caomei-showcase__preview').nth(targetIndex)
+
+            // 焦点环取值与 CDP 定位必须落在**同一个**预览区（与滚动断言同元素），避免两处各取首元素而错位
+            const outlineOf = () => scrollable.evaluate((element) => {
+                const computed = getComputedStyle(element)
+                return {
+                    style: computed.outlineStyle,
+                    width: computed.outlineWidth,
+                    color: computed.outlineColor,
+                    offset: computed.outlineOffset,
+                }
+            })
+            // 判别力前置：聚焦前不得有常驻描边（聚焦后键盘交互本身会触发 :focus-visible，故必须先取）
+            expect((await outlineOf()).style, '聚焦前不应有常驻描边（判别力前置）').toBe('none')
+
+            await scrollable.focus()
+            await expect(scrollable, '预览区应可聚焦').toBeFocused()
+            await page.keyboard.press('ArrowDown')
+            await expect
+                .poll(() => scrollable.evaluate((element) => element.scrollTop), { message: '方向键应滚动预览区' })
+                .toBeGreaterThan(0)
+
+            // 焦点环：用 CDP 强制伪类取证，不依赖 UA 的键盘启发式
+
+            const cdp = await page.context().newCDPSession(page)
+            try {
+                await cdp.send('DOM.enable')
+                await cdp.send('CSS.enable')
+                // 用一次性标记把「目标预览区」暴露给 DOM.querySelector：CDP 只能按选择器取首元素
+                await scrollable.evaluate((element) => {
+                    element.setAttribute('data-focus-ring-target', '')
+                })
+                const { root } = await cdp.send('DOM.getDocument', { depth: -1 })
+                const { nodeId } = await cdp.send('DOM.querySelector', {
+                    nodeId: root.nodeId,
+                    selector: '[data-focus-ring-target]',
+                })
+                expect(nodeId, '目标预览区未映射为 DOM 节点').not.toBe(0)
+
+                await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: ['focus-visible'] })
+                const ring = await outlineOf()
+                expect(ring.style, ':focus-visible 应呈现描边').toBe('solid')
+                expect(ring.width, '焦点环应为 2px').toBe('2px')
+                expect(ring.color, '焦点环应有可辨颜色').not.toBe('rgba(0, 0, 0, 0)')
+                expect(ring.offset, '焦点环内缩，避免被卡片圆角裁切').toBe('-2px')
+                await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [] })
+            } finally {
+                // 断言失败时也要清掉一次性标记（页面虽为一次性，但不留下临时属性）
+                await scrollable
+                    .evaluate((element) => {
+                        element.removeAttribute('data-focus-ring-target')
+                    })
+                    .catch(() => undefined)
+                await cdp.detach()
+            }
+        })
+
         test('Dialog 卡开启后面板出现且 Portal 到卡片之外', async ({ page }) => {
             await openGallery(page, config.page)
 

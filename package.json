@@ -93,6 +93,7 @@
     "docs:check:example-refs": "node scripts/docs/check-example-refs.mjs",
     "docs:check:showcase": "node scripts/docs/check-showcase-registry.mjs",
     "docs:check:demo-external-images": "node scripts/docs/check-demo-external-images.mjs",
+    "docs:check:axe": "node scripts/docs/check-docs-axe.mjs",
     "docs:check": "pnpm docs:check:integrity && pnpm docs:check:links && pnpm docs:check:structure && pnpm docs:check:config-links && pnpm docs:check:i18n-parity && pnpm docs:check:version && pnpm docs:check:interpolation && pnpm docs:check:example-refs && pnpm docs:check:showcase && pnpm docs:check:demo-external-images && pnpm docs:check:line-count && pnpm docs:check:i18n",
     "check:standards-redundant": "node scripts/governance/check-standards-redundant.mjs",
     "check:standards-redundant:strict": "node scripts/governance/check-standards-redundant.mjs --strict",

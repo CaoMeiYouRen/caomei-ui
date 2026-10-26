@@ -205,4 +205,16 @@ docs/
 - **对账守卫**：`pnpm docs:check:showcase`（`scripts/docs/check-showcase-registry.mjs`）以登记表 + 本节 §11 为事实源逐项对账——结构合法性、分组归属（`group.zh` 属 §11 登记分组、`group.en` 与之一致、`name` 属该分组组件清单）、中英组件页与中英示例存在性、`example` 形态（两级 `.vue`、目录等于组件名 kebab-case、无 `..`）、登记顺序、中英画廊页的 `<ShowcaseGrid />` 挂载点；另设项数与覆盖分组数下界、空扫描拒绝（防登记表被清空 / 整组丢失被静默通过）。
 - **分组标题不进 outline**：分组标题由渲染组件输出（`<h3>`），而站点右侧 outline 取自 markdown 标题，故画廊页的目录只有页内 H2，7 个分组不可锚点跳转。这是「登记表驱动、不在页面里逐条写标题」的已知取舍；若将来需要分组锚点，须改为在页面 markdown 中显式书写分组标题。
 - **与演示动效层的关系**：画廊预览是 §12「demo 面」的延伸。当前策展集中唯一带入场动效的是经 Portal 挂载的 DatePicker 面板，已由 `motion.css` 的**组件选择器**层恢复；容器内可达的 opt-in 规则（Accordion / Image / Button spinner / AutoComplete spinner）暂未被画廊触发。若后续策展项在预览容器内产生动画，须同步扩展 `motion.css` 的容器作用域（口径见 §12），不留「reduced-motion 下动画被静默压平」的缺口。
+- **预览区键盘可达**：预览区固定 `height: 168px` + `overflow: auto`（卡片对齐的承重声明），故按滚动区处理——常驻 `tabindex="0"`、`role="group"`、名称为「<组件名> 预览 / preview」，键盘可进入并用方向键滚动；焦点环 `outline-offset: -2px` 内缩，避免被卡片的 `overflow: hidden` 与圆角裁掉。**代价**：即使不溢出的预览也会多一个 tab 停靠点（每页固定 15 个），条件化（溢出时才可聚焦）列为后续项。
+
+## 17. 文档站 a11y 抽检（axe）
+
+- **为什么不在组件级装置里**：`test/a11y` 跑在 happy-dom 中，滚动 / 布局类规则（`scrollable-region-focusable`）与文档示例的可访问名（`button-name`）只有在**真实渲染**下才可判定；此前这类检查是人工 V 阶段的一次性抽检，没有可复现的退出码。
+- **脚本**：`scripts/docs/check-docs-axe.mjs` —— `vitepress preview` 起**构建产物** → Chromium 注入 axe-core → 按页面矩阵审计 → 有违规即 exit 1。默认矩阵 5 页：`/components/data-table`（滚动容器）、`/components/select` 中英、`/components/showcase` 中英（示例可访问名）。
+- **规则面**：只取 WCAG 规则（`button-name` / `scrollable-region-focusable`）。**不纳入** best-practice / experimental（如 `focus-order-semantics`）——可聚焦的滚动容器必然命中「Element does not have a widget role」，纳入会让合规模式本身无法通过。
+- **抗静默收窄（两层）**：① 每页设「就绪选择器 + 最小命中数」下界（示例被删 / 页面渲染失败直接失败）；② 每页登记「规则 × 最小适用节点数」（适用 = 通过 + 违规 + 待复核），规则不适用也会失败，避免「什么都没检查」被当成零违规。空页面清单、空规则清单、页面加载超时、端口被占用、预览服务器提前退出均 fail-closed；`--rules` 收窄时只判定本轮实际审计的规则。
+- **失败语义**：违规、受检面收窄、规则未生效与基础设施失败一律 exit 1；`--report` 落 JSON 时附 `head` / `distIndexMtime` / 各规则三计与 `outcome`，便于 G0 对账产物与源码版本。
+- **用法**：`pnpm docs:build && pnpm docs:check:axe`（等价于 `node scripts/docs/check-docs-axe.mjs`）；可用 `--pages=<key|path,...>` 收窄、`--rules=<id,...>` 换规则面、`--base-url=<url>` 复用已起的服务器、`--report=<path>` 落 JSON 报告。页面 key 见脚本 `PAGES`。
+- **门禁位置**：不接入 `verify` / `governance:check`（依赖浏览器与构建产物）；1.0 门禁 G0 采信其退出码与 `--report` 报告，是否常驻另行评估。
+- **已知边界**：只跑 Chromium、单视口（1440×1000）、登记页面与规则面，不宣称「整站 a11y 合规」；窄屏 / 暗色主题与浮层展开态由专项用例承担。
 

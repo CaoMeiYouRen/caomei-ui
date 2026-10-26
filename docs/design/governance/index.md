@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md](./2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md)：**Phase 26 M5-1 DataTable 横向滚动容器键盘可达**。根滚动容器常驻 `tabindex="0"`，有 `caption` 时补 `role="group"` 并以 caption 作可访问名（无 caption 不伪造），新增 `:focus-visible` 焦点环（2px 主色）；补单测与 375px 键盘滚动 E2E（Tab 进入 / `ArrowRight` 滚动 / 焦点环三锁）。同批修复文档站 `component-api` 手写表格的可聚焦性（VitePress 只对 Markdown 表格注入 `tabindex`），属已披露的范围扩张，守卫移交 M5-2 的 `check-docs-axe.mjs`。**Review Gate**：R1 `standard` Reject → R2 / R3 `quick` Pass，结论见本记录 §6。
+
 - [2026-10-26-refactoring-ui-self-check.md](./2026-10-26-refactoring-ui-self-check.md)：**《Refactoring UI》20 条规则对照自检（初步评估，只评估）**。以真实浏览器（VitePress dev + Firefox）对文档站首页 / 组件总览 / Button / DataTable / DataView / 画廊 / Select / Tag / Message 做 token、对比度与 axe 抽检。结论：库的 token 与文本对比度治理已高于该书层级；主要缺口为**颜色角色未分离**（品牌预设 soft / outline 状态文本）、**非文本 3:1 未纳入门禁**、**Select 示例可访问名缺失**、**Button 无 hover / active**、**DataTable 滚动容器不可键盘聚焦**、**空态 / 加载态仅文本**；数值与分级见记录 §4。未改 `src/**`；提交记录见 git 历史。**Review Gate**：R1 `standard` Reject → R2 `quick` Pass → R3 `quick` Pass，结论见[规划记录](./2026-10-26-phase26-ui-gate-planning.md) §7。
 
 - [2026-10-26-phase26-ui-gate-planning.md](./2026-10-26-phase26-ui-gate-planning.md)：**Phase 26 执行期追加与 1.0 发布门禁（规划）**。用户 2026-10-26 指令：UI 自检第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入**插队 todo**，第 2 档（品牌预设颜色角色 + 非文本对比度）进入 **Backlog**；**1.0 发布延后**并设门禁。M5 插队批次 **4 条**（M5-1 ~ M5-4），Phase 26 构成由原登记 **4 / 13** 调整为 **5 / 17**；门禁 **G0 ~ G4** + 时间盒（目标 **2026-11-13** / 硬截止 **2026-11-27**），到期未通过不得自动延期，须用户三选一裁定。Backlog 新增「颜色角色分层与非文本对比度治理」高优先级行；M3-3 标阻塞。未改 `src/**`；提交记录见 git 历史。**Review Gate**：R1 `standard` Reject（1 blocker / 5 warning / 6 suggest）→ R2 `quick` Pass（0 blocker；残留已同批修正）→ R3 `quick` Pass，结论见本记录 §7。

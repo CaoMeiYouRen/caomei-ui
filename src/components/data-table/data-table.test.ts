@@ -145,12 +145,30 @@ describe('CaomeiDataTable', () => {
         )
     })
 
-    it('caption 渲染为表格标题', () => {
+    it('caption 渲染为表格标题并作为滚动容器的可访问名', () => {
         const wrapper = mount(DataTable, {
             props: { data: baseData, columns: baseColumns, caption: '用户列表' },
         })
 
         expect(wrapper.get('caption').text()).toBe('用户列表')
+
+        const root = wrapper.get('.caomei-data-table')
+        expect(root.attributes('tabindex')).toBe('0')
+        expect(root.attributes('role')).toBe('group')
+        expect(root.attributes('aria-label')).toBe('用户列表')
+        // 滚动容器自身即 tab 停靠点，内部不再重复声明 tabindex
+        expect(root.findAll('[tabindex]')).toHaveLength(0)
+    })
+
+    it('无 caption 时滚动容器可聚焦但不伪造可访问名', () => {
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns: baseColumns },
+        })
+
+        const root = wrapper.get('.caomei-data-table')
+        expect(root.attributes('tabindex')).toBe('0')
+        expect(root.attributes('role')).toBeUndefined()
+        expect(root.attributes('aria-label')).toBeUndefined()
     })
 
     it('hoverable 与 striped 控制样式类', () => {

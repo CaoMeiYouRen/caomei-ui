@@ -213,6 +213,7 @@ When `data` is empty an empty state is rendered, with default text from the curr
   - That button's `aria-label` **follows the state** ("Expand row group" while collapsed, "Collapse row group" while expanded) alongside `aria-expanded`; this is this library's trade-off (the name describes the action). If a constant name is preferred, override both labels with the same text at the usage site and let `aria-expanded` carry the state alone.
 - The row-expander toggle is likewise a native `<button>` carrying `aria-expanded`, `aria-controls` (pointing at the expansion row) and an accessible name (locale-based by default, overridable with `expandRowLabel` / `collapseRowLabel`), and is keyboard reachable; the expander column's header is left blank.
 - With multi-column sorting, every sorted header carries its own `aria-sort`; the priority number is visible text (it becomes part of the header button's accessible name, matching PrimeVue).
+- The root scroll container is always `tabindex="0"`: when content overflows horizontally, keyboard users can Tab into it and scroll with the arrow keys (the focus ring appears only on keyboard focus). With a `caption`, the container carries `role="group"` and uses the caption as its accessible name; without one it stays focusable without a fabricated name.
 - Provide a table caption via `caption`, or a visible explanation at the usage site.
 
 ## Style customization

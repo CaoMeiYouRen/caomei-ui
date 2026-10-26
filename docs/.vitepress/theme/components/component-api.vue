@@ -77,7 +77,11 @@ const meta = computed<ComponentMeta | undefined>(
 
         <template v-if="meta.props.length">
             <h3>Props</h3>
-            <table>
+            <!--
+              `tabindex="0"`：VitePress 把 `.vp-doc table` 设为 `display: block; overflow-x: auto`，
+              窄视口下属性表自身成为滚动区；键盘用户必须能进入（axe `scrollable-region-focusable`）。
+            -->
+            <table tabindex="0">
                 <thead>
                     <tr>
                         <th scope="col">
@@ -123,7 +127,7 @@ const meta = computed<ComponentMeta | undefined>(
 
         <template v-if="meta.events.length">
             <h3>Events</h3>
-            <table>
+            <table tabindex="0">
                 <thead>
                     <tr>
                         <th scope="col">
@@ -153,7 +157,7 @@ const meta = computed<ComponentMeta | undefined>(
 
         <template v-if="meta.slots.length">
             <h3>Slots</h3>
-            <table>
+            <table tabindex="0">
                 <thead>
                     <tr>
                         <th scope="col">
@@ -177,7 +181,7 @@ const meta = computed<ComponentMeta | undefined>(
 
         <template v-if="meta.exposed.length">
             <h3>Exposed</h3>
-            <table>
+            <table tabindex="0">
                 <thead>
                     <tr>
                         <th scope="col">

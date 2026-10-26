@@ -272,6 +272,25 @@ const sortWidthData: SortWidthRow[] = [
 ]
 
 /**
+ * DataTable 根滚动容器键盘可达用例（见 `test/e2e/data-table-keyboard-scroll.e2e.ts`）：
+ * 8 列窄表配合夹具侧的 `min-width: 720px`，使 375px 视口下根容器必然横向溢出——
+ * 断言 `tabindex="0"` 可 Tab 进入、方向键可横向滚动，且 `caption` 同时作为容器可访问名。
+ */
+const keyboardScrollColumns = Array.from({ length: 8 }, (_, index) => ({
+    key: `column${index + 1}`,
+    header: `列 ${index + 1}`,
+}))
+
+const keyboardScrollData = Array.from({ length: 3 }, (_, rowIndex) =>
+    Object.fromEntries(
+        keyboardScrollColumns.map((column, columnIndex) => [
+            column.key,
+            `R${rowIndex + 1}C${columnIndex + 1}`,
+        ]),
+    ),
+)
+
+/**
  * 禁用态尺寸不变用例（见 `test/e2e/disabled-size.e2e.ts`）：默认态与禁用态成对，
  * 档位 / 内容 / 宽度宿主完全一致，仅 `disabled` 不同——两者的外盒几何必须逐值相等。
  */
@@ -852,6 +871,24 @@ const ConfirmDriver = defineComponent({
                 row-key="name"
                 sort-mode="multiple"
                 caption="排序列宽"
+            />
+        </section>
+
+        <!--
+          DataTable 键盘横向滚动用例（见 `test/e2e/data-table-keyboard-scroll.e2e.ts`）：
+          焦点锚点紧邻表格容器之前，便于断言「Tab 的下一站是滚动容器」；表格最小宽见样式块。
+        -->
+        <section id="data-table-keyboard-scroll" class="fixture__case">
+            <button
+                id="data-table-keyboard-scroll-before"
+                type="button"
+            >
+                表格前焦点锚点
+            </button>
+            <CaomeiDataTable
+                :data="keyboardScrollData"
+                :columns="keyboardScrollColumns"
+                caption="键盘横向滚动"
             />
         </section>
 
@@ -1491,5 +1528,13 @@ const ConfirmDriver = defineComponent({
 #disabled-size .fixture__state > *,
 #badge-layout .fixture__state > * {
     min-width: 0;
+}
+
+/*
+  DataTable 键盘横向滚动用例：把表格最小宽固定为 720px，使 375px 视口下根容器必然横向溢出。
+  溢出只发生在组件滚动容器内部，不构成页面级横向溢出。
+*/
+#data-table-keyboard-scroll :deep(.caomei-data-table__table) {
+    min-width: 720px;
 }
 </style>

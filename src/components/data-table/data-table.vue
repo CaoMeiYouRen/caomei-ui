@@ -823,6 +823,9 @@ function setPageSize(rows: number): void {
     <div
         class="caomei-data-table"
         :class="rootClass"
+        tabindex="0"
+        :role="caption ? 'group' : undefined"
+        :aria-label="caption || undefined"
         :aria-busy="loading || undefined"
     >
         <table
@@ -1069,6 +1072,15 @@ function setPageSize(rows: number): void {
     color: var(--caomei-color-text);
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-font-size-md);
+}
+
+/*
+  根容器常驻 `tabindex="0"`：横向溢出时键盘用户必须能进入滚动区（WCAG 2.1.1）。
+  焦点环只在键盘聚焦时出现，静态视觉与鼠标交互不受影响。
+*/
+.caomei-data-table:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 2px;
 }
 
 .caomei-data-table__table {

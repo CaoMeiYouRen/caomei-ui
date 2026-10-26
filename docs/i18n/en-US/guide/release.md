@@ -8,6 +8,8 @@
 
 > **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the flow is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. `manual-release.mjs` supports `--tag=next|latest`; the default is inferred from the version (pre-release → `next`, stable → `latest`), and **a pre-release combined with `latest` is rejected**. The channel contract and evidence are recorded in [the M3-1 release record](/design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
 
+> **1.0 release gate (from 2026-10-26)**: `1.0.0-rc.1` must pass **G0 / G1 (plus G1-F if G1 decides "fix") / G2** before publishing; the final `1.0.0` must pass **G0 ~ G4** (including G3 rc and downstream verification). Do not run the corresponding `publish` before it passes. Target review 2026-11-13, hard stop 2026-11-27; no automatic extension. See [Phase 26 execution-time addition and 1.0 release gate](/design/governance/2026-10-26-phase26-ui-gate-planning.md) §4.
+
 ## Version inference
 
 | Commit type | Version change |

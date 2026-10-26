@@ -6,13 +6,15 @@
 
 当前进行中阶段：**Phase 26 1.0 发布前收尾：冻结面、行为收口与发布链路**（2026-10-22 用户就[第十轮范围评估](../design/governance/2026-10-22-next-stage-scope-evaluation-10.md) §3 裁定「按推荐来」后登记）。范围与验收口径的唯一事实源见[Phase 26 登记批次记录](../design/governance/2026-10-22-phase26-registration.md) §1 / §2。
 
+**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+
 **Phase 24 遗留**：两条已于 2026-10-22 回填（视觉基线 = 2026-10-16 周级 run success；CI 镜像 = 未命中），状态见下节；**待独立归档批次**把 Phase 24 块迁入[待办归档](./todo-archive.md)（该批需一并处置 `docs:check:line-count` 的 warn 阈值，见[规划规范 §7](../standards/planning.md)）。
 
-**执行期追加（2026-10-26）**：用户指令的主题预设同步与扩面已交付，不计入本阶段 13 条原子条目——`momei` 预设按 momei 运行时口径同步；新增 `sakura` / `forest` / `ink` 三套设计向预设；手机端优先预设评估完成并登记 Backlog。依据见[主题预设同步与扩面记录](../design/governance/2026-10-26-theme-preset-expansion.md)与[手机端优先评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
+**执行期追加（2026-10-26）**：用户指令的主题预设同步与扩面已交付，不计入本阶段原子条目（原登记 13 条，2026-10-26 追加 M5 后为 17 条）——`momei` 预设按 momei 运行时口径同步；新增 `sakura` / `forest` / `ink` 三套设计向预设；手机端优先预设评估完成并登记 Backlog。依据见[主题预设同步与扩面记录](../design/governance/2026-10-26-theme-preset-expansion.md)与[手机端优先评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
 
 ## Phase 26 原子条目
 
-> 4 条主线 / 13 条原子条目（M1 4 / M2 4 / M3 3 / M4 2；对账 4 + 4 + 3 + 2 = 13）。决策：**D1 ④**（A+B+C+D）/ **D2 ①**（rc → 转正，维持手动）/ **D3 ①**（DataTable 主项 + ①②③ 全做）/ **D4 ①**（`Form` 只评估）/ **D5 ③**（发布时 API 差分）。
+> **5 条主线 / 17 条原子条目**（M1 4 / M2 4 / M3 3 / M4 2 / M5 4；对账 4 + 4 + 3 + 2 + 4 = 17；**原登记 4 条主线 / 13 条原子条目为 2026-10-22 时点值，2026-10-26 执行期追加 M5 插队批次 4 条**，见 [规划记录](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §5）。决策：**D1 ④**（A+B+C+D）/ **D2 ①**（rc → 转正，维持手动）/ **D3 ①**（DataTable 主项 + ①②③ 全做）/ **D4 ①**（`Form` 只评估）/ **D5 ③**（发布时 API 差分）。
 
 | 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
 |------|------|----------|----------|------|
@@ -25,10 +27,16 @@
 | M2-3 | 行为收口与准破坏性变更 | **`rowKey` 缺省按索引在 `lazy` 下撞 id**：给出修复或显式契约（要求显式 `rowKey`） | 选择 / 展开在 `lazy` 跨页不串行；测试覆盖；若改为显式契约须同步文档与迁移说明 | **已完成（2026-10-24）**：`lazy` + 缺省 `rowKey` 为页内索引，自持展开态随页重置；启用选择 / 展开时 `warnDev` 要求显式 `rowKey`，受控 `expandedRows` 同口径；中英组件页、迁移表与设计规范 §7 已同步；见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §4 |
 | M2-4 | 行为收口与准破坏性变更 | **`engines.node` 由 `>=20` 提升到 `>=22`**（Node 20 已于 2026-04 EOL） | `package.json` 与文档同步；CI 仍 `lts/*`；1.0.0 发布说明列为发布前调整（1.0 后同类调整须走 major） | **已完成（2026-10-24）**：`engines.node` = `>=22`；README 中英、开发指南中英、文档站设计文档同步；CI 仍 `lts/*`；发布文案见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §5.1 |
 | M3-1 | 发布链路就绪与 1.0 交付 | **预发布通道与覆盖率前置**：`manual-release.mjs` 支持 `--tag`（`next` / `latest`），dry-run 与日志同步；`preflight` 纳入 `test:coverage` + `check:coverage`（或等价证据）；同步回写 `release.md` §3.3 的 publish / verify 口径为按目标 dist-tag 断言 | `release:manual run --version=1.0.0-rc.1 --tag=next --dry-run` 输出正确；单测覆盖；预发布不再落到 `latest`；`release.md` 中英同步 | **已完成（2026-10-26）**：`--tag` 缺省按版本推断（预发布 → `next`），预发布 + `latest` 在参数层拒绝；`publish` 强制带目标 dist-tag；`verify` 断言 `dist-tags.<tag>`、`latest` 上不得出现任何预发布版本，并对 `dist.shasum` fail-closed；`announce` 预发布加 `--prerelease`、非 `latest` 加 `--latest=false`；`preflight` 在 `verify` 后补 `test:coverage` + `check:coverage`（实测 92.98 / 85.89 / 94.69 / 92.33）；中英 `release.md` 同步并链接记录。见[M3-1 记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md) §1 ~ §5 |
-| M3-2 | 发布链路就绪与 1.0 交付 | **1.0.0 CHANGELOG 里程碑段与 GitHub Release note**：人工补 1.x 承诺 / 冻结面 / `engines` / locale / DataTable 行为说明 / 主题预设（`momei` 取值同步 + `sakura` / `forest` / `ink` 新增） | 1.0.0 段有可读里程碑内容；`announce` 能从 CHANGELOG 正确抽取 note | 待执行 |
-| M3-3 | 发布链路就绪与 1.0 交付 | **1.0 交付执行**：推送 → `1.0.0-rc.1` 发 `next` → 下游复验（M4-1）→ `1.0.0` 发 `latest` → 发布后校验 → 版本句同步 → GitHub Release | registry `latest` = `1.0.0`；tarball shasum / 解包 / `exports` 13 键校验留痕；`v1.0.0` tag 与 GitHub Release 到位 | 待执行 |
+| M3-2 | 发布链路就绪与 1.0 交付 | **1.0.0 CHANGELOG 里程碑段与 GitHub Release note**：人工补 1.x 承诺 / 冻结面 / `engines` / locale / DataTable 行为说明 / 主题预设（`momei` 取值同步 + `sakura` / `forest` / `ink` 新增） | 1.0.0 段有可读里程碑内容；`announce` 能从 CHANGELOG 正确抽取 note | 待执行（可先起草；不得据此发布） |
+| M3-3 | 发布链路就绪与 1.0 交付 | **1.0 交付执行**：推送 → `1.0.0-rc.1` 发 `next` → 下游复验（M4-1）→ `1.0.0` 发 `latest` → 发布后校验 → 版本句同步 → GitHub Release；**发布前完成回滚方案** | registry `latest` = `1.0.0`；tarball shasum / 解包 / `exports` 13 键校验留痕；`v1.0.0` tag 与 GitHub Release 到位；回滚方案在 G4 前留痕 | **阻塞（1.0 门禁）**：G0 ~ G4（含条件 G1-F）全部通过前不得执行，见[门禁记录](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4 |
 | M4-1 | 下游复验与质量确认 | **下游正向复验**：dependfix 升级到 `0.7.0`（或 rc）跑 `typecheck` + `build`；或 `workflow_dispatch` compat 并传版本 | 一次绿 run 且记录下游 revision；若真实 run 可验证「实际安装版本校验」则顺手落地 | 待执行 |
 | M4-2 | 下游复验与质量确认 | **一期 5 语译文复核状态确认**（Phase 25 M3-1b 记录「待用户复核」） | 复核结论（通过 / 修订清单）落治理记录；未复核则显式声明边界、不带默认承诺 | 待执行 |
+| M5-1 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **DataTable 横向滚动容器键盘可达**：根滚动容器常驻 `tabindex="0"`（本轮不做条件化）；有 `caption` 时补可访问名；新增键盘滚动 E2E；中英组件页无障碍节同步 | axe `scrollable-region-focusable` 为 0；375px 窄屏 Tab 可进入、`ArrowRight` 后 `scrollLeft > 0`；无嵌套重复 tabindex；无视觉变化 | 待执行 |
+| M5-2 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Select 示例可访问名（中文）**：`docs/examples/select/` 7 个示例的每个 `CaomeiSelect` 补 `label`（映射 `aria-label`）；画廊复用同一 `select/basic.vue`，不额外计数；同批把文档页 axe 抽检收进 `scripts/docs/check-docs-axe.mjs`（M5-2 只验收 zh select / showcase；全矩阵由 G0 在 M5-1 / M5-3 后跑） | zh `/components/select` 与 `/components/showcase` axe `button-name` 为 0；脚本在 zh select / showcase 范围退出码 0；不以 placeholder 代替可访问名；无可见布局变化 | 待执行 |
+| M5-3 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Select 示例可访问名（英文）**：`docs/i18n/en-US/examples/select/` 7 个示例同口径补 `label` | `/en-US/components/select` 与 `/en-US/components/showcase` axe `button-name` 为 0；中英可访问名语义对齐 | 待执行 |
+| M5-4 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Button hover / active 反馈**：用 `color-mix()` 派生 hover / active（不新增冻结 token）；补计算样式测试；设计规范 §6 与中英组件页补状态说明；视觉基线按实际差异重冻结 | hover / active 与默认态计算样式不同；各变体 / tone 文字与背景对比度仍 ≥ 4.5:1；`:disabled` / `:focus-visible` 不变；`prefers-reduced-motion` 无过渡；`capture:styles` 仅预期差异 | 待执行 |
+
+> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ G2 质量门 / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 ## Phase 24 原子条目
 
@@ -44,6 +52,7 @@
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。
 
 - **等待外部反馈**：dependfix `apps/platform` 与 momei 根包的迁移由对应仓库执行、本仓等待反馈；两仓 `caomei-ui` 实测为 **`0.6.0`**（2026-10-13 复核；0.7.0 后未重测），复验由本阶段「下游复验与质量确认」主线承接（见上方条目表）。
+- **1.0 发布门禁**：Phase 26 `M3-3` 受 G0 ~ G4 约束；目标评审 2026-11-13 / 硬截止 2026-11-27。当前阻塞点 = M5 插队批次未开始、第 2 档 G1 未裁定。唯一口径见[门禁记录](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 - **条件触发候选**（触发后按「条件触发 → 再评估 → 决策」处理，不自动进入阶段）：**下表为与 `backlog.md` 的对账面**——每行的「Backlog 判别键」（**可多枚，全部须存在**）须在 [Backlog](./backlog.md) §1 出现（由 `pnpm check:candidate-anchors` 机检）。**候选名为 Backlog 行名的指针、非独立定义**；**新增候选须同批补行并填键**，否则守卫失败。
 
 | 候选 | 触发条件 | Backlog 判别键 |
@@ -55,6 +64,7 @@
 | 组件增强与长尾 | 下游出现真实用量 | `ColorPicker`、`DatePicker`、`Paginator`、`Sidebar`、`ScrollPanel` |
 | `Form` / `FormItem` | 1.0 后按用户决策；形态已评估 | `Form`、`FormItem` |
 | 发布时 API 表面差分 | 发布链路 `--tag` 落地后，或用户指定 | `API 表面差分` |
+| 颜色角色分层与非文本对比度治理 | 1.0 门禁 G1 裁定为「修复」，或 1.0 后 1.x | `颜色角色分层` |
 | Toast 焦点哨兵与 `aria-hidden-focus` 冲突 | 既有裁定：维持现状 | `Toast 焦点哨兵` |
 | 文档站多版本托管 / 首页 hydration | 用户裁定暂不启动 / 待定位上游行为 | `文档站多版本托管`、`首页 hydration` |
 | 语言矩阵 - 长期（二期语言集）与 RTL | 语言数量增长 / RTL 单独立项 | `语言矩阵 - 长期`、`RTL` |

@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-15T11:25:14.515Z",
+    "capturedAt": "2026-10-28T11:09:34.186Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -1983,6 +1983,222 @@
             "outline-color": "rgb(220, 38, 38)",
             "outline-style": "solid",
             "outline-width": "2px"
+        },
+        "button-hover.primary.none": {
+            "background-color": "color(srgb 0.166275 0.380235 0.853804)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.none": {
+            "background-color": "color(srgb 0.183922 0.373569 0.797333)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.primary.neutral": {
+            "background-color": "color(srgb 0.304 0.304 0.336471)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.neutral": {
+            "background-color": "color(srgb 0.286431 0.286431 0.316078)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.primary.primary": {
+            "background-color": "color(srgb 0.166275 0.380235 0.853804)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.primary": {
+            "background-color": "color(srgb 0.183922 0.373569 0.797333)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.primary.success": {
+            "background-color": "color(srgb 0.111059 0.480314 0.253333)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.success": {
+            "background-color": "color(srgb 0.13498 0.462275 0.265098)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.primary.warning": {
+            "background-color": "color(srgb 0.659765 0.32502 0.0738824)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.warning": {
+            "background-color": "color(srgb 0.621333 0.324627 0.106039)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.primary.danger": {
+            "background-color": "color(srgb 0.797804 0.169725 0.173961)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.primary.danger": {
+            "background-color": "color(srgb 0.743686 0.18698 0.194745)",
+            "color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.secondary.none": {
+            "background-color": "color(srgb 0.928157 0.928157 0.928157)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "color(srgb 0.738824 0.745098 0.757647)",
+            "border-left-color": "color(srgb 0.738824 0.745098 0.757647)"
+        },
+        "button-active.secondary.none": {
+            "background-color": "color(srgb 0.874275 0.874275 0.874275)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "color(srgb 0.659216 0.664706 0.675686)",
+            "border-left-color": "color(srgb 0.659216 0.664706 0.675686)"
+        },
+        "button-hover.secondary.neutral": {
+            "background-color": "color(srgb 0.928157 0.928157 0.928157)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "color(srgb 0.738824 0.745098 0.757647)",
+            "border-left-color": "color(srgb 0.738824 0.745098 0.757647)"
+        },
+        "button-active.secondary.neutral": {
+            "background-color": "color(srgb 0.874275 0.874275 0.874275)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "color(srgb 0.659216 0.664706 0.675686)",
+            "border-left-color": "color(srgb 0.659216 0.664706 0.675686)"
+        },
+        "button-hover.secondary.primary": {
+            "background-color": "color(srgb 0.931608 0.951059 0.993725)",
+            "color": "color(srgb 0.139922 0.353882 0.823216)",
+            "border-top-color": "color(srgb 0.136471 0.33098 0.757647)",
+            "border-left-color": "color(srgb 0.136471 0.33098 0.757647)"
+        },
+        "button-active.secondary.primary": {
+            "background-color": "color(srgb 0.880314 0.914353 0.98902)",
+            "color": "color(srgb 0.135608 0.325255 0.741255)",
+            "border-top-color": "color(srgb 0.132157 0.302353 0.675686)",
+            "border-left-color": "color(srgb 0.132157 0.302353 0.675686)"
+        },
+        "button-hover.secondary.success": {
+            "background-color": "color(srgb 0.926588 0.960157 0.939137)",
+            "color": "color(srgb 0.0847059 0.453961 0.222745)",
+            "border-top-color": "color(srgb 0.0862745 0.421961 0.211765)",
+            "border-left-color": "color(srgb 0.0862745 0.421961 0.211765)"
+        },
+        "button-active.secondary.success": {
+            "background-color": "color(srgb 0.871529 0.930275 0.89349)",
+            "color": "color(srgb 0.0866667 0.413961 0.20902)",
+            "border-top-color": "color(srgb 0.0882353 0.381961 0.198039)",
+            "border-left-color": "color(srgb 0.0882353 0.381961 0.198039)"
+        },
+        "button-hover.secondary.warning": {
+            "background-color": "color(srgb 0.976471 0.946039 0.922824)",
+            "color": "color(srgb 0.633412 0.298667 0.0432941)",
+            "border-top-color": "color(srgb 0.585098 0.280784 0.0486275)",
+            "border-left-color": "color(srgb 0.585098 0.280784 0.0486275)"
+        },
+        "button-active.secondary.warning": {
+            "background-color": "color(srgb 0.958824 0.905569 0.864941)",
+            "color": "color(srgb 0.57302 0.276314 0.0499608)",
+            "border-top-color": "color(srgb 0.524706 0.258431 0.0552941)",
+            "border-left-color": "color(srgb 0.524706 0.258431 0.0552941)"
+        },
+        "button-hover.secondary.danger": {
+            "background-color": "color(srgb 0.98902 0.931922 0.931922)",
+            "color": "color(srgb 0.771451 0.143373 0.143373)",
+            "border-top-color": "color(srgb 0.710588 0.139608 0.139608)",
+            "border-left-color": "color(srgb 0.710588 0.139608 0.139608)"
+        },
+        "button-active.secondary.danger": {
+            "background-color": "color(srgb 0.980784 0.880863 0.880863)",
+            "color": "color(srgb 0.695373 0.138667 0.138667)",
+            "border-top-color": "color(srgb 0.63451 0.134902 0.134902)",
+            "border-left-color": "color(srgb 0.63451 0.134902 0.134902)"
+        },
+        "button-hover.ghost.none": {
+            "background-color": "color(srgb 0.101961 0.101961 0.101961 / 0.08)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.none": {
+            "background-color": "color(srgb 0.101961 0.101961 0.101961 / 0.14)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.ghost.neutral": {
+            "background-color": "color(srgb 0.101961 0.101961 0.101961 / 0.08)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.neutral": {
+            "background-color": "color(srgb 0.101961 0.101961 0.101961 / 0.14)",
+            "color": "color(srgb 0.101961 0.101961 0.101961)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.ghost.primary": {
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
+            "color": "color(srgb 0.139922 0.353882 0.823216)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.primary": {
+            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.14)",
+            "color": "color(srgb 0.135608 0.325255 0.741255)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.ghost.success": {
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
+            "color": "color(srgb 0.0847059 0.453961 0.222745)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.success": {
+            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.14)",
+            "color": "color(srgb 0.0866667 0.413961 0.20902)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.ghost.warning": {
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
+            "color": "color(srgb 0.633412 0.298667 0.0432941)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.warning": {
+            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.14)",
+            "color": "color(srgb 0.57302 0.276314 0.0499608)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-hover.ghost.danger": {
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
+            "color": "color(srgb 0.771451 0.143373 0.143373)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
+        },
+        "button-active.ghost.danger": {
+            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.14)",
+            "color": "color(srgb 0.695373 0.138667 0.138667)",
+            "border-top-color": "rgba(0, 0, 0, 0)",
+            "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "state.input.focus": {
             "box-shadow": "color(srgb 0.145098 0.388235 0.921569 / 0.2) 0px 0px 0px 2px",

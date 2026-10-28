@@ -241,6 +241,11 @@ const alertTones = ['neutral', 'primary', 'success', 'warning', 'danger'] as con
 const alertVariants = ['soft', 'solid', 'outline'] as const
 const alertCombos = alertTones.flatMap((tone) => alertVariants.map((variant) => ({ tone, variant })))
 
+/* 按钮状态对比度受检面：3 变体 × 6 语气（含 disabled 一条），见 `test/e2e/button-states.e2e.ts`。 */
+const buttonContrastVariants = ['primary', 'secondary', 'ghost'] as const
+const buttonContrastTones = ['none', 'neutral', 'primary', 'success', 'warning', 'danger'] as const
+const buttonContrastCombos = buttonContrastVariants.flatMap((variant) => buttonContrastTones.map((tone) => ({ variant, tone })))
+
 /**
  * 内联 ColorPicker 用例（见 `test/e2e/overlay-stacking.e2e.ts` 第二个用例）：`inline` 形态是
  * 页面内的静态 flex item，`z-index` 对其同样生效，必须**不参与**浮层层叠（不得被基类带上档位）。
@@ -1354,6 +1359,7 @@ const ConfirmDriver = defineComponent({
                 description="当前为沙箱环境，数据不会写入生产库。"
                 :data-alert-tone="combo.tone"
                 :data-alert-variant="combo.variant"
+                :data-contrast-key="`${combo.tone}/${combo.variant}`"
             />
         </section>
         <!--
@@ -1368,6 +1374,30 @@ const ConfirmDriver = defineComponent({
                     :option="chartOption"
                 />
             </div>
+        </section>
+        <!--
+          按钮状态对比度受检面（见 `test/e2e/button-states.e2e.ts`）：3 变体 × 6 语气 + 1 条禁用态，
+          用于在真实 Chromium 中强制 `:hover` / `:active` 后复算「文字 / 实际合成背景」对比度。
+          与其它受检面同属「追加在模板末尾」的约定，不改动既有元素绝对位置。
+        -->
+        <section id="button-contrast" class="fixture__case">
+            <CaomeiButton
+                v-for="combo in buttonContrastCombos"
+                :key="`${combo.variant}-${combo.tone}`"
+                :variant="combo.variant"
+                :tone="combo.tone === 'none' ? undefined : combo.tone"
+                :data-contrast-key="`${combo.variant}/${combo.tone}`"
+            >
+                {{ combo.variant }}-{{ combo.tone }}
+            </CaomeiButton>
+            <CaomeiButton
+                variant="primary"
+                disabled
+                data-contrast-key="disabled/primary"
+                data-button-disabled="true"
+            >
+                disabled
+            </CaomeiButton>
         </section>
     </main>
 </template>

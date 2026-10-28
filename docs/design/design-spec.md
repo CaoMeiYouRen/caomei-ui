@@ -243,7 +243,7 @@
 
 | 组件 | 约定 |
 | --- | --- |
-| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调 |
+| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调；`hover` / `active` 由既有 token 经 `color-mix()` 派生（实底变体向中性深色 token 混合，`tone="neutral"` 例外改用文字色锚点；文字型变体向 `--caomei-color-text` 混合，无 `tone` 时仅底色变化），**不新增冻结 token**；`disabled` 不参与状态反馈、`:focus-visible` 仅叠加描边、`prefers-reduced-motion` 下关闭过渡 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
 | Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用类 / 属性驱动的 invalid 语义（`.caomei-field--invalid` 类 + `aria-invalid` 属性）而非色值类 |
 | Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板背景 `bg-elevated`、面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |

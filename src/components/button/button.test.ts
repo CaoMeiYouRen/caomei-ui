@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import { CaomeiButton } from './index'
@@ -304,5 +306,31 @@ describe('CaomeiButton', () => {
         })
 
         expect(wrapper.get('button').attributes('aria-label')).toBe('通知')
+    })
+
+    it('hover / active 规则由 color-mix 派生且全部排除 disabled（真实计算样式由 capture:styles 承载）', () => {
+        const source = readFileSync(join(process.cwd(), 'src/components/button/button.vue'), 'utf8')
+
+        // 三变体都声明了两态；实底与文字型变体分别走「加深」与「向 text 混合」的派生方向
+        for (const variant of ['primary', 'secondary', 'ghost']) {
+            for (const state of ['hover', 'active']) {
+                expect(source, `${variant}:${state} 缺少规则`).toContain(`.caomei-button--${variant}:${state}:not(:disabled)`)
+            }
+        }
+        expect(source).toContain('color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-primary)) 88%, var(--caomei-color-neutral-solid))')
+        expect(source).toContain('color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-neutral-solid)) 92%, var(--caomei-color-text))')
+        expect(source).toContain('color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-neutral-solid)) 84%, var(--caomei-color-text))')
+        expect(source).toContain('color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 88%, var(--caomei-color-text))')
+
+        // 状态规则不得漏掉 `:not(:disabled)`：忽略 `:hover` 的匹配形态即判失败
+        const stateSelectors = source.split('\n').filter((line) => /^\s*\.caomei-button[^\n]*:(?:hover|active)/u.test(line))
+        // 6 条基础规则 + 2 条 `tone=neutral` 的实底例外
+        expect(stateSelectors.length).toBe(8)
+        for (const selector of stateSelectors) {
+            expect(selector, `状态选择器缺少 :not(:disabled)：${selector}`).toContain(':not(:disabled)')
+        }
+
+        // 减动效分支仍在（关闭过渡，但保留状态差异）
+        expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.caomei-button \{[\s\S]*?transition: none;/u)
     })
 })

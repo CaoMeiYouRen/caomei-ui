@@ -361,11 +361,77 @@ export const PANEL_SAMPLES = [
     { name: 'dropdown-menu', trigger: '[data-cap="panel:dropdown-menu"] .caomei-dropdown-menu__trigger', panel: '.caomei-dropdown-menu__content', props: PANEL_BG_PROPS },
 ]
 
+/**
+ * 按钮 hover / active 计算样式采样：只取 `md` 档（颜色不随尺寸变化），覆盖 **3 变体 × 6 语气**。
+ *
+ * 采这两个态的原因：`:hover` / `:active` 的取值由 `color-mix()` 在浏览器内派生，happy-dom 既不算
+ * scoped CSS 也不算 `color-mix()`，只有真实 Chromium 的计算样式能证明「与默认态不同」且颜色落在预期档位。
+ * 采样前经 CDP `CSS.forcePseudoState` 强制伪类，状态稳定后再读（`background-color` / `color` 参与过渡）。
+ */
+export const BUTTON_STATE_PROPS = [
+    'background-color', 'color', 'border-top-color', 'border-left-color',
+]
+/*
+  本不变量假定状态反馈落在上面这些颜色属性上；若将来改由 `box-shadow` / `transform` / `filter` 承载，
+  必须同步扩展该数组，否则会以「active 无独立反馈」的误导性错误收场。
+*/
+export const BUTTON_STATE_SAMPLES = BUTTON_VARIANTS.flatMap((variant) =>
+    BUTTON_TONES.flatMap((tone) => [
+        {
+            key: `button-hover.${variant}.${tone}`,
+            selector: `[data-cap="button:${variant}:${tone}:md"] .caomei-button`,
+            props: BUTTON_STATE_PROPS,
+            forcedPseudoClasses: ['hover'],
+        },
+        {
+            key: `button-active.${variant}.${tone}`,
+            selector: `[data-cap="button:${variant}:${tone}:md"] .caomei-button`,
+            props: BUTTON_STATE_PROPS,
+            forcedPseudoClasses: ['hover', 'active'],
+        },
+    ]),
+)
+
+/**
+ * 状态反馈不变量：`hover` 必须与默认态不同、`active` 必须与 `hover` 不同。
+ *
+ * 为什么必须单独守卫：`--freeze` 会把「规则没生效、三个态取值完全相同」的现状一并冻结成基线，
+ * 于是基线比对从此永远通过——这类静默失效只能靠三态之间的**相对差异**拦住。
+ *
+ * @param {Record<string, Record<string, string>>} entries 采集结果
+ * @returns {{ ok: boolean, failures: string[] }}
+ */
+export function verifyButtonStates(entries) {
+    const failures = []
+    for (const sample of BUTTON_STATE_SAMPLES) {
+        const [prefix, variant, tone] = sample.key.split('.')
+        const state = prefix.replace('button-', '')
+        const defaultKey = `button.${variant}.${tone}.md`
+        const baseline = entries[defaultKey]
+        const current = entries[sample.key]
+        if (!baseline || !current) {
+            failures.push(`${sample.key}: 缺少可比对的采样（${defaultKey} 或本条缺失）`)
+            continue
+        }
+        const differs = (left, right) => Object.keys(right).some((prop) => left[prop] !== right[prop])
+        if (!differs(baseline, current)) {
+            failures.push(`${sample.key}: 与默认态 ${defaultKey} 完全一致（状态规则未生效）`)
+            continue
+        }
+        const hoverKey = `button-hover.${variant}.${tone}`
+        if (state === 'active' && entries[hoverKey] && !differs(entries[hoverKey], current)) {
+            failures.push(`${sample.key}: 与 ${hoverKey} 完全一致（active 无独立反馈）`)
+        }
+    }
+    return { ok: failures.length === 0, failures }
+}
+
 /** 全部声明式采样项（静态 + 按钮聚焦态 + 状态 + 焦点层叠 + Toast + 锚定面板 + 浮层）；触发器属性快照另按 `TRIGGER_SAMPLES` 生成。 */
 export function declaredKeys() {
     return [
         ...STATIC_SAMPLES.map((item) => item.key),
         ...BUTTON_FOCUS_SAMPLES.map((item) => item.key),
+        ...BUTTON_STATE_SAMPLES.map((item) => item.key),
         ...STATE_SAMPLES.map((item) => item.key),
         ...FOCUS_WITHIN_SAMPLES.map((item) => item.key),
         ...TOAST_SAMPLES.map((item) => item.key),
@@ -512,6 +578,14 @@ async function collect(page, cdp, rootNodeId) {
         await forceSiblingPseudo(sample.selector, [])
     }
 
+    // ── 按钮 hover / active 态：强制伪类后读状态色（与 `button.*` 的默认态逐属性比对）──
+    for (const sample of BUTTON_STATE_SAMPLES) {
+        await forceSiblingPseudo(sample.selector, sample.forcedPseudoClasses)
+        await sleep(SETTLE_MS)
+        await readStyle(sample.key, sample.selector, sample.props)
+        await forceSiblingPseudo(sample.selector, [])
+    }
+
     // ── 状态与几何：聚焦 / 非法态 ────────────────────────────────────
     for (const sample of STATE_SAMPLES) {
         await page.locator(`[data-cap="${sample.cap}"] ${sample.inner}`).first().focus()
@@ -640,6 +714,14 @@ export async function capture({ freeze = false } = {}) {
                 console.error(`[capture][error] ${error}`)
             }
             throw new Error(`采集失败：${errors.length} 个错误（不写入结果）`)
+        }
+
+        const states = verifyButtonStates(entries)
+        if (!states.ok) {
+            for (const failure of states.failures) {
+                console.error(`[capture][state] ${failure}`)
+            }
+            throw new Error(`状态反馈不变量失败：${states.failures.length} 项（不写入结果）`)
         }
 
         const items = Object.keys(entries).length

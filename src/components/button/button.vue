@@ -127,7 +127,7 @@ function onClick(event: MouseEvent): void {
     line-height: 1;
     cursor: pointer;
     user-select: none;
-    transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .caomei-button:disabled {
@@ -176,6 +176,58 @@ function onClick(event: MouseEvent): void {
 .caomei-button--ghost {
     background: transparent;
     color: var(--caomei-button-text, var(--caomei-color-text));
+}
+
+/*
+  状态反馈：`hover` / `active` 全部由既有 token 经 `color-mix()` 派生，**不新增冻结 token**。
+  - 实底变体向中性深色 token 混合：白字档对比度上升；暗色主题的默认 `primary`（浅底深字）向文字方向
+    小幅移动、对比度略降但仍留有 ≥ 4.5:1 裕度（由 `button-states.e2e.ts` 的 18 条受检面逐条锁定）；
+  - 文字型变体把文字向 `--caomei-color-text` 混合（亮色更深 / 暗色更浅），底色取同一来源低比例着色
+    ⇒ 两个方向都远离底色，对比度同样不下降；
+  - `:disabled`（含复用原生 disabled 的 loading）不参与状态反馈；
+  - `:focus-visible` 只叠加描边，不改动状态色；`prefers-reduced-motion` 由下方媒体查询关闭过渡。
+*/
+.caomei-button--primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-primary)) 88%, var(--caomei-color-neutral-solid));
+}
+
+.caomei-button--primary:active:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-primary)) 78%, var(--caomei-color-neutral-solid));
+}
+
+/*
+  `tone="neutral"` 的实底与上面的加深锚点同值（`--caomei-color-neutral-solid`），混合同色恒等 ⇒ 状态零变化。
+  该语气的实底足够深，改用文字色作锚点（亮色变深 / 暗色变浅）仍保持白字 ≥ 4.5:1；比例比默认档更保守。
+  选择器用「基类 + 语气类」的复合形态提高特异性，与源码顺序解耦（不依赖规则先后）。
+*/
+.caomei-button--primary.caomei-button--tone-neutral:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-neutral-solid)) 92%, var(--caomei-color-text));
+}
+
+.caomei-button--primary.caomei-button--tone-neutral:active:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-bg, var(--caomei-color-neutral-solid)) 84%, var(--caomei-color-text));
+}
+
+.caomei-button--secondary:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-border)) 80%, var(--caomei-color-text));
+    background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 8%, var(--caomei-color-bg));
+    color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 88%, var(--caomei-color-text));
+}
+
+.caomei-button--secondary:active:not(:disabled) {
+    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-border)) 70%, var(--caomei-color-text));
+    background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 14%, var(--caomei-color-bg));
+    color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 78%, var(--caomei-color-text));
+}
+
+.caomei-button--ghost:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 8%, transparent);
+    color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 88%, var(--caomei-color-text));
+}
+
+.caomei-button--ghost:active:not(:disabled) {
+    background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 14%, transparent);
+    color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 78%, var(--caomei-color-text));
 }
 
 :where(.caomei-button--tone-neutral) {

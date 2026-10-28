@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { chromiumArgs, declaredKeys, main, verifyCoverage } from './capture.mjs'
+import { BUTTON_STATE_PROPS, BUTTON_STATE_SAMPLES, chromiumArgs, declaredKeys, main, verifyButtonStates, verifyCoverage } from './capture.mjs'
 import { diffEntries, formatDiffs } from './diff.mjs'
 
 /** 受检面基线规模：新增 / 删除采样项必须同步此值，使「收窄受检范围」在 diff 中显式可见。 */
-const DECLARED_KEY_BUDGET = 313
+const DECLARED_KEY_BUDGET = 349
 
 describe('采样面声明', () => {
     it('样本键唯一且与预算一致', () => {
@@ -12,11 +12,80 @@ describe('采样面声明', () => {
         expect(keys).toHaveLength(DECLARED_KEY_BUDGET)
     })
 
+    it('hover / active 采样覆盖 3 变体 × 6 语气（36 条，18 个触发器各两态）', () => {
+        expect(BUTTON_STATE_SAMPLES).toHaveLength(36)
+        expect(new Set(BUTTON_STATE_SAMPLES.map((sample) => sample.selector)).size).toBe(18)
+        // 属性面与键面同权：收窄采样属性会让文字型变体的反馈失去受检
+        expect(BUTTON_STATE_PROPS).toEqual(['background-color', 'color', 'border-top-color', 'border-left-color'])
+        for (const sample of BUTTON_STATE_SAMPLES) {
+            expect(sample.key).toMatch(/^button-(hover|active)\.(primary|secondary|ghost)\.(none|neutral|primary|success|warning|danger)$/u)
+            expect(sample.forcedPseudoClasses.length, `${sample.key} 未声明强制伪类`).toBeGreaterThan(0)
+            expect(sample.selector, `${sample.key} 应取 md 档触发器`).toContain(':md"]')
+        }
+    })
+
     it('覆盖各采样段的前缀', () => {
         const keys = declaredKeys()
-        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.', 'switch.', 'toast.', 'panel.', 'confirm-dialog.', 'card.', 'password.', 'data-table.', 'calendar.', 'color-picker.', 'split-button.', 'checkbox.', 'checkbox-group.', 'tabs.', 'grid.']) {
+        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-hover.', 'button-active.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.', 'switch.', 'toast.', 'panel.', 'confirm-dialog.', 'card.', 'password.', 'data-table.', 'calendar.', 'color-picker.', 'split-button.', 'checkbox.', 'checkbox-group.', 'tabs.', 'grid.']) {
             expect(keys.some((key) => key.startsWith(prefix))).toBe(true)
         }
+    })
+})
+
+describe('verifyButtonStates', () => {
+    /** 构造一份「三态互不相同」的最小采集结果。 */
+    const buildEntries = () => {
+        const entries = {}
+        for (const sample of BUTTON_STATE_SAMPLES) {
+            const [prefix, variant, tone] = sample.key.split('.')
+            const state = prefix.replace('button-', '')
+            entries[`button.${variant}.${tone}.md`] = { 'background-color': 'rgb(1, 1, 1)', color: 'rgb(2, 2, 2)' }
+            entries[sample.key] = {
+                'background-color': state === 'hover' ? 'rgb(3, 3, 3)' : 'rgb(4, 4, 4)',
+                color: 'rgb(2, 2, 2)',
+            }
+        }
+        return entries
+    }
+
+    it('三态互不相同时通过', () => {
+        expect(verifyButtonStates(buildEntries())).toEqual({ ok: true, failures: [] })
+    })
+
+    it('hover 与默认态完全一致时失败（规则静默失效）', () => {
+        const entries = buildEntries()
+        for (const sample of BUTTON_STATE_SAMPLES) {
+            if (sample.key.startsWith('button-hover.')) {
+                const [, variant, tone] = sample.key.split('.')
+                entries[sample.key] = { ...entries[`button.${variant}.${tone}.md`] }
+            }
+        }
+        const result = verifyButtonStates(entries)
+        expect(result.ok).toBe(false)
+        expect(result.failures).toHaveLength(18)
+        expect(result.failures[0]).toContain('状态规则未生效')
+    })
+
+    it('active 与 hover 完全一致时失败（无独立按下反馈）', () => {
+        const entries = buildEntries()
+        for (const sample of BUTTON_STATE_SAMPLES) {
+            if (sample.key.startsWith('button-active.')) {
+                const [, variant, tone] = sample.key.split('.')
+                entries[sample.key] = { ...entries[`button-hover.${variant}.${tone}`] }
+            }
+        }
+        const result = verifyButtonStates(entries)
+        expect(result.ok).toBe(false)
+        expect(result.failures).toHaveLength(18)
+        expect(result.failures[0]).toContain('active 无独立反馈')
+    })
+
+    it('缺少默认态采样时失败', () => {
+        const entries = buildEntries()
+        delete entries['button.primary.none.md']
+        const result = verifyButtonStates(entries)
+        expect(result.ok).toBe(false)
+        expect(result.failures.some((failure) => failure.includes('缺少可比对的采样'))).toBe(true)
     })
 })
 

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { measureContrast } from './helpers/contrast'
 
 /**
  * Alert 对比度复核（真实 Chromium，常驻）。
@@ -42,104 +43,11 @@ interface CellMeasurement {
 }
 
 async function measure(page: Page): Promise<CellMeasurement[]> {
-    return page.evaluate((selector) => {
-        const context = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D
-
-        /** 借 canvas 归一化 `#rrggbb` / `rgb()` / `rgba()` 等为统一形态。 */
-        const normalize = (color: string): string => {
-            const sentinel = '#010203'
-            context.fillStyle = sentinel
-            context.fillStyle = color
-            if (context.fillStyle === sentinel) {
-                throw new Error(`无法解析颜色：${color}`)
-            }
-            return context.fillStyle
-        }
-
-        const parse = (color: string): [number, number, number, number] => {
-            /*
-             * `color(srgb r g b / a)`：`color-mix()` 的计算值在 Chromium 中以此形式序列化，
-             * canvas 的 `fillStyle` 不接受该形态（会静默保留上一次赋值 ⇒ 恒得黑色背景），故单独解析。
-             */
-            if (/^color\(/iu.test(color.trim())) {
-                const channels = color.match(/[\d.]+/gu)?.map(Number) ?? []
-                const [red = 0, green = 0, blue = 0, alpha = 1] = channels
-                return [red * 255, green * 255, blue * 255, alpha]
-            }
-
-            const normalized = normalize(color)
-            if (normalized.startsWith('#')) {
-                const hex = normalized.slice(1)
-                return [
-                    Number.parseInt(hex.slice(0, 2), 16),
-                    Number.parseInt(hex.slice(2, 4), 16),
-                    Number.parseInt(hex.slice(4, 6), 16),
-                    1,
-                ]
-            }
-            const numbers = normalized.match(/[\d.]+/g)?.map(Number) ?? []
-            return [numbers[0] ?? 0, numbers[1] ?? 0, numbers[2] ?? 0, numbers[3] ?? 1]
-        }
-
-        /** 自根向下逐层合成，得到元素的实际背景（半透明层与上层合成）。 */
-        const effectiveBackground = (element: Element): [number, number, number] => {
-            const chain: string[] = []
-            let node: Element | null = element
-            while (node) {
-                chain.push(getComputedStyle(node).backgroundColor)
-                node = node.parentElement
-            }
-
-            let result: [number, number, number] = [255, 255, 255]
-            for (const color of chain.reverse()) {
-                const [red, green, blue, alpha] = parse(color)
-                if (alpha === 0) {
-                    continue
-                }
-                result = [
-                    red * alpha + result[0] * (1 - alpha),
-                    green * alpha + result[1] * (1 - alpha),
-                    blue * alpha + result[2] * (1 - alpha),
-                ]
-            }
-
-            return result
-        }
-
-        const luminance = ([red, green, blue]: [number, number, number]): number => {
-            const channel = (value: number): number => {
-                const ratio = value / 255
-                return ratio <= 0.03928 ? ratio / 12.92 : ((ratio + 0.055) / 1.055) ** 2.4
-            }
-
-            return 0.2126 * channel(red) + 0.7152 * channel(green) + 0.0722 * channel(blue)
-        }
-
-        return Array.from(document.querySelectorAll<HTMLElement>(selector)).map((element) => {
-            const style = getComputedStyle(element)
-            const background = effectiveBackground(element)
-            const [red, green, blue, alpha] = parse(style.color)
-            const text: [number, number, number] = [
-                red * alpha + background[0] * (1 - alpha),
-                green * alpha + background[1] * (1 - alpha),
-                blue * alpha + background[2] * (1 - alpha),
-            ]
-
-            const foregroundLuminance = luminance(text)
-            const backgroundLuminance = luminance(background)
-            const ratio = (Math.max(foregroundLuminance, backgroundLuminance) + 0.05)
-                / (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
-
-            return {
-                tone: element.dataset.alertTone ?? '',
-                variant: element.dataset.alertVariant ?? '',
-                // 判定用未舍入值（舍入仅用于展示：先舍入再比较会把 4.495–4.4999 放行）
-                ratio,
-                color: style.color,
-                background: `rgb(${background.map((value) => Math.round(value)).join(', ')})`,
-            }
-        })
-    }, CELLS)
+    const cells = await measureContrast(page, CELLS)
+    return cells.map((cell) => {
+        const [tone = '', variant = ''] = cell.key.split('/')
+        return { tone, variant, ratio: cell.ratio, color: cell.color, background: cell.background }
+    })
 }
 
 /** 失败明细（色号 / 实测比）便于定位到具体 tone × variant。 */
@@ -161,6 +69,7 @@ test.describe('Alert 对比度复核', () => {
 
         const cells = await measure(page)
         expect(cells.length, '对比度受检面不得被静默收窄').toBeGreaterThanOrEqual(MIN_CELLS)
+        expect(cells.every((cell) => cell.tone && cell.variant), '受检单元的 data-contrast-key 缺失').toBe(true)
         expect(minimumRatio(cells), '亮色最低比值应高出阈值一个可维护裕度').toBeGreaterThanOrEqual(MIN_RATIO + MIN_MARGIN)
         expect(describeFailures(cells), '存在低于阈值的组合').toBe('')
     })
@@ -173,6 +82,7 @@ test.describe('Alert 对比度复核', () => {
 
         const cells = await measure(page)
         expect(cells.length, '对比度受检面不得被静默收窄').toBeGreaterThanOrEqual(MIN_CELLS)
+        expect(cells.every((cell) => cell.tone && cell.variant), '受检单元的 data-contrast-key 缺失').toBe(true)
         expect(minimumRatio(cells), '暗色最低比值应高出阈值一个可维护裕度').toBeGreaterThanOrEqual(MIN_RATIO + MIN_MARGIN)
         expect(describeFailures(cells), '存在低于阈值的组合').toBe('')
     })

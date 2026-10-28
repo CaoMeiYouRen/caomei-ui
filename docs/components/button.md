@@ -65,6 +65,17 @@
     ssg="true"
 />
 
+## 状态反馈
+
+`hover` 与 `active` 的底色 / 文字色由既有 `--caomei-*` token 经 `color-mix()` 派生，不新增 token：
+
+- 实底变体（`primary`）向中性深色 token（`--caomei-color-neutral-solid`）混合加深，前景色不变；`tone="neutral"` 的实底与该锚点同值，改用 `--caomei-color-text` 作锚点；
+- 文字型变体（`secondary` / `ghost`）把文字向 `--caomei-color-text` 混合（亮色更深、暗色更浅），底色按同一来源低比例着色；未设置 `tone` 时文字色本身就是 `--caomei-color-text`，两态文字色不变（`secondary` 另有边框色变化）；
+- `disabled`（含自动禁用的 `loading`）不参与状态反馈；`:focus-visible` 只叠加描边，不改动状态色；
+- 过渡时长 150ms；`prefers-reduced-motion: reduce` 下关闭过渡，状态差异仍然生效。
+
+在**默认预设（`minimal`）**下，派生方向保证三态（默认 / hover / active）的文字与背景对比度不低于 WCAG AA 正文阈值（≥ 4.5:1）。品牌预设存在既有的三态对比度缺口（含默认态，见 Backlog「颜色角色分层与非文本对比度治理」），本机制不会额外恶化该口径。
+
 ## 角标
 
 `badge` 提供非空字符串时在按钮右上角渲染角标（内容即该字符串），`badgeTone` 控制色调（默认 `neutral`，对应 PrimeVue `badge-severity` 的默认值 `secondary`）；传 `undefined` 或空串即不渲染，可用于按数量控制显隐。

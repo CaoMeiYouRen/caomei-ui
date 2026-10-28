@@ -65,6 +65,17 @@ While `loading`, the button is disabled and shows a loading indicator; `block` m
     ssg="true"
 />
 
+## State feedback
+
+`hover` and `active` colors are derived from the existing `--caomei-*` tokens with `color-mix()`; no new tokens are introduced:
+
+- solid variants (`primary`) mix toward the neutral solid token (`--caomei-color-neutral-solid`) to darken, leaving the foreground color unchanged; the `tone="neutral"` solid is that same anchor, so it uses `--caomei-color-text` instead;
+- text-style variants (`secondary` / `ghost`) mix their text toward `--caomei-color-text` (darker in light mode, lighter in dark mode) and tint the background from the same source at a low ratio; without `tone` the text already is `--caomei-color-text`, so the text stays the same (the `secondary` border color still changes);
+- `disabled` (including the automatic disable while `loading`) does not take part in state feedback; `:focus-visible` only adds the outline and does not change state colors;
+- the transition lasts 150ms; `prefers-reduced-motion: reduce` disables it while the state difference still applies.
+
+Under the **default preset (`minimal`)**, the derived direction keeps text/background contrast at or above the WCAG AA body threshold (≥ 4.5:1) across all three states (default / hover / active). Brand presets have pre-existing three-state contrast gaps (including the default state; see the "color role layering and non-text contrast" backlog item); this mechanism does not make them worse.
+
 ## Badge
 
 A non-empty `badge` string renders a badge at the button's top-right corner (the string is the content); `badgeTone` controls its tone (defaults to `neutral`, corresponding to PrimeVue's default `badge-severity` of `secondary`). Pass `undefined` or an empty string to hide it, which is handy for count-driven visibility.

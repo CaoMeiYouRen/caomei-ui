@@ -46,7 +46,7 @@ It chains seven steps: `preflight → bump → changelog → publish → verify 
 
 ## Pre-release checks
 
-- **Security alert gate**: before any release (including rc), check open Dependabot and Code Scanning alerts per the [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese). **Critical must be zero and cannot be exempted**; **high must be fixed, or exempted with a recorded reason** (see §2.1); medium / low may be deferred. Record the counts and any exemptions in the release governance record. The `run` orchestrator does not query these panels.
+- **Security alert gate**: before any release (including rc), check open Dependabot and Code Scanning alerts per the [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese). **Critical must be zero and cannot be exempted**; **high must be fixed, or exempted with a recorded reason** (see §2.1); medium / low may be deferred. CI runs the same check in the `Security Alerts` workflow with the `SECURITY_ALERTS_TOKEN` secret (Dependabot alerts require a user PAT); locally run `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`. Record the counts and any exemptions in the release governance record. The `run` orchestrator does not query these panels.
 - All quality gates pass (lint / typecheck / test / build).
 - Coverage evidence is generated and checked with `pnpm test:coverage` + `pnpm check:coverage` (also part of `preflight`).
 - Build output smoke test: confirm ESM, type declarations, CSS and subpath exports work.

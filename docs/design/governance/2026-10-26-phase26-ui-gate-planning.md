@@ -71,6 +71,7 @@
 | **S1 依赖安全清理（前置，2026-10-28 追加）** | 15 项开发作用域 Dependabot 告警在 lockfile 解析层清零（`undici` / `fast-uri` / `serialize-javascript` / `node-forge` / `nuxt` / `@vitest/mocker`）；依赖升级后质量门复跑；残留项（无补丁）有再评估触发 | lockfile 解析 + `pnpm audit` + 治理记录 | **已完成（2026-10-28）**：见 [S1 记录](./2026-10-28-phase26-s1-dependency-alerts-remediation.md) |
 | **S2 Code Scanning 清理（前置，2026-10-28 追加）** | 5 项 Code Scanning 告警（3 条 high：1 条 tag filter + 2 条不完整多字符清洗；2 条 medium：两个 job 缺 workflow 权限）修复；守卫脚本与单测通过；CI 补最小权限 | `pnpm verify` + 守卫实跑 + YAML 解析 + 记录 | **已完成（2026-10-28）**：见 [S2 记录](./2026-10-28-phase26-s2-code-scanning-remediation.md) |
 | **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿。**S1 / S2 的同名检查属批次自检，不作 G2 放行证据** | CI / 本地日志 | **已完成（2026-10-28）**：见 [G2 记录](./2026-10-28-phase26-g2-quality-gate.md) |
+| **S3 安全告警门禁 CI 接入（2026-10-29 追加，G2 通过后）** | 告警检查脚本 + `Security Alerts` workflow；`SECURITY_ALERTS_TOKEN` secret 读取两类 open 告警；豁免文件与规范 / 指南同步 | 单测 / eslint / YAML / 实网运行 + 记录 | **已完成（2026-10-29）**：见 [S3 记录](./2026-10-29-phase26-s3-security-alert-gate-ci.md) |
 | **G3 RC 与下游** | `1.0.0-rc.1` 发 `next` 前按[安全规范 §2.1](../../standards/security.md#_2-1-发布前安全告警门禁)复核告警（critical = 0，high 全部修复或留痕豁免）；M4-1 dependfix `typecheck` + `build` 绿；tarball shasum / `exports` 13 键 / 发布时 API 差分留痕 | registry / CI run / release log | 未开始 |
 | **G4 发布证据** | 1.0.0 CHANGELOG、GitHub Release note、version policy、known limitations、回滚方案就绪；**按[安全规范 §2.1](../../standards/security.md#_2-1-发布前安全告警门禁)复核 Dependabot / Code Scanning：critical = 0，high 全部修复或留痕豁免**；用户明确授权推送与发布。回滚方案由 `M3-3` 负责在 G4 前完成 | docs + 用户授权 | 未开始 |
 
@@ -98,7 +99,7 @@
 
 - **原登记（2026-10-22）**：4 条主线 / 13 条原子条目（4 + 4 + 3 + 2）。
 - **执行期追加（2026-10-26）**：M5 插队批次 4 条 → **5 条主线 / 17 条原子条目**（4 + 4 + 3 + 2 + 4 = 17）。
-- **发布序列**：M5 完成 → G0 / G1（若裁定「修复」则加 G1-F）→ S1 依赖安全清理 → S2 Code Scanning 清理 → G2 → `1.0.0-rc.1` 发 `next` → G3 下游复验 → G4 证据与授权 → `1.0.0` 发 `latest`。
+- **发布序列**：M5 完成 → G0 / G1（若裁定「修复」则加 G1-F）→ S1 依赖安全清理 → S2 Code Scanning 清理 → G2 → S3 安全告警门禁 CI 接入（G2 通过后追加，rc 前生效）→ `1.0.0-rc.1` 发 `next` → G3 下游复验 → G4 证据与授权 → `1.0.0` 发 `latest`。
 - `M3-2` 可先起草；`M3-3` 状态改为「阻塞（1.0 门禁）」；`M4-1` 可在 rc 后进行；`M4-2` 不阻塞发布。
 
 ## 6. 载体同步

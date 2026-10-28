@@ -84,6 +84,8 @@
 - 本地判据 = **lockfile 解析版本已离开受影响区间**（§4 残留扫描 0 命中 + 解析后版本表）。
 - 推送并扫描后应复核：15 项全部 `fixed`；若 `node-forge` 因 advisory 未回填补丁标识仍显示 open，按「版本已离开 `<= 1.4.0` 区间」提交 dismissal（`reason: fix_started` 或 `not_used` 视面板选项）并留痕。
 
+> **推送后复核（2026-10-29）**：本批随仓库推送后 Dependabot 复算完成，15 项告警全部关闭；当前 open = **1**（`deepmerge` low，S1 §3 已登记无补丁与再评估触发）。按[安全规范 §2.1](../../standards/security.md#_2-1-发布前安全告警门禁)，该 low 不阻塞发布。
+
 ## 6. 未覆盖边界
 
 - **Code Scanning 仍有 5 项 open**（不在本条范围，已由 [S2 记录](./2026-10-28-phase26-s2-code-scanning-remediation.md) 承接）：`scripts/docs/check-example-refs.mjs` 的大写标签匹配、`scripts/docs/check-i18n-routing.mjs` 的不完整多字符清理，以及 `.github/workflows/test.yml` 两个 job 缺 `permissions` 块。均为仓库内脚本 / CI 配置，需独立批次处置。

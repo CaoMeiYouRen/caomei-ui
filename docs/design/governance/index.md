@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-10-29-phase26-s3-security-alert-gate-ci.md](./2026-10-29-phase26-s3-security-alert-gate-ci.md)：**Phase 26 S3 安全告警门禁 CI 接入**。Dependabot alerts 仅用户 PAT 可读，新增 `check-security-alerts` 与 `Security Alerts` workflow，统一读取 `SECURITY_ALERTS_TOKEN`；脚本按规范判定 critical / high / 其余级别，支持 `Link` 游标分页与 high 豁免文件。实网运行通过（仅 `deepmerge` low 暂缓），Code Scanning 面板已清零；CI 生效前须先配置 secret `SECURITY_ALERTS_TOKEN`。**Review Gate**：结论见本记录 §5。
+
 - [2026-10-28-phase26-g2-quality-gate.md](./2026-10-28-phase26-g2-quality-gate.md)：**Phase 26 G2 质量门**。在 S1 / S2 之后取得证据：质量门主线、全量端到端、无障碍与视觉基线四条判据全部通过，另补画廊回归；**G2 通过**，`M3-3` 阻塞面缩减为 G3 ~ G4。读数与边界见记录。**Review Gate**：结论见本记录 §6。
 
 - [2026-10-28-phase26-s2-code-scanning-remediation.md](./2026-10-28-phase26-s2-code-scanning-remediation.md)：**Phase 26 S2 1.0 发布前 Code Scanning 告警清理**。本地判据下 5 项告警（3 条 high 脚本规则 + 2 条 medium CI 权限）的命中形态全部消除（面板仍为 5 项 open，推送 + CodeQL 重跑后收敛）：示例守卫大小写不敏感、语言切换守卫改字符扫描、`test.yml` 补 `permissions: contents: read`。告警形态与推送后收敛口径见记录。**Review Gate**：结论见本记录 §6。

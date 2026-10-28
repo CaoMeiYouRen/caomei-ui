@@ -6,7 +6,7 @@
 
 当前进行中阶段：**Phase 26 1.0 发布前收尾：冻结面、行为收口与发布链路**（2026-10-22 用户就[第十轮范围评估](../design/governance/2026-10-22-next-stage-scope-evaluation-10.md) §3 裁定「按推荐来」后登记）。范围与验收口径的唯一事实源见[Phase 26 登记批次记录](../design/governance/2026-10-22-phase26-registration.md) §1 / §2。
 
-**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**2026-10-28 G1 裁定「修复」后登记为 G1-F 门禁批次并交付**（不占 Phase 26 原子条目计数）；**2026-10-28 用户指令「发布前尽可能清理 Dependabot alerts」后登记为 S1 依赖安全告警清理批次并交付**（同属插队例外清单第 1 条，不占条目计数）；**同日按「Code Scanning 也镜像清理」指令登记 S2 并交付**（同属插队例外）；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**2026-10-28 G1 裁定「修复」后登记为 G1-F 门禁批次并交付**（不占 Phase 26 原子条目计数）；**2026-10-28 用户指令「发布前尽可能清理 Dependabot alerts」后登记为 S1 依赖安全告警清理批次并交付**（同属插队例外清单第 1 条，不占条目计数）；**同日按「Code Scanning 也镜像清理」指令登记 S2 并交付**（同属插队例外）；**2026-10-29 按「CI 引入 PAT 读取配置」指令登记 S3 并交付**；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 **Phase 24 遗留**：两条已于 2026-10-22 回填（视觉基线 = 2026-10-16 周级 run success；CI 镜像 = 未命中），状态见下节；**待独立归档批次**把 Phase 24 块迁入[待办归档](./todo-archive.md)（该批需一并处置 `docs:check:line-count` 的 warn 阈值，见[规划规范 §7](../standards/planning.md)）。
 
@@ -36,7 +36,7 @@
 | M5-3 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Select 示例可访问名（英文）**：`docs/i18n/en-US/examples/select/` 7 个示例同口径补 `label` | `/en-US/components/select` 与 `/en-US/components/showcase` axe `button-name` 为 0；中英可访问名语义对齐 | **已完成（2026-10-28）**：17 个英文触发器补 `label`（映射 `aria-label`），与中文示例逐项语义对齐；en-US select / showcase 的 `button-name` 为 0（全矩阵五页 × 两规则零违规，`check-docs-axe` exit 0）；仅新增属性、无可见布局变化。见[M5-3 记录](../design/governance/2026-10-28-phase26-m5-3-select-example-names-en.md) §1 / §4 |
 | M5-4 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Button hover / active 反馈**：用 `color-mix()` 派生 hover / active（不新增冻结 token）；补计算样式测试；设计规范 §6 与中英组件页补状态说明；视觉基线按实际差异重冻结 | hover / active 与默认态计算样式不同；各变体 / tone 文字与背景对比度仍 ≥ 4.5:1；`:disabled` / `:focus-visible` 不变；`prefers-reduced-motion` 无过渡；`capture:styles` 仅预期差异 | **已完成（2026-10-28）**：三变体两态由既有 token 经 `color-mix()` 派生（`tone="neutral"` 单独取文字色作锚点）；`capture:styles` 新增 36 条状态采样 + 三态差异不变量，冻结前仅新增键、无既有键变化；E2E 复核亮暗 × 三态对比度（**默认预设**最低 4.829）、disabled / focus-visible / 减动效边界；视觉基线实测 0 差异未重冻结；设计规范 §6 与中英组件页已补状态说明（品牌预设既有缺口不在本条范围）。见[M5-4 记录](../design/governance/2026-10-28-phase26-m5-4-button-state-feedback.md) §2 / §5 |
 
-> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ S1 依赖安全清理 / S2 Code Scanning 清理（2026-10-28 追加的前置批次）/ G2 质量门 / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ S1 依赖安全清理 / S2 Code Scanning 清理 / G2 质量门 / S3 安全告警门禁 CI 接入（2026-10-29 追加，G2 通过后、rc 前生效） / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 ## G1-F 门禁批次（2026-10-28 裁定「修复」；不占 Phase 26 原子条目计数）
 
@@ -64,6 +64,15 @@
 | **回归证据与载体**：`pnpm verify` 全绿；新增 S2 记录并同步门禁表 / 索引 / `.session` | `pnpm verify` exit 0；`governance:check` 全绿；推送后 CodeQL 复核口径已登记 | **已完成（2026-10-28）** |
 
 > 证据与边界见 [S2 记录](../design/governance/2026-10-28-phase26-s2-code-scanning-remediation.md)。Code Scanning 面板需**推送 + CodeQL 重跑**后收敛。
+
+## S3 安全告警门禁 CI 接入批次（2026-10-29 用户指令；不占 Phase 26 原子条目计数）
+
+| 条目 | 验收标准 | 状态 |
+|------|----------|------|
+| **检查脚本与 CI**：`check-security-alerts` 读取两类 open 告警，按规范分级判定；`Security Alerts` workflow 使用 `SECURITY_ALERTS_TOKEN` 运行 | 单测与 eslint 通过；实网运行 exit 0；workflow YAML 合法 | **已完成（2026-10-29）** |
+| **豁免与文档**：豁免文件、secret 权限说明、规范与发布指南同步 | `governance:check` 全绿；豁免字段与判定口径可复算 | **已完成（2026-10-29）** |
+
+> 证据与边界见 [S3 记录](../design/governance/2026-10-29-phase26-s3-security-alert-gate-ci.md)。需在仓库配置 secret `SECURITY_ALERTS_TOKEN` 后 CI 才会生效。
 
 ## Phase 24 原子条目
 

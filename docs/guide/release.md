@@ -47,7 +47,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ### 3.3 各步骤口径（runbook）
 
-0. **发布前安全告警门禁（人工，脚本未覆盖）**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警——**critical 不允许豁免**；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。检查计数与豁免清单写入当次发布治理记录。
+0. **发布前安全告警门禁（人工）**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警——**critical 不允许豁免**；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。CI 侧由 `Security Alerts` workflow 执行同名检查（secret `SECURITY_ALERTS_TOKEN`，见 §2.1）；本地可跑 `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`。检查计数与豁免清单写入当次发布治理记录。
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；随后运行 `pnpm test:coverage` + `pnpm check:coverage` 生成并校验覆盖率证据（`verify` 内含 `test`，故预检会跑两遍测试）；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；dist-tag 取 `--tag` 或按版本推断，**预发布 + `latest` 在参数层直接拒绝**；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 提交在其后——**tag 视图不含 CHANGELOG 段属正常形态**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。
@@ -90,7 +90,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。启用 2FA 时用 `--otp=<code>` 传入一次性密码；脚本在日志与错误信息中对 OTP 做脱敏。注意 OTP 仍会进入进程参数与 Shell history，优先在受控环境使用，或省略 `--otp` 让 npm 交互提示。
 - **版本已发布过**时 `npm publish` 会以 `403`（`You cannot publish over the previously published versions: <version>`）失败——npm 不允许覆盖同名版本。处理：确认 `package.json` 的 `version` 是否已递增；确需修复已发布版本时**改发新 patch 版本**（不要尝试 unpublish，见 §8）。
 - `prepublishOnly` 失败（如许可声明过期）会中止发布且不产生 tarball——按报错补齐后重跑即可，无需处理 registry 状态。
-- 当前为本地手动发布，故**无需**配置 CI secret。
+- 当前为本地手动发布，npm 发布侧无需 CI secret；但安全告警巡检由 `Security Alerts` workflow 使用 `SECURITY_ALERTS_TOKEN`（见[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)），该 secret 仍须配置。
 
 ## 5. CI 自动发布（暂缓）
 

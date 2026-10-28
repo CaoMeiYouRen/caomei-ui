@@ -5,6 +5,8 @@
 > 范围：`pnpm-workspace.yaml`（`overrides` + `patchedDependencies`）+ `patches/simple-git@4.0.2.patch` + `pnpm-lock.yaml`；零 `src/**` 零 `test/**`
 > 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo-archive.md) M2-2；[规划规范](../../standards/planning.md) / [安全规范](../../standards/security.md)
 > 基线：`86caf15`（Phase 22 M6-1 提交）；前置记录：[2026-10-10-phase22-m2-2-dev-alerts-remediation.md](./2026-10-10-phase22-m2-2-dev-alerts-remediation.md)
+>
+> **退场（2026-10-28）**：`nuxt` 4.6.3 依赖 `@nuxt/devtools ^3.4.4`，devtools 3.4.4 起不再依赖 `simple-git`，本记录的 `overrides` 与 `patchedDependencies` 已无消费方；S1 批次删除覆盖、补丁配置与 `patches/simple-git@4.0.2.patch`。正文按点时态保留不回改，见 [S1 记录](./2026-10-28-phase26-s1-dependency-alerts-remediation.md)。
 
 ## 1. 背景与触发
 

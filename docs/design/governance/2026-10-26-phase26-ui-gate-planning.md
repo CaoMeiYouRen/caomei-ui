@@ -68,9 +68,12 @@
 | **G0 插队批次完成** | M5-1 ~ M5-4 全部完成；每项经 Review Gate Pass；M5 收口自检的 axe / 计算样式 / 视觉基线通过；`scripts/docs/check-docs-axe.mjs` 全矩阵退出码为 0 | 提交、治理记录、`check-docs-axe` 全矩阵输出、`capture:styles` diff | **已完成（2026-10-28）**：见 [G0 记录](./2026-10-28-phase26-g0-m5-closure-self-check.md) |
 | **G1 新问题裁定** | 第 2 档（颜色角色 + 非文本对比度）完成 **「修复」或「明确接受」二选一**；G1 在**裁定完成时关闭**。接受时须写 1.0 known limitations + 1.x 承诺；裁定修复时转入 G1-F；不得沉默 | 用户裁定记录 / 本记录 §4.2 | **已完成（2026-10-28）：用户裁定「修复」**，转入 G1-F |
 | **G1-F 修复交付（条件）** | **仅当 G1 裁定「修复」时启用**：tone text / control-border / 全预设矩阵断言完成并通过；Review Gate Pass。G1-F 关闭前不得发 `1.0.0` | 提交、矩阵测试输出、治理记录 | **已完成（2026-10-28）**：见 [G1-F 记录](./2026-10-28-phase26-g1-f-color-role-fix.md) |
-| **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿 | CI / 本地日志 | 未开始 |
+| **S1 依赖安全清理（前置，2026-10-28 追加）** | 15 项开发作用域 Dependabot 告警在 lockfile 解析层清零（`undici` / `fast-uri` / `serialize-javascript` / `node-forge` / `nuxt` / `@vitest/mocker`）；依赖升级后质量门复跑；残留项（无补丁）有再评估触发 | lockfile 解析 + `pnpm audit` + 治理记录 | **已完成（2026-10-28）**：见 [S1 记录](./2026-10-28-phase26-s1-dependency-alerts-remediation.md) |
+| **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿。**S1 的同名检查属批次自检，不作 G2 放行证据** | CI / 本地日志 | 未开始 |
 | **G3 RC 与下游** | `1.0.0-rc.1` 发 `next`；M4-1 dependfix `typecheck` + `build` 绿；tarball shasum / `exports` 13 键 / 发布时 API 差分留痕 | registry / CI run / release log | 未开始 |
 | **G4 发布证据** | 1.0.0 CHANGELOG、GitHub Release note、version policy、known limitations、回滚方案就绪；用户明确授权推送与发布。回滚方案由 `M3-3` 负责在 G4 前完成 | docs + 用户授权 | 未开始 |
+
+> **G2 的证据必须在 S1 之后取得**：依赖解析变更会改写工具链（`nuxt` 4.6.3 / `vitest` 4.1.12），S1 之前的 G2 读数不得作为放行依据。
 
 > **G0 之前不得发 `1.0.0-rc.1`。** `M3-2`（CHANGELOG 里程碑段）可先行起草，但不得据此发布；`M3-3` 保持阻塞。**G1-F 是发布前置门禁，不占 Phase 26 原子条目计数**；若裁定「修复」需要实际代码交付，按 §4.3 走新批次并触发 §3.9 回扫。
 
@@ -92,7 +95,7 @@
 
 - **原登记（2026-10-22）**：4 条主线 / 13 条原子条目（4 + 4 + 3 + 2）。
 - **执行期追加（2026-10-26）**：M5 插队批次 4 条 → **5 条主线 / 17 条原子条目**（4 + 4 + 3 + 2 + 4 = 17）。
-- **发布序列**：M5 完成 → G0 / G1（若裁定「修复」则加 G1-F）/ G2 → `1.0.0-rc.1` 发 `next` → G3 下游复验 → G4 证据与授权 → `1.0.0` 发 `latest`。
+- **发布序列**：M5 完成 → G0 / G1（若裁定「修复」则加 G1-F）→ S1 依赖安全清理 → G2 → `1.0.0-rc.1` 发 `next` → G3 下游复验 → G4 证据与授权 → `1.0.0` 发 `latest`。
 - `M3-2` 可先起草；`M3-3` 状态改为「阻塞（1.0 门禁）」；`M4-1` 可在 rc 后进行；`M4-2` 不阻塞发布。
 
 ## 6. 载体同步

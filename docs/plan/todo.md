@@ -6,7 +6,7 @@
 
 当前进行中阶段：**Phase 26 1.0 发布前收尾：冻结面、行为收口与发布链路**（2026-10-22 用户就[第十轮范围评估](../design/governance/2026-10-22-next-stage-scope-evaluation-10.md) §3 裁定「按推荐来」后登记）。范围与验收口径的唯一事实源见[Phase 26 登记批次记录](../design/governance/2026-10-22-phase26-registration.md) §1 / §2。
 
-**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**2026-10-28 G1 裁定「修复」后登记为 G1-F 门禁批次并交付**（不占 Phase 26 原子条目计数）；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**2026-10-28 G1 裁定「修复」后登记为 G1-F 门禁批次并交付**（不占 Phase 26 原子条目计数）；**2026-10-28 用户指令「发布前尽可能清理 Dependabot alerts」后登记为 S1 依赖安全告警清理批次并交付**（同属插队例外清单第 1 条，不占条目计数）；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 **Phase 24 遗留**：两条已于 2026-10-22 回填（视觉基线 = 2026-10-16 周级 run success；CI 镜像 = 未命中），状态见下节；**待独立归档批次**把 Phase 24 块迁入[待办归档](./todo-archive.md)（该批需一并处置 `docs:check:line-count` 的 warn 阈值，见[规划规范 §7](../standards/planning.md)）。
 
@@ -44,7 +44,17 @@
 | G1-F-2 | **控件边界角色**：新增 `--caomei-color-control-border`，字段族 / Checkbox / Radio / Switch / Slider 轨道 / SelectButton / 触发器 / 上传区 / 分页与步骤指示器改用该 token；`--caomei-color-border` 只保留装饰性分隔线 | 6 预设 × 明暗对 `bg` 与 `bg-elevated` 均 ≥ 3:1；视觉重量变化有披露 | **已完成（2026-10-28）** |
 | G1-F-3 | **矩阵断言**：`test/e2e/preset-contrast.e2e.ts` 常驻覆盖 21 条文本（含 `text-muted`）× 2 种背景 + 4 条控件边界；`capture:styles` / 视觉基线按实际差异重冻结 | 矩阵通过；capture 0 差异、视觉 0 差异；证据见[G1-F 记录](../design/governance/2026-10-28-phase26-g1-f-color-role-fix.md) | **已完成（2026-10-28）** |
 
-> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ G2 质量门 / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+## S1 依赖安全告警清理批次（2026-10-28 用户指令；不占 Phase 26 原子条目计数）
+
+| 条目 | 验收标准 | 状态 |
+|------|----------|------|
+| **15 项开发作用域 Dependabot 告警在 lockfile 解析层清零**：`undici` 6/7/8 三线、`fast-uri`、`serialize-javascript`、`node-forge` 走 `overrides`；`nuxt` / `@nuxt/kit` / `@nuxt/schema` 升 4.6.3；`vitest` / `@vitest/coverage-v8` 升 4.1.12；`simple-git` 覆盖与补丁随 devtools 3.4.4 退场 | 解析后版本离开全部受影响区间、旧版残留 0 命中；`pnpm verify` 与 `check:nuxt` 通过；`pnpm audit` high / critical = 0 | **已完成（2026-10-28）** |
+| **回归证据**：依赖升级后复跑质量门，确认无运行时 / 样式回归 | `pnpm verify` exit 0；desktop E2E 133、a11y 67、visual 33 全绿；`capture:styles` 0 差异 | **已完成（2026-10-28）** |
+| **治理载体与残留风险**：新增 S1 记录，登记 `node-forge` 补丁判据、`simple-git` 退场与 `deepmerge` 无补丁项；同步门禁表 / 索引 / `.session` | 记录可复算；`governance:check` 全绿；残留项有再评估触发 | **已完成（2026-10-28）** |
+
+> 证据与残留边界见 [S1 记录](../design/governance/2026-10-28-phase26-s1-dependency-alerts-remediation.md)。Dependabot 面板的 `state` 需**推送 + 扫描**后收敛，本批未推送。
+
+> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ S1 依赖安全清理（2026-10-28 追加的前置批次）/ G2 质量门 / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 ## Phase 24 原子条目
 

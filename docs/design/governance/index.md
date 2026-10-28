@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-10-28-phase26-s1-dependency-alerts-remediation.md](./2026-10-28-phase26-s1-dependency-alerts-remediation.md)：**Phase 26 S1 1.0 发布前依赖安全告警清理**。15 项开发作用域 Dependabot 告警在 **lockfile 解析层**清零，`simple-git` 覆盖与补丁随上游退场；升级后质量门复跑全绿。残留项、推送后收敛口径与包级明细见记录。**Review Gate**：结论见本记录 §7。
+
 - [2026-10-28-phase26-g1-f-color-role-fix.md](./2026-10-28-phase26-g1-f-color-role-fix.md)：**Phase 26 G1 裁定（修复）与 G1-F 颜色角色修复**。用户 2026-10-28 裁定第 2 档「颜色角色分层与非文本对比度」为**修复**；新增 `--caomei-color-<tone>-text`（5 个）与 `--caomei-color-control-border`，Tag / Badge / Message（含 Alert）/ Button 文字型变体 / toast action 等文本消费点与字段族 / 复选 / 单选 / 开关 / 滑块 / 分段 / 触发器 / 上传区 / 分页 / 步骤指示器的边界完成角色拆分；`caomei` / `momei` `text-muted` 提升至 AA。新增常驻矩阵（6 预设 × 明暗 × 2 种背景 × 21 条文本 + 4 条控件边界）通过，Tag / Message 全预设 axe `color-contrast` 零违规（同 spec 可复现）；capture 重冻结前差异全为颜色属性、冻结后 0 差异，视觉基线重冻结。token 有效冻结面 371 → 380（向后兼容增量）。**Review Gate**：结论见本记录 §5。
 
 

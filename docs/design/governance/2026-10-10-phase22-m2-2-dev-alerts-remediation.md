@@ -6,6 +6,8 @@
 > 依据：范围与验收见 [待办事项 §Phase 22](../../plan/todo-archive.md) M2-2；[规划规范](../../standards/planning.md) / [安全规范](../../standards/security.md)
 > 基线：`6e80f9a`（M2-1 修复提交）
 > **后续（2026-10-10）**：§3 的 `simple-git`「受阻」结论已由 [2026-10-10-phase22-m2-2-simple-git-override-upgrade.md](./2026-10-10-phase22-m2-2-simple-git-override-upgrade.md) 再评估解除；正文按点时态保留不回改。
+>
+> **后续（2026-10-28）**：§3 的 `node-forge`「无修复版本」结论已解除——上游 2026-10-27 发布 1.4.1 / 1.4.2，S1 批次取 **1.4.2** 并退出 `<= 1.4.0` 区间；`simple-git` 覆盖与补丁随 `@nuxt/devtools` 3.4.4 移除依赖而退场。见 [S1 记录](./2026-10-28-phase26-s1-dependency-alerts-remediation.md)。
 
 ## 1. 背景与口径
 

@@ -153,14 +153,17 @@ export function findSfcShapeIssues(relPath, rawSource) {
         }]
     }
     const body = source.slice(range.start, range.end)
-    const nested = body.match(/<(style|script)[\s>]/)
+    // `i` 标志：CodeQL bad-tag-filter 要求大小写不敏感；本守卫按 HTML 语义取最严判定（fail-closed）。
+    // 注：Vue compiler 自身只识别小写 `<script>` / `<style>`，此处不据此放宽。
+    const nested = body.match(/<(style|script)[\s>]/i)
     if (!nested) {
         return []
     }
+    const tagName = nested[1].toLowerCase()
     const line = source.slice(0, range.start + nested.index).split(/\r?\n/).length
     return [{
         type: 'example-sfc-shape',
-        message: `${relPath}:${line} 根 <template> 内出现 <${nested[1]}>：会使 docs:dev 报 side-effect tag 编译错误（<style> / <script> 必须在 <template> 之外）`,
+        message: `${relPath}:${line} 根 <template> 内出现 <${tagName}>：会使 docs:dev 报 side-effect tag 编译错误（<style> / <script> 必须在 <template> 之外）`,
     }]
 }
 

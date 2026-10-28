@@ -35,6 +35,44 @@ export const ROUTING_CASES = [
 ]
 
 /**
+ * 提取锚点内的纯文本：跳过标签与注释，保留其余字符。
+ *
+ * 用字符扫描替代正则清洗：标签与注释是两种不同结构，正则替换容易留下残余片段
+ * （如未匹配到的 `<!--`），也容易被大小写 / 属性内 `>` 绕过。
+ *
+ * 已知边界：属性值内含 `>` 时（如 `<span title="a>b">`）会把 `b">` 当作文本；
+ * 实际输入是 VitePress SSR 产物（属性值中的 `>` 已转义），且 label 为常量，不构成放行风险。
+ *
+ * @param {string} html 锚点内部标记
+ * @returns {string} 去掉标签与注释后的文本（已 trim）
+ */
+export function extractTextContent(html) {
+    let text = ''
+    let index = 0
+    while (index < html.length) {
+        if (html[index] !== '<') {
+            text += html[index]
+            index += 1
+            continue
+        }
+        if (html.startsWith('<!--', index)) {
+            const commentEnd = html.indexOf('-->', index + 4)
+            if (commentEnd !== -1) {
+                index = commentEnd + 3
+                continue
+            }
+        }
+        const tagEnd = html.indexOf('>', index + 1)
+        if (tagEnd === -1) {
+            text += html.slice(index)
+            break
+        }
+        index = tagEnd + 1
+    }
+    return text.trim()
+}
+
+/**
  * 提取 HTML 中所有「文本等于 label」的锚点 href。
  *
  * 同时兼容三种菜单的标记：默认主题的桌面 / 平板菜单把文本包在 span 与注释标记中，
@@ -44,8 +82,7 @@ export function collectHrefsForLabel(html, label) {
     const hrefs = []
     const anchorRe = /<a\b[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g
     for (const match of html.matchAll(anchorRe)) {
-        const text = match[2].replace(/<[^>]*>/g, '').replace(/<!--[\s\S]*?-->/g, '').trim()
-        if (text === label) {
+        if (extractTextContent(match[2]) === label) {
             hrefs.push(match[1])
         }
     }

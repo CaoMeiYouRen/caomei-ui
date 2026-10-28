@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { ROUTING_CASES, checkPage, collectHrefsForLabel } from './check-i18n-routing.mjs'
+import { ROUTING_CASES, checkPage, collectHrefsForLabel, extractTextContent } from './check-i18n-routing.mjs'
 
 /** 自工作目录向上定位仓库根（以 `.github/skills` 为锚点）。 */
 function resolveRepoRoot() {
@@ -41,6 +41,22 @@ describe('collectHrefsForLabel', () => {
 
         expect(collectHrefsForLabel(html, '简体中文')).toEqual(['/components/locale'])
         expect(collectHrefsForLabel(html, 'Deutsch')).toEqual([])
+    })
+})
+
+describe('extractTextContent', () => {
+    it('跳过嵌套标签与注释标记，只保留文本', () => {
+        expect(extractTextContent('<!--[--><span>English</span><!--]-->')).toBe('English')
+        expect(extractTextContent('<span class="x"><b>简</b>体中文</span>')).toBe('简体中文')
+    })
+
+    it('注释内的 > 与标签不会被当成文本', () => {
+        expect(extractTextContent('<!-- <b>ignore</b> -->English')).toBe('English')
+        expect(extractTextContent('<!--[--><span>English</span><!--]--><!-- trailing -->')).toBe('English')
+    })
+
+    it('未闭合标签按字面保留剩余文本', () => {
+        expect(extractTextContent('English<')).toBe('English<')
     })
 })
 

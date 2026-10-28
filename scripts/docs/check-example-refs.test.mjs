@@ -158,6 +158,16 @@ describe('示例 SFC 形态', () => {
         expect(issues[0].message).toContain('<script>')
     })
 
+    it('大写 <SCRIPT> / <Style> 同样判定为副作用标签', () => {
+        const upperScript = findSfcShapeIssues('docs/examples/x.vue', '<template><SCRIPT>1</SCRIPT></template>')
+        expect(upperScript).toHaveLength(1)
+        expect(upperScript[0].message).toContain('<script>')
+
+        const upperStyle = findSfcShapeIssues('docs/examples/x.vue', '<template><Style scoped>.a{color:red}</Style></template>')
+        expect(upperStyle).toHaveLength(1)
+        expect(upperStyle[0].message).toContain('<style>')
+    })
+
     it('缺少根 template 报 example-sfc-shape', () => {
         const issues = findSfcShapeIssues('docs/examples/x.vue', '<style scoped>.a { color: red; }</style>\n')
         expect(issues).toHaveLength(1)

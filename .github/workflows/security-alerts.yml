@@ -1,0 +1,46 @@
+name: Security Alerts
+
+# 发布前安全告警门禁（安全规范 §2.1）。
+#
+# Dependabot alerts 需要用户 PAT（仓库 `GITHUB_TOKEN` 无法读取），故使用仓库 secret
+# `SECURITY_ALERTS_TOKEN`（classic PAT 的 `security_events`，或 fine-grained 的
+# `Dependabot alerts: read` + `Code scanning alerts: read`）。仓库默认 `GITHUB_TOKEN`
+# 无法读取 Dependabot 告警，故未配置该 secret 时 job 会失败并提示。
+#
+# 判定：critical 恒阻塞（不得豁免）；high 无有效豁免即阻塞；medium / low 可暂缓。
+# 豁免文件：`.github/security-alerts-exemptions.json`（仅 high）。
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    # 每日 01:00 UTC 巡检，尽早发现新公告
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  alerts:
+    name: Alerts gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - name: Check Dependabot / Code Scanning alerts
+        env:
+          SECURITY_ALERTS_TOKEN: ${{ secrets.SECURITY_ALERTS_TOKEN }}
+        run: pnpm check:security-alerts

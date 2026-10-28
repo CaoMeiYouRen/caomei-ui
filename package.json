@@ -138,6 +138,7 @@
     "changelog": "node scripts/release/generate-changelog.mjs",
     "release": "semantic-release",
     "release:manual": "node scripts/release/manual-release.mjs",
+    "check:security-alerts": "node scripts/release/check-security-alerts.mjs",
     "check:resolver": "node scripts/release/check-resolver.run.mjs"
   },
   "dependencies": {

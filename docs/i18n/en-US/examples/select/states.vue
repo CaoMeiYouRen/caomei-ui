@@ -16,18 +16,21 @@ const options = [
     <div class="demo-column">
         <CaomeiSelect
             v-model="value"
+            label="Fruit (disabled)"
             :options="options"
             disabled
             placeholder="Disabled"
         />
         <CaomeiSelect
             v-model="empty"
+            label="Fruit (invalid)"
             :options="options"
             invalid
             placeholder="Invalid"
         />
         <CaomeiSelect
             v-model="value"
+            label="Fruit (with disabled option)"
             :options="options"
             placeholder="With a disabled option"
         />

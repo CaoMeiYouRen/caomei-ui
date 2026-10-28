@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-28-phase26-m5-3-select-example-names-en.md](./2026-10-28-phase26-m5-3-select-example-names-en.md)：**Phase 26 M5-3 Select 示例可访问名（英文）**。英文 Select 示例 7 文件 / 17 个触发器补 `label`（映射 `aria-label`），与 M5-2 中文示例逐项语义对齐（对照表见记录 §1）；画廊复用的 `select/basic.vue` 一并收口。全矩阵 `check-docs-axe` 五页 × 两条 WCAG 规则**零违规**（en-US select / showcase 的 `button-name` 由 M5-2 负向验证时的 17 + 1 降为 0），退出码 0。**Review Gate**：结论见本记录 §4。
+
 - [2026-10-27-phase26-m5-2-select-example-names-docs-axe.md](./2026-10-27-phase26-m5-2-select-example-names-docs-axe.md)：**Phase 26 M5-2 Select 示例可访问名与文档站 axe 抽检**。中文 Select 示例 7 文件 / 17 个触发器补 `label`（映射 `aria-label`，按字段用途命名）；新增 `scripts/docs/check-docs-axe.mjs`（`vitepress preview` + Chromium + axe，5 页矩阵 / 2 条 WCAG 规则，DOM 与规则两层抗静默收窄，未接入 `verify`）与 17 例单测、`docs:check:axe` 手动入口；同批把画廊预览区改为可聚焦滚动区（`role="group"` + 焦点环 + 中英 E2E），并修复上一批裸 `<caption>` 造成的 `docs:build` 阻断。zh select / showcase 的 `button-name` 与 `scrollable-region-focusable` 均为 0；全矩阵仅剩英文页违规（由 M5-3 承接）。**Review Gate**：R1 `standard` 两区并行 Pass → R2 / R3 / R4 `quick` Pass，结论见本记录 §6。
 
 - [2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md](./2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md)：**Phase 26 M5-1 DataTable 横向滚动容器键盘可达**。根滚动容器常驻 `tabindex="0"`，有 `caption` 时补 `role="group"` 并以 caption 作可访问名（无 caption 不伪造），新增 `:focus-visible` 焦点环（2px 主色）；补单测与 375px 键盘滚动 E2E（Tab 进入 / `ArrowRight` 滚动 / 焦点环三锁）。同批修复文档站 `component-api` 手写表格的可聚焦性（VitePress 只对 Markdown 表格注入 `tabindex`），属已披露的范围扩张，守卫移交 M5-2 的 `check-docs-axe.mjs`。**Review Gate**：R1 `standard` Reject → R2 / R3 `quick` Pass，结论见本记录 §6。

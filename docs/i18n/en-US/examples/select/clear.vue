@@ -15,6 +15,7 @@ const options = [
     <div class="demo-column">
         <CaomeiSelect
             v-model="value"
+            label="Fruit (clearable)"
             :options="options"
             show-clear
             placeholder="Select a fruit"

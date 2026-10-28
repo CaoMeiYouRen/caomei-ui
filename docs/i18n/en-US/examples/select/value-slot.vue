@@ -38,6 +38,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value1"
+                label="Fruit (value slot)"
                 :options="options"
                 placeholder="Select a fruit"
             >
@@ -57,6 +58,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value2"
+                label="Fruit (value slot · icon)"
                 :options="starredOptions"
                 placeholder="Select a favorite"
             >
@@ -75,6 +77,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value3"
+                label="Fruit (value slot · placeholder)"
                 :options="options"
                 placeholder="Shown when nothing is selected"
             >
@@ -93,6 +96,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value4a"
+                label="Fruit (value slot · small)"
                 :options="options"
                 placeholder="Small"
                 size="sm"
@@ -104,6 +108,7 @@ const starredOptions: StarredFruit[] = [
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4b"
+                label="Fruit (value slot · medium)"
                 :options="options"
                 placeholder="Medium"
                 size="md"
@@ -115,6 +120,7 @@ const starredOptions: StarredFruit[] = [
             </CaomeiSelect>
             <CaomeiSelect
                 v-model="value4c"
+                label="Fruit (value slot · large)"
                 :options="options"
                 placeholder="Large"
                 size="lg"
@@ -135,6 +141,7 @@ const starredOptions: StarredFruit[] = [
         <div class="demo-row">
             <CaomeiSelect
                 v-model="value5"
+                label="Fruit (value + option slot)"
                 :options="starredOptions"
                 placeholder="Select"
             >

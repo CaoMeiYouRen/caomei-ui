@@ -22,6 +22,8 @@
 
 ## 当前条目
 
+- [2026-10-28-phase26-g0-m5-closure-self-check.md](./2026-10-28-phase26-g0-m5-closure-self-check.md)：**Phase 26 G0 M5 收口自检**。M5 四条原子条目全部完成且逐项 Review Gate Pass；axe 全矩阵 **exit 0 / 零违规**，计算样式与视觉基线均 **0 差异**，画廊回归全绿 → **G0 通过（2026-10-28）**，`M3-3` 的阻塞点缩减为仅 G1 未裁定。读数与未覆盖边界见记录 §2 / §3 / §5。**Review Gate**：结论见本记录 §7。
+
 - [2026-10-28-phase26-m5-4-button-state-feedback.md](./2026-10-28-phase26-m5-4-button-state-feedback.md)：**Phase 26 M5-4 Button hover / active 状态反馈**。用 `color-mix()` 从既有 token 派生三变体两态（实底向中性深色加深、文字型变体的文字向 `--caomei-color-text` 混合），不新增 token / prop / 覆盖钩子；`tone="neutral"` 因锚点与实底同值改用文字色作锚点。`capture:styles` 新增 36 条状态采样并加「三态互不相同」不变量（防冻结静默失效），E2E 复核亮暗 × 三态对比度（默认预设最低 4.829）、disabled / focus-visible / 减动效边界；视觉基线实测 0 差异、未重冻结。**Review Gate**：结论见本记录 §5。
 
 - [2026-10-28-phase26-m5-3-select-example-names-en.md](./2026-10-28-phase26-m5-3-select-example-names-en.md)：**Phase 26 M5-3 Select 示例可访问名（英文）**。英文 Select 示例 7 文件 / 17 个触发器补 `label`（映射 `aria-label`），与 M5-2 中文示例逐项语义对齐（对照表见记录 §1）；画廊复用的 `select/basic.vue` 一并收口。全矩阵 `check-docs-axe` 五页 × 两条 WCAG 规则**零违规**（en-US select / showcase 的 `button-name` 由 M5-2 负向验证时的 17 + 1 降为 0），退出码 0。**Review Gate**：结论见本记录 §4。

@@ -65,7 +65,7 @@
 
 | Gate | 判据 | 证据 | 状态 |
 | --- | --- | --- | --- |
-| **G0 插队批次完成** | M5-1 ~ M5-4 全部完成；每项经 Review Gate Pass；M5 收口自检的 axe / 计算样式 / 视觉基线通过；`scripts/docs/check-docs-axe.mjs` 全矩阵退出码为 0 | 提交、治理记录、`check-docs-axe` 全矩阵输出、`capture:styles` diff | 未开始 |
+| **G0 插队批次完成** | M5-1 ~ M5-4 全部完成；每项经 Review Gate Pass；M5 收口自检的 axe / 计算样式 / 视觉基线通过；`scripts/docs/check-docs-axe.mjs` 全矩阵退出码为 0 | 提交、治理记录、`check-docs-axe` 全矩阵输出、`capture:styles` diff | **已完成（2026-10-28）**：见 [G0 记录](./2026-10-28-phase26-g0-m5-closure-self-check.md) |
 | **G1 新问题裁定** | 第 2 档（颜色角色 + 非文本对比度）完成 **「修复」或「明确接受」二选一**；G1 在**裁定完成时关闭**。接受时须写 1.0 known limitations + 1.x 承诺；裁定修复时转入 G1-F；不得沉默 | 用户裁定记录 / 本记录 §4.2 | 待裁定 |
 | **G1-F 修复交付（条件）** | **仅当 G1 裁定「修复」时启用**：tone text / control-border / 全预设矩阵断言完成并通过；Review Gate Pass。G1-F 关闭前不得发 `1.0.0` | 提交、矩阵测试输出、治理记录 | 条件未启用 |
 | **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿 | CI / 本地日志 | 未开始 |

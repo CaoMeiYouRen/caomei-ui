@@ -32,8 +32,14 @@
     --caomei-color-bg: #fff;
     --caomei-color-bg-elevated: #f7f7f8;
     --caomei-color-text: #1a1a1a;
-    --caomei-color-text-muted: #6b7280;
+    --caomei-color-text-muted: #686f78;
     --caomei-color-border: #e5e7eb;
+    --caomei-color-primary-text: #1d4ed8;
+    --caomei-color-success-text: #166534;
+    --caomei-color-warning-text: #92400e;
+    --caomei-color-danger-text: #b91c1c;
+    --caomei-color-neutral-text: #4b5563;
+    --caomei-color-control-border: #8a8b8d;
     --caomei-color-mask: rgb(0 0 0 / 0.45);
     --caomei-radius-sm: 4px;
     --caomei-radius-md: 8px;
@@ -84,6 +90,12 @@
     --caomei-color-danger: #f87171;
     --caomei-color-success: #4ade80;
     --caomei-color-warning: #fbbf24;
+    --caomei-color-primary-text: var(--caomei-color-primary);
+    --caomei-color-success-text: var(--caomei-color-success);
+    --caomei-color-warning-text: var(--caomei-color-warning);
+    --caomei-color-danger-text: var(--caomei-color-danger);
+    --caomei-color-neutral-text: var(--caomei-color-text-muted);
+    --caomei-color-control-border: #67676a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,5 +110,11 @@
         --caomei-color-danger: #f87171;
         --caomei-color-success: #4ade80;
         --caomei-color-warning: #fbbf24;
+        --caomei-color-primary-text: var(--caomei-color-primary);
+        --caomei-color-success-text: var(--caomei-color-success);
+        --caomei-color-warning-text: var(--caomei-color-warning);
+        --caomei-color-danger-text: var(--caomei-color-danger);
+        --caomei-color-neutral-text: var(--caomei-color-text-muted);
+        --caomei-color-control-border: #67676a;
     }
 }

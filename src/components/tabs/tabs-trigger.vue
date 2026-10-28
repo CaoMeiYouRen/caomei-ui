@@ -55,7 +55,7 @@ withDefaults(defineProps<TabTriggerProps>(), {
 
 .caomei-tabs__trigger[data-state='active'] {
     border-bottom-color: var(--caomei-tabs-indicator, var(--caomei-color-primary));
-    color: var(--caomei-tabs-trigger-active-color, var(--caomei-color-primary));
+    color: var(--caomei-tabs-trigger-active-color, var(--caomei-color-primary-text));
     font-weight: 500;
 }
 

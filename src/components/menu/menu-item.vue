@@ -88,7 +88,7 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
 
 .caomei-menu__item[aria-current] {
     background: var(--caomei-menu-item-current-bg, var(--caomei-color-bg-elevated));
-    color: var(--caomei-menu-item-current-color, var(--caomei-color-primary));
+    color: var(--caomei-menu-item-current-color, var(--caomei-color-primary-text));
     font-weight: 600;
 }
 

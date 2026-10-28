@@ -247,7 +247,7 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
     justify-content: center;
     width: var(--caomei-dropdown-menu-indicator-width, 1em);
     height: 1em;
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 
 .caomei-dropdown-menu__shortcut {

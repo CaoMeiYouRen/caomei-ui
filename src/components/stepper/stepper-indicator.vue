@@ -38,7 +38,7 @@ defineSlots<{
     justify-content: center;
     width: var(--caomei-stepper-indicator-size, 1.75rem);
     height: var(--caomei-stepper-indicator-size, 1.75rem);
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-full);
     background: var(--caomei-stepper-indicator-bg, var(--caomei-color-bg));
     color: var(--caomei-stepper-indicator-color, var(--caomei-color-text-muted));
@@ -54,8 +54,8 @@ defineSlots<{
 }
 
 .caomei-stepper__item[data-state='completed'] .caomei-stepper__indicator {
-    border-color: var(--caomei-stepper-completed-color, var(--caomei-color-success));
-    color: var(--caomei-stepper-completed-color, var(--caomei-color-success));
+    border-color: var(--caomei-stepper-completed-color, var(--caomei-color-success-text));
+    color: var(--caomei-stepper-completed-color, var(--caomei-color-success-text));
 }
 
 .caomei-stepper__item[data-disabled] .caomei-stepper__indicator {

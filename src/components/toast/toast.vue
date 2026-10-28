@@ -294,7 +294,7 @@ function onOpenChange(id: string, open: boolean): void {
 
 .caomei-toast__action {
     font-weight: 600;
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 
 .caomei-toast__action:hover,

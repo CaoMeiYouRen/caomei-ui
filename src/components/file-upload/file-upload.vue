@@ -391,7 +391,7 @@ defineExpose({ upload, clear })
 }
 
 .caomei-file-upload__message {
-    color: var(--caomei-color-danger);
+    color: var(--caomei-color-danger-text);
     font-size: var(--caomei-font-size-sm);
 }
 
@@ -404,7 +404,7 @@ defineExpose({ upload, clear })
     gap: var(--caomei-space-1);
     width: 100%;
     padding: var(--caomei-file-upload-padding, var(--caomei-space-4));
-    border: 1px dashed var(--caomei-file-upload-border, var(--caomei-color-border));
+    border: 1px dashed var(--caomei-file-upload-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-file-upload-bg, var(--caomei-color-bg));
     color: var(--caomei-color-text-muted);
@@ -440,7 +440,7 @@ defineExpose({ upload, clear })
     gap: var(--caomei-space-2);
     height: var(--caomei-control-height-md);
     padding: 0 var(--caomei-space-3);
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
@@ -536,7 +536,7 @@ defineExpose({ upload, clear })
 }
 
 .caomei-file-upload__remove:hover:not(:disabled) {
-    color: var(--caomei-color-danger);
+    color: var(--caomei-color-danger-text);
 }
 
 .caomei-file-upload__remove:focus-visible {

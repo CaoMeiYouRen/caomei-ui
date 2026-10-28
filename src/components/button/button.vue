@@ -169,7 +169,7 @@ function onClick(event: MouseEvent): void {
 
 .caomei-button--secondary {
     background: var(--caomei-color-bg);
-    border-color: var(--caomei-button-border, var(--caomei-color-border));
+    border-color: var(--caomei-button-border, var(--caomei-color-control-border));
     color: var(--caomei-button-text, var(--caomei-color-text));
 }
 
@@ -209,13 +209,13 @@ function onClick(event: MouseEvent): void {
 }
 
 .caomei-button--secondary:hover:not(:disabled) {
-    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-border)) 80%, var(--caomei-color-text));
+    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-control-border)) 80%, var(--caomei-color-text));
     background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 8%, var(--caomei-color-bg));
     color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 88%, var(--caomei-color-text));
 }
 
 .caomei-button--secondary:active:not(:disabled) {
-    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-border)) 70%, var(--caomei-color-text));
+    border-color: color-mix(in srgb, var(--caomei-button-border, var(--caomei-color-control-border)) 70%, var(--caomei-color-text));
     background: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 14%, var(--caomei-color-bg));
     color: color-mix(in srgb, var(--caomei-button-text, var(--caomei-color-text)) 78%, var(--caomei-color-text));
 }
@@ -233,7 +233,7 @@ function onClick(event: MouseEvent): void {
 :where(.caomei-button--tone-neutral) {
     --caomei-button-bg: var(--caomei-color-neutral-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
-    --caomei-button-border: var(--caomei-color-border);
+    --caomei-button-border: var(--caomei-color-control-border);
     --caomei-button-text: var(--caomei-color-text);
     --caomei-button-focus: var(--caomei-color-text);
 }
@@ -241,33 +241,33 @@ function onClick(event: MouseEvent): void {
 :where(.caomei-button--tone-primary) {
     --caomei-button-bg: var(--caomei-color-primary-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
-    --caomei-button-border: var(--caomei-color-primary);
-    --caomei-button-text: var(--caomei-color-primary);
-    --caomei-button-focus: var(--caomei-color-primary);
+    --caomei-button-border: var(--caomei-color-primary-text);
+    --caomei-button-text: var(--caomei-color-primary-text);
+    --caomei-button-focus: var(--caomei-color-primary-text);
 }
 
 :where(.caomei-button--tone-success) {
     --caomei-button-bg: var(--caomei-color-success-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
-    --caomei-button-border: var(--caomei-color-success);
-    --caomei-button-text: var(--caomei-color-success);
-    --caomei-button-focus: var(--caomei-color-success);
+    --caomei-button-border: var(--caomei-color-success-text);
+    --caomei-button-text: var(--caomei-color-success-text);
+    --caomei-button-focus: var(--caomei-color-success-text);
 }
 
 :where(.caomei-button--tone-warning) {
     --caomei-button-bg: var(--caomei-color-warning-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
-    --caomei-button-border: var(--caomei-color-warning);
-    --caomei-button-text: var(--caomei-color-warning);
-    --caomei-button-focus: var(--caomei-color-warning);
+    --caomei-button-border: var(--caomei-color-warning-text);
+    --caomei-button-text: var(--caomei-color-warning-text);
+    --caomei-button-focus: var(--caomei-color-warning-text);
 }
 
 :where(.caomei-button--tone-danger) {
     --caomei-button-bg: var(--caomei-color-danger-solid);
     --caomei-button-fg: var(--caomei-color-on-solid);
-    --caomei-button-border: var(--caomei-color-danger);
-    --caomei-button-text: var(--caomei-color-danger);
-    --caomei-button-focus: var(--caomei-color-danger);
+    --caomei-button-border: var(--caomei-color-danger-text);
+    --caomei-button-text: var(--caomei-color-danger-text);
+    --caomei-button-focus: var(--caomei-color-danger-text);
 }
 
 :where(.caomei-button--sm) {

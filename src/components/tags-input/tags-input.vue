@@ -161,7 +161,7 @@ function restoreInputFocus(): void {
     width: 100%;
     min-height: var(--caomei-tags-input-min-height, var(--caomei-control-height-md));
     padding: var(--caomei-tags-input-padding-block, var(--caomei-space-1)) var(--caomei-tags-input-padding-inline, var(--caomei-space-3));
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);

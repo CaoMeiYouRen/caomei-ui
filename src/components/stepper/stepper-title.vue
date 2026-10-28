@@ -32,11 +32,11 @@ useStepperLabelPresence('title')
 }
 
 .caomei-stepper__item[data-state='active'] .caomei-stepper__title {
-    color: var(--caomei-stepper-active-color, var(--caomei-color-primary));
+    color: var(--caomei-stepper-active-color, var(--caomei-color-primary-text));
 }
 
 .caomei-stepper__item[data-state='completed'] .caomei-stepper__title {
-    color: var(--caomei-stepper-completed-color, var(--caomei-color-success));
+    color: var(--caomei-stepper-completed-color, var(--caomei-color-success-text));
 }
 
 .caomei-stepper__item[data-state='inactive'] .caomei-stepper__title {

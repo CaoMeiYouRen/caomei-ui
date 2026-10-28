@@ -40,7 +40,7 @@ registerPanelIdref(injectDropdownMenuRootContext() as unknown as PanelIdrefConte
     align-items: center;
     gap: var(--caomei-dropdown-menu-trigger-gap, var(--caomei-space-1));
     padding: var(--caomei-dropdown-menu-trigger-padding-y, var(--caomei-space-2)) var(--caomei-dropdown-menu-trigger-padding-x, var(--caomei-space-3));
-    border: 1px solid var(--caomei-dropdown-menu-trigger-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-dropdown-menu-trigger-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-dropdown-menu-trigger-bg, var(--caomei-color-bg));
     color: var(--caomei-color-text);

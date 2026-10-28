@@ -200,7 +200,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
     min-width: var(--caomei-paginator-control-size, 32px);
     height: var(--caomei-paginator-control-size, 32px);
     padding: 0 6px;
-    border: 1px solid var(--caomei-paginator-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-paginator-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-paginator-radius, var(--caomei-radius-sm));
     background: var(--caomei-paginator-bg, var(--caomei-color-bg));
     color: var(--caomei-paginator-color, var(--caomei-color-text));
@@ -212,7 +212,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
 
 .caomei-paginator__control:hover:not(:disabled, [data-selected='true']) {
     border-color: var(--caomei-color-primary);
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 
 .caomei-paginator__control:focus-visible {

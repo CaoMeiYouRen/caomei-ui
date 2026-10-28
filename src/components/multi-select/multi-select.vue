@@ -267,7 +267,7 @@ function onAnchorClick(event: MouseEvent): void {
     max-width: var(--caomei-multi-select-max-width, var(--caomei-select-max-width));
     min-height: var(--caomei-multi-select-min-height, var(--caomei-control-height-md));
     padding: var(--caomei-multi-select-padding-block, var(--caomei-space-1)) var(--caomei-multi-select-padding-inline, var(--caomei-space-3));
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
@@ -479,6 +479,6 @@ function onAnchorClick(event: MouseEvent): void {
 .caomei-multi-select__indicator {
     display: inline-flex;
     flex-shrink: 0;
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 </style>

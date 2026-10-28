@@ -108,32 +108,37 @@ function onToggle(): void {
 :where(.caomei-tag--primary) {
     --caomei-tag-tone: var(--caomei-color-primary);
     --caomei-tag-solid: var(--caomei-color-primary-solid);
+    --caomei-tag-text: var(--caomei-color-primary-text);
 }
 
 :where(.caomei-tag--success) {
     --caomei-tag-tone: var(--caomei-color-success);
     --caomei-tag-solid: var(--caomei-color-success-solid);
+    --caomei-tag-text: var(--caomei-color-success-text);
 }
 
 :where(.caomei-tag--warning) {
     --caomei-tag-tone: var(--caomei-color-warning);
     --caomei-tag-solid: var(--caomei-color-warning-solid);
+    --caomei-tag-text: var(--caomei-color-warning-text);
 }
 
 :where(.caomei-tag--danger) {
     --caomei-tag-tone: var(--caomei-color-danger);
     --caomei-tag-solid: var(--caomei-color-danger-solid);
+    --caomei-tag-text: var(--caomei-color-danger-text);
 }
 
 :where(.caomei-tag--neutral) {
     --caomei-tag-tone: var(--caomei-color-text-muted);
     --caomei-tag-solid: var(--caomei-color-neutral-solid);
+    --caomei-tag-text: var(--caomei-color-neutral-text);
 }
 
 .caomei-tag--soft {
-    /* soft 底取 8%（非 12%）：保证 primary 文本在亮色下 ≥ 4.5:1（12% 时仅 4.37:1），其余 tone 只升不降 */
+    /* soft 底取 8%：文本改用 `-text` 角色后，8% 底在 6 预设 × 明暗下均 ≥ 4.5:1（矩阵见 preset-contrast.e2e.ts） */
     background: color-mix(in srgb, var(--caomei-tag-tone) 8%, transparent);
-    color: var(--caomei-tag-tone);
+    color: var(--caomei-tag-text);
 }
 
 .caomei-tag--solid {
@@ -142,8 +147,8 @@ function onToggle(): void {
 }
 
 .caomei-tag--outline {
-    border-color: var(--caomei-tag-tone);
-    color: var(--caomei-tag-tone);
+    border-color: var(--caomei-tag-text);
+    color: var(--caomei-tag-text);
 }
 
 :where(.caomei-tag--sm) {
@@ -212,7 +217,7 @@ function onToggle(): void {
 
 /* 选中态：边框 + 背景加深 */
 .caomei-tag--selected {
-    border-color: var(--caomei-tag-tone);
+    border-color: var(--caomei-tag-text);
     background: color-mix(in srgb, var(--caomei-tag-tone) 24%, transparent);
 }
 </style>

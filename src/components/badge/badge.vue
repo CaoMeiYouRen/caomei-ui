@@ -130,32 +130,37 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
 :where(.caomei-badge--primary) {
     --caomei-badge-tone: var(--caomei-color-primary);
     --caomei-badge-solid: var(--caomei-color-primary-solid);
+    --caomei-badge-text: var(--caomei-color-primary-text);
 }
 
 :where(.caomei-badge--success) {
     --caomei-badge-tone: var(--caomei-color-success);
     --caomei-badge-solid: var(--caomei-color-success-solid);
+    --caomei-badge-text: var(--caomei-color-success-text);
 }
 
 :where(.caomei-badge--warning) {
     --caomei-badge-tone: var(--caomei-color-warning);
     --caomei-badge-solid: var(--caomei-color-warning-solid);
+    --caomei-badge-text: var(--caomei-color-warning-text);
 }
 
 :where(.caomei-badge--danger) {
     --caomei-badge-tone: var(--caomei-color-danger);
     --caomei-badge-solid: var(--caomei-color-danger-solid);
+    --caomei-badge-text: var(--caomei-color-danger-text);
 }
 
 :where(.caomei-badge--neutral) {
     --caomei-badge-tone: var(--caomei-color-text-muted);
     --caomei-badge-solid: var(--caomei-color-neutral-solid);
+    --caomei-badge-text: var(--caomei-color-neutral-text);
 }
 
 .caomei-badge--soft {
-    /* soft 底取 8%（非 12%）：保证 primary 文本在亮色下 ≥ 4.5:1（12% 时仅 4.37:1），其余 tone 只升不降 */
+    /* soft 底取 8%：文本改用 `-text` 角色后，8% 底在 6 预设 × 明暗下均 ≥ 4.5:1（矩阵见 preset-contrast.e2e.ts） */
     background: color-mix(in srgb, var(--caomei-badge-tone) 8%, transparent);
-    color: var(--caomei-badge-tone);
+    color: var(--caomei-badge-text);
 }
 
 .caomei-badge--solid {
@@ -164,8 +169,8 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
 }
 
 .caomei-badge--outline {
-    border-color: var(--caomei-badge-tone);
-    color: var(--caomei-badge-tone);
+    border-color: var(--caomei-badge-text);
+    color: var(--caomei-badge-text);
 }
 
 :where(.caomei-badge--sm) {

@@ -195,7 +195,7 @@ onUnmounted(() => {
 }
 
 .caomei-confirm-dialog__icon--danger {
-    color: var(--caomei-color-danger);
+    color: var(--caomei-color-danger-text);
 }
 
 /*

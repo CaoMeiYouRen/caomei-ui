@@ -90,11 +90,11 @@ const idrefBinds = computed<Record<string, string | undefined>>(() => {
 }
 
 .caomei-stepper__trigger[data-state='active'] {
-    color: var(--caomei-stepper-active-color, var(--caomei-color-primary));
+    color: var(--caomei-stepper-active-color, var(--caomei-color-primary-text));
 }
 
 .caomei-stepper__trigger[data-state='completed'] {
-    color: var(--caomei-stepper-completed-color, var(--caomei-color-success));
+    color: var(--caomei-stepper-completed-color, var(--caomei-color-success-text));
 }
 
 .caomei-stepper__trigger[data-disabled] {

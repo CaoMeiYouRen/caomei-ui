@@ -135,7 +135,7 @@ function handleUpdate(value: unknown): void {
     display: inline-flex;
     overflow: hidden;
     height: var(--caomei-select-button-height, var(--caomei-control-height-md));
-    border: 1px solid var(--caomei-select-button-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-select-button-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-select-button-radius, var(--caomei-radius-md));
     background: var(--caomei-select-button-bg, var(--caomei-color-bg));
     font-family: var(--caomei-font-sans);
@@ -154,7 +154,7 @@ function handleUpdate(value: unknown): void {
     gap: var(--caomei-select-button-gap, var(--caomei-space-1));
     padding: 0 var(--caomei-select-button-item-padding-inline, var(--caomei-space-3));
     border: none;
-    border-left: 1px solid var(--caomei-select-button-border, var(--caomei-color-border));
+    border-left: 1px solid var(--caomei-select-button-border, var(--caomei-color-control-border));
     background: transparent;
     color: var(--caomei-select-button-color, var(--caomei-color-text));
     font: inherit;

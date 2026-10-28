@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-10-28T11:09:34.186Z",
+    "capturedAt": "2026-10-28T13:16:08.521Z",
     "chromiumVersion": "153.0.8010.12",
     "viewport": "1280x800",
     "entries": {
@@ -393,8 +393,8 @@
             "padding-right": "0px"
         },
         "variant.message.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.04)",
-            "color": "rgb(107, 114, 128)",
+            "background-color": "color(srgb 0.407843 0.435294 0.470588 / 0.04)",
+            "color": "rgb(75, 85, 99)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -410,31 +410,31 @@
         },
         "variant.message.neutral.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(107, 114, 128)",
-            "border-top-color": "rgb(107, 114, 128)",
-            "border-left-color": "rgb(107, 114, 128)",
+            "color": "rgb(75, 85, 99)",
+            "border-top-color": "rgb(75, 85, 99)",
+            "border-left-color": "rgb(75, 85, 99)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.neutral.simple": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(107, 114, 128)",
+            "color": "rgb(75, 85, 99)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.badge.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
-            "color": "rgb(107, 114, 128)",
+            "background-color": "color(srgb 0.407843 0.435294 0.470588 / 0.08)",
+            "color": "rgb(75, 85, 99)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.neutral.soft": {
-            "background-color": "color(srgb 0.419608 0.447059 0.501961 / 0.08)",
-            "color": "rgb(107, 114, 128)",
+            "background-color": "color(srgb 0.407843 0.435294 0.470588 / 0.08)",
+            "color": "rgb(75, 85, 99)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -458,23 +458,23 @@
         },
         "variant.badge.neutral.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(107, 114, 128)",
-            "border-top-color": "rgb(107, 114, 128)",
-            "border-left-color": "rgb(107, 114, 128)",
+            "color": "rgb(75, 85, 99)",
+            "border-top-color": "rgb(75, 85, 99)",
+            "border-left-color": "rgb(75, 85, 99)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.neutral.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(107, 114, 128)",
-            "border-top-color": "rgb(107, 114, 128)",
-            "border-left-color": "rgb(107, 114, 128)",
+            "color": "rgb(75, 85, 99)",
+            "border-top-color": "rgb(75, 85, 99)",
+            "border-left-color": "rgb(75, 85, 99)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.primary.soft": {
             "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.04)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -490,15 +490,15 @@
         },
         "variant.message.primary.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
-            "border-left-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
+            "border-left-color": "rgb(29, 78, 216)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.primary.simple": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -506,7 +506,7 @@
         },
         "variant.badge.primary.soft": {
             "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -514,7 +514,7 @@
         },
         "variant.tag.primary.soft": {
             "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -538,23 +538,23 @@
         },
         "variant.badge.primary.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
-            "border-left-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
+            "border-left-color": "rgb(29, 78, 216)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.primary.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
-            "border-left-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
+            "border-left-color": "rgb(29, 78, 216)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.success.soft": {
             "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.04)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -570,15 +570,15 @@
         },
         "variant.message.success.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
-            "border-left-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
+            "border-left-color": "rgb(22, 101, 52)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.success.simple": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -586,7 +586,7 @@
         },
         "variant.badge.success.soft": {
             "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -594,7 +594,7 @@
         },
         "variant.tag.success.soft": {
             "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -618,23 +618,23 @@
         },
         "variant.badge.success.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
-            "border-left-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
+            "border-left-color": "rgb(22, 101, 52)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.success.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
-            "border-left-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
+            "border-left-color": "rgb(22, 101, 52)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.warning.soft": {
             "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.04)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -650,15 +650,15 @@
         },
         "variant.message.warning.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
-            "border-left-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
+            "border-left-color": "rgb(146, 64, 14)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.warning.simple": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -666,7 +666,7 @@
         },
         "variant.badge.warning.soft": {
             "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -674,7 +674,7 @@
         },
         "variant.tag.warning.soft": {
             "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -698,23 +698,23 @@
         },
         "variant.badge.warning.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
-            "border-left-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
+            "border-left-color": "rgb(146, 64, 14)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.warning.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
-            "border-left-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
+            "border-left-color": "rgb(146, 64, 14)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.danger.soft": {
             "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.04)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -730,15 +730,15 @@
         },
         "variant.message.danger.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
-            "border-left-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
+            "border-left-color": "rgb(185, 28, 28)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.message.danger.simple": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -746,7 +746,7 @@
         },
         "variant.badge.danger.soft": {
             "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -754,7 +754,7 @@
         },
         "variant.tag.danger.soft": {
             "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)",
             "border-top-width": "1px",
@@ -778,17 +778,17 @@
         },
         "variant.badge.danger.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
-            "border-left-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
+            "border-left-color": "rgb(185, 28, 28)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
         "variant.tag.danger.outline": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
-            "border-left-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
+            "border-left-color": "rgb(185, 28, 28)",
             "border-top-width": "1px",
             "border-left-width": "1px"
         },
@@ -993,7 +993,7 @@
         "button.secondary.none.sm": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
@@ -1004,7 +1004,7 @@
         "button.secondary.none.md": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
@@ -1015,7 +1015,7 @@
         "button.secondary.none.lg": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
@@ -1026,7 +1026,7 @@
         "button.secondary.neutral.sm": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
@@ -1037,7 +1037,7 @@
         "button.secondary.neutral.md": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
@@ -1048,7 +1048,7 @@
         "button.secondary.neutral.lg": {
             "background-color": "rgb(255, 255, 255)",
             "color": "rgb(26, 26, 26)",
-            "border-top-color": "rgb(229, 231, 235)",
+            "border-top-color": "rgb(138, 139, 141)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
@@ -1058,133 +1058,133 @@
         },
         "button.secondary.primary.sm": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.primary.md": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.primary.lg": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(37, 99, 235)",
-            "border-top-color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
+            "border-top-color": "rgb(29, 78, 216)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.success.sm": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.success.md": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.success.lg": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(21, 128, 61)",
-            "border-top-color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
+            "border-top-color": "rgb(22, 101, 52)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.warning.sm": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.warning.md": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.warning.lg": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(180, 83, 9)",
-            "border-top-color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
+            "border-top-color": "rgb(146, 64, 14)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.danger.sm": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.danger.md": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.secondary.danger.lg": {
             "background-color": "rgb(255, 255, 255)",
-            "color": "rgb(220, 38, 38)",
-            "border-top-color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
+            "border-top-color": "rgb(185, 28, 28)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
@@ -1256,133 +1256,133 @@
         },
         "button.ghost.primary.sm": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.primary.md": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.primary.lg": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.success.sm": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.success.md": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.success.lg": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(21, 128, 61)",
+            "color": "rgb(22, 101, 52)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.warning.sm": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.warning.md": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.warning.lg": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(180, 83, 9)",
+            "color": "rgb(146, 64, 14)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.danger.sm": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "12px",
             "height": "28px",
             "padding-left": "8px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.danger.md": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "14px",
             "height": "36px",
             "padding-left": "12px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
         "button.ghost.danger.lg": {
             "background-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(220, 38, 38)",
+            "color": "rgb(185, 28, 28)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "font-size": "16px",
             "height": "44px",
             "padding-left": "16px",
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "none",
             "outline-width": "3px"
         },
@@ -1450,8 +1450,8 @@
             "padding-bottom": "2px",
             "border-top-width": "1px",
             "border-top-left-radius": "999px",
-            "background-color": "rgb(229, 231, 235)",
-            "border-top-color": "rgb(229, 231, 235)"
+            "background-color": "rgb(138, 139, 141)",
+            "border-top-color": "rgb(138, 139, 141)"
         },
         "switch.off.thumb": {
             "width": "16px",
@@ -1478,7 +1478,7 @@
             "transform": "matrix(1, 0, 0, 1, 18, 0)"
         },
         "switch.disabled.track": {
-            "background-color": "rgb(229, 231, 235)",
+            "background-color": "rgb(138, 139, 141)",
             "opacity": "0.6",
             "cursor": "not-allowed"
         },
@@ -1569,7 +1569,7 @@
             "border-bottom-color": "rgb(229, 231, 235)"
         },
         "data-table.sort-icon": {
-            "color": "rgb(107, 114, 128)"
+            "color": "rgb(104, 111, 120)"
         },
         "button.rounded": {
             "border-top-left-radius": "999px"
@@ -1628,13 +1628,13 @@
         "tabs.horizontal.trigger-active": {
             "border-bottom-width": "2px",
             "border-bottom-color": "rgb(37, 99, 235)",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "font-weight": "500"
         },
         "tabs.horizontal.trigger-inactive": {
             "border-bottom-width": "2px",
             "border-bottom-color": "rgba(0, 0, 0, 0)",
-            "color": "rgb(107, 114, 128)"
+            "color": "rgb(104, 111, 120)"
         },
         "tabs.vertical.list": {
             "overflow": "visible",
@@ -1646,14 +1646,14 @@
             "border-right-width": "2px",
             "border-right-color": "rgb(37, 99, 235)",
             "border-bottom-width": "0px",
-            "color": "rgb(37, 99, 235)",
+            "color": "rgb(29, 78, 216)",
             "font-weight": "500"
         },
         "tabs.vertical.trigger-inactive": {
             "border-right-width": "2px",
             "border-right-color": "rgba(0, 0, 0, 0)",
             "border-bottom-width": "0px",
-            "color": "rgb(107, 114, 128)"
+            "color": "rgb(104, 111, 120)"
         },
         "grid.row": {
             "display": "grid",
@@ -1745,62 +1745,62 @@
             "outline-width": "2px"
         },
         "button-focus.primary.primary.sm": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.primary.md": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.primary.lg": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.success.sm": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.success.md": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.success.lg": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.warning.sm": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.warning.md": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.warning.lg": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.danger.sm": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.danger.md": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.primary.danger.lg": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
@@ -1835,62 +1835,62 @@
             "outline-width": "2px"
         },
         "button-focus.secondary.primary.sm": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.primary.md": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.primary.lg": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.success.sm": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.success.md": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.success.lg": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.warning.sm": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.warning.md": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.warning.lg": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.danger.sm": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.danger.md": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.secondary.danger.lg": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
@@ -1925,62 +1925,62 @@
             "outline-width": "2px"
         },
         "button-focus.ghost.primary.sm": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.primary.md": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.primary.lg": {
-            "outline-color": "rgb(37, 99, 235)",
+            "outline-color": "rgb(29, 78, 216)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.success.sm": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.success.md": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.success.lg": {
-            "outline-color": "rgb(21, 128, 61)",
+            "outline-color": "rgb(22, 101, 52)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.warning.sm": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.warning.md": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.warning.lg": {
-            "outline-color": "rgb(180, 83, 9)",
+            "outline-color": "rgb(146, 64, 14)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.danger.sm": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.danger.md": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
         "button-focus.ghost.danger.lg": {
-            "outline-color": "rgb(220, 38, 38)",
+            "outline-color": "rgb(185, 28, 28)",
             "outline-style": "solid",
             "outline-width": "2px"
         },
@@ -2059,74 +2059,74 @@
         "button-hover.secondary.none": {
             "background-color": "color(srgb 0.928157 0.928157 0.928157)",
             "color": "color(srgb 0.101961 0.101961 0.101961)",
-            "border-top-color": "color(srgb 0.738824 0.745098 0.757647)",
-            "border-left-color": "color(srgb 0.738824 0.745098 0.757647)"
+            "border-top-color": "color(srgb 0.453333 0.456471 0.462745)",
+            "border-left-color": "color(srgb 0.453333 0.456471 0.462745)"
         },
         "button-active.secondary.none": {
             "background-color": "color(srgb 0.874275 0.874275 0.874275)",
             "color": "color(srgb 0.101961 0.101961 0.101961)",
-            "border-top-color": "color(srgb 0.659216 0.664706 0.675686)",
-            "border-left-color": "color(srgb 0.659216 0.664706 0.675686)"
+            "border-top-color": "color(srgb 0.409412 0.412157 0.417647)",
+            "border-left-color": "color(srgb 0.409412 0.412157 0.417647)"
         },
         "button-hover.secondary.neutral": {
             "background-color": "color(srgb 0.928157 0.928157 0.928157)",
             "color": "color(srgb 0.101961 0.101961 0.101961)",
-            "border-top-color": "color(srgb 0.738824 0.745098 0.757647)",
-            "border-left-color": "color(srgb 0.738824 0.745098 0.757647)"
+            "border-top-color": "color(srgb 0.453333 0.456471 0.462745)",
+            "border-left-color": "color(srgb 0.453333 0.456471 0.462745)"
         },
         "button-active.secondary.neutral": {
             "background-color": "color(srgb 0.874275 0.874275 0.874275)",
             "color": "color(srgb 0.101961 0.101961 0.101961)",
-            "border-top-color": "color(srgb 0.659216 0.664706 0.675686)",
-            "border-left-color": "color(srgb 0.659216 0.664706 0.675686)"
+            "border-top-color": "color(srgb 0.409412 0.412157 0.417647)",
+            "border-left-color": "color(srgb 0.409412 0.412157 0.417647)"
         },
         "button-hover.secondary.primary": {
-            "background-color": "color(srgb 0.931608 0.951059 0.993725)",
-            "color": "color(srgb 0.139922 0.353882 0.823216)",
-            "border-top-color": "color(srgb 0.136471 0.33098 0.757647)",
-            "border-left-color": "color(srgb 0.136471 0.33098 0.757647)"
+            "background-color": "color(srgb 0.929098 0.944471 0.987765)",
+            "color": "color(srgb 0.112314 0.281412 0.757647)",
+            "border-top-color": "color(srgb 0.111373 0.265098 0.698039)",
+            "border-left-color": "color(srgb 0.111373 0.265098 0.698039)"
         },
         "button-active.secondary.primary": {
-            "background-color": "color(srgb 0.880314 0.914353 0.98902)",
-            "color": "color(srgb 0.135608 0.325255 0.741255)",
-            "border-top-color": "color(srgb 0.132157 0.302353 0.675686)",
-            "border-left-color": "color(srgb 0.132157 0.302353 0.675686)"
+            "background-color": "color(srgb 0.875922 0.902824 0.978588)",
+            "color": "color(srgb 0.111137 0.26102 0.683137)",
+            "border-top-color": "color(srgb 0.110196 0.244706 0.623529)",
+            "border-left-color": "color(srgb 0.110196 0.244706 0.623529)"
         },
         "button-hover.secondary.success": {
-            "background-color": "color(srgb 0.926588 0.960157 0.939137)",
-            "color": "color(srgb 0.0847059 0.453961 0.222745)",
-            "border-top-color": "color(srgb 0.0862745 0.421961 0.211765)",
-            "border-left-color": "color(srgb 0.0862745 0.421961 0.211765)"
+            "background-color": "color(srgb 0.926902 0.951686 0.936314)",
+            "color": "color(srgb 0.0881569 0.360784 0.191686)",
+            "border-top-color": "color(srgb 0.0894118 0.337255 0.183529)",
+            "border-left-color": "color(srgb 0.0894118 0.337255 0.183529)"
         },
         "button-active.secondary.success": {
-            "background-color": "color(srgb 0.871529 0.930275 0.89349)",
-            "color": "color(srgb 0.0866667 0.413961 0.20902)",
-            "border-top-color": "color(srgb 0.0882353 0.381961 0.198039)",
-            "border-left-color": "color(srgb 0.0882353 0.381961 0.198039)"
+            "background-color": "color(srgb 0.872078 0.915451 0.888549)",
+            "color": "color(srgb 0.0897255 0.331373 0.18149)",
+            "border-top-color": "color(srgb 0.0909804 0.307843 0.173333)",
+            "border-left-color": "color(srgb 0.0909804 0.307843 0.173333)"
         },
         "button-hover.secondary.warning": {
-            "background-color": "color(srgb 0.976471 0.946039 0.922824)",
-            "color": "color(srgb 0.633412 0.298667 0.0432941)",
-            "border-top-color": "color(srgb 0.585098 0.280784 0.0486275)",
-            "border-left-color": "color(srgb 0.585098 0.280784 0.0486275)"
+            "background-color": "color(srgb 0.965804 0.940078 0.924392)",
+            "color": "color(srgb 0.516078 0.233098 0.060549)",
+            "border-top-color": "color(srgb 0.478431 0.221176 0.0643137)",
+            "border-left-color": "color(srgb 0.478431 0.221176 0.0643137)"
         },
         "button-active.secondary.warning": {
-            "background-color": "color(srgb 0.958824 0.905569 0.864941)",
-            "color": "color(srgb 0.57302 0.276314 0.0499608)",
-            "border-top-color": "color(srgb 0.524706 0.258431 0.0552941)",
-            "border-left-color": "color(srgb 0.524706 0.258431 0.0552941)"
+            "background-color": "color(srgb 0.940157 0.895137 0.867686)",
+            "color": "color(srgb 0.46902 0.218196 0.0652549)",
+            "border-top-color": "color(srgb 0.431373 0.206275 0.0690196)",
+            "border-left-color": "color(srgb 0.431373 0.206275 0.0690196)"
         },
         "button-hover.secondary.danger": {
-            "background-color": "color(srgb 0.98902 0.931922 0.931922)",
-            "color": "color(srgb 0.771451 0.143373 0.143373)",
-            "border-top-color": "color(srgb 0.710588 0.139608 0.139608)",
-            "border-left-color": "color(srgb 0.710588 0.139608 0.139608)"
+            "background-color": "color(srgb 0.978039 0.928784 0.928784)",
+            "color": "color(srgb 0.650667 0.108863 0.108863)",
+            "border-top-color": "color(srgb 0.600784 0.108235 0.108235)",
+            "border-left-color": "color(srgb 0.600784 0.108235 0.108235)"
         },
         "button-active.secondary.danger": {
-            "background-color": "color(srgb 0.980784 0.880863 0.880863)",
-            "color": "color(srgb 0.695373 0.138667 0.138667)",
-            "border-top-color": "color(srgb 0.63451 0.134902 0.134902)",
-            "border-left-color": "color(srgb 0.63451 0.134902 0.134902)"
+            "background-color": "color(srgb 0.961569 0.875373 0.875373)",
+            "color": "color(srgb 0.588314 0.108078 0.108078)",
+            "border-top-color": "color(srgb 0.538431 0.107451 0.107451)",
+            "border-left-color": "color(srgb 0.538431 0.107451 0.107451)"
         },
         "button-hover.ghost.none": {
             "background-color": "color(srgb 0.101961 0.101961 0.101961 / 0.08)",
@@ -2153,50 +2153,50 @@
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-hover.ghost.primary": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.08)",
-            "color": "color(srgb 0.139922 0.353882 0.823216)",
+            "background-color": "color(srgb 0.113725 0.305882 0.847059 / 0.08)",
+            "color": "color(srgb 0.112314 0.281412 0.757647)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-active.ghost.primary": {
-            "background-color": "color(srgb 0.145098 0.388235 0.921569 / 0.14)",
-            "color": "color(srgb 0.135608 0.325255 0.741255)",
+            "background-color": "color(srgb 0.113725 0.305882 0.847059 / 0.14)",
+            "color": "color(srgb 0.111137 0.26102 0.683137)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-hover.ghost.success": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.08)",
-            "color": "color(srgb 0.0847059 0.453961 0.222745)",
+            "background-color": "color(srgb 0.0862745 0.396078 0.203922 / 0.08)",
+            "color": "color(srgb 0.0881569 0.360784 0.191686)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-active.ghost.success": {
-            "background-color": "color(srgb 0.0823529 0.501961 0.239216 / 0.14)",
-            "color": "color(srgb 0.0866667 0.413961 0.20902)",
+            "background-color": "color(srgb 0.0862745 0.396078 0.203922 / 0.14)",
+            "color": "color(srgb 0.0897255 0.331373 0.18149)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-hover.ghost.warning": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.08)",
-            "color": "color(srgb 0.633412 0.298667 0.0432941)",
+            "background-color": "color(srgb 0.572549 0.25098 0.054902 / 0.08)",
+            "color": "color(srgb 0.516078 0.233098 0.060549)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-active.ghost.warning": {
-            "background-color": "color(srgb 0.705882 0.32549 0.0352941 / 0.14)",
-            "color": "color(srgb 0.57302 0.276314 0.0499608)",
+            "background-color": "color(srgb 0.572549 0.25098 0.054902 / 0.14)",
+            "color": "color(srgb 0.46902 0.218196 0.0652549)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-hover.ghost.danger": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.08)",
-            "color": "color(srgb 0.771451 0.143373 0.143373)",
+            "background-color": "color(srgb 0.72549 0.109804 0.109804 / 0.08)",
+            "color": "color(srgb 0.650667 0.108863 0.108863)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
         "button-active.ghost.danger": {
-            "background-color": "color(srgb 0.862745 0.14902 0.14902 / 0.14)",
-            "color": "color(srgb 0.695373 0.138667 0.138667)",
+            "background-color": "color(srgb 0.72549 0.109804 0.109804 / 0.14)",
+            "color": "color(srgb 0.588314 0.108078 0.108078)",
             "border-top-color": "rgba(0, 0, 0, 0)",
             "border-left-color": "rgba(0, 0, 0, 0)"
         },
@@ -2296,13 +2296,13 @@
             "background-color": "rgb(247, 247, 248)",
             "color": "rgb(26, 26, 26)",
             "border-top-color": "rgb(229, 231, 235)",
-            "border-left-color": "rgb(107, 114, 128)",
+            "border-left-color": "rgb(104, 111, 120)",
             "border-left-width": "3px",
             "border-top-left-radius": "8px",
             "box-shadow": "rgba(0, 0, 0, 0.12) 0px 8px 24px 0px"
         },
         "toast.neutral.icon": {
-            "color": "rgb(107, 114, 128)"
+            "color": "rgb(104, 111, 120)"
         },
         "toast.primary.root": {
             "background-color": "rgb(247, 247, 248)",

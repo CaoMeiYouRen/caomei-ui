@@ -72,7 +72,7 @@ const separator = computed(() => context?.separator.value ?? '/')
 }
 
 .caomei-breadcrumb__link:hover {
-    color: var(--caomei-breadcrumb-link-hover-color, var(--caomei-color-primary));
+    color: var(--caomei-breadcrumb-link-hover-color, var(--caomei-color-primary-text));
 }
 
 .caomei-breadcrumb__link:focus-visible {

@@ -99,13 +99,13 @@ const rootClass = computed(() => `caomei-float-label--${props.variant}`)
 
 /* 聚焦态标签色 */
 .caomei-float-label:has(> *:focus-within) :deep(> label) {
-    color: var(--caomei-float-label-focus-color, var(--caomei-color-primary));
+    color: var(--caomei-float-label-focus-color, var(--caomei-color-primary-text));
 }
 
 /* 校验失败态标签色（置于聚焦之后，优先于聚焦色） */
 .caomei-float-label:has(> :is(.caomei-input--invalid, .caomei-input-number--invalid, .caomei-select--invalid, .caomei-multi-select--invalid, .caomei-textarea--invalid)) :deep(> label),
 .caomei-float-label:has([aria-invalid='true']) :deep(> label) {
-    color: var(--caomei-float-label-invalid-color, var(--caomei-color-danger));
+    color: var(--caomei-float-label-invalid-color, var(--caomei-color-danger-text));
 }
 
 @media (prefers-reduced-motion: reduce) {

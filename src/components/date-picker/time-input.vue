@@ -238,7 +238,7 @@ function onDayPeriodChange(event: Event): void {
     box-sizing: border-box;
     height: var(--caomei-control-height-sm);
     padding: 0 var(--caomei-space-1);
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-sm);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);

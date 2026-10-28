@@ -206,7 +206,7 @@ function onTimeUpdate(value: TimeParts): void {
     max-width: var(--caomei-date-picker-max-width, var(--caomei-select-max-width));
     height: var(--caomei-date-picker-height, var(--caomei-control-height-md));
     padding: 0 var(--caomei-date-picker-padding-x, var(--caomei-space-3));
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);

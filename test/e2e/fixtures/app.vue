@@ -246,6 +246,9 @@ const buttonContrastVariants = ['primary', 'secondary', 'ghost'] as const
 const buttonContrastTones = ['none', 'neutral', 'primary', 'success', 'warning', 'danger'] as const
 const buttonContrastCombos = buttonContrastVariants.flatMap((variant) => buttonContrastTones.map((tone) => ({ variant, tone })))
 
+/* 预设对比度矩阵受检面：5 语气 × soft / outline × Tag / Message，见 `test/e2e/preset-contrast.e2e.ts`。 */
+const presetContrastTones = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
+
 /**
  * 内联 ColorPicker 用例（见 `test/e2e/overlay-stacking.e2e.ts` 第二个用例）：`inline` 形态是
  * 页面内的静态 flex item，`z-index` 对其同样生效，必须**不参与**浮层层叠（不得被基类带上档位）。
@@ -1399,6 +1402,60 @@ const ConfirmDriver = defineComponent({
                 disabled
             </CaomeiButton>
         </section>
+        <!--
+          预设对比度矩阵（见 `test/e2e/preset-contrast.e2e.ts`）：5 语气 × soft / outline × Tag / Message，
+          另加输入 / 复选框 / 开关 / 滑块的控件边界（WCAG 1.4.11 3:1）。与其它受检面同属「追加在模板末尾」的约定。
+        -->
+        <section id="preset-contrast" class="fixture__case">
+            <template v-for="tone in presetContrastTones" :key="`preset-${tone}`">
+                <CaomeiTag
+                    :tone="tone"
+                    variant="soft"
+                    :data-contrast-key="`tag/${tone}/soft`"
+                >
+                    {{ tone }}
+                </CaomeiTag>
+                <CaomeiTag
+                    :tone="tone"
+                    variant="outline"
+                    :data-contrast-key="`tag/${tone}/outline`"
+                >
+                    {{ tone }}
+                </CaomeiTag>
+                <CaomeiMessage
+                    :tone="tone"
+                    variant="soft"
+                    :data-contrast-key="`message/${tone}/soft`"
+                    title="标题"
+                    description="预设对比度矩阵文本。"
+                />
+                <CaomeiMessage
+                    :tone="tone"
+                    variant="outline"
+                    :data-contrast-key="`message/${tone}/outline`"
+                    title="标题"
+                    description="预设对比度矩阵文本。"
+                />
+            </template>
+            <div data-nontext="input">
+                <CaomeiInput placeholder="输入" />
+            </div>
+            <div data-nontext="checkbox">
+                <CaomeiCheckbox>同意</CaomeiCheckbox>
+            </div>
+            <div data-nontext="switch">
+                <CaomeiSwitch />
+            </div>
+            <div data-nontext="slider">
+                <CaomeiSlider :model-value="40" />
+            </div>
+            <p
+                class="fixture-muted"
+                data-contrast-key="muted/text"
+            >
+                次要文字
+            </p>
+        </section>
     </main>
 </template>
 
@@ -1566,5 +1623,11 @@ const ConfirmDriver = defineComponent({
 */
 #data-table-keyboard-scroll :deep(.caomei-data-table__table) {
     min-width: 720px;
+}
+
+/* 预设对比度矩阵的次要文字样本：颜色由 token 决定，不在这里写死 */
+.fixture-muted {
+    margin: 0;
+    color: var(--caomei-color-text-muted);
 }
 </style>

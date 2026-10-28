@@ -407,7 +407,7 @@ watch(normalizedOptions, () => {
     max-width: var(--caomei-auto-complete-max-width, var(--caomei-select-max-width));
     min-height: var(--caomei-auto-complete-min-height, var(--caomei-control-height-md));
     padding: var(--caomei-auto-complete-padding-block, var(--caomei-space-1)) var(--caomei-auto-complete-padding-inline, var(--caomei-space-3));
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
@@ -641,6 +641,6 @@ watch(normalizedOptions, () => {
 .caomei-auto-complete__indicator {
     display: inline-flex;
     flex-shrink: 0;
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 </style>

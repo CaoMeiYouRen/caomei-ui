@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<PopoverTriggerProps>(), {
     gap: var(--caomei-popover-trigger-gap, var(--caomei-space-1));
     height: var(--caomei-popover-trigger-height, var(--caomei-control-height-md));
     padding: 0 var(--caomei-popover-trigger-padding-x, var(--caomei-space-3));
-    border: 1px solid var(--caomei-popover-trigger-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-popover-trigger-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-popover-trigger-radius, var(--caomei-radius-md));
     background: var(--caomei-popover-trigger-bg, var(--caomei-color-bg));
     color: var(--caomei-color-text);

@@ -127,39 +127,44 @@ const rootClass = computed(() => [
 :where(.caomei-message--primary) {
     --caomei-message-tone: var(--caomei-color-primary);
     --caomei-message-solid: var(--caomei-color-primary-solid);
+    --caomei-message-text: var(--caomei-color-primary-text);
 }
 
 :where(.caomei-message--success) {
     --caomei-message-tone: var(--caomei-color-success);
     --caomei-message-solid: var(--caomei-color-success-solid);
+    --caomei-message-text: var(--caomei-color-success-text);
 }
 
 :where(.caomei-message--warning) {
     --caomei-message-tone: var(--caomei-color-warning);
     --caomei-message-solid: var(--caomei-color-warning-solid);
+    --caomei-message-text: var(--caomei-color-warning-text);
 }
 
 :where(.caomei-message--danger) {
     --caomei-message-tone: var(--caomei-color-danger);
     --caomei-message-solid: var(--caomei-color-danger-solid);
+    --caomei-message-text: var(--caomei-color-danger-text);
 }
 
 :where(.caomei-message--neutral) {
     --caomei-message-tone: var(--caomei-color-text-muted);
     --caomei-message-solid: var(--caomei-color-neutral-solid);
+    --caomei-message-text: var(--caomei-color-neutral-text);
 }
 
 .caomei-message--soft {
     /*
       soft 底比例（`--caomei-message-soft-mix`）以**实测**为判据：正文（14px 常规）在**实际合成
-      背景**上须 ≥ 4.5:1 **且留可维护裕度**（装置 `test/e2e/alert-contrast.e2e.ts`，亮色 + 暗色两档）。
-      8% 时实测 `neutral` / `danger` 仅 4.38 / 4.27（低于阈值）、`success` / `warning` 4.507 / 4.506
-      （贴线，任何 token 微调即翻档），故统一取 **4%**（暗色下同样达标，最低约 4.6:1）。
+      背景**上须 ≥ 4.5:1 **且留可维护裕度**（装置 `test/e2e/alert-contrast.e2e.ts` 与预设矩阵
+      `test/e2e/preset-contrast.e2e.ts`）。文本自 2026-10-28 起改用 `-text` 角色，4% 底在全部
+      预设与明暗下均达标；调整此值后须复跑两个装置并重冻结计算样式基线。
       注意 `soft` 底是半透明色，其对比度取决于**与页面底色逐层合成**的结果，与元素自身
-      `background-color` 不同——调整此值后须复跑上述装置并重冻结计算样式基线。
+      `background-color` 不同。
     */
     background: color-mix(in srgb, var(--caomei-message-tone) var(--caomei-message-soft-mix, 4%), transparent);
-    color: var(--caomei-message-tone);
+    color: var(--caomei-message-text);
 }
 
 .caomei-message--solid {
@@ -168,8 +173,8 @@ const rootClass = computed(() => [
 }
 
 .caomei-message--outline {
-    border-color: var(--caomei-message-tone);
-    color: var(--caomei-message-tone);
+    border-color: var(--caomei-message-text);
+    color: var(--caomei-message-text);
 }
 
 /* 行内形态：无背景 / 边框 / 内边距，仅保留语义色文本与图标 */
@@ -177,7 +182,7 @@ const rootClass = computed(() => [
     padding: 0;
     border-color: transparent;
     background: transparent;
-    color: var(--caomei-message-tone);
+    color: var(--caomei-message-text);
 }
 
 .caomei-message__icon {

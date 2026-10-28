@@ -19,7 +19,7 @@
 :root {
     /* 外壳几何 */
     --caomei-field-border-width: 1px;
-    --caomei-field-border-color: var(--caomei-color-border);
+    --caomei-field-border-color: var(--caomei-color-control-border);
     --caomei-field-border-radius: var(--caomei-radius-md);
     --caomei-field-bg: var(--caomei-color-bg);
     --caomei-field-color: var(--caomei-color-text);

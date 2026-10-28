@@ -84,7 +84,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     flex-shrink: 0;
     width: var(--caomei-radio-size, 18px);
     height: var(--caomei-radio-size, 18px);
-    border: 1px solid var(--caomei-radio-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-radio-border, var(--caomei-color-control-border));
     border-radius: 50%;
     background: var(--caomei-radio-bg, var(--caomei-color-bg));
     transition: background-color 0.15s ease, border-color 0.15s ease;

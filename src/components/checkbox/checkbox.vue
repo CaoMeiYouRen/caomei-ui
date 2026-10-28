@@ -159,7 +159,7 @@ const rootClass = computed(() => [
     width: var(--caomei-checkbox-size, 18px);
     height: var(--caomei-checkbox-size, 18px);
     padding: 0;
-    border: 1px solid var(--caomei-checkbox-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-checkbox-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-checkbox-radius, var(--caomei-radius-sm));
     background: var(--caomei-checkbox-bg, var(--caomei-color-bg));
     color: var(--caomei-checkbox-foreground, var(--caomei-color-primary-foreground));

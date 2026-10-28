@@ -512,7 +512,7 @@ function clearValue(): void {
 .caomei-select__indicator {
     display: inline-flex;
     flex-shrink: 0;
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 
 .caomei-select-group {

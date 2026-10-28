@@ -103,6 +103,6 @@ const isEmpty = computed(() => items.value.length === 0)
 }
 
 .caomei-data-view__loading {
-    color: var(--caomei-color-primary);
+    color: var(--caomei-color-primary-text);
 }
 </style>

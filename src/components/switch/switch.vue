@@ -70,9 +70,9 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
     width: var(--caomei-switch-width, 40px);
     height: var(--caomei-switch-height, 22px);
     padding: 2px;
-    border: 1px solid var(--caomei-switch-border, var(--caomei-color-border));
+    border: 1px solid var(--caomei-switch-border, var(--caomei-color-control-border));
     border-radius: var(--caomei-switch-radius, 999px);
-    background: var(--caomei-switch-bg, var(--caomei-color-border));
+    background: var(--caomei-switch-bg, var(--caomei-color-control-border));
     cursor: pointer;
     transition: background-color 0.15s ease, border-color 0.15s ease;
 }

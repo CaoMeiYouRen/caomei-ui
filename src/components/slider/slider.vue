@@ -156,7 +156,7 @@ function handleCommit(values: number[]): void {
     flex: 1 1 auto;
     height: var(--caomei-slider-track-height, 6px);
     border-radius: var(--caomei-slider-track-radius, 999px);
-    background: var(--caomei-slider-track-bg, var(--caomei-color-border));
+    background: var(--caomei-slider-track-bg, var(--caomei-color-control-border));
 }
 
 .caomei-slider--vertical .caomei-slider__track {

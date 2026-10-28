@@ -153,7 +153,7 @@ function onUpdate(value: string): void {
     width: var(--caomei-control-height-md);
     height: var(--caomei-control-height-md);
     padding: var(--caomei-space-1);
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-md);
     background: var(--caomei-color-bg);
     cursor: pointer;

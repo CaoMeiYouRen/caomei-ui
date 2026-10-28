@@ -86,7 +86,7 @@
 
 ## 6. 未覆盖边界
 
-- **Code Scanning 仍有 5 项 open**（不在本条范围）：`scripts/docs/check-example-refs.mjs` 的大写标签匹配、`scripts/docs/check-i18n-routing.mjs` 的不完整多字符清理，以及 `.github/workflows/test.yml` 两个 job 缺 `permissions` 块。均为仓库内脚本 / CI 配置，需独立批次处置。
+- **Code Scanning 仍有 5 项 open**（不在本条范围，已由 [S2 记录](./2026-10-28-phase26-s2-code-scanning-remediation.md) 承接）：`scripts/docs/check-example-refs.mjs` 的大写标签匹配、`scripts/docs/check-i18n-routing.mjs` 的不完整多字符清理，以及 `.github/workflows/test.yml` 两个 job 缺 `permissions` 块。均为仓库内脚本 / CI 配置，需独立批次处置。
 - `deepmerge` low（见 §3）无补丁可用，未清零。
 - 传递依赖含工具链内部大版本跃迁（如 `cssnano` 8 → 9、`@colordx/core` 5 → 7、`diff` 8 → 9、`postcss-calc` 10 → 11），均由 `nuxt` 4.6.3 工具链带入，已由 `pnpm verify` / `check:nuxt` 覆盖。
 - 后续候选（未登记 Backlog，待评估）：把「受控包在 lockfile 中单实例 / 不进旧区间」做成 `scripts/governance` 的轻量机检，替代 §4 的手工 grep。

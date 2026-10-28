@@ -68,7 +68,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-popover-trigger-gap` | `--caomei-space-1` | Gap between the icon and the text inside the trigger |
 | `--caomei-popover-trigger-padding-x` | `--caomei-space-3` | Trigger horizontal padding |
 | `--caomei-popover-trigger-bg` | `--caomei-color-bg` | Trigger background color |
-| `--caomei-popover-trigger-border` | `--caomei-color-border` | Trigger border color |
+| `--caomei-popover-trigger-border` | `--caomei-color-control-border` | Trigger border color |
 | `--caomei-popover-trigger-radius` | `--caomei-radius-md` | Trigger border radius |
 
 ```css

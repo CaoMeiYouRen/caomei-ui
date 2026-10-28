@@ -58,7 +58,7 @@ Switch between `sm` / `md` (default) / `lg` with `size`; it affects font size an
 
 ## Style customization
 
-Colors come from the global semantic tokens: `primary` / `success` / `warning` / `danger` use `--caomei-color-<tone>`, and `neutral` uses `--caomei-color-text-muted`; the `solid` variant background uses the matching `--caomei-color-<tone>-solid` (`--caomei-color-neutral-solid` for `neutral`). There is also a radius override hook:
+Colors come from the global semantic tokens: soft / outline / simple **text** uses `--caomei-color-<tone>-text` (`--caomei-color-neutral-text` for `neutral`), while the soft background and outline border still use `--caomei-color-<tone>`; the `solid` variant background uses the matching `--caomei-color-<tone>-solid` (`--caomei-color-neutral-solid` for `neutral`). There is also a radius override hook:
 
 | Variable | Default | Description |
 |------|------|------|

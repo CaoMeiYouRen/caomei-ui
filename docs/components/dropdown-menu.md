@@ -111,7 +111,7 @@
 | `--caomei-dropdown-menu-trigger-gap` | `--caomei-space-1` | 触发器内元素间距 |
 | `--caomei-dropdown-menu-trigger-padding-x` | `--caomei-space-3` | 触发器水平内边距 |
 | `--caomei-dropdown-menu-trigger-padding-y` | `--caomei-space-2` | 触发器垂直内边距 |
-| `--caomei-dropdown-menu-trigger-border` | `--caomei-color-border` | 触发器描边色 |
+| `--caomei-dropdown-menu-trigger-border` | `--caomei-color-control-border` | 触发器描边色 |
 | `--caomei-dropdown-menu-trigger-bg` | `--caomei-color-bg` | 触发器背景色 |
 
 ```css

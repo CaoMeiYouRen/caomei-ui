@@ -20,6 +20,8 @@ Switch the semantic tone with `tone`, and between `soft` / `solid` / `outline` w
     ssg="true"
 />
 
+> soft / outline text color follows `--caomei-color-<tone>-text` for the tone (`--caomei-color-neutral-text` for `neutral`); override it per component with `--caomei-badge-text`.
+
 ## Numeric maximum
 
 When `value` is a number greater than `max`, `max+` is shown.

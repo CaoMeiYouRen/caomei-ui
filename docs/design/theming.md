@@ -19,7 +19,7 @@
   --caomei-color-bg: #ffffff;
   --caomei-color-bg-elevated: #f7f7f8;
   --caomei-color-text: #1a1a1a;
-  --caomei-color-text-muted: #6b7280;
+  --caomei-color-text-muted: #686f78;
   --caomei-color-border: #e5e7eb;
   --caomei-color-success: #15803d;
   --caomei-color-warning: #b45309;
@@ -30,6 +30,12 @@
   --caomei-color-danger-solid: #dc2626;
   --caomei-color-neutral-solid: #52525b;
   --caomei-color-on-solid: #fff;
+  --caomei-color-primary-text: #1d4ed8;
+  --caomei-color-success-text: #166534;
+  --caomei-color-warning-text: #92400e;
+  --caomei-color-danger-text: #b91c1c;
+  --caomei-color-neutral-text: #4b5563;
+  --caomei-color-control-border: #8a8b8d;
 
   --caomei-radius-sm: 4px;
   --caomei-radius-md: 8px;
@@ -57,10 +63,16 @@
   --caomei-color-danger: #f87171;
   --caomei-color-success: #4ade80;
   --caomei-color-warning: #fbbf24;
+  --caomei-color-primary-text: var(--caomei-color-primary);
+  --caomei-color-success-text: var(--caomei-color-success);
+  --caomei-color-warning-text: var(--caomei-color-warning);
+  --caomei-color-danger-text: var(--caomei-color-danger);
+  --caomei-color-neutral-text: var(--caomei-color-text-muted);
+  --caomei-color-control-border: #67676a;
 }
 ```
 
-`--caomei-color-<tone>` 为**随主题自适应的强调色**（用于文字、边框、soft 底）；`--caomei-color-<tone>-foreground` 是**与该 tone 配套的前景色**（tone 作底时的文字 / 图标色，随明暗切换，如暗色 `primary-foreground` 取深色 `#0b0b0d` 以配亮蓝底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，固定配 `--caomei-color-on-solid`（保证实底白字对比度）。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
+`--caomei-color-<tone>` 为**随主题自适应的强调色**（用于边框 / 填充 / soft 底）；文字改用 `--caomei-color-<tone>-text`（文字安全前景，soft / outline / 文本型消费点），交互控件边界用 `--caomei-color-control-border`（≥ 3:1）；`--caomei-color-<tone>-foreground` 是**与该 tone 配套的前景色**（tone 作底时的文字 / 图标色，随明暗切换，如暗色 `primary-foreground` 取深色 `#0b0b0d` 以配亮蓝底）；`--caomei-color-<tone>-solid` 为**跨主题稳定的实底背景色**，仅用于 `solid` 变体，固定配 `--caomei-color-on-solid`（保证实底白字对比度）。`neutral` 无强调色，仅提供 `--caomei-color-neutral-solid`。
 
 > 以上 token 片段为节选，完整清单以 `src/styles/theme.css` 为准。断点约定为 sm 640px / md 768px / lg 1024px；`@media` 不支持 CSS 自定义属性，故未定义 `--caomei-breakpoint-*`（详见 [设计规范 §2.3](./design-spec.md)）。
 

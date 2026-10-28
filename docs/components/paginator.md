@@ -59,7 +59,7 @@
 | `--caomei-paginator-control-size` | `32px` | 控件最小宽度与高度 |
 | `--caomei-paginator-radius` | `--caomei-radius-sm` | 控件圆角 |
 | `--caomei-paginator-bg` | `--caomei-color-bg` | 控件背景色 |
-| `--caomei-paginator-border` | `--caomei-color-border` | 控件描边色 |
+| `--caomei-paginator-border` | `--caomei-color-control-border` | 控件描边色 |
 | `--caomei-paginator-color` | `--caomei-color-text` | 控件文字色 |
 | `--caomei-paginator-active-bg` | `--caomei-color-primary` | 当前页背景与描边色 |
 | `--caomei-paginator-active-color` | `--caomei-color-primary-foreground` | 当前页文字色 |

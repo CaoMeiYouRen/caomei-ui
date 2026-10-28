@@ -73,7 +73,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-radio-size` | from the `size` step | Indicator diameter (sm 16 / md 18 / lg 20) |
 | `--caomei-radio-gap` | `--caomei-space-2` | Gap between the indicator and the label |
 | `--caomei-radio-bg` | `--caomei-color-bg` | Unselected indicator background color |
-| `--caomei-radio-border` | `--caomei-color-border` | Unselected indicator border color (`--caomei-color-danger` when `invalid`) |
+| `--caomei-radio-border` | `--caomei-color-control-border` | Unselected indicator border color (`--caomei-color-danger` when `invalid`) |
 | `--caomei-radio-active-bg` | `--caomei-color-primary` | Selected indicator background and border color |
 | `--caomei-radio-dot` | `--caomei-color-primary-foreground` | Selected dot color |
 | `--caomei-radio-focus` | `--caomei-color-primary` | Focus ring color (`--caomei-color-danger` when `invalid`) |

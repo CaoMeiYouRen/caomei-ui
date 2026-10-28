@@ -89,10 +89,12 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 **冻结语义**：token 的**名称与用途**冻结；默认色值 / 尺寸值可调（视觉细节不承诺像素级稳定）。删除 / 重命名 / 改变用途属破坏性变更；新增 token 属向后兼容增量。
 
+> **2026-10-28 增量（G1-F）**：新增 6 个公开角色 token（`--caomei-color-primary-text` / `success-text` / `warning-text` / `danger-text` / `neutral-text` + `--caomei-color-control-border`）与 3 个组件级默认声明（`--caomei-{tag,badge,message}-text`），属向后兼容增量；有效冻结面由 **371** 更新为 **380**（155 默认声明 ∪ 290 已披露钩子，交集 65）。披露面 +2 的构成为 `control-border`（进入 8 张组件「样式定制」表）+ `neutral-text`（进入 Message 章节说明），其余组件级声明不计入披露面。本表其余数字为 2026-10-24 时点值，不回改。
+
 **复算命令**：
 
 ```bash
-# 写入中间文件：146（默认声明）与 288（中英「样式定制」表；剔除 `--caomei-color-` 一类前缀片段）
+# 写入中间文件：2026-10-24 时点值为 146（默认声明）与 288（中英「样式定制」章节；剔除 `--caomei-color-` 一类前缀片段）
 rg -o --no-filename -- "--caomei-[a-z0-9-]+:" src | sed 's/:$//' | sort -u > tokens-defined.txt
 awk '/^## (样式定制|Style customization)/{flag=1;next} /^## /{flag=0} flag' docs/components/*.md \
   | rg -o --no-filename -- "--caomei-[a-z0-9-]+" | grep -v -- "-$" > tokens-documented.txt
@@ -101,8 +103,9 @@ awk '/^## (样式定制|Style customization)/{flag=1;next} /^## /{flag=0} flag' 
 sort -u tokens-documented.txt -o tokens-documented.txt
 wc -l tokens-defined.txt tokens-documented.txt
 
-# 371（有效冻结面）
+# 2026-10-24 时点值：371（有效冻结面）；当前值 380
 cat tokens-defined.txt tokens-documented.txt | sort -u | wc -l
+comm -12 tokens-defined.txt tokens-documented.txt | wc -l   # 交集（2026-10-24 为 63，当前 65）
 
 # 386 / 98 / 83 / 15（消费面与未披露拆分）
 rg -o --no-filename -- "--caomei-[a-z0-9-]+" src | grep -v -- "-$" | sort -u > tokens-consumed.txt
@@ -182,7 +185,7 @@ comm -23 tokens-consumed-undocumented.txt tokens-defined.txt | wc -l
 
 - **不落地守卫**：API 表面基线的形态与守卫由 M1-3 只做评估，不在本批实现。
 - **生成物限制**：`docs/.vitepress/data/component-meta.json` 为 gitignored 生成物，不能直接充当提交态基线；§2.1 的 516 / 85 / 70 / 16 为**本次复算值**，发布前须重新生成复核。
-- **token 已披露集合的口径**：只取中英组件页「样式定制」章节表格内的变量名（2026-10-24 实测均为 288 且集合一致）；示例代码或其它章节偶然出现的变量名**不构成披露**，也不进入冻结面。
+- **token 已披露集合的口径**：取中英组件页「样式定制」章节内的变量名（**含表格与紧邻的章节说明文字**；2026-10-24 实测均为 288 且集合一致）；其它章节或示例代码中偶然出现的变量名**不构成披露**，也不进入冻结面。
 - **未逐条冻结组件清单**：本记录冻结的是「面 + 规则 + 复算入口」，逐组件 props / events / slots 清单以组件页与 `types.ts` 为准，避免双载体漂移。
 - **不涉及实现**：本批零 `src/**`、零测试、零配置。
 

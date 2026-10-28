@@ -27,6 +27,8 @@
     ssg="true"
 />
 
+> soft / outline 的文本色按 `tone` 取 `--caomei-color-<tone>-text`（`neutral` 为 `--caomei-color-neutral-text`）；需要单独覆盖时用组件内变量 `--caomei-tag-text`。
+
 ## 可关闭
 
 设置 `closable` 后显示关闭按钮，点击抛出 `close` 事件由父级处理移除。

@@ -80,7 +80,7 @@
 
 | 变量 | 默认 | 说明 |
 |------|------|------|
-| `--caomei-select-button-border` | `--caomei-color-border` | 整组描边与分段分隔线颜色 |
+| `--caomei-select-button-border` | `--caomei-color-control-border` | 整组描边与分段分隔线颜色 |
 | `--caomei-select-button-radius` | `--caomei-radius-md` | 整组圆角 |
 | `--caomei-select-button-bg` | `--caomei-color-bg` | 未选中段背景色 |
 | `--caomei-select-button-color` | `--caomei-color-text` | 未选中段文字色 |

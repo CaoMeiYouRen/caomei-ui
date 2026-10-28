@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-10-28-phase26-g1-f-color-role-fix.md](./2026-10-28-phase26-g1-f-color-role-fix.md)：**Phase 26 G1 裁定（修复）与 G1-F 颜色角色修复**。用户 2026-10-28 裁定第 2 档「颜色角色分层与非文本对比度」为**修复**；新增 `--caomei-color-<tone>-text`（5 个）与 `--caomei-color-control-border`，Tag / Badge / Message（含 Alert）/ Button 文字型变体 / toast action 等文本消费点与字段族 / 复选 / 单选 / 开关 / 滑块 / 分段 / 触发器 / 上传区 / 分页 / 步骤指示器的边界完成角色拆分；`caomei` / `momei` `text-muted` 提升至 AA。新增常驻矩阵（6 预设 × 明暗 × 2 种背景 × 21 条文本 + 4 条控件边界）通过，Tag / Message 全预设 axe `color-contrast` 零违规（同 spec 可复现）；capture 重冻结前差异全为颜色属性、冻结后 0 差异，视觉基线重冻结。token 有效冻结面 371 → 380（向后兼容增量）。**Review Gate**：结论见本记录 §5。
+
 
 - [2026-10-28-phase26-g0-m5-closure-self-check.md](./2026-10-28-phase26-g0-m5-closure-self-check.md)：**Phase 26 G0 M5 收口自检**。M5 四条原子条目全部完成且逐项 Review Gate Pass；axe 全矩阵 **exit 0 / 零违规**，计算样式与视觉基线均 **0 差异**，画廊回归全绿 → **G0 通过（2026-10-28）**，`M3-3` 的阻塞点缩减为仅 G1 未裁定。读数与未覆盖边界见记录 §2 / §3 / §5。**Review Gate**：结论见本记录 §7。
 

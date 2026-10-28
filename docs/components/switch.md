@@ -56,8 +56,8 @@
 | `--caomei-switch-width` | `40px` | 开关宽度 |
 | `--caomei-switch-height` | `22px` | 开关高度 |
 | `--caomei-switch-radius` | `999px` | 轨道圆角 |
-| `--caomei-switch-bg` | `--caomei-color-border` | 未开启轨道背景色 |
-| `--caomei-switch-border` | `--caomei-color-border` | 未开启轨道描边色 |
+| `--caomei-switch-bg` | `--caomei-color-control-border` | 未开启轨道背景色 |
+| `--caomei-switch-border` | `--caomei-color-control-border` | 未开启轨道描边色 |
 | `--caomei-switch-active-bg` | `--caomei-color-primary` | 开启态轨道背景与描边色 |
 | `--caomei-switch-thumb-size` | `16px` | 滑块尺寸 |
 | `--caomei-switch-thumb-bg` | `--caomei-color-primary-foreground` | 滑块背景色 |

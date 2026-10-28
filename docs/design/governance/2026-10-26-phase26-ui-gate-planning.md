@@ -10,7 +10,7 @@
 | 项 | 决策 |
 | --- | --- |
 | 第 1 档（低成本修复） | 进入 Phase 26 **执行期追加的 M5 插队批次**，4 条原子条目（M5-1 ~ M5-4） |
-| 第 2 档（颜色角色 + 非文本对比度） | 进入 [Backlog §1.6](../../plan/backlog.md)（高优先级），**不进入当前 todo**；1.0 门禁要求对其作出「修复 / 明确接受」二选一裁定 |
+| 第 2 档（颜色角色 + 非文本对比度） | 进入 [Backlog §1.6](../../plan/backlog.md)（高优先级），**不进入当前 todo**；1.0 门禁要求对其作出「修复 / 明确接受」二选一裁定。**2026-10-28：G1 裁定「修复」，候选行已从 Backlog 移出并登记为 G1-F** |
 | Phase 26 构成 | 原登记 **4 条主线 / 13 条原子条目** → 执行期追加后 **5 条主线 / 17 条原子条目**（M1 4 / M2 4 / M3 3 / M4 2 / M5 4） |
 | 1.0 发布 | **延后**；`M3-3` 在门禁 G0 ~ G4（含条件 G1-F）全部通过前不得执行 |
 | 门禁时间盒 | 目标评审 **2026-11-13**；硬截止 **2026-11-27**；硬截止未通过不得自动延期，须用户三选一裁定（见 §4.3） |
@@ -50,7 +50,7 @@
 
 ## 3. 第 2 档：Backlog 登记
 
-在 [Backlog §1.6](../../plan/backlog.md) 新增一行，候选名 **「颜色角色分层与非文本对比度治理（tone text / control-border）」**，优先级 **高**，来源 = 本轮自检 §4.1 / §4.2，说明包含：
+在 [Backlog §1.6](../../plan/backlog.md) 新增一行，候选名 **「颜色角色分层与非文本对比度治理（tone text / control-border）」**，优先级 **高**，来源 = 本轮自检 §4.1 / §4.2（**2026-10-28 G1 裁定「修复」后已移出该行并登记为 G1-F**），说明包含：
 
 - **问题**：品牌预设 soft / outline 状态文本实测 success 2.12 / warning 2.58 / danger 3.34–3.39；`caomei` `text-muted` 4.02；交互控件 `border` / `bg` 1.09–1.83。
 - **候选形态**：`--caomei-color-<tone>-text`（亮色 -700 / 暗色 -300 ~ -400 或 OKLCH 派生）+ `--caomei-color-control-border`（≥ 3:1）+ 全预设矩阵断言。
@@ -66,8 +66,8 @@
 | Gate | 判据 | 证据 | 状态 |
 | --- | --- | --- | --- |
 | **G0 插队批次完成** | M5-1 ~ M5-4 全部完成；每项经 Review Gate Pass；M5 收口自检的 axe / 计算样式 / 视觉基线通过；`scripts/docs/check-docs-axe.mjs` 全矩阵退出码为 0 | 提交、治理记录、`check-docs-axe` 全矩阵输出、`capture:styles` diff | **已完成（2026-10-28）**：见 [G0 记录](./2026-10-28-phase26-g0-m5-closure-self-check.md) |
-| **G1 新问题裁定** | 第 2 档（颜色角色 + 非文本对比度）完成 **「修复」或「明确接受」二选一**；G1 在**裁定完成时关闭**。接受时须写 1.0 known limitations + 1.x 承诺；裁定修复时转入 G1-F；不得沉默 | 用户裁定记录 / 本记录 §4.2 | 待裁定 |
-| **G1-F 修复交付（条件）** | **仅当 G1 裁定「修复」时启用**：tone text / control-border / 全预设矩阵断言完成并通过；Review Gate Pass。G1-F 关闭前不得发 `1.0.0` | 提交、矩阵测试输出、治理记录 | 条件未启用 |
+| **G1 新问题裁定** | 第 2 档（颜色角色 + 非文本对比度）完成 **「修复」或「明确接受」二选一**；G1 在**裁定完成时关闭**。接受时须写 1.0 known limitations + 1.x 承诺；裁定修复时转入 G1-F；不得沉默 | 用户裁定记录 / 本记录 §4.2 | **已完成（2026-10-28）：用户裁定「修复」**，转入 G1-F |
+| **G1-F 修复交付（条件）** | **仅当 G1 裁定「修复」时启用**：tone text / control-border / 全预设矩阵断言完成并通过；Review Gate Pass。G1-F 关闭前不得发 `1.0.0` | 提交、矩阵测试输出、治理记录 | **已完成（2026-10-28）**：见 [G1-F 记录](./2026-10-28-phase26-g1-f-color-role-fix.md) |
 | **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿 | CI / 本地日志 | 未开始 |
 | **G3 RC 与下游** | `1.0.0-rc.1` 发 `next`；M4-1 dependfix `typecheck` + `build` 绿；tarball shasum / `exports` 13 键 / 发布时 API 差分留痕 | registry / CI run / release log | 未开始 |
 | **G4 发布证据** | 1.0.0 CHANGELOG、GitHub Release note、version policy、known limitations、回滚方案就绪；用户明确授权推送与发布。回滚方案由 `M3-3` 负责在 G4 前完成 | docs + 用户授权 | 未开始 |
@@ -101,7 +101,7 @@
 | --- | --- |
 | `docs/plan/todo.md` | 当前状态句补「1.0 延后 / 门禁」；Phase 26 条目表新增 M5-1 ~ M5-4；构成 4/13 → 5/17；`M3-3` 标阻塞；「未完成项汇总」加门禁指针与 Backlog 条件候选行 |
 | `docs/plan/roadmap.md` | §1 现状句补 1.0 延后 + 门禁；Phase 26 行补执行期追加与 5/17 |
-| `docs/plan/backlog.md` | §1.6 新增「颜色角色分层与非文本对比度治理」高优先级行 |
+| `docs/plan/backlog.md` | §1.6 新增「颜色角色分层与非文本对比度治理」高优先级行（**2026-10-28 G1 裁定修复后已移出**） |
 | `docs/design/governance/2026-10-22-phase26-registration.md` | 追加 §8「执行期追加（2026-10-26）」：原 4/13、现 5/17、1.0 延后与门禁指针 |
 | `docs/design/governance/index.md` | 新增本记录条目；Phase 26 登记记录摘要补「原登记 4/13；2026-10-26 后为 5/17」 |
 | `.session/current-task.yaml` | 阶段态 / 摘要 / next_steps / decisions 同步；门禁为当前阻塞点 |

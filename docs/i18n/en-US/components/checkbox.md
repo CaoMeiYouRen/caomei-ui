@@ -72,7 +72,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-checkbox-font-size` | from the `size` step | Label font size (sm 12 / md 14 / lg 16) |
 | `--caomei-checkbox-radius` | `--caomei-radius-sm` | Border radius |
 | `--caomei-checkbox-bg` | `--caomei-color-bg` | Unchecked background color |
-| `--caomei-checkbox-border` | `--caomei-color-border` | Unchecked border color |
+| `--caomei-checkbox-border` | `--caomei-color-control-border` | Unchecked border color |
 | `--caomei-checkbox-active-bg` | `--caomei-color-primary` | Checked / indeterminate background and border color |
 | `--caomei-checkbox-foreground` | `--caomei-color-primary-foreground` | Indicator icon color |
 

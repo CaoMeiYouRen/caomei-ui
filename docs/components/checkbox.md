@@ -72,7 +72,7 @@
 | `--caomei-checkbox-font-size` | 由 `size` 档位决定 | 标签字号（sm 12 / md 14 / lg 16） |
 | `--caomei-checkbox-radius` | `--caomei-radius-sm` | 圆角 |
 | `--caomei-checkbox-bg` | `--caomei-color-bg` | 未选中背景色 |
-| `--caomei-checkbox-border` | `--caomei-color-border` | 未选中描边色 |
+| `--caomei-checkbox-border` | `--caomei-color-control-border` | 未选中描边色 |
 | `--caomei-checkbox-active-bg` | `--caomei-color-primary` | 选中 / 半选背景与描边色 |
 | `--caomei-checkbox-foreground` | `--caomei-color-primary-foreground` | 指示图标颜色 |
 

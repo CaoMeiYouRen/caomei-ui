@@ -111,7 +111,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-dropdown-menu-trigger-gap` | `--caomei-space-1` | Gap between elements inside the trigger |
 | `--caomei-dropdown-menu-trigger-padding-x` | `--caomei-space-3` | Trigger horizontal padding |
 | `--caomei-dropdown-menu-trigger-padding-y` | `--caomei-space-2` | Trigger vertical padding |
-| `--caomei-dropdown-menu-trigger-border` | `--caomei-color-border` | Trigger border color |
+| `--caomei-dropdown-menu-trigger-border` | `--caomei-color-control-border` | Trigger border color |
 | `--caomei-dropdown-menu-trigger-bg` | `--caomei-color-bg` | Trigger background color |
 
 ```css

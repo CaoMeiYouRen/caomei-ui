@@ -69,7 +69,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-slider-height` | `10rem` | Vertical slider height |
 | `--caomei-slider-track-height` | `6px` | Track thickness |
 | `--caomei-slider-track-radius` | `999px` | Track radius |
-| `--caomei-slider-track-bg` | `--caomei-color-border` | Track background color |
+| `--caomei-slider-track-bg` | `--caomei-color-control-border` | Track background color |
 | `--caomei-slider-range-bg` | `--caomei-color-primary` | Selected range background color |
 | `--caomei-slider-thumb-size` | `18px` | Thumb size |
 | `--caomei-slider-thumb-bg` | `--caomei-color-bg` | Thumb background color |

@@ -73,7 +73,7 @@
 | `--caomei-radio-size` | 由 `size` 档位决定 | 指示器直径（sm 16 / md 18 / lg 20） |
 | `--caomei-radio-gap` | `--caomei-space-2` | 指示器与标签间距 |
 | `--caomei-radio-bg` | `--caomei-color-bg` | 未选中指示器背景色 |
-| `--caomei-radio-border` | `--caomei-color-border` | 未选中指示器描边色（`invalid` 时为 `--caomei-color-danger`） |
+| `--caomei-radio-border` | `--caomei-color-control-border` | 未选中指示器描边色（`invalid` 时为 `--caomei-color-danger`） |
 | `--caomei-radio-active-bg` | `--caomei-color-primary` | 选中指示器背景与描边色 |
 | `--caomei-radio-dot` | `--caomei-color-primary-foreground` | 选中圆点颜色 |
 | `--caomei-radio-focus` | `--caomei-color-primary` | 聚焦描边色（`invalid` 时为 `--caomei-color-danger`） |

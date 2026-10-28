@@ -37,12 +37,33 @@
 | `--caomei-color-bg` | 页面背景 | `#fff` | `#0b0b0d` |
 | `--caomei-color-bg-elevated` | 抬升面（卡片 / 浮层） | `#f7f7f8` | `#17171a` |
 | `--caomei-color-text` | 主文字 | `#1a1a1a` | `#f5f5f5` |
-| `--caomei-color-text-muted` | 次要文字 | `#6b7280` | `#a1a1aa` |
+| `--caomei-color-text-muted` | 次要文字 | `#686f78` | `#a1a1aa` |
 | `--caomei-color-border` | 边框 / 分隔线 | `#e5e7eb` | `#2a2a2e` |
+| `--caomei-color-<tone>-text` | tone 的**文字安全前景**（soft / outline / 文本型消费点） | `#1d4ed8` / `#166534` / `#92400e` / `#b91c1c` / `#4b5563`（primary / success / warning / danger / neutral） | 取对应 tone 亮阶（`var(--caomei-color-<tone>)`）；neutral 取 `text-muted` |
+| `--caomei-color-control-border` | **交互控件边界**（输入 / 复选 / 单选 / 开关轨道 / 滑块轨道 / 分段 / 触发器 / 上传区） | `#8a8b8d` | `#67676a` |
 
 > `--caomei-color-<tone>` 随主题自适应；`--caomei-color-<tone>-solid` 跨主题稳定，保证实底与 `--caomei-color-on-solid` 的对比度；**替换品牌色时需同时覆盖对应的 `-solid`**。若自定义强调色会被当作底色承载文字 / 图标（`primary` 作底的按钮、选中态等），还需同时覆盖 `--caomei-color-primary-foreground`——它随主题变化（暗色为深色 `#0b0b0d`），只改 `primary` 不改它会与自定义色失配；Nuxt 模块可用 `primary-foreground` 别名覆盖——注意别名写入的是**单条 `:root` 声明**（同一值跨明暗），需要按明暗分别取值时仍以 CSS 覆盖为准。
 >
 > 已登记的稳定例外：`momei` 预设的 `primary-solid` 按源保真随明暗取 `primary-700`（`#3c4653` / `#59626e`），不满足跨主题稳定；两种形态配 `on-solid` 白字分别为 9.58:1 / 6.18:1，见 §5.2。
+
+**角色分离的取值矩阵（2026-10-28 G1-F）**：`--caomei-color-<tone>` 继续承担边框 / 填充 / soft 底；文字改用 `-text`，交互控件边界改用 `control-border`。各预设取值如下（完整值以 `theme.css` 与 `presets/*.css` 为准）：
+
+| 预设 | 主题 | primary-text | success-text | warning-text | danger-text | neutral-text | control-border |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| minimal | 亮 | `#1d4ed8` | `#166534` | `#92400e` | `#b91c1c` | `#4b5563` | `#8a8b8d` |
+| minimal | 暗 | `#60a5fa` | `#4ade80` | `#fbbf24` | `#f87171` | `#a1a1aa` | `#67676a` |
+| caomei | 亮 | `#c1121f` | `#166534` | `#9a3412` | `#b91c1c` | `#475569` | `#838e9e` |
+| caomei | 暗 | `#ff6b6b` | `#4ade80` | `#fb923c` | `#f87171` | `#a1a1aa` | `#737378` |
+| momei | 亮 | `#475569` | `#166534` | `#9a3412` | `#b91c1c` | `#4b5563` | `#868992` |
+| momei | 暗 | `#94a3b8` | `#22c55e` | `#f97316` | `#f87171` | `#91959f` | `#656975` |
+| sakura | 亮 | `#be123c` | `#166534` | `#92400e` | `#b91c1c` | `#7d4b5b` | `#a07e89` |
+| sakura | 暗 | `#fb7185` | `#4ade80` | `#fbbf24` | `#f87171` | `#c8a2ac` | `#7e626a` |
+| forest | 亮 | `#065f46` | `#166534` | `#92400e` | `#b91c1c` | `#4c6b5d` | `#738d81` |
+| forest | 暗 | `#34d399` | `#4ade80` | `#fbbf24` | `#f87171` | `#9dc6b3` | `#527766` |
+| ink | 亮 | `#1f1b18` | `#166534` | `#854d0e` | `#b91c1c` | `#6b6459` | `#89857d` |
+| ink | 暗 | `#f4f1ea` | `#4ade80` | `#fbbf24` | `#f87171` | `#a9a294` | `#6c6964` |
+
+> 取值规则：`-text` 在亮色取同色相深阶（保证在 soft 8% 底、`bg` 与 `bg-elevated` 上均 ≥ 4.5:1），暗色沿用亮阶 tone；`control-border` 由各预设原 `border` 向文字色混合至「对 `bg` / `bg-elevated` 均 ≥ 3:1」，不改变装饰性分隔线（仍用 `--caomei-color-border`）。
 
 ### 2.3 尺寸 token（已实现）
 
@@ -135,9 +156,10 @@
   - **不在本节范围的其它缺口与例外**（按第一条「正文 ≥ 4.5:1 / 图形 ≥ 3:1」跟踪；2026-09-28 复算与逐条裁定见 [M2 对比度与配色口径收口记录](./governance/2026-09-28-m2-contrast-and-pairing.md)，**6 项在册缺口的终局结论与唯一载体见 [M4-2 对比度终局结论](./governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md)**）：
     - **已修复（2026-09-28）**：亮色 soft 变体 primary 文本 **4.37:1 → 4.65:1**（soft 底由 `color-mix(tone 12%, transparent)` 调整为 8%，`tag` / `message` / `badge` 三处共用公式）；toast 中性强调**描边**暗色 **2.31:1 → 6.98:1**（回退色由 `neutral-solid` 改为 `--caomei-color-text-muted`，并与图标色统一回退口径；亮色 4.83:1）。
     - **soft 底口径**：soft 变体底为半透明 `color-mix(in srgb, <tone> 8%, transparent)`，对比度按页面底 `--caomei-color-bg` 合成；在抬升面 `--caomei-color-bg-elevated` 上会更低（primary 8% 约 **4.34:1**，未达标），属半透明底的固有边界。
-    - **维持（终局）**：`caomei` 预设 `danger` `#ef4444` 作为前景色时：纯白底约 **3.76:1**、soft 变体的 `color-mix(tone 8%)` 底约 **3.39:1**（消费点为 soft / outline 文本；invalid 描边属图形、3:1 阈值下达标，无需改动；实底仍走 `danger-solid`）。
-    - **维持（终局，2026-09-30 D4 裁定「全部维持登记（不修色）」）**：默认预设 soft 变体 `danger` **4.28:1** / `neutral` **4.39:1**（8% 底）与 `caomei` / `momei` 预设 primary soft **3.73:1** / **4.32:1** 仍 < 4.5:1；逐条结论（复算值 + 阈值 + 依据）见 [M4-2 对比度终局结论](./governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md) §3。
-    - **momei 运行时面层（2026-10-26 随预设同步登记）**：`primary` 在 `bg-elevated` 上 **4.40:1**（消费点含 Toast action 文本）、`text-muted` 同面 **4.33:1**；由 momei 的 `color-mix(surface-card 96%, text 4%)` 面层派生引入，按源保真维持；需要严格 AA 时在使用层覆盖 `--caomei-color-bg-elevated` 或对应前景 token。
+    - **历史维持项已被取代（2026-10-28 G1-F）**：以下条目为 2026-09-30 D4「全部维持登记（不修色）」的时点裁定，**自 2026-10-28 起由 G1 修复取代**——`caomei` danger 前景 3.76 / soft 3.39、默认预设 soft danger 4.28 / neutral 4.39、`caomei` / `momei` primary soft 3.73 / 4.32、momei `primary` 与 `text-muted` 在 `bg-elevated` 的 4.40 / 4.33。历史复算见 [M4-2 对比度终局结论](./governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md) §3。
+    - **G1-F 修复（2026-10-28）**：新增 `--caomei-color-<tone>-text` 角色，Tag / Badge / Message（含 Alert）的 soft / outline / simple 文本、Button 文字型变体与 toast action 等文本消费点改用该 token；**6 预设 × 明暗 × `bg` / `bg-elevated` × 5 语气 × soft / outline** 在实际合成背景上均 ≥ 4.5:1（矩阵由 `test/e2e/preset-contrast.e2e.ts` 常驻断言）。`caomei` / `momei` 的 `text-muted` 同步提升至 AA（亮色 `#5b6675` / `#565d6b`）。
+    - **非文本对比度（WCAG 1.4.11）**：新增 `--caomei-color-control-border`，字段族 / Checkbox / Radio / Switch / Slider 轨道 / SelectButton / 触发器 / 上传区 / 分页与步骤指示器的边界改用它；**6 预设 × 明暗**对 `bg` 与 `bg-elevated` 均 ≥ 3:1。`--caomei-color-border` 仅保留装饰性分隔线用途。边界加深属 1.0 的**可见外观变化**（字段 / 开关 / 分页等边界比此前明显），下游可用对应覆盖钩子回退；该变化在 1.0 发布说明中披露。
+    - **仍维持的例外**：`caomei` 预设 `primary-solid` 配 `on-solid` 白字 4.17:1（品牌源保真，见上）；momei `primary-solid` 的跨主题派生例外（9.58 / 6.18）。
     - `.caomei-calendar__weekday` 亮色 **4.83:1**（on `bg`）/ 4.52:1（on `bg-elevated`）库内达标，历史值 4.48:1 系站点 `--vp-c-bg-soft` 口径（见 [M2 一致性收口记录](./governance/2026-09-26-m2-style-token-consistency.md) §3 #6）。
 - 焦点态必须可见（`--caomei-color-focus-ring` 为规划项），不得仅用颜色细微变化表示状态。
 - **在册盘点须覆盖全集而非被点名项**：数值 / 对比度类盘点若只覆盖被点名的条目，修复共享公式时会遗漏同根因缺口。修复共享公式前须对全 tone / 全预设复算；超出授权范围的残余缺口转载体行登记，不静默扩面（实例见 [M2 对比度与配色口径收口记录](./governance/2026-09-28-m2-contrast-and-pairing.md)）。
@@ -174,7 +196,7 @@
 | `--caomei-color-bg` | `#ffffff` | `#18181b` | Lara content.background |
 | `--caomei-color-bg-elevated` | `#f8fafc`（亮 surface-50） | `#27272a`（暗抬升面，zinc-800） | Lara content.background + 抬升面取 zinc-800 与底 `#18181b` 区分 |
 | `--caomei-color-text` | `#475569` | `#ffffff` | Lara text |
-| `--caomei-color-text-muted` | `#718096` | `#a1a1aa` | Lara text.muted |
+| `--caomei-color-text-muted` | `#5b6675`（2026-10-28 提升至 AA） | `#a1a1aa` | Lara text.muted（亮色深阶化） |
 | `--caomei-color-border` | `#e2e8f0` | `#3f3f46` | Lara content.border |
 | `--caomei-radius-sm/md/lg` | `4 / 6 / 12` | 同 | 控件 6px / 卡片与浮层 12px |
 
@@ -199,13 +221,13 @@
 | `--caomei-color-bg` | `#ffffff`（surface-0） | `#0c1020`（surface-card = surface-100） | 桥接 `--p-surface-card` |
 | `--caomei-color-bg-elevated` | `#f5f6f6` | `#151929` | 桥接 `color-mix(surface-card 96%, text 4%)` |
 | `--caomei-color-text` | `#0f172a`（slate-900） | `#f1f5f9`（slate-100） | use-theme `PRESETS.default.text` |
-| `--caomei-color-text-muted` | `#6f747f` | `#91959f` | 运行时 `color-mix(text, surface 40%)` |
+| `--caomei-color-text-muted` | `#565d6b`（2026-10-28 提升至 AA） | `#91959f` | 运行时派生（亮色深阶化） |
 | `--caomei-color-border` | `#ebebeb`（surface-200） | `#161a2a`（surface-200） | 运行时 `content-border-color = surface-200` |
 | `--caomei-radius-sm/md/lg` | `4 / 8 / 16` | 同 | 运行时 `content-border-radius = 0.5rem` 及其 0.5× / 2× 派生 |
 
 > `primary-solid` 是本预设对「`-solid` 跨主题稳定」的**有意例外**：momei 桥接把它映射到随明暗派生的 `--p-primary-700`，这里按源保真。两种形态配 `--caomei-color-on-solid` 白字的对比度分别为 **9.58:1** / **6.18:1**，均达标。
 >
-> `text-muted` 在 `bg-elevated` 上的对比度为 **4.33:1**（`bg` 上 4.69:1），`primary` 在同面为 **4.40:1**（`bg` 上 4.76:1），均沿用 momei 运行时取值；如需严格 AA，可在使用层覆盖 `--caomei-color-text-muted` / `--caomei-color-bg-elevated`。
+> `text-muted` 于 2026-10-28 提升到 AA（`bg` / `bg-elevated` 均 ≥ 4.5:1）；tone 文本改用 `-text` 角色后，`primary` 在 `bg-elevated` 上同样按 `-text` 取值。
 >
 > 状态色取 PrimeVue primitive 500，暗色不另作浅化；`-solid` 系列（`success` / `warning` / `danger` / `neutral`）仍按同 tone 深阶覆盖并保证 `on-solid` 对比度。未列出的 token 继承 `theme.css` 默认值。
 >
@@ -237,25 +259,25 @@
 | `forest` | `#34d399` | `#06180f` | `#0d2619` | `#ecfdf5` | `#9dc6b3` | `#1f4a36` |
 | `ink` | `#f4f1ea` | `#121110` | `#1c1a17` | `#f4f1ea` | `#a9a294` | `#3a3733` |
 
-**实底与外层**：三套预设的 `primary-solid` 分别为 `#9f1239` / `#065f46` / `#1f1b18`（跨明暗稳定），配 `--caomei-color-on-solid` 白字的对比度为 **8.02:1** / **7.68:1** / **17.10:1**。主色配对（`primary` × `primary-foreground`）亮 / 暗分别为 **6.29 / 6.78**、**5.48 / 8.93**、**17.10 / 16.26**；正文与次要文字均满足 AA。状态色在 `bg` 上满足 AA，在 `bg-elevated` 上沿用库内既有口径（部分 tone 可能低于 4.5:1），未纳入本次下界断言。完整值以对应 CSS 文件为准。
+**实底与外层**：三套预设的 `primary-solid` 分别为 `#9f1239` / `#065f46` / `#1f1b18`（跨明暗稳定），配 `--caomei-color-on-solid` 白字的对比度为 **8.02:1** / **7.68:1** / **17.10:1**。主色配对（`primary` × `primary-foreground`）亮 / 暗分别为 **6.29 / 6.78**、**5.48 / 8.93**、**17.10 / 16.26**；正文与次要文字均满足 AA。状态色文本自 2026-10-28 起通过 `-text` 角色在 `bg` / `bg-elevated` 上均达到 AA，并纳入预设对比度矩阵断言。完整值以对应 CSS 文件为准。
 
 ## 6. 组件风格约定
 
 | 组件 | 约定 |
 | --- | --- |
-| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调；`hover` / `active` 由既有 token 经 `color-mix()` 派生（实底变体向中性深色 token 混合，`tone="neutral"` 例外改用文字色锚点；文字型变体向 `--caomei-color-text` 混合，无 `tone` 时仅底色变化），**不新增冻结 token**；`disabled` 不参与状态反馈、`:focus-visible` 仅叠加描边、`prefers-reduced-motion` 下关闭过渡 |
+| Button | 高度取 `control-height-*`；圆角 `radius-md`（`rounded` 时 `radius-full`）；变体 `primary` / `secondary` / `ghost`；可选 `tone` 语义色（`neutral` / `primary` / `success` / `warning` / `danger`）；`tone` 实底前景用 `--caomei-color-on-solid`，默认 `variant="primary"` 沿用 `--caomei-color-primary` + `--caomei-color-primary-foreground`（随主题自适应）；图标经 `#icon` 插槽与 `iconPosition` 控制位置；角标 `badge` 以右上角外扩叠加（不参与布局），默认 `neutral` 色调；`hover` / `active` 由既有 token 经 `color-mix()` 派生（实底变体向中性深色 token 混合，`tone="neutral"` 例外改用文字色锚点；文字型变体向 `--caomei-color-text` 混合，无 `tone` 时仅底色变化），**不新增冻结 token**；`secondary` 的控件描边取 `--caomei-color-control-border`，tone 描边取对应 `-text`；`disabled` 不参与状态反馈、`:focus-visible` 仅叠加描边、`prefers-reduced-motion` 下关闭过渡 |
 | SplitButton | 主按钮与下拉按钮共用 Button 的变体 / `tone` / 尺寸档位与圆角；拼接处移除内侧边框宽度、仅外侧保留圆角（`rounded` 时外侧取 `radius-full`）；下拉按钮仅显示图标并以 `aria-label` 承载可访问名 |
-| Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；校验态用类 / 属性驱动的 invalid 语义（`.caomei-field--invalid` 类 + `aria-invalid` 属性）而非色值类 |
+| Input 家族 | 高度 `control-height-*`；圆角 `radius-md`；默认全宽；控件边界取 `--caomei-color-control-border`（≥ 3:1）；校验态用类 / 属性驱动的 invalid 语义（`.caomei-field--invalid` 类 + `aria-invalid` 属性）而非色值类 |
 | Calendar / DatePicker | 触发器高度取 `control-height-*`、圆角 `radius-md`、默认 `width: 100%` 并带可覆盖的宽度上限（`--caomei-date-picker-max-width`，未覆盖回退 `--caomei-select-max-width`）；面板背景 `bg-elevated`、面板圆角 `radius-md`；选中日取 `primary` / `primary-foreground`，今日用 `border` 描边；对外统一使用原生 `Date` |
 | ColorPicker | 触发器为 `control-height-md` 方形按钮、圆角 `radius-md`；浮层面板背景 `bg-elevated`（内联 `--inline` 形态取基础面 `bg`）、圆角 `radius-lg`、宽度 260px、阴影 `shadow-lg`；色块圆角 `radius-sm`、色板 22px 按钮（选中态用 `primary` 描边 + `aria-pressed`）、滑条取 `radius-full` |
 | Card | 圆角 `radius-lg`；背景按变体：`outlined` 取 `bg` + `border`、`elevated` 取 `bg` + `shadow-sm`、`filled` 取 `bg-elevated`；内边距取 `space-4` |
-| Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号：Tag 取档位 `sm` / `md` / `lg`（默认 `md`），Badge 默认 `sm` |
-| Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；`size` 影响字号、内边距与图标（`simple` 不消费内边距）。`Alert` 为语义预设包装（复用同一外观层；变体收敛为三档、默认不进 live region） |
+| Tag / Badge | 圆角 `radius-sm`（Tag 的 `rounded` 时 `radius-full`）；`tone` 语义；字号：Tag 取档位 `sm` / `md` / `lg`（默认 `md`），Badge 默认 `sm`；soft / outline 文本与描边用 `--caomei-color-<tone>-text`（neutral 用 `-neutral-text`） |
+| Message / Alert | 圆角 `radius-md`；变体 `soft` / `solid` / `outline` / `simple`；soft / outline / simple 文本用 `--caomei-color-<tone>-text`；`size` 影响字号、内边距与图标（`simple` 不消费内边距）。`Alert` 为语义预设包装（复用同一外观层；变体收敛为三档、默认不进 live region） |
 | Dialog / ConfirmDialog / Popover | 圆角 `radius-lg`；浮层背景 `bg-elevated`；Dialog / ConfirmDialog 阴影取 `shadow-lg`，Popover / DropdownMenu / Select / MultiSelect / AutoComplete / DatePicker / Toast 取 `shadow-md` |
 | Drawer | 面板背景 `bg-elevated`、面板贴边、不设圆角；高度 / 宽度取档位（`sm` / `md` / `lg` = 320 / 420 / 560px，按 `90vw` / `90vh` 收敛）；滑入 / 滑出 200ms，`prefers-reduced-motion` 时关闭动画 |
 | DataTable | 表头/单元格底部边框取 `border`；排序按钮图标取 `text-muted`；排序态经 `aria-sort` 表达；列样式优先 `headerClass` / `bodyClass` |
 | DataView | 内容区不设内边距与背景（条目排版由插槽内容决定）；`layout` 只切换根修饰类与 `list` / `grid` 插槽，网格列定义交给使用方内容层；空态 / 加载态文案居中、取 `text-muted`（加载态取 `primary`） |
-| Checkbox / CheckboxGroup | 指示器为 `radius-sm` 方形（尺寸 sm 16 / md 18 / lg 20）；`v-model` 传数组时为分组语义（按 `value` 增删成员）；分组根为 `role="group"`、间距 `--caomei-checkbox-group-gap`（默认 `space-2`），禁用态不在分组层叠加透明度（子项各自处理，避免双重变淡） |
+| Checkbox / CheckboxGroup | 指示器为 `radius-sm` 方形（尺寸 sm 16 / md 18 / lg 20），未选中描边取 `--caomei-color-control-border`；`v-model` 传数组时为分组语义（按 `value` 增删成员）；分组根为 `role="group"`、间距 `--caomei-checkbox-group-gap`（默认 `space-2`），禁用态不在分组层叠加透明度（子项各自处理，避免双重变淡） |
 | Textarea | 自动增高时高度由内容决定、默认不出现滚动条；`rows` 为初始最小高度；`autoResize` 时 `resize` 固定 `none`，否则由 `resize` prop（默认 `vertical`）决定 |
 | Password | 根为 `.caomei-password` 包裹层（单根），`class` / `style` 留在根元素；强度计量条高度 4px、圆角 `radius-full`；弱 / 中 / 强取 `danger` / `warning` / `success`；未聚焦且无值时强度区域不占布局 |
 | 所有组件 | 焦点态可见；禁用态不改变布局尺寸；禁用态不透明度统一为 `--caomei-disabled-opacity`（35 处，含根控件 / 子部件 / 条目，无字面量残留）；`cursor: not-allowed` 与禁用背景按需逐组件声明、未 token 化 |

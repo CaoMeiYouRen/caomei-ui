@@ -69,7 +69,7 @@
 | `--caomei-slider-height` | `10rem` | 垂直滑块高度 |
 | `--caomei-slider-track-height` | `6px` | 轨道粗细 |
 | `--caomei-slider-track-radius` | `999px` | 轨道圆角 |
-| `--caomei-slider-track-bg` | `--caomei-color-border` | 轨道背景色 |
+| `--caomei-slider-track-bg` | `--caomei-color-control-border` | 轨道背景色 |
 | `--caomei-slider-range-bg` | `--caomei-color-primary` | 已选区间背景色 |
 | `--caomei-slider-thumb-size` | `18px` | 滑块尺寸 |
 | `--caomei-slider-thumb-bg` | `--caomei-color-bg` | 滑块背景色 |

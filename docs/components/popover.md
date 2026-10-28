@@ -68,7 +68,7 @@
 | `--caomei-popover-trigger-gap` | `--caomei-space-1` | 触发器内图标与文本间距 |
 | `--caomei-popover-trigger-padding-x` | `--caomei-space-3` | 触发器水平内边距 |
 | `--caomei-popover-trigger-bg` | `--caomei-color-bg` | 触发器背景色 |
-| `--caomei-popover-trigger-border` | `--caomei-color-border` | 触发器描边色 |
+| `--caomei-popover-trigger-border` | `--caomei-color-control-border` | 触发器描边色 |
 | `--caomei-popover-trigger-radius` | `--caomei-radius-md` | 触发器圆角 |
 
 ```css

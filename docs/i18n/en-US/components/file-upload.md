@@ -63,7 +63,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 |------|------|------|
 | `--caomei-file-upload-gap` | `--caomei-space-2` | Gap between the select area and the list |
 | `--caomei-file-upload-padding` | `--caomei-space-4` | Select area padding |
-| `--caomei-file-upload-border` | `--caomei-color-border` | Select area dashed border color |
+| `--caomei-file-upload-border` | `--caomei-color-control-border` | Select area dashed border color |
 | `--caomei-file-upload-bg` | `--caomei-color-bg` | Select area background color |
 | `--caomei-file-upload-icon-size` | `24px` | Select area icon size |
 | `--caomei-file-upload-item-bg` | `--caomei-color-bg-elevated` | List item background color |

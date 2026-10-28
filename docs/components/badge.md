@@ -20,6 +20,8 @@
     ssg="true"
 />
 
+> soft / outline 的文本色按 `tone` 取 `--caomei-color-<tone>-text`（`neutral` 为 `--caomei-color-neutral-text`）；需要单独覆盖时用组件内变量 `--caomei-badge-text`。
+
 ## 数值上限
 
 `value` 为数字且超过 `max` 时显示 `max+`。

@@ -59,7 +59,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-paginator-control-size` | `32px` | Control minimum width and height |
 | `--caomei-paginator-radius` | `--caomei-radius-sm` | Control border radius |
 | `--caomei-paginator-bg` | `--caomei-color-bg` | Control background color |
-| `--caomei-paginator-border` | `--caomei-color-border` | Control border color |
+| `--caomei-paginator-border` | `--caomei-color-control-border` | Control border color |
 | `--caomei-paginator-color` | `--caomei-color-text` | Control text color |
 | `--caomei-paginator-active-bg` | `--caomei-color-primary` | Current-page background and border color |
 | `--caomei-paginator-active-color` | `--caomei-color-primary-foreground` | Current-page text color |

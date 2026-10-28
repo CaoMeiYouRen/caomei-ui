@@ -27,6 +27,8 @@ Switch between `soft` / `solid` / `outline` with `variant`, between `sm` / `md` 
     ssg="true"
 />
 
+> soft / outline text color follows `--caomei-color-<tone>-text` for the tone (`--caomei-color-neutral-text` for `neutral`); override it per component with `--caomei-tag-text`.
+
 ## Closable
 
 With `closable`, a close button is shown; clicking it emits `close` for the parent to handle the removal.

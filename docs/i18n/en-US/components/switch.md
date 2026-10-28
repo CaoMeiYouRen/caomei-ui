@@ -56,8 +56,8 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-switch-width` | `40px` | Track width |
 | `--caomei-switch-height` | `22px` | Track height |
 | `--caomei-switch-radius` | `999px` | Track radius |
-| `--caomei-switch-bg` | `--caomei-color-border` | Track background when off |
-| `--caomei-switch-border` | `--caomei-color-border` | Track border when off |
+| `--caomei-switch-bg` | `--caomei-color-control-border` | Track background when off |
+| `--caomei-switch-border` | `--caomei-color-control-border` | Track border when off |
 | `--caomei-switch-active-bg` | `--caomei-color-primary` | Track background and border when on |
 | `--caomei-switch-thumb-size` | `16px` | Thumb size |
 | `--caomei-switch-thumb-bg` | `--caomei-color-primary-foreground` | Thumb background |

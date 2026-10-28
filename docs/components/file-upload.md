@@ -63,7 +63,7 @@
 |------|------|------|
 | `--caomei-file-upload-gap` | `--caomei-space-2` | 选择区与列表间距 |
 | `--caomei-file-upload-padding` | `--caomei-space-4` | 选择区内边距 |
-| `--caomei-file-upload-border` | `--caomei-color-border` | 选择区虚线描边色 |
+| `--caomei-file-upload-border` | `--caomei-color-control-border` | 选择区虚线描边色 |
 | `--caomei-file-upload-bg` | `--caomei-color-bg` | 选择区背景色 |
 | `--caomei-file-upload-icon-size` | `24px` | 选择区图标尺寸 |
 | `--caomei-file-upload-item-bg` | `--caomei-color-bg-elevated` | 列表项背景色 |

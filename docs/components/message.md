@@ -58,7 +58,7 @@
 
 ## 样式定制
 
-色板取自全局语义 token：`primary` / `success` / `warning` / `danger` 使用 `--caomei-color-<tone>`，`neutral` 使用 `--caomei-color-text-muted`；`solid` 变体背景使用对应的 `--caomei-color-<tone>-solid`（`neutral` 为 `--caomei-color-neutral-solid`）。另有圆角覆盖钩子：
+色板取自全局语义 token：soft / outline / simple 的**文本**使用 `--caomei-color-<tone>-text`（`neutral` 为 `--caomei-color-neutral-text`），soft 底色与 outline 边框仍用 `--caomei-color-<tone>`；`solid` 变体背景使用对应的 `--caomei-color-<tone>-solid`（`neutral` 为 `--caomei-color-neutral-solid`）。另有圆角覆盖钩子：
 
 | 变量 | 默认 | 说明 |
 |------|------|------|

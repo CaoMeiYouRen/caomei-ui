@@ -74,7 +74,7 @@ While `loading`, the button is disabled and shows a loading indicator; `block` m
 - `disabled` (including the automatic disable while `loading`) does not take part in state feedback; `:focus-visible` only adds the outline and does not change state colors;
 - the transition lasts 150ms; `prefers-reduced-motion: reduce` disables it while the state difference still applies.
 
-Under the **default preset (`minimal`)**, the derived direction keeps text/background contrast at or above the WCAG AA body threshold (≥ 4.5:1) across all three states (default / hover / active). Brand presets have pre-existing three-state contrast gaps (including the default state; see the "color role layering and non-text contrast" backlog item); this mechanism does not make them worse.
+Under the **default preset (`minimal`)**, the derived direction keeps text/background contrast at or above the WCAG AA body threshold (≥ 4.5:1) across all three states (default / hover / active). Brand presets' pre-existing three-state contrast gaps were fixed by G1-F on 2026-10-28 (tone text now uses the `-text` role); all three states are asserted by the preset matrix.
 
 ## Badge
 

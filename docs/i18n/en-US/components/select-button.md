@@ -80,7 +80,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 | Variable | Default | Description |
 |------|------|------|
-| `--caomei-select-button-border` | `--caomei-color-border` | Whole-group border and segment divider color |
+| `--caomei-select-button-border` | `--caomei-color-control-border` | Whole-group border and segment divider color |
 | `--caomei-select-button-radius` | `--caomei-radius-md` | Whole-group border radius |
 | `--caomei-select-button-bg` | `--caomei-color-bg` | Unselected segment background color |
 | `--caomei-select-button-color` | `--caomei-color-text` | Unselected segment text color |

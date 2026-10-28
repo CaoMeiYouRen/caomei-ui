@@ -8,7 +8,7 @@
 
 > **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the flow is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. `manual-release.mjs` supports `--tag=next|latest`; the default is inferred from the version (pre-release → `next`, stable → `latest`), and **a pre-release combined with `latest` is rejected**. The channel contract and evidence are recorded in [the M3-1 release record](/design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
 
-> **1.0 release gate (from 2026-10-26)**: `1.0.0-rc.1` must pass **G0 / G1 (plus G1-F if G1 decides "fix") / G2** before publishing; the final `1.0.0` must pass **G0 ~ G4** (including G3 rc and downstream verification). **Every `publish` run (including rc) must also pass the security alert gate in [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese).** Do not run the corresponding `publish` before it passes. Target review 2026-11-13, hard stop 2026-11-27; no automatic extension. See [Phase 26 execution-time addition and 1.0 release gate](/design/governance/2026-10-26-phase26-ui-gate-planning.md) §4.
+> **1.0 release gate (from 2026-10-26)**: `1.0.0-rc.1` must pass **G0 / G1 (plus G1-F if G1 decides "fix") / G2**, plus the S1 / S2 / S3 pre-release batches, before publishing; the final `1.0.0` must pass **G0 ~ G4** (including G3 rc and downstream verification). **Every `publish` run (including rc) must also pass the security alert gate in [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese).** Do not run the corresponding `publish` before it passes. Target review 2026-11-13, hard stop 2026-11-27; no automatic extension. See [Phase 26 execution-time addition and 1.0 release gate](/design/governance/2026-10-26-phase26-ui-gate-planning.md) §4.
 
 ## Version inference
 
@@ -47,9 +47,11 @@ It chains seven steps: `preflight → bump → changelog → publish → verify 
 ## Pre-release checks
 
 - **Security alert gate**: before any release (including rc), check open Dependabot and Code Scanning alerts per the [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese). **Critical must be zero and cannot be exempted**; **high must be fixed, or exempted with a recorded reason** (see §2.1); medium / low may be deferred. CI runs the same check in the `Security Alerts` workflow with the `SECURITY_ALERTS_TOKEN` secret (Dependabot alerts require a user PAT); locally run `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`. Record the counts and any exemptions in the release governance record. The `run` orchestrator does not query these panels.
+- **Registry**: set `NPM_CONFIG_REGISTRY=https://registry.npmjs.org` for the release session. A mirror registry (for example `registry.npmmirror.com`) returns `ENEEDAUTH` for `npm whoami` and cannot publish; an expired `//registry.npmjs.org/:_authToken` returns `401`. Confirm `npm whoami` and `npm owner ls caomei-ui` before publishing.
 - All quality gates pass (lint / typecheck / test / build).
 - Coverage evidence is generated and checked with `pnpm test:coverage` + `pnpm check:coverage` (also part of `preflight`).
 - Build output smoke test: confirm ESM, type declarations, CSS and subpath exports work.
+- API surface diff: run `pnpm check:api-surface --baseline=<previous dist>`; a non-zero exit (removed / renamed `.d.ts` files or exports) blocks the release. When content changes are listed, review them manually: a tightened required prop blocks, while type-only changes are warnings.
 - Public API changes are confirmed backward compatible or a major is planned.
 - The docs site builds.
 

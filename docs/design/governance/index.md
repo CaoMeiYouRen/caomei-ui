@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-10-28-phase26-g2-quality-gate.md](./2026-10-28-phase26-g2-quality-gate.md)：**Phase 26 G2 质量门**。在 S1 / S2 之后取得证据：质量门主线、全量端到端、无障碍与视觉基线四条判据全部通过，另补画廊回归；**G2 通过**，`M3-3` 阻塞面缩减为 G3 ~ G4。读数与边界见记录。**Review Gate**：结论见本记录 §6。
+
 - [2026-10-28-phase26-s2-code-scanning-remediation.md](./2026-10-28-phase26-s2-code-scanning-remediation.md)：**Phase 26 S2 1.0 发布前 Code Scanning 告警清理**。本地判据下 5 项告警（3 条 high 脚本规则 + 2 条 medium CI 权限）的命中形态全部消除（面板仍为 5 项 open，推送 + CodeQL 重跑后收敛）：示例守卫大小写不敏感、语言切换守卫改字符扫描、`test.yml` 补 `permissions: contents: read`。告警形态与推送后收敛口径见记录。**Review Gate**：结论见本记录 §6。
 
 - [2026-10-28-phase26-s1-dependency-alerts-remediation.md](./2026-10-28-phase26-s1-dependency-alerts-remediation.md)：**Phase 26 S1 1.0 发布前依赖安全告警清理**。15 项开发作用域 Dependabot 告警在 **lockfile 解析层**清零，`simple-git` 覆盖与补丁随上游退场；升级后质量门复跑全绿。残留项、推送后收敛口径与包级明细见记录。**Review Gate**：结论见本记录 §7。

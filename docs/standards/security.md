@@ -11,9 +11,36 @@
 ## 2. 依赖安全
 
 - 新增依赖前核实：来源真实（官方 registry）、拼写正确（防 typosquatting）、维护状态与 license。
-- 关注 Dependabot / `pnpm audit` 告警，高危漏洞优先处理。
+- 关注 Dependabot / `pnpm audit` / Code Scanning 告警；**发布前必须执行 §2.1 的告警门禁**。
 - `pnpm-lock.yaml` 提交入库，CI 使用 `--frozen-lockfile`。
 - 供应链告警（CVE / GHSA）属于规划插队例外清单，可优先处理。
+
+### 2.1 发布前安全告警门禁
+
+任何发布（含 `rc` 预发布）前，必须检查 Dependabot alerts 与 Code Scanning alerts 的 open 项，并按下列分级处置。当次发布的治理记录至少登记各严重级的 open 计数与全部豁免清单。
+
+| 级别 | 处置 | 是否阻塞发布 |
+| --- | --- | --- |
+| critical | **必须修复**；上游无补丁时须移除 / 替换依赖或下线受影响能力，仍不得豁免 | 是，**不允许豁免** |
+| high | 原则上必须修复；仅「上游无可用修复版本」或「修复成本显著高于当期可承受范围」可豁免 | 是，除非按本节要求留痕豁免 |
+| medium / low（及非安全 note 类） | 可暂缓，随常规版本修复 | 否 |
+
+- **级别取值**：Dependabot 取 `security_advisory.severity`（`low` / `moderate` / `high` / `critical`，本文的 `medium` 即 `moderate`）；Code Scanning 取 `rule.security_severity_level`（`low` / `medium` / `high` / `critical`）。后者为空时先核对 `rule.tags`：含 `security` 的按 high 处置；不含（纯 maintainability / note 类规则）才不构成安全阻塞项。
+- **high 豁免要求**（缺一不可）：
+  1. 由维护者确认；**AI 不得自行豁免**；
+  2. 在当次发布治理记录登记：来源、包 / 规则、GHSA / CVE 或规则 ID、受影响区间（或文件位置）、当前解析版本、不可修原因、计划修复版本或再评估触发条件；
+  3. 在 [Backlog](../plan/backlog.md) 建高优先级跟踪行，注明计划修复版本（原则上最近的可发布窗口），并在每次发布前复评；
+  4. 在发布说明 / known limitations 中披露。
+- **检查入口**（无 GitHub 安全面板访问权限时，以 `pnpm audit --registry=https://registry.npmjs.org` 与本地 / CI 扫描结果替代，分级口径不变）：
+
+```bash
+gh api --paginate "repos/<owner>/<repo>/dependabot/alerts?state=open&per_page=100"
+gh api --paginate "repos/<owner>/<repo>/code-scanning/alerts?state=open&per_page=100"
+```
+
+`pnpm audit` 只要存在任意级别告警就会非零退出，**必须按 `severity` 判读**（如 `pnpm audit --registry=https://registry.npmjs.org --json` 后过滤 `high` / `critical`），不得以退出码直接作为门禁结论。
+
+- 面板的 `state` 依赖**推送后的扫描**收敛；本地已修复但未推送时，还须在发布记录登记「解析版本已离开受影响区间」的证据（解析后版本 + 旧版残留扫描）。
 
 ## 3. 输入校验
 

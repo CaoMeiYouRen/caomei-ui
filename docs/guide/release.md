@@ -5,7 +5,7 @@
 - 版本推断与发布工具为 **semantic-release**，依据 Conventional Commits 自动推断版本并发布。
 - **当前决策（1.0 收尾，2026-10）**：采用**本地手动发布**；**暂不启动 CI 自动发布流程**。1.0 走「rc 预发布 → 正式版」两步：预发布发 npm `next`，正式版发 `latest`。`manual-release.mjs` 已支持 `--tag=next|latest`（缺省按版本推断：预发布 → `next`、正式版 → `latest`；**预发布 + `latest` 会被直接拒绝**，不会落到正式通道）。通道口径与验证证据见 [M3-1 发布预检记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)。
 
-> **1.0 发布门禁（2026-10-26 起）**：`1.0.0-rc.1` 发布前须通过 **G0 / G1（若 G1 裁定「修复」，另需 G1-F）/ G2**；`1.0.0` 正式版发布前须通过 **G0 ~ G4**（含 G3 的 rc 与下游复验）。未通过前不得执行对应 `publish`。目标评审 2026-11-13、硬截止 2026-11-27，到期未通过不得自动延期。门禁口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+> **1.0 发布门禁（2026-10-26 起）**：`1.0.0-rc.1` 发布前须通过 **G0 / G1（若 G1 裁定「修复」，另需 G1-F）/ G2**；`1.0.0` 正式版发布前须通过 **G0 ~ G4**（含 G3 的 rc 与下游复验）。**所有 `publish`（含 rc）前另须通过[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁（critical 不允许豁免；high 须修复或留痕豁免）**。未通过前不得执行对应 `publish`。目标评审 2026-11-13、硬截止 2026-11-27，到期未通过不得自动延期。门禁口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
 > 不使用 changesets（本项目为单包，semantic-release 是标准场景）。
 
@@ -31,7 +31,7 @@ pnpm release:manual run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--o
 pnpm release:manual run --version=1.0.0 --tag=latest [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
 ```
 
-`run` 依序执行 7 步：`preflight → bump → changelog → publish → verify → sync → announce`。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
+`run` 依序执行 7 步：`preflight → bump → changelog → publish → verify → sync → announce`。**`run` / `preflight` 不代查 GitHub 安全面板**：发布前须人工执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁，并把结论写入当次发布治理记录。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
 
 ### 3.2 分步执行（可复算 / 失败恢复）
 
@@ -47,6 +47,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ### 3.3 各步骤口径（runbook）
 
+0. **发布前安全告警门禁（人工，脚本未覆盖）**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警——**critical 不允许豁免**；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。检查计数与豁免清单写入当次发布治理记录。
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；随后运行 `pnpm test:coverage` + `pnpm check:coverage` 生成并校验覆盖率证据（`verify` 内含 `test`，故预检会跑两遍测试）；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；dist-tag 取 `--tag` 或按版本推断，**预发布 + `latest` 在参数层直接拒绝**；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 提交在其后——**tag 视图不含 CHANGELOG 段属正常形态**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。

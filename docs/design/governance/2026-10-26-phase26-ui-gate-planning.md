@@ -71,8 +71,10 @@
 | **S1 依赖安全清理（前置，2026-10-28 追加）** | 15 项开发作用域 Dependabot 告警在 lockfile 解析层清零（`undici` / `fast-uri` / `serialize-javascript` / `node-forge` / `nuxt` / `@vitest/mocker`）；依赖升级后质量门复跑；残留项（无补丁）有再评估触发 | lockfile 解析 + `pnpm audit` + 治理记录 | **已完成（2026-10-28）**：见 [S1 记录](./2026-10-28-phase26-s1-dependency-alerts-remediation.md) |
 | **S2 Code Scanning 清理（前置，2026-10-28 追加）** | 5 项 Code Scanning 告警（3 条 high：1 条 tag filter + 2 条不完整多字符清洗；2 条 medium：两个 job 缺 workflow 权限）修复；守卫脚本与单测通过；CI 补最小权限 | `pnpm verify` + 守卫实跑 + YAML 解析 + 记录 | **已完成（2026-10-28）**：见 [S2 记录](./2026-10-28-phase26-s2-code-scanning-remediation.md) |
 | **G2 质量门** | `pnpm verify` 全绿（lint / lint:css / lint:md / typecheck / typecheck:docs / test / build / check:build / check:resolver / check:nuxt / docs:build / docs:check:i18n-routing / governance:check）；`test:e2e` / `test:a11y` / `test:visual` 全绿。**S1 / S2 的同名检查属批次自检，不作 G2 放行证据** | CI / 本地日志 | **已完成（2026-10-28）**：见 [G2 记录](./2026-10-28-phase26-g2-quality-gate.md) |
-| **G3 RC 与下游** | `1.0.0-rc.1` 发 `next`；M4-1 dependfix `typecheck` + `build` 绿；tarball shasum / `exports` 13 键 / 发布时 API 差分留痕 | registry / CI run / release log | 未开始 |
-| **G4 发布证据** | 1.0.0 CHANGELOG、GitHub Release note、version policy、known limitations、回滚方案就绪；用户明确授权推送与发布。回滚方案由 `M3-3` 负责在 G4 前完成 | docs + 用户授权 | 未开始 |
+| **G3 RC 与下游** | `1.0.0-rc.1` 发 `next` 前按[安全规范 §2.1](../../standards/security.md#_2-1-发布前安全告警门禁)复核告警（critical = 0，high 全部修复或留痕豁免）；M4-1 dependfix `typecheck` + `build` 绿；tarball shasum / `exports` 13 键 / 发布时 API 差分留痕 | registry / CI run / release log | 未开始 |
+| **G4 发布证据** | 1.0.0 CHANGELOG、GitHub Release note、version policy、known limitations、回滚方案就绪；**按[安全规范 §2.1](../../standards/security.md#_2-1-发布前安全告警门禁)复核 Dependabot / Code Scanning：critical = 0，high 全部修复或留痕豁免**；用户明确授权推送与发布。回滚方案由 `M3-3` 负责在 G4 前完成 | docs + 用户授权 | 未开始 |
+
+> **安全规范 §2.1 适用于 G3 与 G4，以及 §4.3 的例外发布路径**：critical 不允许豁免，high 必须修复或按规范留痕豁免。
 
 > **G2 的证据必须在 S1 / S2 之后取得**：依赖解析变更会改写工具链（`nuxt` 4.6.3 / `vitest` 4.1.12），S1 之前的 G2 读数不得作为放行依据。
 
@@ -87,7 +89,7 @@
 
 - **目标门禁评审：2026-11-13**（G0 / G1 / G2 应有结论）。
 - **硬截止：2026-11-27**。到期未通过，**不得自动延期**，由用户三选一裁定：
-  1. 以明确例外发布 1.0（仅当 G0 / G2 / G3 已通过，且 G1 已作出「接受」裁定；若 G1 为「修复」，则 G1-F 通过后按正常序列发布，不适用例外）；
+  1. 以明确例外发布 1.0（仅当 G0 / G2 / G3 已通过、安全规范 §2.1 已通过，且 G1 已作出「接受」裁定；若 G1 为「修复」，则 G1-F 通过后按正常序列发布，不适用例外）；
   2. 批准一次新的、带明确日期的延期（不沿用旧时间盒）；
   3. 取消本次 1.0 窗口，回 Phase 26 重新评估发布范围。
 - 门禁期间新发现的 P0 **进入新批次或新门禁条目**，未关闭 / 未接受前不得发布；追加即触发[规划规范 §3.9](../../standards/planning.md) 的全载体回扫，不得静默把「M5 4 条 / 17 条」改成未登记的数字。

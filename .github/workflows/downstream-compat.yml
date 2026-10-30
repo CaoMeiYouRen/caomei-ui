@@ -102,9 +102,17 @@ jobs:
           CAOMEI_UI_VERSION: ${{ steps.version.outputs.version }}
         # 被测版本通常是刚发布的 tag；下游可能配置了 minimumReleaseAge（pnpm 11），
         # 会拒绝安装「过新」的版本。兼容检查必须能安装刚发布的包，故对本步骤关闭该门槛。
-        # 注意：该开关对本次 pnpm add 的整张依赖解析图生效（不只 caomei-ui 本身）；
-        # 下游 lockfile 已在上一 step 以默认门槛安装，常规安装未削弱。
-        run: pnpm --filter ${{ matrix.target-package }} add "caomei-ui@$CAOMEI_UI_VERSION" --config.minimumReleaseAge=0
+        # 注意：`--config.*` 只作用于这一条 pnpm 命令，无法覆盖后续 build chain 的隐式 install。
+        run: |
+          pnpm --filter ${{ matrix.target-package }} add "caomei-ui@$CAOMEI_UI_VERSION" --config.minimumReleaseAge=0
+          # override 会把刚发布的版本写进下游 lockfile；build chain（含 nuxt prepare 等）再次触发
+          # pnpm install 时会重新校验，故对后续步骤关闭门槛。仅作用于本次 CI 工作区。
+          # 必须是 `pnpm_config_` 前缀：pnpm 11 不读取 `npm_config_*`。
+          echo "pnpm_config_minimum_release_age=0" >> "$GITHUB_ENV"
+      # 仅验证 pnpm 已解析该配置；安装侧是否放行以 tag 触发的 typecheck / build 为准。
+      - name: Assert minimumReleaseAge override
+        working-directory: downstream
+        run: test "$(pnpm config get minimumReleaseAge)" = "0"
       - name: Setup downstream build chain
         working-directory: downstream
         run: ${{ matrix.setup-command }}

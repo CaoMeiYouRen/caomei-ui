@@ -22,6 +22,7 @@
 
 ## 当前条目
 - [2026-10-29-phase26-g3-rc-release-readiness.md](./2026-10-29-phase26-g3-rc-release-readiness.md)：**Phase 26 G3 `1.0.0-rc.1` 发布与收口**。rc.1 已发 `next`、tag / prerelease 已建、下游复验绿，G3 已完成；记录含发布流程、`sync` 守卫修复、rc.1 tarball 已知缺陷与 G4 待办。**Review Gate**：结论见本记录 §5 / §6.1。
+- [2026-10-31-phase26-m3-2-1.0.0-release-notes.md](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md)：**Phase 26 M3-2 `1.0.0` 里程碑文案 / Release note**。给出可原样插入的里程碑块（1.x 承诺 / 预设 / 颜色角色 / DataTable / Button / 10 语）、升级注意与已知限制，并固定落盘顺序（`changelog` 后、`announce` 前）与抽取校验命令。**Review Gate**：结论见本记录 §7。
 
 - [2026-10-29-phase26-s3-security-alert-gate-ci.md](./2026-10-29-phase26-s3-security-alert-gate-ci.md)：**Phase 26 S3 安全告警门禁 CI 接入**。Dependabot alerts 仅用户 PAT 可读，新增 `check-security-alerts` 与 `Security Alerts` workflow，统一读取 `SECURITY_ALERTS_TOKEN`；脚本按规范判定 critical / high / 其余级别，支持 `Link` 游标分页与 high 豁免文件。实网运行通过（仅 `deepmerge` low 暂缓），Code Scanning 面板已清零；CI 生效前须先配置 secret `SECURITY_ALERTS_TOKEN`。**Review Gate**：结论见本记录 §5。
 

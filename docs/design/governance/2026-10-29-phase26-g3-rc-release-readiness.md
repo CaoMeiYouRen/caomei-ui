@@ -159,4 +159,16 @@ gh workflow run downstream-compat.yml -f caomei-ui-version=1.0.0-rc.1
 - **rc 已发布**：`publish --tag=next` 成功；registry 实测 `next = 1.0.0-rc.1`、`latest = 0.7.0`；本地 tag `v1.0.0-rc.1` 已建，未推送；GitHub Release 未建。
 - **执行期发现并修复的守卫缺陷**：`sync` 写入版本句后 `docs:check:version` 失败——roadmap 锚点只捕获三段式数字，把 `1.0.0-rc.1` 截成 `1.0.0`；同时 README / roadmap 写死 `latest` 与 registry 事实不符。
   - 修复：roadmap 锚点改为「当前状态：当前版本 `X`」并支持预发布 token；当前版本句禁止声明 dist-tag（新增 `dist-tag-in-statement`）；`sync` 在「已是目标版本但文件仍有未提交改动」时 fail-closed。
-- **剩余步骤**：提交版本句与状态 → 推送 `master` + tag（用户授权）→ `announce`（rc / `--latest=false`）→ M4-1 下游复验 → G3 收口。
+- **剩余步骤**（时点为发布当日中间态，均已完成，见 §6.1）：提交版本句与状态 → 推送 `master` + tag（用户授权）→ `announce`（rc / `--latest=false`）→ M4-1 下游复验 → G3 收口。
+
+### 6.1 G3 收口（2026-10-30）
+
+- **registry**：`next = 1.0.0-rc.1`、`latest = 0.7.0`；tarball sha1 `c527fd0a60f42445be8bfb2151d9611427aabcd6` 与 `dist.shasum` 一致；解包 `version = 1.0.0-rc.1`、`exports` 13 键。
+- **tag / Release**：`v1.0.0-rc.1` 已推送（指向 `01815a5`）；GitHub Release 已创建（`isPrerelease = true`，未占 Latest）。
+- **下游复验（M4-1）**：run `41023344064`（tag `v1.0.0-rc.1` push 自动触发）attempt 2 **success**（2m03s），`dependfix @ a95c1068ef0e71a42b0467aab5d55f578fd5337c`，`typecheck` + `build` 绿；两次 attempt 的下游 revision 相同，排除「下游移动目标」归因。
+  - attempt 1 失败于 `Setup downstream build chain` 的 `minimumReleaseAge`（rc 发布后 40 分钟，cutoff 60 分钟），**非兼容性回归**。
+  - attempt 2 于发布后 **60 分 17 秒**重跑，属自然越过门槛；其 `headSha = 01815a5`，**不包含** workflow 修复 `7db7e24`，因此该绿 run **不验证**修复。`7db7e24` 仍未推送，首次真实验证只能落在下一次 `v*` tag（建议 `rc.2` 或 1.0.0）。
+- **API 差分**：`pnpm check:api-surface --baseline=<0.7.0 解包 dist> --current=<rc.1 tarball dist>` → **exit 0**；0 删除 / 0 重命名，`changedFiles = 25`，人工复核无 required 收紧迹象。复算当前 `dist` 与 rc.1 tarball 的 `changedFiles` 均为 25；早期预演 28 属另一构建批次的属性顺序抖动（同一源码，无 API 变化）。
+- **安全门禁**：发布前 `Security Alerts` run `41017923081`（2026-10-30T07:05:22Z）success；Dependabot 1 low（`deepmerge`，按 §2.1 暂缓）、Code Scanning 0。
+- **已知产物缺陷**：rc.1 的 tag 指向 `01815a5`，版本句同步提交 `ca97e44` 在其后，故 rc.1 tarball 内 README 仍声明 `0.7.0`（npm 包页面展示旧版本句）。**1.0.0 从最终提交重建后自然修复**；若在 1.0.0 前发 `rc.2`，则同批修复。
+- **G3 通过**；G4 待办：**先推送 `7db7e24` 再打 1.0.0 tag（该 tag 的下游 run 是修复的首次真实验证）**、M3-2 里程碑文案、回滚方案、known limitations（含上述 rc.1 README 旧版本句）、1.0.0 用户授权。

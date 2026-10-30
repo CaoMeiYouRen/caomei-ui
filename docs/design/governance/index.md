@@ -21,7 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
-- [2026-10-29-phase26-g3-rc-release-readiness.md](./2026-10-29-phase26-g3-rc-release-readiness.md)：**Phase 26 G3 `1.0.0-rc.1` 发布前检查与流程规划**。CI / 告警 / 版本 / tag 均就绪（Dependabot 仅 1 项 low、Code Scanning 0、`next` 未占用），唯一硬阻塞为 **npm 凭据 401 + 默认 registry 指向镜像**；记录给出分步发布流程、`sync` 工件恢复路径与 rc 回滚口径。**Review Gate**：结论见本记录 §5。
+- [2026-10-29-phase26-g3-rc-release-readiness.md](./2026-10-29-phase26-g3-rc-release-readiness.md)：**Phase 26 G3 `1.0.0-rc.1` 发布与收口**。rc.1 已发 `next`、tag / prerelease 已建、下游复验绿，G3 已完成；记录含发布流程、`sync` 守卫修复、rc.1 tarball 已知缺陷与 G4 待办。**Review Gate**：结论见本记录 §5 / §6.1。
 
 - [2026-10-29-phase26-s3-security-alert-gate-ci.md](./2026-10-29-phase26-s3-security-alert-gate-ci.md)：**Phase 26 S3 安全告警门禁 CI 接入**。Dependabot alerts 仅用户 PAT 可读，新增 `check-security-alerts` 与 `Security Alerts` workflow，统一读取 `SECURITY_ALERTS_TOKEN`；脚本按规范判定 critical / high / 其余级别，支持 `Link` 游标分页与 high 豁免文件。实网运行通过（仅 `deepmerge` low 暂缓），Code Scanning 面板已清零；CI 生效前须先配置 secret `SECURITY_ALERTS_TOKEN`。**Review Gate**：结论见本记录 §5。
 

@@ -1,5 +1,24 @@
 # caomei-ui
 
+# [1.0.0-rc.1](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.7.0...v1.0.0-rc.1) (2026-10-30)
+
+### ✨ 新功能
+
+* **button:** 新增 hover 与 active 状态反馈 ([2b7af3a](https://github.com/CaoMeiYouRen/caomei-ui/commit/2b7af3a))
+* **ci:** 接入安全告警门禁并读取用户 PAT ([34084cf](https://github.com/CaoMeiYouRen/caomei-ui/commit/34084cf))
+* **docs:** 新增 axe 抽检脚本并补齐 Select 示例可访问名 ([013b647](https://github.com/CaoMeiYouRen/caomei-ui/commit/013b647))
+* **release:** 支持 --tag 预发布通道并加入覆盖率预检 ([b8a2086](https://github.com/CaoMeiYouRen/caomei-ui/commit/b8a2086))
+* **scripts:** 新增发布时 API 表面差分 ([1786029](https://github.com/CaoMeiYouRen/caomei-ui/commit/1786029))
+* **theme:** 同步 momei 预设并新增三套设计向预设 ([7cdacfc](https://github.com/CaoMeiYouRen/caomei-ui/commit/7cdacfc))
+* **theme:** 拆分文字与控件边界的颜色角色 ([5c260a2](https://github.com/CaoMeiYouRen/caomei-ui/commit/5c260a2))
+
+### 🐛 Bug 修复
+
+* **data-table:** 修复横向滚动容器键盘不可达 ([d59800a](https://github.com/CaoMeiYouRen/caomei-ui/commit/d59800a))
+* **data-table:** 收口行选择全选作用域与 lazy 页内状态 ([17bf41e](https://github.com/CaoMeiYouRen/caomei-ui/commit/17bf41e))
+* **release:** 修复空 Unreleased、OTP 与 tag 预检 ([a0e91f5](https://github.com/CaoMeiYouRen/caomei-ui/commit/a0e91f5))
+* **scripts:** 修复文档守卫的标签与文本判定缺陷 ([991330d](https://github.com/CaoMeiYouRen/caomei-ui/commit/991330d))
+
 # [0.7.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.6.0...v0.7.0) (2026-10-20)
 
 ### ✨ 新功能
@@ -23,14 +42,6 @@
 ### 📦 代码重构
 
 * **shared:** 提取跨层共享的开发期告警工具 warnDev ([1eb562b](https://github.com/CaoMeiYouRen/caomei-ui/commit/1eb562b))
-
-### 💥 BREAKING CHANGES
-
-* **locale:** 内建语言改为「预注册 + 按需引入」：`zh-CN` / `en-US` 随包根可用，
-  其余语言（`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`）
-  须经 `caomei-ui/locale/<code>` 子路径引入并 `registerLocale()` 注册；`caomeiLocales`
-  变为已注册表。未注册语言回落 `zh-CN` 并给非生产环境告警。迁移见发布指南 §9 与
-  [内建文案与语言](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/docs/components/locale.md)。
 
 # [0.6.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.5.0...v0.6.0) (2026-10-08)
 

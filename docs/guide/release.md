@@ -96,9 +96,10 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ## 5. CI 自动发布（暂缓）
 
-- `.github/workflows/release.yml` 保持「仅执行 `pnpm verify`」，发布步骤注释保留、不放开。
-- 后续启用条件：配置 `NPM_TOKEN` secret，或使用 npm **Trusted Publisher（OIDC）**，再放开发布步骤。
-- **1.0 决策**：1.0 的 rc 与正式版均按本地手动发布执行；rc 走 `next`、正式版走 `latest`（`--tag` 已落地，见 §1 / §3）；提交驱动的自动发布在 1.0 后单独立项，本阶段不放开发布步骤。
+- `.github/workflows/release.yml` 当前**只执行质量门**（`pnpm verify` → `test:coverage` → `check:coverage`），**publish 步骤保持注释**——它不构成可用的发布工作流。
+- 距可用的 **8 项缺口**（凭据、回推凭据、版本句同步、安全门禁、发布后校验、触发模型与 `next` 通道、发布审批、事件链）与验收口径以 Backlog「提交驱动 CI 自动发布」为**单一事实源**；立项需 8 项全绿 + 一次 dry-run 演练。
+- **关键约束**：`semantic-release` 只提交 `CHANGELOG.md` + `package.json`（`@semantic-release/git` assets），**不维护「当前版本」声明句**——直接放开 publish 会让仓库随后处于守卫失败态（下一次 CI 或 `preflight` 的 `pnpm docs:check:version` 即红），且与手动流 `sync` 解决的是同一问题。
+- **1.0 决策**：rc 与正式版继续本地手动发布（rc 走 `next`、正式版走 `latest`，`--tag` 已落地，见 §1 / §3）；提交驱动自动发布在 1.0 后单独立项，本阶段不放开 publish。
 
 ## 6. 版本推断（基线建立后）
 

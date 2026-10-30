@@ -31,6 +31,8 @@
    - publishes the npm package `caomei-ui`;
    - creates the GitHub Release and tag.
 
+> **Not a working release pipeline yet**: `release.yml` currently runs only the quality gates (`pnpm verify`, `test:coverage`, `check:coverage`) and keeps the publish step commented out. Eight gaps must close first, plus one dry run; the Backlog row「提交驱动 CI 自动发布」is the single source for the list and acceptance — credentials, the `@semantic-release/git` push credential, **version-statement sync**, the security alert gate, post-publish verification, the trigger model and `next` channel, a release approval environment, and the event chain (a tag pushed with `GITHUB_TOKEN` does not trigger `v*` workflows such as `downstream-compat`). Note that semantic-release only commits `CHANGELOG.md` and `package.json`, so enabling publish without the sync step leaves the repo in a guard-failing state right after the release (the next CI run or `preflight` turns red). See the Chinese guide §5 for the full list.
+
 ## Manual release (local)
 
 Releases are performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. Use the single-entry orchestrator:

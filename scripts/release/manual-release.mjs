@@ -19,7 +19,7 @@
  *   node scripts/release/manual-release.mjs preflight --version=0.7.0
  *   node scripts/release/manual-release.mjs run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--yes] [--dry-run]
  *   pnpm release:manual <step> --version=<v> [--tag=next|latest]
- * steps：preflight | bump | changelog | publish | verify | sync | announce | run
+ * steps：见 `STEPS`（preflight | bump | changelog | sync | publish | verify | announce）| run
  *
  * 变更型步骤（bump / changelog / publish / sync / announce）**必须显式给出 `--yes`**
  * （或以 `--dry-run` 预览），避免误触发不可逆动作。
@@ -47,8 +47,13 @@ export const DEFAULT_PRERELEASE_TAG = 'next'
 /** 正式版默认 dist-tag。 */
 export const DEFAULT_STABLE_TAG = 'latest'
 
-/** 全流程步骤（顺序即执行顺序）。 */
-export const STEPS = ['preflight', 'bump', 'changelog', 'publish', 'verify', 'sync', 'announce']
+/**
+ * 全流程步骤（顺序即执行顺序）。
+ *
+ * `sync` 必须排在 `publish` **之前**：`npm publish` 打包的是当前工作区，README 随包发布。
+ * 若 `sync` 在后，tarball 内的「当前版本」句会永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。
+ */
+export const STEPS = ['preflight', 'bump', 'changelog', 'sync', 'publish', 'verify', 'announce']
 
 /** 改动仓库状态的步骤：须显式 `--yes` 或 `--dry-run`。 */
 export const MUTATING_STEPS = new Set(['bump', 'changelog', 'publish', 'sync', 'announce'])
@@ -515,6 +520,64 @@ export function buildPublishArgs(otp, tag) {
     return args
 }
 
+/**
+ * 断言「当前版本」声明句已同步到目标版本。
+ *
+ * `npm publish` 打包当前工作区，README 随包发布；版本句未同步会让 tarball 内的版本声明
+ * 永远落后一版（`1.0.0-rc.1` 实测 README 仍写 `0.7.0`）。分步执行可绕过 `STEPS` 顺序，
+ * 故在 `publish` 前 fail-closed。
+ *
+ * @param {Record<string, string>} contentByFile 文件路径 → 内容
+ * @param {string} version 目标版本
+ * @param {Array<{ file: string, pattern: RegExp, label: string }>} statements 声明句登记表
+ * @returns {string[]} 问题清单（空数组表示通过）
+ */
+export function assertVersionStatements(contentByFile, version, statements = CURRENT_VERSION_STATEMENTS) {
+    const problems = []
+    for (const entry of statements) {
+        const content = contentByFile[entry.file]
+        if (content === undefined) {
+            problems.push(`${entry.file}：文件缺失`)
+            continue
+        }
+        const match = entry.pattern.exec(content)
+        if (!match) {
+            problems.push(`${entry.file}：未匹配${entry.label}锚点（句式被改写？）`)
+            continue
+        }
+        if (match[1] !== version) {
+            problems.push(`${entry.file}：${entry.label} = ${match[1]}，期望 ${version}`)
+        }
+    }
+    return problems
+}
+
+/**
+ * 发布前置断言：`package.json` 版本 + 全部「当前版本」声明句都必须是目标版本。
+ *
+ * 不预过滤缺文件——改名 / 删除声明句载体同样必须 fail-closed（否则守卫视同通过）。
+ *
+ * @param {string} root 仓库根
+ * @param {string} version 目标版本
+ */
+export function assertPublishVersionStatements(root, version) {
+    const problems = []
+    const actualVersion = readPackageVersion(root)
+    if (actualVersion !== version) {
+        problems.push(`package.json：version = ${actualVersion}，期望 ${version}（是否漏跑 bump？）`)
+    }
+    const contentByFile = {}
+    for (const file of statementFiles(CURRENT_VERSION_STATEMENTS)) {
+        try {
+            contentByFile[file] = readFileSync(resolve(root, file), 'utf8')
+        } catch {
+            // 缺文件交由 assertVersionStatements 记为 problem（fail-closed）。
+        }
+    }
+    problems.push(...assertVersionStatements(contentByFile, version))
+    return problems
+}
+
 function stepPublish(ctx) {
     if (!DIST_TAGS.includes(ctx.tag)) {
         throw new Error(`缺少目标 dist-tag（next | latest）：${ctx.tag ?? '（空）'}`)
@@ -522,8 +585,16 @@ function stepPublish(ctx) {
     const args = buildPublishArgs(ctx.otp, ctx.tag)
     const displayArgs = buildPublishArgs(ctx.otp ? '***' : undefined, ctx.tag)
     if (ctx.dryRun) {
+        process.stdout.write('[publish] dry-run：真实运行会先校验 package.json 版本与「当前版本」声明句，未同步即中止\n')
         process.stdout.write(`[publish] dry-run：npm ${displayArgs.join(' ')}（${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}）\n`)
         return
+    }
+    const prePublishProblems = assertPublishVersionStatements(ctx.root, ctx.version)
+    if (prePublishProblems.length > 0) {
+        throw new Error(
+            `版本未就绪，拒绝发布（tarball 内 README 会落后一版）：\n${prePublishProblems.join('\n')}\n`
+            + '请先执行 bump / sync（见 docs/guide/release.md §3.3 第 2 / 4 步）',
+        )
     }
     process.stdout.write(`[publish] 发布 ${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}\n`)
     run('npm', args, { cwd: ctx.root, displayArgs })
@@ -569,6 +640,23 @@ function stepVerify(ctx) {
         const pkg = readUnpackedPackage(unpackDir)
         if (pkg.version !== version) {
             throw new Error(`解包 package.json version = ${pkg.version}，与目标 ${version} 不一致`)
+        }
+        // 产物级断言：tarball 内 README 的「当前版本」句必须已是目标版本（发布链顺序的最终防线）。
+        const packaged = {}
+        for (const file of ['README.md', 'README.en-US.md']) {
+            const packagedPath = join(unpackDir, 'package', file)
+            if (existsSync(packagedPath)) {
+                packaged[file] = readFileSync(packagedPath, 'utf8')
+            }
+        }
+        if (packaged['README.md'] === undefined) {
+            throw new Error('tarball 内缺少 README.md（npm 必带），无法校验版本句')
+        }
+        // roadmap 不随包发布，只排除它；README 中英都随包，缺失即 fail-closed。
+        const packagedStatements = CURRENT_VERSION_STATEMENTS.filter((entry) => entry.file !== 'docs/plan/roadmap.md')
+        const readmeProblems = assertVersionStatements(packaged, version, packagedStatements)
+        if (readmeProblems.length > 0) {
+            throw new Error(`tarball 内 README 版本句不一致：\n${readmeProblems.join('\n')}`)
         }
         process.stdout.write(`[verify] OK：dist-tag ${tag} = ${version}、shasum ${actual.slice(0, 12)}…、exports ${pkg.exports.length} 键\n`)
     } finally {

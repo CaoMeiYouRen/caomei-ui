@@ -6,6 +6,8 @@ import { spawnSync } from 'node:child_process'
 import { afterAll, describe, expect, it } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import {
+    assertPublishVersionStatements,
+    assertVersionStatements,
     buildAnnounceArgs,
     buildPublishArgs,
     checkDistTagState,
@@ -24,6 +26,7 @@ import {
     replacePackageVersion,
     replaceVersionInStatement,
     sha1File,
+    STEPS,
     validateDate,
     validateOtp,
     validateVersion,
@@ -45,6 +48,87 @@ afterAll(() => {
 
 // 直接使用**真实**登记表，锁定真实锚点形态（避免测试与实现静默分叉）
 const STATEMENTS = CURRENT_VERSION_STATEMENTS
+
+describe('manual-release 版本句断言', () => {
+    it('声明句已同步时无问题', () => {
+        const statements = [{ file: 'A.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'A 句' }]
+        expect(assertVersionStatements({ 'A.md': '当前版本：`1.0.0`' }, '1.0.0', statements)).toEqual([])
+    })
+
+    it('声明句落后一版时给出问题清单', () => {
+        const statements = [{ file: 'A.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'A 句' }]
+        const problems = assertVersionStatements({ 'A.md': '当前版本：`1.0.0-rc.1`' }, '1.0.0', statements)
+        expect(problems).toHaveLength(1)
+        expect(problems[0]).toContain('1.0.0-rc.1')
+    })
+
+    it('文件缺失或锚点被改写时 fail-closed', () => {
+        const statements = [{ file: 'B.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'B 句' }]
+        expect(assertVersionStatements({}, '1.0.0', statements)[0]).toContain('文件缺失')
+        expect(assertVersionStatements({ 'B.md': '版本：1.0.0' }, '1.0.0', statements)[0]).toContain('锚点')
+    })
+
+    it('默认登记表覆盖 README 中英与 roadmap', () => {
+        const contentByFile = {
+            'README.md': '当前版本：`1.0.0`\n当前最新版本为 `1.0.0`',
+            'README.en-US.md': 'Current version is `1.0.0`',
+            'docs/plan/roadmap.md': '当前状态：当前版本 `1.0.0`；其余',
+        }
+        expect(assertVersionStatements(contentByFile, '1.0.0')).toEqual([])
+    })
+})
+
+describe('manual-release publish 前置断言', () => {
+    const writeRoot = (version, files) => {
+        const root = tempDir('caomei-publish-')
+        writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'caomei-ui', version }))
+        for (const [file, content] of Object.entries(files)) {
+            const target = join(root, file)
+            mkdirSync(dirname(target), { recursive: true })
+            writeFileSync(target, content)
+        }
+        return root
+    }
+
+    const synced = {
+        'README.md': '当前版本：`1.0.0`\n当前最新版本为 `1.0.0`',
+        'README.en-US.md': 'Current version is `1.0.0`',
+        'docs/plan/roadmap.md': '当前状态：当前版本 `1.0.0`；其余',
+    }
+
+    it('版本一致时通过', () => {
+        expect(assertPublishVersionStatements(writeRoot('1.0.0', synced), '1.0.0')).toEqual([])
+    })
+
+    it('声明句落后一版时 fail-closed', () => {
+        const root = writeRoot('1.0.0', { ...synced, 'README.md': '当前版本：`1.0.0-rc.1`' })
+        const problems = assertPublishVersionStatements(root, '1.0.0')
+        expect(problems.some((item) => item.includes('1.0.0-rc.1'))).toBe(true)
+    })
+
+    it('缺声明句载体时 fail-closed（不得因过滤而放行）', () => {
+        const root = writeRoot('1.0.0', { ...synced })
+        rmSync(join(root, 'README.en-US.md'))
+        const problems = assertPublishVersionStatements(root, '1.0.0')
+        expect(problems.some((item) => item.includes('文件缺失'))).toBe(true)
+    })
+
+    it('package.json 版本与目标不一致时 fail-closed', () => {
+        const root = writeRoot('0.7.0', synced)
+        expect(assertPublishVersionStatements(root, '1.0.0')[0]).toContain('漏跑 bump')
+    })
+})
+
+describe('manual-release 步骤顺序', () => {
+    it('sync 必须早于 publish（否则 tarball 内 README 版本句落后一版）', () => {
+        expect(STEPS.indexOf('sync')).toBeGreaterThan(-1)
+        expect(STEPS.indexOf('publish')).toBeGreaterThan(-1)
+        expect(STEPS.indexOf('sync')).toBeLessThan(STEPS.indexOf('publish'))
+        expect(STEPS[0]).toBe('preflight')
+        expect(STEPS.at(-1)).toBe('announce')
+        expect(new Set(STEPS).size).toBe(STEPS.length)
+    })
+})
 
 describe('manual-release parseArgs', () => {
     it('解析 step 与参数', () => {

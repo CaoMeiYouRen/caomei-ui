@@ -170,5 +170,5 @@ gh workflow run downstream-compat.yml -f caomei-ui-version=1.0.0-rc.1
   - attempt 2 于发布后 **60 分 17 秒**重跑，属自然越过门槛；其 `headSha = 01815a5`，**不包含** workflow 修复 `7db7e24`，因此该绿 run **不验证**修复。`7db7e24` 仍未推送，首次真实验证只能落在下一次 `v*` tag（建议 `rc.2` 或 1.0.0）。
 - **API 差分**：`pnpm check:api-surface --baseline=<0.7.0 解包 dist> --current=<rc.1 tarball dist>` → **exit 0**；0 删除 / 0 重命名，`changedFiles = 25`，人工复核无 required 收紧迹象。复算当前 `dist` 与 rc.1 tarball 的 `changedFiles` 均为 25；早期预演 28 属另一构建批次的属性顺序抖动（同一源码，无 API 变化）。
 - **安全门禁**：发布前 `Security Alerts` run `41017923081`（2026-10-30T07:05:22Z）success；Dependabot 1 low（`deepmerge`，按 §2.1 暂缓）、Code Scanning 0。
-- **已知产物缺陷**：rc.1 的 tag 指向 `01815a5`，版本句同步提交 `ca97e44` 在其后，故 rc.1 tarball 内 README 仍声明 `0.7.0`（npm 包页面展示旧版本句）。**1.0.0 从最终提交重建后自然修复**；若在 1.0.0 前发 `rc.2`，则同批修复。
+- **已知产物缺陷**：rc.1 的 tag 指向 `01815a5`，版本句同步提交 `ca97e44` 在其后，故 rc.1 tarball 内 README 仍声明 `0.7.0`（npm 包页面展示旧版本句）。**2026-10-31 改判**：根因是发布链 `sync` 位于 `publish` 之后（`npm publish` 打包当前工作区），并非仅 rc.1 的时点问题；已改为 `sync` 前置于 `publish` 并补发布 / 校验断言，见 [G4 记录](./2026-10-31-phase26-g4-rollback-and-known-limitations.md) §2.6。rc.1 的已发布产物本身不可修。
 - **G3 通过**；G4 待办：**先推送 `7db7e24` 再打 1.0.0 tag（该 tag 的下游 run 是修复的首次真实验证）**、M3-2 里程碑文案、回滚方案、known limitations（含上述 rc.1 README 旧版本句）、1.0.0 用户授权。

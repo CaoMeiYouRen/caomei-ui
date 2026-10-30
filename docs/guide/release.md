@@ -31,7 +31,7 @@ pnpm release:manual run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--o
 pnpm release:manual run --version=1.0.0 --tag=latest [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
 ```
 
-`run` 依序执行 7 步：`preflight → bump → changelog → publish → verify → sync → announce`。**`run` / `preflight` 不代查 GitHub 安全面板**：发布前须人工执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁，并把结论写入当次发布治理记录。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
+`run` 依序执行 7 步：`preflight → bump → changelog → sync → publish → verify → announce`。**`sync` 排在 `publish` 之前**：`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版。**`run` / `preflight` 不代查 GitHub 安全面板**：发布前须人工执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁，并把结论写入当次发布治理记录。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
 
 ### 3.2 分步执行（可复算 / 失败恢复）
 
@@ -39,9 +39,9 @@ pnpm release:manual run --version=1.0.0 --tag=latest [--date=YYYY-MM-DD] [--otp=
 pnpm release:manual preflight --version=1.0.0-rc.1 --tag=next
 pnpm release:manual bump      --version=1.0.0-rc.1 --yes
 pnpm release:manual changelog --version=1.0.0-rc.1 --yes
+pnpm release:manual sync      --version=1.0.0-rc.1 --yes
 pnpm release:manual publish   --version=1.0.0-rc.1 --tag=next [--otp=<code>] --yes
 pnpm release:manual verify    --version=1.0.0-rc.1 --tag=next
-pnpm release:manual sync      --version=1.0.0-rc.1 --yes
 pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 ```
 
@@ -50,11 +50,11 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 0. **发布前安全告警门禁（人工）**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警——**critical 不允许豁免**；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。CI 侧由 `Security Alerts` workflow 执行同名检查（secret `SECURITY_ALERTS_TOKEN`，见 §2.1）；本地可跑 `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`。检查计数与豁免清单写入当次发布治理记录。
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；随后运行 `pnpm test:coverage` + `pnpm check:coverage` 生成并校验覆盖率证据（`verify` 内含 `test`，故预检会跑两遍测试）；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；dist-tag 取 `--tag` 或按版本推断，**预发布 + `latest` 在参数层直接拒绝**；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
-   **tag 落点**：tag 指向版本提交，`CHANGELOG` 提交在其后——**tag 视图不含 CHANGELOG 段属正常形态**（CHANGELOG 是仓库内产物，不要求出现在 tag 视图里）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。
-3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。**major 版另须人工补里程碑段**（里程碑 / 升级注意 / 已知限制，文案见当次发布治理记录）：生成器只按提交分组，`v1.0.0-rc.1..v1.0.0` 这类区间会只剩零星修复；插入必须在 `changelog` 之后、`announce` 之前——`announce` 直接抽取该段落作为 GitHub Release note，插早了会被 `changelog` 重写覆盖。补完另起一次 `docs(changelog): 补充 <v> 里程碑段` 提交，并用 `announce --dry-run` 复核 `note <N> 行`。**major 版须分步执行**（`bump → changelog → 插入并单独提交 → publish → verify → sync → announce`）：插入后不得重跑 `changelog` 步骤或整链 `run`，否则里程碑块会被整篇重写覆盖。
-4. **发布（`publish`）**：`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
-5. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。另执行 `pnpm check:api-surface --baseline=<上一版解包 dist>` 比对 `.d.ts`：exit 1（删除 / 重命名）阻塞；exit 0 且列出内容变化时人工复核，命中 required 收紧按阻塞处理、纯类型变化记 warning。
-6. **文档同步（`sync`）**：**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 announce）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`。
+   **tag 落点**：tag 指向版本提交，`CHANGELOG` 与 `sync` 提交都在其后——**tag 视图不含 CHANGELOG 段、README 版本句落后一版均属正常形态**（两者都是仓库内产物，作者是后续提交）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。因此**已发布 tag 的 README 快照不是版本句校验的有效信号**（README 的作者提交在 tag 之后），权威校验以解包 tarball 的 README 为准（`verify` 已自动断言）。
+3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。**major 版另须人工补里程碑段**（里程碑 / 升级注意 / 已知限制，文案见当次发布治理记录）：生成器只按提交分组，`v1.0.0-rc.1..v1.0.0` 这类区间会只剩零星修复；插入必须在 `changelog` 之后、`announce` 之前——`announce` 直接抽取该段落作为 GitHub Release note，插早了会被 `changelog` 重写覆盖。补完另起一次 `docs(changelog): 补充 <v> 里程碑段` 提交，并用 `announce --dry-run` 复核 `note <N> 行`。**major 版须分步执行**（`bump → changelog → 插入并单独提交 → sync → publish → verify → announce`）：插入后不得重跑 `changelog` 步骤或整链 `run`，否则里程碑块会被整篇重写覆盖。
+4. **文档同步（`sync`）**：**必须在 `publish` 之前**——`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 `publish` / `announce`）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`（不命中发布元数据豁免，提交前须已有新鲜 Review Gate 工件）。
+5. **发布（`publish`）**：**发布前 fail-closed 断言** `package.json` 版本与全部「当前版本」声明句均已到达目标版本（`scripts/release/manual-release.mjs` 的 `assertPublishVersionStatements`；分步执行绕过 `STEPS` 顺序时由该断言兜底），未就绪即中止并提示先跑 `bump` / `sync`。`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
+6. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。并断言**解包 tarball 内 README（中 / 英）的「当前版本」句 = 目标版本**（产物级最终防线）。另执行 `pnpm check:api-surface --baseline=<上一版解包 dist>` 比对 `.d.ts`：exit 1（删除 / 重命名）阻塞；exit 0 且列出内容变化时人工复核，命中 required 收紧按阻塞处理、纯类型变化记 warning。
 7. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`；预发布版本追加 `--prerelease`，目标 dist-tag 非 `latest` 时追加 `--latest=false`（staged release 不抢 Latest）。
 
 > **落痕（人工，脚本未覆盖）**：发布结论与关键实测值（registry 版本 / tarball shasum / 解包与冒烟结果 / GitHub Release）应落到可提交位置（发布执行治理记录或提交信息）。
@@ -70,7 +70,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 | `chore(release): <v>` | 仅 `package.json` 的版本行 | ✅ |
 | `docs(changelog): <v>` | 仅 `CHANGELOG.md` | ✅ |
 | `docs(changelog): 补充 <v> 里程碑段` | 仅 `CHANGELOG.md`（major 版人工里程碑段，见 §3.3 第 3 步） | ✅ |
-| `docs(release): sync version statements to <v>` | README（中英）+ `docs/plan/roadmap.md` 的版本句 | ❌ **不豁免** |
+| `docs(release): sync version statements to <v>` | README（中英）+ `docs/plan/roadmap.md` 的版本句（在 `publish` **之前**提交，版本句才随 tarball 发布） | ❌ **不豁免** |
 
 > 豁免要求范围**等于全量暂存集**且每项状态为 `M`、版本清单 diff 增删行**全部**为 `"version": "…"` 形态；与任何其它文件同批即失去豁免。故执行 `sync` 提交前**须已有新鲜 Review Gate 工件**。
 
@@ -78,7 +78,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ### 3.5 发版后的文档同步边界
 
-站点内展示的版本号由 `themeConfig.version` 从 `package.json` **自动派生**（页面用 `useData()` 的 `theme.version` 插值，由 `pnpm docs:check:version` 看守），发版时**无需手改站点文档**；但仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述仍需同步——由 `sync` 步骤按「当前版本」句式锚点自动完成（`scripts/shared/version-statements.mjs` 为唯一事实源）。
+站点内展示的版本号由 `themeConfig.version` 从 `package.json` **自动派生**（页面用 `useData()` 的 `theme.version` 插值，由 `pnpm docs:check:version` 看守），发版时**无需手改站点文档**；但仓库根 `README.md` / `README.en-US.md`（GitHub / npm 渲染，无插值能力）与 `docs/plan/roadmap.md` 的版本表述仍需同步——由 `sync` 步骤按「当前版本」句式锚点自动完成（`scripts/shared/version-statements.mjs` 为唯一事实源），且必须在 `publish` 之前完成，版本句才会随 tarball 一起发布。
 
 ### 3.6 CHANGELOG 生成口径
 
@@ -123,6 +123,15 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - 标记问题版本：`npm deprecate caomei-ui@<version> "<reason>"`。
 - npm 的 `unpublish` 受发布时长（一般 72 小时）、依赖方数量、下载量与所有权等政策约束，且可能被拒绝；超期或已被广泛安装时**不建议** unpublish，改用 deprecate + 修复后 patch。
 - 已发布的 git tag 不重写，修复以新版本提交。
+
+**处置阶梯（逐级升级，不跳级）**：
+
+1. **标记**：`npm deprecate caomei-ui@<version> "<原因>；请升级到 <修复版本>"`——只影响新的安装与升级提示，不改动已有 lockfile 的解析结果，也**不阻止安装**；「装不上」类 P0 不能只靠它止血。误判时用 `npm deprecate caomei-ui@<version> ""` 撤销。
+2. **修复**：从对应 tag 拉 hotfix 发 patch 到 `latest`；`latest` 自然前移，**不改 tag、不改 dist-tag**。
+3. **回退通道**（P0 立即执行；P1 超时执行）：`npm dist-tag add caomei-ui@<上一稳定版> latest`；修好后 `npm dist-tag add caomei-ui@<修复版本> latest` 恢复。**只影响不带范围的新安装**：已锁 `<version>` 的 lockfile 或 `^<version>` / `~<version>` 范围仍解析到问题版本，这批下游只能靠 patch 或显式 pin 回上一版。
+4. **时点要求**：**P0（下游无法安装）分钟级**完成 `deprecate` + 回退 `latest`；**P1（可安装但构建 / 类型失败，或核心功能阻断）**在确认后 **24 小时内**完成 `deprecate` 并给出计划、**72 小时内**出 patch 或完成回退。
+5. **禁止项**：不 `unpublish`、不重写 / 移动已推送 tag、不覆盖已发布 tarball；GitHub Release 正文可编辑（`gh release edit`），tag 与产物不动。
+6. **校验与信号对齐**：`npm view caomei-ui dist-tags --json`、`npm view caomei-ui@<version> deprecated`、`gh workflow run downstream-compat.yml -f caomei-ui-version=<target>`（下游 `typecheck` + `build`，记录 revision 归因）；回退期间三处信号（npm dist-tags / GitHub Release 的 Latest / README 版本句）必须一致，必要时 `gh release edit v<version> --latest=false`；随后同步「当前版本」句并跑 `pnpm docs:check:version`（不得声明 dist-tag）。启用 npm 2FA 时 `deprecate` / `dist-tag` 同样需要 `--otp=<code>`。
 
 ## 9. 包形态与兼容性
 

@@ -4,6 +4,8 @@
 > 依据：[Phase 26 执行期追加与 1.0 发布门禁](./2026-10-26-phase26-ui-gate-planning.md) §4.1 G3；[发布指南 §3 / §4](../../guide/release.md)。
 > 基线：`af72b2a`（`master` = `origin/master`；工作区干净）。
 > 结论：**1 项硬阻塞（npm 凭据）；其余就绪**。API 差分已落为可复算脚本 `check:api-surface` 并用 0.7.0 预演通过。
+>
+> **时点说明（2026-10-30）**：§1 / §2 B1 / §3.1 的「硬阻塞」为 2026-10-29 时点结论；凭据已解除、rc 已发 `next`，以 §6 为准。
 
 ## 1. 检查结果
 
@@ -136,6 +138,8 @@ gh workflow run downstream-compat.yml -f caomei-ui-version=1.0.0-rc.1
 
 ## 4. 当前不能执行的原因
 
+> 时点结论（2026-10-30）：凭据已解除、rc 已发布，以 §6 为准。
+
 `pnpm release:manual preflight --version=1.0.0-rc.1 --tag=next` 会在 `npm whoami` 处失败；`publish` 会因 registry 指向镜像而不可用。**在 B1 解除前，G3 保持阻塞，不进行任何版本提交 / tag / 发布。**
 
 ## 5. Review Gate
@@ -148,3 +152,11 @@ gh workflow run downstream-compat.yml -f caomei-ui-version=1.0.0-rc.1
 - **R2（`quick` delta）：Reject**（1 blocker / 4 warning / 2 suggest）：B1「发布时 API 差分」的 §3.5 用全量 `diff -rq`，scoped CSS 哈希文件名产生 30 / 35 条假阳性；导出计数口径与命令不一致；`28 个文件仅顺序变化` 的归纳不准确；CodeQL 归属存疑（实测 run `40736337068` 确在 `af72b2a`）；`.session` summary 远端句仍写 `0dfff98`。修复：落地 `scripts/release/diff-api.mjs` + 11 例单测（负向对照），§3.5 改为脚本步骤；读数改为脚本口径（328 导出 / 0 删除）；28 个变化细分为 26 行序 + 1 emit 成员顺序 + 1 additive import；CodeQL 补 run id；`.session` 远端句改 `af72b2a`。
 - **R3（`standard` delta）：Reject**（1 blocker / 4 warning / 3 suggest）：新脚本 `REPO_ROOT` 仍少一级（默认 `--current` = `scripts/dist`，§3.5 命令不可复跑）；导出名按全局集合比对，单文件删除同名导出会漏判；`export type {}` 未抽取；`.session` summary 未真正改；required 收紧被误归 warning。修复：`REPO_ROOT` 补 `dirname` + 默认路径断言；改为按「文件 + 导出名」比对；正则兼容 `export type {}`；required 收紧明确为阻塞；`.session` 实测改句；补 15 例单测（重命名 / 同名导出 / 默认路径）。
 - **R4（`standard` delta）：Pass**（0 blocker / 0 warning / 3 suggest）。R3 的 1 blocker + 4 warning 全部关闭；3 条 suggest（无变化时尾行文案、R3 台账计数、`export type * from` 前瞻）已同批处理；单测 **16 例**。
+
+## 6. 执行期更新（2026-10-30）
+
+- **凭据阻塞已解除**：维护者完成 npm 登录（`npm whoami` = `cao-mei-you-ren`），默认 registry 已指向 `https://registry.npmjs.org/`。
+- **rc 已发布**：`publish --tag=next` 成功；registry 实测 `next = 1.0.0-rc.1`、`latest = 0.7.0`；本地 tag `v1.0.0-rc.1` 已建，未推送；GitHub Release 未建。
+- **执行期发现并修复的守卫缺陷**：`sync` 写入版本句后 `docs:check:version` 失败——roadmap 锚点只捕获三段式数字，把 `1.0.0-rc.1` 截成 `1.0.0`；同时 README / roadmap 写死 `latest` 与 registry 事实不符。
+  - 修复：roadmap 锚点改为「当前状态：当前版本 `X`」并支持预发布 token；当前版本句禁止声明 dist-tag（新增 `dist-tag-in-statement`）；`sync` 在「已是目标版本但文件仍有未提交改动」时 fail-closed。
+- **剩余步骤**：提交版本句与状态 → 推送 `master` + tag（用户授权）→ `announce`（rc / `--latest=false`）→ M4-1 下游复验 → G3 收口。

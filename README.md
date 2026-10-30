@@ -22,7 +22,7 @@
 > 一个基于 Vue 3 与 [Reka UI](https://reka-ui.com/) 的自建组件库。组件与样式解耦，默认提供极简可用的样式（具名预设 `minimal`，缺省即它）并支持 100% 覆盖；主题切换与暗色模式开箱即用，同一套组件适配桌面端与移动端。
 
 - 定位：替代多个下游项目中的 PrimeVue，规避 PrimeUI 商业许可风险
-- 当前版本：`0.7.0`（npm `latest`），样式入口 `caomei-ui/theme.css`
+- 当前版本：`1.0.0-rc.1`，样式入口 `caomei-ui/theme.css`
 - 阶段进展、组件清单与下一步方向见[路线图](./docs/plan/roadmap.md)、[待办事项](./docs/plan/todo.md) 与 [Backlog](./docs/plan/backlog.md)
 - 发布策略：本地手动发布，CI 自动发布暂缓；1.x 起遵循语义化版本兼容承诺（破坏性变更仅随 `major` 发布，冻结面与弃用政策见[版本与兼容策略](./docs/guide/version-policy.md)）
 
@@ -45,7 +45,9 @@
 pnpm add caomei-ui
 ```
 
-当前最新版本为 `0.7.0`（样式入口为 `caomei-ui/theme.css`；0.5.0 新增 `CaomeiRichTextEditor` 富文本编辑器封装（可选 peer 依赖 `md-editor-v3`）、把极简具名预设 `minimal` 设为缺省预设，并修复模态内浮层被遮挡的缺陷；0.6.0 修复 Tabs 激活指示条被裁剪与多余纵向滚动条、`DataTable` 排序指示条列宽跳动，并统一组件背景 / 阴影 token 与分组标签 / 折叠触发器可访问性；0.7.0 新增 Chart / Tooltip / 导航骨架 / 栅格布局与 Alert，并将内建语言改为预注册 + 按需子路径〔非预注册语言需 `registerLocale`〕），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。1.x 起遵循语义化版本兼容承诺；冻结面与弃用政策见[版本与兼容策略](./docs/guide/version-policy.md)。
+> 1.0 预发布走 `next` 通道：`pnpm add caomei-ui@next`；正式版发布后按默认 `latest` 安装。
+
+当前最新版本为 `1.0.0-rc.1`（样式入口为 `caomei-ui/theme.css`；0.5.0 新增 `CaomeiRichTextEditor` 富文本编辑器封装（可选 peer 依赖 `md-editor-v3`）、把极简具名预设 `minimal` 设为缺省预设，并修复模态内浮层被遮挡的缺陷；0.6.0 修复 Tabs 激活指示条被裁剪与多余纵向滚动条、`DataTable` 排序指示条列宽跳动，并统一组件背景 / 阴影 token 与分组标签 / 折叠触发器可访问性；0.7.0 新增 Chart / Tooltip / 导航骨架 / 栅格布局与 Alert，并将内建语言改为预注册 + 按需子路径〔非预注册语言需 `registerLocale`〕），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。1.x 起遵循语义化版本兼容承诺；冻结面与弃用政策见[版本与兼容策略](./docs/guide/version-policy.md)。
 
 除 Vue 3.5+ 外，**部分组件另有可选 peer 依赖**（当前为 `CaomeiRichTextEditor` 的编辑器内核 `md-editor-v3`）：未使用这些组件的下游无需安装、也不受影响；使用前须自行安装（`pnpm add md-editor-v3`）。
 

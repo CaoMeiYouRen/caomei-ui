@@ -22,7 +22,9 @@
  *    1.0 时随该节语义重写，故不命中；`0.4` 这类两段式非 `x` 形态亦不在面内。
  * 7. `current-version-statement`（**弱守卫**）——**对外可读的「当前版本」句**须存在且等于
  *    `package.json` 的 `version`：仓库根 README（中英两版）与 `docs/plan/roadmap.md` §1 的
- *    `` `latest` = <version> `` 句；句式被改写即 `statement-missing`。
+ *    「当前版本 `X`」句；版本 token 支持预发布后缀（如 `1.0.0-rc.1`）。句式被改写即 `statement-missing`。
+ *    本守卫只校验**文本与 package.json 一致**；发布通道（`next` / `latest`）由发布流 `verify` 对 registry
+ *    断言，静态文案不再写死 dist-tag（预发布期间写 `latest` 会与事实不符，命中 `dist-tag-in-statement`）。
  *    这三个文件都按设计保留**历史版本叙述**（各版本做了什么），故不能对全文件版本字面量施加相等要求,
  *    只锚定声明句式——`roadmap` 与 README 采用**同一套窄锚策略**（不因"规划载体每次阶段重写"而豁免）。
  *
@@ -122,6 +124,20 @@ export function findCurrentVersionDrift(root, version, statements = CURRENT_VERS
                 file: statement.file,
                 line,
                 message: `${statement.label}写作「${match[1]}」，与 package.json 的 version（${version}）不一致`,
+            })
+        }
+        // 静态文案不得在版本号后的括注里声明 dist-tag：预发布在 next、正式版在 latest，
+        // 写死会与 registry 事实不符。只检紧随版本 token、且括注内**只有**可选 npm + 反引号 tag 的形态；
+        // 已知边界：无反引号的「（npm latest）」不在判据内（当前文档不使用该形态）。
+        const trailing = content.slice(match.index + match[0].length)
+        const tag = trailing.match(/^[（(]\s*(?:npm\s*)?`(latest|next)`\s*[）)]/u)
+        if (tag) {
+            const line = content.slice(0, match.index).split(/\r?\n/u).length
+            issues.push({
+                type: 'dist-tag-in-statement',
+                file: statement.file,
+                line,
+                message: `${statement.label}声明了 npm dist-tag「${tag[1]}」：静态文案易与 registry 事实不符；发布通道由发布流 verify 对 registry 断言`,
             })
         }
     }

@@ -224,28 +224,77 @@ describe('「当前版本」句弱守卫（README + roadmap 同一套窄锚策�
     const statements = [
         { file: 'README.md', pattern: /当前版本[：:]\s*`([^`\s]+)`/u, label: 'zh' },
         { file: 'README.en-US.md', pattern: /Current version is\s*`([^`\s]+)`/u, label: 'en' },
-        { file: 'docs/plan/roadmap.md', pattern: /`latest`\s*=\s*`?([0-9]+\.[0-9]+(?:\.[0-9]+)?)`?/u, label: 'roadmap' },
+        { file: 'docs/plan/roadmap.md', pattern: /当前状态[：:]\s*当前版本[：:]?\s*`([^`\s]+)`/u, label: 'roadmap' },
     ]
 
     const clean = {
-        'README.md': '- 当前版本：`1.2.3`（npm latest）',
+        'README.md': '- 当前版本：`1.2.3`，样式入口 `x`',
         'README.en-US.md': 'Current version is `1.2.3` (style entry: x)',
-        'docs/plan/roadmap.md': '均已发布到 npm（`latest` = 1.2.3）',
+        'docs/plan/roadmap.md': '当前状态：当前版本 `1.2.3`；',
     }
 
     it('三面版本一致时零问题', () => {
         expect(findCurrentVersionDrift(createFixture(clean), '1.2.3', statements)).toEqual([])
     })
 
+    it('预发布版本（1.0.0-rc.1）不被截断（走生产登记表）', () => {
+        const prerelease = {
+            'README.md': '- 当前版本：`1.0.0-rc.1`，样式入口 `x`\n当前最新版本为 `1.0.0-rc.1`',
+            'README.en-US.md': 'Current version is `1.0.0-rc.1` (style entry: x)',
+            'docs/plan/roadmap.md': '当前状态：当前版本 `1.0.0-rc.1`；',
+        }
+        expect(findCurrentVersionDrift(createFixture(prerelease), '1.0.0-rc.1')).toEqual([])
+    })
+
+    it('当前版本句声明 dist-tag 时报 dist-tag-in-statement', () => {
+        const root = createFixture({
+            ...clean,
+            'README.md': '- 当前版本：`1.2.3`（npm `latest`）',
+        })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues.map((issue) => issue.type)).toContain('dist-tag-in-statement')
+    })
+
+    it('括注内的合法通道说明不误报', () => {
+        const root = createFixture({
+            ...clean,
+            'README.md': '- 当前版本：`1.2.3`（1.0 预发布走 `next`）',
+        })
+        expect(findCurrentVersionDrift(root, '1.2.3', statements)).toEqual([])
+    })
+
+    it('版本句后的合法 dist-tag 叙述不误报', () => {
+        const root = createFixture({
+            ...clean,
+            'docs/plan/roadmap.md': '当前状态：当前版本 `1.2.3`；已发 `next`（`latest` 仍为 0.7.0）',
+        })
+        expect(findCurrentVersionDrift(root, '1.2.3', statements)).toEqual([])
+    })
+
+    it('当前版本后带冒号也可识别', () => {
+        const root = createFixture({ ...clean, 'docs/plan/roadmap.md': '当前状态：当前版本：`1.2.3`；' })
+        expect(findCurrentVersionDrift(root, '1.2.3', statements)).toEqual([])
+    })
+
+    it('§1 前的同名短语不能替代当前状态句', () => {
+        const root = createFixture({
+            ...clean,
+            'docs/plan/roadmap.md': 'Phase 25 完成时当前版本 `1.2.3`\n当前状态：当前版本 `1.1.0`；',
+        })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'current-version-drift', file: 'docs/plan/roadmap.md' })
+    })
+
     it('README 版本漂移时报 current-version-drift 并给出行号', () => {
-        const root = createFixture({ ...clean, 'README.md': '首行\n- 当前版本：`0.3.0`（npm latest）' })
+        const root = createFixture({ ...clean, 'README.md': '首行\n- 当前版本：`0.3.0`' })
         const issues = findCurrentVersionDrift(root, '1.2.3', statements)
         expect(issues).toHaveLength(1)
         expect(issues[0]).toMatchObject({ type: 'current-version-drift', line: 2 })
     })
 
-    it('roadmap `latest` 句漂移同样命中（与 README 同族）', () => {
-        const root = createFixture({ ...clean, 'docs/plan/roadmap.md': '均已发布到 npm（`latest` = 1.1.0）' })
+    it('roadmap 当前版本句漂移同样命中（与 README 同族）', () => {
+        const root = createFixture({ ...clean, 'docs/plan/roadmap.md': '当前状态：当前版本 `1.1.0`；' })
         const issues = findCurrentVersionDrift(root, '1.2.3', statements)
         expect(issues).toHaveLength(1)
         expect(issues[0]).toMatchObject({ type: 'current-version-drift', file: 'docs/plan/roadmap.md' })
@@ -277,8 +326,8 @@ describe('runSiteVersionCheck 新规则接线（W1：防接线被静默拆除）
             'package.json': '{ "version": "1.2.3" }\n',
             'docs/.vitepress/config.mjs': 'export default { themeConfig: { version: "1.2.3" } }\n',
             'docs/guide/version-policy.md': '# 版本\n\n> 即 0.9.x 系列\n',
-            'README.md': '- 当前版本：`1.1.0`（npm latest）\n',
-            'docs/plan/roadmap.md': '（`latest` = 1.1.0）\n',
+            'README.md': '- 当前版本：`1.1.0`\n',
+            'docs/plan/roadmap.md': '当前版本 `1.1.0`\n',
         })
         const result = await runSiteVersionCheck(root, { surfaces: [] })
         const kinds = result.issues.map((issue) => issue.type)

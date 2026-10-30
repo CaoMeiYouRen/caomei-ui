@@ -9,6 +9,7 @@ import {
     buildAnnounceArgs,
     buildPublishArgs,
     checkDistTagState,
+    decideSyncCommit,
     extractChangelogSection,
     formatLocalTagNotPushed,
     isPrereleaseVersion,
@@ -346,7 +347,7 @@ describe('manual-release 版本句同步', () => {
         const entries = [
             { file: 'README.md', content: '当前版本：`0.6.0`\n当前最新版本为 `0.6.0`\n历史：0.1.0 / 0.2.0' },
             { file: 'README.en-US.md', content: 'Current version is `0.6.0`' },
-            { file: 'docs/plan/roadmap.md', content: '`latest` = 0.6.0；0.1.0 起' },
+            { file: 'docs/plan/roadmap.md', content: '当前状态：当前版本 `0.6.0`；0.1.0 起' },
         ]
         const planned = planVersionStatementSync(entries, '0.7.0', STATEMENTS)
         const readme = planned.find((item) => item.file === 'README.md')
@@ -356,7 +357,22 @@ describe('manual-release 版本句同步', () => {
         expect(readme.changed).toBe(true)
         expect(readme.matched).toBe(true)
         expect(en.content).toBe('Current version is `0.7.0`')
-        expect(roadmap.content).toBe('`latest` = 0.7.0；0.1.0 起')
+        expect(roadmap.content).toBe('当前状态：当前版本 `0.7.0`；0.1.0 起')
+    })
+
+    it('预发布版本与正式版可双向替换', () => {
+        const entries = [
+            { file: 'README.md', content: '当前版本：`0.7.0`\n当前最新版本为 `0.7.0`' },
+            { file: 'README.en-US.md', content: 'Current version is `0.7.0`' },
+            { file: 'docs/plan/roadmap.md', content: '当前状态：当前版本 `0.7.0`；' },
+        ]
+        const rc = planVersionStatementSync(entries, '1.0.0-rc.1', STATEMENTS)
+        expect(rc.find((item) => item.file === 'docs/plan/roadmap.md').content).toBe('当前状态：当前版本 `1.0.0-rc.1`；')
+        expect(rc.find((item) => item.file === 'README.md').content).toContain('当前版本：`1.0.0-rc.1`')
+
+        const stableEntries = rc.map((item) => ({ file: item.file, content: item.content }))
+        const stable = planVersionStatementSync(stableEntries, '1.0.0', STATEMENTS)
+        expect(stable.find((item) => item.file === 'docs/plan/roadmap.md').content).toBe('当前状态：当前版本 `1.0.0`；')
     })
 
     it('未匹配锚点时标记 matched=false（不改内容）', () => {
@@ -381,6 +397,24 @@ describe('manual-release replacePackageVersion', () => {
     it('同版本不改；缺 version 字段抛错', () => {
         expect(replacePackageVersion('{\n  "version": "0.7.0"\n}\n', '0.7.0').changed).toBe(false)
         expect(() => replacePackageVersion('{\n  "name": "x"\n}\n', '0.7.0')).toThrow(/未找到 "version" 字段/u)
+    })
+})
+
+describe('decideSyncCommit', () => {
+    it('有改写时提交改写文件', () => {
+        expect(decideSyncCommit({ changedFiles: ['README.md'] })).toEqual({ action: 'commit', files: ['README.md'] })
+    })
+
+    it('已是目标版本但文件仍脏时 fail-closed', () => {
+        expect(decideSyncCommit({ changedFiles: [], dirtyFiles: ['README.md'] })).toEqual({ action: 'error', files: ['README.md'] })
+    })
+
+    it('无改写且无脏文件时跳过', () => {
+        expect(decideSyncCommit({ changedFiles: [], dirtyFiles: [] })).toEqual({ action: 'skip', files: [] })
+    })
+
+    it('改写优先于脏文件', () => {
+        expect(decideSyncCommit({ changedFiles: ['a.md'], dirtyFiles: ['b.md'] })).toEqual({ action: 'commit', files: ['a.md'] })
     })
 })
 

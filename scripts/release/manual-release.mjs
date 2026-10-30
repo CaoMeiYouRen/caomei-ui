@@ -265,6 +265,22 @@ export function planVersionStatementSync(entries, version, statements) {
 }
 
 /**
+ * 决定 `sync` 的提交动作：有改写则提交；已是目标版本但文件仍脏则 fail-closed；否则跳过。
+ *
+ * @param {{ changedFiles: string[], dirtyFiles?: string[] }} input 改写的文件与未提交的受检文件
+ * @returns {{ action: 'commit'|'error'|'skip', files: string[] }} 动作与涉及文件
+ */
+export function decideSyncCommit({ changedFiles, dirtyFiles = [] }) {
+    if (changedFiles.length > 0) {
+        return { action: 'commit', files: changedFiles }
+    }
+    if (dirtyFiles.length > 0) {
+        return { action: 'error', files: dirtyFiles }
+    }
+    return { action: 'skip', files: [] }
+}
+
+/**
  * 把 `package.json` 的版本行改写为目标版本（保持其余格式与末尾换行）。
  *
  * @param {string} raw package.json 原文
@@ -590,9 +606,26 @@ async function stepSync(ctx) {
     }
     // 守卫前置：版本句未同步到位则不落提交（避免提交坏状态）
     run('pnpm', ['docs:check:version'], { cwd: root })
-    if (changedFiles.length > 0) {
-        run('git', ['add', ...changedFiles], { cwd: root })
+    const statementPaths = entries.map((entry) => entry.file)
+    // 上次 sync 已写入文件但守卫 / 提交失败时，重跑会看到 changed=false；此时若仍有未提交改动，
+    // 必须 fail-closed，避免带着半提交状态继续 announce。
+    let dirtyFiles = []
+    if (statementPaths.length > 0) {
+        const statusResult = capture('git', ['status', '--porcelain', '--', ...statementPaths], { cwd: root })
+        if (statusResult.status !== 0) {
+            throw new Error(`git status 失败：${output(statusResult)}`)
+        }
+        dirtyFiles = (statusResult.stdout ?? '')
+            .split(/\r?\n/u)
+            .filter(Boolean)
+            .map((line) => line.slice(3).trim())
+    }
+    const decision = decideSyncCommit({ changedFiles, dirtyFiles })
+    if (decision.action === 'commit') {
+        run('git', ['add', ...decision.files], { cwd: root })
         run('git', ['commit', '-m', `docs(release): sync version statements to ${version}`], { cwd: root })
+    } else if (decision.action === 'error') {
+        throw new Error(`版本句已是 ${version}，但以下文件仍有未提交改动：\n${decision.files.join('\n')}\n请先提交后再执行 sync / announce`)
     } else {
         process.stdout.write('[sync] 无版本句变更，跳过提交\n')
     }

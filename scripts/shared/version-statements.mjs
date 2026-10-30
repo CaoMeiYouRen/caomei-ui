@@ -7,7 +7,7 @@
  * 引入 vitepress。
  *
  * 为什么是弱守卫：这些文件按设计保留**历史版本**叙述（各版本做了什么），故不能对文件内所有
- * 版本字面量施加相等要求；此处只锚定「当前版本 / `latest` =」这一声明句式，句式被改写会在
+ * 版本字面量施加相等要求；此处只锚定「当前版本」这一声明句式（不写 dist-tag），句式被改写会在
  * `statement-missing` 上响亮失败（有意的防静默失效设计，代价是改措辞即红）。
  */
 export const CURRENT_VERSION_STATEMENTS = [
@@ -19,10 +19,12 @@ export const CURRENT_VERSION_STATEMENTS = [
         label: 'README (en) "Current version" statement',
     },
     {
-        // roadmap 写作 `latest` = 0.4.0（版本号本处未加反引号），故捕获「数字版本」而非反引号内容
+        // 只声明「当前版本」，不声明 npm dist-tag：预发布在 `next`、正式版在 `latest`，
+        // 固定写 `latest` 会让 rc 期间的事实错误（如 1.0.0-rc.1 被写成 latest）。
         file: 'docs/plan/roadmap.md',
-        pattern: /`latest`\s*=\s*`?([0-9]+\.[0-9]+(?:\.[0-9]+)?)`?/u,
-        label: 'roadmap §1「latest =」当前版本句',
+        // 限定 §1 的「当前状态：当前版本」前缀，避免命中后文阶段叙述中的同名短语
+        pattern: /当前状态[：:]\s*当前版本[：:]?\s*`([^`\s]+)`/u,
+        label: 'roadmap §1「当前版本」句',
     },
 ]
 

@@ -83,7 +83,7 @@
 | KL-4 | a11y 断言面 | 禁用态按 WCAG「非活动控件」豁免（G1-F §6） | 禁用态对比度不作保证 | 维持豁免口径 | ✅ 已知限制 |
 | KL-5 | 视觉回归精度 | 快照比对双轴容差 `threshold: 0.1` + `maxDiffPixels: 100`（`playwright.visual.config.ts`） | 极小尺寸组件的细微色差可能不触发差异 | 颜色类回归以 `capture:styles` 计算样式采样为主证据 | ✅ 已知限制 |
 | KL-6 | 下游自定义 | 消费方覆盖 `--caomei-*` 后的对比度由使用方负责（G1-F §6） | 覆盖 token 后可能低于 4.5 / 3:1 | 已在「升级注意」声明责任边界 | ✅ 升级注意 |
-| KL-7 | 国际化 | 一期 5 语（es / fr / de / ru / pt）文案由 AI 生成，母语审校待完成（Phase 25 M3-1b） | 措辞可能不地道 | **待 `M4-2` 裁定**：复核通过则改写该条 | ✅ 已知限制（可替换） |
+| KL-7 | 国际化 | 一期 5 语（es / fr / de / ru / pt）文案由 AI 生成，母语审校待完成（Phase 25 M3-1b） | 措辞可能不地道 | **M4-2 已裁定（2026-11-01）：未复核，保留保守表述、不带默认质量承诺**；措辞已冻结进 M3-2 §2 文案（将随 1.0.0 Release note 披露） | ✅ 已知限制 |
 | KL-8 | 产物（仅 rc.1） | `1.0.0-rc.1` tarball 内 README 声明 `0.7.0`：`sync` 在 `publish` 之后导致 | 仅影响 rc.1 的 npm 页面文案；已发布 tarball 不可修 | 流程已修（§2.6），`1.0.0` 起正确；不重发布 rc.1 | ❌（仅 rc.1） |
 | KL-9 | 文档站示例 | `/components/input-group` 的 `CaomeiSelect` 仍以 placeholder 代替可访问名；该页不在 `check-docs-axe` 的 5 页矩阵内 | 仅文档站示例，不影响库内组件 | Backlog「文档站 a11y 抽检矩阵外示例」 | ❌ |
 | KL-10 | 依赖冻结 | `reka-ui` 钉 `2.10.4`（2.10.5+ 导致 `InputNumber` 步进 emit 回归） | 无法受益于上游补丁版本 | Backlog 触发条件：`reka-ui ≥ 2.11.0` 下 4 例回归测试全过 | ❌（内部依赖） |
@@ -113,7 +113,7 @@
 - **回滚未演练**：无预发 registry，§2.3 的命令只做语义核对；首次真实执行即回滚现场。
 - **回退后的版本句修正**未固定到具体命令：`sync` 以 `package.json` 版本为锚点，回退场景需人工判断对外版本并以 `docs:check:version` 兜底。
 - **`sync` 前置**由三层兜底：`STEPS` 顺序单测、`publish` 前置断言（`package.json` 版本 + 全部「当前版本」句）、`verify` 产物断言（解包 tarball README），首次真实发布验证落在 `1.0.0`。
-- **KL-7** 的最终措辞取决于 `M4-2` 结论，本记录不预设结论。
+- **KL-7** 的措辞已按 `M4-2` 裁定（未复核）冻结为保守表述；若后续完成母语审校，在下个 patch 的 Release note 中更新，不回改本记录。
 - 安全读数以 2026-10-30 的 CI run 为准，发布当日必须以新 run 覆盖。
 
 ## 7. Review Gate
@@ -122,4 +122,5 @@
 - **R2（standard）：Pass**（0 blocker / 5 warning / 4 suggest）：B1 闭环；残留英文回滚段旧模型、脚本 docblock / `todo` M3-3 旧顺序、tag 视图残差、`publish` 缺版本句前置断言。
 - **R3（standard）：Pass**（0 blocker / 1 warning / 6 suggest）：新增断言在缺文件时 fail-open，已改为全量读取 + 显式缺 README 报错，并补 4 例集成级单测。
 - **R4（quick）：Pass**（0 blocker / 0 warning / 4 suggest）：fail-open 闭环；3 条措辞同批修正，1 条（版本句判定与 `check-site-version` 去重）登记后续。
-- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`。
+- **2026-11-01（quick，M4-2 = 未复核裁定回填）：Pass**（0 blocker / 2 warning / 4 suggest）；KL-7 冻结为保守表述。
+- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md` 与 `artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md`。

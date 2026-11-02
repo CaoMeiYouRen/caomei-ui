@@ -26,6 +26,7 @@ metadata:
   - [ ] 2.2 读取 `.session/runtime-state.json`（`last_verification` 等运行快照）。
   - [ ] 2.3 读取 `.session/wisdom.md`（跨 session 可复用发现）。
   - [ ] 2.4 读取 `docs/plan/todo.md`，对齐阶段级上下文。
+  - [ ] 2.5 任务开局 CI 回执：满足触发条件时按 [references/task-start.md](./references/task-start.md) 查询最近一次 CI，并在开局 briefing 单列一行；`gh` 不可用写「不可用 + 原因」，不得写成通过。
 - [ ] Step 3: Session 收尾更新 ⚠️ REQUIRED
   - [ ] 3.1 更新 `.session/current-task.yaml` 的 `progress` / `next_steps` / `cognitive` / `session.updated_at`。**任务态只写当前状态**：`progress.completed` 不追加逐条交付日志（摘要 + 指针到 `todo-archive` / 治理记录 / git），历史 `next_steps` 不保留；`current-task.yaml` 超过 50KB、`runtime-state.json` 超过 32KB 时先按「当前态 + 指针」压缩再继续。
   - [ ] 3.2 追加可复用发现到 `.session/wisdom.md`。
@@ -37,6 +38,7 @@ metadata:
 
 - 新事项是否有明确落点（当前阶段 / backlog），未在阶段容量内私自扩容。
 - `.session/` 三文件是否与 `todo.md` 状态一致。
+- 开局 briefing 是否单列 CI 回执（通过 / 失败 / 无相关 run / 不可用），且未把不可用写成通过。
 - `todo.md` 完成态是否与 Review Gate 结论**同批落地**（完成态不得早于 RG 结论，提交前记录结论已回填）——Step 1.7。
 - 阶段**登记 / 归档 / 范围变更**三类事件后 `.session` 阶段态（`current-task.yaml` + `runtime-state.json`）是否已同步——Step 3.5（git-ignored，无脚本守卫，由 Review Gate 引用）。
 - 认知状态（`cognitive`）是否记录了本 session 的失败与模式切换。
@@ -56,6 +58,7 @@ metadata:
 
 - 用聊天历史替代结构化 `.session/` 文件恢复上下文。
 - 把 `.session/` 当交付日志：在 `progress.completed` 追加逐条批次摘要，或保留历代 `next_steps`（文件持续膨胀，恢复时噪声大于信号）。
+- 把 `gh` 不可用或「无相关 run」写成 CI 通过（只读检查失效时不得伪装成绿灯）。
 - 只更新 `todo.md` 而不同步 session 协议，或反之。
 - 达到阈值仍不蒸馏，导致 wisdom 无限膨胀。
 - 在 `todo.md` / `backlog.md` 里为已完成 / 已归档条目保留交付摘要或归档指针（消耗阅读成本且与归档重复）。

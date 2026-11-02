@@ -140,6 +140,7 @@
 
 - `.session/`（git-ignored）承载任务态：`current-task.yaml`（进度与认知状态）、`runtime-state.json`（运行快照）、`wisdom.md`（跨 session 发现）。权威来源以 `current-task.yaml` 的 `cognitive` 为准。
 - 开局恢复与收尾更新的完整步骤见 `todo-manager` skill，本条不重复定义；失败切换见 §5。
+- 任务开局 CI 回执：触发条件、四态结论（通过 / 失败 / 无相关 run / 不可用）与项目参数见 `.github/skills/todo-manager/references/task-start.md`；开局 briefing 单列一行。
 - wisdom 活跃条目 >= 20 时执行蒸馏，详见 [Session Wisdom 蒸馏机制](./session-wisdom-distillation.md)。
 
 ## 7. 反模式

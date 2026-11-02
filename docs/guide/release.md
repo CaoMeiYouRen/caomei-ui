@@ -47,7 +47,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ### 3.3 各步骤口径（runbook）
 
-0. **发布前安全告警门禁（内置 + 留痕）**：`preflight` 与 `publish` 自动执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的检查——**critical 不允许豁免**；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。`SECURITY_ALERTS_TOKEN` 缺失即中止（fail-closed），本地写入仓库根 `.env.local` 或临时 export（`--dry-run` 预览不执行门禁）；CI 侧由 `Security Alerts` workflow 执行同名检查（secret `SECURITY_ALERTS_TOKEN`，见 §2.1）。检查计数与豁免清单仍须写入当次发布治理记录。
+0. **发布前安全告警门禁（内置 + 留痕）**：`preflight` 与 `publish` 自动执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的检查（open + dismissed，`auto_dismissed` 不参与）——**critical 不允许豁免**（被 dismiss 也算存在）；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。`SECURITY_ALERTS_TOKEN` 缺失即中止（fail-closed），本地写入仓库根 `.env.local` 或临时 export（`--dry-run` 预览不执行门禁）；CI 侧由 `Security Alerts` workflow 执行同名检查（secret `SECURITY_ALERTS_TOKEN`，见 §2.1）。检查计数与豁免清单仍须写入当次发布治理记录。
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；随后运行 `pnpm test:coverage` + `pnpm check:coverage` 生成并校验覆盖率证据（`verify` 内含 `test`，故预检会跑两遍测试）；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；dist-tag 取 `--tag` 或按版本推断，**预发布 + `latest` 在参数层直接拒绝**；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
 2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 与 `sync` 提交都在其后——**tag 视图不含 CHANGELOG 段、README 版本句落后一版均属正常形态**（两者都是仓库内产物，作者是后续提交）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。因此**已发布 tag 的 README 快照不是版本句校验的有效信号**（README 的作者提交在 tag 之后），权威校验以解包 tarball 的 README 为准（`verify` 已自动断言）。

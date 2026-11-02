@@ -3,10 +3,10 @@
 /**
  * check-security-alerts：发布前安全告警门禁。
  *
- * 依据：[安全规范 §2.1](../../docs/standards/security.md) —— critical 必须修复且不得豁免；
- * high 仅「无可用修复版本 / 修复成本过高」可留痕豁免；medium / low 可暂缓。
+ * 依据：[安全规范 §2.1](../../docs/standards/security.md) —— critical 必须修复且不得豁免（被 dismiss 也算存在）；
+ * high 仅「无可用修复版本 / 修复成本过高 / 误报」可留痕豁免；medium / low 可暂缓。
  *
- * 数据源（均取 `state=open`，分页拉全量）：
+ * 数据源（每类来源取 `state=open` 与 `state=dismissed`，分页拉全量；`auto_dismissed` 不取）：
  * 1. Dependabot alerts：严重级取 `security_advisory.severity`；
  * 2. Code Scanning alerts：严重级取 `rule.security_severity_level`，为空时含 `security` 标签按 high 处置。
  *
@@ -16,7 +16,10 @@
  *
  * 仓库标识：`--repo=owner/repo` → `GITHUB_REPOSITORY` → `git remote get-url origin`（本地回退）。
  *
- * 豁免：`.github/security-alerts-exemptions.json`（仅 high，字段见 `validateExemptions`）。
+ * 豁免：`.github/security-alerts-exemptions.json`（仅 high；`category` 为 `no-fix` / `hard-fix` /
+ * `false-positive`，open 仅前两类、dismissed 仅 `false-positive` 且 reason 须含原 dismiss 原因）。
+ *
+ * 判定：critical（含 dismissed）恒阻塞且不得豁免；high 无有效豁免即阻塞；medium / low 暂缓。
  *
  * 用法：
  *   pnpm check:security-alerts
@@ -39,7 +42,13 @@ export const PAGE_SIZE = 100
 export const MAX_PAGES = 20
 export const SEVERITIES = ['critical', 'high', 'medium', 'low', 'note']
 
-const EXEMPTION_FIELDS = ['source', 'id', 'reason', 'plannedVersion', 'tracking', 'approvedBy', 'recordedAt']
+/** 参与判定的告警状态：`auto_dismissed` 不查询，故不参与。 */
+export const ALERT_STATES = ['open', 'dismissed']
+
+/** 豁免分类：open 仅前两类，dismissed 仅 `false-positive`。 */
+export const EXEMPTION_CATEGORIES = ['no-fix', 'hard-fix', 'false-positive']
+
+const EXEMPTION_FIELDS = ['source', 'id', 'category', 'reason', 'plannedVersion', 'tracking', 'approvedBy', 'recordedAt']
 
 export class GitHubApiError extends Error {
     constructor(message, status) {
@@ -67,6 +76,16 @@ export function normalizeSeverity(raw) {
 }
 
 /**
+ * 归一化告警状态：只区分 `open` 与 `dismissed`（`auto_dismissed` 不查询）。
+ *
+ * @param {unknown} raw 原始状态
+ * @returns {'open'|'dismissed'} 归一化状态
+ */
+export function normalizeState(raw) {
+    return String(raw ?? '').toLowerCase() === 'dismissed' ? 'dismissed' : 'open'
+}
+
+/**
  * 归一化 Dependabot 告警。
  *
  * @param {Record<string, any>} alert 原始告警
@@ -77,6 +96,8 @@ export function normalizeDependabotAlert(alert) {
         source: 'dependabot',
         id: alert.number,
         severity: normalizeSeverity(alert.security_advisory?.severity),
+        state: normalizeState(alert.state),
+        dismissedReason: alert.dismissed_reason ?? '',
         package: alert.dependency?.package?.name ?? '(unknown)',
         vulnerableRange: alert.security_vulnerability?.vulnerable_version_range ?? '',
         advisory: alert.security_advisory?.ghsa_id ?? alert.security_advisory?.cve_id ?? '',
@@ -107,6 +128,8 @@ export function normalizeCodeScanningAlert(alert) {
         source: 'code-scanning',
         id: alert.number,
         severity,
+        state: normalizeState(alert.state),
+        dismissedReason: alert.dismissed_reason ?? '',
         rule: alert.rule?.id ?? '(unknown)',
         path: location.path ?? '',
         line: location.start_line ?? null,
@@ -136,6 +159,9 @@ export function validateExemptions(payload) {
         if (!['dependabot', 'code-scanning'].includes(entry.source)) {
             throw new Error(`exemptions[${index}].source 必须是 dependabot 或 code-scanning`)
         }
+        if (!EXEMPTION_CATEGORIES.includes(entry.category)) {
+            throw new Error(`exemptions[${index}].category 必须是 ${EXEMPTION_CATEGORIES.join(' / ')}`)
+        }
         if (!Number.isInteger(entry.id) || entry.id <= 0) {
             throw new Error(`exemptions[${index}].id 必须是正整数`)
         }
@@ -152,10 +178,44 @@ export function validateExemptions(payload) {
 }
 
 /**
- * 评估告警：critical 恒阻塞（不得豁免）；high 无有效豁免即阻塞；其余暂缓。
+ * 校验豁免条目与告警状态是否匹配（fail-closed）。
+ *
+ * - 仅 high 可豁免；
+ * - open 仅 `no-fix` / `hard-fix`；
+ * - dismissed 仅 `false-positive`，且 reason 必须包含原 dismiss 原因。
+ *
+ * @param {Record<string, any>} alert 归一化告警
+ * @param {Record<string, any>} exemption 豁免条目
+ * @param {string} key `<source>:<id>`
+ * @returns {void}
+ */
+function validateExemptionAgainstAlert(alert, exemption, key) {
+    if (alert.severity !== 'high') {
+        throw new Error(`仅 high 级别可豁免：${key} 当前严重级为 ${alert.severity}`)
+    }
+    if (exemption.category === 'false-positive') {
+        if (alert.state !== 'dismissed') {
+            throw new Error(`false-positive 豁免仅适用于 dismissed 告警：${key}`)
+        }
+        if (!alert.dismissedReason) {
+            throw new Error(`dismissed 告警缺少 dismissed_reason，无法核对 false-positive 原因（请在台账手写并复核）：${key}`)
+        }
+        if (!String(exemption.reason).includes(alert.dismissedReason)) {
+            throw new Error(`false-positive 豁免的 reason 必须包含原 dismiss 原因（${alert.dismissedReason}）：${key}`)
+        }
+        return
+    }
+    if (alert.state === 'dismissed') {
+        throw new Error(`dismissed 告警仅可按 false-positive 豁免：${key}`)
+    }
+}
+
+/**
+ * 评估告警：critical 恒阻塞（open / dismissed 均算，且不得豁免）；
+ * high 无有效豁免即阻塞；其余暂缓。
  *
  * @param {{ dependabot?: Record<string, any>[], codeScanning?: Record<string, any>[], exemptions?: Map<string, Record<string, any>> }} input 输入
- * @returns {{ alerts: Record<string, any>[], counts: Record<string, number>, blocking: Record<string, any>[], exempted: Record<string, any>[], deferred: Record<string, any>[], staleExemptions: string[] }} 评估结果
+ * @returns {{ alerts: Record<string, any>[], counts: Record<string, number>, stateCounts: { open: number, dismissed: number }, blocking: Record<string, any>[], exempted: Record<string, any>[], deferred: Record<string, any>[], staleExemptions: string[] }} 评估结果
  */
 export function evaluateAlerts({ dependabot = [], codeScanning = [], exemptions = new Map() }) {
     const alerts = [
@@ -163,19 +223,28 @@ export function evaluateAlerts({ dependabot = [], codeScanning = [], exemptions 
         ...codeScanning.map(normalizeCodeScanningAlert),
     ]
     const counts = Object.fromEntries(SEVERITIES.map((severity) => [severity, 0]))
+    const stateCounts = { open: 0, dismissed: 0 }
     const blocking = []
     const exempted = []
     const deferred = []
     const used = new Set()
+    const seen = new Map()
 
     for (const alert of alerts) {
         counts[alert.severity] += 1
+        stateCounts[alert.state] += 1
         const key = `${alert.source}:${alert.id}`
+        const previous = seen.get(key)
+        if (previous) {
+            const detail = previous.state === alert.state
+                ? `同一状态重复返回（${alert.state}，疑似分页重叠）`
+                : `同时出现在 ${previous.state} 与 ${alert.state}（状态在查询期间变化？请重跑门禁）`
+            throw new Error(`告警 ${key} ${detail}`)
+        }
+        seen.set(key, alert)
         const exemption = exemptions.get(key)
         if (exemption) {
-            if (alert.severity !== 'high') {
-                throw new Error(`仅 high 级别可豁免：${key} 当前严重级为 ${alert.severity}`)
-            }
+            validateExemptionAgainstAlert(alert, exemption, key)
             used.add(key)
             exempted.push({ ...alert, exemption })
             continue
@@ -188,7 +257,7 @@ export function evaluateAlerts({ dependabot = [], codeScanning = [], exemptions 
     }
 
     const staleExemptions = [...exemptions.keys()].filter((key) => !used.has(key))
-    return { alerts, counts, blocking, exempted, deferred, staleExemptions }
+    return { alerts, counts, stateCounts, blocking, exempted, deferred, staleExemptions }
 }
 
 /**
@@ -267,25 +336,25 @@ export async function fetchAllPages({ path, token, apiUrl = DEFAULT_API_URL, fet
 }
 
 /**
- * 拉取两类 open 告警。
+ * 拉取两类告警的 open 与 dismissed（`auto_dismissed` 不查询）。
+ *
+ * 每类来源各查两次状态，合并后由 `evaluateAlerts` 按 `state` 判定。
  *
  * @param {{ repo: string, token: string, apiUrl?: string, fetchImpl?: typeof fetch }} options 参数
  * @returns {Promise<{ dependabot: Record<string, any>[], codeScanning: Record<string, any>[] }>} 两类告警
  */
 export async function fetchAlerts({ repo, token, apiUrl = DEFAULT_API_URL, fetchImpl = globalThis.fetch }) {
-    const dependabot = await fetchAllPages({
-        path: `/repos/${repo}/dependabot/alerts?state=open`,
+    const fetchByState = (source) => Promise.all(ALERT_STATES.map((state) => fetchAllPages({
+        path: `/repos/${repo}/${source}/alerts?state=${state}`,
         token,
         apiUrl,
         fetchImpl,
-    })
-    const codeScanning = await fetchAllPages({
-        path: `/repos/${repo}/code-scanning/alerts?state=open`,
-        token,
-        apiUrl,
-        fetchImpl,
-    })
-    return { dependabot, codeScanning }
+    })))
+    const [dependabot, codeScanning] = await Promise.all([
+        fetchByState('dependabot'),
+        fetchByState('code-scanning'),
+    ])
+    return { dependabot: dependabot.flat(), codeScanning: codeScanning.flat() }
 }
 
 /**
@@ -309,16 +378,17 @@ export function loadExemptions(file) {
  */
 export function formatReport(result) {
     const lines = [
-        `[security-alerts] critical ${result.counts.critical} / high ${result.counts.high} / medium ${result.counts.medium} / low ${result.counts.low} / note ${result.counts.note}`,
+        `[security-alerts] critical ${result.counts.critical} / high ${result.counts.high} / medium ${result.counts.medium} / low ${result.counts.low} / note ${result.counts.note}（open ${result.stateCounts.open} / dismissed ${result.stateCounts.dismissed}）`,
     ]
     for (const alert of result.blocking) {
-        lines.push(`  ✖ ${alert.source} #${alert.id} ${alert.severity} ${alert.package ?? alert.rule} ${alert.advisory ?? ''} ${alert.vulnerableRange ?? alert.path ?? ''} ${alert.url}`.trim())
+        const state = alert.state === 'dismissed' ? ` dismissed(${alert.dismissedReason || '未记录原因'})` : ''
+        lines.push(`  ✖ ${alert.source} #${alert.id} ${alert.severity}${state} ${alert.package ?? alert.rule} ${alert.advisory ?? ''} ${alert.vulnerableRange ?? alert.path ?? ''} ${alert.url}`.trim())
     }
     for (const alert of result.exempted) {
-        lines.push(`  ○ 豁免 ${alert.source} #${alert.id} ${alert.package ?? alert.rule} → ${alert.exemption.plannedVersion}（${alert.exemption.reason}）`)
+        lines.push(`  ○ 豁免 ${alert.source} #${alert.id} ${alert.package ?? alert.rule} [${alert.exemption.category}] → ${alert.exemption.plannedVersion}（${alert.exemption.reason}）`)
     }
     if (result.staleExemptions.length > 0) {
-        lines.push(`  ! 失效豁免（对应告警已不在 open 列表）：${result.staleExemptions.join(', ')}；请删除对应条目`)
+        lines.push(`  ! 失效豁免（对应告警已不在 open / dismissed 列表）：${result.staleExemptions.join(', ')}；请删除对应条目`)
     }
     if (result.blocking.length > 0) {
         lines.push(`[security-alerts] 未通过：${result.blocking.length} 项 critical / high 阻塞`)
@@ -339,20 +409,20 @@ export function formatSummary(result) {
         const exempt = result.exempted.find((item) => item.source === alert.source && item.id === alert.id)
         let verdict = '暂缓'
         if (exempt) {
-            verdict = `豁免 → ${String(exempt.exemption.plannedVersion).replaceAll('|', '\\|')}`
+            verdict = `豁免 [${exempt.exemption.category}] → ${String(exempt.exemption.plannedVersion).replaceAll('|', '\\|')}`
         } else if (alert.severity === 'critical' || alert.severity === 'high') {
             verdict = '阻塞'
         }
         const name = String(alert.package ?? alert.rule).replaceAll('|', '\\|')
-        return `| ${alert.source} | #${alert.id} | ${alert.severity} | ${name} | ${verdict} |`
+        return `| ${alert.source} | #${alert.id} | ${alert.severity} | ${alert.state} | ${name} | ${verdict} |`
     })
     return [
         '## Security alerts gate',
         '',
-        `critical ${result.counts.critical} / high ${result.counts.high} / medium ${result.counts.medium} / low ${result.counts.low} / note ${result.counts.note}`,
+        `critical ${result.counts.critical} / high ${result.counts.high} / medium ${result.counts.medium} / low ${result.counts.low} / note ${result.counts.note}（open ${result.stateCounts.open} / dismissed ${result.stateCounts.dismissed}）`,
         '',
-        '| Source | Alert | Severity | Package / rule | Verdict |',
-        '| --- | --- | --- | --- | --- |',
+        '| Source | Alert | Severity | State | Package / rule | Verdict |',
+        '| --- | --- | --- | --- | --- | --- |',
         ...rows,
         '',
     ].join('\n')
@@ -511,7 +581,7 @@ export async function main(argv = process.argv, runtime = {}) {
         const result = evaluateAlerts({ ...alerts, exemptions })
 
         if (options.json) {
-            console.info(JSON.stringify({ repo, counts: result.counts, blocking: result.blocking, exempted: result.exempted, staleExemptions: result.staleExemptions }, null, 2))
+            console.info(JSON.stringify({ repo, counts: result.counts, stateCounts: result.stateCounts, blocking: result.blocking, exempted: result.exempted, staleExemptions: result.staleExemptions }, null, 2))
         } else {
             console.info(`[security-alerts] repo=${repo}`)
             console.info(formatReport(result))

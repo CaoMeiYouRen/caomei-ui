@@ -7,8 +7,9 @@ name: Security Alerts
 # `Dependabot alerts: read` + `Code scanning alerts: read`）。仓库默认 `GITHUB_TOKEN`
 # 无法读取 Dependabot 告警，故未配置该 secret 时 job 会失败并提示。
 #
-# 判定：critical 恒阻塞（不得豁免）；high 无有效豁免即阻塞；medium / low 可暂缓。
-# 豁免文件：`.github/security-alerts-exemptions.json`（仅 high）。
+# 判定：扫描 open + dismissed（`auto_dismissed` 不参与）。critical 恒阻塞（被 dismiss 也算存在，不得豁免）；
+# high 无有效豁免即阻塞（open → no-fix / hard-fix，dismissed → false-positive）；medium / low 可暂缓。
+# 豁免文件：`.github/security-alerts-exemptions.json`（仅 high，条目含 category）。
 
 on:
   push:

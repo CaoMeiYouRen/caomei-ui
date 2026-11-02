@@ -7,6 +7,7 @@ import {
     REPO_ROOT,
     assertSecurityGate,
     evaluateAlerts,
+    fetchAlerts,
     fetchAllPages,
     formatReport,
     formatSummary,
@@ -63,6 +64,20 @@ function jsonResponse(body, status = 200, headers = {}) {
     }
 }
 
+/**
+ * 按 `fetchAlerts` 的四次查询顺序（dependabot open / dismissed、code-scanning open / dismissed）构造 mock。
+ *
+ * @param {{ dependabot?: unknown[], dependabotDismissed?: unknown[], codeScanning?: unknown[], codeScanningDismissed?: unknown[] }} [pages] 各查询的响应体
+ * @returns {import('vitest').Mock} fetch mock
+ */
+function mockAlerts({ dependabot = [], dependabotDismissed = [], codeScanning = [], codeScanningDismissed = [] } = {}) {
+    return vi.fn()
+        .mockResolvedValueOnce(jsonResponse(dependabot))
+        .mockResolvedValueOnce(jsonResponse(dependabotDismissed))
+        .mockResolvedValueOnce(jsonResponse(codeScanning))
+        .mockResolvedValueOnce(jsonResponse(codeScanningDismissed))
+}
+
 describe('normalizeSeverity', () => {
     it('把 moderate 归一为 medium，未知值按 high 兜底', () => {
         expect(normalizeSeverity('moderate')).toBe('medium')
@@ -78,6 +93,8 @@ describe('normalizeDependabotAlert', () => {
             source: 'dependabot',
             id: 28,
             severity: 'high',
+            state: 'open',
+            dismissedReason: '',
             package: 'node-forge',
             vulnerableRange: '<= 1.4.0',
             advisory: 'GHSA-86w9-cpqp-85rv',
@@ -118,6 +135,7 @@ describe('validateExemptions', () => {
         exemptions: [{
             source: 'dependabot',
             id: 28,
+            category: 'no-fix',
             reason: '上游暂无补丁',
             plannedVersion: '1.1.0',
             tracking: 'docs/plan/backlog.md',
@@ -143,6 +161,10 @@ describe('validateExemptions', () => {
     it('顶层结构错误时报错', () => {
         expect(() => validateExemptions({})).toThrow('exemptions')
     })
+
+    it('category 非法时报错', () => {
+        expect(() => validateExemptions({ exemptions: [{ ...valid.exemptions[0], category: 'whatever' }] })).toThrow('category')
+    })
 })
 
 describe('evaluateAlerts', () => {
@@ -165,6 +187,7 @@ describe('evaluateAlerts', () => {
             exemptions: [{
                 source: 'dependabot',
                 id: 28,
+                category: 'no-fix',
                 reason: '上游暂无补丁',
                 plannedVersion: '1.1.0',
                 tracking: 'docs/plan/backlog.md',
@@ -183,6 +206,7 @@ describe('evaluateAlerts', () => {
             exemptions: [{
                 source: 'dependabot',
                 id: 1,
+                category: 'no-fix',
                 reason: 'x',
                 plannedVersion: '1.1.0',
                 tracking: 'x',
@@ -194,6 +218,120 @@ describe('evaluateAlerts', () => {
             dependabot: [dependabotAlert({ number: 1, security_advisory: { severity: 'critical' } })],
             exemptions,
         })).toThrow('仅 high')
+    })
+
+    it('critical 被 dismiss 仍阻塞，且计入 dismissed 计数', () => {
+        const result = evaluateAlerts({
+            dependabot: [dependabotAlert({
+                number: 9,
+                state: 'dismissed',
+                dismissed_reason: 'not_used',
+                security_advisory: { severity: 'critical' },
+            })],
+        })
+        expect(result.blocking.map((alert) => alert.id)).toEqual([9])
+        expect(result.stateCounts).toEqual({ open: 0, dismissed: 1 })
+    })
+
+    it('high dismissed 登记 false-positive（reason 含原原因）后放行', () => {
+        const exemptions = validateExemptions({
+            exemptions: [{
+                source: 'dependabot',
+                id: 28,
+                category: 'false-positive',
+                reason: '误报（原 dismiss 原因 not_used）',
+                plannedVersion: '1.1.0',
+                tracking: 'docs/plan/backlog.md',
+                approvedBy: 'CaoMeiYouRen',
+                recordedAt: '2026-10-29',
+            }],
+        })
+        const result = evaluateAlerts({
+            dependabot: [dependabotAlert({ state: 'dismissed', dismissed_reason: 'not_used' })],
+            exemptions,
+        })
+        expect(result.blocking).toEqual([])
+        expect(result.exempted).toHaveLength(1)
+    })
+
+    it('high dismissed 用 no-fix / hard-fix 豁免直接报错', () => {
+        const exemptions = validateExemptions({
+            exemptions: [{
+                source: 'dependabot',
+                id: 28,
+                category: 'no-fix',
+                reason: 'x',
+                plannedVersion: '1.1.0',
+                tracking: 'x',
+                approvedBy: 'x',
+                recordedAt: '2026-10-29',
+            }],
+        })
+        expect(() => evaluateAlerts({
+            dependabot: [dependabotAlert({ state: 'dismissed', dismissed_reason: 'not_used' })],
+            exemptions,
+        })).toThrow('仅可按 false-positive')
+    })
+
+    it('open 告警用 false-positive 豁免直接报错', () => {
+        const exemptions = validateExemptions({
+            exemptions: [{
+                source: 'dependabot',
+                id: 28,
+                category: 'false-positive',
+                reason: '误报',
+                plannedVersion: '1.1.0',
+                tracking: 'x',
+                approvedBy: 'x',
+                recordedAt: '2026-10-29',
+            }],
+        })
+        expect(() => evaluateAlerts({ dependabot: [dependabotAlert()], exemptions }))
+            .toThrow('仅适用于 dismissed')
+    })
+
+    it('false-positive 的 reason 未含原 dismiss 原因时报错', () => {
+        const exemptions = validateExemptions({
+            exemptions: [{
+                source: 'dependabot',
+                id: 28,
+                category: 'false-positive',
+                reason: '误报',
+                plannedVersion: '1.1.0',
+                tracking: 'x',
+                approvedBy: 'x',
+                recordedAt: '2026-10-29',
+            }],
+        })
+        expect(() => evaluateAlerts({
+            dependabot: [dependabotAlert({ state: 'dismissed', dismissed_reason: 'not_used' })],
+            exemptions,
+        })).toThrow('必须包含原 dismiss 原因')
+    })
+
+    it('dismissed 缺 dismissed_reason 时 false-positive 豁免 fail-closed', () => {
+        const exemptions = validateExemptions({
+            exemptions: [{
+                source: 'dependabot',
+                id: 28,
+                category: 'false-positive',
+                reason: '误报',
+                plannedVersion: '1.1.0',
+                tracking: 'x',
+                approvedBy: 'x',
+                recordedAt: '2026-10-29',
+            }],
+        })
+        expect(() => evaluateAlerts({
+            dependabot: [dependabotAlert({ state: 'dismissed' })],
+            exemptions,
+        })).toThrow('缺少 dismissed_reason')
+    })
+
+    it('同一告警同时出现在 open 与 dismissed 时报错', () => {
+        expect(() => evaluateAlerts({
+            dependabot: [dependabotAlert(), dependabotAlert({ state: 'dismissed' })],
+        })).toThrow('同时出现在')
     })
 })
 
@@ -214,6 +352,33 @@ describe('默认路径', () => {
     it('REPO_ROOT 指向仓库根，默认豁免文件存在', () => {
         expect(existsSync(join(REPO_ROOT, 'package.json'))).toBe(true)
         expect(existsSync(join(REPO_ROOT, DEFAULT_EXEMPTIONS_PATH))).toBe(true)
+    })
+})
+
+describe('fetchAlerts', () => {
+    it('两类来源各查 open 与 dismissed，共四次', async () => {
+        const fetchImpl = mockAlerts()
+        await fetchAlerts({ repo: 'o/r', token: 't', fetchImpl })
+
+        const urls = fetchImpl.mock.calls.map(([url]) => url)
+        expect(urls).toHaveLength(4)
+        expect(urls[0]).toContain('/repos/o/r/dependabot/alerts?state=open')
+        expect(urls[1]).toContain('/repos/o/r/dependabot/alerts?state=dismissed')
+        expect(urls[2]).toContain('/repos/o/r/code-scanning/alerts?state=open')
+        expect(urls[3]).toContain('/repos/o/r/code-scanning/alerts?state=dismissed')
+    })
+
+    it('合并两类状态的返回', async () => {
+        const fetchImpl = mockAlerts({
+            dependabot: [dependabotAlert({ number: 1 })],
+            dependabotDismissed: [dependabotAlert({ number: 2, state: 'dismissed' })],
+            codeScanning: [codeScanningAlert({ number: 3 })],
+            codeScanningDismissed: [codeScanningAlert({ number: 4, state: 'dismissed' })],
+        })
+
+        const result = await fetchAlerts({ repo: 'o/r', token: 't', fetchImpl })
+        expect(result.dependabot.map((alert) => alert.number)).toEqual([1, 2])
+        expect(result.codeScanning.map((alert) => alert.number)).toEqual([3, 4])
     })
 })
 
@@ -273,6 +438,7 @@ describe('loadExemptions', () => {
             exemptions: [{
                 source: 'code-scanning',
                 id: 5,
+                category: 'no-fix',
                 reason: '规则误报',
                 plannedVersion: '1.1.0',
                 tracking: 'docs/plan/backlog.md',
@@ -303,6 +469,7 @@ describe('formatSummary', () => {
                 exemptions: [{
                     source: 'dependabot',
                     id: 28,
+                    category: 'no-fix',
                     reason: '无补丁',
                     plannedVersion: '1.1|0',
                     tracking: 't',
@@ -316,7 +483,7 @@ describe('formatSummary', () => {
         expect(summary).toContain('1.1\\|0')
         const rows = summary.split('\n').filter((line) => line.startsWith('| dependabot'))
         expect(rows).toHaveLength(1)
-        expect(rows.every((line) => line.replaceAll('\\|', '').split('|').length === 7)).toBe(true)
+        expect(rows.every((line) => line.replaceAll('\\|', '').split('|').length === 8)).toBe(true)
     })
 })
 
@@ -329,9 +496,7 @@ describe('main', () => {
     })
 
     it('无阻塞项时返回 0', async () => {
-        const fetchImpl = vi.fn()
-            .mockResolvedValueOnce(jsonResponse([]))
-            .mockResolvedValueOnce(jsonResponse([]))
+        const fetchImpl = mockAlerts()
         await expect(main(['--repo=o/r', '--exemptions=/tmp/not-exist-exemptions.json'], { env, fetchImpl })).resolves.toBe(0)
     })
 
@@ -341,9 +506,14 @@ describe('main', () => {
     })
 
     it('存在 high 时返回 1', async () => {
-        const fetchImpl = vi.fn()
-            .mockResolvedValueOnce(jsonResponse([dependabotAlert()]))
-            .mockResolvedValueOnce(jsonResponse([]))
+        const fetchImpl = mockAlerts({ dependabot: [dependabotAlert()] })
+        await expect(main(['--repo=o/r', '--exemptions=/tmp/not-exist-exemptions.json'], { env, fetchImpl })).resolves.toBe(1)
+    })
+
+    it('dismissed 的 high 仍返回 1', async () => {
+        const fetchImpl = mockAlerts({
+            dependabotDismissed: [dependabotAlert({ state: 'dismissed', dismissed_reason: 'not_used' })],
+        })
         await expect(main(['--repo=o/r', '--exemptions=/tmp/not-exist-exemptions.json'], { env, fetchImpl })).resolves.toBe(1)
     })
 })
@@ -382,9 +552,7 @@ describe('assertSecurityGate', () => {
     })
 
     it('存在 critical / high 时抛错（发布链据此中止）', async () => {
-        const fetchImpl = vi.fn()
-            .mockResolvedValueOnce(jsonResponse([dependabotAlert()]))
-            .mockResolvedValueOnce(jsonResponse([]))
+        const fetchImpl = mockAlerts({ dependabot: [dependabotAlert()] })
         await expect(assertSecurityGate({
             repo: 'o/r',
             token: 't',
@@ -395,9 +563,7 @@ describe('assertSecurityGate', () => {
     })
 
     it('无阻塞项时返回评估结果', async () => {
-        const fetchImpl = vi.fn()
-            .mockResolvedValueOnce(jsonResponse([]))
-            .mockResolvedValueOnce(jsonResponse([]))
+        const fetchImpl = mockAlerts()
         const lines = []
         const result = await assertSecurityGate({
             repo: 'o/r',
@@ -411,9 +577,7 @@ describe('assertSecurityGate', () => {
     })
 
     it('未传 repo 时按 env / gitRemote 解析并打印实际检查的仓库', async () => {
-        const fetchImpl = vi.fn()
-            .mockResolvedValueOnce(jsonResponse([]))
-            .mockResolvedValueOnce(jsonResponse([]))
+        const fetchImpl = mockAlerts()
         const lines = []
         await assertSecurityGate({
             token: 't',

@@ -1,6 +1,33 @@
 # caomei-ui
 
-# [1.0.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.0.0-rc.1...v1.0.0) (2026-11-02)
+# [1.0.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.0.0-rc.1...v1.0.0) (2026-11-03)
+
+> **首个正式版**。相较 `0.7.0`，本版完成 1.x 兼容承诺、DataTable 行为收口与颜色 / 可访问性收口；**组件集合与包根导出不变**（发布前 API 差分 exit 0：0 删除 / 0 重命名，导出数 328），但有 4 项升级前需确认的注意事项，见「升级注意」。
+
+### 🎉 1.0 里程碑
+
+- **1.x 兼容承诺**：组件公开 props / events / slots、`exports` 13 键、包根导出名、`--caomei-*` token（冻结面 380 个名称）、10 语 locale 命名空间与 `InputNumber` 的 `step` 语义进入冻结面；破坏性变更只随 `major` 发布并给弃用期（见 [`docs/guide/version-policy.md`](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/docs/guide/version-policy.md)）。
+- **主题预设**：新增 `sakura` / `forest` / `ink` 三套设计向预设，`momei` 按 momei 运行时口径同步；缺省仍为 `minimal`。
+- **颜色角色拆分**：新增 `--caomei-color-<tone>-text`（Tag / Badge / Message / Alert / Button 文字型变体 / toast action）与 `--caomei-color-control-border`（字段族 / Checkbox / Radio / Switch / Slider / SelectButton / 上传区 / 分页 / 步骤指示器）；6 预设 × 明暗的文本与控件边界对比度矩阵纳入常驻回归。
+- **DataTable 行为收口**：表头全选只作用当前页（可访问名同步改为「全选当前页」，10 语）；`lazy` 下选择与展开在受控 / 自持两侧均按页收敛；`lazy` 启用选择或展开须显式 `rowKey`（缺省时开发期告警）；横向滚动容器键盘可达（常驻 `tabindex="0"`，有 `caption` 时补 `role="group"` 与可访问名）。
+- **Button 状态反馈**：hover / active 由既有 token 经 `color-mix()` 派生，**默认预设（`minimal`）**下亮暗三态对比度仍 ≥ 4.5:1；`:disabled` / `:focus-visible` 与减动效行为不变（品牌预设的既有缺口见「已知限制」）。
+- **语言**：内建 10 语。`zh-CN` / `en-US` 预注册；`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR` 经 `caomei-ui/locale/<code>` 按需引入。
+
+### ⚠️ 升级注意
+
+- **`engines.node` ≥ 22**：`0.7.0` 为 ≥ 20，Node 20 已于 2026-04 EOL。
+- **DataTable 全选语义收窄**：表头全选由「整表」改为「当前页」；`lazy` 下选择 / 展开须显式 `rowKey`，跨页不再沿用页内索引键。
+- **可见外观变化**：控件边界改用更深的 `--caomei-color-control-border`（满足 3:1 非文本对比度）；`soft` / `outline` 语义色文本改用 `*-text` 角色，部分预设文字色略有加深。
+- **覆盖过 token 的消费方**：若曾用 `--caomei-color-border` 承担控件边界，需改用 `--caomei-color-control-border`；覆盖后的对比度由使用方自行保证。
+
+### 已知限制
+
+- **品牌预设的既有对比度缺口**：`momei` 亮色 `success` 三态为 2.279 / 2.643 / 3.045，`caomei` `primary-solid` 为 4.17；均为既有品牌裁定保留项，本版未修复也未恶化，见 Backlog「品牌预设的 `-solid` 对比度缺口」与 G1-F 记录 §6。
+- **Calendar / RichTextEditor 的交互边界**：上 / 下月导航按钮与编辑器容器描边的对比度未达 3:1，属可交互边界，本版未覆盖（见 Backlog「Calendar / RichTextEditor 交互边界对比度」）。
+- 视觉与无障碍回归只覆盖 Chromium（常驻档 390 / 768 / 1280，另 320 / 900 定向档；375px 仅用于画廊与 DataTable 键盘滚动专项）；**Firefox / WebKit 未纳入本次 1.0 回归矩阵**。
+- 禁用态按 WCAG 1.4.3 / 1.4.11 豁免，不参与对比度断言。
+- 视觉回归为快照比对（`toHaveScreenshot`，双轴容差 `threshold: 0.1` + `maxDiffPixels: 100`），对极小尺寸组件的细微色差不敏感；颜色类回归以 `capture:styles` 计算样式采样为准。
+- 一期 5 语（`es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`）文案由 AI 生成，母语审校仍待完成；发现措辞问题请提 issue。
 
 ### 🐛 Bug 修复
 

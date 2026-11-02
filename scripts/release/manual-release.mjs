@@ -206,7 +206,9 @@ export function validateOtp(otp) {
  */
 export function extractChangelogSection(changelog, version) {
     const escaped = version.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
-    const heading = new RegExp(`^#\\s+\\[?${escaped}\\]?(?![\\d.])`, 'u')
+    // 版本边界用「合法后继」白名单（行尾 / 空白 / 括号），而不是黑名单：黑名单会漏掉
+    // 字母续接的预发布段（1.0.0-beta 曾静默命中 1.0.0-betamax），导致 Release note 取错段落。
+    const heading = new RegExp(`^#\\s+\\[?${escaped}\\]?(?=$|\\s|\\()`, 'u')
     const lines = changelog.split(/\r?\n/u)
     const start = lines.findIndex((line) => heading.test(line))
     if (start === -1) {

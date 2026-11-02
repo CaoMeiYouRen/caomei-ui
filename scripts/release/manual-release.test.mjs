@@ -411,6 +411,36 @@ describe('manual-release extractChangelogSection', () => {
         const weird = '# [0.6.01](x) (2026-10-08)\n\nbody\n'
         expect(extractChangelogSection(weird, '0.6.0')).toBeNull()
     })
+
+    it('版本边界：1.0.0 不匹配 1.0.0-rc.1 形态', () => {
+        const prereleaseOnly = '# [1.0.0-rc.1](x) (2026-10-30)\n\n### ✨ 新功能\n\n* rc 内容\n'
+        expect(extractChangelogSection(prereleaseOnly, '1.0.0')).toBeNull()
+        expect(extractChangelogSection(prereleaseOnly, '1.0.0-rc.1')).toContain('rc 内容')
+    })
+
+    it('版本边界：1.0.0-beta 不匹配 1.0.0-betamax 形态', () => {
+        const longer = '# [1.0.0-betamax](x) (2026-10-30)\n\n* 内容\n'
+        expect(extractChangelogSection(longer, '1.0.0-beta')).toBeNull()
+        expect(extractChangelogSection(longer, '1.0.0-betamax')).toContain('内容')
+    })
+
+    it('正式版与预发布段并存时各取本段', () => {
+        const both = [
+            '# [1.0.0](x) (2026-11-02)',
+            '',
+            '### 🎉 1.0 里程碑',
+            '',
+            '* 正式版',
+            '',
+            '# [1.0.0-rc.1](x) (2026-10-30)',
+            '',
+            '* rc 内容',
+            '',
+        ].join('\n')
+        expect(extractChangelogSection(both, '1.0.0')).toContain('正式版')
+        expect(extractChangelogSection(both, '1.0.0')).not.toContain('rc 内容')
+        expect(extractChangelogSection(both, '1.0.0-rc.1')).toContain('rc 内容')
+    })
 })
 
 describe('manual-release 版本句同步', () => {

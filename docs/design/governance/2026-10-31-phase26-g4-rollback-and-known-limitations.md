@@ -70,6 +70,7 @@
   断言解包 README 的「当前版本」句 = 目标版本；不一致即登记缺陷并按 §2.1 判级。
 - **tag 视图不是有效信号**：`bump` 打 tag、`sync` 提交在其后，故 `git show v1.0.0:README.md` 仍是上一版版本句；权威校验以解包 tarball（或 `verify` 的自动断言）为准。
 - **首次真实验证**：`1.0.0` 发布即该修复的首个真实 run（此前仅单测覆盖）。
+- **Release note 抽取边界修复（2026-11-03，发布链就绪检查发现）**：`extractChangelogSection` 的标题匹配原为黑名单 `(?![\d.])`，`1.0.0` 会**静默命中 `1.0.0-rc.1` 段**（实测返回 rc.1 正文 16 行）——CHANGELOG 缺 `1.0.0` 段时 `announce` 会把 rc.1 内容当作 1.0.0 Release note（fail-open）。已改为「合法后继」白名单 `(?=$|\s|\()`，并补 3 例边界测试（`1.0.0` × `1.0.0-rc.1`、`1.0.0-beta` × `1.0.0-betamax`、两段并存各取本段）。修复后对当前 CHANGELOG 复算 `1.0.0` → `null`，`announce --dry-run` 走既有 fail-closed 分支（打印「尚无 v1.0.0 段落」）。
 
 ## 3. known limitations 汇总
 
@@ -156,4 +157,5 @@
 - **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 0 warning / 3 suggest）；B1 / B2 / W1 ~ W5 / S6 / S8 / S9 全闭环，3 条 suggest 同批修正（「失败读数」措辞、来源补日期、flaky 计数表述）。
 - **2026-11-02 R1（standard，日历面板内容完整性断言口径修正）：Reject**（1 blocker / 3 warning / 3 suggest）：blocker = 根因段把「日历行数随月份变化（`fixedWeeks` 默认 false）」写成「恒 6 周、与日期无关」；warning = 双 JSDoc 悬空、flaky 用例名缺证据、Backlog 删行缺终局含义。
 - **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 1 warning / 2 suggest）；B1 + W1 ~ W4 / S5 ~ S7 闭环，RG-W5（260 为 border box / 258 为 client 高）与 S2（判别力三分表述）同批修正。
+- **2026-11-03 R1（deep，Release note 抽取边界修复）：Pass**（0 blocker / 1 warning / 2 suggest）：warning = 黑名单仍会漏 `1.0.0-beta` × `1.0.0-betamax`（字母续接），已改为白名单并补该例；suggest = M3-2 预演段补「插入前返回 `null` 属预期」。
 - 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`、`artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md` 与 `artifacts/review-gate/2026-11-02-g4-evidence-backfill.md` 与 `artifacts/review-gate/2026-11-02-g4-e2e-rerun-and-320px-defect.md` 与 `artifacts/review-gate/2026-11-02-320px-calendar-assertion.md`。

@@ -27,7 +27,8 @@
 ## 3. Skill 定义约定
 
 - 目录结构：`.github/skills/<name>/SKILL.md`（可含 `references/`、`scripts/`）。
-- frontmatter 必须包含 `name` 与 `description`；`metadata.internal` 标记是否为内部技能。
+- frontmatter 必须包含 `name` 与 `description`；`metadata.internal` 标记是否为内部技能（`pnpm ai:check` 守卫三者必填）。
+- `references/` 下的 markdown 必须被 `SKILL.md` 索引（索引口径 = SKILL.md 中出现 `references/<相对路径>`；同名文件必须写全路径）；未索引的视为孤儿文件，`pnpm ai:check` 直接失败。`references/rationale.md` 同样需要一行链接索引，但不得内联其内容。
 - `description` 需包含明确的触发词，便于自动匹配。
 - 正文建议包含：铁律、工作流（带 REQUIRED 标记）、常见检查、反模式、交付前检查。
 - 一个 skill 只承担一类能力；避免与既有 skill 职责重叠。

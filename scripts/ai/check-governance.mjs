@@ -5,16 +5,17 @@
  *
  * 检查项：
  * 1. agent 文件 frontmatter 含 name/description；
- * 2. skill 目录含 SKILL.md 且 frontmatter 含 name/description；
+ * 2. skill 目录含 SKILL.md 且 frontmatter 含 name/description/metadata.internal；
  * 3. agent / skill 中引用的 `.github/skills/<name>/SKILL.md` 必须存在；
- * 4. AGENTS.md 智能体矩阵中出现的 `@role` 必须存在对应 `.github/agents/<role>.agent.md`；
- * 5. 平台镜像（.claude / .agents / .opencode）为指向 .github 的符号链接；
- * 6. external-skills-registry.json 合法且字段完整；
- * 7. CLAUDE.md 与 .github/copilot-instructions.md 存在。
+ * 4. skill 的 `references/*.md` 必须在 SKILL.md 中被索引；
+ * 5. AGENTS.md 智能体矩阵中出现的 `@role` 必须存在对应 `.github/agents/<role>.agent.md`；
+ * 6. 平台镜像（.claude / .agents / .opencode）为指向 .github 的符号链接；
+ * 7. external-skills-registry.json 合法且字段完整；
+ * 8. CLAUDE.md 与 .github/copilot-instructions.md 存在。
  *
  * 用法：node scripts/ai/check-governance.mjs
  */
-import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
@@ -45,6 +46,59 @@ function hasFrontmatterField(content, field) {
     return new RegExp(`^${field}\\s*:`, 'm').test(frontmatter)
 }
 
+/**
+ * 判断 frontmatter 的嵌套字段是否存在（如 `metadata.internal`）。
+ *
+ * 只认父键的**下一层**：`metadata.foo.internal` 不算 `metadata.internal`；
+ * 支持块形式（`metadata:` 换行后 `  internal: false`）与行内对象
+ * （`metadata: { internal: false }`）；键名允许引号。
+ *
+ * @param {string} content 文件内容
+ * @param {string} parent 顶层字段
+ * @param {string} field 嵌套字段
+ * @returns {boolean} 是否存在
+ */
+function hasFrontmatterNestedField(content, parent, field) {
+    if (!content.startsWith('---')) {
+        return false
+    }
+    const end = content.indexOf('\n---', 3)
+    if (end === -1) {
+        return false
+    }
+    const lines = content.slice(3, end).split('\n')
+    const parentPattern = new RegExp(`^(\\s*)${parent}\\s*:`, 'u')
+    const parentIndex = lines.findIndex((line) => parentPattern.test(line))
+    if (parentIndex === -1) {
+        return false
+    }
+    const parentLine = lines[parentIndex]
+    const parentIndent = parentLine.match(/^(\s*)/u)[1].length
+    const inlineValue = parentLine.slice(parentLine.indexOf(':') + 1)
+    if (/\{/u.test(inlineValue) && new RegExp(`[{,]\\s*["']?${field}["']?\\s*:`, 'u').test(inlineValue)) {
+        return true
+    }
+    let childIndent = null
+    for (let i = parentIndex + 1; i < lines.length; i += 1) {
+        const line = lines[i]
+        if (line.trim() === '' || line.trim().startsWith('#')) {
+            continue
+        }
+        const indent = line.match(/^(\s*)/u)[1].length
+        if (indent <= parentIndent) {
+            return false
+        }
+        childIndent ??= indent
+        if (indent !== childIndent) {
+            continue
+        }
+        if (new RegExp(`^\\s{${childIndent}}["']?${field}["']?\\s*:`, 'u').test(line)) {
+            return true
+        }
+    }
+    return false
+}
+
 function listDirs(dir) {
     if (!existsSync(dir)) {
         return []
@@ -52,6 +106,29 @@ function listDirs(dir) {
     return readdirSync(dir, { withFileTypes: true })
         .filter((e) => e.isDirectory() || (e.isSymbolicLink() && !e.name.startsWith('.')))
         .map((e) => e.name)
+}
+
+/**
+ * 递归列出目录下的 markdown 文件（相对路径）。
+ *
+ * @param {string} dir 目录
+ * @param {string} [prefix] 相对前缀
+ * @returns {string[]} 相对路径列表
+ */
+function listMarkdownFiles(dir, prefix = '') {
+    if (!existsSync(dir)) {
+        return []
+    }
+    const files = []
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const relPath = prefix === '' ? entry.name : `${prefix}/${entry.name}`
+        if (entry.isDirectory()) {
+            files.push(...listMarkdownFiles(join(dir, entry.name), relPath))
+        } else if (/\.md$/iu.test(entry.name)) {
+            files.push(relPath)
+        }
+    }
+    return files
 }
 
 function checkAgents(errors) {
@@ -70,13 +147,16 @@ function checkAgents(errors) {
     }
 }
 
-function checkSkills(errors) {
-    const skillNames = listDirs(SKILLS_DIR)
-    if (skillNames.length === 0) {
-        errors.push('.github/skills/ 下没有 skill')
-    }
-    for (const name of skillNames) {
-        const skillFile = join(SKILLS_DIR, name, 'SKILL.md')
+/**
+ * 校验 skill frontmatter 必填字段（name / description / metadata.internal）。
+ *
+ * @param {string} [skillsDir] skills 目录
+ * @returns {string[]} 问题列表
+ */
+export function checkSkillMetadata(skillsDir = SKILLS_DIR) {
+    const errors = []
+    for (const name of listDirs(skillsDir)) {
+        const skillFile = join(skillsDir, name, 'SKILL.md')
         if (!existsSync(skillFile)) {
             errors.push(`skill ${name}: 缺少 SKILL.md`)
             continue
@@ -88,7 +168,52 @@ function checkSkills(errors) {
         if (!hasFrontmatterField(content, 'description')) {
             errors.push(`skill ${name}: 缺少 frontmatter description`)
         }
+        if (!hasFrontmatterNestedField(content, 'metadata', 'internal')) {
+            errors.push(`skill ${name}: 缺少 frontmatter metadata.internal`)
+        }
     }
+    return errors
+}
+
+/**
+ * 校验技能 `references/` 下的 markdown 均被执行入口（SKILL.md）索引。
+ *
+ * 索引口径 = SKILL.md 中出现 `references/<相对路径>`（可带 `./` 前缀）；同名文件必须写全路径，
+ * 避免 basename 命中造成孤儿放行。反向断链（SKILL.md 指向不存在的文件）由
+ * `scripts/governance/check-ai-asset-links.mjs` 的 `missing-target` 覆盖，此处不重复实现。
+ *
+ * @param {string} [skillsDir] skills 目录
+ * @returns {string[]} 问题列表
+ */
+export function checkReferencesIndexed(skillsDir = SKILLS_DIR) {
+    const errors = []
+    for (const name of listDirs(skillsDir)) {
+        const referencesDir = join(skillsDir, name, 'references')
+        const skillFile = join(skillsDir, name, 'SKILL.md')
+        if (!existsSync(referencesDir) || !existsSync(skillFile)) {
+            continue
+        }
+        if (!statSync(referencesDir).isDirectory()) {
+            errors.push(`skill ${name}: references 必须是目录`)
+            continue
+        }
+        const content = readFileSync(skillFile, 'utf8')
+        for (const relPath of listMarkdownFiles(referencesDir)) {
+            const candidates = [`references/${relPath}`, `./references/${relPath}`]
+            if (!candidates.some((candidate) => content.includes(candidate))) {
+                errors.push(`skill ${name}: references/${relPath} 未在 SKILL.md 中索引（需写 references/${relPath}）`)
+            }
+        }
+    }
+    return errors
+}
+
+function checkSkills(errors) {
+    if (listDirs(SKILLS_DIR).length === 0) {
+        errors.push('.github/skills/ 下没有 skill')
+    }
+    errors.push(...checkSkillMetadata())
+    errors.push(...checkReferencesIndexed())
 }
 
 function checkSkillReferences(errors) {

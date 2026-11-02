@@ -2,7 +2,7 @@
 
 - 时点：2026-10-31
 - 范围：G4 发布证据中的**回滚方案**与 **known limitations 汇总**（含安全复核口径、用户授权清单）
-- 状态：回滚方案与 known limitations **已就绪**；安全告警复核与用户授权待发布当日（§4 / §5）
+- 状态：回滚方案与 known limitations **已就绪**；安全告警复核**已完成（2026-11-02，§4）**；用户授权待发布当日（§5）
 - 上游：G3 收口见 [G3 记录](./2026-10-29-phase26-g3-rc-release-readiness.md) §6.1；1.0.0 里程碑文案见 [M3-2 记录](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md)
 - 下游：`M3-3` 1.0.0 交付执行
 
@@ -16,8 +16,8 @@
 | known limitations | 已就绪（§3）：11 条，其中 7 条对外披露（6 条「已知限制」+ 1 条「升级注意」） | 本记录 §3 |
 | 回滚方案 | 已就绪（§2），运行手册同步 | 本记录 §2、[发布指南](../../guide/release.md) §8 |
 | 产物 README 版本句（流程修复） | 已修复：`sync` 前置于 `publish`（§2.6） | `scripts/release/manual-release.mjs` `STEPS` + 单测 |
-| 安全告警复核（§2.1） | **待发布当日复跑**（当前读数见 §4） | `Security Alerts` workflow / `pnpm check:security-alerts` |
-| 用户明确授权 | **待**（授权项见 §5） | 会话记录 |
+| 安全告警复核（§2.1） | **已完成（2026-11-02）**：`Security Alerts` run [`41438930655`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438930655) success（§4） | `Security Alerts` workflow / `pnpm check:security-alerts` |
+| 用户明确授权 | **待**（授权项见 §5；推送范围已完成并随 `652dc23` 同步，本批回填待提交） | 会话记录 |
 
 ## 2. 回滚方案
 
@@ -93,16 +93,35 @@
 
 ## 4. 安全告警复核（§2.1）
 
-- **当前读数**（`852bdcb` 推送触发，`Security Alerts` run `41030304849`，2026-10-30T09:00:41Z）：**success**。
+- **前次读数**（`852bdcb` 推送触发，`Security Alerts` run `41030304849`，2026-10-30T09:00:41Z）：**success**。
   - Dependabot open：**1**（`deepmerge`，`low`，上游无补丁，开发作用域）。
   - Code Scanning open：**0**。
   - 豁免清单：`.github/security-alerts-exemptions.json` = `{"exemptions": []}`（未豁免任何 high+）。
-- **发布当日动作**：`1.0.0` `publish` 前重新执行一次（CI `Security Alerts` 手动触发，或本地 `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`），把各级 open 计数与豁免清单写回本记录 §4。
-- **判据**：critical = 0；high 全部修复或按 §2.1 留痕豁免。当前无 high / critical。
+- **发布前读数（2026-11-02，`652dc23`）**：`Security Alerts` run [`41438930655`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438930655) **success**，日志读数为 `critical 0 / high 0 / medium 0 / low 1 / note 0`，豁免 0 项（输出「无 critical / high 阻塞（1 项可暂缓，0 项豁免）」）。与 10-30 读数一致，无新增告警面。
+- **判据**：critical = 0；high 全部修复或按 §2.1 留痕豁免。当前无 high / critical，判据满足。
+
+### 4.1 发布前 CI 取证（2026-11-02，提交 `652dc23`）
+
+| run | workflow | 结果 | 用途与读数 |
+| --- | --- | --- | --- |
+| [`41438930655`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438930655) | `Security Alerts`（`workflow_dispatch`） | success | G4 §2.1 安全复核：critical / high / medium 均 0，low 1（`deepmerge`），豁免 0（见上） |
+| [`41438974434`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438974434) | `Weekly Regression`（`workflow_dispatch`） | success | 运行器 `Image: ubuntu-24.04`（三作业一致，未出现 `ubuntu-26.04`，CI 镜像检测点仍未命中）；`test:visual` 33 / 33、`capture:styles` 0 差异（349 项逐属性与冻结基线一致）、画廊回归 13 / 13；`test:e2e` 见 §4.2 |
+| [`41438865491`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438865491) | `Downstream Compat`（`workflow_dispatch`） | success | dependfix `dependfix/dependfix @ 08ad8f1`，目标版本 `caomei-ui 0.7.0`（缺省入参，**旧于 rc.1**），`typecheck` + `build` 绿。**非 1.0 兼容证据**，仅证明下游 revision 前移后仍可构建 |
+
+- 三个 run 均落在 `master` 的 `652dc23`，与 `origin/master` 一致。
+- 下游复验口径说明：本次为**缺省版本入参**（`0.7.0`）的下游 revision 复验，目标版本旧于 `1.0.0-rc.1`，**不替代也不充实** G3 / M4-1 的 rc.1 结论；1.0.0 tag 的下游 run 仍是 G4 判据里的首次真实验证。下游 revision `08ad8f1` 仅作记录，M4-1 的 `a95c1068` 结论不变。
+
+### 4.2 判别力说明：周级 `test:e2e` 为非阻断步骤
+
+`regression-weekly.yml` 的 `Run E2E tests` / `Run docs site browser regression` 两步为 `continue-on-error: true`，**作业与 run 的 success 不等于该步骤零失败**。本次实测：
+
+- `test:e2e`：439 例中 **2 例失败**（`mobile-320` 定向档 `responsive.e2e.ts` 的「DatePicker 面板落在视口内、内容完整」两例：用例 `DatePicker` 与 `DatePicker 右缘窄触发器`；读数 `scrollHeight=267 > clientHeight=258`，重试仍失败），430 passed / 7 skipped。
+- 对照 run [`41053510073`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41053510073)（`852bdcb`，2026-10-30）为 435 passed / 0 failed / 4 skipped；两次 run 总例数同为 439，且 `852bdcb..652dc23` 区间 `src/**` 与 `test/e2e/**` 零变更（该区间改动为 `.github/workflows/release.yml`、`docs/**`、`scripts/release/**`）。
+- 归因：**未定性**。溢出量为 9px（超出 `expectWrapContainerNotClipped` 的 `+1px` 断言容差），既不能判为断言刀刃，也不能判为布局回归；现有证据只支持「非阻断步骤 + 上一 run 0 失败 + 用例与源码窗口内零变更」⇒ 暂不判 1.0 回归。本轮**不作为「E2E 全绿」证据引用**，处置见 §6。
 
 ## 5. 用户授权清单（逐项）
 
-1. 推送本地提交到 `origin/master`（含 `3b76903` 及本批改动）。
+1. 推送本地提交到 `origin/master`。**推送范围已完成（2026-11-02）：含 `3b76903` 在内的提交已在 `652dc23`；本批 G4 回填尚未提交，待其落盘并推送后另行确认。**
 2. 执行 `1.0.0` 发布链：`bump → changelog → 插入里程碑段并单独提交 → sync → publish --tag=latest → verify → announce`（`sync` 在 `publish` 之前，版本句才随 tarball 发布）。
 3. 推送 tag `v1.0.0`（annotated tag 已由 `bump` 创建，此处只推送；`announce` 前需已推送）。
 4. 创建 GitHub Release `v1.0.0`（正式版，占 Latest）。
@@ -114,7 +133,10 @@
 - **回退后的版本句修正**未固定到具体命令：`sync` 以 `package.json` 版本为锚点，回退场景需人工判断对外版本并以 `docs:check:version` 兜底。
 - **`sync` 前置**由三层兜底：`STEPS` 顺序单测、`publish` 前置断言（`package.json` 版本 + 全部「当前版本」句）、`verify` 产物断言（解包 tarball README），首次真实发布验证落在 `1.0.0`。
 - **KL-7** 的措辞已按 `M4-2` 裁定（未复核）冻结为保守表述；若后续完成母语审校，在下个 patch 的 Release note 中更新，不回改本记录。
-- 安全读数以 2026-10-30 的 CI run 为准，发布当日必须以新 run 覆盖。
+- **安全读数**已以 2026-11-02 的 `Security Alerts` run `41438930655` 覆盖 10-30 读数（§4）；`1.0.0` `publish` 当日若再触发提交，该 run 不自动覆盖——按需复跑一次并回填 §4。
+- **周级 `test:e2e` 的 2 例失败未定性**（§4.2）：`mobile-320` 的 DatePicker 面板内容纵向溢出 9px（267 > 258，含重试）。当前判据是「非阻断步骤 + 上一 run 0 失败 + 用例与源码窗口内零变更」⇒ 不判 1.0 回归，但**不得表述为「E2E 全绿」**。处置（发布前二选一）：① 复跑一次周级 run 观察是否可复现，可复现即按「`mobile-320` DatePicker 面板纵向溢出（归因待查）」登记 Backlog，并在 1.0.0 note 保持「Chromium / 常驻档」的既有边界表述（KL-3 已覆盖 375px 专项口径，不新增强断言）；② 若复现且可见裁剪，按 [M3-2 记录](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md) §2 的「已知限制」追加一条并重跑 `extractChangelogSection` 预演。
+- **`test:e2e` / 画廊回归 / `pnpm audit` 的 `continue-on-error`** 是既有设计（周级作业长期非阻断），本次未改动；因此周级 run 的 success 只代表阻断步骤全绿——即 `capture:styles`、`test:visual`、`Check licenses` 及各 `Core Regression` 步骤，不代表 `test:e2e` / 画廊回归 / `pnpm audit` 零失败。
+- **run id 字面不可机检**：`governance:check` / `docs:check` 都不校验 run id 是否存在或与 URL 一致（本轮回填即出现 1 处过手误），复核时须 `gh run view <id>` 实开一次。
 
 ## 7. Review Gate
 
@@ -123,4 +145,6 @@
 - **R3（standard）：Pass**（0 blocker / 1 warning / 6 suggest）：新增断言在缺文件时 fail-open，已改为全量读取 + 显式缺 README 报错，并补 4 例集成级单测。
 - **R4（quick）：Pass**（0 blocker / 0 warning / 4 suggest）：fail-open 闭环；3 条措辞同批修正，1 条（版本句判定与 `check-site-version` 去重）登记后续。
 - **2026-11-01（quick，M4-2 = 未复核裁定回填）：Pass**（0 blocker / 2 warning / 4 suggest）；KL-7 冻结为保守表述。
-- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md` 与 `artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md`。
+- **2026-11-02 R1（standard，G4 取证回填）：Reject**（1 blocker / 6 warning / 5 suggest）：blocker = 下游 run id 手误（`41438965491` → 实为 `41438865491`，链接 404）；warning = §4.2 归因越界（「子像素」定性 + 失效归档引用）与 §6「未定性」矛盾、阻断步骤清单误含 `pnpm audit`、§5 推送完成范围混入未提交载体、`todo` 的「G4 收口」与门禁表「进行中」口径分裂、对照 run 未给 id 且「同提交」措辞错误、下游 run 目标版本旧于 rc.1 未标注。
+- **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 0 warning / 5 suggest）；B1 + W1 ~ W6 全闭环，5 条 suggest 同批修正（标题前空行、§1 授权行口径、处置①登记名、第二个失败用例名、`M4-1` 反向指针）。
+- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`、`artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md` 与 `artifacts/review-gate/2026-11-02-g4-evidence-backfill.md`。

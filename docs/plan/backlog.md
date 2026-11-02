@@ -42,7 +42,7 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订） | 低 |
+| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。**触发条件 = 语言集扩容决策**（如新增二期语言或 RTL 立项） | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
 
 ### 1.5 移动端与响应式候选
@@ -66,7 +66,7 @@
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
-| CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测） | 低 |
+| CHANGELOG 生成器健壮性收口 | 无 remote 降级、语言源自 root；**空 `# Unreleased` 段**（`outputUnreleased: true` 在无未发布提交时仍输出标题，2026-09-22 0.2.0 / 2026-09-24 0.3.0 发布会后实测）。**触发条件 = 调整发布机制（含引入自动发布）时** | 低 |
 | 发布时 API 表面差分（根导出 + 组件声明面） | Phase 26 登记时评估（只评估） | 推荐形态：发布 preflight 对比上一已发布版本的 `dist/*.d.ts`（根导出名 + 组件 props / events / slots / exposed，归一化后比较；删除 / required 收紧 = breaking，类型变化 = warning）。触发条件 = 发布链路 `--tag` 落地后，或用户指定 | 中 |
 | 提交驱动 CI 自动发布 | 发布机制评估（[2026-10-08](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md) §4）+ 2026-10-31 `release.yml` 现状差距分析。**现状**：workflow 只跑质量门（`pnpm verify` → `test:coverage` → `check:coverage`），publish 步骤仍为注释；`@semantic-release/npm@13.1.5` 已支持 Trusted Publisher，job 已有 `id-token: write`。**拟立项验收（待用户裁定）= 8 项全绿 + 一次 dry-run 演练**：① npm trusted publisher 注册或 `NPM_TOKEN`；② `@semantic-release/git` 推送凭据（`persist-credentials: false` 下不会自动注入）；③ **版本句同步**（README 中英 + roadmap，经 `@semantic-release/exec`，否则发布后 `docs:check:version` 立刻红）；④ publish 前接入安全告警门禁（[安全规范 §2.1](../standards/security.md#_2-1-发布前安全告警门禁)）；⑤ publish 后校验（dist-tag / shasum / 解包 README / `exports` / API 差分）；⑥ 触发模型决策（push `master` 自动发 vs `workflow_dispatch`）与预发布 `next` 通道；⑦ 发布审批（`environment:`）；⑧ **事件链**：GitHub 的 `GITHUB_TOKEN` 事件排除规则使回推的 tag / release 不触发其它工作流，故 `v*` tag 触发的 `downstream-compat` 不会自动跑（`release.yml` 自身只监听 `master` push，不会因回推 tag 重跑）——需 PAT / GitHub App token 或显式 `workflow_dispatch` 编排。Phase 21 D8 / Phase 26 D2 均**维持手动**，1.0 后单独立项；风险：breaking 提交直接升 major、发布不可逆 | 低 |
 | 下游兼容检查：校验实际安装版本步骤 | Phase 23 M2-1 follow-up | 工作流的 override 步骤当前**不校验实际安装版本**（本仓 run #2 只能由「版本差 + `+1 −1` + 命令语义」推断重装生效）。候选为在 override 后断言 `caomei-ui` 实际版本 == 目标版本（fail-closed）并把结果写入 job summary。**触发条件 = 下次发布前后可在真实 run 中验证时**（workflow 改动只能在真实 run 中验证，未验证前不入库） | 低 |

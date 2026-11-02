@@ -2,7 +2,7 @@
 
 - 时点：2026-10-31
 - 范围：G4 发布证据中的**回滚方案**与 **known limitations 汇总**（含安全复核口径、用户授权清单）
-- 状态：回滚方案与 known limitations **已就绪**；安全告警复核**已完成（2026-11-02，§4）**；用户授权待发布当日（§5）
+- 状态：**已完成（2026-11-03）**——`1.0.0` 已发布、tag 与 GitHub Release 到位（§4.4）；回滚方案与 known limitations 保持待用（§2 / §3）
 - 上游：G3 收口见 [G3 记录](./2026-10-29-phase26-g3-rc-release-readiness.md) §6.1；1.0.0 里程碑文案见 [M3-2 记录](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md)
 - 下游：`M3-3` 1.0.0 交付执行
 
@@ -10,7 +10,7 @@
 
 | 证据 | 状态 | 载体 |
 | --- | --- | --- |
-| 1.0.0 CHANGELOG 里程碑段 | 文案定稿；实际落盘在 `M3-3` 的 `changelog` 步骤后（生成器会重写文件） | [M3-2 记录](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md) §2 |
+| 1.0.0 CHANGELOG 里程碑段 | **已完成（2026-11-03）**：落盘于 `cea60bf`（32 行、锚点全中、不含 rc.1 段） | [M3-2 记录](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md) §2 / M3-3 记录 §1 |
 | GitHub Release note | 与 CHANGELOG 同源，`announce` 抽取 | 同上 §4 |
 | version policy（1.x 承诺 / 冻结面 380 / 弃用政策） | 已完成（2026-10-24） | [版本与兼容策略](../../guide/version-policy.md)（中英） |
 | known limitations | 已就绪（§3）：11 条，其中 7 条对外披露（6 条「已知限制」+ 1 条「升级注意」） | 本记录 §3 |
@@ -18,7 +18,9 @@
 | 产物 README 版本句（流程修复） | 已修复：`sync` 前置于 `publish`（§2.6） | `scripts/release/manual-release.mjs` `STEPS` + 单测 |
 | 安全告警复核（§2.1） | **已完成（2026-11-02）**：`Security Alerts` run [`41438930655`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438930655) success（§4） | `Security Alerts` workflow / `pnpm check:security-alerts` |
 | 发布链 dry-run 就绪 | **已取证（2026-11-03）**：preflight 通过 + 七步 dry-run 贯通（§4.3） | `manual-release` / G4 §4.3 |
-| 用户明确授权 | **待**（授权项见 §5；`652dc23` 已推送，其后提交待授权推送，读数见 §4.3） | 会话记录 |
+| 发布日安全复核 | **已完成（2026-11-03）**：`Security Alerts` run `41480943386` success（critical / high / medium 0、low 1、豁免 0） | [M3-3 记录](./2026-11-03-phase26-m3-3-1.0.0-release.md) §1 |
+| `1.0.0` 发布执行 | **已完成（2026-11-03）**：`latest = 1.0.0`、tag + GitHub Release 到位、发布后校验通过（§4.4） | [M3-3 记录](./2026-11-03-phase26-m3-3-1.0.0-release.md) §1 / §2 |
+| 用户明确授权 | **已完成（2026-11-03）**：§5 第 1 ~ 4 项全部完成，第 5 项（回滚处置权）未触发 | 会话记录 |
 
 ## 2. 回滚方案
 
@@ -126,7 +128,7 @@
 - 但判定不变：矩阵 #6 明写「最多占满可用高」+ `overflow: auto` 滚动降级，6 行月在小屏滚动 9px 属**设计内行为**；失败的是「不得有任何纵向溢出」这一比契约更严的断言。
 - **处置**：断言改为「内容完整 **或** 滚动可达」双分支，并新增「滚到底后末位成员完整落在面板 client rect 内」检查（`expectCappedPanelContentReachable`）；矩阵 #6 与 §4 断言 3 同步。Backlog 的缺陷候选因非产品缺陷而移除。**仍不作「E2E 全绿」证据引用**（该步骤另有 flaky），见 §6。
 
-### 4.3 发布链就绪检查（2026-11-03）
+### 4.3 发布链就绪检查（2026-11-03，发布前时点快照；结论已由 §4.4 / §5 覆盖）
 
 | 项 | 读数 |
 | --- | --- |
@@ -134,19 +136,25 @@
 | 全链 `--dry-run` | 七步顺序 `preflight → bump → changelog → sync → publish → verify → announce` 全部打印；`git push` 仍由用户执行 |
 | registry | `latest = 0.7.0`、`next = 1.0.0-rc.1`；`1.0.0` 未发布（`npm view` 404） |
 | tag | `v1.0.0-rc.1` 存在；`v1.0.0` 未创建 |
-| 工作区 | clean；`master` 比 `origin/master`（`652dc23`）多 5 个提交（`git rev-list --count 652dc23..4fb0c52`；本轮记录提交后为 6 个），待授权推送 |
+| 工作区 | clean；`master` 比 `origin/master`（`652dc23`）多 5 个提交（`git rev-list --count 652dc23..4fb0c52`；本轮记录提交后为 6 个）——**当时待授权推送，现已推送，见 §5-1** |
 | 缺陷修复 | Release note 抽取 fail-open 已修（§2.6）；真实运行时 `announce` 对缺失段 fail-closed（抛错阻止），`--dry-run` 打印「尚无 v1.0.0 段落」并继续 |
 
 - **未覆盖**：未执行 `bump` / `changelog` / `publish`（需授权）；`announce` 的真实 `gh release create` 未演练。
 - **口径**：preflight 与全链 dry-run 通过**不等于发布就绪**；发布仍须 §5 逐项授权。
 
+### 4.4 `1.0.0` 发布执行与发布后校验（2026-11-03）
+
+- 执行与校验全文见 [M3-3 记录](./2026-11-03-phase26-m3-3-1.0.0-release.md) §1 / §2。
+- 关键读数：`latest = 1.0.0`、`next = 1.0.0-rc.1`；tarball shasum `67d71348b452…`；**tarball 内 README 版本句 = `1.0.0`**（`sync` 前置修复首次真实验证）；`exports` 13 键；API 差分（基线 `1.0.0-rc.1`）199 / 328、0 删除 / 0 重命名；GitHub Release `v1.0.0` 为 Latest。
+- 过程处置：npm 传播延迟约 60 秒后 `verify` 通过（未手工改 dist-tag）；`sync` 提交经 Review Gate 工件后放行，**未使用 `--no-verify`**。
+
 ## 5. 用户授权清单（逐项）
 
-1. 推送本地提交到 `origin/master`。**部分完成**：`652dc23` 已于 2026-11-02 推送；其后提交**待授权推送**（读数见 §4.3）。
-2. 执行 `1.0.0` 发布链：`bump → changelog → 插入里程碑段并单独提交 → sync → publish --tag=latest → verify → announce`（`sync` 在 `publish` 之前，版本句才随 tarball 发布）。
-3. 推送 tag `v1.0.0`（annotated tag 已由 `bump` 创建，此处只推送；`announce` 前需已推送）。
-4. 创建 GitHub Release `v1.0.0`（正式版，占 Latest）。
-5. 若发布后需回滚：`deprecate` / `dist-tag` 回退 / Release 正文与 Latest 编辑（按 §2 分级）。
+1. 推送本地提交到 `origin/master`。**已完成（2026-11-03）**：`origin/master` = `bfe6e3a`。
+2. 执行 `1.0.0` 发布链。**已完成（2026-11-03）**：`bump` / `changelog` / 里程碑段 / `sync` / `publish --tag=latest` / `verify` / `announce` 全部通过（§4.4）。
+3. 推送 tag `v1.0.0`。**已完成**：`b7c8517`。
+4. 创建 GitHub Release `v1.0.0`（正式版，占 Latest）。**已完成**：`releases/latest` = `v1.0.0`。
+5. 回滚处置权。**未触发**：发布后校验通过，保留待用（§2）。
 
 ## 6. 未覆盖边界
 

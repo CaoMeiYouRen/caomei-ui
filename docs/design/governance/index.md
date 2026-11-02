@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-03-phase26-m3-3-1.0.0-release.md](./2026-11-03-phase26-m3-3-1.0.0-release.md)：**Phase 26 M3-3 `1.0.0` 正式版发布执行**。发布链分步执行、发布后校验（dist-tag / shasum / tarball README / exports / API 差分）、过程处置（registry 传播延迟、sync 守卫）与后续（回滚未演练、`next` 前移）。**Review Gate**：结论见本记录 §5。
 - [2026-10-29-phase26-g3-rc-release-readiness.md](./2026-10-29-phase26-g3-rc-release-readiness.md)：**Phase 26 G3 `1.0.0-rc.1` 发布与收口**。rc.1 已发 `next`、tag / prerelease 已建、下游复验绿，G3 已完成；记录含发布流程、`sync` 守卫修复、rc.1 tarball 已知缺陷与 G4 待办。**Review Gate**：结论见本记录 §5 / §6.1。
 - [2026-10-31-phase26-m3-2-1.0.0-release-notes.md](./2026-10-31-phase26-m3-2-1.0.0-release-notes.md)：**Phase 26 M3-2 `1.0.0` 里程碑文案 / Release note**。给出可原样插入的里程碑块（1.x 承诺 / 预设 / 颜色角色 / DataTable / Button / 10 语）、升级注意与已知限制，并固定落盘顺序（`changelog` 后、`announce` 前）与抽取校验命令。**Review Gate**：结论见本记录 §7。
 - [2026-10-31-phase26-g4-rollback-and-known-limitations.md](./2026-10-31-phase26-g4-rollback-and-known-limitations.md)：**Phase 26 G4 `1.0.0` 回滚方案与 known limitations**。给出四级处置阶梯（deprecate → patch → `latest` 回退 → 恢复）、禁止项与校验命令，并汇总 11 条已知限制（7 条对外披露）与安全复核口径、用户授权清单。**Review Gate**：结论见本记录 §7。

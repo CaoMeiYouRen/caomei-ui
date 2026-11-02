@@ -118,8 +118,11 @@
 - `test:e2e`（run `41438974434`）：`2 failed / 3 flaky / 4 skipped / 430 passed`（合计 439）。失败为 `mobile-320` 定向档 `responsive.e2e.ts` 的两例（`DatePicker` / `DatePicker 右缘窄触发器`），读数 `scrollHeight=267 > clientHeight=258`，含 retry #1。
 - 对照 run [`41053510073`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41053510073)（`852bdcb`，2026-10-30）为 `0 failed / 0 flaky / 4 skipped / 435 passed`（合计 439）；`852bdcb..652dc23` 区间 `src/**` 与 `test/e2e/**` 零变更（该区间改动为 `.github/workflows/release.yml`、`docs/**`、`scripts/release/**`）。
 - **复跑复核**（run [`41450700126`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41450700126)，同日 `652dc23`，`workflow_dispatch`，13:10Z 起约 10.3 分钟）：`2 failed / 4 flaky / 4 skipped / 429 passed`，失败用例与读数**逐字相同**（267 > 258，含 retry #1）；429 与 430 的 1 例差异来自 retry 面（本次多 1 例首次失败后重试通过，`flaky` 3 → 4）。两轮运行器镜像版本一致（`20261025.353.1`）。
-- 判读：同日同输入下两轮均稳定失败（2 / 2，读数一致）⇒ 该 2 例**不是单次偶发**；但同日套件另有 flaky（两轮分别为 3 例 / 4 例）靠 retry 通过，**flaky 机制在场**，且两轮同日同月，不能据此排除日期 / 环境相关性。跨日 / 跨月未复跑。
-- 归因边界：与 10-30 通过 run 相比，唯一已知输入差异为日历日期（`docs/examples/date-picker/basic.vue` 未固定初值，面板打开当前月），属**假设**；9px 量级不足一个日历周行（约 30px），周行数无法单独解释，DOM 级根因未取证。溢出已超出 `expectWrapContainerNotClipped` 的 `+1px` 容差，不属断言刀刃。**不作「E2E 全绿」证据引用**，处置见 §6。
+- 判读：同日同输入下两轮均稳定失败（2 / 2，读数一致）⇒ 该 2 例不是单次偶发；同日套件另有 flaky（两轮分别为 3 例 / 4 例，均为 `menu-navigation` 重试通过），与本失败无关。
+- **根因（2026-11-02 本地实测，Chromium / 320×568）**：日历行数随月份变化（`fixedWeeks` 默认 `false`，zh-CN 周一起始）：2026-10 为 5 行、内容高 **235**（面板收缩到 235，无滚动）；2026-11 为 6 行、内容高 **267**（`padding 12 + 12` + 日历 243）。可用高（border box）由触发器位置决定，本次实测 **260**（触发器 `y=308`、视口高 568、面板贴底），面板 client 高 **258**（上下边框各 1px）⇒ 6 行月内容 267 溢出 **9px**（按 client box）；`overflow-y: auto` 下滚 9px 即见末行（实测 `scrollTop 0 → 9`，末行 `bottom=555 ≤ clientBottom=567`）。
+- 因此 **10-30 的 run（10 月，5 行）通过、11-02 的 run（11 月，6 行）失败**，由内容高差直接解释，此前的「月份 / 周行数」假设成立。
+- 但判定不变：矩阵 #6 明写「最多占满可用高」+ `overflow: auto` 滚动降级，6 行月在小屏滚动 9px 属**设计内行为**；失败的是「不得有任何纵向溢出」这一比契约更严的断言。
+- **处置**：断言改为「内容完整 **或** 滚动可达」双分支，并新增「滚到底后末位成员完整落在面板 client rect 内」检查（`expectCappedPanelContentReachable`）；矩阵 #6 与 §4 断言 3 同步。Backlog 的缺陷候选因非产品缺陷而移除。**仍不作「E2E 全绿」证据引用**（该步骤另有 flaky），见 §6。
 
 ## 5. 用户授权清单（逐项）
 
@@ -136,7 +139,7 @@
 - **`sync` 前置**由三层兜底：`STEPS` 顺序单测、`publish` 前置断言（`package.json` 版本 + 全部「当前版本」句）、`verify` 产物断言（解包 tarball README），首次真实发布验证落在 `1.0.0`。
 - **KL-7** 的措辞已按 `M4-2` 裁定（未复核）冻结为保守表述；若后续完成母语审校，在下个 patch 的 Release note 中更新，不回改本记录。
 - **安全读数**已以 2026-11-02 的 `Security Alerts` run `41438930655` 覆盖 10-30 读数（§4）；`1.0.0` `publish` 当日若再触发提交，该 run 不自动覆盖——按需复跑一次并回填 §4。
-- **周级 `test:e2e` 的 2 例失败已稳定复现**（§4.2）：同日两轮读数逐字相同（267 > 258，含 retry），属当前输入下的稳定边界、**不是单次偶发**；但套件当轮另有 3 → 4 例 flaky，且跨日 / 跨月未复跑，日期相关性未排除。判定 = 不判 1.0 回归（非阻断步骤 + 用例与源码窗口内零变更），但**不得表述为「E2E 全绿」**。**待用户裁定**：① 1.0 前修复（先定位面板高度上限与日历内容高度口径，并补可见性取证）；② 记为 1.0 已知限制并按 patch 修复。Backlog §1.5 已登记缺陷候选，处置时点随该裁定。
+- **周级 `test:e2e` 的 2 例失败已定位并处置**（§4.2）：6 行月份内容高 267 > 面板 client 高 258（border box 260），滚动 9px 可达末行，属矩阵 #6 的设计内降级；原断言比契约更严。已改为「内容完整或滚动可达」双分支（含滚到底末行可见检查），矩阵 #6 与 §4 断言 3 同步；Backlog 缺陷候选因**非产品缺陷**移除，**本条不再作为待决策候选**——若将来出现「小屏 6 行月不得滚动」的产品裁定，按新条目重开。不判 1.0 回归，但仍**不得表述为「E2E 全绿」**（该步骤另有 `menu-navigation` 的 flaky：ArrowLeft / Escape，两轮分别为 mobile ×2 + tablet ×1 与 mobile ×2 + tablet ×1 + desktop ×1）。
 - **`test:e2e` / 画廊回归 / `pnpm audit` 的 `continue-on-error`** 是既有设计（周级作业长期非阻断），本次未改动；因此周级 run 的 success 只代表阻断步骤全绿——即 `capture:styles`、`test:visual`、`Check licenses` 及各 `Core Regression` 步骤，不代表 `test:e2e` / 画廊回归 / `pnpm audit` 零失败。
 - **run id 字面不可机检**：`governance:check` / `docs:check` 都不校验 run id 是否存在或与 URL 一致（本轮回填即出现 1 处过手误），复核时须 `gh run view <id>` 实开一次。
 
@@ -151,4 +154,6 @@
 - **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 0 warning / 5 suggest）；B1 + W1 ~ W6 全闭环，5 条 suggest 同批修正（标题前空行、§1 授权行口径、处置①登记名、第二个失败用例名、`M4-1` 反向指针）。
 - **2026-11-02 R1（quick，复跑复核与 320px 缺陷候选登记）：Reject**（2 blocker / 3 warning / 4 suggest）：blocker = 「排除随机 flaky」结论越界（同日套件另有 3 / 4 例 flaky，且日期相关性未排除）、两轮读数把 flaky 计成 skipped 并与「总例数 439」自相矛盾；warning = Backlog 断言「纵向裁切」未取证可见性、「唯一差异是日历日期」写成事实、§6 把处置 ② 写成部分已执行。
 - **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 0 warning / 3 suggest）；B1 / B2 / W1 ~ W5 / S6 / S8 / S9 全闭环，3 条 suggest 同批修正（「失败读数」措辞、来源补日期、flaky 计数表述）。
-- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`、`artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md` 与 `artifacts/review-gate/2026-11-02-g4-evidence-backfill.md` 与 `artifacts/review-gate/2026-11-02-g4-e2e-rerun-and-320px-defect.md`。
+- **2026-11-02 R1（standard，日历面板内容完整性断言口径修正）：Reject**（1 blocker / 3 warning / 3 suggest）：blocker = 根因段把「日历行数随月份变化（`fixedWeeks` 默认 false）」写成「恒 6 周、与日期无关」；warning = 双 JSDoc 悬空、flaky 用例名缺证据、Backlog 删行缺终局含义。
+- **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 1 warning / 2 suggest）；B1 + W1 ~ W4 / S5 ~ S7 闭环，RG-W5（260 为 border box / 258 为 client 高）与 S2（判别力三分表述）同批修正。
+- 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`、`artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md` 与 `artifacts/review-gate/2026-11-02-g4-evidence-backfill.md` 与 `artifacts/review-gate/2026-11-02-g4-e2e-rerun-and-320px-defect.md` 与 `artifacts/review-gate/2026-11-02-320px-calendar-assertion.md`。

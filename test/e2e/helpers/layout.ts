@@ -203,6 +203,48 @@ export interface ScrollContainerExpectation {
 }
 
 /**
+ * §4 断言 3（受可用空间上限约束的浮层面板）：内容要么完整落在面板内，要么经纵向滚动可达。
+ *
+ * 与换行类容器的差别：面板 `max-height` 取 popper 可用高（矩阵 #6），空间不足时 `overflow: auto`
+ * 是**设计内降级**；此时 `scrollHeight > clientHeight` 属预期，契约不是「不得滚动」而是
+ * 「无内容丢失」——滚到底后末个成员必须完整落在面板 client rect 内。
+ *
+ * 判别力：缺少滚动通道（`overflow` 非 `auto` / `scroll`，`scrollTop` 恒 0）、未滚到末端、末行仍越出可视区，三类都会失败。
+ * 注意：调用点通常已由 `expectPanelSizeCapped` 覆盖 `overflow` 两轴，此处同款断言仅在单独复用时兜底。
+ */
+export async function expectCappedPanelContentReachable(
+    panel: Locator,
+    members: Locator,
+    tail: Locator,
+    label: string,
+): Promise<void> {
+    const metrics = await panel.evaluate((element) => ({
+        clientHeight: element.clientHeight,
+        scrollHeight: element.scrollHeight,
+        overflowY: getComputedStyle(element).overflowY,
+    }))
+    expect(await tail.count(), `${label} 应有至少一个末位成员`).toBeGreaterThan(0)
+    if (metrics.scrollHeight <= metrics.clientHeight + TOLERANCE) {
+        await expectWrapContainerNotClipped(panel, members, label)
+        return
+    }
+    expect(
+        ['auto', 'scroll'],
+        `${label} 内容超出可用高但缺少纵向滚动通道（overflow-y=${metrics.overflowY}）`,
+    ).toContain(metrics.overflowY)
+    const scrolled = await panel.evaluate((element) => {
+        element.scrollTop = element.scrollHeight
+        return { scrollTop: element.scrollTop, max: element.scrollHeight - element.clientHeight }
+    })
+    expect(scrolled.scrollTop, `${label} 无法纵向滚动（scrollTop=0）`).toBeGreaterThan(0)
+    expect(
+        Math.abs(scrolled.scrollTop - scrolled.max),
+        `${label} 未滚到末端（scrollTop=${scrolled.scrollTop} / max=${scrolled.max}）`,
+    ).toBeLessThanOrEqual(TOLERANCE)
+    expectBoxWithin(await boxOf(tail), await clientRectOf(panel), `${label} 末位成员（滚动到底后）`)
+}
+
+/**
  * §4 断言 1 / 3（滚动类容器）：容器按档位可滚动、每个成员自身内容不被裁切。
  *
  * 滚动量是否必须存在由用例声明：成员总宽未超出容器的组件（如 SplitButton）在窄屏同样

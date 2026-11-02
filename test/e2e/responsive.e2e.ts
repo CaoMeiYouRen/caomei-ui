@@ -1,6 +1,7 @@
 import { expect, test as base, type Locator, type Page } from '@playwright/test'
 import {
     boxOf,
+    expectCappedPanelContentReachable,
     expectInsideViewport,
     expectKeyboardEntryRevealsFirstMember,
     expectKeyboardTabFocusVisibleInContainer,
@@ -19,7 +20,7 @@ import {
  *
  * 覆盖五类可判定口径：
  * 1. 浮层面板：落在视口内、不窄于触发器（断言 2 / 6）；
- * 2. 含日历面板：DatePicker portal 面板落在视口内、带可用宽上限、内容完整（断言 2 / §3 矩阵 #6）；
+ * 2. 含日历面板：DatePicker portal 面板落在视口内、带可用宽上限、内容完整或滚动可达（断言 2 / §3 矩阵 #6）；
  * 3. 换行类容器：纵向不裁切、成员完整落在容器内（断言 3）；
  * 4. 滚动类容器：成员自身不被裁切、按档位可滚动、确有滚动量（断言 1 / 3）；
  * 5. 键盘聚焦：滚动容器内聚焦成员落在容器可视区内，且**聚焦前完全在滚动区外**时完整滚入（断言 3）。
@@ -377,9 +378,9 @@ test.describe('浮层面板：落在视口内且不窄于触发器', () => {
     }
 })
 
-test.describe('含日历面板：落在视口内且内容不裁切', () => {
+test.describe('含日历面板：落在视口内且内容完整或滚动可达', () => {
     for (const calendarCase of CALENDAR_PANEL_CASES) {
-        test(`${calendarCase.name} 面板落在视口内、带可用空间上限且内容完整`, async ({ page }) => {
+        test(`${calendarCase.name} 面板落在视口内、带可用空间上限且内容完整或滚动可达`, async ({ page }) => {
             const trigger = page.locator(calendarCase.trigger)
             const panel = page.locator(DATE_PICKER_PANEL)
 
@@ -391,9 +392,10 @@ test.describe('含日历面板：落在视口内且内容不裁切', () => {
             await expectInsideViewport(panel, viewport, calendarCase.name)
             await expectLocatorNoHorizontalOverflow(panel, `${calendarCase.name} 面板`)
             await expectPanelSizeCapped(panel, calendarCase.name)
-            await expectWrapContainerNotClipped(
+            await expectCappedPanelContentReachable(
                 panel,
                 panel.locator('.caomei-calendar'),
+                panel.locator('.caomei-calendar__grid tbody tr').last(),
                 `${calendarCase.name} 面板内容`,
             )
 

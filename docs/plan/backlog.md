@@ -53,7 +53,6 @@
 | 手机端优先 / 密度轴（`data-density="touch"`） | 用户 2026-10-25 评估要求 | 评估结论：`data-preset` 不承载手机端预设（会与品牌 / 明暗正交冲突，且无法解决命中区与断点）；候选为独立 **`data-density="touch"`** 轴（控件高度 36/44/52、字号 14/16/18、宽度上限 `none`）+ **`--caomei-hit-target-min`** 不可见命中区（icon 按钮 / Checkbox / Radio / Switch）。**时点裁定（2026-10-26）：不影响 1.0，1.0.0 `latest` 发布后作为 1.1.0 实现**；用户提前裁定除外。依据见[评估记录 §8](../design/governance/2026-10-25-mobile-first-preset-evaluation.md#_8-1-0-发布影响与实现时点) | 中 |
 | 触摸目标增强（≥44px 命中区） | 用户决策 | 用户裁定**暂不提升**，维持现状；**2026-10-16 实测复核**给出逐组件清单与 **P0 / P1 / P2 分级建议**（[记录](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md)），提升与否待后续裁定 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| `DatePicker` 面板在 320×568 内容纵向溢出 9px（可见裁切未取证） | 周级回归 workflow（手动触发）2026-11-02 两次 run `41438974434` / `41450700126` | **条件候选（缺陷）**：`mobile-320` 定向档 `responsive.e2e.ts` 的 2 例（`DatePicker` / `DatePicker 右缘窄触发器`）打开当前月时 `scrollHeight=267 > clientHeight=258`，9px 超出 `expectWrapContainerNotClipped` 的 `+1px` 容差；同日两轮**失败读数**逐字相同（当轮汇总 `2 failed / 3 → 4 flaky / 4 skipped / 430、429 passed`），属当前输入下稳定复现，**但套件当轮存在 flaky，跨日 / 跨月未复跑**。与 10-30 通过 run 的唯一已知输入差异为日历日期（假设，未取证）。该步骤 `continue-on-error`，不阻断流水线；常驻 390 / 768 / 1280 档未命中。**待用户裁定**：1.0 前修复，或记为已知限制后 patch 修复；修复前须先取证 `overflow` 计算值与截图，判定是否**可见**裁切。取证见 [G4 记录](../design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations.md) §4.2 | 中 |
 
 ### 1.6 基建与治理候选
 

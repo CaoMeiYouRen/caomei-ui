@@ -12,19 +12,24 @@
  *
  * 认证：必须提供 `SECURITY_ALERTS_TOKEN`（用户 PAT，需 Dependabot alerts / Code Scanning alerts 读权限）；
  * 仓库默认 `GITHUB_TOKEN` 无法读取 Dependabot 告警，故不提供回退（缺 token 直接失败）。
+ * 本地把该变量写入仓库根的 `.env.local`（已 gitignore）即可，真实环境变量优先。
+ *
+ * 仓库标识：`--repo=owner/repo` → `GITHUB_REPOSITORY` → `git remote get-url origin`（本地回退）。
  *
  * 豁免：`.github/security-alerts-exemptions.json`（仅 high，字段见 `validateExemptions`）。
  *
  * 用法：
- *   SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts
+ *   pnpm check:security-alerts
  *   pnpm check:security-alerts --repo=owner/repo --json
  *
  * 退出码：0 通过；1 存在阻塞项；2 配置 / API 错误。
  */
+import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, appendFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution, parseCliOptions } from '../shared/cli.mjs'
+import { LOCAL_ENV_FILE, loadLocalEnv } from '../shared/env.mjs'
 
 export const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 export const DEFAULT_API_URL = 'https://api.github.com'
@@ -353,15 +358,117 @@ export function formatSummary(result) {
     ].join('\n')
 }
 
-function resolveRepo(argvRepo) {
+/**
+ * 从 git remote 地址解析 `owner/repo`（仅 GitHub）。
+ *
+ * 支持 `https://github.com/o/r(.git)`、`git@github.com:o/r(.git)`、
+ * `ssh://git@github.com/o/r(.git)` 三种形态；非 GitHub 或无法解析时返回 `null`。
+ *
+ * @param {string | null | undefined} remote remote 地址
+ * @returns {string | null} `owner/repo`
+ */
+export function parseRepoFromRemote(remote) {
+    const cleaned = String(remote ?? '').trim().replace(/\/+$/u, '').replace(/\.git$/u, '')
+    if (cleaned === '') {
+        return null
+    }
+    const patterns = [
+        /^https?:\/\/github\.com\/([^/]+)\/([^/]+)$/u,
+        /^git@github\.com:([^/]+)\/([^/]+)$/u,
+        /^ssh:\/\/git@github\.com\/([^/]+)\/([^/]+)$/u,
+    ]
+    for (const pattern of patterns) {
+        const match = cleaned.match(pattern)
+        if (match) {
+            return `${match[1]}/${match[2]}`
+        }
+    }
+    return null
+}
+
+/**
+ * 读取 `origin` 的 remote 地址（本地回退用）。
+ *
+ * @param {string} root 仓库根
+ * @returns {string | null} remote 地址；git 不可用或未配置时返回 `null`
+ */
+function readOriginRemote(root) {
+    const result = spawnSync('git', ['remote', 'get-url', 'origin'], { cwd: root, encoding: 'utf8' })
+    if (result.status !== 0) {
+        return null
+    }
+    return result.stdout?.trim() || null
+}
+
+/**
+ * 解析仓库标识。
+ *
+ * 优先级：`--repo` → `GITHUB_REPOSITORY` → `origin` remote（本地回退）。
+ *
+ * @param {string | undefined} argvRepo `--repo` 参数
+ * @param {{ root?: string, env?: NodeJS.ProcessEnv, gitRemote?: () => string | null }} [options] 运行环境
+ * @returns {string} `owner/repo`
+ */
+export function resolveRepo(argvRepo, { root = REPO_ROOT, env = process.env, gitRemote = () => readOriginRemote(root) } = {}) {
     if (argvRepo) {
         return argvRepo
     }
-    const repo = process.env.GITHUB_REPOSITORY
-    if (!repo) {
-        throw new Error('缺少仓库标识：请传 --repo=owner/repo 或设置 GITHUB_REPOSITORY')
+    if (env.GITHUB_REPOSITORY) {
+        return env.GITHUB_REPOSITORY
     }
-    return repo
+    const fromRemote = parseRepoFromRemote(gitRemote())
+    if (fromRemote) {
+        return fromRemote
+    }
+    throw new Error('缺少仓库标识：请传 --repo=owner/repo、设置 GITHUB_REPOSITORY，或在仓库内配置 origin remote')
+}
+
+/**
+ * 发布前安全告警门禁（供 `manual-release` 复用）。
+ *
+ * 与 CLI 同口径，但以抛错表达阻塞：调用方（发布链）不需要处理退出码。
+ * token 缺失时给出本地配置路径（`.env.local`），避免只报「缺少变量」。
+ *
+ * @param {{
+ *   root?: string,
+ *   repo?: string,
+ *   token?: string,
+ *   exemptionsPath?: string,
+ *   apiUrl?: string,
+ *   env?: NodeJS.ProcessEnv,
+ *   gitRemote?: () => string | null,
+ *   fetchImpl?: typeof fetch,
+ *   write?: (line: string) => void,
+ * }} [options] 参数
+ * @returns {Promise<ReturnType<typeof evaluateAlerts>>} 评估结果
+ */
+export async function assertSecurityGate({
+    root = REPO_ROOT,
+    repo,
+    token,
+    exemptionsPath = join(root, DEFAULT_EXEMPTIONS_PATH),
+    apiUrl = DEFAULT_API_URL,
+    env = process.env,
+    gitRemote,
+    fetchImpl,
+    write = (line) => process.stdout.write(`${line}\n`),
+} = {}) {
+    if (!token) {
+        throw new Error(
+            '缺少 SECURITY_ALERTS_TOKEN：Dependabot 告警只能用具备 security_events 权限的用户 PAT 读取。'
+            + `请在仓库根创建 ${LOCAL_ENV_FILE} 写入 SECURITY_ALERTS_TOKEN=<pat>（已 gitignore），或临时 export 该变量`,
+        )
+    }
+    const resolvedRepo = repo ?? resolveRepo(undefined, { root, env, gitRemote })
+    const exemptions = loadExemptions(exemptionsPath)
+    const alerts = await fetchAlerts({ repo: resolvedRepo, token, apiUrl, fetchImpl })
+    const result = evaluateAlerts({ ...alerts, exemptions })
+    write(`[security-alerts] repo=${resolvedRepo}`)
+    write(formatReport(result))
+    if (result.blocking.length > 0) {
+        throw new Error(`安全告警门禁未通过：${result.blocking.length} 项 critical / high 阻塞（明细见上）`)
+    }
+    return result
 }
 
 /**
@@ -372,7 +479,6 @@ function resolveRepo(argvRepo) {
  * @returns {Promise<number>} 退出码
  */
 export async function main(argv = process.argv, runtime = {}) {
-    const env = runtime.env ?? process.env
     const options = parseCliOptions(argv, {
         flags: {
             '--json': { key: 'json' },
@@ -389,18 +495,25 @@ export async function main(argv = process.argv, runtime = {}) {
     })
 
     try {
+        // 测试注入 runtime.env 时不读本地文件，避免读取开发者机器的 `.env.local`。
+        let env = runtime.env
+        if (!env) {
+            env = { ...process.env }
+            loadLocalEnv(REPO_ROOT, { env })
+        }
         const token = env.SECURITY_ALERTS_TOKEN
         if (!token) {
-            throw new Error('缺少 SECURITY_ALERTS_TOKEN；Dependabot 告警只能用具备 security_events 权限的用户 PAT 读取')
+            throw new Error(`缺少 SECURITY_ALERTS_TOKEN；Dependabot 告警只能用具备 security_events 权限的用户 PAT 读取（本地可写入 ${LOCAL_ENV_FILE}）`)
         }
-        const repo = resolveRepo(options.repo)
+        const repo = resolveRepo(options.repo, { env })
         const exemptions = loadExemptions(options.exemptions)
         const alerts = await fetchAlerts({ repo, token, apiUrl: options.apiUrl, fetchImpl: runtime.fetchImpl })
         const result = evaluateAlerts({ ...alerts, exemptions })
 
         if (options.json) {
-            console.info(JSON.stringify({ counts: result.counts, blocking: result.blocking, exempted: result.exempted, staleExemptions: result.staleExemptions }, null, 2))
+            console.info(JSON.stringify({ repo, counts: result.counts, blocking: result.blocking, exempted: result.exempted, staleExemptions: result.staleExemptions }, null, 2))
         } else {
+            console.info(`[security-alerts] repo=${repo}`)
             console.info(formatReport(result))
         }
         if (env.GITHUB_STEP_SUMMARY) {

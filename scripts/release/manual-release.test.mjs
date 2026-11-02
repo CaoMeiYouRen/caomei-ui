@@ -1,9 +1,9 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import {
     assertPublishVersionStatements,
@@ -20,12 +20,14 @@ import {
     parseDistTags,
     parseRemoteTagSha,
     planVersionStatementSync,
+    REPO_ROOT,
     resolveDistTag,
     resolveTagState,
     readUnpackedPackage,
     replacePackageVersion,
     replaceVersionInStatement,
     sha1File,
+    stepPublish,
     STEPS,
     validateDate,
     validateOtp,
@@ -127,6 +129,28 @@ describe('manual-release 步骤顺序', () => {
         expect(STEPS[0]).toBe('preflight')
         expect(STEPS.at(-1)).toBe('announce')
         expect(new Set(STEPS).size).toBe(STEPS.length)
+    })
+})
+
+describe('manual-release publish 安全门禁顺序', () => {
+    it('门禁失败时不执行 npm publish', async () => {
+        // 版本断言注入空结果：本用例只锁定「门禁失败 → 不执行 publish」，不依赖仓库版本句。
+        const version = JSON.parse(readFileSync(join(REPO_ROOT, 'package.json'), 'utf8')).version
+        const publish = vi.fn()
+        const securityGate = vi.fn().mockRejectedValue(new Error('blocked by gate'))
+
+        await expect(stepPublish({
+            root: REPO_ROOT,
+            version,
+            tag: 'next',
+            dryRun: false,
+            securityGate,
+            assertVersionStatements: () => [],
+            publish,
+        })).rejects.toThrow('blocked by gate')
+
+        expect(securityGate).toHaveBeenCalledTimes(1)
+        expect(publish).not.toHaveBeenCalled()
     })
 })
 
@@ -286,7 +310,10 @@ describe('manual-release shasum 形态', () => {
 
 describe('manual-release CLI 安全不变量', () => {
     const script = join(dirname(fileURLToPath(import.meta.url)), 'manual-release.mjs')
-    const runCli = (args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
+    const runCli = (args) => spawnSync(process.execPath, [script, ...args], {
+        encoding: 'utf8',
+        env: { ...process.env, CAOMEI_SKIP_LOCAL_ENV: '1' },
+    })
 
     it('rc + latest 在参数层拒绝，且不执行 publish', () => {
         const result = runCli(['publish', '--version=1.0.0-rc.1', '--tag=latest', '--dry-run'])
@@ -299,6 +326,12 @@ describe('manual-release CLI 安全不变量', () => {
         const result = runCli(['publish', '--version=1.0.0-rc.1', '--tag=next', '--dry-run'])
         expect(result.status).toBe(0)
         expect(result.stdout).toContain('npm publish --tag=next')
+    })
+
+    it('preflight dry-run 声明安全门禁已内置（不联网）', () => {
+        const result = runCli(['preflight', '--version=1.0.0-rc.1', '--tag=next', '--dry-run'])
+        expect(result.status).toBe(0)
+        expect(result.stdout).toContain('跳过安全告警门禁')
     })
 })
 

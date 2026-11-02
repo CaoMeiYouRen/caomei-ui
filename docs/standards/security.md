@@ -41,9 +41,9 @@ gh api --paginate "repos/<owner>/<repo>/code-scanning/alerts?state=open&per_page
 `pnpm audit` 只要存在任意级别告警就会非零退出，**必须按 `severity` 判读**（如 `pnpm audit --registry=https://registry.npmjs.org --json` 后过滤 `high` / `critical`），不得以退出码直接作为门禁结论。
 
 - **CI 接入**：`.github/workflows/security-alerts.yml` 在 push `master`、每日定时与手动触发时运行 `pnpm check:security-alerts`。Dependabot alerts 只能用用户 PAT 读取，故使用仓库 secret **`SECURITY_ALERTS_TOKEN`**（classic PAT 的 `security_events`，或 fine-grained 的 `Dependabot alerts: read` + `Code scanning alerts: read`）；缺失或权限不足时 job 失败并给出提示；两类告警均使用该 PAT 读取（仓库默认 `GITHUB_TOKEN` 无法读取 Dependabot 告警，不设回退）。
+- **发布链内置**：本地手动发布的 `preflight` 与 `publish` 均执行同一门禁（`scripts/release/manual-release.mjs`），`SECURITY_ALERTS_TOKEN` 缺失即中止（fail-closed），不依赖人工「记得查」；`publish` 在不可逆动作前复跑一次，覆盖 preflight 与发布之间的时间窗口。`--dry-run` 预览不执行门禁。
+- **本地配置与复跑**：把 `SECURITY_ALERTS_TOKEN` 写入仓库根 `.env.local`（已被 `.gitignore` 的 `*.local` 覆盖，**不得提交**），**真实环境变量优先**；一次性运行仍可用 `SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`（可加 `--repo=owner/repo`、`--json`）。仓库标识按 `--repo` → `GITHUB_REPOSITORY` → `git remote get-url origin` 解析，本地无需额外配置。
 - **豁免文件**：`.github/security-alerts-exemptions.json`，条目字段 `source` / `id` / `reason` / `plannedVersion` / `tracking` / `approvedBy` / `recordedAt`；**仅 high 可登记**，critical 使用豁免会直接报错；对应告警已关闭的条目会被提示删除。
-- **本地复跑**：`SECURITY_ALERTS_TOKEN=<pat> pnpm check:security-alerts`（可加 `--repo=owner/repo`、`--json`）。
-
 - 面板的 `state` 依赖**推送后的扫描**收敛；本地已修复但未推送时，还须在发布记录登记「解析版本已离开受影响区间」的证据（解析后版本 + 旧版残留扫描）。
 
 ## 3. 输入校验

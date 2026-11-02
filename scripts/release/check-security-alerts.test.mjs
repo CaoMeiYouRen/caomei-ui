@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
     DEFAULT_EXEMPTIONS_PATH,
     REPO_ROOT,
+    assertSecurityGate,
     evaluateAlerts,
     fetchAllPages,
     formatReport,
@@ -15,6 +16,8 @@ import {
     normalizeDependabotAlert,
     normalizeSeverity,
     parseNextLink,
+    parseRepoFromRemote,
+    resolveRepo,
     validateExemptions,
 } from './check-security-alerts.mjs'
 
@@ -342,5 +345,84 @@ describe('main', () => {
             .mockResolvedValueOnce(jsonResponse([dependabotAlert()]))
             .mockResolvedValueOnce(jsonResponse([]))
         await expect(main(['--repo=o/r', '--exemptions=/tmp/not-exist-exemptions.json'], { env, fetchImpl })).resolves.toBe(1)
+    })
+})
+
+describe('parseRepoFromRemote', () => {
+    it('解析 https / scp / ssh 三种 GitHub remote', () => {
+        expect(parseRepoFromRemote('https://github.com/CaoMeiYouRen/caomei-ui.git')).toBe('CaoMeiYouRen/caomei-ui')
+        expect(parseRepoFromRemote('https://github.com/CaoMeiYouRen/caomei-ui/')).toBe('CaoMeiYouRen/caomei-ui')
+        expect(parseRepoFromRemote('git@github.com:CaoMeiYouRen/caomei-ui.git')).toBe('CaoMeiYouRen/caomei-ui')
+        expect(parseRepoFromRemote('ssh://git@github.com/CaoMeiYouRen/caomei-ui.git')).toBe('CaoMeiYouRen/caomei-ui')
+    })
+
+    it('非 GitHub / 空值返回 null', () => {
+        expect(parseRepoFromRemote('https://gitlab.com/o/r.git')).toBeNull()
+        expect(parseRepoFromRemote('')).toBeNull()
+        expect(parseRepoFromRemote(undefined)).toBeNull()
+    })
+})
+
+describe('resolveRepo', () => {
+    it('优先级：--repo → GITHUB_REPOSITORY → origin remote', () => {
+        expect(resolveRepo('a/b', { env: { GITHUB_REPOSITORY: 'c/d' }, gitRemote: () => 'git@github.com:e/f.git' })).toBe('a/b')
+        expect(resolveRepo(undefined, { env: { GITHUB_REPOSITORY: 'c/d' }, gitRemote: () => 'git@github.com:e/f.git' })).toBe('c/d')
+        expect(resolveRepo(undefined, { env: {}, gitRemote: () => 'git@github.com:e/f.git' })).toBe('e/f')
+    })
+
+    it('三者都不可用时 fail-closed', () => {
+        expect(() => resolveRepo(undefined, { env: {}, gitRemote: () => null })).toThrow('缺少仓库标识')
+    })
+})
+
+describe('assertSecurityGate', () => {
+    it('缺少 token 时提示 .env.local 配置方式', async () => {
+        await expect(assertSecurityGate({ token: undefined, write: () => {} }))
+            .rejects.toThrow('.env.local')
+    })
+
+    it('存在 critical / high 时抛错（发布链据此中止）', async () => {
+        const fetchImpl = vi.fn()
+            .mockResolvedValueOnce(jsonResponse([dependabotAlert()]))
+            .mockResolvedValueOnce(jsonResponse([]))
+        await expect(assertSecurityGate({
+            repo: 'o/r',
+            token: 't',
+            exemptionsPath: '/tmp/not-exist-exemptions.json',
+            fetchImpl,
+            write: () => {},
+        })).rejects.toThrow('安全告警门禁未通过')
+    })
+
+    it('无阻塞项时返回评估结果', async () => {
+        const fetchImpl = vi.fn()
+            .mockResolvedValueOnce(jsonResponse([]))
+            .mockResolvedValueOnce(jsonResponse([]))
+        const lines = []
+        const result = await assertSecurityGate({
+            repo: 'o/r',
+            token: 't',
+            exemptionsPath: '/tmp/not-exist-exemptions.json',
+            fetchImpl,
+            write: (line) => lines.push(line),
+        })
+        expect(result.blocking).toHaveLength(0)
+        expect(lines[0]).toContain('repo=o/r')
+    })
+
+    it('未传 repo 时按 env / gitRemote 解析并打印实际检查的仓库', async () => {
+        const fetchImpl = vi.fn()
+            .mockResolvedValueOnce(jsonResponse([]))
+            .mockResolvedValueOnce(jsonResponse([]))
+        const lines = []
+        await assertSecurityGate({
+            token: 't',
+            env: {},
+            gitRemote: () => 'git@github.com:e/f.git',
+            exemptionsPath: '/tmp/not-exist-exemptions.json',
+            fetchImpl,
+            write: (line) => lines.push(line),
+        })
+        expect(lines[0]).toContain('repo=e/f')
     })
 })

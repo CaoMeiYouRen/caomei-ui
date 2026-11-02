@@ -26,6 +26,11 @@
  *
  * dist-tag 不变量：预发布版本（含 `-` 后缀）默认发 `next` 且**禁止**发 `latest`；
  * 正式版默认发 `latest`。`preflight` 另生成覆盖率证据（`test:coverage` + `check:coverage`）。
+ *
+ * 发布前安全门禁（强制）：`preflight` 与 `publish` 都会执行
+ * [安全规范 §2.1](../../docs/standards/security.md) 的告警门禁；`SECURITY_ALERTS_TOKEN`
+ * 缺失即中止（fail-closed）。本地把该变量写入仓库根的 `.env.local`（已 gitignore）即可，
+ * 真实环境变量优先。
  */
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -34,7 +39,9 @@ import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { isDirectExecution } from '../shared/cli.mjs'
+import { LOCAL_ENV_FILE, loadLocalEnv } from '../shared/env.mjs'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
+import { DEFAULT_EXEMPTIONS_PATH, assertSecurityGate } from './check-security-alerts.mjs'
 
 export const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 export const PACKAGE_NAME = 'caomei-ui'
@@ -414,7 +421,38 @@ function readPackageVersion(root) {
     return JSON.parse(readFileSync(packageJsonPath(root), 'utf8')).version
 }
 
-function stepPreflight(ctx) {
+/**
+ * 安全告警门禁参数：token 只从 `ctx.env` 读取（`main` 启动时已合并 `.env.local`），
+ * 不写入 `process.env`，避免被 `pnpm verify` / `npm publish` 等子进程继承。
+ *
+ * @param {{ root: string, env?: NodeJS.ProcessEnv }} ctx 运行上下文
+ * @returns {{ root: string, token: string | undefined, exemptionsPath: string, env: NodeJS.ProcessEnv | undefined }} 门禁参数
+ */
+function securityGateOptions(ctx) {
+    return {
+        root: ctx.root,
+        token: (ctx.env ?? process.env).SECURITY_ALERTS_TOKEN,
+        exemptionsPath: join(ctx.root, DEFAULT_EXEMPTIONS_PATH),
+        env: ctx.env,
+    }
+}
+
+/**
+ * 执行发布前安全告警门禁；阻塞项或 token 缺失即抛错（fail-closed）。
+ *
+ * `ctx.securityGate` 仅供测试注入：默认使用真实门禁实现。
+ *
+ * @param {{ root: string, env?: NodeJS.ProcessEnv, securityGate?: typeof assertSecurityGate }} ctx 运行上下文
+ * @param {string} label 输出前缀
+ * @returns {Promise<void>}
+ */
+async function runSecurityGate(ctx, label) {
+    const gate = ctx.securityGate ?? assertSecurityGate
+    process.stdout.write(`[${label}] 发布前安全告警门禁：检查 Dependabot / Code Scanning 的 open 告警\n`)
+    await gate(securityGateOptions(ctx))
+}
+
+async function stepPreflight(ctx) {
     const { root } = ctx
     if (output(capture('git', ['status', '--porcelain'], { cwd: root })) !== '') {
         if (ctx.dryRun) {
@@ -436,9 +474,11 @@ function stepPreflight(ctx) {
     process.stdout.write(`[preflight] 当前 package.json version = ${readPackageVersion(root)}，目标 = ${ctx.version}（dist-tag = ${ctx.tag}）\n`)
     process.stdout.write('[preflight] 人工确认项：长期任务门槛复核轮已执行并留痕（发布前触发义务）\n')
     if (ctx.dryRun) {
-        process.stdout.write('[preflight] dry-run：跳过 pnpm verify / test:coverage / check:coverage / npm 凭据与版本探测\n')
+        process.stdout.write('[preflight] dry-run：跳过安全告警门禁 / pnpm verify / test:coverage / check:coverage / npm 凭据与版本探测\n')
         return
     }
+    // 安全门禁放在 verify 之前：被 critical / high 阻塞时不必再等全量质量门。
+    await runSecurityGate(ctx, 'preflight')
     run('pnpm', ['verify'], { cwd: root })
     // 覆盖率证据：verify 不含覆盖率校验，故在预检内单独生成并断言（发布前置）。
     run('pnpm', ['test:coverage'], { cwd: root })
@@ -580,26 +620,38 @@ export function assertPublishVersionStatements(root, version) {
     return problems
 }
 
-function stepPublish(ctx) {
+/**
+ * 发布步骤：版本就绪断言 → 安全门禁复跑 → `npm publish`。
+ *
+ * `ctx.publish` 仅供测试注入（默认真实执行 `npm publish`），用于证明门禁失败时不会走到发布动作。
+ *
+ * @param {{ root: string, version: string, tag: string, otp?: string, dryRun: boolean, env?: NodeJS.ProcessEnv, securityGate?: typeof assertSecurityGate, assertVersionStatements?: (root: string, version: string) => string[], publish?: (args: string[], options: { cwd: string, displayArgs: string[] }) => void | Promise<void> }} ctx 运行上下文
+ * @returns {Promise<void>}
+ */
+export async function stepPublish(ctx) {
     if (!DIST_TAGS.includes(ctx.tag)) {
         throw new Error(`缺少目标 dist-tag（next | latest）：${ctx.tag ?? '（空）'}`)
     }
     const args = buildPublishArgs(ctx.otp, ctx.tag)
     const displayArgs = buildPublishArgs(ctx.otp ? '***' : undefined, ctx.tag)
     if (ctx.dryRun) {
-        process.stdout.write('[publish] dry-run：真实运行会先校验 package.json 版本与「当前版本」声明句，未同步即中止\n')
+        process.stdout.write('[publish] dry-run：真实运行会先校验 package.json 版本与「当前版本」声明句，并复跑安全告警门禁，未通过即中止\n')
         process.stdout.write(`[publish] dry-run：npm ${displayArgs.join(' ')}（${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}）\n`)
         return
     }
-    const prePublishProblems = assertPublishVersionStatements(ctx.root, ctx.version)
+    const checkVersionStatements = ctx.assertVersionStatements ?? assertPublishVersionStatements
+    const prePublishProblems = checkVersionStatements(ctx.root, ctx.version)
     if (prePublishProblems.length > 0) {
         throw new Error(
             `版本未就绪，拒绝发布（tarball 内 README 会落后一版）：\n${prePublishProblems.join('\n')}\n`
             + '请先执行 bump / sync（见 docs/guide/release.md §3.3 第 2 / 4 步）',
         )
     }
+    // 门禁在不可逆动作前复跑：preflight 与 publish 之间可能隔了 verify / coverage 的长时间窗口。
+    await runSecurityGate(ctx, 'publish')
     process.stdout.write(`[publish] 发布 ${PACKAGE_NAME}@${ctx.version} → dist-tag ${ctx.tag}\n`)
-    run('npm', args, { cwd: ctx.root, displayArgs })
+    const publish = ctx.publish ?? ((publishArgs, options) => run('npm', publishArgs, options))
+    await publish(args, { cwd: ctx.root, displayArgs })
 }
 
 function stepVerify(ctx) {
@@ -859,6 +911,24 @@ async function runStep(step, ctx) {
 }
 
 async function main() {
+    // 本地发布凭据：真实环境变量优先，`.env.local` 只补缺失项（已 gitignore）。
+    // 合并进 `ctx.env` 而非 `process.env`：PAT 不随子进程（verify / npm / gh）继承。
+    // `CAOMEI_SKIP_LOCAL_ENV=1` 是测试旁路，避免开发者本机文件影响 CLI 用例。
+    const env = { ...process.env }
+    if (process.env.CAOMEI_SKIP_LOCAL_ENV !== '1') {
+        try {
+            const loaded = loadLocalEnv(REPO_ROOT, { env })
+            if (loaded.length > 0) {
+                process.stdout.write(`[env] 已从 ${LOCAL_ENV_FILE} 载入：${loaded.join(', ')}\n`)
+            }
+        } catch (error) {
+            process.stderr.write(`[manual-release] ${error.message}\n`)
+            process.exitCode = 1
+            return
+        }
+    } else {
+        process.stdout.write('[env] CAOMEI_SKIP_LOCAL_ENV=1：已跳过 .env.local\n')
+    }
     const options = parseArgs(process.argv.slice(2))
     if (options.error) {
         process.stderr.write(`[manual-release] ${options.error}\n${USAGE}\n`)
@@ -884,6 +954,7 @@ async function main() {
         otp: options.otp,
         yes: options.yes,
         dryRun: options.dryRun,
+        env,
     }
     if (options.step === 'run') {
         for (const step of STEPS) {
@@ -896,5 +967,11 @@ async function main() {
 }
 
 if (isDirectExecution(import.meta.url)) {
-    await main()
+    try {
+        await main()
+    } catch (error) {
+        // 步骤失败统一走「[manual-release] 消息 + exit 1」，不输出未处理拒绝栈。
+        process.stderr.write(`[manual-release] ${error.message}\n`)
+        process.exitCode = 1
+    }
 }

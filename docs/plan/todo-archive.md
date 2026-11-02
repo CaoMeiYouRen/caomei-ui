@@ -2,7 +2,7 @@
 
 本文档归档已完成阶段的原子条目与验收结论。当前阶段完成后，从 [todo.md](./todo.md) 迁入此处。
 
-> **主窗口口径（2026-10-21 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 18，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 19 ~ Phase 23 + Phase 25 共 6 块已完成阶段**；其后另有 **Phase 24 部分归档块**——该阶段未收口、不计入窗口计数；本轮 Phase 25 归档后主窗口仍在 warn 阈值内，暂不迁出 Phase 19）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（只做链接深度机械调整、正文不改写）**；该阈值由 `docs:check:line-count` 驱动——归档载体只增不减，2026-09-29 曾达 594 行（首次压缩后回落），2026-10-13 达 574 行（二次压缩后回落），2026-10-16 达 404 行（本批三次压缩后回落）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
+> **主窗口口径（2026-11-03 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 20，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 21 ~ Phase 26 共 6 块；目标窗口 5 个，未越阈暂留 6**）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——归档载体只增不减，2026-09-29 曾达 594 行、2026-10-13 达 574 行、2026-10-16 达 404 行、本批前 396 行；Phase 26 入窗后约 470 行（> warn 400），Phase 19 / 20 迁出后回落至 362 行。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
 
 ## 归档格式
 
@@ -18,7 +18,7 @@
 
 ---
 
-## 归档索引（Phase 0 ~ Phase 18）
+## 归档索引（Phase 0 ~ Phase 20）
 
 > 完整归档块见「深度归档」列；阶段交付摘要如下（每行一行，细节以深度归档与治理记录为准）。
 
@@ -44,122 +44,8 @@
 | Phase 16 | 2026-09-28 ~ 09-29 | 质量收口与治理装置落地：治理守卫精选落地、0.4.0 发布收口 | [phase-13-17](./archive/phase-13-17.md) |
 | Phase 17 | 2026-09-30 | 极简主题预设与富文本封装 + 治理补口：极简具名预设 `minimal` 成为缺省、`CaomeiRichTextEditor` 轻量封装、类名前缀守卫、取证命令 revision 钉定守卫、模态内浮层档位修复与门禁 | [phase-13-17](./archive/phase-13-17.md) |
 | Phase 18 | 2026-09-30 ~ 10-01 | 发布收口、测试稳定性与一致性治理：0.5.0 发布后校验与版本句同步、并行负载 flaky 类根因修复与并发上限兜底、计算样式采样面扩至 Toast / Switch、设计规范 §6 可机检性分级评估、治理台账漂移消缺 | [phase-18](./archive/phase-18.md) |
-
----
-
-## Phase 19：设计一致性口径落地、组件文档去重与观感缺陷处置
-
-- 时间：2026-10-02 用户裁定 D1 ~ D13 后登记；2026-10-07 交付 6 条主线 / 14 条原子条目并完成阶段归档（用户指令「开始归档」）。
-- 范围与授权（用户决策 2026-10-02）：用户取**组合 A + 组合 B + 组合 C（= M1 + M2 + M3 + M4 + M6）**，并经 **D10 上收 M7**，共 **6 条主线 / 14 条原子条目**（M1 4 / M2 3 / M3 3 / M4 2 / M6 1 / M7 1）；逐条裁定——**D2** 设计规范 §6 七项口径漂移「措辞 + 实现一起改」（含 D3 浮层背景 `bg-elevated`、D4 Popover 圆角、D6 AutoComplete 阴影 token 化三项视觉变更）；**D3** Tab 指示条**修复**；**D4** 富文本下拉取**文档站作用域隔离**；**D5** 迁移映射**3 批全量整改**；**D6** `iconOnly` **改示例**；**D7** 下游升级口径**重写并纳入 M6**；**D8** Phase 8 **继续等待**；**D9** 两条流程约束**纳入 M4**；**D10** 上收国际化调研；**D11** 远端 tag **已授权并推送**；**D12** 组件增强**维持条件触发**；**D13** **按需不预登记发布**。范围依据见[下一阶段范围评估（第三轮）](../design/governance/2026-10-02-next-stage-scope-evaluation.md) §8。
-- 非目标：不重指 tag / 不重新发布；不启动 Phase 8；不做组件增强与长尾；不做国际化实现 / RTL；不改品牌色值；不做破坏性 API 变更；不重写下游仓库；不预登记发布条目；不引入 Tailwind / UnoCSS。
-
-### M1 设计一致性口径裁定与守卫落地（4 条）
-
-- **M1-1**：依据 [Phase 18 M3-1 记录](../design/governance/2026-10-01-phase18-m3-1-design-consistency-evaluation.md) §4 逐条修正[设计规范 §6](../design/design-spec.md) 的措辞与计数（D1 禁用态计数 35 / D2 `invalid` 语义 / D5 Tag 字号按档位 / D7 Card 三变体）。提交 `db342c3`。
-- **M1-2**：§6 涉及的**实现对齐**（视觉变更）——D3 浮层背景 `bg` → `bg-elevated`、D4 Popover 默认圆角 `md` → `lg`、D6 AutoComplete 阴影走 `--caomei-shadow-md`；同批随 §6 扩写覆盖 **11 处**（D3 原定 8 面 + ConfirmDialog / Drawer / DatePicker）。**V 阶段**真实 Chromium **44 / 44 通过**、负向对照 **11 / 11 失败**；`capture:styles` 262 项 0 差异、`check:design` 全绿。提交 `89c4d82`（实现）/ `1728a0f`（状态）/ `8288638`（验证留痕）；记录见 [M1-2 视觉对齐](../design/governance/2026-10-05-phase19-m1-2-visual-alignment.md)。
-- **M1-3**：按 §5 落地 **P1 + P2 装置**（三子批）——**3a** 浮层面板视觉契约固化（采样面 262 → 270）；**3b** §5 P1 五项 + 登记点名项（270 → 297）；**3c** 声明层契约 3 项 + checkbox 采样（297 → 302）。负向对照逐组命中、`capture:styles` **302 项 0 差异**；提交 `222cee7` / `86f1cad` / `ecf019e`；记录见 [3a](../design/governance/2026-10-05-phase19-m1-3a-panel-visual-contract.md) / [3b](../design/governance/2026-10-05-phase19-m1-3b-capture-p1-extension.md) / [3c](../design/governance/2026-10-05-phase19-m1-3c-declaration-contracts.md)。
-- **M1-4**：落地 **P3 几何 / 交互层装置**——禁用态尺寸不变（7 组件对）+ Button 角标外扩 + Drawer `90vw`·`90vh` 收敛 + Drawer reduced-motion + 焦点可见扩面（5 组件）；新增 **54 例常驻 E2E**、全量 **186 passed**、`capture:styles` 302 项 0 差异；**发现并修复 Drawer reduced-motion 特异性缺陷**。提交 `522befe`；记录见 [M1-4](../design/governance/2026-10-05-phase19-m1-4-geometry-interaction-devices.md)。
-
-### M2 组件文档一致性整改（迁移映射去重，3 条）
-
-- **M2-1 批 1（ColorPicker / DatePicker）**：删除中英 4 页中段 `> 迁移映射` 正文块并折入迁移节；ColorPicker 纯冗余、DatePicker 折入 `selectionMode` 零用量语义。复算整改前中英各 **6** / 消除 **2** / 当前 **4**。提交 `7139efe`；记录见 [M2-1](../design/governance/2026-10-05-phase19-m2-1-migration-dedup-batch1.md)。
-- **M2-2 批 2（Drawer / Message）**：删除中英 4 页正文块；Drawer 折入 `#footer` 映射与零下游用量判据、Message 折入有损近似。复算批前 **4** / 消除 **2** / 当前 **2**。提交 `5d36c3a`；记录见 [M2-2](../design/governance/2026-10-05-phase19-m2-2-migration-dedup-batch2.md)。
-- **M2-3 批 3（SplitButton / Tag）**：删除中英 4 页正文块；SplitButton 折入未实现括注、Tag 折入 `info → primary` / `error` 零用量 / `outlined` prop / §9 未决项指针。复算批前 **2** / 消除 **2** / 当前 **0**，**M2 终态中英各 0 页**；**N2 关闭**（该候选行已随登记批次迁出候选池，无残留行）。提交 `cf38ca8`；记录见 [M2-3](../design/governance/2026-10-05-phase19-m2-3-migration-dedup-batch3.md)。
-
-### M3 组件观感缺陷处置（3 条）
-
-- **M3-1 Tab 激活指示条被容器裁剪修复**（视觉变更）：取「`padding-bottom: 1px` + 内阴影」方案，恢复设计意图「2px 主色、分隔线被盖住」；**V 阶段**逐行像素 白/主色/分隔线/白 → 白/主色/主色/白、`triggerClippedPx` 1 → 0；新增声明层契约 + 几何/像素 E2E；顺带结构性消除 1px 纵向溢出（`tabs-list-overflow.e2e.ts` 前置条件同步）；`capture:styles` 302 项 0 差异（采样面不含 Tabs，显式声明非证据）。提交 `7b71b2e`；记录见 [M3-1](../design/governance/2026-10-06-phase19-m3-1-tabs-indicator-clipping.md)。
-- **M3-2 RichTextEditor 工具栏下拉留白**：按 D4 取**文档站作用域隔离**（`caomei-demo.css` 新增内核菜单隔离规则），不改组件库 `src/**`；**V 阶段**菜单 20px → 0、菜单项 8px → 0、首项偏移 31 → 11px，正文列表 20px 无回归；新增声明层契约；`docs:build` / `pnpm verify` exit 0；零 `src/**`。提交 `35c6731`；记录见 [M3-2](../design/governance/2026-10-06-phase19-m3-2-rich-text-editor-dropdown-indent-fix.md)。
-- **M3-3 Button `iconOnly` 示例形态**：按 D6 改示例（22 个纯图标按钮改走 `#icon` 插槽），组件契约不变；**V 阶段** 22/22 有可见内容、空白 0；新增声明层契约；中英共用示例源；零 `src/**`。提交 `7a70134`；记录见 [M3-3](../design/governance/2026-10-06-phase19-m3-3-button-icon-only-example.md)。
-
-### M4 治理约束载体落地（2 条）
-
-- **M4-1 `.session` 阶段态同步触发点**：`todo-manager` skill Session 收尾协议把「阶段登记 / 归档 / 范围变更批次」显式列为 `.session` 阶段态**必同步触发点**（Step 3.5，含「常见检查 / 交付前检查」引用行）；**不为 git-ignored 载体新增机检守卫**。
-- **M4-2 `todo.md` 完成态回填次序**：把「完成态不得早于该条目 Review Gate 结论、两者同批落地后方可提交」固化到 skill Step 1.7（此前仅在 `.session/wisdom.md`，属**首次固化非重述**）。M4-1 / M4-2 同提交 `70a7eb7`；记录见 [M4](../design/governance/2026-10-06-phase19-m4-governance-constraint-carriers.md)。
-
-### M6 下游协同口径消缺（1 条）
-
-- **M6-1**：按 dependfix 实测重写 [Backlog](./backlog.md) §1.8「下游 0.5.0 升级护航」行（**就地重写、不迁出候选池**：dependfix 侧已消费 / momei 侧仍锁 `0.3.0` 待升级），并回扫同类版本口径表述；逐载体 `rg` 复核旧口径零残留；补两仓实测时点。提交 `46cfe17`；记录见 [M6-1](../design/governance/2026-10-06-phase19-m6-1-downstream-version-alignment.md)。
-
-### M7 国际化调研（1 条）
-
-- **M7-1**：调研主流组件库（Vue / React 生态）国际化语言覆盖（L1 取证 6 库语言条目 43 ~ 72，本库 5）与国际化文案**分包 / 体积**工程方案；盘点本库现状（854 行 / 32 KB、单对象根导出、无子路径）并给出 A/B 两条工程路线与 RTL 独立立项判据。**只调研、未改代码**。提交 `1ff2757`；记录见 [M7-1](../design/governance/2026-10-06-phase19-m7-1-i18n-research.md)。
-
-### 附带交付（非阶段条目）
-
-- **Phase 19 登记与范围评估**：`7cf0747`（规划编号守卫豁免进行中阶段条目表）/ `9613eb5`（Phase 19 登记 + 第三轮下一阶段范围评估）。
-- **2026-10-02 用户多事项批次**（登记前交付）：`135d632`（文档开发命令自动打开浏览器）/ `dae0b62` + `dad3e91`（RichTextEditor 下拉留白归因与收窄）/ `568b042` + `53976ac`（TabList 多余纵向滚动条修复与回填）/ `f41a2e2`（Accordion 自定义触发器示例修复）/ `449068e` + `c88e6d3`（DataTable 排序指示条列宽稳定与回填）/ `4a2d910`（DataView 迁移映射合并 + 跨组件专项评估 + Backlog 登记）。
-
-### 阶段总结
-
-- **提交对账**：`git log --oneline c69b3e3..1ff2757 | wc -l` → **28**（下界 = Phase 18 归档批次末条提交 `c69b3e3`，上界 = 本阶段末条实现 / 记录提交 `1ff2757`；**不得写 `HEAD` 相对范围**，归档提交会推进 `HEAD`）。构成（逐项相加 = 28）：Phase 19 本体 **17**（M1 8 = `db342c3` / `89c4d82` / `1728a0f` / `8288638` / `222cee7` / `86f1cad` / `ecf019e` / `522befe`；M2 3 = `7139efe` / `5d36c3a` / `cf38ca8`；M3 3 = `7b71b2e` / `35c6731` / `7a70134`；M4 1 = `70a7eb7`〔M4-1 / M4-2 同提交〕；M6 1 = `46cfe17`；M7 1 = `1ff2757`）+ 阶段登记与范围评估 **2**（`7cf0747` / `9613eb5`）+ 附带交付 **9**（`135d632` / `dae0b62` / `dad3e91` / `568b042` / `53976ac` / `f41a2e2` / `449068e` / `c88e6d3` / `4a2d910`）。**归档批次自身提交不计入上式**。
-- **质量门**：`pnpm verify` **exit 0**、`test` / `test:a11y` / `test:e2e` / `capture:styles` / `docs:check` / `check:governance-records` / `check:distill-archive` / `docs:build` 的**终态数值与复算命令见[归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §8**（单点来源，本块不复写易变计数）。
-- **长期任务**：阶段收口前触发**第 21 轮**门槛复核（规划清理域）——待执行批次 **0 项**；条件触发 **1 项维持**；已判定不纳入 5 项维持；**计数与第 20 轮逐项一致（无漂移）**；证据见[长期任务](./recurring.md) §3 第 21 轮。
-- **回扫口径（三段式）**：见[归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §4（机检面 / 人工面 / 未处理面）。
-- **wisdom 蒸馏**：活跃条目数、阈值判定与归档段对账见[归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §6。
-- **归档批次审计**：经 `@code-reviewer` Review Gate **单分区 `standard`**（归档批次以规划载体为主、无运行时面，故不分区）——结论见本块末「归档批次 Review Gate」段。
-- **已知观察**：① Phase 19 **含 `src/**` 行为改动**（M1-2 组件背景 / 阴影、M3-1 Tabs 几何、M1-4 Drawer reduced-motion），与 Phase 18 的「零 `src/**` 行为改动」不同；② `capture:styles` 采样面由 **262 扩至 302**（M1-3 三子批），属预期变更（同族变更见 [M1-3a](../design/governance/2026-10-05-phase19-m1-3a-panel-visual-contract.md)）；③ 本批顺带修正 `todo-archive.md` 主窗口阶段块顺序（原 Phase 18 块误置于 Phase 17 之前），现按时间序 13 → 14 → 15 → 16 → 17 → 18 → 19 排列；④ `docs:check:integrity` 对 `todo.md` 报「H1/H2 结构标题减少」告警——脚本自带说明「阶段 / 条目标题在 H3/H4，属归档正常移除面」，属预期、非阻断；⑤ 归档载体行数超 `docs:check:line-count` 的 warn 阈值（warn > 400 / error > 600，**非阻断**）——归档载体只增不减，本批接受；⑥ 归档后 `check:governance-records` 报 **9 处** `stale-planning-pointer`（Phase 18 记录表头「关联条目」指向 `todo.md`）；同批改指 **9 份 Phase 18 + 主动改指 14 份 Phase 19** 记录表头至 `todo-archive.md`，复跑 exit 0。
-- **遗留与后续候选**：Phase 8 未启动（用户 2026-09-28 裁定 D13、2026-10-02 D8 维持）；dependfix `apps/platform`（已升级 `0.5.0`、M34 归档）与 momei 侧迁移由对应仓库执行、本仓等待反馈；Backlog 在册含「下游 0.5.0 升级护航」、组件增强与长尾（条件触发）、a11y 同类悬空引用与 Toast 焦点哨兵、文档站浮层泄漏常驻浏览器断言、国际化语言覆盖与文案分包体积（调研结论已出、实现待规模触发）、RTL 独立立项等；其余见 [Backlog](./backlog.md)。
-
-### 归档批次 Review Gate
-
-经 `@code-reviewer` Review Gate **单分区 `standard`**（归档批次以规划载体为主，故不分区）：R1 **`Reject`**（1 blocker：归档记录 §4① 的**描述性样例**（`todo.md` 链接后紧邻 `Phase 18`）自触发 `stale-planning-pointer`，使 `governance:check` / `verify` 必失败；1 warning：§8 易变计数未取终态；3 suggest）→ 修复（§4① 去链接化 + 主动改指 14 份 Phase 19 记录表头 + §8 重取终态）→ **R2 `Pass`**（0 blocker；RG-B1 / RG-S1 / RG-S2 / RG-S3 关闭；RG-W1 回填记「已修复未复审」）。逐轮 findings 见[归档批次记录](../design/governance/2026-10-07-phase19-archive.md) §10。
-
----
-
-## Phase 20：测试装置扩面、治理守卫补口与发布收口
-
-- 时间：2026-10-07 用户裁定 D1 ~ D13 后登记；2026-10-09 交付 5 条主线 / 12 条原子条目并完成阶段归档（用户指令「开始归档」）。
-- 范围与授权（用户决策 2026-10-07）：用户取**组合 A + 组合 B + 组合 C（= M1 + M2 + M3）**，并**纳入 M6 发布收口**（D4 发 0.6.0）、**上收 M7 视觉回归基线立项评估**（D9）；**M5 国际化路线 / M4 组件能力不纳入**（D6 / D8 维持登记），共 **5 条主线 / 12 条原子条目**（M1 4 / M2 5 / M3 1 / M6 1 / M7 1）。逐条裁定——**D2** Phase 8 **只出范围评估、不启动**；**D3** 测试装置扩面三项**全纳入**；**D4** 发 **0.6.0**；**D5** 基建守卫五项**全纳入**；**D6** 国际化 / RTL 维持登记；**D7** 归档载体超阈维持登记；**D8** 组件能力维持条件触发；**D9** 上收视觉回归基线立项评估；**D10 ~ D12** 文档站长投 / 其余守卫 / 下游协同维持；**D13** 发布已登记为 M6-1 条目。范围依据见[下一阶段范围评估（第四轮）](../design/governance/2026-10-07-next-stage-scope-evaluation-4.md) §8。
-- 非目标：不纳入国际化路线落地 / 组件能力与长尾；不重写 / 不修改下游仓库；不做破坏性 API 变更；不启用 CI 自动发布；不改品牌色值；不重指已发布 tag；不引入 Tailwind / UnoCSS。
-
-### M1 测试装置与覆盖扩面（4 条）
-
-- **M1-1 Tabs 纳入 `capture:styles` 采样面**：采样面 **302 → 308**（Tabs 横 / 纵各 3 项），判定「指示条可稳定采样」；冻结基线重取后 **0 差异**、`capture.test.mjs` **17 passed**；两轮负向对照各命中 3 处。提交 `852908b`；记录见 [M1-1](../design/governance/2026-10-07-phase20-m1-1-tabs-capture-face.md)。
-- **M1-2 焦点可见扩面补全**：受检面 **5 → 31 项（+26）**，新增下界守卫 `MIN_FOCUS_TARGETS = 31`；负向对照 9 处失败；`test:e2e` **276 passed**。提交 `8d8a775`；记录见 [M1-2](../design/governance/2026-10-07-phase20-m1-2-focus-visible-expansion.md)。
-- **M1-3 禁用态几何扩面补全**：受检面 **7 → 18 对（+11）**，下界守卫 `MIN_DISABLED_PAIRS = 18`；负向对照 9 处失败；`test:e2e` **312 passed**。提交 `437431f`；记录见 [M1-3](../design/governance/2026-10-07-phase20-m1-3-disabled-geometry-expansion.md)。
-- **M1-4 文档站浮层泄漏常驻浏览器断言**：把一次性探针转为常驻 Playwright 规格 `test/e2e/docs-theme-isolation.e2e.ts`（`docs:build` 产物 + 每周回归），负向对照 1 failed；`test:e2e:gallery` **11 passed**。提交 `f3b3b78`；记录见 [M1-4](../design/governance/2026-10-07-phase20-m1-4-docs-theme-isolation.md)。
-
-### M2 基建与治理守卫补口（5 条）
-
-- **M2-1 a11y 同类悬空引用处置**：分组无内嵌标签时省略 `aria-labelledby`（槽内标签在位检测 + 显式透传优先）、折叠触发器统一省略 `aria-controls`（Reka 内容 id 非响应式）；新增共享机构 `_shared/slot-presence`；axe 不判本类 → 真实 Chromium 复验 + 等价断言；`test:a11y` 59。提交 `5d3ce82`；记录见 [M2-1](../design/governance/2026-10-07-phase20-m2-1-a11y-dangling-refs.md)。
-- **M2-2 文档站主题 CSS 纳入 lint 面**：`lint:css` 的 glob 追加 `docs/.vitepress/theme/**`（引号化交由 Stylelint 展开），存量 4 处记号等价 `--fix` 清零。提交 `2149de1` + `c6158ce`；记录见 [M2-2](../design/governance/2026-10-07-phase20-m2-2-docs-theme-stylelint.md)。
-- **M2-3 直连 Reka 触发器机检守卫**：新增 `check-reka-trigger-usage`（接入 `governance:check`）——本库已有包装时禁止组件内直连同型触发器；受检 **197 文件 / 0 违规**；单测 14 例 + 负向对照。提交 `d8641c6`；记录见 [M2-3](../design/governance/2026-10-07-phase20-m2-3-reka-trigger-guard.md)。
-- **M2-4 浮层交互 E2E 规格**：新增 `overlay-interaction.e2e.ts`（Dialog / ConfirmDialog 焦点落位 + 滚动锁复位，2 用例 × 三视口）；负向对照 `:modal=false` 1 failed；`test:e2e` **318 passed**。提交 `62431d0`；记录见 [M2-4](../design/governance/2026-10-07-phase20-m2-4-overlay-interaction.md)。
-- **M2-5 执行层规则重述与失效引用收敛**：任务粒度阈值重述收敛为链接引用（唯一权威 = 规划规范 §5）；扩展 `check:audit-protocol` 新增 `granularity-threshold` 规则 + 新增 `check-ai-asset-links`（AI 资产链接与 GitHub slug 锚点）。提交 `e996656`；记录见 [M2-5](../design/governance/2026-10-07-phase20-m2-5-audit-protocol-convergence.md)。
-
-### M3 下游协同与 Phase 8 评估（1 条）
-
-- **M3-1 Phase 8 下游兼容性回归启动范围评估**（**评估不等于启动**）：前置三条件 ①② 成立、③ 因 dependfix 完成全量迁移并稳定消费 `0.5.0` 由「不完全成形」推进为「**部分成形**」；已接入下游清单（dependfix / momei）、触发形态四选（以 [发布指南 §10](../guide/release.md) 的 A/B + 失败即阻塞为基线）、容量边界（发布触发、`typecheck + build`）；启动前待决策 D1 ~ D6。用户初步取向（2026-10-08）：**下阶段正式启动、以 dependfix 为试点**。提交 `2c803e0` + `ac21a46`；记录见 [M3-1](../design/governance/2026-10-08-phase8-downstream-regression-scope-evaluation.md)。
-
-### M6 发布收口（1 条）
-
-- **M6-1 0.6.0 发布**：长期任务**第 22 轮**门槛复核（`d22f034`）→ `pnpm verify` 全绿 → `npm version 0.6.0`（`5c48387` + annotated tag `v0.6.0`；首跑被 `check-review-gate-artifacts` 阻断，根因 = `package.json` 缺末尾换行，`ef65a33` 修复）→ `pnpm changelog`（`b083a53`）→ 本地 `npm publish`（registry `latest` = 0.6.0）→ 发布后校验 + 版本句同步（`ead6624`，消解 `docs:check:version` 4 处红）→ 同源漂移 9 文件归一（`e14edc0`）+ 新增 `check-final-newline` 守卫（`8e3c395`，根治）→ **GitHub Release 回填** `v0.1.0` ~ `v0.6.0`（推送 `master` + tags 后）→ 发布执行记录（`a87f657`）。记录见 [M6-1](../design/governance/2026-10-08-phase20-m6-1-release-execution.md)。
-
-### M7 视觉回归基线立项评估（1 条）
-
-- **M7-1**：评估 Playwright 截图比对形态（基线库 / 容差 / CI 集成成本），**只出立项建议、不建实体基线、不改代码**；结论 = 采用 Playwright **内置 `toHaveScreenshot`** + 仓库内冻结基线（零外部服务 / 零新依赖，与下游 dependfix / momei 同构），给出双轴容差、CI 先非阻断后转阻断与待决策 D1 ~ D6。提交 `6d992d8`；记录见 [M7-1](../design/governance/2026-10-08-m7-1-visual-regression-baseline-evaluation.md)。
-
-### 附带交付（非阶段条目）
-
-- **Phase 20 登记与范围评估**：`95aea81`（Phase 20 登记 + 第四轮下一阶段范围评估）。
-- **发布机制评估**（用户指令）：`c4f2e3f`（统一手动发布流 + 1.x / 自动化发布评估，只出建议；记录见 [Release flow eval](../design/governance/2026-10-08-release-flow-and-version-strategy-evaluation.md)）。
-- **Phase 19 归档批次回填**（窗口内、属上一阶段）：`83ff5b4`（回填 Phase 19 归档批次提交号）。
-
-### 阶段总结
-
-- **提交对账**：`git log --oneline 29662c7..c4f2e3f | wc -l` → **24**（下界 = Phase 19 归档批次提交 `29662c7`，上界 = 本阶段末条记录提交 `c4f2e3f`；**不得写 `HEAD` 相对范围**，归档提交会推进 `HEAD`）。构成（逐项相加 = 24）：Phase 20 本体 **21**（M1 4 = `852908b` / `8d8a775` / `437431f` / `f3b3b78`；M2 6 = `5d3ce82` / `2149de1` / `c6158ce` / `d8641c6` / `62431d0` / `e996656`；M3 2 = `2c803e0` / `ac21a46`；M6 8 = `ef65a33` / `5c48387` / `b083a53` / `ead6624` / `e14edc0` / `8e3c395` / `d22f034` / `a87f657`；M7 1 = `6d992d8`）+ 阶段登记与范围评估 **1**（`95aea81`）+ 附带交付与上一阶段回填 **2**（`c4f2e3f` / `83ff5b4`）。**归档批次自身提交不计入上式**。
-- **质量门**：`pnpm verify` **exit 0**、`test` / `test:a11y` / `test:e2e` / `capture:styles` / `docs:check` / `check:governance-records` / `check:distill-archive` / `docs:build` 的**终态数值与复算命令见[归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §8**（单点来源，本块不复写易变计数）。
-- **长期任务**：阶段收口前触发**第 23 轮**门槛复核（规划清理域）——待执行批次 **0 项**；条件触发 **1 项维持**；已判定不纳入 5 项维持；**计数与第 22 轮逐项一致（无漂移）**；证据见[长期任务](./recurring.md) §3 第 23 轮。
-- **回扫口径（三段式）**：见[归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §4（机检面 / 人工面 / 未处理面）。
-- **wisdom 蒸馏**：22 条活跃条目 ≥ 阈值 → **本轮执行蒸馏**（migrate 22），段计数与落点见[归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §6。
-- **归档批次审计**：经 `@code-reviewer` Review Gate **单分区 `standard`**——结论见本块末「归档批次 Review Gate」段。
-- **已知观察**：① Phase 20 **含 `src/**` 行为改动**（M2-1 a11y 引用型属性）且**完成一次发布**（0.6.0），与 Phase 19 不同；② `capture:styles` 采样面由 **302 扩至 308**（M1-1），属预期变更；③ 归档载体行数（Phase 20 块后）超 `docs:check:line-count` 的 warn 阈值（warn > 400 / error > 600，**非阻断**）——归档载体只增不减；④ `docs:check:integrity` 对 `todo.md` 报「H1/H2 结构标题减少」告警——属归档正常移除面，**预期、非阻断**；⑤ 归档后 `check:governance-records` 报 `stale-planning-pointer`（Phase 19 及更早记录表头「关联条目」指向 `todo.md`），同批改指 `todo-archive.md`。
-- **遗留与后续候选**：**Phase 8 未启动**（用户 2026-10-08 初步取向：**下阶段正式启动、以 dependfix 为试点**）；**发布机制评估**待决策 D1 ~ D6（统一手动流形态 / 1.x / 自动化发布）；dependfix（`0.5.0`，可升级 `0.6.0`）与 momei（锁 `0.3.0`、部分迁移）由对应仓库执行、本仓等待反馈；Backlog 在册含组件增强与长尾、国际化语言覆盖与文案分包（实现待规模触发）、RTL 独立立项、视觉回归基线（立项评估已出、实施待裁定）、下游 0.5.0 升级护航、依赖安全告警（推送时 GitHub 提示默认分支 13 条）等；其余见 [Backlog](./backlog.md)。
-
-### 归档批次 Review Gate
-
-经 `@code-reviewer` Review Gate **单分区 `standard`**（归档批次以规划载体为主，故不分区）：结论见[归档批次记录](../design/governance/2026-10-09-phase20-archive.md) §10。
+| Phase 19 | 2026-10-02 ~ 10-07 | 设计一致性口径落地、组件文档去重与观感缺陷处置：设计规范 §6 七项口径裁定与 P1 ~ P3 装置、迁移映射去重 3 批、Tab 指示条 / 富文本下拉 / `iconOnly` 示例修复、`.session` 与 `todo` 约束 | [phase-19](./archive/phase-19.md) |
+| Phase 20 | 2026-10-07 ~ 10-09 | 测试装置扩面、治理守卫补口与发布收口：Tabs 采样 / 焦点与禁用态扩面、文档站主题 CSS lint、直连 Reka 守卫、浮层交互 E2E、0.6.0 发布、视觉基线立项评估 | [phase-20](./archive/phase-20.md) |
 
 ---
 
@@ -297,15 +183,15 @@
 
 经 `@code-reviewer` Review Gate **两分区并发 `standard`**（[AI 协作规范 §3.2](../standards/ai-collaboration.md)：9 文件 / +171 −31 触发并发阈值）：结论见[归档批次记录](../design/governance/2026-10-13-phase23-archive.md) §10。
 
-## Phase 24：机制远端生效与判别力收口、CI 环境治理、治理装置与规划载体补口、组件缺口补齐、图表能力（**部分归档**）
+## Phase 24：机制远端生效与判别力收口、CI 环境治理、治理装置与规划载体补口、组件缺口补齐、图表能力（**已完成 2026-10-22；2026-11-03 整体归档**）
 
-- 时间：2026-10-13 用户就关键决策点裁定后登记（同日经范围变更追加两条内容主线；2026-10-14 授权插队追加两条治理条目）；**2026-10-16 用户指令「其他待办归档」→ 本批为**部分归档**：14 条已交付条目入本块，M1-1 / M2-1 经用户授权**保留在 `todo.md` 待外部触发**。
+- 时间：2026-10-13 用户就关键决策点裁定后登记（同日经范围变更追加两条内容主线；2026-10-14 授权插队追加两条治理条目）；**2026-10-16 部分归档（14 条），2026-10-22 M1-1 / M2-1 回填后闭合，2026-11-03 整体归档**。
 - 范围与授权（用户决策 2026-10-13）：取**组合 A + B + C**（机制收口与回归判别力 2 / CI 环境治理 1 / 治理装置与规划载体补口 5）；同日经**范围变更**追加 **M4 组件缺口补齐 4** 与 **M5 图表能力 2**（依据见[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §10）；2026-10-14 授权插队追加 **M3-6 / M3-7** → **5 条主线 / 16 条原子条目**。
 - 非目标（沿用登记口径）：不推送任何提交、不为取证而专门发布版本、不启用 CI 自动发布 / 不进入 1.x、本阶段不落地移动端三项与国际化一期语言（转 Backlog）、图表不新增运行时依赖、不引入高误报守卫、不改公共 API。
-- ⚠️ **本块为部分归档**：M1-1（视觉基线阻断形态首次远端执行复核）与 M2-1（CI 运行器镜像迁移检测点复核与视觉基线重冻结）**未交付**，故 Phase 24 **不整体归档**——不进「近线窗口 = 最近 5 个已完成阶段」的计数、不迁入深度归档、`roadmap` 阶段表保持「当前进行中阶段」。
+### 逐条交付（16 条）
 
-### 逐条交付（14 条）
-
+- **M1-1 视觉基线阻断形态首次远端执行复核**（2026-10-22 回填）：2026-10-16 周级 run `38899204640` **success**（`Image: ubuntu-24.04`），确认远端为阻断形态且 `test:visual` 在调度执行面通过。
+- **M2-1 CI 运行器镜像迁移检测点复核与视觉基线重冻结**（2026-10-22 回填）：同一 run 的 `E2E Test` / `Core Regression` / `Security Audit` 均为 `Image: ubuntu-24.04`，**未命中** `ubuntu-26.04`；检测点维持待触发（承接载体见 [Backlog](./backlog.md) §1.6），命中后按重冻结 5 步执行。
 - **M1-2 下游兼容检查版本差判别力补齐**（提交 `62c3208`）——以负向对照建立判别力（dispatch 已知不兼容的 `0.2.0` → Typecheck downstream 红）；正向用例待下次发布 tag；记录见 [M1-2](../design/governance/2026-10-14-phase24-m1-2-downstream-compat-negative-control.md)；RG `standard` R1 Reject → R2 `quick` Pass。
 - **M3-1 暂存区卫生机检**（提交 `3dffd25`）——`AM` / `MM` 即失败；含失败路径单测 + 受检面下界 + 负向对照，接入提交路径；记录见 [M3-1](../design/governance/2026-10-14-phase24-m3-1-staging-hygiene-guard.md)；RG `standard` 两分区 R1 A Pass / B Reject → R2 Pass。
 - **M3-2 归档块逐条 Review Gate 计数对账**（提交 `9f29eed`）——只对「两处都有却矛盾」判失败 + 受检面下界；记录见 [M3-2](../design/governance/2026-10-14-phase24-m3-2-archive-rg-counts-guard.md)；RG `standard` R1 Reject → R2 Reject → R3 Pass。
@@ -339,13 +225,14 @@
 
 ### 遗留与后续候选
 
-- **未交付（保留在本阶段）**：M1-1（触发 = 周级 `regression-weekly.yml`，`cron "0 12 * * 5"`；实测该工作流最近 run 均早于转阻断提交 `422bc20`）、M2-1（触发 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04`，2026-10-19 起）。
+- **原未交付两条已于 2026-10-22 回填**：M1-1 = 2026-10-16 周级 run `38899204640` success（`Image: ubuntu-24.04`）；M2-1 = 同一 run 未出现 `ubuntu-26.04`、检测点维持待触发（2026-10-19 起迁移窗口）。
 - **本阶段交付引出的 follow-up（登记，不占条目）**：RichTextEditor 的 `role` / 透传 `aria-label` 口径与 Chart 统一（涉及既有组件 a11y 快照）；可选 peer 契约守卫扩至 `dist` 产物；Chart 纳入 `capture:styles` 采样面；负向对照与校准数值固化为可重放工件；「`N 用例 × M project`」类 E2E 计数纳入对账。
 - **候选池**：见 [Backlog](../plan/backlog.md)（20 行条件触发候选，含本阶段 M3-5 登记的两行：「示例外链守卫漏判面扩展」与「归档载体行数再评估」——**后者的触发条件为超 `docs:check:line-count` warn 阈值 400 行**，本批归档后如越线即进入评估）。
 
 ### 归档批次 Review Gate
 
-- R1 `quick` **`Reject`**（2 blocker：批次记录的 RG 指针错节、归档块承诺的回扫枚举无载体）；已同批收口，**结论与复查基线见[归档批次记录](../design/governance/2026-10-16-phase24-partial-archive.md) §7**（该记录为唯一口径载体，不复写易变计数）。
+- 2026-10-16 部分归档：R1 `quick` **`Reject`**（2 blocker：批次记录的 RG 指针错节、归档块承诺的回扫枚举无载体）；已同批收口，结论见[部分归档批次记录](../design/governance/2026-10-16-phase24-partial-archive.md) §7。
+- 2026-11-03 整体归档：随 Phase 26 归档批次复核（结论见 Phase 26 块末）。
 
 ## Phase 25：归档载体收口、移动端与响应式优化、国际化深化（一期）、发布收口
 
@@ -393,3 +280,82 @@
 ### 归档批次 Review Gate
 
 经 `@code-reviewer` Review Gate **单分区 `standard` R1 `Reject` → R2 delta `quick` `Pass`**；结论与 findings 见[归档批次记录](../design/governance/2026-10-21-phase25-archive.md) §5。
+
+---
+
+## Phase 26：1.0 发布前收尾：冻结面、行为收口与发布链路（**2026-11-03 完成并发布 `1.0.0`**）
+
+- 时间：2026-10-22 用户就[第十轮范围评估](../design/governance/2026-10-22-next-stage-scope-evaluation-10.md) §3 裁定「按推荐来」后登记；2026-10-26 执行期追加 M5 插队批次 4 条与 1.0 发布门禁（G0 ~ G4）；2026-11-03 完成并发布 `1.0.0`、阶段归档。
+- 范围与授权：取 **A + B + C + D** 四条主线，**5 条主线 / 17 条原子条目**（M1 4 / M2 4 / M3 3 / M4 2 / M5 4）；逐条裁定 **D1 ④**（四条主线全取）/ **D2 ①**（rc → 转正，维持手动）/ **D3 ①**（DataTable 主项 + ①②③ 全做）/ **D4 ①**（`Form` 只评估）/ **D5 ③**（发布时与上一已发布版本做 API 差分）。范围与验收口径的单一事实源见 [Phase 26 登记批次记录](../design/governance/2026-10-22-phase26-registration.md) §1 / §2；执行期追加与门禁见[门禁规划](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+- 执行期插队批次（不占条目计数）：**G1-F** 颜色角色修复（3 项）、**S1** 依赖安全告警清理、**S2** Code Scanning 清理、**S3** 安全告警门禁 CI 接入。
+- 非目标：不进入自动发布、不实现 `Form` / RTL / 触摸目标 / 二期语言 / 长尾组件、不做破坏性 API 变更、不引入 Tailwind / UnoCSS、不自动推送。
+
+> 条目级 Review Gate 结论集中于各阶段治理记录（各条目行已给出记录链接），本块不逐条复写计数。
+
+### M1 冻结面终审与 1.x 承诺落地（4 条）
+
+- **M1-1 冻结面清单终审与 1.0 决策记录**（提交 `036babd`；记录见 [M1-1](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md)）：token 档位经用户裁定取「全量 146 + 已披露钩子」（有效冻结面 371，2026-10-28 增量后 380）；六类面（组件 props / events / slots、`exports` 13 键、包根导出、token、10 语 locale、`InputNumber` 的 `step` 语义）与复算命令、例外 / 弃用流程、「最后一破」口径成文；`version-policy` 中英「5 键」改 13 键。
+- **M1-2 `Form` / `FormItem` 形态与字段契约影响评估**（提交 `d648fbb`；记录见 [M1-2](../design/governance/2026-10-24-phase26-m1-2-form-field-contract-evaluation.md)）：结论 = 1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；12 / 35（交集 8）逐项取证；组型控件需 `aria-labelledby`、`Switch` 无校验态；未实现组件。
+- **M1-3 API 表面基线形态评估**（提交 `729488b`；记录见 [M1-3](../design/governance/2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md)）：推荐 **③ 发布时差分**（对比上一版 `dist/*.d.ts`；删除 / required 收紧 = breaking，类型变化 = warning）；记录 `component-meta.json` 为 gitignored 生成物的限制。
+- **M1-4 1.x 承诺载体改写**（提交 `f16f277`；英文链接修正 `e679fd4`）：中英版本策略页改写为「1.x 兼容策略 / 冻结面 / 弃用政策 / 预发布通道 / 例外与流程」，`getting-started` / `README` / `release.md` §1 · §2 · §5 同步；活载体「0.x」关键词回扫为 0。
+
+### M2 行为收口与准破坏性变更（4 条）
+
+- **M2-1 DataTable 全选作用域收口（方案 A）**（提交 `17bf41e`；记录见 [M2](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §2 / §5.1）：表头全选只作用当前页，客户端分页保留跨页选择，`lazy` 仍为当前页；`table.selectAll` 10 语改「全选当前页」；中英组件页、迁移表与设计规范 §7 披露。
+- **M2-2 `lazy` 跨页选择两侧收敛**（同批 `17bf41e`；记录见 [M2](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §3）：受控输入只映射当前页、emit 只含当前页；自持态在 `lazy` 翻页时清空。
+- **M2-3 `rowKey` 缺省在 `lazy` 下撞 id**（同批 `17bf41e`；记录见 [M2](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §4）：启用选择 / 展开时要求显式 `rowKey`，缺省走 `warnDev`；受控 `expandedRows` 同口径。
+- **M2-4 `engines.node` ≥ 22**（提交 `add02bf`；记录见 [M2](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §5.1）：`package.json` 与中英 README / 开发指南同步；CI 仍 `lts/*`；1.0 发布说明列为发布前调整。
+
+### M3 发布链路就绪与 1.0 交付（3 条）
+
+- **M3-1 预发布通道与覆盖率前置**（提交 `b8a2086`；记录见 [M3-1](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)）：`--tag` 缺省按版本推断、预发布 + `latest` 参数层拒绝；`publish` 强制 dist-tag；`verify` 断言 `dist-tags.<tag>`、latest 不得有预发布、shasum fail-closed；`preflight` 补 `test:coverage` + `check:coverage`。
+- **M3-2 1.0.0 CHANGELOG 里程碑段与 Release note**（提交 `318f959` / `cea60bf`；记录见 [M3-2](../design/governance/2026-10-31-phase26-m3-2-1.0.0-release-notes.md)）：里程碑块 / 升级注意 / 已知限制落盘 32 行、锚点全中、不含 rc.1 段；`announce` 从该段生成 Release note。
+- **M3-3 1.0 交付执行**（提交 `4fb0c52` / `1967ff7` / `bfe6e3a` / `37ca419`；记录见 [M3-3](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)）：`latest = 1.0.0`、tag `v1.0.0` + GitHub Release（Latest）到位；tarball shasum `67d71348b452…`、包内 README 版本句 = 1.0.0；`exports` 13 键；API 差分（基线 rc.1）0 删除 / 0 重命名；发布前修复 Release note 抽取 fail-open（`4fb0c52`）。
+
+### M4 下游复验与质量确认（2 条）
+
+- **M4-1 下游正向复验**（2026-10-30）：run `41023344064` attempt 2（tag `v1.0.0-rc.1` 触发）success，`dependfix @ a95c1068`，`typecheck` + `build` 绿；attempt 1 为 `minimumReleaseAge` 门槛（非兼容性回归）。
+- **M4-2 一期 5 语译文复核状态确认**（2026-11-01 裁定「未复核」；见 [G4 记录](../design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations.md) §3 KL-7）：按「显式声明边界」处置，1.0.0 Release note 保留「文案由 AI 生成，母语审校仍待完成」。
+
+### M5 UI 可用性与示例可访问名（4 条，2026-10-26 插队批次）
+
+- **M5-1 DataTable 横向滚动容器键盘可达**（提交 `d59800a`；记录见 [M5-1](../design/governance/2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md)）：根容器常驻 `tabindex="0"`，有 `caption` 时 `role="group"` + 可访问名，新增焦点环与 375px 键盘滚动 E2E；axe 三档违规 0。
+- **M5-2 Select 示例可访问名（中文）**（提交 `013b647`；记录见 [M5-2](../design/governance/2026-10-27-phase26-m5-2-select-example-names-docs-axe.md)）：17 个触发器补 `label`；新增 `check-docs-axe`（5 页矩阵 / 2 条 WCAG 规则 / 抗收窄 / 17 例单测）。
+- **M5-3 Select 示例可访问名（英文）**（提交 `b021ccc`；记录见 [M5-3](../design/governance/2026-10-28-phase26-m5-3-select-example-names-en.md)）：17 个英文触发器与中文逐项语义对齐；全矩阵零违规。
+- **M5-4 Button hover / active 反馈**（提交 `2b7af3a`；记录见 [M5-4](../design/governance/2026-10-28-phase26-m5-4-button-state-feedback.md)）：状态由既有 token 经 `color-mix()` 派生（不新增冻结 token）；36 条状态采样 + 三态不变量；默认预设亮暗最低 4.829；视觉基线 0 差异。
+
+### 执行期插队批次（不占条目计数）
+
+- **G1-F 颜色角色修复**（提交 `5c260a2` / `a0e82ba`；记录见 [G1-F](../design/governance/2026-10-28-phase26-g1-f-color-role-fix.md)）：新增 `--caomei-color-<tone>-text` 与 `--caomei-color-control-border`；6 预设 × 明暗文本 / 控件边界矩阵纳入常驻回归；`capture:styles` 与视觉基线按实际差异重冻结。
+- **S1 依赖安全告警清理**（提交 `f9aeb43` / `c0c8e6d`；记录见 [S1](../design/governance/2026-10-28-phase26-s1-dependency-alerts-remediation.md)）：15 项开发作用域告警在 lockfile 解析层清零；`nuxt` 4.6.3 / `vitest` 4.1.12；`deepmerge` low 无补丁留痕。
+- **S2 Code Scanning 清理**（提交 `991330d` / `5146d71` / `6a46098`；记录见 [S2](../design/governance/2026-10-28-phase26-s2-code-scanning-remediation.md)）：5 项告警（3 high 脚本规则 + 2 medium CI 权限）修复；`test.yml` 补最小 `permissions`。
+- **S3 安全告警门禁 CI 接入**（提交 `0dfff98` / `34084cf` / `af72b2a`；记录见 [S3](../design/governance/2026-10-29-phase26-s3-security-alert-gate-ci.md)）：`check-security-alerts` + `Security Alerts` workflow（`SECURITY_ALERTS_TOKEN`）；安全规范 §2.1 与发布指南同步。
+- **G0 ~ G4 门禁**：G0（M5 收口自检，2026-10-28）/ G1（裁定「修复」）/ G1-F / G2（质量门，2026-10-28）/ G3（rc.1 与下游，2026-10-30）/ G4（发布证据与授权，2026-11-03）全部通过；口径见[门禁规划](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+
+### 阶段总结
+
+- **5 条主线 / 17 条原子条目全部交付**，另完成 G1-F / S1 / S2 / S3 四个插队批次与 G0 ~ G4 门禁。
+- **发布**：`1.0.0` 于 2026-11-03 发布（`latest`），tag `v1.0.0` 与 GitHub Release（Latest）到位；tarball README 版本句 = `1.0.0`；API 差分 0 删除 / 0 重命名。
+- **新增 / 强化装置**：冻结面清单与 token 复算、发布时 API 差分、`--tag` 预发布通道、`check:coverage` 前置、`check-docs-axe`、颜色角色对比度矩阵、`check-security-alerts` 门禁、DataTable 键盘滚动 E2E。
+- **提交对账**：`git log --oneline 10de6e8^..37ca419 --no-merges | wc -l` → **56**（下界 = 登记提交 `10de6e8` 的父提交 `51f00bc`，上界 = 本阶段治理收口提交 `37ca419`）；构成 = 条目行 **28** + 门禁 / 规划 / 发布记录与收口 **28**（含 `10de6e8` / `37ca419`）。**归档批次自身提交不计入上式**。
+
+### 回扫口径（三段式）
+
+- **机检面**：归档后 `pnpm governance:check`（含 `check-governance-records` / `check-governance-counts` / `check:candidate-anchors` / `check:planning-numbers`）与 `pnpm docs:check` 全绿。
+- **人工面**：Phase 26 各治理记录对 `todo.md` 的引用按「点时记录保持原样」处置；逐条核对 M1-1 ~ M1-4、M2、M3-1 ~ M3-3、M4-2、M5-1 ~ M5-4、G1-F、S1 ~ S3 的回链。
+- **未处理面**：历史记录内「阶段限定 + 复用编号」类散文指针不回改（边界见 [M3-5 记录](../design/governance/2026-10-15-phase24-m3-5-planning-carrier-discrepancy-cleanup.md)）。
+
+### 长期任务
+
+- **第 28 轮门槛复核**（2026-11-03，Phase 26 收口 / 1.0.0 发布后）：待执行批次 **0 项**；未达门槛 → 条件触发 **1 项维持**（表单控件公共 props 契约后续候选）；已判定不纳入 **5 项维持**。证据：`useLabelAttrs` 15 / `labelAttrs` 11 / 模板级 `:aria-label="label"` 0 / 继承契约 12 / 含内联同名字段 35 / `useFocusControl` 4 / `useAttrs()` 13（与第 27 轮逐项一致）；§2.2 `field-shell-overlap.mjs`：`input 0 / textarea 1 / input-number 0 / tags-input 16`、四组件共有声明 0；`capture:styles` 349 项 0 差异。详见[长期任务](./recurring.md) 第 28 轮。
+- **wisdom 蒸馏**：`pnpm distill:wisdom --check` → 活跃条目 14（< 阈值 20，不蒸馏）；`check:distill-archive` 通过。
+
+### 遗留与后续候选
+
+- **已知限制**（对外披露见 1.0.0 Release note）：品牌预设 `-solid` 对比度缺口、Calendar / RichTextEditor 交互边界 < 3:1、回归仅 Chromium、禁用态豁免、视觉快照容差、消费方覆盖 token 后的对比度责任、一期 5 语未复核（KL-1 ~ KL-7）。
+- **发布后遗留已处置**：`next` 通道评估后**维持 `1.0.0-rc.1`**（1.x 暂无预发布计划，下一预发布时前移）；README 中英预发布声明改为「1.0 起默认 `latest`，预发布经 `next` 取回」。
+- **后续候选**：PrimeVue 迁移经验回收与指南完善（Backlog §1.8）、`mobile-320` DatePicker 纵向滚动口径（已按矩阵 #6 判定为非缺陷，断言已修）、归档载体行数再评估；其余见 [Backlog](./backlog.md)。
+
+### 归档批次 Review Gate
+
+- 经 `@code-reviewer` Review Gate **单分区 `standard`**；结论与复查基线见[归档批次记录](../design/governance/2026-11-03-phase26-archive.md) §6。

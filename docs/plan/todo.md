@@ -4,91 +4,15 @@
 
 ## 当前状态
 
-当前进行中阶段：**Phase 26 1.0 发布前收尾：冻结面、行为收口与发布链路**（2026-10-22 用户就[第十轮范围评估](../design/governance/2026-10-22-next-stage-scope-evaluation-10.md) §3 裁定「按推荐来」后登记）。范围与验收口径的唯一事实源见[Phase 26 登记批次记录](../design/governance/2026-10-22-phase26-registration.md) §1 / §2。
+**无进行中阶段**。Phase 26（1.0 发布前收尾：冻结面、行为收口与发布链路）已于 **2026-11-03 完成并发布 `1.0.0`**，阶段块（含执行期插队批次 G1-F / S1 / S2 / S3 与 G0 ~ G4 门禁）已迁入[待办归档](./todo-archive.md) 的「Phase 21 ~ Phase 26」窗口。
 
-**2026-10-26 执行期追加**：UI 自检发现新的 P0 / P1 项后，用户指令第 1 档（DataTable 键盘可达 / Select 中英示例可访问名 / Button hover）列入插队 todo，第 2 档（颜色角色分层 + 非文本对比度）进入 Backlog；**2026-10-28 G1 裁定「修复」后登记为 G1-F 门禁批次并交付**（不占 Phase 26 原子条目计数）；**2026-10-28 用户指令「发布前尽可能清理 Dependabot alerts」后登记为 S1 依赖安全告警清理批次并交付**（同属插队例外清单第 1 条，不占条目计数）；**同日按「Code Scanning 也镜像清理」指令登记 S2 并交付**（同属插队例外）；**2026-10-29 按「CI 引入 PAT 读取配置」指令登记 S3 并交付**；**1.0 发布延后**，在门禁 G0 ~ G4 通过前不得执行 `M3-3`。Phase 26 构成由原登记 **4 条主线 / 13 条原子条目** 调整为 **5 条主线 / 17 条原子条目**（新增 M5 插队批次 4 条）。门禁与时间盒的唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
-
-**Phase 24 遗留**：两条已于 2026-10-22 回填（视觉基线 = 2026-10-16 周级 run success；CI 镜像 = 未命中），状态见下节；**待独立归档批次**把 Phase 24 块迁入[待办归档](./todo-archive.md)（该批需一并处置 `docs:check:line-count` 的 warn 阈值，见[规划规范 §7](../standards/planning.md)）。
-
-**执行期追加（2026-10-26）**：用户指令的主题预设同步与扩面已交付，不计入本阶段原子条目（原登记 13 条，2026-10-26 追加 M5 后为 17 条）——`momei` 预设按 momei 运行时口径同步；新增 `sakura` / `forest` / `ink` 三套设计向预设；手机端优先预设评估完成并登记 Backlog。依据见[主题预设同步与扩面记录](../design/governance/2026-10-26-theme-preset-expansion.md)与[手机端优先评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
-
-## Phase 26 原子条目
-
-> **5 条主线 / 17 条原子条目**（M1 4 / M2 4 / M3 3 / M4 2 / M5 4；对账 4 + 4 + 3 + 2 + 4 = 17；**原登记 4 条主线 / 13 条原子条目为 2026-10-22 时点值，2026-10-26 执行期追加 M5 插队批次 4 条**，见 [规划记录](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §5）。决策：**D1 ④**（A+B+C+D）/ **D2 ①**（rc → 转正，维持手动）/ **D3 ①**（DataTable 主项 + ①②③ 全做）/ **D4 ①**（`Form` 只评估）/ **D5 ③**（发布时 API 差分）。
-
-| 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
-|------|------|----------|----------|------|
-| M1-1 | 冻结面终审与 1.x 承诺落地 | **冻结面清单终审与 1.0 决策记录**：四类面逐项确认（组件公开 props / events / slots 名称与语义；`exports` 13 键；包根导出名；`--caomei-*` token 冻结档位〔全局 68 / 全量 146 二选一裁定〕；10 语 locale 命名空间与注册形态；`reka-ui` 下 `InputNumber` 的 `step` 语义按 2.10.4 冻结） | 清单逐项可复算；例外流程（安全 / 正确性必须破坏时）成文；「最后一破」归零确认；`version-policy` 的「`exports` 5 键」陈旧口径修正；结论落治理记录 | **已完成（2026-10-24）**：token 档位经用户裁定取「全量 146 + 已披露钩子」（有效冻结面 371；2026-10-28 增量后 380，见 M1-1 记录注记）；六类面与复算命令、例外 / 弃用流程、「最后一破」口径见[冻结面终审记录](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) §1 ~ §4；`version-policy` 中英「5 键」已改 13 键 |
-| M1-2 | 冻结面终审与 1.x 承诺落地 | **`Form` / `FormItem` 形态与字段契约影响评估（只评估）**：校验规则 / 布局 / 与 `FieldProps` 家族的关系 / `id` · `name` · `aria-describedby` 注入点 | 评估记录给出形态建议与「是否扩既有字段契约」的结论；**不实现**；现存 12 个继承契约 / 35 个含内联同名字段的 `types.ts` 逐项取证 | **已完成（2026-10-24）**：结论为 1.x **不扩既有字段契约**，推荐「独立组合层 + 插槽作用域」；12 / 35（交集 8）/ 8 个 `required` 与 12 个继承者的 `id` 落点 / 可访问名 / 校验态逐项取证见[评估记录](../design/governance/2026-10-24-phase26-m1-2-form-field-contract-evaluation.md) §2 ~ §4；组型控件需 `aria-labelledby`、`Switch` 无校验态；未实现组件 |
-| M1-3 | 冻结面终审与 1.x 承诺落地 | **API 表面基线形态评估（只评估）**：对比「仅文档声明 / 提交态快照 / 发布时与上一已发布版本差分」三形态 | 给出成本、判别力与推荐；说明 `docs/.vitepress/data/component-meta.json` 为 gitignored 生成物的限制；**不落地守卫** | **已完成（2026-10-24）**：推荐 **③ 发布时差分**（preflight 对比上一版 `dist/*.d.ts`；删除 / required 收紧 = breaking，类型变化 = warning）；① 保留为承诺载体，② 暂不采用；`component-meta.json` 的 gitignored / 描述噪声限制与现有 `verify` 只校验 exports 的取证见[评估记录](../design/governance/2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md) §2 ~ §5；未落地守卫 |
-| M1-4 | 冻结面终审与 1.x 承诺落地 | **1.x 承诺载体改写**：中英 `version-policy` / `getting-started` / `README` / `release.md` §1 · §2 · §5；删除「0.x 阶段 API 与目录结构在 1.0 前可能调整」类表述 | 1.x 兼容承诺与弃用政策成文；`0.x` 活载体零残留（历史记录按点时快照不回改）；`pnpm docs:check` 全绿 | **已完成（2026-10-24）**：中英版本策略页改写为「1.x 兼容策略 / 冻结面 / 弃用政策 / 预发布通道 / 例外与流程」，冻结面与 [M1-1 记录](../design/governance/2026-10-24-phase26-m1-1-freeze-final-review.md) 对齐；`getting-started`、`README`、`release.md` §1 · §2 · §5 同步；活载体 `0.x` 关键词回扫为 0（`docs/design/documentation-site.md` 一处历史表述改为「1.0 之前的开发期」） |
-| M2-1 | 行为收口与准破坏性变更 | **DataTable 行选择全选作用域收口（方案 A）**：表头全选只作用当前页；客户端分页保留跨页选择；表头状态用 `getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`，切换用 `toggleAllPageRowsSelected`；`lazy` 仍为当前页；受控全表由父级写 `selection`，不新增 prop；可访问名改「全选当前页」（10 语） | 分页 × 选择测试；中英组件页、PrimeVue 迁移差异、CHANGELOG 与 GitHub Release 四处披露；`selectAll` / `selectAllScope` 契约仅登记不实现 | **已完成（2026-10-24）**：表头状态 / 切换改为页口径，客户端分页跨页选择保留、`lazy` 只作用当前页；`table.selectAll` 10 语改「全选当前页」（`checkbox.selectAll` 不变）；中英组件页、迁移表与[设计规范 §7](../design/design-spec.md) 已披露，CHANGELOG / GitHub Release 文案由 M3-2 承载（`pnpm changelog` 会重写文件）；见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §2 / §5.1 |
-| M2-2 | 行为收口与准破坏性变更 | **`lazy` 跨页选择在受控输入与 emit 两侧收敛**：`rowSelectionState` 经 `indexOfRow` 只查当前页、`onRowSelectionChange` 用 `props.data.filter` 组装 | 两侧一致只保留当前页行；定向测试覆盖受控与非受控 | **已完成（2026-10-24）**：受控输入只映射当前页、emit 只含当前页；自持态在 `lazy` 翻页时清空，避免页内索引键复用；受控 / 自持定向测试通过；见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §3 |
-| M2-3 | 行为收口与准破坏性变更 | **`rowKey` 缺省按索引在 `lazy` 下撞 id**：给出修复或显式契约（要求显式 `rowKey`） | 选择 / 展开在 `lazy` 跨页不串行；测试覆盖；若改为显式契约须同步文档与迁移说明 | **已完成（2026-10-24）**：`lazy` + 缺省 `rowKey` 为页内索引，自持展开态随页重置；启用选择 / 展开时 `warnDev` 要求显式 `rowKey`，受控 `expandedRows` 同口径；中英组件页、迁移表与设计规范 §7 已同步；见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §4 |
-| M2-4 | 行为收口与准破坏性变更 | **`engines.node` 由 `>=20` 提升到 `>=22`**（Node 20 已于 2026-04 EOL） | `package.json` 与文档同步；CI 仍 `lts/*`；1.0.0 发布说明列为发布前调整（1.0 后同类调整须走 major） | **已完成（2026-10-24）**：`engines.node` = `>=22`；README 中英、开发指南中英、文档站设计文档同步；CI 仍 `lts/*`；发布文案见[M2 记录](../design/governance/2026-10-24-phase26-m2-behavior-convergence.md) §5.1 |
-| M3-1 | 发布链路就绪与 1.0 交付 | **预发布通道与覆盖率前置**：`manual-release.mjs` 支持 `--tag`（`next` / `latest`），dry-run 与日志同步；`preflight` 纳入 `test:coverage` + `check:coverage`（或等价证据）；同步回写 `release.md` §3.3 的 publish / verify 口径为按目标 dist-tag 断言 | `release:manual run --version=1.0.0-rc.1 --tag=next --dry-run` 输出正确；单测覆盖；预发布不再落到 `latest`；`release.md` 中英同步 | **已完成（2026-10-26）**：`--tag` 缺省按版本推断（预发布 → `next`），预发布 + `latest` 在参数层拒绝；`publish` 强制带目标 dist-tag；`verify` 断言 `dist-tags.<tag>`、`latest` 上不得出现任何预发布版本，并对 `dist.shasum` fail-closed；`announce` 预发布加 `--prerelease`、非 `latest` 加 `--latest=false`；`preflight` 在 `verify` 后补 `test:coverage` + `check:coverage`（实测 92.98 / 85.89 / 94.69 / 92.33）；中英 `release.md` 同步并链接记录。见[M3-1 记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md) §1 ~ §5 |
-| M3-2 | 发布链路就绪与 1.0 交付 | **1.0.0 CHANGELOG 里程碑段与 GitHub Release note**：人工补 1.x 承诺 / 冻结面 / `engines` / locale / DataTable 行为说明 / 主题预设（`momei` 取值同步 + `sakura` / `forest` / `ink` 新增） | 1.0.0 段有可读里程碑内容；`announce` 能从 CHANGELOG 正确抽取 note | **已完成（2026-11-03）**：里程碑块已随 `changelog` 后落盘（提交 `cea60bf`），抽取 32 行、锚点全中、不含 rc.1 段、无一级标题；`announce` 成功从该段生成 Release note。文案与落盘流程见[M3-2 记录](../design/governance/2026-10-31-phase26-m3-2-1.0.0-release-notes.md)；执行证据见[M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md) §1 |
-| M3-3 | 发布链路就绪与 1.0 交付 | **1.0 交付执行**：推送 → `1.0.0-rc.1` 发 `next` → 下游复验（M4-1）→ `1.0.0` 发 `latest` → 发布后校验 → GitHub Release（发布链内 `sync` 在 `publish` **之前**，版本句才随 tarball 发布）；**发布前完成回滚方案** | registry `latest` = `1.0.0`；tarball shasum / 解包 / `exports` 13 键校验留痕；`v1.0.0` tag 与 GitHub Release 到位；回滚方案在 G4 前留痕 | **已完成（2026-11-03）**：`latest = 1.0.0`、`next = 1.0.0-rc.1`；tarball shasum `67d71348b452…`、内 README 版本句 = 1.0.0；`exports` 13 键；tag `v1.0.0` 与 GitHub Release（Latest）到位；API 差分 0 删除 / 0 重命名。见[M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md) §1 / §2 |
-| M4-1 | 下游复验与质量确认 | **下游正向复验**：dependfix 升级到 `0.7.0`（或 rc）跑 `typecheck` + `build`；或 `workflow_dispatch` compat 并传版本 | 一次绿 run 且记录下游 revision；若真实 run 可验证「实际安装版本校验」则顺手落地 | **已完成（2026-10-30）**：run `41023344064` attempt 2（tag `v1.0.0-rc.1` push 自动触发）success，`dependfix @ a95c1068`，`typecheck` + `build` 绿；attempt 1 为 `minimumReleaseAge` 门槛（非兼容性回归）；新下游 revision `08ad8f1`（目标 0.7.0）记录于 G4 §4.1，不改变 rc.1 结论 |
-| M4-2 | 下游复验与质量确认 | **一期 5 语译文复核状态确认**（Phase 25 M3-1b 记录「待用户复核」） | 复核结论（通过 / 修订清单）落治理记录；未复核则显式声明边界、不带默认承诺 | **已完成（2026-11-01 裁定「未复核」）**：按「显式声明边界」处置——1.0.0 Release note 保留「文案由 AI 生成，母语审校仍待完成」，不带默认质量承诺；边界见 [G4 记录](../design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations.md) §3 KL-7 |
-| M5-1 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **DataTable 横向滚动容器键盘可达**：根滚动容器常驻 `tabindex="0"`（本轮不做条件化）；有 `caption` 时补可访问名；新增键盘滚动 E2E；中英组件页无障碍节同步 | axe `scrollable-region-focusable` 为 0；375px 窄屏 Tab 可进入、`ArrowRight` 后 `scrollLeft > 0`；无嵌套重复 tabindex；无视觉变化 | **已完成（2026-10-27）**：根容器常驻 `tabindex="0"`，有 `caption` 时 `role="group"` + `aria-label`（无 caption 不伪造），新增 `:focus-visible` 焦点环；单测覆盖两种 `caption` 分支与嵌套 tabindex；新增 375px 键盘滚动 E2E（Tab 进入 / `ArrowRight` 滚动 / 焦点环三锁）；中英组件页无障碍节同步；axe 实测 375 / 768 / 1280 违规 0（同批补文档站 `component-api` 手写表格的可聚焦性，属已披露的范围扩张）。见[M5-1 记录](../design/governance/2026-10-27-phase26-m5-1-data-table-keyboard-scroll.md) §3 / §6 |
-| M5-2 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Select 示例可访问名（中文）**：`docs/examples/select/` 7 个示例的每个 `CaomeiSelect` 补 `label`（映射 `aria-label`）；画廊复用同一 `select/basic.vue`，不额外计数；同批把文档页 axe 抽检收进 `scripts/docs/check-docs-axe.mjs`（M5-2 只验收 zh select / showcase；全矩阵由 G0 在 M5-1 / M5-3 后跑） | zh `/components/select` 与 `/components/showcase` axe `button-name` 为 0；脚本在 zh select / showcase 范围退出码 0；不以 placeholder 代替可访问名；无可见布局变化 | **已完成（2026-10-27）**：17 个触发器补 `label`（按字段用途命名，value 插槽变体带语境）；新增 `check-docs-axe`（5 页矩阵 / 2 条 WCAG 规则 / DOM 与规则两层抗收窄 / 端口预检 / 失败路径单测 17 例）与 `docs:check:axe` 入口；zh select / showcase 两规则均 0 违规（exit 0），全矩阵仅 en-US 页 `button-name` 失败（M5-3 承接）；同批改画廊预览区为可聚焦滚动区（+15 tab 停靠点已披露）、修复上一批裸 `<caption>` 构建阻断。见[M5-2 记录](../design/governance/2026-10-27-phase26-m5-2-select-example-names-docs-axe.md) §3 / §6 |
-| M5-3 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Select 示例可访问名（英文）**：`docs/i18n/en-US/examples/select/` 7 个示例同口径补 `label` | `/en-US/components/select` 与 `/en-US/components/showcase` axe `button-name` 为 0；中英可访问名语义对齐 | **已完成（2026-10-28）**：17 个英文触发器补 `label`（映射 `aria-label`），与中文示例逐项语义对齐；en-US select / showcase 的 `button-name` 为 0（全矩阵五页 × 两规则零违规，`check-docs-axe` exit 0）；仅新增属性、无可见布局变化。见[M5-3 记录](../design/governance/2026-10-28-phase26-m5-3-select-example-names-en.md) §1 / §4 |
-| M5-4 | UI 可用性与示例可访问名（2026-10-26 插队批次） | **Button hover / active 反馈**：用 `color-mix()` 派生 hover / active（不新增冻结 token）；补计算样式测试；设计规范 §6 与中英组件页补状态说明；视觉基线按实际差异重冻结 | hover / active 与默认态计算样式不同；各变体 / tone 文字与背景对比度仍 ≥ 4.5:1；`:disabled` / `:focus-visible` 不变；`prefers-reduced-motion` 无过渡；`capture:styles` 仅预期差异 | **已完成（2026-10-28）**：三变体两态由既有 token 经 `color-mix()` 派生（`tone="neutral"` 单独取文字色作锚点）；`capture:styles` 新增 36 条状态采样 + 三态差异不变量，冻结前仅新增键、无既有键变化；E2E 复核亮暗 × 三态对比度（**默认预设**最低 4.829）、disabled / focus-visible / 减动效边界；视觉基线实测 0 差异未重冻结；设计规范 §6 与中英组件页已补状态说明（品牌预设既有缺口不在本条范围）。见[M5-4 记录](../design/governance/2026-10-28-phase26-m5-4-button-state-feedback.md) §2 / §5 |
-
-> **1.0 发布门禁（2026-10-26 起）**：G0 插队批次完成 / G1 第 2 档「修复或明确接受」裁定（若裁定修复则加条件门禁 G1-F）/ S1 依赖安全清理 / S2 Code Scanning 清理 / G2 质量门 / S3 安全告警门禁 CI 接入（2026-10-29 追加，G2 通过后、rc 前生效） / G3 RC 与下游 / G4 发布证据。`M3-3` 在 G0 ~ G4 全部通过前不得执行；目标评审 **2026-11-13**，硬截止 **2026-11-27**，到期未通过不得自动延期。唯一口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
-
-## G1-F 门禁批次（2026-10-28 裁定「修复」；不占 Phase 26 原子条目计数）
-
-| 编号 | 条目 | 验收标准 | 状态 |
-|------|------|----------|------|
-| G1-F-1 | **tone 文本角色**：新增 `--caomei-color-<tone>-text`，Tag / Badge / Message（含 Alert）/ Button 文字型变体 / toast action 等文本消费点改用该 token；`caomei` / `momei` 的 `text-muted` 提升到 AA | 6 预设 × 明暗 × 5 语气 × soft / outline 在实际合成背景上 ≥ 4.5:1；axe Tag / Message 全预设零违规 | **已完成（2026-10-28）** |
-| G1-F-2 | **控件边界角色**：新增 `--caomei-color-control-border`，字段族 / Checkbox / Radio / Switch / Slider 轨道 / SelectButton / 触发器 / 上传区 / 分页与步骤指示器改用该 token；`--caomei-color-border` 只保留装饰性分隔线 | 6 预设 × 明暗对 `bg` 与 `bg-elevated` 均 ≥ 3:1；视觉重量变化有披露 | **已完成（2026-10-28）** |
-| G1-F-3 | **矩阵断言**：`test/e2e/preset-contrast.e2e.ts` 常驻覆盖 21 条文本（含 `text-muted`）× 2 种背景 + 4 条控件边界；`capture:styles` / 视觉基线按实际差异重冻结 | 矩阵通过；capture 0 差异、视觉 0 差异；证据见[G1-F 记录](../design/governance/2026-10-28-phase26-g1-f-color-role-fix.md) | **已完成（2026-10-28）** |
-
-## S1 依赖安全告警清理批次（2026-10-28 用户指令；不占 Phase 26 原子条目计数）
-
-| 条目 | 验收标准 | 状态 |
-|------|----------|------|
-| **15 项开发作用域 Dependabot 告警在 lockfile 解析层清零**：`undici` 6/7/8 三线、`fast-uri`、`serialize-javascript`、`node-forge` 走 `overrides`；`nuxt` / `@nuxt/kit` / `@nuxt/schema` 升 4.6.3；`vitest` / `@vitest/coverage-v8` 升 4.1.12；`simple-git` 覆盖与补丁随 devtools 3.4.4 退场 | 解析后版本离开全部受影响区间、旧版残留 0 命中；`pnpm verify` 与 `check:nuxt` 通过；`pnpm audit` high / critical = 0 | **已完成（2026-10-28）** |
-| **回归证据**：依赖升级后复跑质量门，确认无运行时 / 样式回归 | `pnpm verify` exit 0；desktop E2E 133、a11y 67、visual 33 全绿；`capture:styles` 0 差异 | **已完成（2026-10-28）** |
-| **治理载体与残留风险**：新增 S1 记录，登记 `node-forge` 补丁判据、`simple-git` 退场与 `deepmerge` 无补丁项；同步门禁表 / 索引 / `.session` | 记录可复算；`governance:check` 全绿；残留项有再评估触发 | **已完成（2026-10-28）** |
-
-> 证据与残留边界见 [S1 记录](../design/governance/2026-10-28-phase26-s1-dependency-alerts-remediation.md)。Dependabot 面板的 `state` 需**推送 + 扫描**后收敛，本批未推送。
-
-## S2 Code Scanning 告警清理批次（2026-10-28 用户指令；不占 Phase 26 原子条目计数）
-
-| 条目 | 验收标准 | 状态 |
-|------|----------|------|
-| **5 项 Code Scanning 告警清零**：文档示例守卫补大小写不敏感、语言切换守卫改用字符扫描替代正则清洗、`test.yml` 补最小 `permissions` | 命中形态消失；新增单测通过；YAML 解析与两个守卫脚本实跑通过 | **已完成（2026-10-28）** |
-| **回归证据与载体**：`pnpm verify` 全绿；新增 S2 记录并同步门禁表 / 索引 / `.session` | `pnpm verify` exit 0；`governance:check` 全绿；推送后 CodeQL 复核口径已登记 | **已完成（2026-10-28）** |
-
-> 证据与边界见 [S2 记录](../design/governance/2026-10-28-phase26-s2-code-scanning-remediation.md)。Code Scanning 面板需**推送 + CodeQL 重跑**后收敛。
-
-## S3 安全告警门禁 CI 接入批次（2026-10-29 用户指令；不占 Phase 26 原子条目计数）
-
-| 条目 | 验收标准 | 状态 |
-|------|----------|------|
-| **检查脚本与 CI**：`check-security-alerts` 读取两类 open 告警，按规范分级判定；`Security Alerts` workflow 使用 `SECURITY_ALERTS_TOKEN` 运行 | 单测与 eslint 通过；实网运行 exit 0；workflow YAML 合法 | **已完成（2026-10-29）** |
-| **豁免与文档**：豁免文件、secret 权限说明、规范与发布指南同步 | `governance:check` 全绿；豁免字段与判定口径可复算 | **已完成（2026-10-29）** |
-
-> 证据与边界见 [S3 记录](../design/governance/2026-10-29-phase26-s3-security-alert-gate-ci.md)。需在仓库配置 secret `SECURITY_ALERTS_TOKEN` 后 CI 才会生效。
-
-## Phase 24 原子条目
-
-> **遗留段（用户 2026-10-16 授权保留；2026-10-22 回填，待归档批次）**：下表两条为 Phase 24 未交付条目，触发条件已满足并完成复核；Phase 24 块的整体归档（含行数阈值处置）随独立批次执行，本表不并入 Phase 26 条目表。
-
-| 编号 | 主线 | 原子条目 | 验收标准 | 状态 |
-|------|------|----------|----------|------|
-| 遗留-视觉基线 | 机制收口与回归判别力 | **视觉基线阻断形态首次远端执行复核**：转阻断提交（`422bc20`）进入远端后的首个周级 run | 有一次真实调度 run 记录（含运行器 `Image:` 值）；确认远端为**阻断形态**；`test:visual` 结果可归因 | **已执行（2026-10-22 回填）**：2026-10-16 周级 run `38899204640` **success**（`Image: ubuntu-24.04`）；阻断形态与 `test:visual` 已在调度执行面通过 |
-| 遗留-CI 镜像 | CI 环境治理 | **CI 运行器镜像迁移检测点复核**：`ubuntu-latest` 自 2026-10-19 起分批迁移 Ubuntu 26.04；检测点 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04` | 命中即按重冻结 5 步执行并留痕；未命中则留「未命中」记录（含当时 `Image:` 值） | **未命中（2026-10-22 回填）**：同一 run 的 `E2E Test` / `Core Regression` / `Security Audit` 均为 `Image: ubuntu-24.04`，未出现 `ubuntu-26.04`；检测点维持待触发 |
+**下一阶段待用户裁定**：组件能力与长尾、国际化二期与 RTL、移动端密度轴等候选见 [Backlog](./backlog.md)；发布后事项：`next` 通道已裁定维持 `1.0.0-rc.1`（下一预发布时前移）、README 预发布声明时态已改写；迁移经验回收等候选以[归档块](./todo-archive.md) 的「遗留与后续候选」为准；阶段收口后的第 28 轮门槛复核已执行（见[长期任务](./recurring.md)）。
 
 ## 未完成项汇总
 
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。
 
-- **等待外部反馈**：dependfix `apps/platform` 与 momei 根包的迁移由对应仓库执行、本仓等待反馈；两仓 `caomei-ui` 实测为 **`0.6.0`**（2026-10-13 复核；0.7.0 后未重测），复验由本阶段「下游复验与质量确认」主线承接（见上方条目表）。
-- **1.0 发布门禁**：Phase 26 `M3-3` 受 G0 ~ G4 约束；目标评审 2026-11-13 / 硬截止 2026-11-27。**G0 收口自检已通过（2026-10-28）；G1 同日裁定「修复」且 G1-F、S1、S2、G2 均已交付 / 通过**；G3 已完成（rc.1 已发 `next`、tag / Release 已建、下游复验绿）；**G4 已完成（2026-11-03）**：安全复核通过、发布链贯通、用户授权后完成 `1.0.0` 发布（见[发布执行记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)）。唯一口径见[门禁记录](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
+- **等待外部反馈**：dependfix `apps/platform` 与 momei 根包的迁移由对应仓库执行、本仓等待反馈；两仓 `caomei-ui` 实测仍为 **`0.6.0`**（2026-10-13 复核；`1.0.0` 发布后未重测）。Phase 26 的下游复验以 dependfix 对 `v1.0.0-rc.1` 的一次绿 run 为证；`1.0.0` 升级护航由对应仓库决定。
 - **条件触发候选**（触发后按「条件触发 → 再评估 → 决策」处理，不自动进入阶段）：**下表为与 `backlog.md` 的对账面**——每行的「Backlog 判别键」（**可多枚，全部须存在**）须在 [Backlog](./backlog.md) §1 出现（由 `pnpm check:candidate-anchors` 机检）。**候选名为 Backlog 行名的指针、非独立定义**；**新增候选须同批补行并填键**，否则守卫失败。
 
 | 候选 | 触发条件 | Backlog 判别键 |
@@ -112,7 +36,7 @@
 | 下游 0.5.0 升级护航 | 原触发条件已不成立，待一次条件重评估 | `0.5.0 升级护航` |
 
 > 逐条触发条件、复算值与取证入口见 [Backlog](./backlog.md)。
-- **已发布版本**：registry `latest` = **0.7.0**（2026-10-20T12:29:13Z 发布；`dist.shasum` = `5b59e41aa400b0e59ade6f6f10984ebf1faf3622`，`fileCount` 427）。**写录时点（2026-10-22）本地领先 `origin/master` 5 个提交**（推送态以 `git rev-parse` / `git ls-remote` 实时复核）；远端 `v0.1.0` ~ `v0.7.0` **7 个** annotated tag；**GitHub Release 已回填**（`v0.7.0` = Latest）。
-- **长期任务待执行批次**：见[长期任务](./recurring.md) §2（**第 27 轮门槛复核已于 2026-10-21 执行**〔Phase 25 收口 / 0.7.0 发布后〕：两组任务均无待执行批次；Phase 24 整体归档时须执行新一轮）。
+- **已发布版本**：registry `latest` = **`1.0.0`**（2026-11-03 发布；`dist.shasum` = `67d71348b4529b98e504f83f347c926b7a75a397`，`fileCount` 432）；`next` 仍为 `1.0.0-rc.1`。远端 annotated tag 共 **8 个**（`v0.1.0` ~ `v1.0.0`）；**GitHub Release 已回填至 `v1.0.0`** 并占 Latest。发布执行见[记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)。
+- **长期任务待执行批次**：见[长期任务](./recurring.md) §2（**第 28 轮门槛复核已于 2026-11-03 执行**〔Phase 26 收口 / 1.0.0 发布后〕：两组任务均无待执行批次，条件触发 1 项维持、已判定不纳入 5 项维持）。
 - **未纳入任何阶段的候选**：见 [Backlog](./backlog.md)（组件增强、长尾组件、国际化与 RTL、移动端与响应式、基建与治理、服务层、下游协同等分组）。
 - **已完成阶段的遗留项与已知偏差**：见[待办归档](./todo-archive.md)各归档块（含[深度归档](./archive/)）的「遗留与后续候选」与「已知观察」段，其中仍待决策者已在 [Backlog](./backlog.md) 在册。

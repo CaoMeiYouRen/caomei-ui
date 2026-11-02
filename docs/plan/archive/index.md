@@ -12,11 +12,14 @@
 | [phase-07-12.md](./phase-07-12.md) | Phase 7 第一阶段（迁移就绪）、Phase 9（发布前收口）、Phase 10（国际化与移动端）、Phase 7 第二阶段（库侧迁移就绪与交接）、Phase 5 第二阶段（首版发布）、Phase 11（样式按需化与能力增强）、Phase 12（发布就绪与一致性收官） |
 | [phase-13-17.md](./phase-13-17.md) | Phase 13（组件能力补齐与 dependfix 迁移解阻）、Phase 14（质量与一致性收口）、Phase 15（治理收口深化 + 组件能力补齐 + 下游迁移护航文档）、Phase 16（质量收口与治理装置落地）、Phase 17（极简主题预设与富文本封装 + 治理补口） |
 | [phase-18.md](./phase-18.md) | Phase 18（发布收口、测试稳定性与一致性治理） |
+| [phase-19.md](./phase-19.md) | Phase 19（设计一致性口径落地、组件文档去重与观感缺陷处置） |
+| [phase-20.md](./phase-20.md) | Phase 20（测试装置扩面、治理守卫补口与发布收口） |
 
 > `phase-07-12.md` 另含各阶段块之间的「跨阶段预落地条目」等过渡段，随迁入一并保留。
 
 ## 迁出时点
 
 - 2026-09-30（Phase 17 归档批次）：主窗口自 Phase 0 起累计至 594 行（`docs:check:line-count` warn > 400 持续累积、error > 600 逼近），按用户决策压缩为「近线窗口（Phase 13 ~ Phase 17）+ 归档索引」，Phase 0 ~ Phase 12 迁入本目录。
-- 2026-10-13（Phase 23 M4-1 压缩批次）：主窗口累计至 574 行（`docs:check:line-count` warn > 400），按用户决策 D6 二次压缩为「近线窗口（**Phase 18 ~ Phase 22**，口径 = 最近 5 个已完成阶段）+ 归档索引」，Phase 13 ~ Phase 17 迁入本目录 [phase-13-17.md](./phase-13-17.md)（迁移为机械操作，仅链接深度 `../` → `../../`，正文不改写）。
-- 2026-10-16（Phase 25 M1-1 压缩批次）：主窗口累计至 404 行（`docs:check:line-count` warn > 400，Phase 18 ~ Phase 23 共 6 块 + Phase 24 部分归档块），按「近线窗口 = 最近 5 个已完成阶段」口径三次压缩为「近线窗口（**Phase 19 ~ Phase 23**）+ 归档索引」，Phase 18 迁入本目录 [phase-18.md](./phase-18.md)（迁移为机械操作，仅链接深度 `../` → `../../`，正文不改写）。**批次口径载体见[治理记录](../../design/governance/2026-10-16-phase25-m1-1-todo-archive-deep-migration.md)**。
+- 2026-10-13（Phase 23 M4-1 压缩批次）：主窗口累计至 574 行（`docs:check:line-count` warn > 400），按用户决策 D6 二次压缩为「近线窗口（**Phase 18 ~ Phase 22**，口径 = 最近 5 个已完成阶段）+ 归档索引」，Phase 13 ~ Phase 17 迁入本目录 [phase-13-17.md](./phase-13-17.md)（迁移为机械操作：链接深度 `../` → `../../`，另含 5 处同目录 `./` → `../` 修正，正文不改写）。
+- 2026-10-16（Phase 25 M1-1 压缩批次）：主窗口累计至 404 行（`docs:check:line-count` warn > 400，Phase 18 ~ Phase 23 共 6 块 + Phase 24 部分归档块），按「近线窗口 = 最近 5 个已完成阶段」口径三次压缩为「近线窗口（**Phase 19 ~ Phase 23**）+ 归档索引」，Phase 18 迁入本目录 [phase-18.md](./phase-18.md)（迁移为机械操作：链接深度 `../` → `../../`，另含 5 处同目录 `./` → `../` 修正，正文不改写）。**批次口径载体见[治理记录](../../design/governance/2026-10-16-phase25-m1-1-todo-archive-deep-migration.md)**。
+- 2026-11-03（Phase 26 归档批次）：主窗口在 Phase 24 补齐与 Phase 26 入窗后越过 warn 阈值（400 行），按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径压缩为「**Phase 21 ~ Phase 26** + 归档索引」，Phase 19 / Phase 20 分别迁入本目录 [phase-19.md](./phase-19.md) 与 [phase-20.md](./phase-20.md)（迁移为机械操作：链接深度 `../` → `../../`，另含 5 处同目录 `./` → `../` 修正，正文不改写）。

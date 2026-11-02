@@ -75,6 +75,7 @@
 | 文档站示例外链守卫漏判面扩展 | Phase 23 M5-1 follow-up（第八轮 N2） | 现行守卫为**整文件 fail-closed**（`docs/**/examples/**` 出现 `http(s)://` 即判 `external-image-source` 失败），无法区分「图片源」与「合法非图片外链」。**触发条件 = 出现合法非图片外链用例**（如示例中引用外部 API / 文档链接）时需重新划面；**复算 = `pnpm docs:check:demo-external-images`**（受检面 363 个示例文件 / 下界 `MIN_SCANNED_EXAMPLES = 300`，含中英两侧示例目录覆盖断言）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 低 |
 | Calendar / RichTextEditor 交互边界对比度 | Phase 26 G1-F §6。Calendar 上 / 下月导航按钮与 RichTextEditor 容器描边属**可交互边界**，当前 < 3:1，未纳入 G1-F 的 4 条边界断言面。**触发条件 = 下一轮颜色 / 非文本对比度治理，或下游报可读性问题时**；收口须把两者加入 `test/e2e/preset-contrast.e2e.ts` 边界矩阵并以 3:1 断言 | 低 |
 | 品牌预设的 `-solid` 对比度缺口 | Phase 26 G1-F §6 / M5-4 §2。`momei` 亮色 `success` 默认 / hover / active = 2.279 / 2.643 / 3.045（均 < 4.5:1），`caomei` `primary-solid` = 4.17；G1-F 只动文本与控件边界角色（6 预设 × 明暗已在常驻矩阵内），`-solid` 配对仅做不回退核对，`caomei` `primary-solid` 为既有品牌裁定保留项。**触发条件 = 调整品牌预设 `-solid` 取值时，或下游报可读性问题时**；收口须把三态对比度断言面从默认预设扩到全部预设 | 中 |
+| CI 运行器镜像迁移检测（`ubuntu-26.04`） | Phase 24 M2-1 归档后承接的**待触发检测义务**：`ubuntu-latest` 自 2026-10-19 起分批迁移 Ubuntu 26.04；检测点 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04`；命中后按重冻结 5 步执行视觉基线并留痕。**触发条件 = 该检测点命中** | 中 |
 | 文档站 a11y 抽检矩阵外示例 | 2026-10-27 axe 抽检脚本落地时发现 | `docs/examples/input-group/with-select.vue` 的 `CaomeiSelect` 仍以 placeholder 代替可访问名，所在 `/components/input-group` 不在 `check-docs-axe` 的 5 页矩阵内，门禁不会发现（`float-label/*` 经可见 `<label for>` 关联，暂不计）。**触发条件 = 用户指定或扩面到该页时**；处置为补 `label` 并把页面加入 `PAGES` | 低 |
 
 ### 1.7 服务层候选（composables）

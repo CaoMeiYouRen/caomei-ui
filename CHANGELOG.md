@@ -1,5 +1,13 @@
 # caomei-ui
 
+# [1.0.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.0.0-rc.1...v1.0.0) (2026-11-02)
+
+### 🐛 Bug 修复
+
+* **release:** 修正 CHANGELOG 段落抽取的版本边界 ([4fb0c52](https://github.com/CaoMeiYouRen/caomei-ui/commit/4fb0c52))
+* **release:** 将版本句同步前置于发布并补齐 G4 证据 ([fd4ad8e](https://github.com/CaoMeiYouRen/caomei-ui/commit/fd4ad8e))
+* **release:** 支持预发布版本句并阻止静态 dist-tag ([03d6726](https://github.com/CaoMeiYouRen/caomei-ui/commit/03d6726))
+
 # [1.0.0-rc.1](https://github.com/CaoMeiYouRen/caomei-ui/compare/v0.7.0...v1.0.0-rc.1) (2026-10-30)
 
 ### ✨ 新功能

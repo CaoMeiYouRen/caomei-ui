@@ -58,10 +58,6 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 上游提案：AI 治理检查对齐（部分采纳） | 来源：`cmyr-skills-agents` 的 `docs/proposals/2026-11-02-governance-check-alignment.md`。**已采纳（待立项）**：`ai:check` 补 `metadata.internal` 必填与技能 `references/*.md` 被执行入口索引两项守卫 + fixture 测试（当前 14/14 skill 已合规、7/7 references 已索引，零迁移）。**optOut**：死链（已有 `check:ai-asset-links`，含 GitHub slug 锚点，口径更强）、能力标记（需读兄弟仓台账，跨仓依赖）、弃用引用扫描（项目无 deprecated 清单）、`--json`（无消费者）。验收：缺 `metadata.internal` / 孤儿 references 时 `pnpm ai:check` 判失败。 | 中 |
-| 上游提案：发布前安全门禁（已采纳，部分落地） | 来源：`cmyr-skills-agents` 的 `docs/proposals/2026-11-02-release-security-gate.md`。**已落地**：`preflight` / `publish` 内置门禁（token 缺失 fail-closed，`.env.local` 配置，仓库标识支持 git remote 回退）。**待立项**：① 扫 `dismissed`（critical 被 dismiss 仍阻断、high dismissed 需 `false-positive` 豁免）；② 豁免台账补 `category`；③ `release.yml` 接线归入「提交驱动 CI 自动发布」第 ④ 项。**optOut**：`review` / `expiresAt`（`plannedVersion` + 每次发布前复评已等价）、`location`（台账键 `source:id` 已按实例）、token 按来源分离（当前共用 PAT 为文档化决策）。 | 中 |
-| 上游提案：任务开局 CI 回执（已采纳，待立项） | 来源：`cmyr-skills-agents` 的 `docs/proposals/2026-11-02-task-start-ci-receipt.md`。**已采纳（落点已定，未实现）**：规则将落 `todo-manager` 开局步骤，`docs/standards/ai-collaboration.md` §6 只留指针（能力矩阵扫 `AGENTS.md` / `README` / `docs/standards`，无需改 `AGENTS.md`）；参数：默认分支 `master`、session 文件 `.session/current-task.yaml`、briefing = 开局首条回复。验收：通过 / 失败 / 无相关 run / 不可用四种结论均可见，且不可用不得写成通过。 | 中 |
-| 上游提案：standards 骨架接入（不采纳） | 来源：`cmyr-skills-agents` 的 `docs/proposals/2026-11-02-standards-skeleton-adoption.md`。草案未发起正式提案（dependfix 试点未出结论）；项目 `AGENTS.md` §2 / §8.2 已有等价正文，且 `check:standards-redundant:strict` 禁止规范重复表述，搬运上游正文会直接触发本仓门禁。**optOut 已提交上游** §7 研判记录。复查条件：试点结论出来后只考虑「规范来源可追溯」标注，不搬正文。 | 低 |
 | 阶段构成计数跨载体一致机检 | **无机检的复发族**（2026-09-30 两批 + 2026-10-14 + 2026-10-16，共 3 次判 Review Gate blocker）：`todo.md` 的当前状态句 / 条目表 与 `roadmap.md` 的 §1 当前态句 / 阶段表行 是**多处独立口径**，改阶段构成或计数时只改一处即形成「同载体两套口径」。触发条件 = 用户指定或下次同族复发时；守卫须带负向对照与受检面下界。**用户 2026-10-16 裁定：记录在册、等待后续修复** | 低 |
 | Toast 焦点哨兵与 `aria-hidden-focus` 规则冲突 | Reka `Toast/FocusProxy` 的 `VisuallyHidden tabindex="0"` 焦点哨兵（上游有意模式）。**2026-09-25 用户裁定 D2③：维持现状仅更新记录**（不引入定向豁免机制）；候选处置为上游反馈或 `inert` 可行性 | 低 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
@@ -111,5 +107,6 @@
 
 | 诉求 | 来源 | 结论与理由 |
 |------|------|------------|
+| 上游 standards 骨架接入（`cmyr-skills-agents` 提案草案） | 2026-11-02 提案（草案，未正式发起） | **不采纳**：草案未发起正式提案（dependfix 试点未出结论）；项目 `AGENTS.md` §2 / §8.2 已有等价正文，且 `check:standards-redundant:strict` 禁止规范重复表述，搬运上游正文会直接触发本仓门禁。optOut 已提交上游 §7（commit `3ba71e0`）。复查条件：试点结论出来后只考虑「规范来源可追溯」标注，不搬正文。 |
 | Select 选项 `null` 值支持（以独立哨兵区分「未选择」） | momei 迁移反馈 2026-09-25 §1.2 | **不纳入**：`optionValue` 收窄为 `string \| number` 属有意契约（对齐 Reka 可稳定比较子集），非字符串 / 数字选项不渲染已在[设计规范 §7](../design/design-spec.md) 与 Select 组件页声明；支持 `null` 会改变「未选择」语义，须另立契约。开发期告警已作为条件候选登记于 §1.1，评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) |
 | App Shell / `Overlay` / `Fab` / `List`（应用外壳与组合件） | 三仓实测（2026-10-13，[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §3.1 / §3.2） | **不纳入**：`v-app` / `v-main` / `v-toolbar` 属**应用层外壳**（本库以组件为单位提供，`Toolbar` 已覆盖工具栏语义）；`v-overlay` 与既有 Dialog / Drawer / Popover 的遮罩机制重复；`v-fab-transition`（悬浮按钮）与 `v-list`（列表）均可用既有容器 + 样式承接（@lucide/vue 提供图标）。触发条件 = 出现既有能力无法覆盖的真实用例时再评估 |

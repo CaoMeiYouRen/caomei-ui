@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-03-upstream-proposal-adoption.md](./2026-11-03-upstream-proposal-adoption.md)：**上游提案研判与落地**。4 份提案结论（CI 回执 / 安全门禁 / ai-check 采纳或部分采纳，standards 骨架 optOut）、落地范围（发布链门禁、dismissed、`category`、references 索引、CI 回执规则）、optOut 理由与剩余事项。**Review Gate**：见同批提交的 `artifacts/review-gate/` 记录（本地态）。
 - [2026-11-03-phase26-archive.md](./2026-11-03-phase26-archive.md)：**Phase 26 归档批次（阶段收口、Phase 24 补齐与深度归档）**。Phase 26 块入窗、Phase 24 改整体归档、Phase 19 / 20 迁深度归档、`todo.md` 收口、第 28 轮门槛复核；含提交对账与回扫三段式。**Review Gate**：结论见本记录 §6。
 - [2026-11-03-phase26-m3-3-1.0.0-release.md](./2026-11-03-phase26-m3-3-1.0.0-release.md)：**Phase 26 M3-3 `1.0.0` 正式版发布执行**。发布链分步执行、发布后校验（dist-tag / shasum / tarball README / exports / API 差分）、过程处置（registry 传播延迟、sync 守卫）与后续（回滚未演练、`next` 前移）。**Review Gate**：结论见本记录 §5。
 - [2026-10-29-phase26-g3-rc-release-readiness.md](./2026-10-29-phase26-g3-rc-release-readiness.md)：**Phase 26 G3 `1.0.0-rc.1` 发布与收口**。rc.1 已发 `next`、tag / prerelease 已建、下游复验绿，G3 已完成；记录含发布流程、`sync` 守卫修复、rc.1 tarball 已知缺陷与 G4 待办。**Review Gate**：结论见本记录 §5 / §6.1。

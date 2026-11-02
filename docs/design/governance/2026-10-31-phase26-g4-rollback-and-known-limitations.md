@@ -17,7 +17,8 @@
 | 回滚方案 | 已就绪（§2），运行手册同步 | 本记录 §2、[发布指南](../../guide/release.md) §8 |
 | 产物 README 版本句（流程修复） | 已修复：`sync` 前置于 `publish`（§2.6） | `scripts/release/manual-release.mjs` `STEPS` + 单测 |
 | 安全告警复核（§2.1） | **已完成（2026-11-02）**：`Security Alerts` run [`41438930655`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41438930655) success（§4） | `Security Alerts` workflow / `pnpm check:security-alerts` |
-| 用户明确授权 | **待**（授权项见 §5；推送范围已完成并随 `652dc23` 同步，本批回填待提交） | 会话记录 |
+| 发布链 dry-run 就绪 | **已取证（2026-11-03）**：preflight 通过 + 七步 dry-run 贯通（§4.3） | `manual-release` / G4 §4.3 |
+| 用户明确授权 | **待**（授权项见 §5；`652dc23` 已推送，其后提交待授权推送，读数见 §4.3） | 会话记录 |
 
 ## 2. 回滚方案
 
@@ -70,7 +71,7 @@
   断言解包 README 的「当前版本」句 = 目标版本；不一致即登记缺陷并按 §2.1 判级。
 - **tag 视图不是有效信号**：`bump` 打 tag、`sync` 提交在其后，故 `git show v1.0.0:README.md` 仍是上一版版本句；权威校验以解包 tarball（或 `verify` 的自动断言）为准。
 - **首次真实验证**：`1.0.0` 发布即该修复的首个真实 run（此前仅单测覆盖）。
-- **Release note 抽取边界修复（2026-11-03，发布链就绪检查发现）**：`extractChangelogSection` 的标题匹配原为黑名单 `(?![\d.])`，`1.0.0` 会**静默命中 `1.0.0-rc.1` 段**（实测返回 rc.1 正文 16 行）——CHANGELOG 缺 `1.0.0` 段时 `announce` 会把 rc.1 内容当作 1.0.0 Release note（fail-open）。已改为「合法后继」白名单 `(?=$|\s|\()`，并补 3 例边界测试（`1.0.0` × `1.0.0-rc.1`、`1.0.0-beta` × `1.0.0-betamax`、两段并存各取本段）。修复后对当前 CHANGELOG 复算 `1.0.0` → `null`，`announce --dry-run` 走既有 fail-closed 分支（打印「尚无 v1.0.0 段落」）。
+- **Release note 抽取边界修复（2026-11-03，发布链就绪检查发现）**：`extractChangelogSection` 的标题匹配原为黑名单 `(?![\d.])`，`1.0.0` 会**静默命中 `1.0.0-rc.1` 段**（实测返回 rc.1 正文 16 行）——CHANGELOG 缺 `1.0.0` 段时 `announce` 会把 rc.1 内容当作 1.0.0 Release note（fail-open）。已改为「合法后继」白名单 `(?=$|\s|\()`，并补 3 例边界测试（`1.0.0` × `1.0.0-rc.1`、`1.0.0-beta` × `1.0.0-betamax`、两段并存各取本段）。修复后对当前 CHANGELOG 复算 `1.0.0` → `null`；真实运行时 `announce` 走既有 fail-closed 分支（抛错阻止），`--dry-run` 打印「尚无 v1.0.0 段落」并继续。
 
 ## 3. known limitations 汇总
 
@@ -125,9 +126,23 @@
 - 但判定不变：矩阵 #6 明写「最多占满可用高」+ `overflow: auto` 滚动降级，6 行月在小屏滚动 9px 属**设计内行为**；失败的是「不得有任何纵向溢出」这一比契约更严的断言。
 - **处置**：断言改为「内容完整 **或** 滚动可达」双分支，并新增「滚到底后末位成员完整落在面板 client rect 内」检查（`expectCappedPanelContentReachable`）；矩阵 #6 与 §4 断言 3 同步。Backlog 的缺陷候选因非产品缺陷而移除。**仍不作「E2E 全绿」证据引用**（该步骤另有 flaky），见 §6。
 
+### 4.3 发布链就绪检查（2026-11-03）
+
+| 项 | 读数 |
+| --- | --- |
+| `preflight` | `manual-release preflight --version=1.0.0 --tag=latest` **OK**：`pnpm verify` / `test:coverage` / `check:coverage` 全过（Statements 92.98 / Branches 85.92 / Functions 94.69 / Lines 92.33，阈值 90 / 80 / 90 / 90）；npm 身份 `cao-mei-you-ren` |
+| 全链 `--dry-run` | 七步顺序 `preflight → bump → changelog → sync → publish → verify → announce` 全部打印；`git push` 仍由用户执行 |
+| registry | `latest = 0.7.0`、`next = 1.0.0-rc.1`；`1.0.0` 未发布（`npm view` 404） |
+| tag | `v1.0.0-rc.1` 存在；`v1.0.0` 未创建 |
+| 工作区 | clean；`master` 比 `origin/master`（`652dc23`）多 5 个提交（`git rev-list --count 652dc23..4fb0c52`；本轮记录提交后为 6 个），待授权推送 |
+| 缺陷修复 | Release note 抽取 fail-open 已修（§2.6）；真实运行时 `announce` 对缺失段 fail-closed（抛错阻止），`--dry-run` 打印「尚无 v1.0.0 段落」并继续 |
+
+- **未覆盖**：未执行 `bump` / `changelog` / `publish`（需授权）；`announce` 的真实 `gh release create` 未演练。
+- **口径**：preflight 与全链 dry-run 通过**不等于发布就绪**；发布仍须 §5 逐项授权。
+
 ## 5. 用户授权清单（逐项）
 
-1. 推送本地提交到 `origin/master`。**推送范围已完成（2026-11-02）：含 `3b76903` 在内的提交已在 `652dc23`；本批 G4 回填尚未提交，待其落盘并推送后另行确认。**
+1. 推送本地提交到 `origin/master`。**部分完成**：`652dc23` 已于 2026-11-02 推送；其后提交**待授权推送**（读数见 §4.3）。
 2. 执行 `1.0.0` 发布链：`bump → changelog → 插入里程碑段并单独提交 → sync → publish --tag=latest → verify → announce`（`sync` 在 `publish` 之前，版本句才随 tarball 发布）。
 3. 推送 tag `v1.0.0`（annotated tag 已由 `bump` 创建，此处只推送；`announce` 前需已推送）。
 4. 创建 GitHub Release `v1.0.0`（正式版，占 Latest）。
@@ -158,4 +173,6 @@
 - **2026-11-02 R1（standard，日历面板内容完整性断言口径修正）：Reject**（1 blocker / 3 warning / 3 suggest）：blocker = 根因段把「日历行数随月份变化（`fixedWeeks` 默认 false）」写成「恒 6 周、与日期无关」；warning = 双 JSDoc 悬空、flaky 用例名缺证据、Backlog 删行缺终局含义。
 - **2026-11-02 R2（standard，delta）：Pass**（0 blocker / 1 warning / 2 suggest）；B1 + W1 ~ W4 / S5 ~ S7 闭环，RG-W5（260 为 border box / 258 为 client 高）与 S2（判别力三分表述）同批修正。
 - **2026-11-03 R1（deep，Release note 抽取边界修复）：Pass**（0 blocker / 1 warning / 2 suggest）：warning = 黑名单仍会漏 `1.0.0-beta` × `1.0.0-betamax`（字母续接），已改为白名单并补该例；suggest = M3-2 预演段补「插入前返回 `null` 属预期」。
+- **2026-11-03 R1（standard，发布链就绪记录）：Reject**（1 blocker / 3 warning / 4 suggest）：blocker = §5 第 1 项「推送范围已完成」与 §4.3 的 ahead 5 冲突，等于把推送移出授权清单（`preflight` 对 ahead 只提示、不阻断）；warning = ahead 未附命令与持久区间、`announce --dry-run` 被写成 fail-closed（实际 dry-run 打印并继续）、档位应按定量判定表取 `standard`。
+- **2026-11-03 R2（standard，delta）：Pass**（0 blocker / 1 warning / 2 suggest）；B1 闭环，W2 的 §2.6 补句与 §5 读数去重、§4.3 复算命令同批修正。
 - 证据与未覆盖边界见 `artifacts/review-gate/2026-10-31-g4-rollback-known-limitations.md`、`artifacts/review-gate/2026-11-01-m4-2-locale-verdict.md` 与 `artifacts/review-gate/2026-11-02-g4-evidence-backfill.md` 与 `artifacts/review-gate/2026-11-02-g4-e2e-rerun-and-320px-defect.md` 与 `artifacts/review-gate/2026-11-02-320px-calendar-assertion.md`。

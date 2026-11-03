@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import {
     CaomeiBadge,
     CaomeiButton,
+    CaomeiCheckboxGroup,
     CaomeiDialog,
+    CaomeiForm,
+    CaomeiFormItem,
     CaomeiIcon,
     CaomeiInput,
     CaomeiInputNumber,
@@ -28,6 +31,22 @@ const fruitOptions = [
     { label: '香蕉', value: 'banana' },
     { label: '樱桃', value: 'cherry' },
 ]
+
+/** 表单编排演示：文本 / 选择 / 组型 / 开关各一，覆盖三种继承面与 Switch 例外 */
+const formName = ref('')
+const formFruit = ref<string>('apple')
+const formRoles = ref<string[]>(['reader'])
+const formNotify = ref(true)
+const formSubmitted = ref(false)
+const formNameError = computed(() => (formSubmitted.value && !formName.value.trim() ? '名称不能为空' : ''))
+const roleOptions = [
+    { label: '读者', value: 'reader' },
+    { label: '编辑', value: 'editor' },
+]
+
+function onSubmitForm(): void {
+    formSubmitted.value = true
+}
 const { mode, isDark, setMode } = useTheme('light')
 
 watchEffect(() => {
@@ -198,6 +217,81 @@ async function triggerLoading(): Promise<void> {
                     tone="success"
                 />
             </div>
+        </section>
+
+        <section class="playground__section">
+            <h2>表单编排</h2>
+            <CaomeiForm
+                style="max-width: 420px"
+                @submit="onSubmitForm"
+            >
+                <CaomeiFormItem
+                    label="名称"
+                    name="name"
+                    hint="请输入名称"
+                    :error="formNameError"
+                    required
+                >
+                    <template #default="{id, name, invalid, ...aria}">
+                        <CaomeiInput
+                            :id="id"
+                            v-model="formName"
+                            :name="name"
+                            :invalid="invalid"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="水果"
+                    name="fruit"
+                    hint="单选选择器"
+                >
+                    <template #default="{id, name, invalid, ...aria}">
+                        <CaomeiSelect
+                            :id="id"
+                            v-model="formFruit"
+                            :name="name"
+                            :invalid="invalid"
+                            :options="fruitOptions"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="角色"
+                    name="roles"
+                    hint="组型控件用 aria-labelledby 关联标签"
+                >
+                    <template #default="{id, name, invalid, ...aria}">
+                        <CaomeiCheckboxGroup
+                            :id="id"
+                            v-model="formRoles"
+                            :name="name"
+                            :invalid="invalid"
+                            :options="roleOptions"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="通知"
+                    name="notify"
+                    hint="Switch 没有校验状态通道，不绑定 invalid"
+                >
+                    <template #default="{id, name, ...aria}">
+                        <CaomeiSwitch
+                            :id="id"
+                            v-model="formNotify"
+                            :name="name"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiButton type="submit">
+                    提交
+                </CaomeiButton>
+            </CaomeiForm>
         </section>
 
         <section class="playground__section">

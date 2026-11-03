@@ -47,6 +47,8 @@ export const caomeiComponents = [
     'CaomeiDropdownMenuTrigger',
     'CaomeiFileUpload',
     'CaomeiFloatLabel',
+    'CaomeiForm',
+    'CaomeiFormItem',
     'CaomeiIcon',
     'CaomeiImage',
     'CaomeiInput',

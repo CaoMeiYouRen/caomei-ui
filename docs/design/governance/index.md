@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-04-phase27-m2-1-form-composition.md](./2026-11-04-phase27-m2-1-form-composition.md)：**Phase 27 M2-1 `CaomeiForm` / `CaomeiFormItem` 实现与单测**。独立组合层：`Form` 负责布局与提交编排，`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-labelledby` / `aria-describedby` / `invalid`；12 个字段按三类继承面逐项绑定（`Switch` 无校验态）；无 rules 引擎、未扩 `Field*Props`；SSR 无警告；真实浏览器 23 项检查与三档响应式通过。**Review Gate**：R1 Pass → R2 Pass，见本记录 §5。
 - [2026-11-03-phase27-m1-4-guidelines-alignment.md](./2026-11-03-phase27-m1-4-guidelines-alignment.md)：**Phase 27 M1-4 指南与设计口径同步**。关闭三处触摸目标旧口径，P0 命中区改为已完成事实；17 对控件组件页按实际受影响尺寸项补密度轴说明与指南锚点；组件总览补跨组件能力入口；token 冻结面 380 → 381（156 默认声明 ∪ 290 披露钩子）并追加冻结面增量注记。**Review Gate**：见本记录 §5。
 - [2026-11-03-phase27-m1-3-mobile-matrix-baseline.md](./2026-11-03-phase27-m1-3-mobile-matrix-baseline.md)：**Phase 27 M1-3 移动端常驻回归与视觉基线**。密度轴与 P0 命中区进入 390 / 768 / 1280（含 320 / 900 定向档）常驻矩阵，命中区探针抽为公共助手；计算样式纳入三个多值字段值片与 `#hit-target`（含 `::after` 命中区），视觉基线新增 390 视口亮暗两面；基线差异处置与重冻结、判别力（移除 `::after` 与常驻负向对照）见记录。**Review Gate**：见本记录 §5。
 - [2026-11-03-phase27-registration.md](./2026-11-03-phase27-registration.md)：**Phase 27 登记批次（1.1.0 起步）**。编号与构成（**6 条主线 / 18 条**：原登记 5 / 13，2026-11-03 执行期追加 M6 CI 发布链路 5 条）、各条目范围与验收口径、非目标、载体同步与候选移出（42 → 33）。**Review Gate**：见本记录 §6。

@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-03-phase27-registration.md](./2026-11-03-phase27-registration.md)：**Phase 27 登记批次（1.1.0 起步）**。编号与构成、13 条原子条目的范围与验收口径、非目标、载体同步与候选移出（42 → 35；触摸目标行就地重写为 P1 / P2 候选）。**Review Gate**：见本记录 §6。
+- [2026-11-03-next-stage-scope-evaluation-11.md](./2026-11-03-next-stage-scope-evaluation-11.md)：**下一阶段范围评估（第十一轮）：1.1.0 起步**。候选池 42 条按能力归并为 7 组并逐条给落点，另列本轮新增 1 条（`minimatch` medium）、1.0 时点事实与长期任务义务；主线草案 5 条 / 13 条目（移动端与响应式二期 / `Form` 组合层 / 下游迁移护航 / 机制与质量收口 / 发布收口）；D1 ~ D5 裁定与登记结果。**Review Gate**：见本记录 §6。
 - [2026-11-03-upstream-proposal-adoption.md](./2026-11-03-upstream-proposal-adoption.md)：**上游提案研判与落地**。4 份提案结论（CI 回执 / 安全门禁 / ai-check 采纳或部分采纳，standards 骨架 optOut）、落地范围（发布链门禁、dismissed、`category`、references 索引、CI 回执规则）、optOut 理由与剩余事项。**Review Gate**：见同批提交的 `artifacts/review-gate/` 记录（本地态）。
 - [2026-11-03-phase26-archive.md](./2026-11-03-phase26-archive.md)：**Phase 26 归档批次（阶段收口、Phase 24 补齐与深度归档）**。Phase 26 块入窗、Phase 24 改整体归档、Phase 19 / 20 迁深度归档、`todo.md` 收口、第 28 轮门槛复核；含提交对账与回扫三段式。**Review Gate**：结论见本记录 §6。
 - [2026-11-03-phase26-m3-3-1.0.0-release.md](./2026-11-03-phase26-m3-3-1.0.0-release.md)：**Phase 26 M3-3 `1.0.0` 正式版发布执行**。发布链分步执行、发布后校验（dist-tag / shasum / tarball README / exports / API 差分）、过程处置（registry 传播延迟、sync 守卫）与后续（回滚未演练、`next` 前移）。**Review Gate**：结论见本记录 §5。

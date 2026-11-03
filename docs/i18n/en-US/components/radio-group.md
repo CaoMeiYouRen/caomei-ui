@@ -39,6 +39,8 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Form integration
 
 With `name`, the group is submitted with a native form when inside `<form>`; Reka UI outputs a hidden input carrying the selected value, and `required` participates in native validation.

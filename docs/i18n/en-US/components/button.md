@@ -54,6 +54,8 @@ Switch the size with `size`.
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## States
 
 While `loading`, the button is disabled and shows a loading indicator; `block` makes it fill the parent width.

@@ -35,6 +35,8 @@ A tags input lets users enter multiple free-text tags: commit with Enter or a de
 
 `size` offers `sm` / `md` / `lg` (default `md`); `invalid` maps to `aria-invalid` plus the error-state outline; `disabled` is forwarded to the input and disables all interaction.
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Form and accessibility
 
 - `name` + `required` render a hidden control inside a `<form>` to trigger native validation; the array value is expanded as `name[index]`.

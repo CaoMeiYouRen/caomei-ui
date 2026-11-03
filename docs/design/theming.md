@@ -176,7 +176,7 @@
 - **不是预设**：不进入 `data-preset` 命名空间，避免与品牌 / 明暗交叉；也不随视口自动切换（窄屏自动切换需由使用方把属性放进媒体查询内的容器）。
 - **宽度上限只放开两类**：`MultiSelect` / `AutoComplete` / `DatePicker` 经回退链继承 `--caomei-select-max-width`，因此同样放开；`Input` / `Textarea` 本就不设上限。
 - **浮层面板不穿透**：`Select` / `MultiSelect` / `AutoComplete` / `DatePicker` 的面板经 Portal 挂到 `body`，token 不会从内层容器穿透到面板内容。把属性挂在 `<html>` 时触发器与面板一同生效；挂在局部容器时只有该子树的触发器跟随。
-- **命中区不在本轴内**：密度轴只改尺寸，不改变可点范围。P0 的清除 / 关闭按钮另由 `--caomei-hit-target-min`（默认 `24px`，WCAG 2.5.8）与 `.caomei-hit-target` 不可见命中区原语承载，按钮视觉盒不变；多行值片的行距 +2px（4 → 6）使相邻 24px 命中区不重叠；调大该 token 时须保证**相邻目标的轴距（`max(|dx|, |dy|)`）不小于该值**，并同时覆盖 `.caomei-tags-input` / `.caomei-multi-select` / `.caomei-auto-complete` 的 `row-gap`（默认行距只按 24px 计算）。P1 / P2 目标仍待后续批次。
+- **命中区不在本轴内**：密度轴只改尺寸，不改变可点范围。P0 的清除 / 关闭按钮另由 `--caomei-hit-target-min`（默认 `24px`，WCAG 2.5.8）与 `.caomei-hit-target` 不可见命中区原语承载，按钮视觉盒不变；多行值片的行距 +2px（4 → 6）使相邻 24px 命中区不重叠；调大该 token 时须保证**相邻目标的轴距（`max(|dx|, |dy|)`）不小于该值**，并同时覆盖 `.caomei-tags-input` / `.caomei-multi-select` / `.caomei-auto-complete` 的 `row-gap`（默认行距只按 24px 计算）。P1 / P2 不在 1.1.0 范围内，触发条件见 [Backlog §1.5](../plan/backlog.md)。
 - 使用方视角的用法与示例见[移动端与响应式 §触摸密度轴](../guide/mobile.md)。
 
 ## 6. 无障碍

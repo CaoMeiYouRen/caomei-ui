@@ -75,8 +75,8 @@ Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):
 
 - `CaomeiCheckbox` / `CaomeiRadioButton` control boxes are 18px tall (width is sufficient once the associated label is included); the `CaomeiSwitch` track is 40×22; `control-height` tiers are 28 / 36 / 44px.
 - Under **WCAG 2.5.8 (≥24×24)**, about **30%** of the 289 interactive targets (87) fall short — **clear / close icon buttons (13.33px), 34 of them**, are the largest single group; under **Apple HIG (≥44×44)** only 9 targets pass (file-picker drop zone / stepper triggers / multiline textarea).
-- **P0 shipped (1.1.0)**: the six clear / close buttons (TagsInput / MultiSelect / AutoComplete / Password / Tag / Message, including value-chip removal) now have a **≥24×24** hit area with an **unchanged button box**; multi-row chips get +2px row spacing so adjacent hit areas do not overlap. Tune the minimum with `--caomei-hit-target-min`, but keep the axis distance (`max(|dx|, |dy|)`) between adjacent targets at least that value, and override `row-gap` on the three multi-value fields as well. The other targets (P1 form-control boxes / P2 row-height and inline rows) **keep their current sizes** and stay candidates in [Backlog §1.5](/plan/backlog) (Chinese).
-- **Suggestions for your app**: for finger-heavy areas (forms, toolbars, row actions), widen the clickable area at the consumer level with container `padding` or a wrapper element; whether the library lifts P1 / P2 further is a later decision.
+- **P0 shipped (1.1.0)**: the six clear / close buttons (TagsInput / MultiSelect / AutoComplete / Password / Tag / Message, including value-chip removal) now have a **≥24×24** hit area with an **unchanged button box**; multi-row chips get +2px row spacing so adjacent hit areas do not overlap. Tune the minimum with `--caomei-hit-target-min`, but keep the axis distance (`max(|dx|, |dy|)`) between adjacent targets at least that value, and override `row-gap` on the three multi-value fields as well. The other targets (P1 form-control boxes / P2 row-height and inline rows) **keep their current sizes** and are outside 1.1.0; both are registered in [Backlog §1.5](/plan/backlog) under their own trigger conditions.
+- **Suggestions for your app**: for finger-heavy areas (forms, toolbars, row actions), widen the clickable area at the consumer level with container `padding` or a wrapper element. P0 shipped in 1.1.0; the disposition of P1 / P2 follows the conditions registered in [Backlog §1.5](/plan/backlog).
 
 ## Narrow-screen self-check
 
@@ -92,4 +92,4 @@ Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):
 - [Responsive design](/design/responsive) (Chinese) — breakpoints, behaviour matrix, acceptance criteria (single source of truth)
 - [Theming and styles](/design/theming) (Chinese) — control width limits and token overrides
 - [Component overview](/en-US/components/) — per-component capabilities and usage
-- [Backlog](/plan/backlog) (Chinese) — mobile & responsive candidates (including touch-target enhancement)
+- [Backlog](/plan/backlog) (Chinese) — mobile & responsive candidates (including P1 / P2 touch targets)

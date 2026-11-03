@@ -37,6 +37,8 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
 - The open state supports `v-model:open`; `showIcon` toggles the calendar icon.
 - `locale` controls the calendar and date language, defaulting to the library's default locale (`zh-CN`). It is independent of the injected built-in text locale; pass it explicitly when the two must match.
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights, font sizes and content-width caps in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Accessibility
 
 - The trigger is a `button` with `aria-expanded`. Its accessible name resolves as `label` > forwarded `aria-label` > the current locale's "Date" text; when none applies (visible date text or a placeholder is present) no `aria-label` is added.

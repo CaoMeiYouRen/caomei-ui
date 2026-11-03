@@ -75,8 +75,8 @@
 
 - `CaomeiCheckbox` / `CaomeiRadioButton` 控件盒 18px 高（含关联标签并集后宽度充足）；`CaomeiSwitch` 轨道 40×22；`control-height` 三档 = 28 / 36 / 44px。
 - 按 **WCAG 2.5.8（≥24×24）** 判据，289 个可点目标中约**三成**（87 个）未达标，其中**清除 / 关闭类 icon 按钮（13.33px）共 34 个**为最大构成；按 **Apple HIG（≥44×44）** 判据，达标者共 9 个（文件选择拖拽区 / 步骤条触发器 / 多行文本域）。
-- **P0 已实现（1.1.0）**：六类清除 / 关闭按钮（TagsInput / MultiSelect / AutoComplete / Password / Tag / Message，含值片删除）的命中区扩到 **≥24×24**，**按钮视觉盒不变**；多行值片的行距 +2px 以保证相邻命中区不重叠。下限可用 `--caomei-hit-target-min` 调整，但调大时须保证相邻目标的轴距不小于该值，并同时覆盖三个多值字段的 `row-gap`。其余目标（P1 表单控件盒 / P2 行高受限与内联行）**维持现状**，仍在 [Backlog §1.5](../plan/backlog.md) 作为候选。
-- **给你的建议**：面向手指操作的触摸密集区（表单、工具栏、列表项操作），可在使用层用容器 `padding` 或包装元素扩大可点区域；P1 / P2 是否由库侧继续提升以后续裁定为准。
+- **P0 已实现（1.1.0）**：六类清除 / 关闭按钮（TagsInput / MultiSelect / AutoComplete / Password / Tag / Message，含值片删除）的命中区扩到 **≥24×24**，**按钮视觉盒不变**；多行值片的行距 +2px 以保证相邻命中区不重叠。下限可用 `--caomei-hit-target-min` 调整，但调大时须保证相邻目标的轴距不小于该值，并同时覆盖三个多值字段的 `row-gap`。其余目标（P1 表单控件盒 / P2 行高受限与内联行）**维持现状**，不在 1.1.0 范围内；两类已按触发条件登记在 [Backlog §1.5](../plan/backlog.md)。
+- **给你的建议**：面向手指操作的触摸密集区（表单、工具栏、列表项操作），可在使用层用容器 `padding` 或包装元素扩大可点区域；P0 已在 1.1.0 交付，P1 / P2 的处置以 [Backlog §1.5](../plan/backlog.md) 的登记条件为准。
 
 ## 自测清单（窄屏）
 
@@ -92,4 +92,4 @@
 - [响应式设计](../design/responsive.md)——断点语义 / 窄屏行为矩阵 / 验收标准（单一事实源）
 - [主题与样式](../design/theming.md)——控件宽度上限与 token 覆盖
 - [组件总览](../components/index.md)——各组件的能力与用法
-- [Backlog](../plan/backlog.md)——移动端与响应式候选（含触摸目标增强）
+- [Backlog](../plan/backlog.md)——移动端与响应式候选（含 P1 / P2 触摸目标）

@@ -40,6 +40,8 @@
     ssg="true"
 />
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 关闭与操作
 
 `closable` 显示关闭按钮并抛出 `close`；`#actions` 插槽承载操作按钮。

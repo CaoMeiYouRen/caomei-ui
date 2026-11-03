@@ -91,6 +91,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-10-28 增量（G1-F）**：新增 6 个公开角色 token（`--caomei-color-primary-text` / `success-text` / `warning-text` / `danger-text` / `neutral-text` + `--caomei-color-control-border`）与 3 个组件级默认声明（`--caomei-{tag,badge,message}-text`），属向后兼容增量；有效冻结面由 **371** 更新为 **380**（155 默认声明 ∪ 290 已披露钩子，交集 65）。披露面 +2 的构成为 `control-border`（进入 8 张组件「样式定制」表）+ `neutral-text`（进入 Message 章节说明），其余组件级声明不计入披露面。本表其余数字为 2026-10-24 时点值，不回改。
 
+> **2026-11-03 增量（P0 命中区）**：新增 `--caomei-hit-target-min`（默认 `24px`，清除 / 关闭按钮的不可见命中区下限，WCAG 2.5.8），属向后兼容增量；有效冻结面由 **380** 更新为 **381**（156 默认声明 ∪ 290 已披露钩子，交集 65）。该 token 只进入默认声明集合，不进入组件页「样式定制」披露面；消费面 / 未披露拆分同步为 **396 / 106**（含已声明 91 / 纯内部 15）。复算见下方命令块与 [`version-policy` 中英](../../guide/version-policy.md)。
+
 **复算命令**：
 
 ```bash
@@ -103,7 +105,7 @@ awk '/^## (样式定制|Style customization)/{flag=1;next} /^## /{flag=0} flag' 
 sort -u tokens-documented.txt -o tokens-documented.txt
 wc -l tokens-defined.txt tokens-documented.txt
 
-# 2026-10-24 时点值：371（有效冻结面）；当前值 380
+# 2026-10-24 时点值：371（有效冻结面）；2026-10-28：380；当前值 381
 cat tokens-defined.txt tokens-documented.txt | sort -u | wc -l
 comm -12 tokens-defined.txt tokens-documented.txt | wc -l   # 交集（2026-10-24 为 63，当前 65）
 

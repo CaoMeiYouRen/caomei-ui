@@ -24,6 +24,8 @@ Pass the option list via `options` and bind the value array with `v-model`; the 
 
 `size` / `disabled` / `invalid` apply to both the group and the options it renders; `label` maps to the group's own accessible name. Disabled opacity is not applied at the group level (each child already handles `--caomei-disabled-opacity`), avoiding a double fade.
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Keyboard behavior
 
 The native per-item tab order is kept by default; with `rovingFocus` the group keeps a single tab stop and the arrow keys move between options (Reka's roving focus).

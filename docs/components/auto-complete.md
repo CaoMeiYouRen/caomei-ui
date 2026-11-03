@@ -51,6 +51,12 @@
 - 空态与展开触发器分别使用本地化文案（`autoComplete.empty` / `autoComplete.open`），可通过 `emptyLabel` / `openLabel` 覆盖。
 - 禁用建议项输出 `data-disabled`，不可被选中。
 
+## 尺寸
+
+通过 `size` 切换尺寸（`sm` / `md` / `lg`，默认 `md`）。
+
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度、字号与内容型宽度上限；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 样式定制
 
 样式基于 CSS variables，保持低特异性便于覆盖：

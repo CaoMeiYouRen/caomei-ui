@@ -2,6 +2,8 @@
 
 caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](https://reka-ui.com/). Every component ships minimal default styles and exposes CSS variables for full overrides. Prefer to look first? Browse the [Component Gallery](/en-US/components/showcase) for live previews.
 
+> Responsive breakpoints, the touch density axis and P0 hit areas are **cross-component capabilities** documented in [Mobile & responsive](/en-US/guide/mobile); this page only lists components and does not repeat those rules.
+
 ## Translated component pages
 
 Component pages are translated incrementally and listed in the same order as the Chinese sidebar. Pages available in English so far:

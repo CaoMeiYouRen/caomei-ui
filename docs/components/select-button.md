@@ -42,6 +42,8 @@
     ssg="true"
 />
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度与字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 自定义选项内容
 
 通过 `#option` 插槽自定义每个选项的内容（如「图标 + 文本」），插槽参数为 `{ option, selected }`。选项可携带额外字段（`SelectButtonOption` 已开放索引签名）供插槽使用。

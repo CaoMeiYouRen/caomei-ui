@@ -24,6 +24,8 @@
 
 `size` / `disabled` / `invalid` 同时作用于分组与渲染出的选项；`label` 映射分组自身的可访问名。禁用态不在分组层叠加透明度（子项各自已按 `--caomei-disabled-opacity` 处理），避免双重变淡。
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 键盘行为
 
 默认保持原生逐项 Tab 顺序；`rovingFocus` 开启后组内只保留一个 Tab 停靠点、用方向键在选项间移动（Reka 的漫游焦点）。

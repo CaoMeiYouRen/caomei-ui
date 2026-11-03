@@ -42,6 +42,8 @@ With `multiple`, `v-model` becomes an array of values, and clicking toggles an o
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Custom option content
 
 Use the `#option` slot to customize each option's content (such as icon + text); the slot parameter is `{ option, selected }`. Options may carry extra fields (`SelectButtonOption` has an open index signature) for use in the slot.

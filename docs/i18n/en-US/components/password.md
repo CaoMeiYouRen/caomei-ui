@@ -15,6 +15,8 @@ Two-way bind with `v-model`; the right-side button toggles between masked and pl
 
 Passes through Input's `size`; supports `sm` / `md` / `lg`.
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## States and autofill
 
 `disabled` / `readonly` / `invalid` / `clearable` behave as in Input; `autocomplete` defaults to `current-password`, and sign-up or password-change flows should pass `new-password` explicitly to work with browser password managers.

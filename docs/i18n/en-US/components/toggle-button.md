@@ -40,6 +40,8 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## States
 
 The pressed state is determined by `v-model`; `disabled` disables interaction.

@@ -20,6 +20,8 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights, font sizes and content-width caps in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Range, stepping and precision
 
 `min` / `max` clamp the value on blur and step; `step` controls the increment; `precision` controls the number of decimal places.

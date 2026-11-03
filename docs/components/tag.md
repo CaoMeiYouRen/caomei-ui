@@ -29,6 +29,8 @@
 
 > soft / outline 的文本色按 `tone` 取 `--caomei-color-<tone>-text`（`neutral` 为 `--caomei-color-neutral-text`）；需要单独覆盖时用组件内变量 `--caomei-tag-text`。
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度与字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 可关闭
 
 设置 `closable` 后显示关闭按钮，点击抛出 `close` 事件由父级处理移除。

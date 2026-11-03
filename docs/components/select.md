@@ -70,6 +70,8 @@
     ssg="true"
 />
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度、字号与内容型宽度上限；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 状态
 
 `disabled` 禁用、`invalid` 标记校验失败；选项级 `disabled` 可禁用单个选项。

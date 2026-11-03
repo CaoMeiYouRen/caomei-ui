@@ -30,6 +30,8 @@ Switch the size with `size`; supports `sm` / `md` / `lg`.
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Multi-select group
 
 Pass an array to `v-model` and use `value` as the membership key to enter group semantics: clicking adds or removes that `value` from the array (matching PrimeVue). Checkboxes in one group only need to share the same array model — no manual membership bookkeeping required.

@@ -15,6 +15,8 @@
 
 透传 Input 的 `size`，支持 `sm` / `md` / `lg`。
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度与字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 状态与自动填充
 
 `disabled` / `readonly` / `invalid` / `clearable` 与 Input 一致；`autocomplete` 默认为 `current-password`，注册或修改密码场景应显式传 `new-password`，以配合浏览器密码管理器。

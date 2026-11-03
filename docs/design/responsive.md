@@ -27,7 +27,7 @@
 - 步骤条方向选择（横向步骤条在窄屏需纵向排布时，由使用方改 `orientation="vertical"`）；
 - 页面语言下的文案长度控制。
 
-**非目标**：移动端独立包；触摸手势（左滑返回 / 下拉刷新）；基于 JS 的视口分支与通用 `breakpoint` props（**例外**：① `Dialog.breakpoints` 为下游迁移对齐项，按使用方传入的视口上限生成媒体查询；② `CaomeiCol` 的 `sm` / `md` / `lg` 为栅格消费侧断点 props —— 二者均为**使用方数据**，不使用 `matchMedia` / 视口监听，见 §2 与 §3 #17 / #18）；容器查询（Container Queries）；`DataTable` 卡片化；触摸目标尺寸（a11y 独立议题，见 §5）。
+**非目标**：移动端独立包；触摸手势（左滑返回 / 下拉刷新）；基于 JS 的视口分支与通用 `breakpoint` props（**例外**：① `Dialog.breakpoints` 为下游迁移对齐项，按使用方传入的视口上限生成媒体查询；② `CaomeiCol` 的 `sm` / `md` / `lg` 为栅格消费侧断点 props —— 二者均为**使用方数据**，不使用 `matchMedia` / 视口监听，见 §2 与 §3 #17 / #18）；容器查询（Container Queries）；`DataTable` 卡片化；触摸目标的 **P1 / P2 提升**（P0 清除 / 关闭按钮的不可见命中区已由 1.1.0 提供，见 §3 #16 / §4 断言 7）。
 
 ## 2. 断点语义
 
@@ -117,12 +117,12 @@
 | 批次 1（已交付 2026-09-16） | Select、MultiSelect、AutoComplete、DropdownMenu | 同一缺陷类：浮层面板缺宽度上限（矩阵 #3 / #4），修法一致 |
 | 批次 2（已交付 2026-09-16） | Toolbar、ButtonGroup、SelectButton、SplitButton、ColorPicker、Dialog / ConfirmDialog（footer 换行） | 窄屏必现溢出或裁切（矩阵 #1 / #5 / #7 / #8） |
 | 批次 3（已交付 2026-09-17） | DatePicker / Calendar | 需先实测确认（矩阵 #6）→ 实测确认面板缺可用宽上限，按批次 1 同源修法收敛；基线见[批次 3 记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md) |
-| 不纳入 | DataTable 卡片化、Dialog 转全屏、Stepper 方向转换、触摸目标 | 均属使用方职责或已由用户决策维持现状（见下）；页面级栅格已由 `CaomeiRow` / `CaomeiCol` 组件原语内建（见 §1），不属本清单的适配批次 |
+| 不纳入 | DataTable 卡片化、Dialog 转全屏、Stepper 方向转换、P1 / P2 触摸目标提升 | 均属使用方职责或已由用户决策维持现状（见下；P0 清除 / 关闭按钮命中区已于 1.1.0 交付，见 §3 #16）；页面级栅格已由 `CaomeiRow` / `CaomeiCol` 组件原语内建（见 §1），不属本清单的适配批次 |
 
 **偏差与决策记录**：
 
 - **批次口径偏差**：登记门槛写「判为需适配的 Tier 0 / Tier 1 组件为一批」（Tier 分层见[组件设计](./components.md)）。经源码核对，Tier 0 / Tier 1 中多数组件的窄屏形态已收敛（矩阵 #1 的面板宽度、#9、#11，以及 #14 中的 Input 家族），库内**浮层面板宽度**类仅 Select / MultiSelect 待补；而「必现溢出 / 裁切」的项既有 Tier 0 / Tier 1 的 Dialog、ConfirmDialog（footer 换行），也有 Tier 2 / Tier 3 的布局类（Toolbar、ButtonGroup、SelectButton、ColorPicker）。故批次 1 以**缺陷类**为单位（含同缺陷类的 AutoComplete（Tier 3）、DropdownMenu（Tier 2）），批次 2 承接其余必现溢出的横向布局类。偏差已在[待办事项](../plan/todo.md) 登记。
-- **已决策 ①（2026-09-16，用户）**：触摸目标**暂不提升**到 ≥44px 命中区，维持现有视觉尺寸（Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px）。后续如需提升，须引入不改变视觉尺寸的不可见命中区原语，候选登记见 [Backlog §1.5](../plan/backlog.md)。
+- **已决策 ①（2026-09-16，用户）**：触摸目标**不整体提升到 ≥44px**，控件视觉尺寸维持现状（Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px）。2026-11-03 起 P0 清除 / 关闭按钮按 WCAG 2.5.8 提供 ≥24×24 不可见命中区（见下条），视觉盒不变；P1 / P2 的触发条件见 [Backlog §1.5](../plan/backlog.md)。
 - **P0 命中区落地（2026-11-03，Phase 27 M1-2）**：把**清除 / 关闭类 icon 按钮**的命中区扩到 **≥24×24**（`--caomei-hit-target-min` 默认 24px + `.caomei-hit-target` 的 `::after` 不可见扩展，按钮视觉盒不变），覆盖 TagsInput / MultiSelect / AutoComplete（含值片删除）/ Password（Input 清除）/ Tag / Message。多行值片的**行距 +2px**（4 → 6）使相邻 24px 命中区不重叠（WCAG 2.5.8 间距轴）。该批**不涉及** ≥44 提升，**决策 ① 仍成立**；P1（表单控件盒）与 P2（行高受限 / 内联行）维持 [Backlog §1.5](../plan/backlog.md) 候选。
 - **实测复核（2026-10-16，Phase 25 M2-2）**：对主夹具按真实渲染**逐组件实测**命中区（390×844 与 320×568 两档，受检 293 个可点目标）——结论：① 289 个目标中 **≥44×44 仅 9 个**（FileUpload 拖拽按钮 / Stepper / Textarea 各 3）、**24 ~ 43.99 者 193 个**、**< 24×24 者 87 个（30.1%）**（WCAG 2.5.8 达标为多数但非绝大多数；Button 无达标项，夹具无 `size="lg"` 实例）；② 不达标者中 **`13.33×13.33` 清除 / 关闭 icon 按钮 34 个**（最大单一构成）与**字段族内联输入行 `×16` 共 22 个**居前；③ 既有决策 ① 的四个对象（Checkbox 18 / RadioButton 18 / Switch 40×22 / `control-height-sm` 28）全部复现、结论不冲突。**决策 ① 维持**（本轮按用户裁定只出清单与建议、不改样式）；提升建议按 **P0（icon 按钮，可用 `::after` 不可见命中区原语、视觉盒零变化）/ P1（表单控件族）/ P2（需改行高、会触及视觉基线者）** 分级，逐组件清单与影响面见[触摸目标实测复核记录](./governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §3 / §4。
 - **已决策 ②（2026-09-16，用户）**：Stepper 横向窄屏**由使用方适配**——组件不内建横向→纵向的自动转换或滚动策略，需纵向形态时由使用方改 `orientation="vertical"`（已登记于 [Stepper 组件文档](../components/stepper.md) 与本节 §1 使用方职责）。

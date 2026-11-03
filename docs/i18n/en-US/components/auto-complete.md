@@ -51,6 +51,12 @@ Enable `multiple` to select several values; `v-model` becomes `string[]`, select
 - The empty state and the open trigger use localized text (`autoComplete.empty` / `autoComplete.open`), overridable via `emptyLabel` / `openLabel`.
 - Disabled suggestions output `data-disabled` and cannot be selected.
 
+## Sizes
+
+Switch the size with `size` (`sm` / `md` / `lg`, default `md`).
+
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights, font sizes and content-width caps in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Style customization
 
 Styles are based on CSS variables and kept low-specificity for easy overriding:

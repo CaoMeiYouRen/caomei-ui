@@ -35,6 +35,8 @@
 
 `size` 提供 `sm` / `md` / `lg` 三档（默认 `md`）；`invalid` 映射 `aria-invalid` 与错误态描边；`disabled` 透传到输入框并禁用全部交互。
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度与字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 表单与无障碍
 
 - `name` + `required` 在 `<form>` 内生成隐藏控件以触发原生校验；数组值按 `name[index]` 展开。

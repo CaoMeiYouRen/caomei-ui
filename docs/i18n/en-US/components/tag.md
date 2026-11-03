@@ -29,6 +29,8 @@ Switch between `soft` / `solid` / `outline` with `variant`, between `sm` / `md` 
 
 > soft / outline text color follows `--caomei-color-<tone>-text` for the tone (`--caomei-color-neutral-text` for `neutral`); override it per component with `--caomei-tag-text`.
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Closable
 
 With `closable`, a close button is shown; clicking it emits `close` for the parent to handle the removal.

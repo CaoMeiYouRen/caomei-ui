@@ -40,6 +40,8 @@
     ssg="true"
 />
 
+触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度与字号；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 ## 状态
 
 按下态由 `v-model` 决定；`disabled` 禁用交互。

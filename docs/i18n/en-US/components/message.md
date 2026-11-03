@@ -40,6 +40,8 @@ Switch between `sm` / `md` (default) / `lg` with `size`; it affects font size an
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Close and actions
 
 `closable` shows a close button and emits `close`; the `#actions` slot holds action buttons.

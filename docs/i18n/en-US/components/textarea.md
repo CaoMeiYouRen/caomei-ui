@@ -20,6 +20,8 @@ Switch the size with `size`, and control the number of initially visible lines w
     ssg="true"
 />
 
+On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights and font sizes in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 ## Auto resize
 
 With `autoResize`, the height follows the content in both directions and no scrollbar appears; `rows` still acts as the initial minimum height, and `resize` is fixed to `none` (a manually dragged size is overwritten by the next measurement).

@@ -53,10 +53,10 @@ export const MIN_REGISTERED_COMPONENTS = 45
  */
 export const CATALOG_ALLOWLIST = []
 /**
- * 已声明「无独立组件页的子部件」名（如 `RadioButton` 随 `RadioGroup` 登记）。
+ * 已声明「无独立组件页的子部件」名（如 `RadioButton` 随 `RadioGroup` 登记、`FormItem` 随 `Form` 登记）。
  * 受 T5 判定与反向校验：非登记名须在此表内，否则视为成员集合漂移；条目不再出现即报错。
  */
-export const CATALOG_SUBPART_ALLOWLIST = ['RadioButton']
+export const CATALOG_SUBPART_ALLOWLIST = ['RadioButton', 'FormItem']
 
 /**
  * 解析 `docs/design/components.md` §5 的组件清单表。

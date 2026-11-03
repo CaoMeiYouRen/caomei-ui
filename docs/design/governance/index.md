@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-04-phase27-m2-2-form-docs-and-counts.md](./2026-11-04-phase27-m2-2-form-docs-and-counts.md)：**Phase 27 M2-2 Form 文档、示例与计数回扫**。中英组件页 / 示例 / E2E（提交与错误态）/ 画廊 / 组件总览 / 设计清单 / capture 与视觉基线全部纳入 Form；包根导出名 324 → 330、组件目录 56 → 57、API 面 516/85/70/16 → 517/86/71/18；相对 npm 1.0.0 的 API 差分 0 删除 / 0 重命名，仅新增 3 个声明文件与 6 个导出。**Review Gate**：见本记录 §5。
 - [2026-11-04-phase27-m2-1-form-composition.md](./2026-11-04-phase27-m2-1-form-composition.md)：**Phase 27 M2-1 `CaomeiForm` / `CaomeiFormItem` 实现与单测**。独立组合层：`Form` 负责布局与提交编排，`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-labelledby` / `aria-describedby` / `invalid`；12 个字段按三类继承面逐项绑定（`Switch` 无校验态）；无 rules 引擎、未扩 `Field*Props`；SSR 无警告；真实浏览器 23 项检查与三档响应式通过。**Review Gate**：R1 Pass → R2 Pass，见本记录 §5。
 - [2026-11-03-phase27-m1-4-guidelines-alignment.md](./2026-11-03-phase27-m1-4-guidelines-alignment.md)：**Phase 27 M1-4 指南与设计口径同步**。关闭三处触摸目标旧口径，P0 命中区改为已完成事实；17 对控件组件页按实际受影响尺寸项补密度轴说明与指南锚点；组件总览补跨组件能力入口；token 冻结面 380 → 381（156 默认声明 ∪ 290 披露钩子）并追加冻结面增量注记。**Review Gate**：见本记录 §5。
 - [2026-11-03-phase27-m1-3-mobile-matrix-baseline.md](./2026-11-03-phase27-m1-3-mobile-matrix-baseline.md)：**Phase 27 M1-3 移动端常驻回归与视觉基线**。密度轴与 P0 命中区进入 390 / 768 / 1280（含 320 / 900 定向档）常驻矩阵，命中区探针抽为公共助手；计算样式纳入三个多值字段值片与 `#hit-target`（含 `::after` 命中区），视觉基线新增 390 视口亮暗两面；基线差异处置与重冻结、判别力（移除 `::after` 与常驻负向对照）见记录。**Review Gate**：见本记录 §5。

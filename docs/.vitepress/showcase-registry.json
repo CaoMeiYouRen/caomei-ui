@@ -36,6 +36,15 @@
         }
     },
     {
+        "name": "Form",
+        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "example": "form/basic.vue",
+        "description": {
+            "zh": "表单组合层：负责布局与提交编排，FormItem 提供标签、提示与错误的可访问性关联。",
+            "en": "Form composition layer for layout and submit orchestration; FormItem wires labels, hints and errors accessibly."
+        }
+    },
+    {
         "name": "Input",
         "group": { "zh": "表单输入", "en": "Form Inputs" },
         "example": "input/basic.vue",

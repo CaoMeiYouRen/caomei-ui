@@ -8,7 +8,7 @@
 |----|------|------|
 | Primitive 层 | Reka UI 原始件，不直接对外 | Select / Dialog 等组件内部使用的 primitive |
 | 封装 / 自建层 | Reka UI 封装，或原生元素 + 样式 / 变体 | 封装：Select、Dialog、Switch、Toast、Checkbox / CheckboxGroup；自建：Button、Input、Card、Tag / Badge |
-| 复合层 | 多 primitive 组合 | DataTable、ConfirmDialog、MultiSelect |
+| 复合层 | 多 primitive 组合 | DataTable、ConfirmDialog、MultiSelect、Form / FormItem |
 | Provider 层 | renderless 上下文组件（仅默认插槽，无 DOM） | ConfigProvider（内建文案注入，消费 `useLocale` / `provideLocale`） |
 | 服务层 | composables | useToast、useConfirm、useTheme |
 
@@ -84,6 +84,7 @@
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**已实现**；范围选择零用量未实现，见 [设计规范 §7](./design-spec.md)） |
 | ColorPicker | 封装（组合 ColorArea / ColorSlider / ColorField；色板自建按钮组） | Color 系列 | Alpha | 组合 color primitive，色板不用 `ColorSwatchPicker`（见 [设计规范 §7](./design-spec.md)）（**已实现**） |
 | InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
+| Form / FormItem | 自建（组合层） | 无 | — | 表单布局与提交编排；`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-*` / `invalid`，不含 rules 引擎（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
 | Tooltip | 封装（+ 一次性 Provider） | Tooltip | 稳定 | 悬停 / 聚焦即显的只读提示；不构成焦点陷阱，描述经隐藏 `role="tooltip"` 元素接线（**已实现**） |

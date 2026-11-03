@@ -70,6 +70,8 @@
 
 ## 7. M2-2 收口项
 
+> 2026-11-04 已由 [M2-2 交付记录](./2026-11-04-phase27-m2-2-form-docs-and-counts.md) 收口（组件页 / 示例 / E2E / capture / 视觉基线 / 计数与 API 差分）。
+
 - 组件页中英：`required` 仅视觉、控件语义由使用方绑定；`<span id>` + `aria-labelledby` 的取舍与 `FloatLabel` / 自绘 `<label for>` 替代方案；`FormExposed.form` 命名说明。
 - 把 `CaomeiForm` / `CaomeiFormItem` 纳入 `capture:styles` 夹具与 `test:visual` 基线，补负向对照；重冻结只应新增键 / 新面。
 - 中英组件页 / 示例 / E2E（布局 + 提交 + 错误态）/ 组件总览 / 画廊 / locale 台账 / 冻结面与 API 基线计数回扫。

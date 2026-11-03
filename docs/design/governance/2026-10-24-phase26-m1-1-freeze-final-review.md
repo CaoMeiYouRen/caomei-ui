@@ -26,6 +26,8 @@
 - **包根导出的组件名**：**94** 个 `Caomei*`（含 `TabList` / `TabContent` / `StepperItem` 等子组件）。命令：`rg -o --no-filename "export \{ default as [A-Za-z0-9_]+" src/components/*/index.ts | sed 's/export { default as //' | sort -u | wc -l`。
 - **文档站 API 面**（`vue-component-meta` 抽取）：**props 516 / events 85 / slots 70 / exposed 16**。命令：先 `pnpm docs:gen`，再读取 `docs/.vitepress/data/component-meta.json` 逐键求和；该文件**为 gitignored 生成物**，见 §6。
 - **冻结语义**：上述名称与语义不得删除或改义；新增**可选** props / events / slots 属向后兼容增量，不受冻结限制。必填性放宽（required → optional）属向后兼容；收紧（optional → required）属破坏性变更。
+
+> 本段 56 / 94 / 516 · 85 · 70 · 16 为 **2026-10-24 时点值**；2026-11-04 Form 增量（57 / 96 / 517 · 86 · 71 · 18）见 §2.3 注记，不回改本段。
 - **组件契约的权威表述**：以各组件页的 API 表与 `types.ts` JSDoc 为准；本记录只冻结面与复算入口，不复制逐组件清单。
 
 ### 2.2 子路径导出（13 键）
@@ -70,6 +72,8 @@
 ```bash
 node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ESNext,moduleResolution:ts.ModuleResolutionKind.Bundler,noEmit:true}),c=p.getTypeChecker(),s=c.getSymbolAtLocation(p.getSourceFile('src/index.ts'));const n=c.getExportsOfModule(s).map(x=>x.getName());console.log('total',n.length,'Caomei',n.filter(x=>x.startsWith('Caomei')).length,'use-provide',n.filter(x=>x.startsWith('use')||x.startsWith('provide')).length)"
 ```
+
+> **2026-11-04 增量（Form 组合层）**：新增 `CaomeiForm` / `CaomeiFormItem` 与 4 个公开类型（`FormProps` / `FormItemProps` / `FormItemSlotProps` / `FormExposed`），属向后兼容增量。组件目录 **56 → 57**、根导出组件名 **94 → 96**、包根导出名 **324 → 330**（`Caomei*` 98 → 100 / `use*`·`provide*` 7 / 其余 219 → 223）；API 面 props **516 → 517** / events **85 → 86** / slots **70 → 71** / exposed **16 → 18**；`exports` 13 键与 token 有效冻结面 381 不变。复算命令同上；API 面由 `pnpm docs:gen` 后对 `component-meta.json` 求和。
 
 ### 2.4 token 契约（用户 2026-10-24 裁定）
 

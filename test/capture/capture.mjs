@@ -130,6 +130,15 @@ const HIT_VISUAL_BOX_PROPS = ['width', 'height']
 const HIT_PSEUDO_PROPS = ['position', 'width', 'height']
 
 /**
+ * 表单组合层：Form 根 / FormItem / label / 必填标记 / hint / error / 失败态 label。
+ * 只取布局与文本 token，不采样输入控件的边框（由字段族基线覆盖）。
+ */
+const FORM_PROPS = ['display', 'flex-direction', 'gap', 'width', 'font-size', 'color']
+const FORM_ITEM_PROPS = ['display', 'flex-direction', 'gap', 'width']
+const FORM_LABEL_PROPS = ['font-size', 'font-weight', 'color', 'gap', 'line-height']
+const FORM_MESSAGE_PROPS = ['font-size', 'color', 'line-height']
+
+/**
  * 折行前置守卫：三个多值字段的值片必须跨 ≥2 行。
  *
  * 否则 `row-gap` 仍是 6px（单行时不可见），基线比对无法区分「多行行距生效」与
@@ -336,6 +345,15 @@ function buildStaticSamples() {
         add(`hit-target.${target.key}`, selector, HIT_VISUAL_BOX_PROPS)
         add(`hit-target.${target.key}-hit`, selector, HIT_PSEUDO_PROPS, { pseudo: '::after' })
     }
+
+    // 表单组合层：Form 根 / FormItem / label / required / hint / error / 失败态 label
+    add('form.root', '[data-cap="form:default"] .caomei-form', FORM_PROPS)
+    add('form.item', '[data-cap="form:default"] .caomei-form-item', FORM_ITEM_PROPS)
+    add('form.label', '[data-cap="form:default"] .caomei-form-item__label', FORM_LABEL_PROPS)
+    add('form.required', '[data-cap="form:default"] .caomei-form-item__required', ['color'])
+    add('form.hint', '[data-cap="form:default"] .caomei-form-item__hint', FORM_MESSAGE_PROPS)
+    add('form.error', '[data-cap="form:error"] .caomei-form-item__error', FORM_MESSAGE_PROPS)
+    add('form.invalid-label', '[data-cap="form:error"] .caomei-form-item__label', ['color'])
 
     return samples
 }

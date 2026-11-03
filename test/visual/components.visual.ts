@@ -22,6 +22,7 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-switch-default', name: 'switch' },
     { id: 'ds-radio-button-default', name: 'radio-button' },
     { id: 'ds-input-default', name: 'input' },
+    { id: 'form', name: 'form' },
     { id: 'ds-select-default', name: 'select' },
     { id: 'ds-slider-default', name: 'slider' },
     { id: 'ds-font-latin', name: 'font-latin-button' },
@@ -36,7 +37,7 @@ const SAMPLE_SECTIONS = [
 const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 11
+const MIN_SECTIONS = 12
 
 const THEMES = ['light', 'dark'] as const
 
@@ -44,17 +45,19 @@ const THEMES = ['light', 'dark'] as const
 const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 
 /**
- * 常驻负向对照的注入样式（四类目标各一条规则，缺一则对应面**不会**报差异）：
+ * 常驻负向对照的注入样式（五类目标各一条规则，缺一则对应面**不会**报差异）：
  * - `.fixture__state`：组件面与视口 / 预设轴面（`#app` 内）；
  * - `#calendar-inline`：日期轴面（该段为 `fixture__case`，不含 `.fixture__state`）；
  * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）；
- * - `#hit-target`：P0 命中区轴面（多值字段折行）。
+ * - `#hit-target`：P0 命中区轴面（多值字段折行）；
+ * - `#form`：表单组合层面。
  */
 const NEGATIVE_CONTROL_CSS = [
     '#app .fixture__state { padding: 24px !important; }',
     '#calendar-inline { padding: 24px !important; }',
     '.caomei-dialog__content { padding: 0 !important; }',
     '#hit-target { padding: 24px !important; }',
+    '#form { padding: 24px !important; }',
 ].join('\n')
 
 /**

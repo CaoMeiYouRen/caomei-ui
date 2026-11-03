@@ -15,6 +15,7 @@ const CATALOG_MARKDOWN = [
     '|------|----------|--------------|:-:|------|',
     '| Divider | 自建 | 无 | — | 线型（**已实现**） |',
     '| RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件（**已实现**） |',
+    '| Form / FormItem | 自建（组合层） | 无 | — | 表单布局与字段编排（**已实现**） |',
     '| Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog |',
     '| NotShipped | 自建 | 无 | — | 规划中 |',
     '',
@@ -23,7 +24,7 @@ const CATALOG_MARKDOWN = [
     '| Divider | 不应被解析 |',
 ].join('\n')
 
-const REGISTERED = new Set(['Divider', 'RadioGroup'])
+const REGISTERED = new Set(['Divider', 'RadioGroup', 'Form'])
 
 /** §5 语料：首张表结束后追加第二张表（须停在首张表结束处）。 */
 const CATALOG_WITH_SECOND_TABLE = [
@@ -46,6 +47,7 @@ describe('parseCatalogRows', () => {
         expect(rows.map((row) => row.nameCell)).toEqual([
             'Divider',
             'RadioGroup / RadioButton',
+            'Form / FormItem',
             'Sidebar',
             'NotShipped',
         ])
@@ -63,7 +65,12 @@ describe('parseCatalogRows', () => {
             names: ['RadioGroup', 'RadioButton'],
             implemented: true,
         })
-        expect(rows[2].implemented).toBe(false)
+        expect(rows[2]).toEqual({
+            nameCell: 'Form / FormItem',
+            names: ['Form', 'FormItem'],
+            implemented: true,
+        })
+        expect(rows[3].implemented).toBe(false)
     })
 
     it('缺少 §5 标题时返回空数组', () => {
@@ -167,6 +174,6 @@ describe('仓库现状', () => {
 
     it('默认允许名单为空、子部件名单仅登记无独立组件页的子部件', () => {
         expect(CATALOG_ALLOWLIST).toEqual([])
-        expect(CATALOG_SUBPART_ALLOWLIST).toEqual(['RadioButton'])
+        expect(CATALOG_SUBPART_ALLOWLIST).toEqual(['RadioButton', 'FormItem'])
     })
 })

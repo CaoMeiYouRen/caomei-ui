@@ -23,6 +23,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [CheckboxGroup](/en-US/components/checkbox-group)
 - [FileUpload](/en-US/components/file-upload)
 - [FloatLabel](/en-US/components/float-label)
+- [Form](/en-US/components/form)
 - [Input](/en-US/components/input)
 - [InputGroup](/en-US/components/input-group)
 - [InputNumber](/en-US/components/input-number)

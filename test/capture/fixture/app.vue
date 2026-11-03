@@ -21,6 +21,8 @@ import {
     CaomeiDropdownMenuContent,
     CaomeiDropdownMenuTrigger,
     CaomeiFloatLabel,
+    CaomeiForm,
+    CaomeiFormItem,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -136,6 +138,9 @@ const hitAuto = ref<string[]>(hitAutoValues)
 const hitMultiOptions = hitMultiValues.map((value, index) => ({ label: `多选${index + 1}`, value }))
 const hitAutoOptions = hitAutoValues.map((value) => ({ label: value, value }))
 const hitPassword = ref('Abcdefg1')
+
+/** 表单组合层：默认态（hint + required）与错误态（error + invalid label） */
+const captureFormName = ref('')
 
 /** 复选框：三档尺寸 + 分组（间距契约）。 */
 const checkboxSm = ref(false)
@@ -812,6 +817,56 @@ ui.setDialog = (size, open) => {
                     title="提示"
                     closable
                 />
+            </div>
+        </section>
+
+        <!-- 17. 表单组合层：默认态（hint + required）与错误态（error + invalid label） -->
+        <section>
+            <div
+                class="case"
+                data-cap="form:default"
+            >
+                <CaomeiForm>
+                    <CaomeiFormItem
+                        label="名称"
+                        name="name"
+                        hint="提示"
+                        required
+                    >
+                        <template #default="{id, name: fieldName, invalid, ...aria}">
+                            <CaomeiInput
+                                :id="id"
+                                v-model="captureFormName"
+                                :name="fieldName"
+                                :invalid="invalid"
+                                v-bind="aria"
+                            />
+                        </template>
+                    </CaomeiFormItem>
+                </CaomeiForm>
+            </div>
+            <div
+                class="case"
+                data-cap="form:error"
+            >
+                <CaomeiForm>
+                    <CaomeiFormItem
+                        label="名称"
+                        name="name"
+                        error="错误"
+                        required
+                    >
+                        <template #default="{id, name: fieldName, invalid, ...aria}">
+                            <CaomeiInput
+                                :id="id"
+                                v-model="captureFormName"
+                                :name="fieldName"
+                                :invalid="invalid"
+                                v-bind="aria"
+                            />
+                        </template>
+                    </CaomeiFormItem>
+                </CaomeiForm>
             </div>
         </section>
 

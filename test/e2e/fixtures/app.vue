@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h, ref } from 'vue'
 import { Settings } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
@@ -15,6 +15,7 @@ import {
     CaomeiCalendar,
     CaomeiChart,
     CaomeiCheckbox,
+    CaomeiCheckboxGroup,
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
@@ -26,6 +27,8 @@ import {
     CaomeiDropdownMenuContent,
     CaomeiDropdownMenuTrigger,
     CaomeiFileUpload,
+    CaomeiForm,
+    CaomeiFormItem,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -377,6 +380,31 @@ const htAutoOptions = Array.from({ length: 10 }, (_, index) => ({
     label: `值${index + 1}`,
     value: `值${index + 1}`,
 }))
+
+/**
+ * 表单组合层用例（见 `test/e2e/form.e2e.ts` 与视觉基线）：
+ * 空名称提交后展示错误态与 `aria-invalid`；`#form-submitted` 记录提交结果。
+ */
+const formName = ref('')
+const formFruit = ref<string>('a')
+const formRoles = ref<string[]>(['reader'])
+const formNotify = ref(true)
+const formSubmitted = ref(false)
+const formSubmittedName = ref('')
+const formError = computed(() => (formSubmitted.value && !formName.value.trim() ? '名称不能为空' : ''))
+const formFruitOptions = [
+    { label: '选项一', value: 'a' },
+    { label: '选项二', value: 'b' },
+]
+const formRoleOptions = [
+    { label: '读者', value: 'reader' },
+    { label: '编辑', value: 'editor' },
+]
+
+function onSubmitForm(): void {
+    formSubmitted.value = true
+    formSubmittedName.value = formName.value
+}
 
 /**
  * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
@@ -1574,6 +1602,88 @@ const ConfirmDriver = defineComponent({
                 ×
             </button>
         </section>
+
+        <!--
+          表单组合层用例（见 `test/e2e/form.e2e.ts`、视觉基线与响应式矩阵）：
+          四种继承面各一；空名称提交后展示错误态与 aria-invalid。
+        -->
+        <section id="form" class="fixture__case">
+            <CaomeiForm
+                class="fixture-form"
+                @submit="onSubmitForm"
+            >
+                <CaomeiFormItem
+                    label="名称"
+                    name="name"
+                    hint="请输入名称"
+                    :error="formError"
+                    required
+                >
+                    <template #default="{id, name: fieldName, invalid, ...aria}">
+                        <CaomeiInput
+                            :id="id"
+                            v-model="formName"
+                            :name="fieldName"
+                            :invalid="invalid"
+                            placeholder="请输入名称"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="水果"
+                    name="fruit"
+                    hint="单选选择器"
+                >
+                    <template #default="{id, name: fieldName, invalid, ...aria}">
+                        <CaomeiSelect
+                            :id="id"
+                            v-model="formFruit"
+                            :name="fieldName"
+                            :invalid="invalid"
+                            :options="formFruitOptions"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="角色"
+                    name="roles"
+                    hint="组型控件用 aria-labelledby"
+                >
+                    <template #default="{id, name: fieldName, invalid, ...aria}">
+                        <CaomeiCheckboxGroup
+                            :id="id"
+                            v-model="formRoles"
+                            :name="fieldName"
+                            :invalid="invalid"
+                            :options="formRoleOptions"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="通知"
+                    name="notify"
+                    hint="Switch 没有校验状态通道"
+                >
+                    <template #default="{id, name: fieldName, ...aria}">
+                        <CaomeiSwitch
+                            :id="id"
+                            v-model="formNotify"
+                            :name="fieldName"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiButton type="submit">
+                    提交
+                </CaomeiButton>
+            </CaomeiForm>
+            <p id="form-submitted">
+                {{ formSubmitted ? `已提交：${formSubmittedName || '（空）'}` : '未提交' }}
+            </p>
+        </section>
     </main>
 </template>
 
@@ -1714,6 +1824,10 @@ const ConfirmDriver = defineComponent({
     background: var(--caomei-color-bg);
     color: var(--caomei-color-text);
     cursor: pointer;
+}
+
+.fixture-form {
+    max-width: 420px;
 }
 
 .fixture__state {

@@ -66,7 +66,7 @@
 | 13 | 长文本容器 | FileUpload 文件名、面板选项文本 | `min-width: 0` + 省略号 | 同左 | 同左 | 已实现（`file-upload.vue:331`）；面板选项文本随 #3 / #4 收敛 |
 | 14 | 表单控件宽度 | Input 家族 / Slider / InputNumber | `width: 100%`，上限由使用方容器决定 | 同左 | 默认 `max-width` token | 已实现（`input.vue:122`、`slider.vue:140`、`input-number.vue:258`） |
 | 15 | 单元素展示 | Card / Tag / Badge / Message / Skeleton / Image / Avatar | 随容器自适应 | 同左 | 同左 | 无风险（`image.vue:149`、`message.vue:104` 为 `width: 100%`；`card.vue:135` 宽度随容器；`tag.vue:73`、`avatar.vue:91`、`badge.vue:81` 为随内容 / 定尺寸元素；`skeleton.vue:78` 宽度默认 `100%`） |
-| 16 | 触摸目标 | Checkbox / RadioButton / Switch、`control-height-sm` | 维持现状（不做 ≥44px 提升，决策见 §5） | — | — | 维持（`checkbox.vue:129` 18px、`radio-button.vue:85` 18px、`switch.vue:52` 40px、`theme.css:43` 控件高度 28px）；**2026-10-16 实测复核**：受检 289 个目标中 **< 24×24 者 87（30.1%）**、**≥44 者仅 9**，最小为清除 / 关闭 icon 按钮 13.33px（34 个），逐组件清单与提升建议见[触摸目标实测复核记录](./governance/2026-10-16-phase25-m2-2-touch-target-audit.md) |
+| 16 | 触摸目标 | Checkbox / RadioButton / Switch / icon 按钮 | 维持视觉尺寸；**P0 清除 / 关闭 icon 按钮的命中区 ≥24×24**（`::after` 不可见扩展，按钮视觉盒不变） | — | — | **P0 已实现（2026-11-03）**：`--caomei-hit-target-min: 24px` + `.caomei-hit-target` 原语，作用于 TagsInput / MultiSelect / AutoComplete / Tag / Message 的清除 / 关闭按钮（含值片删除）与 Password（Input 清除）；多行值片的行距 +2px（4 → 6），使相邻 24px 命中区不重叠。`test/e2e/hit-target.e2e.ts` 以 `elementFromPoint` 实测 24×24 命中 + 24 外不命中 + **相邻目标中心距 ≥24** + 未纳入的 20px 按钮负向对照。**P1 / P2 维持候选**（表单控件盒 / 行高受限与内联行），清单见[触摸目标实测复核记录](./governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 |
 | 17 | 浮层断点宽度 | Dialog（`breakpoints`） | 使用方传入的视口上限 → 面板宽度；命中多个取最窄档 | 同左 | 未传时按 `size` 档位宽度 | 已实现（`dialog.vue` 按实例属性选择器注入媒体查询 + `breakpoints.ts` 解析 / 生成；键须 px、值须安全长度，非法条目忽略；未使用 `!important`、无视图口监听） |
 | 18 | 栅格布局 | Row / Col | 断点 `span` / `offset` / `order` 按视口覆盖（`sm` ≤640 / `md` ≤768 / `lg` ≤1024，窄档覆盖宽档） | 同左（`md` 档仅在传入 `md` 时改变形态） | 默认 24 栏，未传断点时维持桌面取值 | 已实现（`row.vue`：24 栏 CSS Grid + `gap` 承载 gutter；`col.vue`：`grid-column` / `order` 由 CSS 变量驱动，三条 `@media (width <= 640 / 768 / 1024px)` 按宽→窄源序覆盖） |
 
@@ -92,6 +92,8 @@
 4. **桌面无回归**：1280×800 下组件几何与计算样式与批次实施前的基线一致；基线（截图或计算样式快照）随该批次的验证记录归档；
 5. **0 console error**；
 6. **面板不窄于触发器**（仅「面板宽度匹配触发器」的浮层组件：Select / MultiSelect / AutoComplete）：可用宽足够时面板宽 `>= 触发器宽 - 1` —— 该断言用于守卫 `min(触发器宽, 可用宽)` 收敛语义与 Reka 变量重命名导致的静默失效。
+
+7. **P0 命中区**（2026-11-03 起）：清除 / 关闭 icon 按钮的视觉盒不变，命中范围 `≥ --caomei-hit-target-min`（默认 24×24，WCAG 2.5.8），且**相邻目标的 Chebyshev 中心距（`max(|dx|, |dy|)`）≥24**（两个方命中区不相交的判据；多行值片经行距 +2px 保证）。判定 = 以按钮中心为原点、24×24 方框内 9 个 `elementFromPoint` 采样点均命中该按钮，方框外不命中，并以未纳入 P0 的 20px 普通按钮作负向对照；常驻用例 `test/e2e/hit-target.e2e.ts`。P1 / P2 目标不在此断言面内。**视觉基线边界**：TagsInput / MultiSelect / AutoComplete 的值片与 `#hit-target` 尚未纳入 `test:visual` / `capture:styles` 抽面，重冻结归 M1-3。
 
 **键盘聚焦（滚动类容器的追加口径，2026-09-17 用户裁定）**：按**聚焦前**的实际几何分档判定——
 
@@ -121,6 +123,7 @@
 
 - **批次口径偏差**：登记门槛写「判为需适配的 Tier 0 / Tier 1 组件为一批」（Tier 分层见[组件设计](./components.md)）。经源码核对，Tier 0 / Tier 1 中多数组件的窄屏形态已收敛（矩阵 #1 的面板宽度、#9、#11，以及 #14 中的 Input 家族），库内**浮层面板宽度**类仅 Select / MultiSelect 待补；而「必现溢出 / 裁切」的项既有 Tier 0 / Tier 1 的 Dialog、ConfirmDialog（footer 换行），也有 Tier 2 / Tier 3 的布局类（Toolbar、ButtonGroup、SelectButton、ColorPicker）。故批次 1 以**缺陷类**为单位（含同缺陷类的 AutoComplete（Tier 3）、DropdownMenu（Tier 2）），批次 2 承接其余必现溢出的横向布局类。偏差已在[待办事项](../plan/todo.md) 登记。
 - **已决策 ①（2026-09-16，用户）**：触摸目标**暂不提升**到 ≥44px 命中区，维持现有视觉尺寸（Checkbox / RadioButton 18px、Switch 40px、`control-height-sm` 28px）。后续如需提升，须引入不改变视觉尺寸的不可见命中区原语，候选登记见 [Backlog §1.5](../plan/backlog.md)。
+- **P0 命中区落地（2026-11-03，Phase 27 M1-2）**：把**清除 / 关闭类 icon 按钮**的命中区扩到 **≥24×24**（`--caomei-hit-target-min` 默认 24px + `.caomei-hit-target` 的 `::after` 不可见扩展，按钮视觉盒不变），覆盖 TagsInput / MultiSelect / AutoComplete（含值片删除）/ Password（Input 清除）/ Tag / Message。多行值片的**行距 +2px**（4 → 6）使相邻 24px 命中区不重叠（WCAG 2.5.8 间距轴）。该批**不涉及** ≥44 提升，**决策 ① 仍成立**；P1（表单控件盒）与 P2（行高受限 / 内联行）维持 [Backlog §1.5](../plan/backlog.md) 候选。
 - **实测复核（2026-10-16，Phase 25 M2-2）**：对主夹具按真实渲染**逐组件实测**命中区（390×844 与 320×568 两档，受检 293 个可点目标）——结论：① 289 个目标中 **≥44×44 仅 9 个**（FileUpload 拖拽按钮 / Stepper / Textarea 各 3）、**24 ~ 43.99 者 193 个**、**< 24×24 者 87 个（30.1%）**（WCAG 2.5.8 达标为多数但非绝大多数；Button 无达标项，夹具无 `size="lg"` 实例）；② 不达标者中 **`13.33×13.33` 清除 / 关闭 icon 按钮 34 个**（最大单一构成）与**字段族内联输入行 `×16` 共 22 个**居前；③ 既有决策 ① 的四个对象（Checkbox 18 / RadioButton 18 / Switch 40×22 / `control-height-sm` 28）全部复现、结论不冲突。**决策 ① 维持**（本轮按用户裁定只出清单与建议、不改样式）；提升建议按 **P0（icon 按钮，可用 `::after` 不可见命中区原语、视觉盒零变化）/ P1（表单控件族）/ P2（需改行高、会触及视觉基线者）** 分级，逐组件清单与影响面见[触摸目标实测复核记录](./governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §3 / §4。
 - **已决策 ②（2026-09-16，用户）**：Stepper 横向窄屏**由使用方适配**——组件不内建横向→纵向的自动转换或滚动策略，需纵向形态时由使用方改 `orientation="vertical"`（已登记于 [Stepper 组件文档](../components/stepper.md) 与本节 §1 使用方职责）。
 - **已决策 ③（2026-09-16，用户）**：「DataTable 转卡片列表」「Dialog 转全屏」**不作为默认行为**，窄屏以响应式适配（横向滚动 / 内收宽度 / 换行 / 截断）为主；卡片化与全屏化仅在业务需要时由使用方实现（结论与 §1 非目标一致）。

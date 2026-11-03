@@ -58,6 +58,9 @@
     --caomei-control-height-sm: 28px;
     --caomei-control-height-md: 36px;
     --caomei-control-height-lg: 44px;
+
+    /* 不可见命中区下限（WCAG 2.5.8）：icon 按钮通过 `.caomei-hit-target` 扩到该尺寸 */
+    --caomei-hit-target-min: 24px;
     --caomei-input-number-max-width: 12rem;
     --caomei-select-max-width: 20rem;
     --caomei-skeleton-highlight: rgb(255 255 255 / 0.6);

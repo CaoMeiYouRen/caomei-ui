@@ -84,7 +84,7 @@ const rootClass = computed(() => [
         <button
             v-if="closable"
             type="button"
-            class="caomei-message__close"
+            class="caomei-hit-target caomei-message__close"
             :aria-label="closeLabel"
             @click="emit('close')"
         >

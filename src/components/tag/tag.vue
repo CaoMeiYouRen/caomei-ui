@@ -78,7 +78,7 @@ function onToggle(): void {
         <button
             v-if="closable"
             type="button"
-            class="caomei-tag__close"
+            class="caomei-hit-target caomei-tag__close"
             :disabled="disabled"
             :aria-label="closeLabel"
             @click.stop="onClose"

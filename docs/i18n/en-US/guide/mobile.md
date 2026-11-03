@@ -66,7 +66,7 @@ If the app only needs larger controls on narrow screens, skip the axis and overr
 ```
 
 - `font-size-md: 16px` avoids iOS zoom when focusing inputs smaller than 16px, but it changes button / table-row heights — run the self-check below.
-- This override does **not** enlarge the hit areas of Checkbox / RadioButton / Switch / icon buttons; the clear / close hit-area enhancement ships in a later release (not implemented yet), so consumer-level `padding` or a wrapper is still needed for finger-heavy areas.
+- This override does **not** enlarge the hit areas of Checkbox / RadioButton / Switch / icon buttons; the P0 clear / close buttons are already covered by the library (≥24×24, visuals unchanged), while the remaining targets still need consumer-level `padding` or a wrapper.
 - Why there is no `data-preset="mobile"`: presets are orthogonal to colour scheme and viewport-agnostic; putting sizes into a preset would also enlarge desktop controls and still would not cover breakpoints or hit areas. See the [mobile-first preset evaluation](/design/governance/2026-10-25-mobile-first-preset-evaluation) (Chinese).
 
 ## Touch targets
@@ -75,8 +75,8 @@ Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):
 
 - `CaomeiCheckbox` / `CaomeiRadioButton` control boxes are 18px tall (width is sufficient once the associated label is included); the `CaomeiSwitch` track is 40×22; `control-height` tiers are 28 / 36 / 44px.
 - Under **WCAG 2.5.8 (≥24×24)**, about **30%** of the 289 interactive targets (87) fall short — **clear / close icon buttons (13.33px), 34 of them**, are the largest single group; under **Apple HIG (≥44×44)** only 9 targets pass (file-picker drop zone / stepper triggers / multiline textarea).
-- **Current state**: the library keeps the existing sizes (see [Responsive design §5](/design/responsive), Chinese); the per-component inventory and tiered suggestions are in the [touch-target audit record](/design/governance/2026-10-16-phase25-m2-2-touch-target-audit) (Chinese).
-- **Suggestions for your app**: for finger-heavy areas (forms, toolbars, row actions), widen the clickable area at the consumer level with container `padding` or a wrapper element; whether the library ships an invisible-hit-area primitive is a later decision (candidate in the [Backlog §1.5](/plan/backlog) (Chinese)).
+- **P0 shipped (1.1.0)**: the six clear / close buttons (TagsInput / MultiSelect / AutoComplete / Password / Tag / Message, including value-chip removal) now have a **≥24×24** hit area with an **unchanged button box**; multi-row chips get +2px row spacing so adjacent hit areas do not overlap. Tune the minimum with `--caomei-hit-target-min`, but keep the axis distance (`max(|dx|, |dy|)`) between adjacent targets at least that value, and override `row-gap` on the three multi-value fields as well. The other targets (P1 form-control boxes / P2 row-height and inline rows) **keep their current sizes** and stay candidates in [Backlog §1.5](/plan/backlog) (Chinese).
+- **Suggestions for your app**: for finger-heavy areas (forms, toolbars, row actions), widen the clickable area at the consumer level with container `padding` or a wrapper element; whether the library lifts P1 / P2 further is a later decision.
 
 ## Narrow-screen self-check
 

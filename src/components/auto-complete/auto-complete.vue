@@ -311,7 +311,7 @@ watch(normalizedOptions, () => {
                 <span class="caomei-auto-complete__tag-label">{{ labelFor(value) }}</span>
                 <button
                     type="button"
-                    class="caomei-auto-complete__tag-remove"
+                    class="caomei-auto-complete__tag-remove caomei-hit-target"
                     :disabled="disabled"
                     :aria-label="`${clearLabel} ${labelFor(value)}`"
                     @click.stop="removeValue(value)"
@@ -344,7 +344,7 @@ watch(normalizedOptions, () => {
             <button
                 v-else-if="showClear"
                 type="button"
-                class="caomei-auto-complete__clear"
+                class="caomei-auto-complete__clear caomei-hit-target"
                 :aria-label="clearLabel"
                 @click.stop="onClear"
             >
@@ -403,6 +403,9 @@ watch(normalizedOptions, () => {
     flex-wrap: wrap;
     align-items: center;
     gap: var(--caomei-space-1);
+
+    /* 多行值片的行距 +2px：使 24px 不可见命中区在相邻行之间留出间隙（WCAG 2.5.8） */
+    row-gap: calc(var(--caomei-space-1) + 2px);
     width: 100%;
     max-width: var(--caomei-auto-complete-max-width, var(--caomei-select-max-width));
     min-height: var(--caomei-auto-complete-min-height, var(--caomei-control-height-md));

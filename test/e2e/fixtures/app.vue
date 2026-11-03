@@ -361,6 +361,24 @@ const densityOptions = [
 ]
 
 /**
+ * P0 命中区用例（见 `test/e2e/hit-target.e2e.ts`）：值片删除按钮 11 / 9 / 10 个、清空按钮 3 个、
+ * 密码 3 个、Tag / Message 各 1 个；值必须预置，否则 `clear` / 删除按钮不渲染。
+ * `#hit-negative` 为 20px 普通按钮，作为「探针有判别力」的负向对照。
+ */
+const htTags = ref<string[]>(Array.from({ length: 11 }, (_, index) => `标签${index + 1}`))
+const htMulti = ref<string[]>(Array.from({ length: 9 }, (_, index) => `m${index + 1}`))
+const htAuto = ref<string[]>(Array.from({ length: 10 }, (_, index) => `值${index + 1}`))
+const htPassword = ref('Abcdefg1')
+const htMultiOptions = Array.from({ length: 9 }, (_, index) => ({
+    label: `多选${index + 1}`,
+    value: `m${index + 1}`,
+}))
+const htAutoOptions = Array.from({ length: 10 }, (_, index) => ({
+    label: `值${index + 1}`,
+    value: `值${index + 1}`,
+}))
+
+/**
  * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
  * 滚动锁复位。确认框走命令式 `useConfirm()`，驱动按钮渲染在 `<CaomeiConfirmDialog>` 后代内。
  */
@@ -1493,6 +1511,69 @@ const ConfirmDriver = defineComponent({
         <section id="density-outside" class="fixture__case">
             <CaomeiButton>默认按钮</CaomeiButton>
         </section>
+
+        <!--
+          P0 命中区用例（见 `test/e2e/hit-target.e2e.ts`）：值片删除 / 清空 / 密码 / Tag / Message；
+          `#hit-negative` 为 20px 普通按钮，作为「探针有判别力」的负向对照。
+        -->
+        <section id="hit-target" class="fixture__case">
+            <div id="hit-tags">
+                <CaomeiTagsInput
+                    v-model="htTags"
+                    show-clear
+                    label="标签"
+                />
+            </div>
+            <div id="hit-multi">
+                <CaomeiMultiSelect
+                    v-model="htMulti"
+                    :options="htMultiOptions"
+                    show-clear
+                    label="多选"
+                />
+            </div>
+            <div id="hit-auto">
+                <CaomeiAutoComplete
+                    v-model="htAuto"
+                    :options="htAutoOptions"
+                    multiple
+                    clearable
+                    label="自动完成"
+                />
+            </div>
+            <div id="hit-password">
+                <CaomeiPassword
+                    v-model="htPassword"
+                    clearable
+                    label="密码一"
+                />
+                <CaomeiPassword
+                    v-model="htPassword"
+                    clearable
+                    label="密码二"
+                />
+                <CaomeiPassword
+                    v-model="htPassword"
+                    clearable
+                    label="密码三"
+                />
+            </div>
+            <div id="hit-tag">
+                <CaomeiTag closable>
+                    可关闭标签
+                </CaomeiTag>
+            </div>
+            <div id="hit-message">
+                <CaomeiMessage title="提示" closable />
+            </div>
+            <button
+                id="hit-negative"
+                class="fixture-hit-negative"
+                type="button"
+            >
+                ×
+            </button>
+        </section>
     </main>
 </template>
 
@@ -1621,6 +1702,18 @@ const ConfirmDriver = defineComponent({
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
+}
+
+/* P0 命中区负向对照：20px 见方、无命中区扩展的普通按钮 */
+.fixture-hit-negative {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid var(--caomei-color-border);
+    background: var(--caomei-color-bg);
+    color: var(--caomei-color-text);
+    cursor: pointer;
 }
 
 .fixture__state {

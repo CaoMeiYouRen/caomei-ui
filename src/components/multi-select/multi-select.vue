@@ -179,7 +179,7 @@ function onAnchorClick(event: MouseEvent): void {
                 <span class="caomei-multi-select__tag-label">{{ option.label }}</span>
                 <button
                     type="button"
-                    class="caomei-multi-select__tag-remove"
+                    class="caomei-hit-target caomei-multi-select__tag-remove"
                     :disabled="disabled"
                     :aria-label="`${removeLabel} ${option.label}`"
                     @click.stop="removeValue(option.value)"
@@ -199,7 +199,7 @@ function onAnchorClick(event: MouseEvent): void {
             <button
                 v-if="clearable"
                 type="button"
-                class="caomei-multi-select__clear"
+                class="caomei-hit-target caomei-multi-select__clear"
                 :aria-label="clearLabel"
                 @click.stop="clearValue"
             >
@@ -263,6 +263,9 @@ function onAnchorClick(event: MouseEvent): void {
     flex-wrap: wrap;
     align-items: center;
     gap: var(--caomei-space-1);
+
+    /* 多行值片的行距 +2px：使 24px 不可见命中区在相邻行之间留出间隙（WCAG 2.5.8） */
+    row-gap: calc(var(--caomei-space-1) + 2px);
     width: 100%;
     max-width: var(--caomei-multi-select-max-width, var(--caomei-select-max-width));
     min-height: var(--caomei-multi-select-min-height, var(--caomei-control-height-md));

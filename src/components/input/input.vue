@@ -101,7 +101,7 @@ defineExpose({ focus, blur, inputRef })
         <button
             v-if="showClear"
             type="button"
-            class="caomei-input__clear"
+            class="caomei-hit-target caomei-input__clear"
             :aria-label="clearLabel"
             @click="onClear"
         >

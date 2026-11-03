@@ -6,6 +6,28 @@
 @import './presets/ink.css';
 @import './field-shell.css';
 
+/**
+ * 不可见命中区原语（P0）：清除 / 关闭类 icon 按钮的视觉盒保持原尺寸，命中范围扩到
+ * `--caomei-hit-target-min`（默认 24px，WCAG 2.5.8）。伪元素绝对定位、不参与布局，
+ * 因此不改变几何与视觉基线；`pointer-events` 沿用按钮本身。
+ */
+.caomei-hit-target {
+    position: relative;
+}
+
+.caomei-hit-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--caomei-hit-target-min, 24px);
+    height: var(--caomei-hit-target-min, 24px);
+    transform: translate(-50%, -50%);
+
+    /* 防御性声明：pointer-events 本就可继承；显式写出，避免宿主改为 none 时被误判为“扩展仍有效” */
+    pointer-events: inherit;
+}
+
 .caomei-root {
     font-family: var(--caomei-font-sans);
     color: var(--caomei-color-text);

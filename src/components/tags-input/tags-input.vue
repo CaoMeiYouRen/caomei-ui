@@ -124,7 +124,7 @@ function restoreInputFocus(): void {
             class="caomei-tags-input__tag"
         >
             <TagsInputItemText class="caomei-tags-input__tag-label" />
-            <TagsInputItemDelete class="caomei-tags-input__tag-remove">
+            <TagsInputItemDelete class="caomei-hit-target caomei-tags-input__tag-remove">
                 <CaomeiIcon :icon="X" />
             </TagsInputItemDelete>
         </TagsInputItem>
@@ -138,7 +138,7 @@ function restoreInputFocus(): void {
         />
         <TagsInputClear
             v-if="clearable"
-            class="caomei-tags-input__clear"
+            class="caomei-hit-target caomei-tags-input__clear"
             :aria-label="clearLabel"
             @click="restoreInputFocus"
         >
@@ -158,6 +158,9 @@ function restoreInputFocus(): void {
     flex-wrap: wrap;
     align-items: center;
     gap: var(--caomei-space-1);
+
+    /* 多行值片的行距 +2px：使 24px 不可见命中区在相邻行之间留出间隙（WCAG 2.5.8） */
+    row-gap: calc(var(--caomei-space-1) + 2px);
     width: 100%;
     min-height: var(--caomei-tags-input-min-height, var(--caomei-control-height-md));
     padding: var(--caomei-tags-input-padding-block, var(--caomei-space-1)) var(--caomei-tags-input-padding-inline, var(--caomei-space-3));

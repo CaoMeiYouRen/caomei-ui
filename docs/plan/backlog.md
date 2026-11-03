@@ -50,7 +50,7 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| 触摸目标增强 P1 / P2（不可见命中区 ≥24×24） | [触摸目标审计](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 | **P0 已由 Phase 27 承接**（5 组件 34 个清除 / 关闭 icon 按钮 + Message 关闭）；本行只保留 **P1**（表单控件盒：Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3 / ColorPicker 滑柄 4 = 17 个）与 **P2**（行高受限与内联行 = 35 个，须逐项确认交互绑定；改行高会触及视觉基线）。触发条件 = 用户裁定或下一轮移动端 / 无障碍治理 | 低 |
+| 触摸目标增强 P1 / P2（不可见命中区 ≥24×24） | [触摸目标审计](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 | **P0 已由 Phase 27 承接**（5 组件 34 个清除 / 关闭 icon 按钮 + Message 关闭）；本行只保留 **P1**（表单控件盒：Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3 / ColorPicker 滑柄 4 = 17 个）与 **P2**（行高受限与内联行 = 35 个，须逐项确认交互绑定；改行高会触及视觉基线）。触发条件 = 用户裁定或下一轮移动端 / 无障碍治理。**未入册**：Toast / Dialog / Drawer / Popover 的关闭按钮（13.33 / 21.33）在 2026-10-16 夹具未渲染，待实测后归类 | 低 |
 
 ### 1.6 基建与治理候选
 

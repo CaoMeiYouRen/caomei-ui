@@ -28,9 +28,27 @@
 - **步骤条方向**：`CaomeiStepper` 横向形态在窄屏随容器压缩，需要纵向时请改 `orientation="vertical"`。
 - **超长文案**：单条超长选项可能自身超宽（例如极窄视口下的长枚举），请在文案长度或容器宽度上约束。
 
-## 触摸优化覆盖（尺寸 token）
+## 触摸密度轴与尺寸覆盖
 
-主题预设只承载视觉气质，**不随视口变化**；如果应用同时面向桌面与手机，建议在窄屏容器或媒体查询内覆盖尺寸类 token，而不是期待某个预设自动切换：
+`1.1.0` 起提供**独立于预设与明暗**的触摸密度轴：在任意祖先元素上加 `data-density="touch"`，该子树内的控件高度、字号与内容型宽度上限按触摸档渲染；未设置时逐值等同桌面。
+
+<demo
+    vue="../examples/mobile/density.vue"
+    ssg="true"
+/>
+
+| token | 默认 | `data-density="touch"` |
+| --- | --- | --- |
+| `--caomei-control-height-sm` / `md` / `lg` | 28 / 36 / 44px | 36 / 44 / 52px |
+| `--caomei-font-size-sm` / `md` / `lg` | 12 / 14 / 16px | 14 / 16 / 18px |
+| `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | `none` |
+
+- **不随视口自动切换**：需要「窄屏才放大」时，把属性加在媒体查询内的容器上（或直接用下面的 token 覆盖）。
+- **与 `data-preset` / `data-theme` / `.dark` 正交**：只改尺寸，不改任何颜色。
+- **浮层面板不穿透**：`CaomeiSelect` / `CaomeiMultiSelect` / `CaomeiAutoComplete` / `CaomeiDatePicker` 的面板经 Portal 挂到 `body`。属性挂在 `<html>` 时触发器与面板一同放大；挂在局部容器时只有该子树的触发器跟随，面板内容维持默认字号。
+- **可继续覆盖**：需要更细的控制（例如只放大按钮高度）时，仍可直接覆盖对应 token，密度轴只提供一组默认值。
+
+如果应用只需要在窄屏放大，也可以不用密度轴、直接按视口覆盖 token：
 
 ```css
 @media (width <= 768px) {
@@ -48,7 +66,7 @@
 ```
 
 - `font-size-md: 16px` 可避免 iOS 对小于 16px 的输入框聚焦缩放，但会改变按钮 / 表格行高，需按下方自测清单回归。
-- 该覆盖**不会**扩大 Checkbox / RadioButton / Switch / icon 按钮的命中区；触摸密集区仍需在使用层用 `padding` 或包装元素扩大可点区域。
+- 该覆盖**不会**扩大 Checkbox / RadioButton / Switch / icon 按钮的命中区；清除 / 关闭按钮的命中区增强由后续版本提供（当前尚未实现），触摸密集区仍需在使用层用 `padding` 或包装元素扩大可点区域。
 - 为什么不提供 `data-preset="mobile"`：预设与明暗正交、且不感知视口；把尺寸塞进预设会让桌面端同样放大，也无法处理断点与命中区。评估与候选方案见[手机端优先主题预设评估](../design/governance/2026-10-25-mobile-first-preset-evaluation.md)。
 
 ## 触摸目标

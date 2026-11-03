@@ -351,6 +351,16 @@ const fvFieldOptions = [
 ]
 
 /**
+ * 触摸密度轴用例（见 `test/e2e/density.e2e.ts`）：同一容器内放按钮 / 数值框 / 选择器，
+ * 由用例在 `#density-axis` 上增删 `data-density="touch"`，`#density-outside` 作为不继承的对照。
+ */
+const densitySelect = ref<string | null>('a')
+const densityOptions = [
+    { label: '选项一', value: 'a' },
+    { label: '选项二', value: 'b' },
+]
+
+/**
  * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
  * 滚动锁复位。确认框走命令式 `useConfirm()`，驱动按钮渲染在 `<CaomeiConfirmDialog>` 后代内。
  */
@@ -1455,6 +1465,33 @@ const ConfirmDriver = defineComponent({
             >
                 次要文字
             </p>
+        </section>
+
+        <!--
+          触摸密度轴用例（见 `test/e2e/density.e2e.ts`）：`data-density="touch"` 由用例动态增删，
+          `#density-outside` 作为不继承该属性的对照。
+        -->
+        <section id="density-axis" class="fixture__case">
+            <div id="density-inside">
+                <CaomeiButton size="sm">
+                    小号按钮
+                </CaomeiButton>
+                <CaomeiButton>密度按钮</CaomeiButton>
+                <CaomeiButton size="lg">
+                    大号按钮
+                </CaomeiButton>
+                <CaomeiInputNumber :model-value="1" />
+                <CaomeiSelect
+                    v-model="densitySelect"
+                    :options="densityOptions"
+                    show-clear
+                    label="密度选择器"
+                />
+            </div>
+        </section>
+
+        <section id="density-outside" class="fixture__case">
+            <CaomeiButton>默认按钮</CaomeiButton>
         </section>
     </main>
 </template>

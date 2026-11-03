@@ -48,8 +48,27 @@
   --caomei-space-3: 12px;
   --caomei-space-4: 16px;
 
+  --caomei-control-height-sm: 28px;
+  --caomei-control-height-md: 36px;
+  --caomei-control-height-lg: 44px;
+  --caomei-font-size-sm: 12px;
+  --caomei-font-size-md: 14px;
+  --caomei-font-size-lg: 16px;
+
   --caomei-input-number-max-width: 12rem;
   --caomei-select-max-width: 20rem;
+}
+
+/* 触摸密度轴：与预设 / 明暗正交，只覆盖尺寸类 token；未设置时逐值等同默认 */
+[data-density='touch'] {
+  --caomei-control-height-sm: 36px;
+  --caomei-control-height-md: 44px;
+  --caomei-control-height-lg: 52px;
+  --caomei-font-size-sm: 14px;
+  --caomei-font-size-md: 16px;
+  --caomei-font-size-lg: 18px;
+  --caomei-input-number-max-width: none;
+  --caomei-select-max-width: none;
 }
 
 :is(.dark, [data-theme='dark']) {
@@ -141,6 +160,23 @@
 - 非模态浮层不得锁 body 滚动：Reka `SelectContent.bodyLock` 默认为 `true`（移除滚动条并补偿 `padding-right`，引发布局跳动）；非模态下拉须显式设为 `false`，需要锁定时再开放。
 - 验证要求见[测试规范 §5.1](../standards/testing.md#_5-1-浮层组件的页面稳定性-必测)。
 - Reka `DropdownMenu` 以 `modal` prop 控制模态（默认 `true`，会锁定 `body` 并屏蔽外部指针）；非模态下拉应关闭该 prop。
+
+### 5.2 触摸密度轴
+
+`1.1.0` 起提供独立于预设与明暗的**触摸密度轴**：`data-density="touch"` 只覆盖尺寸类 token，可挂在任意祖先元素（token 继承，未设置时逐值等同默认）。
+
+| token | 默认 | `data-density="touch"` |
+| --- | --- | --- |
+| `--caomei-control-height-sm` / `md` / `lg` | 28 / 36 / 44px | 36 / 44 / 52px |
+| `--caomei-font-size-sm` / `md` / `lg` | 12 / 14 / 16px | 14 / 16 / 18px |
+| `--caomei-input-number-max-width` | `12rem` | `none` |
+| `--caomei-select-max-width` | `20rem` | `none` |
+
+- **不是预设**：不进入 `data-preset` 命名空间，避免与品牌 / 明暗交叉；也不随视口自动切换（窄屏自动切换需由使用方把属性放进媒体查询内的容器）。
+- **宽度上限只放开两类**：`MultiSelect` / `AutoComplete` / `DatePicker` 经回退链继承 `--caomei-select-max-width`，因此同样放开；`Input` / `Textarea` 本就不设上限。
+- **浮层面板不穿透**：`Select` / `MultiSelect` / `AutoComplete` / `DatePicker` 的面板经 Portal 挂到 `body`，token 不会从内层容器穿透到面板内容。把属性挂在 `<html>` 时触发器与面板一同生效；挂在局部容器时只有该子树的触发器跟随。
+- **命中区不在本轴内**：密度轴只改尺寸，不改变可点范围；清除 / 关闭按钮的命中区增强由后续条目承接（当前尚未实现）。
+- 使用方视角的用法与示例见[移动端与响应式 §触摸密度轴](../guide/mobile.md)。
 
 ## 6. 无障碍
 

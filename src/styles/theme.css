@@ -79,6 +79,25 @@
     --caomei-z-toast: 1100;
 }
 
+/**
+ * 触摸密度轴：`data-density="touch"` 放大控件尺寸与字号，并把内容型控件的宽度上限放开。
+ *
+ * - **与预设 / 明暗正交**：只覆盖尺寸类 token，不改变颜色，不随视口自动切换；
+ * - **可挂在任意祖先元素**：token 继承，作用域即该子树（未设置时逐值等同默认）；
+ * - 宽度上限只放开 `input-number` 与 `select` 两类默认上限（`MultiSelect` / `AutoComplete` /
+ *   `DatePicker` 沿用回退链）；`Input` / `Textarea` 本就不设上限。
+ */
+[data-density='touch'] {
+    --caomei-control-height-sm: 36px;
+    --caomei-control-height-md: 44px;
+    --caomei-control-height-lg: 52px;
+    --caomei-font-size-sm: 14px;
+    --caomei-font-size-md: 16px;
+    --caomei-font-size-lg: 18px;
+    --caomei-input-number-max-width: none;
+    --caomei-select-max-width: none;
+}
+
 :is(.dark, [data-theme='dark']) {
     --caomei-color-primary: #60a5fa;
     --caomei-color-primary-foreground: #0b0b0d;

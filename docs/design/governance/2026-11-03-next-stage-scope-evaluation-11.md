@@ -133,24 +133,32 @@
   4. **API 差分判别力**：首次运行会遇到「新增 2 组件」的合法新增，规则须明确「新增不阻断」，否则发布被自身门禁阻断。
   5. **依赖告警不可自动修复**：`minimatch` 跨 4 个大版本，override 可能破坏 eslint 链；只能以「评估 + 留痕」收口。
   6. **发布顺序**：1.1.0 必须在 A / B 全部通过 Review Gate 与质量门后发布；不可用未验证的命中区几何做发布试验。
-- **非目标（建议）**：P1 / P2 命中区、RTL、二期语言、长尾组件（Sidebar / ScrollPanel / BackTop / Rating / TimePicker）、`Form` rules 引擎（Zod / 自研）、提交驱动 CI 自动发布、破坏性 API 变更、Tailwind / UnoCSS、文档站多版本托管、Storybook、自动推送。
+- **非目标（建议）**：P1 / P2 命中区、RTL、二期语言、长尾组件（Sidebar / ScrollPanel / BackTop / Rating / TimePicker）、`Form` rules 引擎（Zod / 自研）、提交驱动 CI 自动发布（**2026-11-03 执行期改为纳入 CI 发布链路；push 触发仍为非目标**）、破坏性 API 变更、Tailwind / UnoCSS、文档站多版本托管、Storybook、自动推送。
 
 ## 5. 登记状态
 
 ### 5.1 阶段与构成
 
-- 按[规划规范 §4](../../standards/planning.md) 分配 **Phase 27**（1.1.0：移动端密度轴、Form 组合层、迁移护航与机制收口），构成 **5 条主线 / 13 条原子条目**（A 4 / B 2 / C 2 / D 4 / E 1；构成对账 4 + 2 + 2 + 4 + 1 = 13）。
+- 按[规划规范 §4](../../standards/planning.md) 分配 **Phase 27**（1.1.0：移动端密度轴、Form 组合层、迁移护航与机制收口），构成 **5 条主线 / 13 条原子条目**（A 4 / B 2 / C 2 / D 4 / E 1；构成对账 4 + 2 + 2 + 4 + 1 = 13，**2026-11-03 登记时点值**）。**2026-11-03 执行期追加 M6（CI 发布链路 5 条）后为 6 条主线 / 18 条原子条目**，见 §5.3 与[登记记录](./2026-11-03-phase27-registration.md) §1.1。
 - **范围与验收口径的单一事实源**：[Phase 27 登记批次记录](./2026-11-03-phase27-registration.md) §1 / §2；本记录只保留评估与裁定。
 
 ### 5.2 载体同步
 
 | 载体 | 变更 |
 |:---|:---|
-| `docs/plan/todo.md` | 登记「当前进行中阶段：Phase 27」+ `## Phase 27 原子条目` 13 行 |
+| `docs/plan/todo.md` | 登记「当前进行中阶段：Phase 27」+ `## Phase 27 原子条目` 段（登记时 13 行；2026-11-03 执行期追加后 18 行） |
 | `docs/plan/roadmap.md` | §1 当前态句 + 阶段表新增 Phase 27 行 |
-| `docs/plan/backlog.md` | 移出 7 行（`Form` / `FormItem`、密度轴、阶段构成计数机检、API 表面差分、品牌 `-solid`、下游 0.5.0 升级护航、PrimeVue 经验回收）+ 就地重写 1 行（触摸目标 → P1 / P2 候选）；**42 → 35**（6 + 5 + 0 + 2 + 3 + 16 + 1 + 2） |
+| `docs/plan/backlog.md` | 移出 7 行（`Form` / `FormItem`、密度轴、阶段构成计数机检、API 表面差分、品牌 `-solid`、下游 0.5.0 升级护航、PrimeVue 经验回收）+ 就地重写 1 行（触摸目标 → P1 / P2 候选）；**42 → 35**（6 + 5 + 0 + 2 + 3 + 16 + 1 + 2）。**执行期追加后再移出 2 行 → 33**，见 §5.3 |
 | `docs/design/governance/index.md` | 新增本记录与登记批次记录两条索引 |
 | `.session/`（git-ignored） | `current-task.yaml` 的 `current_phase` / `active_plan` / `next_steps` / `decisions` 与 `runtime-state.json` 的 `plan_state` 同批同步 |
+
+### 5.3 执行期追加（2026-11-03）
+
+- **触发**：用户指令「下阶段开始要通过 CI 来发布了，release 的工作流还没修复，应该添加到 todo 中」。
+- **追加**：**M6 CI 发布链路 5 条**（工作流接线与凭据 / 版本句与发布说明同步 / 前置与后置门禁 / 事件链与下游复验 / `CHANGELOG` 生成器健壮性）；**M5-1 改为经 CI 发布**（触发模型 = `workflow_dispatch` + `environment` 审批，用户同日裁定），手工流保留为回退。
+- **构成变更**：5 条主线 / 13 条（时点值）→ **6 条主线 / 18 条**（4 + 2 + 2 + 4 + 1 + 5）。
+- **候选池**：再移出 2 行（提交驱动 CI 自动发布、`CHANGELOG` 生成器健壮性收口）→ **35 → 33**。
+- **现状取证**：`release.yml` 的 publish 步骤仍为注释；仓库无 `NPM_TOKEN` secret、无 `release` environment、无 `next` 分支；`semantic-release-cmyr-config@1.0.2` 的 assets 仅 `CHANGELOG.md` + `package.json`（不同步版本句）。取证方式与时间（2026-11-03）：`gh secret list` / `gh api repos/CaoMeiYouRen/caomei-ui/environments` / `git ls-remote --heads origin`。
 
 ## 6. Review Gate
 
@@ -163,6 +171,7 @@
   - **RG-W05**：`.session/runtime-state.json` 预写 `pass` 与 `verification_state = pending` 矛盾 ⇒ 改为 `pending（待 Review Gate 回填）`。
   - **suggest 6 ~ 9**：roadmap 的 M2 补「文档 · 示例与计数回扫」；`todo.md` 的 M1-3 补「密度轴」；拆清对外 7 条；三处发布顺序改为按 `release.md` §3.2 分步（含 `preflight` / `bump`）。
 - **R2（`quick` delta）：`Pass`**（无残留 blocker / warning；2 条非阻塞 suggest：G4 落点单元格的加总歧义、`todo.md` 摘要省略 `-solid` 三态括注）。
+- **R3（`standard`，2026-11-03 执行期追加 M6）：`Pass`**（0 blocker / 5 warning / 3 suggest，全部同批关闭）——构成变更回扫面一致、M6 覆盖 8 项缺口、候选池 33 可复算；详见[登记记录](./2026-11-03-phase27-registration.md) §6。
 - **验证证据**：`pnpm lint:md:check` exit 0；`pnpm docs:check` exit 0；`pnpm governance:check` exit 0（`check-planning-numbers` 0 处）；`backlog.md` §1 逐段复算 6 + 5 + 0 + 2 + 3 + 16 + 1 + 2 = **35**；`git diff --stat` 的 backlog = `-8 / +1`（移出 7 + 重写 1）。
 - **未覆盖边界**：未跑 `pnpm verify` / 构建 / 测试（本批零代码改动，最低验证矩阵为 `lint:md` + 链接路径 + RG）。
 - **复查基线**：本记录 §1.1 / §1.2 / §2 / §3 / §5.2；登记记录 §2 / §4；`docs/plan/backlog.md` §1.5 与 §1 逐段计数；`docs/design/governance/index.md` 两条摘要。

@@ -6,7 +6,7 @@
 
 > changesets is not used (this project is a single package, and semantic-release is the standard fit).
 
-> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the flow is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. `manual-release.mjs` supports `--tag=next|latest`; the default is inferred from the version (pre-release → `next`, stable → `latest`), and **a pre-release combined with `latest` is rejected**. The channel contract and evidence are recorded in [the M3-1 release record](/design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md). CI auto-publish stays disabled; commit-driven auto-publish will be decided separately after 1.0.
+> **Current status**: `release.yml` is in place, but the publish step is not enabled yet; releases are performed **locally and manually** (see "Manual release (local)" below). For 1.0 the flow is two-step: an rc pre-release published to the npm `next` dist-tag, then the final version published to `latest`. `manual-release.mjs` supports `--tag=next|latest`; the default is inferred from the version (pre-release → `next`, stable → `latest`), and **a pre-release combined with `latest` is rejected**. The channel contract and evidence are recorded in [the M3-1 release record](/design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md). **2026-11-03 update**: CI auto-publish is authorized (Phase 27 M6) and takes effect from `1.1.0`; the publish step stays disabled until M6 lands. The trigger is manual (`workflow_dispatch`) plus the `release` environment approval — push-triggered releases are not enabled.
 
 > **1.0 release gate (from 2026-10-26)**: `1.0.0-rc.1` must pass **G0 / G1 (plus G1-F if G1 decides "fix") / G2**, plus the S1 / S2 / S3 pre-release batches, before publishing; the final `1.0.0` must pass **G0 ~ G4** (including G3 rc and downstream verification). **Every `publish` run (including rc) must also pass the security alert gate in [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese).** Do not run the corresponding `publish` before it passes. Target review 2026-11-13, hard stop 2026-11-27; no automatic extension. See [Phase 26 execution-time addition and 1.0 release gate](/design/governance/2026-10-26-phase26-ui-gate-planning.md) §4.
 
@@ -21,21 +21,21 @@
 
 ## Release flow
 
-> This is the CI flow for the eventual auto-publish path; it is **not used for 1.0**, which stays on the local manual flow below.
+> This is the CI flow for the auto-publish path. It was authorized on 2026-11-03 (Phase 27 M6) and takes effect from `1.1.0`; `1.0.x` used the local manual flow below.
 
 1. Commits follow Conventional Commits (via the `conventional-committer` skill).
-2. Pushing to `master` triggers semantic-release in `release.yml` (the publish step is currently disabled).
+2. A maintainer runs the `Release` workflow manually (`workflow_dispatch`) and approves the `release` environment; the publish step then runs semantic-release.
 3. Once enabled, it automatically:
    - infers the version number;
    - generates / updates `CHANGELOG.md`;
    - publishes the npm package `caomei-ui`;
    - creates the GitHub Release and tag.
 
-> **Not a working release pipeline yet**: `release.yml` currently runs only the quality gates (`pnpm verify`, `test:coverage`, `check:coverage`) and keeps the publish step commented out. Eight gaps must close first, plus one dry run; the Backlog row「提交驱动 CI 自动发布」is the single source for the list and acceptance — credentials, the `@semantic-release/git` push credential, **version-statement sync**, the security alert gate, post-publish verification, the trigger model and `next` channel, a release approval environment, and the event chain (a tag pushed with `GITHUB_TOKEN` does not trigger `v*` workflows such as `downstream-compat`). Note that semantic-release only commits `CHANGELOG.md` and `package.json`, so enabling publish without the sync step leaves the repo in a guard-failing state right after the release (the next CI run or `preflight` turns red). See the Chinese guide §5 for the full list.
+> **Not a working release pipeline yet**: `release.yml` currently runs only the quality gates (`pnpm verify`, `test:coverage`, `check:coverage`) and keeps the publish step commented out. The gaps and their acceptance criteria live in [Phase 27 registration](../../../design/governance/2026-11-03-phase27-registration.md) §2 (M6-1 ~ M6-5) as the single source — credentials, the `@semantic-release/git` push credential, **version-statement sync**, the security alert gate, post-publish verification, the trigger model and approval, and the event chain (a tag pushed with `GITHUB_TOKEN` does not trigger `v*` workflows such as `downstream-compat`). The trigger model is `workflow_dispatch` plus the `release` environment; push-triggered releases are not enabled. Note that semantic-release only commits `CHANGELOG.md` and `package.json`, so enabling publish without the sync step leaves the repo in a guard-failing state right after the release (the next CI run or `preflight` turns red). See the Chinese guide §5 for the full list.
 
 ## Manual release (local)
 
-Releases are performed **locally and manually** — CI auto-publish stays disabled (see the Chinese guide §5). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. Use the single-entry orchestrator:
+Releases are performed **locally and manually** for `1.0.x`; CI auto-publish is authorized for `1.1.0` and later (Phase 27 M6, not enabled until that work lands). For 1.0, an rc pre-release goes to the npm `next` dist-tag first; `latest` moves only when the final version is published. Use the single-entry orchestrator:
 
 ```bash
 # rc pre-release -> npm next

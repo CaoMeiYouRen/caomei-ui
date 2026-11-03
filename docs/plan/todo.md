@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 27（1.1.0：移动端密度轴、Form 组合层、迁移护航与机制收口）**，2026-11-03 用户就[第十一轮范围评估](../design/governance/2026-11-03-next-stage-scope-evaluation-11.md) §3 裁定后登记。构成 **5 条主线 / 13 条原子条目**（移动端与响应式二期 4 / `Form` 组合层 2 / 下游迁移护航 2 / 机制与质量收口 4 / 发布收口 1；构成对账 4 + 2 + 2 + 4 + 1 = 13）。
+**当前进行中阶段：Phase 27（1.1.0：移动端密度轴、Form 组合层、迁移护航、机制收口与 CI 发布）**，2026-11-03 用户就[第十一轮范围评估](../design/governance/2026-11-03-next-stage-scope-evaluation-11.md) §3 裁定后登记。构成 **6 条主线 / 18 条原子条目**（移动端与响应式二期 4 / `Form` 组合层 2 / 下游迁移护航 2 / 机制与质量收口 4 / 发布收口 1 / CI 发布链路 5；构成对账 4 + 2 + 2 + 4 + 1 + 5 = 18）。**原登记 5 条主线 / 13 条原子条目为 2026-11-03 时点值**；同日执行期追加 CI 发布链路 5 条（用户指令），见登记记录 §1.1。
 
 范围与验收口径的单一事实源见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §1 / §2；目标版本 `1.1.0`（`latest` 当前为 `1.0.0`）。
 
@@ -24,9 +24,14 @@
 | M4-2 | 品牌预设 `-solid` 对比度治理 | `momei` success 三态与 `caomei` `primary-solid`；把 `-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景） | 待执行 |
 | M4-3 | 阶段构成计数跨载体机检 | `todo.md` 与 `roadmap.md` 的口径句 / 表格对账；负向对照 + 受检面下界 | 待执行 |
 | M4-4 | 依赖告警收口 | `minimatch` medium 覆盖评估或留痕；`deepmerge` low 维持留痕 | 待执行 |
-| M5-1 | `1.1.0` 发布 | 按发布指南 §3.2 分步（preflight → bump → changelog → sync → publish → verify（含 API 差分）→ announce）；前置第 29 轮门槛复核 | 待执行 |
+| M5-1 | `1.1.0` 发布（经 CI） | Run `Release` workflow（`workflow_dispatch` + `environment` 审批）→ semantic-release 计算版本并 publish；手工流仅作回退 | 待执行 |
+| M6-1 | 发布工作流接线与凭据 | 打开 publish；触发与审批；Trusted Publisher / `NPM_TOKEN`；`@semantic-release/git` 回推凭据；并发与超时 | 待执行 |
+| M6-2 | 版本句与发布说明同步 | `@semantic-release/exec` 同步 README 中英 + roadmap 版本句；里程碑注入；发布后 `docs:check:version` 为绿 | 待执行 |
+| M6-3 | 发布前置与后置门禁 | publish 前安全告警门禁 + verify / coverage；publish 后 dist-tag / shasum / 解包 README / exports / API 差分 | 待执行 |
+| M6-4 | 事件链与下游复验 | `GITHUB_TOKEN` 事件排除 → PAT / App token 或显式 `workflow_dispatch`；发布后下游检查留痕 | 待执行 |
+| M6-5 | CHANGELOG 生成器健壮性 | 空 `# Unreleased` 段、无 remote 降级、语言源自 root | 待执行 |
 
-> **前置与约束**：发布条目的推送与发布以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕；命中区只做 P0，P1 / P2 维持候选。
+> **前置与约束**：M6 完成前不启用 `release.yml` 的 publish；发布 run 与推送以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕；命中区只做 P0，P1 / P2 维持候选。
 
 ## 未完成项汇总
 

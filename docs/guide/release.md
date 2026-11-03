@@ -3,7 +3,8 @@
 ## 1. 发布方式与当前状态
 
 - 版本推断与发布工具为 **semantic-release**，依据 Conventional Commits 自动推断版本并发布。
-- **当前决策（1.0 收尾，2026-10）**：采用**本地手动发布**；**暂不启动 CI 自动发布流程**。1.0 走「rc 预发布 → 正式版」两步：预发布发 npm `next`，正式版发 `latest`。`manual-release.mjs` 已支持 `--tag=next|latest`（缺省按版本推断：预发布 → `next`、正式版 → `latest`；**预发布 + `latest` 会被直接拒绝**，不会落到正式通道）。通道口径与验证证据见 [M3-1 发布预检记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)。
+- **1.0 期决策（历史，2026-10）**：采用**本地手动发布**；**当时暂不启动 CI 自动发布流程**。1.0 走「rc 预发布 → 正式版」两步：预发布发 npm `next`，正式版发 `latest`。`manual-release.mjs` 已支持 `--tag=next|latest`（缺省按版本推断：预发布 → `next`、正式版 → `latest`；**预发布 + `latest` 会被直接拒绝**，不会落到正式通道）。通道口径与验证证据见 [M3-1 发布预检记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)。
+- **转向（2026-11-03）**：用户裁定**下一阶段起通过 CI 发布**，Phase 27 执行期追加 **M6 CI 发布链路**（触发模型 = `workflow_dispatch` + `environment: release` 审批）。M6 完成前以本地手动流为准；完成后手动流仍保留为回退路径。范围与验收口径见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §1.1 / §2。
 
 > **1.0 发布门禁（2026-10-26 起）**：`1.0.0-rc.1` 发布前须通过 **G0 / G1（若 G1 裁定「修复」，另需 G1-F）/ G2**，以及 S1 / S2 / S3 前置批次；`1.0.0` 正式版发布前须通过 **G0 ~ G4**（含 G3 的 rc 与下游复验）。**所有 `publish`（含 rc）前另须通过[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁（critical 不允许豁免；high 须修复或留痕豁免）**。未通过前不得执行对应 `publish`。目标评审 2026-11-13、硬截止 2026-11-27，到期未通过不得自动延期。门禁口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
@@ -87,19 +88,20 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 ## 4. 凭据与本地运行
 
 - 本地运行 semantic-release 需 `--no-ci`（跳过 CI 环境校验），并设置 `NPM_TOKEN` 与 `GH_TOKEN`。
-- **本阶段首发使用 `npm publish`**（见 §3）；本地 semantic-release 仅作机制说明与后续备选——它会额外触发 `@semantic-release/git`（提交 `package.json` / `CHANGELOG.md`）与 `@semantic-release/github`（创建 GitHub Release），与「本地手动发布」的当前决策不同，未经决策不要执行 `pnpm release`。
+- **本阶段首发使用 `npm publish`**（见 §3）；本地 semantic-release 仅作机制说明与后续备选——它会额外触发 `@semantic-release/git`（提交 `package.json` / `CHANGELOG.md`）与 `@semantic-release/github`（创建 GitHub Release），与 §1 的 2026-11-03 转向后的默认路径（CI 发布）不同；CI 链路落地前仍以手动流为准，未经授权不要执行 `pnpm release`。
 - **registry 必须是 npmjs**：本机全局 `registry` 可能指向 `registry.npmmirror.com`（只读镜像，`npm whoami` 会 `ENEEDAUTH`、`npm publish` 不可用）。发布前显式 `export NPM_CONFIG_REGISTRY=https://registry.npmjs.org`，并用 `npm whoami` 确认账号；`~/.npmrc` 中的 `//registry.npmjs.org/:_authToken` 失效时会返回 `401`，需重新登录或换 token。
 - 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。启用 2FA 时用 `--otp=<code>` 传入一次性密码；脚本在日志与错误信息中对 OTP 做脱敏。注意 OTP 仍会进入进程参数与 Shell history，优先在受控环境使用，或省略 `--otp` 让 npm 交互提示。
 - **版本已发布过**时 `npm publish` 会以 `403`（`You cannot publish over the previously published versions: <version>`）失败——npm 不允许覆盖同名版本。处理：确认 `package.json` 的 `version` 是否已递增；确需修复已发布版本时**改发新 patch 版本**（不要尝试 unpublish，见 §8）。
 - `prepublishOnly` 失败（如许可声明过期）会中止发布且不产生 tarball——按报错补齐后重跑即可，无需处理 registry 状态。
 - 当前为本地手动发布，npm 发布侧无需 CI secret；但安全告警门禁使用 `SECURITY_ALERTS_TOKEN`（CI 为仓库 secret，本地写入仓库根 `.env.local`，见[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)），该凭据仍须配置；发布链在 `preflight` / `publish` 强制检查，缺失即中止。
 
-## 5. CI 自动发布（暂缓）
+## 5. CI 自动发布（已授权，未启用；M6 待实现）
 
-- `.github/workflows/release.yml` 当前**只执行质量门**（`pnpm verify` → `test:coverage` → `check:coverage`），**publish 步骤保持注释**——它不构成可用的发布工作流。
-- 距可用的 **8 项缺口**（凭据、回推凭据、版本句同步、安全门禁、发布后校验、触发模型与 `next` 通道、发布审批、事件链）与验收口径以 Backlog「提交驱动 CI 自动发布」为**单一事实源**；立项需 8 项全绿 + 一次 dry-run 演练。
+- `.github/workflows/release.yml` 当前**只执行质量门**（`pnpm verify` → `test:coverage` → `check:coverage`），**publish 步骤保持注释**——在 M6 完成前它仍不构成可用的发布工作流。
+- 缺口与验收口径以 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §2 的 **M6-1 ~ M6-5** 为**单一事实源**（凭据 / 回推凭据 / 版本句同步 / 安全门禁 / 发布后校验 / 触发模型与审批 / 事件链 / `CHANGELOG` 生成器健壮性）；旧 Backlog 行已随登记移出。
+- **触发模型（2026-11-03 裁定）**：`workflow_dispatch` 手动触发 + `environment: release` 审批后 publish；**不启用 push 触发**，阶段内不会因 `feat` / `fix` 提交自动发版。
 - **关键约束**：`semantic-release` 只提交 `CHANGELOG.md` + `package.json`（`@semantic-release/git` assets），**不维护「当前版本」声明句**——直接放开 publish 会让仓库随后处于守卫失败态（下一次 CI 或 `preflight` 的 `pnpm docs:check:version` 即红），且与手动流 `sync` 解决的是同一问题。
-- **1.0 决策**：rc 与正式版继续本地手动发布（rc 走 `next`、正式版走 `latest`，`--tag` 已落地，见 §1 / §3）；提交驱动自动发布在 1.0 后单独立项，本阶段不放开 publish。
+- **1.0 决策（历史）**：rc 与正式版继续本地手动发布（rc 走 `next`、正式版走 `latest`，`--tag` 已落地，见 §1 / §3）；该决策已被 2026-11-03 的转向取代。
 
 ## 6. 版本推断（基线建立后）
 

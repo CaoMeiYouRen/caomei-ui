@@ -44,20 +44,22 @@ const THEMES = ['light', 'dark'] as const
 const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 
 /**
- * 常驻负向对照的注入样式（三类目标各一条规则，缺一则对应面**不会**报差异）：
+ * 常驻负向对照的注入样式（四类目标各一条规则，缺一则对应面**不会**报差异）：
  * - `.fixture__state`：组件面与视口 / 预设轴面（`#app` 内）；
  * - `#calendar-inline`：日期轴面（该段为 `fixture__case`，不含 `.fixture__state`）；
- * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）。
+ * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）；
+ * - `#hit-target`：P0 命中区轴面（多值字段折行）。
  */
 const NEGATIVE_CONTROL_CSS = [
     '#app .fixture__state { padding: 24px !important; }',
     '#calendar-inline { padding: 24px !important; }',
     '.caomei-dialog__content { padding: 0 !important; }',
+    '#hit-target { padding: 24px !important; }',
 ].join('\n')
 
 /**
  * 形态轴扩面（见 `docs/design/governance/2026-10-13-phase23-m1-2-visual-form-axis-expansion.md`）：
- * 视口 / 预设 / 日期 / 浮层四条**形态轴**，各自独立重冻结基线。
+ * 视口 / 预设 / 日期 / 浮层 / P0 命中区五条**形态轴**，各自独立重冻结基线。
  *
  * 门槛（与治理记录同口径）：① 渲染结果可确定化（无实时日期 / 无随机 / 无网络）；② 覆盖既有
  * 面未覆盖的渲染路径；③ 每批 ≤ 8 张新基线。未纳入的形态（其余视口 / `caomei` 预设 / 日期
@@ -67,23 +69,29 @@ const NEGATIVE_CONTROL_CSS = [
  *   用例内断言该视口下**确实折行**，否则该面无判别力）；
  * - `preset`：`ds-button-default` 在 `data-preset="momei"` 下渲染（非缺省预设的 token 路径）；
  * - `clock`：`#calendar-inline` 在**固定时钟**（2026-01-15）下渲染（日历网格 + 「今日」高亮）；
- * - `dialog`：`#dialog-open` 点击后的 `.caomei-dialog__content`（portal 浮层合成路径）。
+ * - `dialog`：`#dialog-open` 点击后的 `.caomei-dialog__content`（portal 浮层合成路径）；
+ * - `hit-target`：`#hit-target` 在 390×844 下渲染（三个多值字段折行后的值片与 P0 命中区；
+ *   用例内断言三个字段均**确实折行**，否则多行行距面失去判别力）。
  */
 const FORM_AXIS_CASES = [
     { key: 'viewport-768-wrap-row', label: '折行行@768 视口', target: '#ds-viewport-row', setup: 'viewport' },
     { key: 'preset-momei-button', label: 'button@momei 预设', target: '#ds-button-default', setup: 'preset' },
     { key: 'date-calendar-fixed', label: 'calendar@固定时钟', target: '#calendar-inline', setup: 'clock' },
     { key: 'overlay-dialog-open', label: 'dialog@打开态', target: '.caomei-dialog__content', setup: 'dialog' },
+    { key: 'hit-target-390', label: 'P0 命中区@390 视口', target: '#hit-target', setup: 'hit-target' },
 ] as const
 
 /** 形态轴面下界守卫：轴面被静默移除即失败。 */
-const MIN_FORM_AXIS = 4
+const MIN_FORM_AXIS = 5
 
 /** 固定时钟（日期轴确定化）：月 / 日 / 「今日」高亮均由该时刻派生。 */
 const FIXED_CLOCK = new Date('2026-01-15T09:30:00+08:00')
 
 /** 窄视口（视口轴）：与主视口 1280×800 区分，覆盖换行 / 折行布局路径。 */
 const NARROW_VIEWPORT = { width: 768, height: 800 }
+
+/** P0 命中区的手机档视口（响应式设计 §4 的 mobile 档）：多值字段必须折行。 */
+const HIT_TARGET_VIEWPORT = { width: 390, height: 844 }
 
 /** 非缺省预设（预设轴）：缺省为 `minimal`（不设 `data-preset`）。 */
 const NON_DEFAULT_PRESET = 'momei'
@@ -104,6 +112,20 @@ async function prepareFormAxis(page: import('@playwright/test').Page, setup: str
         await page.evaluate((preset) => {
             document.documentElement.setAttribute('data-preset', preset)
         }, NON_DEFAULT_PRESET)
+    }
+    if (setup === 'hit-target') {
+        await page.setViewportSize(HIT_TARGET_VIEWPORT)
+        // 前置守卫：三个多值字段都必须折行（≥2 行），否则多行行距与命中区间距面失去判别力
+        const fields = [
+            ['#hit-tags', '.caomei-tags-input__tag'],
+            ['#hit-multi', '.caomei-multi-select__tag'],
+            ['#hit-auto', '.caomei-auto-complete__tag'],
+        ] as const
+        for (const [section, member] of fields) {
+            const lines = await page.locator(`${section} ${member}`).evaluateAll((elements) =>
+                new Set(elements.map((element) => Math.round(element.getBoundingClientRect().top))).size)
+            expect(lines, `${section} 在 ${HIT_TARGET_VIEWPORT.width} 视口下应折行（≥2 行）`).toBeGreaterThanOrEqual(2)
+        }
     }
     if (setup === 'dialog') {
         await page.click('#dialog-open')
@@ -154,7 +176,7 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
     }
 })
 
-test.describe('形态轴扩面（视口 / 预设 / 日期 / 浮层）', () => {
+test.describe('形态轴扩面（视口 / 预设 / 日期 / 浮层 / P0 命中区）', () => {
     for (const theme of THEMES) {
         for (const { key, label, target, setup } of FORM_AXIS_CASES) {
             test(`${label}（${theme}）`, async ({ page }) => {

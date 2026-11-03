@@ -1,6 +1,6 @@
 {
-    "capturedAt": "2026-10-28T13:16:08.521Z",
-    "chromiumVersion": "153.0.8010.12",
+    "capturedAt": "2026-11-03T13:52:15.518Z",
+    "chromiumVersion": "156.0.8078.4",
     "viewport": "1280x800",
     "entries": {
         "size.auto-complete.sm": {
@@ -1677,6 +1677,90 @@
         },
         "grid.tracks": {
             "grid-template-columns": "20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px 20px"
+        },
+        "hit-target.tags.field": {
+            "row-gap": "6px",
+            "column-gap": "4px",
+            "min-height": "36px"
+        },
+        "hit-target.tags.item": {
+            "height": "19.1875px",
+            "padding-left": "8px",
+            "padding-right": "4px"
+        },
+        "hit-target.tags.remove": {
+            "width": "13.3281px",
+            "height": "13.3281px"
+        },
+        "hit-target.tags.remove-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-target.multi.field": {
+            "row-gap": "6px",
+            "column-gap": "4px",
+            "min-height": "36px"
+        },
+        "hit-target.multi.item": {
+            "height": "19.1875px",
+            "padding-left": "8px",
+            "padding-right": "4px"
+        },
+        "hit-target.multi.remove": {
+            "width": "13.3281px",
+            "height": "13.3281px"
+        },
+        "hit-target.multi.remove-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-target.auto.field": {
+            "row-gap": "6px",
+            "column-gap": "4px",
+            "min-height": "36px"
+        },
+        "hit-target.auto.item": {
+            "height": "19.1875px",
+            "padding-left": "8px",
+            "padding-right": "4px"
+        },
+        "hit-target.auto.remove": {
+            "width": "13.3281px",
+            "height": "13.3281px"
+        },
+        "hit-target.auto.remove-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-target.password.clear": {
+            "width": "13.3281px",
+            "height": "13.3281px"
+        },
+        "hit-target.password.clear-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-target.tag.close": {
+            "width": "13.3281px",
+            "height": "13.3281px"
+        },
+        "hit-target.tag.close-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-target.message.close": {
+            "width": "17.3281px",
+            "height": "17.3281px"
+        },
+        "hit-target.message.close-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
         },
         "trigger.date-picker.attrs": {
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""

@@ -25,7 +25,7 @@
 | 浮层 | `overlay-dialog-open` | `.caomei-dialog__content` | 打开态 | portal + 模态遮罩合成 |
 
 - 夹具：新增 `#visual-viewport` 段（`#ds-viewport-row`：12 个 3 字按钮 + 折行规则），追加在模板末尾；**其余三轴复用既有夹具段**（`#ds-button-default` / `#calendar-inline` / `#overlay-interaction` 的 `#dialog-open`），不新增 DOM。
-- 装置：`test/visual/components.visual.ts` 新增 `FORM_AXIS_CASES`（4 项）+ `MIN_FORM_AXIS = 4` 下界 + `prepareFormAxis()`（按轴设置时钟 / 视口 / 预设 / 打开浮层）；常驻负向对照抽出 `NEGATIVE_CONTROL_CSS`（三类目标，见 §3.1），两处用例共用；既有 11 面 × 亮暗的用例与基线**零改动**。
+- 装置：`test/visual/components.visual.ts` 新增 `FORM_AXIS_CASES`（4 项）+ `MIN_FORM_AXIS = 4` 下界（当时）+ `prepareFormAxis()`（按轴设置时钟 / 视口 / 预设 / 打开浮层）；常驻负向对照抽出 `NEGATIVE_CONTROL_CSS`（三类目标，见 §3.1），两处用例共用；既有 11 面 × 亮暗的用例与基线**零改动**。
 - **附带（.gitignore）**：`*.tsbuildinfo`（`tsc -p tsconfig.node.json` 产生的本地增量构建信息）此前未被忽略，已加入 `.gitignore`；同时删除工作区中已生成的该文件。
 - **基线 diff 纪律**：`test:visual:update` 后只出现 **8 个新增 PNG**，既有 22 张零改动（沿用 M1-1 纪律）。
 

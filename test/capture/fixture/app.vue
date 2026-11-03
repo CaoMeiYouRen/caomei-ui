@@ -42,6 +42,7 @@ import {
     CaomeiTabs,
     CaomeiTabTrigger,
     CaomeiTag,
+    CaomeiTagsInput,
     CaomeiTextarea,
     CaomeiToastProvider,
 } from '@/index'
@@ -122,6 +123,19 @@ const passwordStrong = ref('Abcdefg1')
 const calendarToday = new Date()
 const calendarSelectedDay = calendarToday.getDate() === 1 ? 2 : 1
 const calendarValue = ref(new Date(calendarToday.getFullYear(), calendarToday.getMonth(), calendarSelectedDay))
+
+/**
+ * 多值字段值片与 P0 命中区：三个字段各预置足量值并在 240px 容器内强制折行，
+ * 从而把「多行行距」与值片 / 删除按钮 / `::after` 命中区的几何纳入计算样式基线。
+ */
+const hitTags = ref<string[]>(Array.from({ length: 11 }, (_, index) => `标签${index + 1}`))
+const hitMultiValues = Array.from({ length: 9 }, (_, index) => `m${index + 1}`)
+const hitMulti = ref<string[]>(hitMultiValues)
+const hitAutoValues = Array.from({ length: 10 }, (_, index) => `值${index + 1}`)
+const hitAuto = ref<string[]>(hitAutoValues)
+const hitMultiOptions = hitMultiValues.map((value, index) => ({ label: `多选${index + 1}`, value }))
+const hitAutoOptions = hitAutoValues.map((value) => ({ label: value, value }))
+const hitPassword = ref('Abcdefg1')
 
 /** 复选框：三档尺寸 + 分组（间距契约）。 */
 const checkboxSm = ref(false)
@@ -737,6 +751,70 @@ ui.setDialog = (size, open) => {
             </div>
         </section>
 
+        <!-- 16. 多值字段值片与 P0 命中区：折行行距 / 值片几何 / 删除按钮视觉盒 / ::after 命中区 -->
+        <section id="hit-target">
+            <div
+                class="case hit-target-case"
+                data-cap="hit-target:tags"
+            >
+                <CaomeiTagsInput
+                    v-model="hitTags"
+                    show-clear
+                    label="标签"
+                />
+            </div>
+            <div
+                class="case hit-target-case"
+                data-cap="hit-target:multi"
+            >
+                <CaomeiMultiSelect
+                    v-model="hitMulti"
+                    :options="hitMultiOptions"
+                    show-clear
+                    label="多选"
+                />
+            </div>
+            <div
+                class="case hit-target-case"
+                data-cap="hit-target:auto"
+            >
+                <CaomeiAutoComplete
+                    v-model="hitAuto"
+                    :options="hitAutoOptions"
+                    multiple
+                    clearable
+                    label="自动完成"
+                />
+            </div>
+            <div
+                class="case"
+                data-cap="hit-target:password"
+            >
+                <CaomeiPassword
+                    v-model="hitPassword"
+                    clearable
+                    label="密码"
+                />
+            </div>
+            <div
+                class="case"
+                data-cap="hit-target:tag"
+            >
+                <CaomeiTag closable>
+                    可关闭标签
+                </CaomeiTag>
+            </div>
+            <div
+                class="case"
+                data-cap="hit-target:message"
+            >
+                <CaomeiMessage
+                    title="提示"
+                    closable
+                />
+            </div>
+        </section>
+
         <CaomeiConfirmDialog>
             <ConfirmDriver />
         </CaomeiConfirmDialog>
@@ -762,5 +840,10 @@ ui.setDialog = (size, open) => {
 
 .case > :deep(*) {
     max-width: 100%;
+}
+
+/* 240px 容器强制三个多值字段折行，使多行行距与相邻命中区间距进入采样面 */
+.hit-target-case {
+    width: 240px;
 }
 </style>

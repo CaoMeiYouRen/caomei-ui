@@ -117,6 +117,35 @@ const CALENDAR_TODAY_PROPS = ['border-top-width', 'border-top-color']
 const CHECKBOX_CONTROL_PROPS = ['width', 'height', 'border-top-left-radius']
 
 /**
+ * 多值字段值片与 P0 命中区（见 docs/design/governance/2026-11-03-phase27-m1-3-mobile-matrix-baseline.md）：
+ * - 字段容器：`row-gap` 固定折行行距（4 → 6px），`column-gap` 固定列间距；
+ * - 值片：高度与内边距（折行后相邻值片不重叠的布局基础）；
+ * - 删除 / 清空按钮：`width` / `height` 锁定**视觉盒不变**（13.33 / 17.33 / 20px）；
+ * - 删除按钮 `::after`：`position` / `width` / `height` 锁定不可见命中区 ≥24×24。
+ * 伪元素计算样式是该命中区唯一的声明式断言面。
+ */
+const HIT_FIELD_PROPS = ['row-gap', 'column-gap', 'min-height']
+const HIT_ITEM_PROPS = ['height', 'padding-left', 'padding-right']
+const HIT_VISUAL_BOX_PROPS = ['width', 'height']
+const HIT_PSEUDO_PROPS = ['position', 'width', 'height']
+
+/**
+ * 折行前置守卫：三个多值字段的值片必须跨 ≥2 行。
+ *
+ * 否则 `row-gap` 仍是 6px（单行时不可见），基线比对无法区分「多行行距生效」与
+ * 「字段根本没折行」，采样面会静默失去判别力。
+ */
+export const HIT_TARGET_WRAP_FIELDS = [
+    { name: 'tags', item: '.caomei-tags-input__tag' },
+    { name: 'multi', item: '.caomei-multi-select__tag' },
+    { name: 'auto', item: '.caomei-auto-complete__tag' },
+]
+
+/** 折行前置清单下界：删项即失败，避免少查的字段静默失去判别力。 */
+export const MIN_HIT_TARGET_WRAP_FIELDS = 3
+
+
+/**
  * Tabs：指示条几何与列表分隔线。
  *
  * - 指示条 = 触发器的 `border-bottom`（横向）/ `border-right`（纵向），激活态 2px 主色；
@@ -163,7 +192,7 @@ const COL_PROPS = ['grid-column-start', 'grid-column-end', 'order']
  */
 function buildStaticSamples() {
     const samples = []
-    const add = (key, selector, props) => samples.push({ key, selector, props })
+    const add = (key, selector, props, options = {}) => samples.push({ key, selector, props, ...options })
 
     // 尺寸档位：既有矩阵
     for (const size of SIZES) {
@@ -281,6 +310,32 @@ function buildStaticSamples() {
     add('grid.col.offset', '[data-cap="grid:basic"] .caomei-col:nth-child(2)', COL_PROPS)
     add('grid.col.order', '[data-cap="grid:basic"] .caomei-col:nth-child(3)', COL_PROPS)
     add('grid.tracks', '[data-cap="grid:tracks"] .caomei-row', ['grid-template-columns'])
+
+    // 多值字段值片与 P0 命中区（见 docs/design/governance/2026-11-03-phase27-m1-3-mobile-matrix-baseline.md）：折行行距 / 值片几何 / 视觉盒 / ::after 命中区
+    const hitTargetFields = [
+        { name: 'tags', root: '.caomei-tags-input', item: '.caomei-tags-input__tag', remove: '.caomei-tags-input__tag-remove' },
+        { name: 'multi', root: '.caomei-multi-select', item: '.caomei-multi-select__tag', remove: '.caomei-multi-select__tag-remove' },
+        { name: 'auto', root: '.caomei-auto-complete', item: '.caomei-auto-complete__tag', remove: '.caomei-auto-complete__tag-remove' },
+    ]
+    for (const field of hitTargetFields) {
+        const cap = `[data-cap="hit-target:${field.name}"]`
+        add(`hit-target.${field.name}.field`, `${cap} ${field.root}`, HIT_FIELD_PROPS)
+        add(`hit-target.${field.name}.item`, `${cap} ${field.item}`, HIT_ITEM_PROPS)
+        add(`hit-target.${field.name}.remove`, `${cap} ${field.remove}`, HIT_VISUAL_BOX_PROPS)
+        add(`hit-target.${field.name}.remove-hit`, `${cap} ${field.remove}`, HIT_PSEUDO_PROPS, { pseudo: '::after' })
+    }
+
+    // 其余 P0 目标族：密码清除 / Tag 关闭 / Message 关闭（视觉盒不变 + 24px 命中区）
+    const singleHitTargets = [
+        { key: 'password.clear', cap: 'hit-target:password', selector: '.caomei-input__clear' },
+        { key: 'tag.close', cap: 'hit-target:tag', selector: '.caomei-tag__close' },
+        { key: 'message.close', cap: 'hit-target:message', selector: '.caomei-message__close' },
+    ]
+    for (const target of singleHitTargets) {
+        const selector = `[data-cap="${target.cap}"] ${target.selector}`
+        add(`hit-target.${target.key}`, selector, HIT_VISUAL_BOX_PROPS)
+        add(`hit-target.${target.key}-hit`, selector, HIT_PSEUDO_PROPS, { pseudo: '::after' })
+    }
 
     return samples
 }
@@ -491,22 +546,22 @@ async function collect(page, cdp, rootNodeId) {
     const entries = {}
     const errors = []
 
-    const readStyle = async (key, selector, props) => {
+    const readStyle = async (key, selector, props, pseudo = null) => {
         try {
             entries[key] = await page.evaluate(
-                ([target, properties]) => {
+                ([target, properties, pseudoElement]) => {
                     const element = document.querySelector(target)
                     if (!element) {
                         return { __missing: target }
                     }
-                    const computed = getComputedStyle(element)
+                    const computed = getComputedStyle(element, pseudoElement)
                     const output = {}
                     for (const property of properties) {
                         output[property] = computed.getPropertyValue(property)
                     }
                     return output
                 },
-                [selector, props],
+                [selector, props, pseudo],
             )
         } catch (error) {
             errors.push(`${key}: ${String(error)}`)
@@ -564,7 +619,16 @@ async function collect(page, cdp, rootNodeId) {
 
     // ── 静态计算样式 ────────────────────────────────────────────────
     for (const sample of STATIC_SAMPLES) {
-        await readStyle(sample.key, sample.selector, sample.props)
+        await readStyle(sample.key, sample.selector, sample.props, sample.pseudo)
+    }
+
+    // 多值字段折行前置：值片须跨 ≥2 行，否则「多行行距」采样面失去判别力
+    for (const field of HIT_TARGET_WRAP_FIELDS) {
+        const lines = await page.locator(`[data-cap="hit-target:${field.name}"] ${field.item}`).evaluateAll((elements) =>
+            new Set(elements.map((element) => Math.round(element.getBoundingClientRect().top))).size)
+        if (lines < 2) {
+            errors.push(`hit-target.${field.name}: 值片仅 ${lines} 行，多行行距采样失去判别力`)
+        }
     }
     for (const sample of TRIGGER_SAMPLES) {
         await readAttrs(`trigger.${sample.name}.attrs`, sample.selector)

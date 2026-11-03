@@ -1,4 +1,5 @@
 import { expect, test as base, type Locator, type Page } from '@playwright/test'
+import { expectHitTargetGeometry, MIN_HIT_TARGETS } from './helpers/hit-target'
 import {
     boxOf,
     expectCappedPanelContentReachable,
@@ -90,6 +91,26 @@ const GAP_900_WIDTH = 900
  * 承载**自驱视口探针**的档（矩阵扩面档不承载，口径见文件头）；由漂移守卫对账。
  */
 const FULL_MATRIX_PROJECTS: readonly string[] = ['mobile', 'tablet', 'desktop']
+
+/**
+ * 触摸密度轴在默认 / touch 档的控件高度（与 `src/styles/theme.css` 同源）。
+ *
+ * 矩阵档只验证「档位不随视口宽度漂移」与「touch 切换后窄屏仍不溢出」；逐 token 的
+ * 可逆性 / 正交性由 `density.e2e.ts` 常驻覆盖，此处不重复。
+ */
+const DENSITY_DEFAULT_HEIGHTS = { sm: '28px', md: '36px', lg: '44px' } as const
+const DENSITY_TOUCH_HEIGHTS = { sm: '36px', md: '44px', lg: '52px' } as const
+
+async function densityHeightsOf(page: Page) {
+    return page.locator('#density-inside').evaluate((root) => {
+        const heightOf = (selector: string) => getComputedStyle(root.querySelector(selector) as Element).height
+        return {
+            sm: heightOf('.caomei-button--sm'),
+            md: heightOf('.caomei-button--md'),
+            lg: heightOf('.caomei-button--lg'),
+        }
+    })
+}
 
 /**
  * 栅格断点用例（响应式设计 §3 矩阵 #18）的期望值：三档断点同时命中时**最窄档最终生效**。
@@ -271,6 +292,9 @@ const CASE_SECTION_IDS = [
     'menu-navigation',
     'alert-contrast',
     'chart',
+    'density-axis',
+    'density-outside',
+    'hit-target',
 ]
 
 /**
@@ -280,7 +304,7 @@ const CASE_SECTION_IDS = [
  * 一类静默收窄，不追求余量；配合下方逐 section 的「存在且唯一」断言补上「夹具 section 被移除」方向。
  * **清单扩项时须同步上调本值**（下界低于实际长度才拦得住删项）。
  */
-const MIN_SECTIONS = 17
+const MIN_SECTIONS = 20
 
 /**
  * 自动 fixture：每个用例独立收集 console error / page error（§4 断言 5），
@@ -355,6 +379,38 @@ test.describe('页面与用例容器无横向溢出', () => {
             await expect(page.locator(`#${sectionId}`), `夹具 section #${sectionId} 应存在且唯一`).toHaveCount(1)
             await expectLocatorNoHorizontalOverflow(page.locator(`#${sectionId}`), `#${sectionId}`)
         }
+    })
+})
+
+test.describe('触摸密度轴与 P0 命中区（矩阵档）', () => {
+    test('密度轴档位不随验收视口漂移，touch 切换后仍无横向溢出', async ({ page }) => {
+        const axis = page.locator('#density-axis')
+
+        expect(await densityHeightsOf(page), '默认档控件高度应由 token 决定，不随视口宽度变化').toEqual(DENSITY_DEFAULT_HEIGHTS)
+
+        await axis.evaluate((element) => {
+            element.setAttribute('data-density', 'touch')
+        })
+        expect(await densityHeightsOf(page), 'touch 档控件高度应由 token 决定，不随视口宽度变化').toEqual(DENSITY_TOUCH_HEIGHTS)
+
+        await expectLocatorNoHorizontalOverflow(axis, '触摸密度轴')
+        await expectPageNoHorizontalOverflow(page)
+
+        await axis.evaluate((element) => {
+            element.removeAttribute('data-density')
+        })
+    })
+
+    test('P0 命中区在矩阵档下保持 ≥24×24 且相邻不重叠', async ({ page }) => {
+        const targetCount = await expectHitTargetGeometry(
+            page,
+            '#hit-target .caomei-hit-target',
+            'P0 命中区',
+        )
+        expect(
+            targetCount,
+            '受检目标数不得低于下界（类被移除或夹具被删项时应失败，而非静默变绿）',
+        ).toBeGreaterThanOrEqual(MIN_HIT_TARGETS)
     })
 })
 

@@ -93,7 +93,7 @@
 5. **0 console error**；
 6. **面板不窄于触发器**（仅「面板宽度匹配触发器」的浮层组件：Select / MultiSelect / AutoComplete）：可用宽足够时面板宽 `>= 触发器宽 - 1` —— 该断言用于守卫 `min(触发器宽, 可用宽)` 收敛语义与 Reka 变量重命名导致的静默失效。
 
-7. **P0 命中区**（2026-11-03 起）：清除 / 关闭 icon 按钮的视觉盒不变，命中范围 `≥ --caomei-hit-target-min`（默认 24×24，WCAG 2.5.8），且**相邻目标的 Chebyshev 中心距（`max(|dx|, |dy|)`）≥24**（两个方命中区不相交的判据；多行值片经行距 +2px 保证）。判定 = 以按钮中心为原点、24×24 方框内 9 个 `elementFromPoint` 采样点均命中该按钮，方框外不命中，并以未纳入 P0 的 20px 普通按钮作负向对照；常驻用例 `test/e2e/hit-target.e2e.ts`。P1 / P2 目标不在此断言面内。**视觉基线边界**：TagsInput / MultiSelect / AutoComplete 的值片与 `#hit-target` 尚未纳入 `test:visual` / `capture:styles` 抽面，重冻结归 M1-3。
+7. **P0 命中区**（2026-11-03 起）：清除 / 关闭 icon 按钮的视觉盒不变，命中范围 `≥ --caomei-hit-target-min`（默认 24×24，WCAG 2.5.8），且**相邻目标的 Chebyshev 中心距（`max(|dx|, |dy|)`）≥24**（两个方命中区不相交的判据；多行值片经行距 +2px 保证）。判定 = 以按钮中心为原点、24×24 方框内 9 个 `elementFromPoint` 采样点均命中该按钮，方框外不命中，并以未纳入 P0 的 20px 普通按钮作负向对照；常驻用例 `test/e2e/hit-target.e2e.ts`，矩阵扩面由 `responsive.e2e.ts` 复用同一探针。P1 / P2 目标不在此断言面内。**视觉基线边界（2026-11-03 已收口）**：TagsInput / MultiSelect / AutoComplete 的值片与 `#hit-target` 已纳入 `test:visual`（390 视口折行形态）与 `capture:styles`（值片 / 删除按钮视觉盒 / `::after` 命中区逐属性），见[M1-3 记录](./governance/2026-11-03-phase27-m1-3-mobile-matrix-baseline.md)。
 
 **键盘聚焦（滚动类容器的追加口径，2026-09-17 用户裁定）**：按**聚焦前**的实际几何分档判定——
 
@@ -104,7 +104,7 @@
 
 浮层组件另须通过[测试规范 §5.1](../standards/testing.md) 的页面稳定性测量（遮罩完整、`in-flow` 不位移、CLS 归因）。
 
-**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，**档位与承载面以上表为准（单一事实源）**。**§4 断言 1 的受检面（section 清单）设下界守卫**（`responsive.e2e.ts` 的 `MIN_SECTIONS`）——清单被整体删项或解析失效时用例会失败而非静默变绿。
+**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，**档位与承载面以上表为准（单一事实源）**。**§4 断言 1 的受检面（section 清单）设下界守卫**（`responsive.e2e.ts` 的 `MIN_SECTIONS`）——清单被整体删项或解析失效时用例会失败而非静默变绿。**矩阵扩面（2026-11-03 起）**：`#density-axis` / `#density-outside` / `#hit-target` 进入该清单，密度轴档位与 P0 命中区探针随 390 / 768 / 1280 三档及 320 / 900 定向档各跑一遍；受检面下界由 17 上调为 **20**。
 
 **验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。断言 4 的**「改动前基线」**（改动前数值表 + 计算样式快照 + 已知边界）落 `docs/design/governance/[YYYY-MM-DD]-<批次>-baseline.md`（可提交），取证脚本与原始 JSON 落 `test-results/<批次>/`（gitignored，供复现）；示例见[批次 3 基线记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md)。自 2026-09-17 起，断言 1 / 2 / 3（含键盘聚焦子句，按分档口径）/ 5 / 6 由常驻 Playwright 用例承载（`test/e2e/**`），批次交付以 `pnpm test:e2e` 为可复现基线；**断言 4 仍需批次自身的基线归档**，常驻用例只覆盖其形态回归部分（如窄屏规则在桌面不生效）。
 

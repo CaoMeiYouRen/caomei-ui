@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { BUTTON_STATE_PROPS, BUTTON_STATE_SAMPLES, chromiumArgs, declaredKeys, main, verifyButtonStates, verifyCoverage } from './capture.mjs'
+import { BUTTON_STATE_PROPS, BUTTON_STATE_SAMPLES, chromiumArgs, declaredKeys, HIT_TARGET_WRAP_FIELDS, main, MIN_HIT_TARGET_WRAP_FIELDS, verifyButtonStates, verifyCoverage } from './capture.mjs'
 import { diffEntries, formatDiffs } from './diff.mjs'
 
 /** 受检面基线规模：新增 / 删除采样项必须同步此值，使「收窄受检范围」在 diff 中显式可见。 */
-const DECLARED_KEY_BUDGET = 349
+const DECLARED_KEY_BUDGET = 367
 
 describe('采样面声明', () => {
     it('样本键唯一且与预算一致', () => {
@@ -24,9 +24,14 @@ describe('采样面声明', () => {
         }
     })
 
+    it('多值字段折行前置清单未收窄', () => {
+        expect(HIT_TARGET_WRAP_FIELDS.map((field) => field.name)).toEqual(['tags', 'multi', 'auto'])
+        expect(HIT_TARGET_WRAP_FIELDS).toHaveLength(MIN_HIT_TARGET_WRAP_FIELDS)
+    })
+
     it('覆盖各采样段的前缀', () => {
         const keys = declaredKeys()
-        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-hover.', 'button-active.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.', 'switch.', 'toast.', 'panel.', 'confirm-dialog.', 'card.', 'password.', 'data-table.', 'calendar.', 'color-picker.', 'split-button.', 'checkbox.', 'checkbox-group.', 'tabs.', 'grid.']) {
+        for (const prefix of ['size.', 'tier.', 'state.', 'trigger.', 'variant.', 'button.', 'button-focus.', 'button-hover.', 'button-active.', 'button-icon-only.', 'button-icon-only-icon.', 'z.', 'drawer.', 'dialog.', 'radio-group-invalid.', 'switch.', 'toast.', 'panel.', 'confirm-dialog.', 'card.', 'password.', 'data-table.', 'calendar.', 'color-picker.', 'split-button.', 'checkbox.', 'checkbox-group.', 'tabs.', 'grid.', 'hit-target.']) {
             expect(keys.some((key) => key.startsWith(prefix))).toBe(true)
         }
     })

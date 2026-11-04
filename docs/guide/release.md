@@ -20,7 +20,7 @@
 
 ## 3. 发布流程（本地手动）
 
-> **单入口编排**：`pnpm release:manual <step> --version=<v> [--tag=next|latest]`（脚本 `scripts/release/manual-release.mjs`，publish 可选 `--otp=<code>`）把本节流程串成一条可复算链路，消除「命令分散 / 隐式前置 / 后置文档同步易漏 / GitHub Release 手工」四类易错点。
+> **单入口编排**：`pnpm release:manual <step> --version=<v> [--tag=next|latest]`（脚本 `scripts/release/manual-release.mjs`，publish 可选 `--otp=<code>`，API 差分可选 `--base=<version>` / `--allow-breaking=<记录路径>`）把本节流程串成一条可复算链路，消除「命令分散 / 隐式前置 / 后置文档同步易漏 / GitHub Release 手工」四类易错点。
 > 变更型步骤（`bump` / `changelog` / `publish` / `sync` / `announce`）**必须显式 `--yes`**，否则以 `--dry-run` 预览。
 
 ### 3.1 一键执行（推荐）
@@ -32,12 +32,13 @@ pnpm release:manual run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--o
 pnpm release:manual run --version=1.0.0 --tag=latest [--date=YYYY-MM-DD] [--otp=<code>] [--yes]
 ```
 
-`run` 依序执行 7 步：`preflight → bump → changelog → sync → publish → verify → announce`。**`sync` 排在 `publish` 之前**：`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版。**`run` / `preflight` 内置安全告警门禁**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警，`SECURITY_ALERTS_TOKEN` 缺失即中止；`publish` 在发布动作前复跑一次（`--dry-run` 预览不执行门禁），检查计数与豁免清单仍须写入当次发布治理记录。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
+`run` 依序执行 8 步：`preflight → api-diff → bump → changelog → sync → publish → verify → announce`。**`api-diff` 排在 `preflight` 之后**：`preflight` 的 `pnpm verify` 会构建 `dist`，差分直接比对这份当前产物；基线按目标 dist-tag 取**同通道上一已发布版本**（`latest` → 上一 `latest`，`next` → 上一 `next`），可用 `--base=<version>` 覆写。**`sync` 排在 `publish` 之前**：`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版。**`run` / `preflight` 内置安全告警门禁**：按[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)检查 Dependabot / Code Scanning 的 open 告警，`SECURITY_ALERTS_TOKEN` 缺失即中止；`publish` 在发布动作前复跑一次（`--dry-run` 预览不执行门禁），检查计数与豁免清单仍须写入当次发布治理记录。省略 `--tag` 时按版本自动推断（含 `-` 后缀的预发布 → `next`，正式版 → `latest`）；**预发布版本显式传 `--tag=latest` 会在参数校验阶段终止**。
 
 ### 3.2 分步执行（可复算 / 失败恢复）
 
 ```bash
 pnpm release:manual preflight --version=1.0.0-rc.1 --tag=next
+pnpm release:manual api-diff  --version=1.0.0-rc.1 --tag=next [--base=<version>] [--allow-breaking=<记录路径>]
 pnpm release:manual bump      --version=1.0.0-rc.1 --yes
 pnpm release:manual changelog --version=1.0.0-rc.1 --yes
 pnpm release:manual sync      --version=1.0.0-rc.1 --yes
@@ -48,15 +49,18 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ### 3.3 各步骤口径（runbook）
 
+> 下列第 0 项是内置门禁，不是 `STEPS` 中的步骤；`run` 实际执行第 1 ~ 8 项。
+
 0. **发布前安全告警门禁（内置 + 留痕）**：`preflight` 与 `publish` 自动执行[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的检查（open + dismissed，`auto_dismissed` 不参与）——**critical 不允许豁免**（被 dismiss 也算存在）；**high 须修复，或按规范留痕豁免**；其余级别可暂缓。`SECURITY_ALERTS_TOKEN` 缺失即中止（fail-closed），本地写入仓库根 `.env.local` 或临时 export（`--dry-run` 预览不执行门禁）；CI 侧由 `Security Alerts` workflow 执行同名检查（secret `SECURITY_ALERTS_TOKEN`，见 §2.1）。检查计数与豁免清单仍须写入当次发布治理记录。
 1. **预检（`preflight`）**：工作区干净；分支为 `master`；`pnpm verify` 全链路通过；随后运行 `pnpm test:coverage` + `pnpm check:coverage` 生成并校验覆盖率证据（`verify` 内含 `test`，故预检会跑两遍测试）；目标版本尚未发布（`npm view`）；npm 凭据可用（`npm whoami`）；dist-tag 取 `--tag` 或按版本推断，**预发布 + `latest` 在参数层直接拒绝**；提示「长期任务门槛复核轮已执行并留痕」（发布前触发义务）。领先 `origin/master` 的提交会提示先推送。
-2. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
+2. **API 表面差分（`api-diff`）**：对**上一已发布版本**的 `.d.ts` 做差分，阻断项 = 删除 / 重命名声明文件或导出、非继承且无索引签名的导出类型成员删除、成员由 optional 变为 required；**新增不阻断**；其余内容变化只列出、人工复核类型变化。基线缺省按目标 dist-tag 取同通道上一版本（`latest` → 上一 `latest`，`next` → 上一 `next`），`--base=<version>` 可覆写；通道首版无基线、或目标已是通道当前版本时跳过。分步执行前须先完成 `preflight`（其 `pnpm verify` 构建 `dist`）；单独运行会使用现有 `dist` 并打印提示。`--dry-run` 仍执行只读差分并打印结论，网络 / 基线不可用时降级为提示；真实运行中 breaking 会中止。已批准的 major 用 `--allow-breaking=<治理记录路径>` 显式放行（路径须为 `docs/design/governance/` 下的 `.md` 文件、存在且会打印留痕）。
+3. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 与 `sync` 提交都在其后——**tag 视图不含 CHANGELOG 段、README 版本句落后一版均属正常形态**（两者都是仓库内产物，作者是后续提交）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。因此**已发布 tag 的 README 快照不是版本句校验的有效信号**（README 的作者提交在 tag 之后），权威校验以解包 tarball 的 README 为准（`verify` 已自动断言）。
-3. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。**major 版另须人工补里程碑段**（里程碑 / 升级注意 / 已知限制，文案见当次发布治理记录）：生成器只按提交分组，`v1.0.0-rc.1..v1.0.0` 这类区间会只剩零星修复；插入必须在 `changelog` 之后、`announce` 之前——`announce` 直接抽取该段落作为 GitHub Release note，插早了会被 `changelog` 重写覆盖。补完另起一次 `docs(changelog): 补充 <v> 里程碑段` 提交，并用 `announce --dry-run` 复核 `note <N> 行`。**major 版须分步执行**（`bump → changelog → 插入并单独提交 → sync → publish → verify → announce`）：插入后不得重跑 `changelog` 步骤或整链 `run`，否则里程碑块会被整篇重写覆盖。
-4. **文档同步（`sync`）**：**必须在 `publish` 之前**——`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 `publish` / `announce`）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`（不命中发布元数据豁免，提交前须已有新鲜 Review Gate 工件）。
-5. **发布（`publish`）**：**发布前 fail-closed 断言** `package.json` 版本与全部「当前版本」声明句均已到达目标版本（`scripts/release/manual-release.mjs` 的 `assertPublishVersionStatements`；分步执行绕过 `STEPS` 顺序时由该断言兜底），未就绪即中止并提示先跑 `bump` / `sync`。`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
-6. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。并断言**解包 tarball 内 README（中 / 英）的「当前版本」句 = 目标版本**（产物级最终防线）。另执行 `pnpm check:api-surface --baseline=<上一版解包 dist>` 比对 `.d.ts`：exit 1（删除 / 重命名）阻塞；exit 0 且列出内容变化时人工复核，命中 required 收紧按阻塞处理、纯类型变化记 warning。
-7. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`；预发布版本追加 `--prerelease`，目标 dist-tag 非 `latest` 时追加 `--latest=false`（staged release 不抢 Latest）。
+4. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。**major 版另须人工补里程碑段**（里程碑 / 升级注意 / 已知限制，文案见当次发布治理记录）：生成器只按提交分组，`v1.0.0-rc.1..v1.0.0` 这类区间会只剩零星修复；插入必须在 `changelog` 之后、`announce` 之前——`announce` 直接抽取该段落作为 GitHub Release note，插早了会被 `changelog` 重写覆盖。补完另起一次 `docs(changelog): 补充 <v> 里程碑段` 提交，并用 `announce --dry-run` 复核 `note <N> 行`。**major 版须分步执行**（`bump → changelog → 插入并单独提交 → sync → publish → verify → announce`）：插入后不得重跑 `changelog` 步骤或整链 `run`，否则里程碑块会被整篇重写覆盖。
+5. **文档同步（`sync`）**：**必须在 `publish` 之前**——`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 `publish` / `announce`）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`（不命中发布元数据豁免，提交前须已有新鲜 Review Gate 工件）。
+6. **发布（`publish`）**：**发布前 fail-closed 断言** `package.json` 版本与全部「当前版本」声明句均已到达目标版本（`scripts/release/manual-release.mjs` 的 `assertPublishVersionStatements`；分步执行绕过 `STEPS` 顺序时由该断言兜底），未就绪即中止并提示先跑 `bump` / `sync`。`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
+7. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。并断言**解包 tarball 内 README（中 / 英）的「当前版本」句 = 目标版本**（产物级最终防线）。API 差分的唯一执行点是第 2 步 `api-diff`，`verify` 不重复执行。
+8. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`；预发布版本追加 `--prerelease`，目标 dist-tag 非 `latest` 时追加 `--latest=false`（staged release 不抢 Latest）。
 
 > **落痕（人工，脚本未覆盖）**：发布结论与关键实测值（registry 版本 / tarball shasum / 解包与冒烟结果 / GitHub Release）应落到可提交位置（发布执行治理记录或提交信息）。
 
@@ -70,12 +74,12 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 |:---|:---|:---:|
 | `chore(release): <v>` | 仅 `package.json` 的版本行 | ✅ |
 | `docs(changelog): <v>` | 仅 `CHANGELOG.md` | ✅ |
-| `docs(changelog): 补充 <v> 里程碑段` | 仅 `CHANGELOG.md`（major 版人工里程碑段，见 §3.3 第 3 步） | ✅ |
+| `docs(changelog): 补充 <v> 里程碑段` | 仅 `CHANGELOG.md`（major 版人工里程碑段，见 §3.3 第 4 步） | ✅ |
 | `docs(release): sync version statements to <v>` | README（中英）+ `docs/plan/roadmap.md` 的版本句（在 `publish` **之前**提交，版本句才随 tarball 发布） | ❌ **不豁免** |
 
 > 豁免要求范围**等于全量暂存集**且每项状态为 `M`、版本清单 diff 增删行**全部**为 `"version": "…"` 形态；与任何其它文件同批即失去豁免。故执行 `sync` 提交前**须已有新鲜 Review Gate 工件**。
 
-> **关于 `npm version`（本地发布的常见做法）**：`npm version <v>` 会**直接提交并打 annotated tag**——提交信息为裸版本号（非 Conventional 形态），`pnpm changelog` 提交在其后；这是**正常流程**（2026-09-30 用户口径），其 tag 指向版本提交、tag 视图不含 CHANGELOG 段，按第 2 步口径**不视为偏差、无需重指 tag**。若要改为按本节 2 ~ 4 步自行提交与打 tag，加 `--no-git-tag-version`（该开关同时关闭自动提交与打 tag）。**无论采用哪种方式，版本基线提交前都须复跑 `pnpm verify` 并留痕。**
+> **关于 `npm version`（本地发布的常见做法）**：`npm version <v>` 会**直接提交并打 annotated tag**——提交信息为裸版本号（非 Conventional 形态），`pnpm changelog` 提交在其后；这是**正常流程**（2026-09-30 用户口径），其 tag 指向版本提交、tag 视图不含 CHANGELOG 段，按第 3 步口径**不视为偏差、无需重指 tag**。若要改为按本节 3 ~ 5 步自行提交与打 tag，加 `--no-git-tag-version`（该开关同时关闭自动提交与打 tag）。**无论采用哪种方式，版本基线提交前都须复跑 `pnpm verify` 并留痕。**
 
 ### 3.5 发版后的文档同步边界
 

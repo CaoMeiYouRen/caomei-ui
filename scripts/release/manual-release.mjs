@@ -18,8 +18,8 @@
  * 用法（须在仓库根运行）：
  *   node scripts/release/manual-release.mjs preflight --version=0.7.0
  *   node scripts/release/manual-release.mjs run --version=1.0.0-rc.1 --tag=next [--date=YYYY-MM-DD] [--yes] [--dry-run]
- *   pnpm release:manual <step> --version=<v> [--tag=next|latest]
- * steps：见 `STEPS`（preflight | bump | changelog | sync | publish | verify | announce）| run
+ *   pnpm release:manual <step> --version=<v> [--tag=next|latest] [--base=<version>] [--allow-breaking=<记录路径>]
+ * steps：见 STEPS（preflight | api-diff | bump | changelog | sync | publish | verify | announce）| run
  *
  * 变更型步骤（bump / changelog / publish / sync / announce）**必须显式给出 `--yes`**
  * （或以 `--dry-run` 预览），避免误触发不可逆动作。
@@ -42,6 +42,7 @@ import { isDirectExecution } from '../shared/cli.mjs'
 import { LOCAL_ENV_FILE, loadLocalEnv } from '../shared/env.mjs'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import { DEFAULT_EXEMPTIONS_PATH, assertSecurityGate } from './check-security-alerts.mjs'
+import { stepApiDiff } from './api-diff-step.mjs'
 
 export const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 export const PACKAGE_NAME = 'caomei-ui'
@@ -60,7 +61,7 @@ export const DEFAULT_STABLE_TAG = 'latest'
  * `sync` 必须排在 `publish` **之前**：`npm publish` 打包的是当前工作区，README 随包发布。
  * 若 `sync` 在后，tarball 内的「当前版本」句会永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。
  */
-export const STEPS = ['preflight', 'bump', 'changelog', 'sync', 'publish', 'verify', 'announce']
+export const STEPS = ['preflight', 'api-diff', 'bump', 'changelog', 'sync', 'publish', 'verify', 'announce']
 
 /** 改动仓库状态的步骤：须显式 `--yes` 或 `--dry-run`。 */
 export const MUTATING_STEPS = new Set(['bump', 'changelog', 'publish', 'sync', 'announce'])
@@ -68,12 +69,14 @@ export const MUTATING_STEPS = new Set(['bump', 'changelog', 'publish', 'sync', '
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/u
 
-const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--tag=next|latest] [--date=YYYY-MM-DD] [--otp=<code>] [--yes] [--dry-run]
+const USAGE = `用法：node scripts/release/manual-release.mjs <step> --version=<v> [--tag=next|latest] [--date=YYYY-MM-DD] [--otp=<code>] [--base=<version>] [--allow-breaking=<path>] [--yes] [--dry-run]
 steps：${STEPS.join(' | ')} | run
   --version  目标版本（semver，如 1.0.0-rc.1 / 1.0.0）
   --tag      npm dist-tag（next | latest）；缺省按版本推断：预发布 → next，正式版 → latest
   --date     可选，固定 CHANGELOG 发布日期（YYYY-MM-DD）
   --otp      可选，npm 一次性密码（6-8 位数字；仅 publish 使用；未提供时由 npm 交互提示）
+  --base     可选，API 差分基线版本；缺省按目标 dist-tag 取同通道上一已发布版本
+  --allow-breaking 可选，已批准的治理记录路径；仅用于显式放行 breaking（会打印留痕）
   --yes      确认执行变更型步骤（非交互环境必须显式给出）
   --dry-run  只打印计划动作，不落盘 / 不改 git / 不发布`
 
@@ -81,7 +84,7 @@ steps：${STEPS.join(' | ')} | run
  * 解析命令行参数。
  *
  * @param {string[]} argv 参数列表（不含 node / 脚本名）
- * @returns {{ step: string, version: string | undefined, tag: string | undefined, date: string | undefined, otp: string | undefined, yes: boolean, dryRun: boolean, error: string | null }}
+ * @returns {{ step: string, version: string | undefined, tag: string | undefined, date: string | undefined, otp: string | undefined, base: string | undefined, allowBreaking: string | undefined, yes: boolean, dryRun: boolean, error: string | null }}
  */
 export function parseArgs(argv) {
     let step = null
@@ -89,9 +92,11 @@ export function parseArgs(argv) {
     let tag
     let date
     let otp
+    let base
+    let allowBreaking
     let yes = false
     let dryRun = false
-    const unknown = (error) => ({ step: '', version, tag, date, otp, yes, dryRun, error })
+    const unknown = (error) => ({ step: '', version, tag, date, otp, base, allowBreaking, yes, dryRun, error })
     for (const arg of argv) {
         if (arg === '--yes') {
             yes = true
@@ -105,6 +110,10 @@ export function parseArgs(argv) {
             date = arg.slice('--date='.length)
         } else if (arg.startsWith('--otp=')) {
             otp = arg.slice('--otp='.length)
+        } else if (arg.startsWith('--base=')) {
+            base = arg.slice('--base='.length)
+        } else if (arg.startsWith('--allow-breaking=')) {
+            allowBreaking = arg.slice('--allow-breaking='.length)
         } else if (arg.startsWith('--')) {
             return unknown(`不支持的参数：${arg}`)
         } else if (step === null) {
@@ -119,7 +128,13 @@ export function parseArgs(argv) {
     if (![...STEPS, 'run'].includes(step)) {
         return unknown(`未知 step：${step}（可用：${[...STEPS, 'run'].join(' | ')}）`)
     }
-    return { step, version, tag, date, otp, yes, dryRun, error: null }
+    if (base !== undefined && base.trim() === '') {
+        return unknown('--base 不能为空')
+    }
+    if (allowBreaking !== undefined && allowBreaking.trim() === '') {
+        return unknown('--allow-breaking 不能为空')
+    }
+    return { step, version, tag, date, otp, base, allowBreaking, yes, dryRun, error: null }
 }
 
 /**
@@ -644,7 +659,7 @@ export async function stepPublish(ctx) {
     if (prePublishProblems.length > 0) {
         throw new Error(
             `版本未就绪，拒绝发布（tarball 内 README 会落后一版）：\n${prePublishProblems.join('\n')}\n`
-            + '请先执行 bump / sync（见 docs/guide/release.md §3.3 第 2 / 4 步）',
+            + '请先执行 bump / sync（见 docs/guide/release.md §3.3 第 3 / 5 步）',
         )
     }
     // 门禁在不可逆动作前复跑：preflight 与 publish 之间可能隔了 verify / coverage 的长时间窗口。
@@ -894,6 +909,7 @@ function stepAnnounce(ctx) {
 
 const STEP_RUNNERS = {
     preflight: stepPreflight,
+    'api-diff': stepApiDiff,
     bump: stepBump,
     changelog: stepChangelog,
     publish: stepPublish,
@@ -952,6 +968,9 @@ async function main() {
         tag,
         date: options.date,
         otp: options.otp,
+        base: options.base,
+        allowBreaking: options.allowBreaking,
+        fromRun: options.step === 'run',
         yes: options.yes,
         dryRun: options.dryRun,
         env,

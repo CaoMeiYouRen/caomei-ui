@@ -1,10 +1,11 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { afterAll, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
+import { ensureDistTags, resolveApiDiffBaseline, stepApiDiff } from './api-diff-step.mjs'
 import {
     assertPublishVersionStatements,
     assertVersionStatements,
@@ -16,6 +17,7 @@ import {
     formatLocalTagNotPushed,
     isPrereleaseVersion,
     isValidShasum,
+    MUTATING_STEPS,
     parseArgs,
     parseDistTags,
     parseRemoteTagSha,
@@ -130,6 +132,12 @@ describe('manual-release 步骤顺序', () => {
         expect(STEPS.at(-1)).toBe('announce')
         expect(new Set(STEPS).size).toBe(STEPS.length)
     })
+
+    it('api-diff 位于 preflight 之后、bump 之前（依赖 verify 构建的 dist）', () => {
+        expect(STEPS.indexOf('api-diff')).toBe(STEPS.indexOf('preflight') + 1)
+        expect(STEPS.indexOf('api-diff')).toBeLessThan(STEPS.indexOf('bump'))
+        expect(MUTATING_STEPS.has('api-diff')).toBe(false)
+    })
 })
 
 describe('manual-release publish 安全门禁顺序', () => {
@@ -191,11 +199,280 @@ describe('manual-release parseArgs', () => {
         expect(parseArgs(['publish', '--version=1.0.0', '--tag=latest']).tag).toBe('latest')
     })
 
+    it('解析 --base 与 --allow-breaking', () => {
+        expect(parseArgs([
+            'api-diff',
+            '--version=1.1.0',
+            '--base=1.0.0',
+            '--allow-breaking=docs/design/governance/major.md',
+        ])).toMatchObject({
+            step: 'api-diff',
+            version: '1.1.0',
+            base: '1.0.0',
+            allowBreaking: 'docs/design/governance/major.md',
+            error: null,
+        })
+        expect(parseArgs(['api-diff', '--version=1.1.0', '--base=']).error).toContain('--base 不能为空')
+        expect(parseArgs(['api-diff', '--version=1.1.0', '--allow-breaking=']).error).toContain('--allow-breaking 不能为空')
+    })
+
     it('拒绝未知参数 / 未知 step / 缺 step', () => {
         expect(parseArgs(['bump', '--version=0.7.0', '--nope']).error).toMatch(/不支持的参数/u)
         expect(parseArgs(['nope', '--version=0.7.0']).error).toMatch(/未知 step/u)
         expect(parseArgs(['--version=0.7.0']).error).toMatch(/缺少 step/u)
         expect(parseArgs(['bump', '--version=0.7.0', 'extra']).error).toMatch(/未知位置参数/u)
+    })
+})
+
+describe('manual-release API 差分基线', () => {
+    const distTags = { latest: '1.0.0', next: '1.0.0-rc.1' }
+
+    it('显式 --base 优先于 dist-tag 推断', () => {
+        expect(resolveApiDiffBaseline({
+            targetVersion: '1.1.0',
+            tag: 'latest',
+            distTags,
+            explicitBase: '1.0.0',
+        })).toEqual({ version: '1.0.0', reason: null, source: '--base' })
+    })
+
+    it('--base 与目标版本相同时跳过', () => {
+        const result = resolveApiDiffBaseline({
+            targetVersion: '1.1.0',
+            tag: 'latest',
+            explicitBase: '1.1.0',
+        })
+        expect(result.version).toBeNull()
+        expect(result.reason).toContain('无可对照')
+    })
+
+    it('按同通道取上一版本：latest 对 1.0.0 / next 对 rc.1', () => {
+        expect(resolveApiDiffBaseline({ targetVersion: '1.1.0', tag: 'latest', distTags }).version).toBe('1.0.0')
+        expect(resolveApiDiffBaseline({ targetVersion: '1.0.0-rc.2', tag: 'next', distTags }).version).toBe('1.0.0-rc.1')
+    })
+
+    it('通道无版本或目标已是通道当前版本时跳过', () => {
+        const missing = resolveApiDiffBaseline({ targetVersion: '0.1.0', tag: 'latest', distTags: {} })
+        expect(missing.version).toBeNull()
+        expect(missing.reason).toContain('不存在')
+
+        const same = resolveApiDiffBaseline({ targetVersion: '1.0.0', tag: 'latest', distTags })
+        expect(same.version).toBeNull()
+        expect(same.reason).toContain('无可对照')
+    })
+})
+
+describe('manual-release API 差分步骤', () => {
+    function writeDist(root, content) {
+        mkdirSync(join(root, 'dist'), { recursive: true })
+        writeFileSync(join(root, 'dist', 'index.d.ts'), content)
+    }
+
+    function apiDiffCtx(overrides = {}) {
+        const root = tempDir('caomei-api-diff-root-')
+        writeDist(root, 'export declare class Foo {}\nexport declare const bar: number')
+        const baselineRoot = tempDir('caomei-api-diff-baseline-')
+        writeFileSync(join(baselineRoot, 'index.d.ts'), 'export declare class Foo {}\nexport declare const bar: number')
+        return {
+            root,
+            version: '1.1.0',
+            tag: 'latest',
+            dryRun: false,
+            distTags: { latest: '1.0.0' },
+            fetchApiBaseline: () => ({ dir: tempDir('caomei-api-diff-fetch-'), distRoot: baselineRoot }),
+            ...overrides,
+        }
+    }
+
+    function captureStdout() {
+        return vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    }
+
+    it('新增不阻断，报告列出新增导出', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx()
+            writeDist(ctx.root, 'export declare class Foo {}\nexport declare const bar: number\nexport declare const extra: string')
+            await expect(stepApiDiff(ctx)).resolves.toBeUndefined()
+            expect(spy.mock.calls.flat().join('')).toContain('新增导出')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('删除 / 重命名判 breaking 并中止', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx()
+            writeDist(ctx.root, 'export declare class Foo {}')
+            await expect(stepApiDiff(ctx)).rejects.toThrow(/breaking/u)
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('dry-run 遇到 breaking 只提示，不中止预览', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({ dryRun: true })
+            writeDist(ctx.root, 'export declare class Foo {}')
+            await expect(stepApiDiff(ctx)).resolves.toBeUndefined()
+            expect(spy.mock.calls.flat().join('')).toContain('真实运行会中止')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('--allow-breaking 只在治理记录存在时放行', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({ allowBreaking: 'docs/design/governance/major.md' })
+            writeDist(ctx.root, 'export declare class Foo {}')
+            await expect(stepApiDiff(ctx)).rejects.toThrow(/治理记录不存在/u)
+
+            mkdirSync(join(ctx.root, 'docs/design/governance'), { recursive: true })
+            writeFileSync(join(ctx.root, 'docs/design/governance/major.md'), '# major\n')
+            await expect(stepApiDiff(ctx)).resolves.toBeUndefined()
+            expect(spy.mock.calls.flat().join('')).toContain('显式放行')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('--allow-breaking 拒绝非治理记录路径与目录', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({ allowBreaking: '.' })
+            writeDist(ctx.root, 'export declare class Foo {}')
+            await expect(stepApiDiff(ctx)).rejects.toThrow(/docs\/design\/governance/u)
+
+            const dirCtx = apiDiffCtx({ allowBreaking: 'docs/design/governance/major.md' })
+            mkdirSync(join(dirCtx.root, 'docs/design/governance/major.md'), { recursive: true })
+            writeDist(dirCtx.root, 'export declare class Foo {}')
+            await expect(stepApiDiff(dirCtx)).rejects.toThrow(/须指向文件/u)
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('dist-tags 读取失败时真实运行中止、dry-run 降级', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({
+                distTags: undefined,
+                readDistTags: () => {
+                    throw new Error('bad dist-tags')
+                },
+            })
+            await expect(stepApiDiff(ctx)).rejects.toThrow('bad dist-tags')
+
+            const dryCtx = { ...ctx, dryRun: true }
+            await expect(stepApiDiff(dryCtx)).resolves.toBeUndefined()
+            expect(spy.mock.calls.flat().join('')).toContain('无法读取 dist-tags')
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('--base 非法时在参数层中止', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({ base: 'latest' })
+            await expect(stepApiDiff(ctx)).rejects.toThrow(/Invalid --base/u)
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('差分结束后清理临时解包目录', async () => {
+        const spy = captureStdout()
+        try {
+            const root = tempDir('caomei-api-diff-clean-root-')
+            writeDist(root, 'export declare class Foo {}')
+            const baselineRoot = tempDir('caomei-api-diff-clean-base-')
+            writeFileSync(join(baselineRoot, 'index.d.ts'), 'export declare class Foo {}')
+            const fetchDir = tempDir('caomei-api-diff-clean-fetch-')
+            await expect(stepApiDiff({
+                root,
+                version: '1.1.0',
+                tag: 'latest',
+                dryRun: false,
+                distTags: { latest: '1.0.0' },
+                fetchApiBaseline: () => ({ dir: fetchDir, distRoot: baselineRoot }),
+            })).resolves.toBeUndefined()
+            expect(existsSync(fetchDir)).toBe(false)
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('ensureDistTags 拒绝空对象与非字符串版本值', () => {
+        expect(() => ensureDistTags({})).toThrow(/无法解析/u)
+        expect(() => ensureDistTags({ latest: 123 })).toThrow(/非字符串/u)
+        expect(ensureDistTags({ latest: '1.0.0' })).toEqual({ latest: '1.0.0' })
+    })
+
+    it('compare 抛错时仍清理临时解包目录', async () => {
+        const spy = captureStdout()
+        try {
+            const root = tempDir('caomei-api-diff-fail-root-')
+            writeDist(root, 'export declare class Foo {}')
+            const baselineRoot = tempDir('caomei-api-diff-fail-base-')
+            writeFileSync(join(baselineRoot, 'index.d.ts'), 'export declare class Foo {}')
+            const fetchDir = tempDir('caomei-api-diff-fail-fetch-')
+            await expect(stepApiDiff({
+                root,
+                version: '1.1.0',
+                tag: 'latest',
+                dryRun: false,
+                distTags: { latest: '1.0.0' },
+                fetchApiBaseline: () => ({ dir: fetchDir, distRoot: baselineRoot }),
+                compareApiSurfaces: () => {
+                    throw new Error('compare boom')
+                },
+            })).rejects.toThrow('compare boom')
+            expect(existsSync(fetchDir)).toBe(false)
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('dist 缺失时真实运行中止，dry-run 跳过', async () => {
+        const spy = captureStdout()
+        try {
+            const root = tempDir('caomei-api-diff-nodist-')
+            await expect(stepApiDiff({
+                root,
+                version: '1.1.0',
+                tag: 'latest',
+                dryRun: false,
+                distTags: { latest: '1.0.0' },
+                fetchApiBaseline: () => {
+                    throw new Error('should not be called')
+                },
+            })).rejects.toThrow(/dist 不存在/u)
+
+            await expect(stepApiDiff({
+                root,
+                version: '1.1.0',
+                tag: 'latest',
+                dryRun: true,
+                distTags: { latest: '1.0.0' },
+            })).resolves.toBeUndefined()
+        } finally {
+            spy.mockRestore()
+        }
+    })
+
+    it('目标版本已是通道当前版本时跳过差分', async () => {
+        const spy = captureStdout()
+        try {
+            const ctx = apiDiffCtx({ version: '1.0.0', distTags: { latest: '1.0.0' } })
+            await expect(stepApiDiff(ctx)).resolves.toBeUndefined()
+            expect(spy.mock.calls.flat().join('')).toContain('无可对照')
+        } finally {
+            spy.mockRestore()
+        }
     })
 })
 

@@ -14,6 +14,7 @@
  *   node scripts/release/generate-changelog.mjs [--version=0.1.0] [--date=2026-09-19]
  *   pnpm changelog
  */
+import { execFileSync } from 'node:child_process'
 import { readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -50,6 +51,53 @@ export async function readPackageField(field, root = REPO_ROOT) {
     return pkg[field]
 }
 
+/**
+ * 读取仓库的 origin remote；缺失时返回空串。
+ *
+ * 不能只靠 `readRepository()` 的 try/catch：它在 v7 里把 promise 组合进参数、返回 `this`，
+ * 真正的 git 失败发生在后续 `write()` 中，无法在调用点捕获。
+ *
+ * @param {string} root 仓库根
+ * @returns {string}
+ */
+export function readOriginRemote(root) {
+    try {
+        return execFileSync('git', ['-C', root, 'config', '--get', 'remote.origin.url'], {
+            encoding: 'utf8',
+            stdio: ['ignore', 'pipe', 'ignore'],
+        }).trim()
+    } catch {
+        return ''
+    }
+}
+
+/**
+ * 串行化预设创建期间的 cwd 切换。
+ *
+ * `conventional-changelog-cmyr-config` 从 `process.cwd()/package.json` 读取语言，
+ * 而 `createPreset` 不接受 cwd 参数；切换是当前唯一最小改法。cwd 是进程级状态，
+ * 故用模块内 promise 队列保证并发调用不交叉，并在成功 / 异常路径都恢复原值。
+ */
+let presetLock = Promise.resolve()
+
+function withRepoCwd(repoRoot, task) {
+    const run = presetLock.then(async () => {
+        const previousCwd = process.cwd()
+        try {
+            if (previousCwd !== repoRoot) {
+                process.chdir(repoRoot)
+            }
+            return await task()
+        } finally {
+            if (process.cwd() !== previousCwd) {
+                process.chdir(previousCwd)
+            }
+        }
+    })
+    presetLock = run.catch(() => {})
+    return run
+}
+
 export async function generateChangelog({ version, date, root } = {}) {
     validateOptions({ version, date })
     const repoRoot = root ?? REPO_ROOT
@@ -60,7 +108,10 @@ export async function generateChangelog({ version, date, root } = {}) {
     const pkgName = await readPackageField('name', repoRoot)
     const nextVersion = version ?? (await readPackageField('version', repoRoot))
 
-    const preset = await createPreset()
+    // 预设的 writer 从 `process.cwd()/package.json` 读取 `changelog.language`（上游实现），
+    // 直接调用会让「在别的目录生成 root 仓库的 changelog」串到调用方语言；生成期间切到
+    // 目标仓库根，结束后恢复（脚本本身也要求默认根必须在仓库根运行）。
+    const preset = await withRepoCwd(repoRoot, createPreset)
     preset.parser = {
         ...preset.parser,
         // 预置 headerPattern 不含 `!`，会把 `type(scope)!: …` 的 BREAKING CHANGE 提交整条丢弃；补 `!?`。
@@ -81,11 +132,9 @@ export async function generateChangelog({ version, date, root } = {}) {
         .config(preset)
         .options({ releaseCount: 0, outputUnreleased: true })
 
-    try {
-        // 无 git remote 的仓库（如测试 fixture）读取仓库信息会失败；此时降级为不生成链接。
+    if (readOriginRemote(repoRoot)) {
+        // 有 remote 时才读取仓库信息；commit 链接按远端生成。
         generator.readRepository()
-    } catch {
-        // 忽略：无远程仓库信息时 commit 链接退化为短 hash。
     }
 
     const context = { version: nextVersion }
@@ -100,7 +149,9 @@ export async function generateChangelog({ version, date, root } = {}) {
     }
 
     const content = `# ${pkgName}\n\n${body}`.replace(/\n{3,}/gu, '\n\n')
-    return version === undefined ? content : stripEmptyUnreleasedSection(content)
+    // 不论是否显式指定版本，都剥离**空**的 `# Unreleased` 段：`outputUnreleased: true`
+    // 在「无未发布提交」时仍会输出标题，保留会让 CHANGELOG 首屏出现无内容标题。
+    return stripEmptyUnreleasedSection(content)
 }
 
 /**
@@ -109,6 +160,9 @@ export async function generateChangelog({ version, date, root } = {}) {
  * conventional-changelog 在指定版本、且同名 tag 已存在时，会把目标版本作为已发布段输出，
  * 同时在前面留一个空的 Unreleased 标题。空段不承载信息，保留会让同一份 CHANGELOG 出现
  * 两个版本标题；有内容的 Unreleased 段（预览尚未发布的提交）保持原样。
+ *
+ * 不变量：Unreleased 段必须紧跟在 `# <name>\n\n` 之后；上游格式变化（标题前加导语、
+ * 出现第二段 Unreleased）时本函数静默不剥离（保守行为，不会误删相邻内容）。
  *
  * @param {string} content CHANGELOG 全文
  * @returns {string}

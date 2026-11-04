@@ -7,16 +7,18 @@ import { generateChangelog, parseArgs, readPackageField, stripEmptyUnreleasedSec
 
 const tempDirs = []
 
-function createGitFixture() {
+function createGitFixture({ remote = true, language = 'zh', version = '0.1.0' } = {}) {
     const dir = mkdtempSync(join(tmpdir(), 'generate-changelog-'))
     tempDirs.push(dir)
-    writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'fixture-ui', changelog: { language: 'zh' } }))
+    writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'fixture-ui', version, changelog: { language } }))
 
     const git = (...args) => execFileSync('git', args, { cwd: dir, stdio: 'pipe' })
     git('init', '--quiet')
     git('config', 'user.email', 'fixture@example.com')
     git('config', 'user.name', 'Fixture')
-    git('remote', 'add', 'origin', 'https://github.com/example/fixture-ui.git')
+    if (remote) {
+        git('remote', 'add', 'origin', 'https://github.com/example/fixture-ui.git')
+    }
     git('commit', '--quiet', '--allow-empty', '-m', 'feat(core): 新增核心能力')
     git('commit', '--quiet', '--allow-empty', '-m', 'fix(core): 修复边界问题')
     git('commit', '--quiet', '--allow-empty', '-m', 'refactor(core)!: 破坏性调整', '-m', 'BREAKING CHANGE: 调整公共契约')
@@ -102,5 +104,41 @@ describe('generate-changelog', () => {
         expect(content).not.toContain('/issues/')
         expect(content).not.toContain('closes')
         // 同上：夹具构建 + changelog 生成共用 git 子进程，显式放宽超时
+    }, 30_000)
+
+    it('语言取自目标仓库根的 package.json，而不是调用方 cwd', async () => {
+        const root = createGitFixture({ language: 'en' })
+        const content = await generateChangelog({ version: '0.1.0', date: '2026-09-19', root })
+
+        expect(content).toContain('### ✨ Features')
+        expect(content).not.toContain('### ✨ 新功能')
+    }, 30_000)
+
+    it('生成后恢复调用方 cwd（目标根与 cwd 不同）', async () => {
+        const root = createGitFixture({ language: 'en' })
+        const before = process.cwd()
+        await generateChangelog({ version: '0.1.0', date: '2026-09-19', root })
+        expect(process.cwd()).toBe(before)
+    }, 30_000)
+
+    it('无 remote 时降级为无链接，不抛错', async () => {
+        const root = createGitFixture({ remote: false })
+        const content = await generateChangelog({ version: '0.1.0', date: '2026-09-19', root })
+
+        expect(content.startsWith('# fixture-ui')).toBe(true)
+        expect(content).toContain('调整公共契约')
+        expect(content).not.toMatch(/https?:\/\//u)
+        expect(content).not.toMatch(/\/commit\//u)
+        expect(content).toMatch(/[0-9a-f]{7}/u)
+        expect(content).not.toContain('undefined')
+    }, 30_000)
+
+    it('未显式指定版本时仍剥离空的 Unreleased 段', async () => {
+        const root = createGitFixture({ version: '0.1.0' })
+        execFileSync('git', ['tag', 'v0.1.0', 'HEAD'], { cwd: root, stdio: 'pipe' })
+        const content = await generateChangelog({ root })
+
+        expect(content).not.toContain('# Unreleased')
+        expect(content).toContain('# [0.1.0]')
     }, 30_000)
 })

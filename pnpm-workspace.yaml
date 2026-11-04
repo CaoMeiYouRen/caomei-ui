@@ -36,6 +36,10 @@ overrides:
   node-forge: ^1.4.2
   # simple-git 覆盖与补丁已随 nuxt 4.6.3 移除：@nuxt/devtools 3.4.4 起不再依赖 simple-git
   "@humanfs/node": 0.16.8
+  # GHSA-g3hv-75wg-m249 / CVE-2026-118764：minimatch < 11.0.1 的 ReDoS（开发作用域）
+  # commitizen 4.3.2 → glob 7.2.3 依赖 minimatch 3 的内部字段，不能跨 major 覆盖；该链保留 3.1.5 并留痕
+  minimatch@<11.0.1: ^11.0.1
+  glob@7>minimatch: 3.1.5
 
 allowBuilds:
   '@parcel/watcher': true

@@ -7,7 +7,8 @@
 ## 1. 现状与背景
 
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 当前状态：当前版本 `1.0.0`（2026-11-03 发布，`latest`），下一目标版本 `1.1.0`。**Phase 26 已完成并发布 `1.0.0`**（1.0 发布前收尾：冻结面终审、行为收口、发布链路；含 G0 ~ G4 门禁、M5 插队批次与 S1 ~ S3 安全批次）。阶段块归档已于 2026-11-03 执行（Phase 26 入窗、Phase 24 整体归档、Phase 19 / 20 迁深度归档），见[待办归档](./todo-archive.md)；发布执行见 [M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)。**Phase 27 已于 2026-11-03 用户裁定后登记**（1.1.0：移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布；同日执行期追加 CI 发布链路，**1.1.0 起经 CI 发布**），范围与验收口径见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md)；其余方向（国际化二期、RTL、长尾组件）见 [Backlog](./backlog.md) 与 [长期任务](./recurring.md)。
+- 当前状态：当前版本 `1.0.0`。
+- 版本与阶段：1.0.0 于 2026-11-03 发布（`latest`）；Phase 27 目标版本 `1.1.0`，登记于 2026-11-03。**Phase 26 已完成并发布 `1.0.0`**（1.0 发布前收尾：冻结面终审、行为收口、发布链路；含 G0 ~ G4 门禁、M5 插队批次与 S1 ~ S3 安全批次）。阶段块归档已于 2026-11-03 执行（Phase 26 入窗、Phase 24 整体归档、Phase 19 / 20 迁深度归档），见[待办归档](./todo-archive.md)；发布执行见 [M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)。**Phase 27 已于 2026-11-03 用户裁定后登记**（1.1.0：移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布；同日执行期追加 CI 发布链路，**1.1.0 起经 CI 发布**），范围与验收口径见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md)；其余方向（国际化二期、RTL、长尾组件）见 [Backlog](./backlog.md) 与 [长期任务](./recurring.md)。
 - 组件与已落地能力清单以[组件设计](../design/components.md) 与仓库根 `README` 为单一事实源；版本变更史见仓库根 `CHANGELOG`。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
 

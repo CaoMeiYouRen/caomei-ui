@@ -14,7 +14,7 @@
   - **凭据**：
     - npm 优先 Trusted Publisher（OIDC，`id-token: write`）；回退 environment secret `NPM_TOKEN`，缺失且无 OIDC 时 publish 前 fail-closed；
     - GitHub 优先 `RELEASE_TOKEN`（PAT / App token），缺省 `GITHUB_TOKEN`；`persist-credentials: false` 下显式注入 `AUTHORIZATION` extraheader 供 `@semantic-release/git` 回推。
-  - **并发 / 超时**：`concurrency: Release-${{ github.ref }}`（`cancel-in-progress: false`）；dry-run 15 分钟 / publish 30 分钟。
+  - **并发 / 超时**：`concurrency` 按 workflow + ref 分组、`cancel-in-progress: false`；dry-run 15 分钟 / publish 30 分钟。
 - `docs/guide/release.md` §5 与英文镜像同步：触发模型、审批、凭据、`next` 通道、首次运行前置。
 
 ## 2. `next` 通道结论（2026-11-04）

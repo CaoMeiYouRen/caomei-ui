@@ -154,6 +154,7 @@
     "@nuxt/kit": "^4.6.3",
     "@nuxt/schema": "^4.6.3",
     "@playwright/test": "^1.63.0",
+    "@semantic-release/exec": "^7.1.0",
     "@tsdown/css": "^0.23.0",
     "@types/node": "^26.5.0",
     "@vitejs/plugin-vue": "^6.0.8",

@@ -107,9 +107,10 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - **凭据（fail-closed）**：
   - npm：优先 **Trusted Publisher（OIDC，`id-token: write`）**；回退 environment secret `NPM_TOKEN`（仅临时回退，需轮换并保持最小权限）。两者都没有时 publish 前直接中止。
   - GitHub：优先 `RELEASE_TOKEN`（PAT / App token），缺省用 `GITHUB_TOKEN`；`persist-credentials: false` 下由 publish 步骤显式注入 `AUTHORIZATION` extraheader，供 `@semantic-release/git` 回推 `CHANGELOG.md` + `package.json`。
+- **版本句与里程碑同步（M6-2）**：`@semantic-release/exec` 的 `prepareCmd` 调用 `scripts/release/sync-version-statements.mjs`，在 `@semantic-release/npm` bump `package.json` 之后、`@semantic-release/git` 提交之前，同步 README（中英）与 `docs/plan/roadmap.md` 的「当前版本」句；`@semantic-release/git` 的 assets 已纳入这三个文件。`generateNotesCmd` 读取 `docs/release-notes/<version>.md`（当前 `1.1.0` 已落盘）并追加到提交分组之后；文件缺失时输出空串，不影响普通 patch / minor。锚点缺失或 `docs:check:version` 失败时 prepare 直接中止，不提交、不发布。
 - **`next` 通道结论（2026-11-04）**：仓库无 `next` 分支，CI **只发 `latest`**；预发布仍走本地 `pnpm release:manual --tag=next`，本阶段不新建 `next` 分支。
 - **循环触发**：触发仅为 `workflow_dispatch`，发布提交回推 master 不会再次触发本工作流；下游兼容检查由 `downstream-compat` 的显式 dispatch 承接（M6-4）。
-- **首次运行前置**：仓库侧配置 `release` environment（审批人）与凭据；`RELEASE_TOKEN` 与 `NPM_TOKEN` 均建议存 environment secret（后者仅在审批通过后注入）。先用 `dry_run: true` 验证下一版本，再以 `dry_run: false` 发布。**`dry-run` 本身也会执行 `git push --dry-run` 校验推送权限**，因此同样需要可写 GitHub 凭据；若 `master` 受分支保护，须为所用身份配置 bypass。**审批期间 master 若前进，publish 的 `Recheck next version` 会重新推断版本；与 dry-run 不一致时 fail-closed**，需重新触发 `dry_run: true` 并重新审批。**发布提交后仓库会立刻处于 `docs:check:version` 红灯态**（semantic-release 只提交 `CHANGELOG.md` + `package.json`），故 `dry_run: false` 必须等 M6-2 版本句同步接入后再执行；安全告警门禁与发布后校验由 M6-3 接入。
+- **首次运行前置**：仓库侧配置 `release` environment（审批人）与凭据；`RELEASE_TOKEN` 与 `NPM_TOKEN` 均建议存 environment secret（后者仅在审批通过后注入）。先用 `dry_run: true` 验证下一版本，再以 `dry_run: false` 发布。**`dry-run` 本身也会执行 `git push --dry-run` 校验推送权限**，因此同样需要可写 GitHub 凭据；若 `master` 受分支保护，须为所用身份配置 bypass。**审批期间 master 若前进，publish 的 `Recheck next version` 会重新推断版本；与 dry-run 不一致时 fail-closed**，需重新触发 `dry_run: true` 并重新审批。版本句与里程碑已由发布链自动同步；`dry_run: false` 仍需等 **M6-3 / M6-4**（安全门禁、发布后校验、事件链）落地后再执行。
 - **历史**：1.0 期采用本地手动发布；2026-11-03 用户裁定转向 CI 发布，M6 完成前以手动流为准，完成后手动流仍保留为回退路径。缺口与验收口径以 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §2 的 **M6-1 ~ M6-5** 为单一事实源。
 
 ## 6. 版本推断（基线建立后）

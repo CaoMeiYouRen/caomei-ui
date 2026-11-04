@@ -26,7 +26,7 @@
 | M4-4 | 依赖告警收口 | `minimatch` medium 覆盖评估或留痕；`deepmerge` low 维持留痕 | 已完成 |
 | M5-1 | `1.1.0` 发布（经 CI） | Run `Release` workflow（`workflow_dispatch` + `environment` 审批）→ semantic-release 计算版本并 publish；手工流仅作回退 | 待执行 |
 | M6-1 | 发布工作流接线与凭据 | 打开 publish；触发与审批；Trusted Publisher / `NPM_TOKEN`；`@semantic-release/git` 回推凭据；并发与超时 | 待执行 |
-| M6-2 | 版本句与发布说明同步 | `@semantic-release/exec` 同步 README 中英 + roadmap 版本句；里程碑注入；发布后 `docs:check:version` 为绿 | 待执行 |
+| M6-2 | 版本句与发布说明同步 | `@semantic-release/exec` 同步 README 中英 + roadmap 版本句；里程碑注入；发布后 `docs:check:version` 为绿 | 已完成 |
 | M6-3 | 发布前置与后置门禁 | publish 前安全告警门禁 + verify / coverage；publish 后 dist-tag / shasum / 解包 README / exports / API 差分 | 待执行 |
 | M6-4 | 事件链与下游复验 | `GITHUB_TOKEN` 事件排除 → PAT / App token 或显式 `workflow_dispatch`；发布后下游检查留痕 | 待执行 |
 | M6-5 | CHANGELOG 生成器健壮性 | 空 `# Unreleased` 段、无 remote 降级、语言源自 root | 已完成 |

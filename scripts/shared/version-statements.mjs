@@ -37,3 +37,50 @@ export const CURRENT_VERSION_STATEMENTS = [
 export function statementFiles(statements = CURRENT_VERSION_STATEMENTS) {
     return [...new Set(statements.map((entry) => entry.file))]
 }
+
+/**
+ * 在**单个**声明句内替换版本号（句内首个捕获组即版本）。
+ *
+ * @param {string} content 文件内容
+ * @param {RegExp} pattern 声明句锚点（含 1 个捕获组）
+ * @param {string} version 目标版本
+ * @returns {{ content: string, changed: boolean, matched: boolean }}
+ */
+export function replaceVersionInStatement(content, pattern, version) {
+    const match = pattern.exec(content)
+    if (!match) {
+        return { content, changed: false, matched: false }
+    }
+    if (match[1] === version) {
+        return { content, changed: false, matched: true }
+    }
+    const replaced = match[0].replace(match[1], version)
+    return {
+        content: content.slice(0, match.index) + replaced + content.slice(match.index + match[0].length),
+        changed: true,
+        matched: true,
+    }
+}
+
+/**
+ * 规划版本句同步（纯函数）：对每个文件的全部命中锚点做替换。
+ *
+ * @param {Array<{ file: string, content: string }>} entries 文件内容
+ * @param {string} version 目标版本
+ * @param {Array<{ file: string, pattern: RegExp, label: string }>} statements 锚点登记表
+ * @returns {Array<{ file: string, content: string, changed: boolean, matched: boolean }>}
+ */
+export function planVersionStatementSync(entries, version, statements = CURRENT_VERSION_STATEMENTS) {
+    return entries.map(({ file, content }) => {
+        let next = content
+        let changed = false
+        let matched = false
+        for (const statement of statements.filter((item) => item.file === file)) {
+            const result = replaceVersionInStatement(next, statement.pattern, version)
+            matched = matched || result.matched
+            changed = changed || result.changed
+            next = result.content
+        }
+        return { file, content: next, changed, matched }
+    })
+}

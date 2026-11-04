@@ -28,10 +28,12 @@
 3. Once enabled, it automatically:
    - infers the version number;
    - generates / updates `CHANGELOG.md`;
+   - syncs the "current version" statements in both READMEs and `docs/plan/roadmap.md` (via `@semantic-release/exec` `prepareCmd`, before `@semantic-release/git` commits them);
+   - appends the milestone section from `docs/release-notes/<version>.md` to the release notes;
    - publishes the npm package `caomei-ui`;
    - creates the GitHub Release and tag.
 
-> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` must wait until M6-2 ~ M6-4 land (version-statement sync, security gate + post-publish verification, event chain). `semantic-release` only commits `CHANGELOG.md` and `package.json`, so enabling publish without the sync step leaves the repo in a guard-failing state right after the release. Details live in [Phase 27 registration](/design/governance/2026-11-03-phase27-registration.md) §2 (M6-1 ~ M6-5); see the Chinese guide §5 for the full list.
+> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` must wait until M6-3 / M6-4 land (security gate + post-publish verification, event chain). Details live in [Phase 27 registration](/design/governance/2026-11-03-phase27-registration.md) §2 (M6-1 ~ M6-5); see the Chinese guide §5 for the full list.
 
 ## Manual release (local)
 

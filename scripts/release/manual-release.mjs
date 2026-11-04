@@ -40,7 +40,7 @@ import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { isDirectExecution } from '../shared/cli.mjs'
 import { LOCAL_ENV_FILE, loadLocalEnv } from '../shared/env.mjs'
-import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
+import { CURRENT_VERSION_STATEMENTS, planVersionStatementSync, replaceVersionInStatement, statementFiles } from '../shared/version-statements.mjs'
 import { DEFAULT_EXEMPTIONS_PATH, assertSecurityGate } from './check-security-alerts.mjs'
 import { stepApiDiff } from './api-diff-step.mjs'
 
@@ -247,51 +247,11 @@ export function extractChangelogSection(changelog, version) {
 }
 
 /**
- * 在**单个**声明句内替换版本号（句内首个捕获组即版本）。
- *
- * @param {string} content 文件内容
- * @param {RegExp} pattern 声明句锚点（含 1 个捕获组）
- * @param {string} version 目标版本
- * @returns {{ content: string, changed: boolean, matched: boolean }}
+ * 保持既有导入面：版本句替换 / 同步函数已下沉到 `scripts/shared/version-statements.mjs`，
+ * 发布流脚本与测试仍从本模块导入。
  */
-export function replaceVersionInStatement(content, pattern, version) {
-    const match = pattern.exec(content)
-    if (!match) {
-        return { content, changed: false, matched: false }
-    }
-    if (match[1] === version) {
-        return { content, changed: false, matched: true }
-    }
-    const replaced = match[0].replace(match[1], version)
-    return {
-        content: content.slice(0, match.index) + replaced + content.slice(match.index + match[0].length),
-        changed: true,
-        matched: true,
-    }
-}
+export { planVersionStatementSync, replaceVersionInStatement }
 
-/**
- * 规划版本句同步（纯函数）：对每个文件的全部命中锚点做替换。
- *
- * @param {Array<{ file: string, content: string }>} entries 文件内容
- * @param {string} version 目标版本
- * @param {Array<{ file: string, pattern: RegExp, label: string }>} statements 锚点登记表
- * @returns {Array<{ file: string, content: string, changed: boolean, matched: boolean }>}
- */
-export function planVersionStatementSync(entries, version, statements) {
-    return entries.map(({ file, content }) => {
-        let next = content
-        let changed = false
-        let matched = false
-        for (const statement of statements.filter((item) => item.file === file)) {
-            const result = replaceVersionInStatement(next, statement.pattern, version)
-            matched = matched || result.matched
-            changed = changed || result.changed
-            next = result.content
-        }
-        return { file, content: next, changed, matched }
-    })
-}
 
 /**
  * 决定 `sync` 的提交动作：有改写则提交；已是目标版本但文件仍脏则 fail-closed；否则跳过。

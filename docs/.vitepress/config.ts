@@ -280,6 +280,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Getting Started', link: '/en-US/guide/getting-started' },
                                 { text: 'Versioning & Compatibility', link: '/en-US/guide/version-policy' },
+                                { text: 'Upgrade to 1.0', link: '/en-US/guide/upgrade-to-1.0' },
                                 { text: 'Local Linking', link: '/en-US/guide/local-linking' },
                                 { text: 'Mobile & Responsive', link: '/en-US/guide/mobile' },
                                 { text: 'Development', link: '/en-US/guide/development' },
@@ -482,6 +483,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: '快速上手', link: '/guide/getting-started' },
                         { text: '版本与兼容策略', link: '/guide/version-policy' },
+                        { text: '升级到 1.0', link: '/guide/upgrade-to-1.0' },
                         { text: '本地联调', link: '/guide/local-linking' },
                         { text: '移动端与响应式', link: '/guide/mobile' },
                         { text: '开发指南', link: '/guide/development' },

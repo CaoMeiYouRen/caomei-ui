@@ -67,3 +67,4 @@ The item-by-item list, recomputation commands and rationale are in the [freeze f
 - Only use a range (`~` / `^`) once compatibility is confirmed; Vue 3.5+ is a peer dependency and must be installed by the consuming project.
 - For pre-release versions, pin an exact version or the `next` dist-tag; do not mix them with `latest`.
 - After upgrading, at least re-run the downstream `typecheck` and `build`; the cross-version downstream regression mechanism is described in the [roadmap](/plan/roadmap).
+- For the 0.x → 1.0 release segments, upgrade notes and publicly disclosed known limitations, see [Upgrade to 1.0](./upgrade-to-1.0.md).

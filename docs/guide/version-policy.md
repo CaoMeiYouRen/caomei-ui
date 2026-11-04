@@ -67,3 +67,4 @@ const { theme } = useData()
 - 仅在已确认兼容的前提下使用范围依赖（`~` / `^`）；组件库以 Vue 3.5+ 作为 peer 依赖，需由项目自行安装。
 - 预发布版本请显式 pin 精确版本或 `next` dist-tag，不要与 `latest` 混用。
 - 升级后至少复跑下游的 `typecheck` 与 `build`；跨版本迁移的下游回归机制见[路线图](../plan/roadmap.md)。
+- 从 0.x 升到 1.0 的版本段、升级注意与对外披露的已知限制见[升级到 1.0](./upgrade-to-1.0.md)。

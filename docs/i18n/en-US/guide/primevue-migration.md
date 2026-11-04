@@ -8,9 +8,43 @@ This page is for teams moving from PrimeVue (v4) to caomei-ui: a practical migra
 
 1. **Coexistence**: caomei-ui and PrimeVue can live side by side — components use the `Caomei` prefix, classes `caomei-` and design tokens `--caomei-`, which do not collide with PrimeVue's `p-*` / `--p-*` namespaces. During migration, switch **page by page behind a route / page allowlist** so the regression surface stays controllable.
 2. **Theme and tokens**: map the PrimeVue theme variables to this library's tokens (`--p-*` → `--caomei-*`) before replacing components; see [Theming and styles §4](/design/theming) (Chinese) for token semantics and override recipes. The default light/dark themes ship with the package (base layer: `caomei-ui/theme.css`); `data-preset` switches presets.
-3. **Component replacement**: work through the mapping table in [Design spec §7](/design/design-spec) (Chinese), starting with the three highest-impact differences — controlled-field naming, icon form, and tone/size tiers (see the next section).
+3. **Component replacement**: decide per component whether to replace directly or bridge first (next section), then work through the mapping table in [Design spec §7](/design/design-spec) (Chinese), starting with the three highest-impact differences — controlled-field naming, icon form, and tone/size tiers (see [Common pitfalls](#common-pitfalls)).
 4. **Text and locale**: built-in strings (close / clear / pagination / loading, and so on) are injected through `CaomeiConfigProvider`, falling back to Simplified Chinese when nothing is provided; see [Built-in text and locales](/en-US/components/locale).
 5. **Page-by-page verification**: after each page, check interaction, accessible names, narrow-screen behavior and dark mode; the narrow-screen acceptance criteria are in [Responsive design §4](/design/responsive) (Chinese).
+
+## Migration strategy: replace directly or bridge
+
+Decide per component by its **impact surface**; do not apply one approach to every component.
+
+| Signal | Replace directly | Bridge first, converge page by page |
+| --- | --- | --- |
+| Number of call sites | few and concentrated (this page's rule of thumb, not quantified) | many, across pages / shared components |
+| Scope of differences | tag and a few prop renames | controlled fields, event payloads, slots and type contracts change together |
+| Consumers of the old contract | only the current page | parent components, shared components, e2e / visual assertions or external callers rely on the old props / events (such as `@hide`) |
+| Nature of the difference | equivalent renaming | needs a coexistence period (imperative APIs, directives, global tokens) |
+
+When replacing directly, work through the §7 mapping table site by site; **do not build a bridge layer just to save edits** — the bridge itself needs maintenance and retirement. Bridge only when it clearly shrinks the change surface, and prefer the layer with the smallest surface: styles / tokens → functions / mappings → components.
+
+### Three forms of bridging
+
+| Layer | When it fits | How | Measured example |
+| --- | --- | --- | --- |
+| Styles / tokens | unmigrated pages still get their theme from PrimeVue | map `--p-*` to `--caomei-*` side by side, keeping `--p-*` for unmigrated components | momei appends a semantic-token bridge block at the end of its global styles, always mapping `--p-* → --caomei-*`, with light / dark computed values locked by contract tests |
+| Functions / mappings | enum renames, value conversions or imperative APIs appear in bulk | converge them in a util, mapping table or Promise adapter so call sites only swap the entry point | dependfix converged `TagSeverity` into `ComponentTone` and routed `pi pi-*` icons (63 uses / 30 unique) through one mapping table |
+| Components | call sites span files and the old props / events / slots are still relied on | a thin wrapper keeps the old contract and swaps the internals, so call sites only change the tag | momei routes `v-tooltip` (84 uses / 36 files) through `<AppTooltip>` and normalizes `null → ''` for setting fields in a thin adapter; dependfix uses `computed` to bridge Drawer's existing `visible` contract and re-emit `hide` (see [Common pitfalls](#common-pitfalls)) |
+
+Typical triggers for a component bridge: the difference needs renaming at every site (`v-model:visible` → `open`), the library has no matching event (`Drawer` has no `hide`), the type contract is narrower (field components only accept `string | undefined`), or the number of call sites clearly exceeds the size of the bridge itself. Conversely, with one or two call sites a bridge costs more than the direct edit.
+
+> Evidence for these forms: momei's [migration plan §5.2 / §5.5 / §6.2](https://github.com/CaoMeiYouRen/momei/blob/master/docs/design/governance/2026-09-18-primevue-to-caomei-ui-migration-plan.md) (token bridge / overlay wiring / property-level mapping) and dependfix's [migration record §15.12](https://github.com/dependfix/dependfix/blob/master/docs/design/governance/caomei-ui-migration.md) (snapshots: momei 2026-11-03, dependfix 2026-10-31). Both are evidence for the approach only; component differences are still governed by §7 and the component pages.
+
+### Bridging layer rules and retirement
+
+- **One place, marked as temporary**: each bridge file states why it exists, which differences it covers, and its removal condition; keep it apart from business components (adapters under `components/`, mappings and conversions under `utils/`).
+- **Bridge the contract, not the look**: map old props / events / types only; do not add style overrides to match pixels. Register visual differences as intentional per [Common pitfalls](#common-pitfalls) and §7.
+- **Keep token bridges out of named `@layer`s**: the library's base layer is unlayered and loads later, so a bridge inside `@layer` is silently overridden by its `:root` (no error in pixels or build); use a selector with higher specificity than the library `:root`, such as `html:root`.
+- **Forward attrs in `as-child` setups**: when a bridge component is used as a child of an outer trigger (a Tooltip inside `DropdownMenuTrigger` / `PopoverTrigger`), it must set `inheritAttrs: false` and bind `$attrs` to the inner trigger, otherwise the outer `aria-*` and events are swallowed.
+- **Mind Nuxt auto-import names**: components in a `components/` subdirectory are named with the directory prefix (`settings/setting-input.vue` → `AdminSettingsSettingInput`). A bridge in a subdirectory must either import explicitly or use the full name, otherwise the tag silently resolves to an unknown element and the page renders fewer controls without an error.
+- **Retire when call sites reach zero**: a bridge is deletable code. Remove it per its removal condition when the migration closes out, and register anything that cannot be removed yet in the [Backlog](/plan/backlog) (Chinese) rather than keeping it indefinitely.
 
 ## Common pitfalls
 
@@ -76,6 +110,8 @@ Every component in the table below has a registered mapping in [Design spec §7]
 - [ ] The selector width cap and wrapper are checked (`--caomei-select-max-width` / `:root:root` / field wrapper);
 - [ ] Form-control e2e / unit selectors no longer rely on a native `input`; logic that needs the new value uses `@update:model-value`;
 - [ ] CSS selectors follow the built class names / `aria-sort`, and overlay `hide` events are bridged;
+- [ ] Any bridge layer (tokens / functions / components) has a removal condition per file; bridges with zero remaining call sites are deleted, and anything not yet retired is registered in the Backlog;
+- [ ] Bridge components in `as-child` setups use `inheritAttrs: false` and bind `$attrs` to the inner trigger; bridges under a `components/` subdirectory are named with the directory prefix or imported explicitly;
 - [ ] `CaomeiTooltipProvider` is placed at the app root and every tooltip uses an explicit trigger;
 - [ ] The live-region and soft-variant look differences of `Message` / `Alert` are confirmed;
 - [ ] All string icon names are replaced with `@lucide/vue` components;

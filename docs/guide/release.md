@@ -97,15 +97,20 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - 本地 npm 凭据须有效（`npm whoami` 可验证）；凭据失效时 `npm publish` 会返回 `401`（`ENEEDAUTH` / `E401`）。启用 2FA 时用 `--otp=<code>` 传入一次性密码；脚本在日志与错误信息中对 OTP 做脱敏。注意 OTP 仍会进入进程参数与 Shell history，优先在受控环境使用，或省略 `--otp` 让 npm 交互提示。
 - **版本已发布过**时 `npm publish` 会以 `403`（`You cannot publish over the previously published versions: <version>`）失败——npm 不允许覆盖同名版本。处理：确认 `package.json` 的 `version` 是否已递增；确需修复已发布版本时**改发新 patch 版本**（不要尝试 unpublish，见 §8）。
 - `prepublishOnly` 失败（如许可声明过期）会中止发布且不产生 tarball——按报错补齐后重跑即可，无需处理 registry 状态。
-- 当前为本地手动发布，npm 发布侧无需 CI secret；但安全告警门禁使用 `SECURITY_ALERTS_TOKEN`（CI 为仓库 secret，本地写入仓库根 `.env.local`，见[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)），该凭据仍须配置；发布链在 `preflight` / `publish` 强制检查，缺失即中止。
+- **本地手动流**的 npm 发布侧无需 CI secret；**CI 发布流**的 npm 凭据见 §5（OIDC 或 environment secret `NPM_TOKEN`）。安全告警门禁使用 `SECURITY_ALERTS_TOKEN`（CI 为仓库 secret，本地写入仓库根 `.env.local`，见[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)），该凭据仍须配置；发布链在 `preflight` / `publish` 强制检查，缺失即中止。
 
-## 5. CI 自动发布（已授权，未启用；M6 待实现）
+## 5. CI 发布链路（已接线，待首次真实运行）
 
-- `.github/workflows/release.yml` 当前**只执行质量门**（`pnpm verify` → `test:coverage` → `check:coverage`），**publish 步骤保持注释**——在 M6 完成前它仍不构成可用的发布工作流。
-- 缺口与验收口径以 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §2 的 **M6-1 ~ M6-5** 为**单一事实源**（凭据 / 回推凭据 / 版本句同步 / 安全门禁 / 发布后校验 / 触发模型与审批 / 事件链 / `CHANGELOG` 生成器健壮性）；旧 Backlog 行已随登记移出。
-- **触发模型（2026-11-03 裁定）**：`workflow_dispatch` 手动触发 + `environment: release` 审批后 publish；**不启用 push 触发**，阶段内不会因 `feat` / `fix` 提交自动发版。
-- **关键约束**：`semantic-release` 只提交 `CHANGELOG.md` + `package.json`（`@semantic-release/git` assets），**不维护「当前版本」声明句**——直接放开 publish 会让仓库随后处于守卫失败态（下一次 CI 或 `preflight` 的 `pnpm docs:check:version` 即红），且与手动流 `sync` 解决的是同一问题。
-- **1.0 决策（历史）**：rc 与正式版继续本地手动发布（rc 走 `next`、正式版走 `latest`，`--tag` 已落地，见 §1 / §3）；该决策已被 2026-11-03 的转向取代。
+- `.github/workflows/release.yml` 已按 **M6** 接线：**触发仅 `workflow_dispatch`**，输入 `dry_run`（默认 `true`）：
+  - `dry_run: true`：仅做版本推断（install + `semantic-release --dry-run`，**不跑质量门**），解析下一版本并写入 job summary，**不发布**；
+  - `dry_run: false`：进入 `environment: release` 审批，通过后先跑 `pnpm verify` + 覆盖率门，再由 semantic-release 发布到 `latest`。
+- **凭据（fail-closed）**：
+  - npm：优先 **Trusted Publisher（OIDC，`id-token: write`）**；回退 environment secret `NPM_TOKEN`（仅临时回退，需轮换并保持最小权限）。两者都没有时 publish 前直接中止。
+  - GitHub：优先 `RELEASE_TOKEN`（PAT / App token），缺省用 `GITHUB_TOKEN`；`persist-credentials: false` 下由 publish 步骤显式注入 `AUTHORIZATION` extraheader，供 `@semantic-release/git` 回推 `CHANGELOG.md` + `package.json`。
+- **`next` 通道结论（2026-11-04）**：仓库无 `next` 分支，CI **只发 `latest`**；预发布仍走本地 `pnpm release:manual --tag=next`，本阶段不新建 `next` 分支。
+- **循环触发**：触发仅为 `workflow_dispatch`，发布提交回推 master 不会再次触发本工作流；下游兼容检查由 `downstream-compat` 的显式 dispatch 承接（M6-4）。
+- **首次运行前置**：仓库侧配置 `release` environment（审批人）与凭据；`RELEASE_TOKEN` 与 `NPM_TOKEN` 均建议存 environment secret（后者仅在审批通过后注入）。先用 `dry_run: true` 验证下一版本，再以 `dry_run: false` 发布。**`dry-run` 本身也会执行 `git push --dry-run` 校验推送权限**，因此同样需要可写 GitHub 凭据；若 `master` 受分支保护，须为所用身份配置 bypass。**审批期间 master 若前进，publish 的 `Recheck next version` 会重新推断版本；与 dry-run 不一致时 fail-closed**，需重新触发 `dry_run: true` 并重新审批。**发布提交后仓库会立刻处于 `docs:check:version` 红灯态**（semantic-release 只提交 `CHANGELOG.md` + `package.json`），故 `dry_run: false` 必须等 M6-2 版本句同步接入后再执行；安全告警门禁与发布后校验由 M6-3 接入。
+- **历史**：1.0 期采用本地手动发布；2026-11-03 用户裁定转向 CI 发布，M6 完成前以手动流为准，完成后手动流仍保留为回退路径。缺口与验收口径以 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §2 的 **M6-1 ~ M6-5** 为单一事实源。
 
 ## 6. 版本推断（基线建立后）
 

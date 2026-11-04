@@ -10,10 +10,13 @@ import { measureContrast } from './helpers/contrast'
  * （页面底 `bg` 与抬升面 `bg-elevated`）：
  * 1. **tone 文本**：5 语气 × soft / outline × Tag / Message + 一条 `text-muted` 样本 = 21 条，阈值 ≥ 4.5:1；
  * 2. **控件边界**：Input / Checkbox / Switch / Slider = 4 条，WCAG 1.4.11 图形阈值 ≥ 3:1；
- * 3. **正向对照**：12 档的 `--caomei-color-primary` 必须互不相同，证明预设 / 明暗确实生效；
- * 4. **axe 复核**：Tag / Message 的 `color-contrast` 规则零违规（与人工矩阵同源、可复现）。
+ * 3. **`-solid` 配对**：5 语气的实底按钮 × 默认 / hover / active = 5 条 × 3 态，阈值 ≥ 4.5:1
+ *    （`caomei` `primary-solid` 为在册品牌例外，见 `SOLID_EXCEPTIONS`）；
+ * 4. **正向对照**：12 档的 `--caomei-color-primary` 必须互不相同，证明预设 / 明暗确实生效；
+ * 5. **axe 复核**：Tag / Message 的 `color-contrast` 规则零违规（与人工矩阵同源、可复现）。
  *
- * 文本按**实际合成背景**计算（soft 底为半透明 `color-mix`）；边界与底色按「颜色 vs 父级实际背景」计算。
+ * 文本按**实际合成背景**计算（soft 底为半透明 `color-mix`）；边界与底色按「颜色 vs 父级实际背景」计算；
+ * `-solid` 为不透明实底，仍按同一合成路径测量，以锁定「实底不得退化为半透明」。
  */
 
 const SECTION = '#preset-contrast'
@@ -40,6 +43,43 @@ const NON_TEXT_CELLS = [
     { key: 'switch', selector: `${SECTION} [data-nontext="switch"] .caomei-switch`, mode: 'background' },
     { key: 'slider', selector: `${SECTION} [data-nontext="slider"] .caomei-slider__track`, mode: 'background' },
 ] as const
+
+/** `-solid` 配对受检单元（5 语气的实底按钮）。 */
+const SOLID_TONES = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
+const SOLID_CELLS = `${SECTION} .caomei-button[data-contrast-key^="solid/"]`
+
+/** 期望的实底键集合；下界防受检面被静默收窄。 */
+const EXPECTED_SOLID_KEYS = SOLID_TONES.map((tone) => `solid/${tone}`)
+const MIN_SOLID_CELLS = SOLID_TONES.length
+
+/** 实底三态（hover / active 由 Button 的 `color-mix()` 派生）。 */
+const SOLID_STATES = ['default', 'hover', 'active'] as const
+type SolidState = (typeof SOLID_STATES)[number]
+
+const SOLID_FORCED_PSEUDO: Record<SolidState, string[]> = {
+    default: [],
+    hover: ['hover'],
+    active: ['hover', 'active'],
+}
+
+/** 状态稳定等待：`background-color` 参与 150ms 过渡。 */
+const SOLID_SETTLE_MS = 260
+
+/**
+ * `-solid` 配对的在册例外（键 = `<preset>/<tone>`）。
+ *
+ * 唯一例外是 `caomei` 的 `primary-solid` `#e63946` 配 `on-solid` 白字 4.168:1——**品牌源保真**
+ * （用户决策预设品牌色保持不变），见 `docs/design/design-spec.md` §3.2 与
+ * `docs/design/governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md`。
+ * `floor` 只是**默认态**的容忍下界；hover / active 仍按正式阈值（4.5 + 裕度）断言。
+ * 配色修复到正式阈值后本表必须移除（下方 stale-exception 断言会失败）。
+ */
+const SOLID_EXCEPTIONS = new Map<string, { floor: number, reason: string }>([
+    ['caomei/primary', {
+        floor: 4,
+        reason: '品牌源 primary-solid #e63946 + on-solid 白字 4.168:1，用户决策保留',
+    }],
+])
 
 const PRESETS = ['minimal', 'caomei', 'momei', 'sakura', 'forest', 'ink'] as const
 const THEMES = ['light', 'dark'] as const
@@ -175,6 +215,44 @@ async function applyContext(page: Page, preset: string, theme: string, backgroun
     return primary
 }
 
+interface SolidStateDriver {
+    apply: (state: SolidState) => Promise<void>
+}
+
+/**
+ * 登记 `-solid` 受检单元并返回可重复切换伪类状态的驱动器。
+ *
+ * 与 `button-states.e2e.ts` 同口径：`color-mix()` 派生值只能在真实浏览器里由强制伪类证明。
+ * CDP 的 nodeId 在预设 / 明暗切换后保持稳定，故整条用例只登记一次。
+ */
+async function prepareSolidStates(page: Page): Promise<SolidStateDriver> {
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('DOM.enable')
+    await cdp.send('CSS.enable')
+    const { root } = await cdp.send('DOM.getDocument', { depth: -1 })
+    const { nodeIds } = await cdp.send('DOM.querySelectorAll', { nodeId: root.nodeId, selector: SOLID_CELLS })
+
+    expect(nodeIds.length, '`-solid` 受检面不得被静默收窄').toBeGreaterThanOrEqual(MIN_SOLID_CELLS)
+
+    return {
+        async apply(state) {
+            for (const nodeId of nodeIds) {
+                await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [...SOLID_FORCED_PSEUDO[state]] })
+            }
+            await page.waitForTimeout(SOLID_SETTLE_MS)
+        },
+    }
+}
+
+/** 读 5 条实底按钮的未合成底色（用于「三态互不相同」的相对比较）。 */
+async function solidSnapshots(page: Page): Promise<Map<string, string>> {
+    const entries = await page.evaluate((selector) => Array.from(document.querySelectorAll<HTMLElement>(selector)).map((element) => [
+        element.dataset.contrastKey ?? '',
+        getComputedStyle(element).backgroundColor,
+    ] as [string, string]), SOLID_CELLS)
+    return new Map(entries)
+}
+
 test.describe('预设对比度矩阵', () => {
     test('6 预设 × 明暗 × 2 背景：tone 文本 ≥ 4.5:1 且控件边界 ≥ 3:1', async ({ page }) => {
         await page.goto('/')
@@ -215,6 +293,70 @@ test.describe('预设对比度矩阵', () => {
 
         // 正向对照：12 档的 primary 必须互不相同，否则「预设 / 明暗未生效」会让矩阵空转
         expect(primaries.size, '预设 / 明暗未真正生效（primary 取值出现重复）').toBe(PRESETS.length * THEMES.length)
+    })
+
+    test('6 预设 × 明暗 × 2 背景：`-solid` 配对默认 / hover / active ≥ 4.5:1', async ({ page }) => {
+        // 24 档 × 3 态 × 260ms 过渡等待 + 测量；默认 30s 不足以覆盖矩阵
+        test.setTimeout(120_000)
+        await page.goto('/')
+        const driver = await prepareSolidStates(page)
+
+        const primaries = new Set<string>()
+        const exceptionMin = new Map<string, number>()
+        const failures: string[] = []
+
+        for (const preset of PRESETS) {
+            for (const theme of THEMES) {
+                for (const background of BACKGROUNDS) {
+                    primaries.add(await applyContext(page, preset, theme, background))
+                    const label = `${preset}/${theme}/${background}`
+
+                    const backgrounds = new Map<SolidState, Map<string, string>>()
+                    for (const state of SOLID_STATES) {
+                        await driver.apply(state)
+                        const cells = await measureContrast(page, SOLID_CELLS)
+                        expect(cells.length, `${label}/${state}：\`-solid\` 受检面不得被静默收窄`).toBeGreaterThanOrEqual(MIN_SOLID_CELLS)
+                        expect(cells.map((cell) => cell.key).sort(), `${label}/${state}：实底受检键集合被替换`).toEqual([...EXPECTED_SOLID_KEYS].sort())
+                        backgrounds.set(state, await solidSnapshots(page))
+
+                        for (const cell of cells) {
+                            const tone = cell.key.replace('solid/', '')
+                            const exceptionKey = `${preset}/${tone}`
+                            const exception = SOLID_EXCEPTIONS.get(exceptionKey)
+                            // 例外只放宽**默认态**下限；hover / active 必须按正式阈值，避免跨态放宽掩盖回归
+                            const threshold = exception && state === 'default' ? exception.floor : MIN_RATIO + MIN_MARGIN
+                            if (cell.ratio < threshold) {
+                                failures.push(`${label}/${state} ${cell.key}: ${cell.ratio.toFixed(3)} < ${threshold}`)
+                            }
+                            if (exception) {
+                                exceptionMin.set(exceptionKey, Math.min(exceptionMin.get(exceptionKey) ?? Number.POSITIVE_INFINITY, cell.ratio))
+                            }
+                        }
+                    }
+
+                    // 三态必须有独立反馈：伪类未生效或 `color-mix()` 静默失效时，对比度断言会空转
+                    const defaults = backgrounds.get('default') ?? new Map<string, string>()
+                    const hovers = backgrounds.get('hover') ?? new Map<string, string>()
+                    const actives = backgrounds.get('active') ?? new Map<string, string>()
+                    for (const key of EXPECTED_SOLID_KEYS) {
+                        expect(hovers.get(key), `${label}：${key} 的 hover 未改变实底色`).not.toBe(defaults.get(key))
+                        expect(actives.get(key), `${label}：${key} 的 active 未提供独立反馈`).not.toBe(hovers.get(key))
+                    }
+                }
+            }
+        }
+
+        expect(failures, '`-solid` 配对存在低于阈值 / 例外下限的组合').toEqual([])
+        expect(BACKGROUNDS.length, '背景轴被静默收窄（验收要求 `bg` / `bg-elevated` 两档）').toBe(2)
+        expect(primaries.size, '预设 / 明暗未真正生效（primary 取值出现重复）').toBe(PRESETS.length * THEMES.length)
+
+        // 例外表不得静默失效：既不能低于下限继续恶化，也不能在被修复后残留（allowlist-stale）
+        for (const [key, exception] of SOLID_EXCEPTIONS) {
+            const observed = exceptionMin.get(key)
+            expect(observed, `在册例外 ${key} 未被观测到（受检面或键集合被改坏）`).toBeDefined()
+            expect(observed ?? 0, `${key}（${exception.reason}）低于例外下限 ${exception.floor}`).toBeGreaterThanOrEqual(exception.floor)
+            expect(observed ?? 0, `${key} 已达到正式阈值（含裕度），请从 SOLID_EXCEPTIONS 移除（stale exception）`).toBeLessThan(MIN_RATIO + MIN_MARGIN)
+        }
     })
 
     test('axe：Tag / Message 在 6 预设 × 明暗 × 2 背景下 color-contrast 零违规', async ({ page }) => {

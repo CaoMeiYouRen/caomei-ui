@@ -1460,9 +1460,19 @@ const ConfirmDriver = defineComponent({
         </section>
         <!--
           预设对比度矩阵（见 `test/e2e/preset-contrast.e2e.ts`）：5 语气 × soft / outline × Tag / Message，
-          另加输入 / 复选框 / 开关 / 滑块的控件边界（WCAG 1.4.11 3:1）。与其它受检面同属「追加在模板末尾」的约定。
+          另加输入 / 复选框 / 开关 / 滑块的控件边界（WCAG 1.4.11 3:1）与 5 语气实底按钮
+          （`-solid` 配对，默认 / hover / active 三态）。与其它受检面同属「追加在模板末尾」的约定。
         -->
         <section id="preset-contrast" class="fixture__case">
+            <CaomeiButton
+                v-for="tone in presetContrastTones"
+                :key="`solid-${tone}`"
+                variant="primary"
+                :tone="tone"
+                :data-contrast-key="`solid/${tone}`"
+            >
+                solid-{{ tone }}
+            </CaomeiButton>
             <template v-for="tone in presetContrastTones" :key="`preset-${tone}`">
                 <CaomeiTag
                     :tone="tone"

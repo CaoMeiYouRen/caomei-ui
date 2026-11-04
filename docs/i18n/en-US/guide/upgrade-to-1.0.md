@@ -49,7 +49,7 @@ These map one-to-one to the six "Known limitations" items plus the last "Upgrade
 
 | Item | Fact | Impact and action when upgrading |
 | --- | --- | --- |
-| Existing brand-preset contrast gaps | momei light `success` three states 2.279 / 2.643 / 3.045; caomei `primary-solid` 4.17 | Kept as an existing brand decision; neither fixed nor worsened in this version. Projects requiring AA should use the default preset or override |
+| Existing brand-preset contrast gaps | caomei `primary-solid` 4.17 (the only `-solid` pairing exception); momei light `success` three states 2.279 / 2.643 / 3.045 are derived from the **non-`-solid`** `--caomei-color-success` used directly as a fill with white text (the library has no such pairing) | Kept as an existing brand decision; neither fixed nor worsened in this version. The `-solid` pairings (default / hover / active) are covered by a standing assertion since 1.1.0, with caomei `primary-solid` recorded at a 4.0 floor. Projects requiring AA should use the default preset or override the relevant tokens |
 | Calendar / RichTextEditor interactive borders | Previous / next month navigation buttons and the editor container border are below 3:1 | Not included in this contrast assertion surface; override and re-check when non-text contrast is required |
 | Chromium-only regression | Standing 390 / 768 / 1280 (plus targeted 320 / 900); 375px only for the gallery and DataTable keyboard-scroll checks; Firefox / WebKit are not included | Test on your target engine after upgrading; do not extrapolate Chromium results to all three engines |
 | Disabled-state exemption | Exempt under WCAG 1.4.3 / 1.4.11 | Disabled-state contrast is not guaranteed; do not include it in contrast acceptance |

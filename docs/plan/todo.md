@@ -21,7 +21,7 @@
 | M3-1 | PrimeVue 迁移经验回收 | 指南「常见陷阱」「迁移后自检」「逐组件对照入口」补 Tooltip 行；缺口分类登记 | 已完成 |
 | M3-2 | 1.0 升级护航 | 下游版本快照、跨 minor 升级注意与对外 7 条（6 已知限制 + 1 升级注意）转指南；momei 反馈边界声明 | 已完成 |
 | M4-1 | API 表面差分接入发布链 | `diff-api.mjs` 入 `manual-release.mjs`；删除 / 重命名 / required 收紧判 breaking | 已完成 |
-| M4-2 | 品牌预设 `-solid` 对比度治理 | `momei` success 三态与 `caomei` `primary-solid`；把 `-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景） | 待执行 |
+| M4-2 | 品牌预设 `-solid` 对比度治理 | `momei` success 三态与 `caomei` `primary-solid`；把 `-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景） | 已完成 |
 | M4-3 | 阶段构成计数跨载体机检 | `todo.md` 与 `roadmap.md` 的口径句 / 表格对账；负向对照 + 受检面下界 | 待执行 |
 | M4-4 | 依赖告警收口 | `minimatch` medium 覆盖评估或留痕；`deepmerge` low 维持留痕 | 待执行 |
 | M5-1 | `1.1.0` 发布（经 CI） | Run `Release` workflow（`workflow_dispatch` + `environment` 审批）→ semantic-release 计算版本并 publish；手工流仅作回退 | 待执行 |

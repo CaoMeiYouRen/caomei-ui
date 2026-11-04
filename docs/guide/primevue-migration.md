@@ -31,12 +31,24 @@
 | Select 触发器自定义显示 | — | 新增 `#value` 插槽（作用域 `{ option, label, selected }`），仅影响触发器显示，面板仍用 `#option` | 见 [Select](../components/select.md) 与 [#自定义触发器显示](../components/select.md#自定义触发器显示) |
 | Button `iconOnly` 时 `iconPosition` 失效 | — | `iconOnly=true` 时图标始终居中、`iconPosition` 被忽略，**必须提供 `label`**（否则无 `aria-label`） | 见 [Button](../components/button.md) 与 [#纯图标按钮](../components/button.md#纯图标按钮) |
 | 插槽命名 | 列级 `#body` / `#header` | `#cell-{key}` / `#header-{key}` | 按列 `key` 命名，作用域字段口径见组件页 |
-| 表格排序模型 | `sort-mode` / `multi-sort-meta` / `default-sort-order` | `sortMode` / `multiSortMeta` / `sortDescFirst` | 多列为受控模型（`v-model:multiSortMeta`）；`default-sort-order` 改**表格级** `sortDescFirst`（本库不提供列级）；见 §7 与 [DataTable](../components/data-table.md) |
-| 表格分组与行展开 | `row-group-mode` / `group-rows-by` / `expandable-row-groups` / `expanded-rows` / `Column expander` | 同名 camelCase + `v-model:expandedRowGroups` / `v-model:expandedRows` + `#groupheader` / `#expansion` | 分组按**连续同值**切分、可折叠分组缺省全部收起；展开列写作 `{ key, expander: true }`；见 §7 与 [DataTable](../components/data-table.md) |
+| 表格排序模型 | `sort-mode` / `multi-sort-meta` / `default-sort-order` | `sortMode` / `multiSortMeta` / `sortDescFirst` | 多列为受控模型（`v-model:multiSortMeta`）；`default-sort-order` 改**表格级** `sortDescFirst`（本库不提供列级）；**不要为复刻逐列 `default-sort-order` 全局开启 `sortDescFirst`**——实测会令非业务列的点击循环偏离 PrimeVue；默认方向用 `multiSortMeta` 初值承载；见 §7 与 [DataTable](../components/data-table.md) |
+| 表格分组与行展开 | `row-group-mode` / `group-rows-by` / `expandable-row-groups` / `expanded-rows` / `Column expander` | 同名 camelCase + `v-model:expandedRowGroups` / `v-model:expandedRows` + `#groupheader` / `#expansion` | 分组按**连续同值**切分、可折叠分组缺省全部收起；展开列写作 `{ key, expander: true }`；分组字段列会在数据行保留空白占位（PrimeVue 省略），需要列数一致时按 `groupRowsBy` 过滤 `columns`；见 §7 与 [DataTable](../components/data-table.md) |
 | 命令式浮层 | `ref.toggle(event)` / `show(event)` / `hide()`（以事件坐标为锚点） | 声明式触发器 | 把原触发按钮本身作为 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger`（锚点即该按钮）；`as-child` 复用自定义按钮时加 `unstyled`，`hide()` 改受控 `v-model:open`（Popover 也可用 `<CaomeiPopoverClose>`）；见 [Popover](../components/popover.md) 与 [DropdownMenu](../components/dropdown-menu.md) |
+| Tooltip 接入 | `v-tooltip` 指令（含 `v-tooltip:left` 等方向修饰符）/ `<Tooltip>` | `<CaomeiTooltipProvider>`（应用根部一次）+ `<CaomeiTooltip>` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent`；方向改用 `side` + `align` | `showDelay` → `delayDuration`（Provider 级或单条）；**未提供独立隐藏延迟**；无指令式挂载，须显式包一层触发器（`as-child` 复用原元素）；见 §7 与 [Tooltip](../components/tooltip.md) |
+| 表格受控状态回写 | `v-model:*` 只读日志 / 不回写 | 必须监听并回写 `multiSortMeta` / `expandedRowGroups` / `expandedRows` / `selection` / `page` | 不回写时内建排序、分组折叠、行展开、选择与翻页按钮**无效果**；受控数组请替换引用而非原地增删；见 [DataTable](../components/data-table.md)「范围与约定」 |
+| 表格行状态与分页基准 | `expandedRows` 可为 `Record<key, boolean>`（另有行对象数组形态）；`first` 为 0 基偏移；`rows` / `totalRecords` | `expandedRows` 为 `string[]` 行 key；`selection` 载荷为 `T \| T[] \| null`；`page` 为 1 基；`itemsPerPage` / `total` | `lazy` + 选择 / 展开必须显式 `rowKey`；`selection` 用 `Array.isArray` 窄化后回写；`page = floor(first / rows) + 1`；分页报表在分页器旁自渲染 |
+| 表头全选作用域 | 客户端分页表头全选 = 过滤后整表 | `multiple` 表头全选**只作用当前页**；跨页选择由父级 `selection` 聚合 | 需要「全选全部筛选结果」时自建选择栏；`lazy` 下同样只作用当前页；见 §7 与 [DataTable](../components/data-table.md) |
+| 表格密度与表级结构 | `size="small"`；表级 `#header` / `#footer` | 无 `size` prop；密度用页面级 CSS 覆盖 `.caomei-data-table__th` / `__td` 内边距；无表级 header / footer 插槽 | 标题改用 `caption`，操作区放在表格容器外；不要指望 `size` 静默生效；见 §7 与 [DataTable](../components/data-table.md) |
+| 选择器宽度与包裹层 | `fluid`；在组件上写宽度 | 默认带 `20rem` 上限；`--caomei-select-max-width: none` 写在**字段外层或祖先**；`class` / `style` 落在触发器 | 全局覆盖被库 `:root` 压过时用 `:root:root`；需要定宽时在包裹容器上设，不写触发器；见 [Select](../components/select.md) |
+| 表单控件选择器与事件时序 | `input[type=checkbox]`；`@input` 读取新值 | Checkbox 的可点击控件是 `button[role="checkbox"]`（`.caomei-checkbox__control`），组件根仍是 `div.caomei-checkbox`；Input / Textarea 透传的 `@input` 先于 v-model 写回 | e2e / 单测选择器改用 `button.caomei-checkbox__control`；依赖新值的同步逻辑改用 `@update:model-value`；见 [Checkbox](../components/checkbox.md) 与 [Input](../components/input.md) |
+| CSS 选择器与浮层事件 | 按组件名推断 `.caomei-datatable` / `.caomei-dialog`；依赖 `@hide` | 多词组件逐词 kebab-case（`.caomei-data-table`）；Dialog / Drawer / ConfirmDialog / Popover / DropdownMenu 等无裸根类，用 `__content` / `__overlay`；Toast / Select 等仍有根类或触发器类；排序状态用 `th[aria-sort]`；Drawer 只 emit `update:open` | 写选择器前先 `rg` 产物核实；需要 `hide` 语义时用 `computed` 桥接 `v-model:open` 后补发；见 §7 / [Drawer](../components/drawer.md) |
+| 提示条拆分与外观 | `Message` 单组件；soft 档带同色边框 | `Message` + `Alert` 拆分（Alert 默认不进 live region）；soft 档无可见边框 | 需要播报用 `Message`；不要为复刻边框加覆盖，除非设计确认；见 §7 与 [Message](../components/message.md) / [Alert](../components/alert.md) |
+| ScrollPanel | `<ScrollPanel>` | 无对应组件 | 改用原生滚动容器 + CSS（`max-height` / `overflow: auto`）；固定表头等能力需自行实现；见 [Backlog](../plan/backlog.md) |
 | 未实现项 | — | 见 §7 各组件行的「未实现 / 未暴露」 | 迁移前先读该行，避免按 PrimeVue 文档写了不生效的 prop |
 
 > 上表是**通用**提醒；某个组件是否有对应能力、差异是否属有意，一律以[设计规范 §7](../design/design-spec.md) 该组件的行为准。
+
+> **经验来源（仅作取证，不作映射事实源）**：表中「表格受控状态 / 行状态 / 分页 / 选择器宽度 / 表单控件时序 / CSS 选择器 / 浮层事件」等条目来自 dependfix 的 PrimeVue → caomei-ui 实测迁移（2026-09-28 ~ 2026-10-31），逐条取证见该仓 [`docs/design/governance/caomei-ui-migration.md`](https://github.com/dependfix/dependfix/blob/master/docs/design/governance/caomei-ui-migration.md) §15（取证快照：2026-10-31）。组件能力仍以 §7 与各组件页为准。
 
 ## 逐组件对照入口
 
@@ -47,15 +59,25 @@
 | 基础与布局 | [Avatar](/components/avatar)、[Badge](/components/badge)、[Button](/components/button)、[ButtonGroup](/components/button-group)、[Card](/components/card)（对应 PrimeVue `Panel`）、[Divider](/components/divider)、[Image](/components/image)、[SplitButton](/components/split-button)、[Tag](/components/tag) |
 | 表单输入 | [Checkbox](/components/checkbox) / [CheckboxGroup](/components/checkbox-group)、[FileUpload](/components/file-upload)、[FloatLabel](/components/float-label)、[Input](/components/input)、[InputGroup](/components/input-group)、[InputNumber](/components/input-number)、[Password](/components/password)、[RadioGroup](/components/radio-group)、[Slider](/components/slider)、[Switch](/components/switch)、[TagsInput](/components/tags-input)、[Textarea](/components/textarea) |
 | 选择器 | [AutoComplete](/components/auto-complete)、[Calendar](/components/calendar) / [DatePicker](/components/date-picker)、[ColorPicker](/components/color-picker)、[MultiSelect](/components/multi-select)、[Select](/components/select)、[SelectButton](/components/select-button)、[ToggleButton](/components/toggle-button) |
-| 反馈与浮层 | [ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast) |
+| 反馈与浮层 | [Alert](/components/alert)、[ConfirmDialog](/components/confirm-dialog)、[Dialog](/components/dialog)、[Drawer](/components/drawer)、[Message](/components/message)、[Popover](/components/popover)、[Toast](/components/toast)、[Tooltip](/components/tooltip) |
 | 数据展示 | [DataTable](/components/data-table)、[DataView](/components/data-view)、[Paginator](/components/paginator)、[ProgressBar](/components/progress-bar)、[ProgressSpinner](/components/progress-spinner)、[Skeleton](/components/skeleton) |
-| 导航与操作 | [Accordion](/components/accordion)、[DropdownMenu](/components/dropdown-menu)、[Stepper](/components/stepper)、[Tabs](/components/tabs)、[Toolbar](/components/toolbar) |
+| 导航与操作 | [Accordion](/components/accordion)、[Breadcrumb](/components/breadcrumb)、[DropdownMenu](/components/dropdown-menu)、[Menu](/components/menu)、[Stepper](/components/stepper)、[Tabs](/components/tabs)、[Toolbar](/components/toolbar) |
+| 高级组件 | [Chart](/components/chart) |
 
-> 组件页的「从 PrimeVue 迁移」节与 §7 不一致时**以 §7 为准**（漂移视为文档缺陷）。上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件以其组件页的 API / 「范围与约定」为准（§7 有登记时以 §7 为准）。组件页的「从 PrimeVue 迁移」节已覆盖全部组件页。
+> 组件页的「从 PrimeVue 迁移」节与 §7 不一致时**以 §7 为准**（漂移视为文档缺陷）。上表按 §7 当前已登记的组件维护；**它不宣称穷尽**——§7 新增条目时本表随之补齐。未出现在表中的组件以其组件页的 API / 「范围与约定」为准（§7 有登记时以 §7 为准）。组件页的「从 PrimeVue 迁移」节已覆盖全部在 §7 有映射的组件页；Row / Col / RichTextEditor 无 §7 映射，按其组件页说明处理。
 
 ## 迁移后自检
 
 - [ ] 受控字段（`v-model:*`）与事件名按下表口径改完，且类型检查通过；
+- [ ] 表格的 `multiSortMeta` / `expandedRowGroups` / `expandedRows` / `selection` / `page` 均已在 `@update:*` 回写，并在真实页面点击内建排序、分组折叠、行展开、选择与翻页验证；
+- [ ] `lazy` 表格已显式提供 `rowKey`；`expandedRows` 使用 `string[]`，`selection` 载荷已窄化；分页 `first` 已换算为 1 基 `page`；
+- [ ] 表头全选「只作用当前页」的业务影响已确认；需要跨页全选时由父级 `selection` / 选择栏承载；
+- [ ] `size="small"` 等表格密度写法已移除，改用 CSS 内边距覆盖；表级 `#header` / `#footer` 内容已移到表格容器外；
+- [ ] 选择器宽度上限与包裹层已核对（`--caomei-select-max-width` / `:root:root` / 字段外层）；
+- [ ] 表单控件的 e2e / 单测选择器不再依赖原生 `input`；依赖新值的同步逻辑改用 `@update:model-value`；
+- [ ] CSS 选择器按产物类名 / `aria-sort` 编写，浮层 `hide` 事件已桥接；
+- [ ] Tooltip 的 `CaomeiTooltipProvider` 已在应用根部放置，触发器为显式组合；
+- [ ] `Message` / `Alert` 的 live region 与 soft 档外观差异已确认；
 - [ ] 字符串图标名已全部替换为 `@lucide/vue` 组件；
 - [ ] `severity` / `small` / `large` / `fluid` 等 PrimeVue 专有命名已清除（含模板、类型与样式覆盖）；
 - [ ] 浮层（Dialog / Drawer / Popover / DropdownMenu）的打开、关闭、遮罩、Esc、焦点回归在真实页面复验；

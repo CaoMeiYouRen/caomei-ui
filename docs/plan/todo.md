@@ -18,7 +18,7 @@
 | M1-4 | 指南与设计口径同步 | 响应式设计 / 移动端指南（中英）/ 组件页密度节 / 计数与冻结面回扫（含 token 380 → 381）；关闭三处旧心智表述 | 已完成 |
 | M2-1 | `CaomeiForm` / `CaomeiFormItem` 实现与单测 | 独立组合层 + 插槽作用域；12 字段逐项绑定；无 rules 引擎；不扩字段契约 | 已完成 |
 | M2-2 | Form 文档、示例与计数回扫 | 中英组件页 / 示例 / E2E / 组件总览·画廊·locale 台账·API 基线 | 已完成 |
-| M3-1 | PrimeVue 迁移经验回收 | 指南「常见陷阱」「迁移后自检」「逐组件对照入口」补 Tooltip 行；缺口分类登记 | 待执行 |
+| M3-1 | PrimeVue 迁移经验回收 | 指南「常见陷阱」「迁移后自检」「逐组件对照入口」补 Tooltip 行；缺口分类登记 | 已完成 |
 | M3-2 | 1.0 升级护航 | 下游版本快照、跨 minor 升级注意与对外 7 条（6 已知限制 + 1 升级注意）转指南；momei 反馈边界声明 | 待执行 |
 | M4-1 | API 表面差分接入发布链 | `diff-api.mjs` 入 `manual-release.mjs`；删除 / 重命名 / required 收紧判 breaking | 待执行 |
 | M4-2 | 品牌预设 `-solid` 对比度治理 | `momei` success 三态与 `caomei` `primary-solid`；把 `-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景） | 待执行 |

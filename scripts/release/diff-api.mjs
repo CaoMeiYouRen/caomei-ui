@@ -4,18 +4,23 @@
  * diff-api：发布时 API 表面差分（仅比对 `.d.ts`）。
  *
  * 依据 [API 表面基线评估记录](../../docs/design/governance/2026-10-24-phase26-m1-3-api-surface-baseline-evaluation.md)：
- * 删除 / 重命名 / 必填性收紧属 breaking，类型变化属 warning。本脚本覆盖可机检的前两类：
+ * **删除 / 重命名 / required 收紧**属 breaking，**新增不阻断**，
+ * 其余声明内容变化属 warning（人工复核）。覆盖：
  * 1. 基线有、当前没有的 `.d.ts` 文件（删除 / 重命名）；
- * 2. 基线有、当前没有的导出名（删除 / 重命名）。
+ * 2. 基线有、当前没有的导出名（删除 / 重命名）；
+ * 3. 非继承导出接口 / 类型字面量中消失的成员（删除 / 重命名）；
+ * 4. 同一成员由 optional 变为 required（required 收紧）。
  *
- * 声明文件的内容变化只列出、不判失败（required 收紧需人工复核，见 `changedFiles`）。
- * scoped CSS / JS 产物的哈希文件名**不在比对面**，避免样式变更产生假阳性。
+ * 继承接口的成员删除不在此判定（成员可能上移到基接口）；含索引签名的接口同样跳过成员删除
+ * （索引签名覆盖任意键）。联合 / 交叉 / `Readonly<>` 包裹 / 映射类型 / accessor / `new` 签名 /
+ * 带泛型约束的方法不解析，随声明内容变化提示人工复核。`export * from` 不静态展开，
+ * 报告提示人工复核。scoped CSS / JS 产物的哈希文件名**不在比对面**，避免样式变更产生假阳性。
  *
  * 用法：
  *   node scripts/release/diff-api.mjs --baseline=/tmp/api-diff/package/dist
  *   pnpm check:api-surface --baseline=<dir> --current=dist --json
  *
- * 退出码：0 通过；1 存在删除 / 重命名；2 参数或路径错误。
+ * 退出码：0 通过；1 存在 breaking；2 参数或路径错误。
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
@@ -85,6 +90,299 @@ export function extractExportedNames(text) {
 }
 
 /**
+ * 去掉 JSDoc / 行注释，避免注释中的示例代码参与成员解析。
+ *
+ * 维护单 / 双引号与反引号状态，字符串字面量内的 `//` / `/*` 不会被误当作注释。
+ *
+ * @param {string} text 声明文件内容
+ * @returns {string}
+ */
+export function stripDeclarationComments(text) {
+    let result = ''
+    let quote = null
+    let escaped = false
+    for (let i = 0; i < text.length; i += 1) {
+        const char = text[i]
+        if (quote) {
+            result += char
+            if (escaped) {
+                escaped = false
+            } else if (char === '\\') {
+                escaped = true
+            } else if (char === quote) {
+                quote = null
+            }
+            continue
+        }
+        if (char === '\'' || char === '"' || char === '`') {
+            quote = char
+            result += char
+            continue
+        }
+        if (char === '/' && text[i + 1] === '*') {
+            const end = text.indexOf('*/', i + 2)
+            if (end === -1) {
+                break
+            }
+            i = end + 1
+            continue
+        }
+        if (char === '/' && text[i + 1] === '/') {
+            while (i < text.length && text[i] !== '\n') {
+                i += 1
+            }
+            result += '\n'
+            continue
+        }
+        result += char
+    }
+    return result
+}
+
+/**
+ * 从 `{` 起找到配对的 `}`（简单花括号计数；声明文件不包含模板字符串以外的复杂字面量）。
+ *
+ * @param {string} text 文本
+ * @param {number} openIndex `{` 的下标
+ * @returns {number} 配对 `}` 的下标；未找到返回 -1
+ */
+function findMatchingBrace(text, openIndex) {
+    let depth = 0
+    for (let i = openIndex; i < text.length; i += 1) {
+        if (text[i] === '{') {
+            depth += 1
+        } else if (text[i] === '}') {
+            depth -= 1
+            if (depth === 0) {
+                return i
+            }
+        }
+    }
+    return -1
+}
+
+/**
+ * 按顶层分隔符切分接口 / 类型字面量的成员。
+ *
+ * 只处理声明文件的一行一成员形态；跨行联合类型会被当作多个片段，随后无法解析的属性会被忽略。
+ *
+ * @param {string} body 花括号内的正文
+ * @returns {string[]} 成员片段
+ */
+function splitMemberSegments(body) {
+    const segments = []
+    let current = ''
+    let brace = 0
+    let paren = 0
+    let bracket = 0
+    let angle = 0
+    for (let i = 0; i < body.length; i += 1) {
+        const char = body[i]
+        if (char === '{') {
+            brace += 1
+        } else if (char === '}') {
+            brace -= 1
+        } else if (char === '(') {
+            paren += 1
+        } else if (char === ')') {
+            paren -= 1
+        } else if (char === '[') {
+            bracket += 1
+        } else if (char === ']') {
+            bracket -= 1
+        } else if (char === '<') {
+            angle += 1
+        } else if (char === '>' && body[i - 1] !== '=') {
+            angle -= 1
+        }
+        if ((char === ';' || char === ',' || char === '\n')
+            && brace === 0 && paren === 0 && bracket === 0 && angle === 0) {
+            if (current.trim()) {
+                segments.push(current.trim())
+            }
+            current = ''
+        } else {
+            current += char
+        }
+    }
+    if (current.trim()) {
+        segments.push(current.trim())
+    }
+    return segments
+}
+
+/**
+ * 归一化成员名：去掉 quoted key 的引号并还原转义，避免引号风格变化产生假阳。
+ *
+ * @param {string} name 原始成员名
+ * @returns {string}
+ */
+function normalizeMemberName(name) {
+    if ((name.startsWith('\'') && name.endsWith('\'')) || (name.startsWith('"') && name.endsWith('"'))) {
+        return name.slice(1, -1).replace(/\\(["'\\])/gu, '$1')
+    }
+    return name
+}
+
+/**
+ * 解析单个成员片段，识别属性 / 方法签名及 optional 标记。
+ *
+ * @param {string} segment 成员片段
+ * @returns {{ name: string, optional: boolean } | null}
+ */
+function parseMemberSegment(segment) {
+    const cleaned = segment.replace(/^\s*(?:readonly|declare)\s+/u, '')
+    const property = cleaned.match(/^([A-Za-z_$][\w$]*|'[^']*'|"[^"]*")(\?)?\s*:/u)
+    if (property) {
+        return { name: normalizeMemberName(property[1]), optional: Boolean(property[2]) }
+    }
+    const method = cleaned.match(/^([A-Za-z_$][\w$]*)(\?)?\s*(?:<[^>]*>)?\s*\(/u)
+    if (method && method[1] !== 'new' && method[1] !== 'constructor') {
+        return { name: normalizeMemberName(method[1]), optional: Boolean(method[2]) }
+    }
+    return null
+}
+
+/**
+ * 判断声明头（泛型参数之后）是否存在顶层 `extends`。
+ *
+ * 泛型约束 `T extends object` 不算；只认 `interface X extends Base` 形态。
+ *
+ * @param {string} text 声明头
+ * @returns {boolean}
+ */
+function hasTopLevelExtends(text) {
+    let angle = 0
+    for (let i = 0; i < text.length; i += 1) {
+        const char = text[i]
+        if (char === '<') {
+            angle += 1
+        } else if (char === '>' && text[i - 1] !== '=') {
+            angle = Math.max(0, angle - 1)
+        } else if (angle === 0 && text.startsWith('extends', i)
+            && !/[\w$]/u.test(text[i - 1] ?? '')
+            && !/[\w$]/u.test(text[i + 'extends'.length] ?? '')) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
+ * 从声明头之后扫描到类型字面量的 `{`，跳过泛型参数内的花括号（如 `= {}`）。
+ *
+ * @param {string} text 文本
+ * @param {number} fromIndex 起始下标
+ * @returns {number} 类型体 `{` 的下标；未找到返回 -1
+ */
+function findTypeBodyStart(text, fromIndex) {
+    let angle = 0
+    for (let i = fromIndex; i < text.length; i += 1) {
+        const char = text[i]
+        if (char === '<') {
+            angle += 1
+        } else if (char === '>' && text[i - 1] !== '=') {
+            angle = Math.max(0, angle - 1)
+        } else if (char === '{' && angle === 0) {
+            return i
+        } else if (char === ';' && angle === 0) {
+            return -1
+        }
+    }
+    return -1
+}
+
+/**
+ * 从声明头之后找顶层 `=`（跳过泛型参数内的默认值）。
+ *
+ * @param {string} text 文本
+ * @param {number} fromIndex 起始下标
+ * @returns {number} `=` 的下标；未找到返回 -1
+ */
+function findTopLevelEquals(text, fromIndex) {
+    let angle = 0
+    for (let i = fromIndex; i < text.length; i += 1) {
+        const char = text[i]
+        if (char === '<') {
+            angle += 1
+        } else if (char === '>' && text[i - 1] !== '=') {
+            angle = Math.max(0, angle - 1)
+        } else if (char === '=' && angle === 0) {
+            return i
+        } else if (char === ';' && angle === 0) {
+            return -1
+        }
+    }
+    return -1
+}
+
+/**
+ * 提取导出的接口 / 类型字面量成员（名称 + required 状态）。
+ *
+ * 只解析 `export interface` 与 `export type X = { ... }`；不含继承展开（继承接口的成员
+ * 由其基接口自身参与比较，成员删除也不在继承类型上判定）。索引签名按**顶层成员片段**
+ * 识别，元组标签（`[query: string]`）不会误判。以下形态不解析，只作为声明内容变化
+ * 提示人工复核：联合 / 交叉类型、`Readonly<>` / `Partial<>` 包裹、映射类型、accessor、
+ * `new` 签名、带泛型约束的方法。
+ *
+ * @param {string} text 声明文件内容
+ * @returns {Map<string, { members: Map<string, { optional: boolean }>, hasExtends: boolean, hasIndexSignature: boolean }>}
+ */
+export function extractTypeMembers(text) {
+    const stripped = stripDeclarationComments(text)
+    const types = new Map()
+    const declarations = []
+    for (const match of stripped.matchAll(/export\s+(?:declare\s+)?interface\s+([\w$]+)/gu)) {
+        declarations.push({ kind: 'interface', name: match[1], headerEnd: match.index + match[0].length })
+    }
+    for (const match of stripped.matchAll(/export\s+(?:declare\s+)?type\s+([\w$]+)/gu)) {
+        declarations.push({ kind: 'type', name: match[1], headerEnd: match.index + match[0].length })
+    }
+    declarations.sort((a, b) => a.headerEnd - b.headerEnd)
+    for (const declaration of declarations) {
+        let bodyStart
+        let hasExtends = false
+        if (declaration.kind === 'interface') {
+            bodyStart = findTypeBodyStart(stripped, declaration.headerEnd)
+            if (bodyStart === -1) {
+                continue
+            }
+            hasExtends = hasTopLevelExtends(stripped.slice(declaration.headerEnd, bodyStart))
+        } else {
+            const equalsIndex = findTopLevelEquals(stripped, declaration.headerEnd)
+            if (equalsIndex === -1) {
+                continue
+            }
+            bodyStart = findTypeBodyStart(stripped, equalsIndex + 1)
+            if (bodyStart === -1 || stripped.slice(equalsIndex + 1, bodyStart).trim() !== '') {
+                continue
+            }
+        }
+        const closeIndex = findMatchingBrace(stripped, bodyStart)
+        if (closeIndex === -1) {
+            continue
+        }
+        const body = stripped.slice(bodyStart + 1, closeIndex)
+        const segments = splitMemberSegments(body)
+        const existing = types.get(declaration.name) ?? {
+            members: new Map(),
+            hasExtends: false,
+            hasIndexSignature: false,
+        }
+        existing.hasExtends ||= hasExtends
+        existing.hasIndexSignature ||= segments.some((segment) => /^(?:readonly\s+)?\[\s*[\w$]+\s*:/u.test(segment.trim()))
+        for (const segment of segments) {
+            const parsed = parseMemberSegment(segment)
+            if (parsed) {
+                existing.members.set(parsed.name, { optional: parsed.optional })
+            }
+        }
+        types.set(declaration.name, existing)
+    }
+    return types
+}
+
+/**
  * 比较两套 `.d.ts` 表面。
  *
  * @param {{ baselineRoot: string, currentRoot: string }} input 基线 / 当前 dist 目录
@@ -102,18 +400,28 @@ export function compareApiSurfaces({ baselineRoot, currentRoot }) {
     const currentNames = new Set()
     const baselineFileNames = new Map()
     const currentFileNames = new Map()
+    const baselineTypesByFile = new Map()
+    const currentTypesByFile = new Map()
+    const baselineTexts = new Map()
+    const currentTexts = new Map()
     let baselineStarExports = 0
     let currentStarExports = 0
     for (const file of baselineFiles) {
-        const { names, starExports } = extractExportedNames(readFileSync(join(baselineRoot, file), 'utf8'))
+        const text = readFileSync(join(baselineRoot, file), 'utf8')
+        baselineTexts.set(file, text)
+        const { names, starExports } = extractExportedNames(text)
         names.forEach((name) => baselineNames.add(name))
         baselineFileNames.set(file, new Set(names))
+        baselineTypesByFile.set(file, extractTypeMembers(text))
         baselineStarExports += starExports
     }
     for (const file of currentFiles) {
-        const { names, starExports } = extractExportedNames(readFileSync(join(currentRoot, file), 'utf8'))
+        const text = readFileSync(join(currentRoot, file), 'utf8')
+        currentTexts.set(file, text)
+        const { names, starExports } = extractExportedNames(text)
         names.forEach((name) => currentNames.add(name))
         currentFileNames.set(file, new Set(names))
+        currentTypesByFile.set(file, extractTypeMembers(text))
         currentStarExports += starExports
     }
 
@@ -138,8 +446,41 @@ export function compareApiSurfaces({ baselineRoot, currentRoot }) {
     }
     removedExports.sort((a, b) => a.file.localeCompare(b.file) || a.name.localeCompare(b.name))
     addedExports.sort((a, b) => a.file.localeCompare(b.file) || a.name.localeCompare(b.name))
+
+    // 成员级比较：只在同名导出类型仍存在时进行。继承类型的成员删除不判定（可能上移到基接口），
+    // 但 required 收紧仍按「同类型 + 同成员」比对（基接口自身也会参与比较）。
+    const requiredTightened = []
+    const removedMembers = []
+    for (const file of commonFiles) {
+        const beforeTypes = baselineTypesByFile.get(file) ?? new Map()
+        const afterTypes = currentTypesByFile.get(file) ?? new Map()
+        for (const [typeName, before] of beforeTypes) {
+            const after = afterTypes.get(typeName)
+            if (!after) {
+                continue
+            }
+            for (const [member, meta] of before.members) {
+                const afterMeta = after.members.get(member)
+                if (!afterMeta) {
+                    if (!before.hasExtends && !after.hasExtends
+                        && !before.hasIndexSignature && !after.hasIndexSignature) {
+                        removedMembers.push({ file, type: typeName, member })
+                    }
+                    continue
+                }
+                if (meta.optional && !afterMeta.optional) {
+                    requiredTightened.push({ file, type: typeName, member })
+                }
+            }
+        }
+    }
+    requiredTightened.sort((a, b) => a.file.localeCompare(b.file)
+        || a.type.localeCompare(b.type) || a.member.localeCompare(b.member))
+    removedMembers.sort((a, b) => a.file.localeCompare(b.file)
+        || a.type.localeCompare(b.type) || a.member.localeCompare(b.member))
+
     const changedFiles = commonFiles
-        .filter((file) => readFileSync(join(baselineRoot, file), 'utf8') !== readFileSync(join(currentRoot, file), 'utf8'))
+        .filter((file) => baselineTexts.get(file) !== currentTexts.get(file))
 
     return {
         baselineFiles,
@@ -150,10 +491,13 @@ export function compareApiSurfaces({ baselineRoot, currentRoot }) {
         currentExports: [...currentNames].sort(),
         removedExports,
         addedExports,
+        requiredTightened,
+        removedMembers,
         changedFiles,
         baselineStarExports,
         currentStarExports,
-        breaking: removedFiles.length > 0 || removedExports.length > 0,
+        breaking: removedFiles.length > 0 || removedExports.length > 0
+            || requiredTightened.length > 0 || removedMembers.length > 0,
     }
 }
 
@@ -176,6 +520,12 @@ export function formatReport(result) {
     for (const { file, name } of result.removedExports) {
         lines.push(`  ✖ 删除 / 重命名导出：${file} → ${name}`)
     }
+    for (const { file, type, member } of result.removedMembers) {
+        lines.push(`  ✖ 删除成员：${file} → ${type}.${member}`)
+    }
+    for (const { file, type, member } of result.requiredTightened) {
+        lines.push(`  ✖ required 收紧：${file} → ${type}.${member}`)
+    }
     for (const file of result.addedFiles) {
         lines.push(`  + 新增文件：${file}`)
     }
@@ -183,14 +533,14 @@ export function formatReport(result) {
         lines.push(`  + 新增导出：${file} → ${name}`)
     }
     lines.push(result.changedFiles.length > 0
-        ? `  · ${result.changedFiles.length} 个声明文件内容变化，需人工复核是否收紧 required / 改变类型`
+        ? `  · ${result.changedFiles.length} 个声明文件内容变化，需人工复核是否改变类型`
         : '  · 无声明文件内容变化')
     if (result.breaking) {
-        lines.push('[api-surface] 未通过：存在删除 / 重命名（breaking）')
+        lines.push('[api-surface] 未通过：存在删除 / 重命名 / 成员删除 / required 收紧（breaking）')
     } else if (result.changedFiles.length > 0) {
-        lines.push('[api-surface] 通过：无删除 / 重命名（内容变化需人工复核）')
+        lines.push('[api-surface] 通过：无删除 / 重命名 / 成员删除 / required 收紧（内容变化需人工复核）')
     } else {
-        lines.push('[api-surface] 通过：无删除 / 重命名（无需人工复核）')
+        lines.push('[api-surface] 通过：无删除 / 重命名 / 成员删除 / required 收紧（无需人工复核）')
     }
     return lines.join('\n')
 }

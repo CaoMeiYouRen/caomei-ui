@@ -109,9 +109,10 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
   - GitHub：优先 `RELEASE_TOKEN`（PAT / App token），缺省用 `GITHUB_TOKEN`；`persist-credentials: false` 下由 publish 步骤显式注入 `AUTHORIZATION` extraheader，供 `@semantic-release/git` 回推 `CHANGELOG.md` + `package.json`。
 - **版本句与里程碑同步（M6-2）**：`@semantic-release/exec` 的 `prepareCmd` 调用 `scripts/release/sync-version-statements.mjs`，在 `@semantic-release/npm` bump `package.json` 之后、`@semantic-release/git` 提交之前，同步 README（中英）与 `docs/plan/roadmap.md` 的「当前版本」句；`@semantic-release/git` 的 assets 已纳入这三个文件。`generateNotesCmd` 读取 `docs/release-notes/<version>.md`（当前 `1.1.0` 已落盘）并追加到提交分组之后；文件缺失时输出空串，不影响普通 patch / minor。锚点缺失或 `docs:check:version` 失败时 prepare 直接中止，不提交、不发布。
 - **前置与后置门禁（M6-3）**：publish job 在发布前执行 `pnpm check:security-alerts`（`SECURITY_ALERTS_TOKEN` 缺失或 critical / high 未处置即中止）与 `pnpm verify` + 覆盖率门；发布后执行 `scripts/release/verify-publish.mjs`（dist-tag / tarball shasum / 解包 README / `exports` 13 / 与上一 `latest` 的 API 差分）。任一步失败即 job 标红并写 `Release failed` summary。
+- **事件链与下游复验（M6-4）**：发布成功后由独立 job（`actions: write` + `GITHUB_TOKEN`；`workflow_dispatch` 属防递归规则的显式豁免）执行 `gh workflow run downstream-compat.yml -f caomei-ui-version=<v>`，run URL 写入 job summary；`GITHUB_TOKEN` 创建的 tag / release 不触发 `v*` workflow。
 - **`next` 通道结论（2026-11-04）**：仓库无 `next` 分支，CI **只发 `latest`**；预发布仍走本地 `pnpm release:manual --tag=next`，本阶段不新建 `next` 分支。
 - **循环触发**：触发仅为 `workflow_dispatch`，发布提交回推 master 不会再次触发本工作流；下游兼容检查由 `downstream-compat` 的显式 dispatch 承接（M6-4）。
-- **首次运行前置**：仓库侧配置 `release` environment（审批人）与凭据；`RELEASE_TOKEN` 与 `NPM_TOKEN` 均建议存 environment secret（后者仅在审批通过后注入）。先用 `dry_run: true` 验证下一版本，再以 `dry_run: false` 发布。**`dry-run` 本身也会执行 `git push --dry-run` 校验推送权限**，因此同样需要可写 GitHub 凭据；若 `master` 受分支保护，须为所用身份配置 bypass。**审批期间 master 若前进，publish 的 `Recheck next version` 会重新推断版本；与 dry-run 不一致时 fail-closed**，需重新触发 `dry_run: true` 并重新审批。版本句与里程碑已由发布链自动同步；`dry_run: false` 仍需等 **M6-4**（事件链与下游复验）落地后再执行。
+- **首次运行前置**：仓库侧配置 `release` environment（审批人）与凭据；`RELEASE_TOKEN` 与 `NPM_TOKEN` 均建议存 environment secret（后者仅在审批通过后注入）。先用 `dry_run: true` 验证下一版本，再以 `dry_run: false` 发布。**`dry-run` 本身也会执行 `git push --dry-run` 校验推送权限**，因此同样需要可写 GitHub 凭据；若 `master` 受分支保护，须为所用身份配置 bypass。**审批期间 master 若前进，publish 的 `Recheck next version` 会重新推断版本；与 dry-run 不一致时 fail-closed**，需重新触发 `dry_run: true` 并重新审批。版本句与里程碑已由发布链自动同步；M6 ~ M6-4 实现已落地，`dry_run: false` 仍需一次真实 run 完成审批 / 事件链 / 下游复验取证。
 - **历史**：1.0 期采用本地手动发布；2026-11-03 用户裁定转向 CI 发布，M6 完成前以手动流为准，完成后手动流仍保留为回退路径。缺口与验收口径以 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §2 的 **M6-1 ~ M6-5** 为单一事实源。
 
 ## 6. 版本推断（基线建立后）
@@ -167,6 +168,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 - **机制**：caomei-ui 自身工作流 **checkout 已接入下游源码**，在**上游 runner** 上执行其 `typecheck` + `build`（**上游触发 + 上游执行**）；任一失败视为**兼容性阻塞**。
 - **载体**：`.github/workflows/downstream-compat.yml`——caomei-ui **发布 tag（`v*`）自动触发**，另可手动 `workflow_dispatch`（可传被测版本）。下游仓库须为**公开**（上游 checkout 无需额外凭据）。
+- **CI 发布事件链（M6-4）**：`GITHUB_TOKEN` 创建的 tag / release **不会触发** `v*` workflow；但 `workflow_dispatch` 是防递归规则的显式豁免，`Release` 在发布成功后由独立 job 以 `GITHUB_TOKEN` + `actions: write` 执行 `gh workflow run downstream-compat.yml -f caomei-ui-version=<v>`，并把 run URL 写入 job summary（run 暂不可见时写「已提交、尚未可见」）。
 - **受检清单（接入即登记）**：登记于工作流的 `matrix`——**已在受检面**即已在 `matrix` 登记。
   - **已在受检面**：`dependfix`（`apps/platform`，试点）。
   - **已消费但未接入**（待增量登记）：`momei`（根包）——**单条阻塞**：`momei` 的 `build`（`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`）在上游 runner 的**无凭据可行性未验证**（`typecheck` = `nuxt typecheck` 相对轻量；`pnpm --filter <name>` 可**按根包名选中根工程**，现有 override 步骤无需参数化）。触发条件 = 该验证通过，或用户指定。

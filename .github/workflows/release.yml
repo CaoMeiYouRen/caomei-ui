@@ -266,8 +266,58 @@ jobs:
         if: failure()
         run: |
           {
-            echo "### Release failed"
+            echo "### Workflow failed"
             echo ""
             echo "- 请检查失败步骤日志。若失败发生在 Publish 之后，包可能已发布，重跑同版本会 403；按发布指南 §8 处置。"
             echo "- 安全门禁 / 质量门失败时未执行发布；Publish 或发布后校验失败时需人工复核。"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  dispatch-downstream:
+    name: Dispatch downstream compatibility
+    needs: [dry-run, publish]
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      # workflow_dispatch 是 GITHUB_TOKEN 防递归规则的显式豁免，只需 actions:write + 可读仓库。
+      actions: write
+      contents: read
+    steps:
+      - name: Trigger downstream compatibility
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN 创建的 tag / release 不会触发 v* workflow；显式 dispatch 不受该限制。
+          since="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          if ! gh workflow run downstream-compat.yml --ref master -f "caomei-ui-version=${RELEASE_VERSION}"; then
+            echo "::error::下游兼容检查 dispatch 失败；请检查 actions:write 权限或手动执行 gh workflow run downstream-compat.yml"
+            exit 1
+          fi
+          run_url=""
+          for _ in 1 2 3 4 5 6; do
+            sleep 5
+            run_url="$(gh run list --workflow downstream-compat.yml --event workflow_dispatch --limit 1 \
+              --json url,createdAt --jq ".[0] | select(.createdAt >= \"${since}\") | .url" 2>/dev/null || true)"
+            if [ -n "$run_url" ]; then
+              break
+            fi
+          done
+          {
+            echo ""
+            echo "- 下游兼容检查：已 dispatch（caomei-ui@${RELEASE_VERSION}）"
+            if [ -n "$run_url" ]; then
+              echo "- run：${run_url}"
+            else
+              echo "- dispatch 已提交，run 尚未可见；可在 Actions 页查看 downstream-compat"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Record dispatch failure
+        if: failure()
+        run: |
+          {
+            echo "### Release published, downstream dispatch failed"
+            echo ""
+            echo "- 包已发布；请手动执行 gh workflow run downstream-compat.yml -f caomei-ui-version=${{ needs.dry-run.outputs.version }}"
           } >> "$GITHUB_STEP_SUMMARY"

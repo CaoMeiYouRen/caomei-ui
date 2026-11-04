@@ -32,9 +32,10 @@
    - appends the milestone section from `docs/release-notes/<version>.md` to the release notes;
    - publishes the npm package `caomei-ui`;
    - creates the GitHub Release and tag;
-   - runs the post-publish checks (dist-tag / shasum / unpacked README / `exports` 13 / API diff against the previous `latest`).
+   - runs the post-publish checks (dist-tag / shasum / unpacked README / `exports` 13 / API diff against the previous `latest`);
+   - explicitly dispatches `downstream-compat.yml` with the released version (`actions: write` + `GITHUB_TOKEN`; `workflow_dispatch` is exempt from the recursion rule) and records the run URL in the job summary; tags created with `GITHUB_TOKEN` do not trigger `v*` workflows.
 
-> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` must wait until M6-4 lands (event chain). The security gate and post-publish verification (M6-3) are wired: `check:security-alerts` + `verify` / coverage before publish, `verify-publish.mjs` after. See the Chinese guide §5 for the full list.
+> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` still needs one real run for approval, event-chain dispatch and downstream verification. The security gate and post-publish verification (M6-3) are wired. See the Chinese guide §5 for the full list.
 
 ## Manual release (local)
 
@@ -81,6 +82,7 @@ It chains eight steps: `preflight → api-diff → bump → changelog → sync �
 
 - **Mechanism**: caomei-ui's own workflow **checks out the downstream source** and runs its `typecheck` + `build` on the **upstream runner** (**upstream-triggered + upstream-executed**); any failure is a **compatibility blocker**.
 - **Carrier**: `.github/workflows/downstream-compat.yml` — auto-triggered by a caomei-ui **release tag (`v*`)**, plus manual `workflow_dispatch` (with an optional target version). The downstream repository must be **public** (upstream checkout needs no extra credentials).
+- **CI release event chain (M6-4)**: tags / releases created with `GITHUB_TOKEN` do **not** trigger `v*` workflows, but `workflow_dispatch` is exempt from the recursion rule. After a successful publish, `Release` runs `gh workflow run downstream-compat.yml -f caomei-ui-version=<v>` from a dedicated job (`actions: write` + `GITHUB_TOKEN`) and records the run URL in the job summary.
 - **Checked list (register on onboarding)**: registered in the workflow's `matrix` — **in scope** means it is registered in the `matrix`.
   - **In scope**: `dependfix` (`apps/platform`, pilot).
   - **Consumed but not onboarded** (pending incremental registration): `momei` (root package) — **single blocker**: `momei`'s `build` (`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`) has **unverified credential-free feasibility** on the upstream runner (`typecheck` = `nuxt typecheck` is comparatively light; `pnpm --filter <name>` **can select the root project by its package name**, so the existing override step needs no parameterising). Trigger = that verification, or a user request.

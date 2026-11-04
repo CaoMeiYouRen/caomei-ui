@@ -143,6 +143,13 @@ jobs:
             echo "::error::Release 只允许从 master 触发（当前 ${GITHUB_REF}）"
             exit 1
           fi
+      - name: Security alert gate
+        env:
+          SECURITY_ALERTS_TOKEN: ${{ secrets.SECURITY_ALERTS_TOKEN }}
+        run: |
+          set -euo pipefail
+          # 缺 token 或 critical / high 未处置即中止（安全规范 §2.1）。
+          pnpm check:security-alerts
       - name: Verify quality gates
         run: pnpm verify
       - name: Test with coverage
@@ -207,6 +214,21 @@ jobs:
             echo "::error::审批后的下一版本已从 ${EXPECTED_VERSION} 变为 ${actual}；请重新触发 dry-run 并重新审批"
             exit 1
           fi
+      - name: Capture previous published version
+        id: previous
+        run: |
+          set -euo pipefail
+          # 发布后 API 差分必须有基线；读取失败不得静默跳过（fail-closed）。
+          if ! previous="$(npm view caomei-ui dist-tags.latest 2>/tmp/previous-version.err)"; then
+            cat /tmp/previous-version.err || true
+            echo "::error::无法读取上一 latest 版本，发布后 API 差分无法执行"
+            exit 1
+          fi
+          if [ -z "$previous" ]; then
+            echo "::error::上一 latest 版本为空，拒绝在没有 API 差分基线的情况下发布"
+            exit 1
+          fi
+          echo "version=$previous" >> "$GITHUB_OUTPUT"
       - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
@@ -214,14 +236,38 @@ jobs:
           NPM_CONFIG_PROVENANCE: "true"
           NO_COLOR: "1"
           FORCE_COLOR: "0"
+          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
         run: |
           set -euo pipefail
           pnpm release | tee release.log
-          version="$(sed -nE 's/^.*next release version is ([^[:space:]]+).*$/\1/p' release.log | tail -1)"
           {
             echo "### Release"
             echo ""
             echo "- 触发方式：workflow_dispatch + environment: release 审批"
-            echo "- 目标版本：${version:-见 publish 日志}"
+            echo "- 目标版本：${RELEASE_VERSION}"
             echo "- dist-tag：latest（`next` 通道未启用）"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify published package
+        env:
+          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
+          PREVIOUS_VERSION: ${{ steps.previous.outputs.version }}
+        run: |
+          set -euo pipefail
+          args=(--version="${RELEASE_VERSION}" --tag=latest --require-base)
+          if [ -n "${PREVIOUS_VERSION}" ]; then
+            args+=(--base="${PREVIOUS_VERSION}")
+          fi
+          node scripts/release/verify-publish.mjs "${args[@]}"
+          {
+            echo ""
+            echo "- 发布后校验：通过（dist-tag / shasum / README / exports 13 / 与上一 latest 的 API 差分）"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Record failure
+        if: failure()
+        run: |
+          {
+            echo "### Release failed"
+            echo ""
+            echo "- 请检查失败步骤日志。若失败发生在 Publish 之后，包可能已发布，重跑同版本会 403；按发布指南 §8 处置。"
+            echo "- 安全门禁 / 质量门失败时未执行发布；Publish 或发布后校验失败时需人工复核。"
           } >> "$GITHUB_STEP_SUMMARY"

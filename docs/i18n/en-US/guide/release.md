@@ -31,9 +31,10 @@
    - syncs the "current version" statements in both READMEs and `docs/plan/roadmap.md` (via `@semantic-release/exec` `prepareCmd`, before `@semantic-release/git` commits them);
    - appends the milestone section from `docs/release-notes/<version>.md` to the release notes;
    - publishes the npm package `caomei-ui`;
-   - creates the GitHub Release and tag.
+   - creates the GitHub Release and tag;
+   - runs the post-publish checks (dist-tag / shasum / unpacked README / `exports` 13 / API diff against the previous `latest`).
 
-> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` must wait until M6-3 / M6-4 land (security gate + post-publish verification, event chain). Details live in [Phase 27 registration](/design/governance/2026-11-03-phase27-registration.md) §2 (M6-1 ~ M6-5); see the Chinese guide §5 for the full list.
+> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` must wait until M6-4 lands (event chain). The security gate and post-publish verification (M6-3) are wired: `check:security-alerts` + `verify` / coverage before publish, `verify-publish.mjs` after. See the Chinese guide §5 for the full list.
 
 ## Manual release (local)
 

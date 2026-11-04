@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-04-phase27-m6-3-release-gates.md](./2026-11-04-phase27-m6-3-release-gates.md)：**Phase 27 M6-3 发布前置与后置门禁**。publish 前执行安全告警门禁 + `verify` + 覆盖率；publish 后 `verify-publish.mjs` 校验 dist-tag / shasum / 解包 README / `exports` 13 / 与上一 `latest` 的 API 差分；失败即 job 标红并写 `Release failed` summary。**Review Gate**：见本记录 §5。
 - [2026-11-04-phase27-m6-2-version-statement-sync.md](./2026-11-04-phase27-m6-2-version-statement-sync.md)：**Phase 27 M6-2 版本句与发布说明同步**。`@semantic-release/exec` 在 npm bump 后、git 提交前同步 README 中英与 roadmap 的「当前版本」句；`generateNotesCmd` 追加 `docs/release-notes/<version>.md` 里程碑段；锚点缺失 / `docs:check:version` 失败即中止；新增 1.1.0 里程碑文件与 7 例单测。**Review Gate**：见本记录 §5。
 - [2026-11-04-phase27-m6-1-ci-release-wiring.md](./2026-11-04-phase27-m6-1-ci-release-wiring.md)：**Phase 27 M6-1 CI 发布工作流接线与凭据**。`release.yml` 改为 `workflow_dispatch` + `dry_run` 默认 true；dry-run 用最小插件集输出下一版本，publish 走 `environment: release` 审批；npm 优先 OIDC、回退 `NPM_TOKEN`，GitHub 优先 `RELEASE_TOKEN`、回退 `GITHUB_TOKEN` 并显式注入 extraheader；`next` 通道结论 = 无分支、CI 只发 `latest`。**Review Gate**：见本记录 §5。
 - [2026-11-04-phase27-m6-5-changelog-robustness.md](./2026-11-04-phase27-m6-5-changelog-robustness.md)：**Phase 27 M6-5 `CHANGELOG` 生成器健壮性**。空 `# Unreleased` 段一律剥离（有内容保留）；无 `remote.origin.url` 时跳过仓库读取并降级为无外链；生成期间串行切换 cwd，语言取自目标仓库根；单测覆盖英文语言根 / 无 remote / 无版本空段 / cwd 恢复；不回改既有 `CHANGELOG.md`。**Review Gate**：见本记录 §4。

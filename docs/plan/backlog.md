@@ -17,10 +17,13 @@
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
-| DatePicker 范围选择 | M4 条目 2 范围收敛 | 候选补 `selectionMode="range"`。触发条件：下游出现日期区间筛选真实用例 | 低 |
+| DatePicker 范围选择 | M4 条目 2 范围收敛 + [caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28)（主诉求） | 候选补 `selectionMode="range"`（`multiple` 同批或后续）。**触发条件已满足（2026-11-05）**：caomei-auth 登录日志筛选 1 处 `selection-mode="range"` 真实用例（issue 自述，未跨仓复核；见[评估记录](../design/governance/2026-11-05-caomei-auth-migration-feedback-evaluation.md) §5）；返回值形态（`Date[]` / `[Date, Date]`）与 `showTime` 交互留待实施批次论证，现保留 `minValue` / `maxValue` / `dateFormat` / `locale` 契约。下游可用两个单日期选择器承接，不构成阻塞 | 中 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
-| Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 | **条件候选**：下游 3 处（`import-repos-dialog.vue` / `scans.vue` / `repo-history-dialog.vue`）用 `template` + `current-page-report-template`；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
+| Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 + [caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28) | **条件候选**：下游 dependfix 3 处 + caomei-auth 1 处（`table.vue` 的 `current-page-report-template`）使用模板报表；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
+| Toast 逐语气样式 token / 覆盖路径 | caomei-auth 迁移反馈 #28（主诉求） | 现状仅暴露 `--caomei-toast-accent`（逐语气只改强调色），背景 / 边框 / 文字 / 阴影统一取自 `--caomei-color-*` / `--caomei-shadow-*`，无法一一映射下游 56 个 `--p-toast-*`。候选二选一：① 新增 `--caomei-toast-{tone}-bg` / `-border` / `-text` / `-shadow`；② 确认「接受默认语气样式」并补下游薄封装配方（类名 / 层级 / 覆盖顺序）。逐语气覆盖须纳入对比度校验 | 中 |
+| DataTable 密度（`size` prop / 密度 token） | caomei-auth 迁移反馈 #28（评估） | 现状无 `size` prop，单元格内边距固定 `--caomei-space-2` / `--caomei-space-3`，密度需页面级 CSS 覆盖 `.caomei-data-table__th` / `__td`。候选：提供密度 prop 或 `--caomei-data-table-density-*` token；若不提供，组件页补 CSS 覆盖配方并在迁移指南登记为有意差异。下游可 CSS 覆盖，不构成阻塞 | 低 |
+| DataTable 选择列宽度 token | caomei-auth 迁移反馈 #28（评估） | 现状 `.caomei-data-table__select-cell` 硬编码 `width: 1%` + `padding-inline: var(--caomei-space-2)`（issue 自述渲染约 34px；PrimeVue 默认 52px），无可配置 token。候选：新增 `--caomei-data-table-selection-column-width`（及必要的内边距 token）；若不提供，迁移指南明确「接受差异 + 视觉基线登记」口径。下游可页面级补偿，不构成阻塞 | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
@@ -60,6 +63,7 @@
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
+| caomei-auth 迁移样式配方文档补强 | **文档候选**（来源：[caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28)）：Toast 逐语气薄封装（`.caomei-toast--<tone>` 覆盖背景 / 边框 / 文字 / 阴影的类名、特异性与加载顺序）、DataTable 密度 CSS 覆盖配方（`.caomei-data-table__th` / `__td` 内边距）、选择列宽度接受口径。与 §1.1 的 Toast / DataTable 候选配套：若用户裁定不新增 token，则以本文档项承接 | 低 |
 | @iconify/vue 可选接入 | 字符串图标名 escape hatch | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |

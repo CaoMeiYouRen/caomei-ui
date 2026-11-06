@@ -3,6 +3,7 @@
 > 创建时间：2026-11-04
 > 依据：[Phase 27 登记批次记录](./2026-11-03-phase27-registration.md) §2 的 M6-1。
 > 定位：Phase 27「CI 发布链路」第 1 条的交付记录；本记录是工作流接线、凭据口径、`next` 通道结论与未覆盖边界的唯一载体。
+> **2026-11-06 更新**：按用户指令，发布流已简化为 semantic-release 直连 + OIDC；本记录的 dry-run / `environment: release` 审批 / `NPM_TOKEN` 回退 / 手动重检部分已被[发布工作流 OIDC 简化记录](./2026-11-06-phase27-release-workflow-oidc-simplification.md)取代；`next` 通道结论与下游 dispatch 仍有效。
 
 ## 1. 交付范围
 

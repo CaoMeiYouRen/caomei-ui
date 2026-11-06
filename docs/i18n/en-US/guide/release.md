@@ -6,7 +6,7 @@
 
 > changesets is not used (this project is a single package, and semantic-release is the standard fit).
 
-> **Current status**: `release.yml` is **wired for CI release but has not run for real yet** (Phase 27 M6-1). Trigger is `workflow_dispatch` with `dry_run` (default `true`: version inference only, no publish). Set `dry_run: false` to enter the `release` environment approval and publish to `latest`. npm credentials prefer Trusted Publisher (OIDC) and fall back to the environment secret `NPM_TOKEN`; GitHub push credentials prefer `RELEASE_TOKEN` and fall back to `GITHUB_TOKEN` (store both in the `release` environment). **`dry-run` also runs `git push --dry-run`**, so it needs a writable GitHub credential; if `master` is protected, configure a bypass for that identity. **The publish job rechecks the next version after approval; if `master` moved and the version changed, it fails closed** and you must re-run `dry_run: true` and approve again. There is no `next` branch: CI publishes `latest` only, while pre-releases still use the local `pnpm release:manual --tag=next`. The `1.0.x` local manual flow below remains available as a fallback.
+> **Current status (2026-11-06)**: `release.yml` calls `pnpm release` (semantic-release) directly, the same pattern as momei / caomei-auth. Trigger is `workflow_dispatch` only (master only, enforced by a first-step check that fails the run otherwise); there is no `dry_run` input and no `release` environment approval. npm uses **Trusted Publishing (OIDC, `id-token: write`) and no longer needs `NPM_TOKEN`**; GitHub uses `GITHUB_TOKEN` (semantic-release injects it into the push URL). The workflow keeps the security alert gate, `pnpm verify` and the coverage gate before release. Versions, `CHANGELOG`, version statements, milestone notes, npm publish, GitHub Release and tags are all driven by `release.config.js`. There is no `next` branch: CI publishes `latest` only, while pre-releases still use the local `pnpm release:manual --tag=next`. The local manual flow below remains available as a fallback.
 
 > **1.0 release gate (from 2026-10-26)**: `1.0.0-rc.1` must pass **G0 / G1 (plus G1-F if G1 decides "fix") / G2**, plus the S1 / S2 / S3 pre-release batches, before publishing; the final `1.0.0` must pass **G0 ~ G4** (including G3 rc and downstream verification). **Every `publish` run (including rc) must also pass the security alert gate in [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese).** Do not run the corresponding `publish` before it passes. Target review 2026-11-13, hard stop 2026-11-27; no automatic extension. See [Phase 26 execution-time addition and 1.0 release gate](/design/governance/2026-10-26-phase26-ui-gate-planning.md) §4.
 
@@ -21,21 +21,20 @@
 
 ## Release flow
 
-> This is the CI flow for the auto-publish path. It was authorized on 2026-11-03 (Phase 27 M6) and takes effect from `1.1.0`; `1.0.x` used the local manual flow below.
+> This is the CI flow for the auto-publish path. It was authorized on 2026-11-03 (Phase 27 M6) and simplified on 2026-11-06 to call semantic-release directly; `1.0.x` used the local manual flow below.
 
 1. Commits follow Conventional Commits (via the `conventional-committer` skill).
-2. A maintainer runs the `Release` workflow manually (`workflow_dispatch`) and approves the `release` environment; the publish step then runs semantic-release.
-3. Once enabled, it automatically:
+2. A maintainer runs the `Release` workflow manually (`workflow_dispatch`) on `master`. There is no environment approval and no `dry_run` input.
+3. The workflow runs the security alert gate, `pnpm verify` and the coverage gate, then `pnpm release`. semantic-release automatically:
    - infers the version number;
    - generates / updates `CHANGELOG.md`;
    - syncs the "current version" statements in both READMEs and `docs/plan/roadmap.md` (via `@semantic-release/exec` `prepareCmd`, before `@semantic-release/git` commits them);
    - appends the milestone section from `docs/release-notes/<version>.md` to the release notes;
-   - publishes the npm package `caomei-ui`;
+   - publishes the npm package `caomei-ui` through Trusted Publishing (OIDC, no `NPM_TOKEN`);
    - creates the GitHub Release and tag;
-   - runs the post-publish checks (dist-tag / shasum / unpacked README / `exports` 13 / API diff against the previous `latest`);
    - explicitly dispatches `downstream-compat.yml` with the released version (`actions: write` + `GITHUB_TOKEN`; `workflow_dispatch` is exempt from the recursion rule) and records the run URL in the job summary; tags created with `GITHUB_TOKEN` do not trigger `v*` workflows.
 
-> **Not yet verified in a real run**: the workflow is wired, but `dry_run: false` still needs one real run for approval, event-chain dispatch and downstream verification. The security gate and post-publish verification (M6-3) are wired. See the Chinese guide §5 for the full list.
+> **Post-publish verification**: the workflow no longer runs `verify-publish.mjs`; that script remains for the local manual flow. The first real CI run will publish `1.1.0`. See the Chinese guide §5 for the full list.
 
 ## Manual release (local)
 
@@ -53,7 +52,7 @@ It chains eight steps: `preflight → api-diff → bump → changelog → sync �
 ## Pre-release checks
 
 - **Security alert gate**: `preflight` and `publish` enforce the open and dismissed Dependabot and Code Scanning alert check per the [security standard §2.1](/standards/security#_2-1-发布前安全告警门禁) (Chinese; `auto_dismissed` is excluded), and a missing `SECURITY_ALERTS_TOKEN` aborts (fail-closed); a `--dry-run` preview skips the gate. **Critical must be zero and cannot be exempted, even when dismissed**; **high must be fixed, or exempted with a recorded `category`** (see §2.1); medium / low may be deferred. CI runs the same check in the `Security Alerts` workflow with the `SECURITY_ALERTS_TOKEN` secret (Dependabot alerts require a user PAT); locally put the token in `.env.local` at the repo root (gitignored via `*.local`) or export it for a single run, then use `pnpm check:security-alerts`. Record the counts and any exemptions in the release governance record.
-- **Registry**: set `NPM_CONFIG_REGISTRY=https://registry.npmjs.org` for the release session. A mirror registry (for example `registry.npmmirror.com`) returns `ENEEDAUTH` for `npm whoami` and cannot publish; an expired `//registry.npmjs.org/:_authToken` returns `401`. Confirm `npm whoami` and `npm owner ls caomei-ui` before publishing.
+- **Registry (local manual flow only)**: set `NPM_CONFIG_REGISTRY=https://registry.npmjs.org` for the release session. A mirror registry (for example `registry.npmmirror.com`) returns `ENEEDAUTH` for `npm whoami` and cannot publish; an expired `//registry.npmjs.org/:_authToken` returns `401`. Confirm `npm whoami` and `npm owner ls caomei-ui` before publishing. CI uses Trusted Publishing (OIDC) and needs no token.
 - All quality gates pass (lint / typecheck / test / build).
 - Coverage evidence is generated and checked with `pnpm test:coverage` + `pnpm check:coverage` (also part of `preflight`).
 - Build output smoke test: confirm ESM, type declarations, CSS and subpath exports work.

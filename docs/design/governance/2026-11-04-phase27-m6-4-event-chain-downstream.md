@@ -3,6 +3,7 @@
 > 创建时间：2026-11-04
 > 依据：[Phase 27 登记批次记录](./2026-11-03-phase27-registration.md) §2 的 M6-4。
 > 定位：Phase 27「CI 发布链路」第 4 条的交付记录；本记录是事件链、下游 dispatch 与凭据边界的唯一载体。
+> **2026-11-06 更新**：按用户指令，发布流简化为 semantic-release 直连；独立 `dispatch-downstream` job 保留，但 `needs` 改为 `release`，版本由发布后在 HEAD 上的 `v<version>` tag 读取（原 `dry-run` / `publish` 两 job 已合并为 `release`）。详见[发布工作流 OIDC 简化记录](./2026-11-06-phase27-release-workflow-oidc-simplification.md)。
 
 ## 1. 问题与处置
 

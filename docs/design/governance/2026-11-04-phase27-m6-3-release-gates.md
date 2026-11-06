@@ -3,6 +3,7 @@
 > 创建时间：2026-11-04
 > 依据：[Phase 27 登记批次记录](./2026-11-03-phase27-registration.md) §2 的 M6-3。
 > 定位：Phase 27「CI 发布链路」第 3 条的交付记录；本记录是发布前 / 后门禁与失败语义的唯一载体。
+> **2026-11-06 更新**：按用户指令，发布流已简化为 semantic-release 直连 + OIDC；发布前安全告警 + `verify` + 覆盖率门禁仍有效，发布后 `verify-publish` 步骤已移除（脚本保留供本地手动流），见[发布工作流 OIDC 简化记录](./2026-11-06-phase27-release-workflow-oidc-simplification.md)。
 
 ## 1. 前置门禁（publish job）
 

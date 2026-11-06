@@ -1,148 +1,63 @@
 name: Release
 
-# CI 发布链路（Phase 27 M6）。
+# CI 发布：直接调用 semantic-release（与 momei / caomei-auth 同一模式）。
 #
-# 触发模型（用户 2026-11-03 裁定）：仅 `workflow_dispatch`，不启用 push 触发。
-# - `dry_run: true`（默认）：只推断下一版本并写 job summary，不发布；
-# - `dry_run: false`：进入 `environment: release` 审批，通过后由 semantic-release 发布到 latest。
+# - 版本推断 / CHANGELOG / README 与 roadmap 版本句 / 里程碑 / npm publish /
+#   GitHub Release / tag 全部由 `release.config.js` 的插件链驱动；
+#   workflow 不手写版本计算、不重检版本、不手工 `npm publish`。
+# - npm：Trusted Publishing（OIDC，`id-token: write`），**不需要 NPM_TOKEN**。
+# - GitHub：`GITHUB_TOKEN`；`persist-credentials: false` 下由 semantic-release
+#   自动把 token 注入推送 URL，供 `@semantic-release/git` 回推与创建 Release。
+# - 发布前保留安全告警门禁 + `pnpm verify` + 覆盖率门禁。
+# - 下游兼容检查由独立 job 在发布成功后显式 dispatch：`GITHUB_TOKEN` 创建的
+#   tag / release 不触发 `v*` workflow，必须用 `workflow_dispatch`。
 #
-# 凭据：
-# - npm：优先 Trusted Publisher（OIDC，`id-token: write`），回退 environment secret `NPM_TOKEN`
-#   （仅临时回退，需轮换并保持最小权限）。凭据是否真正可用由 semantic-release 的
-#   verifyConditions 判定；本工作流只做提前提示。
-# - GitHub：优先 `RELEASE_TOKEN`（PAT / App token），缺省 `GITHUB_TOKEN`；`persist-credentials: false`
-#   下显式注入 `AUTHORIZATION` extraheader，供 semantic-release 的 push 校验与
-#   `@semantic-release/git` 回推使用。若 master 受分支保护，需为所用身份配置 bypass。
-#
-# `next` 通道结论（2026-11-04）：**维持**无 `next` 分支；CI 只发 `latest`，预发布仍走本地
-# `pnpm release:manual --tag=next`，不新建 `next` 分支（等价需求另立评估）。
+# 触发：仅 `workflow_dispatch`（手动）。如需周级自动发布，参照 momei / caomei-auth
+# 打开下面的 `schedule`；当前保持手动，避免无变更轮次空跑。
 on:
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 只计算下一版本并输出摘要（不 publish）
-        required: true
-        default: true
-        type: boolean
+  # schedule:
+  #   - cron: "0 12 * * 6"
 
-# 仅针对当前工作流正在进行的作业或运行；Release 不取消，确保发布/回推完整。
+# Release 作业不取消，确保发布 / 回推完整；固定 group 让所有发布 run 串行。
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
-  dry-run:
-    name: Dry run
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
-      # semantic-release 在 --dry-run 下仍会执行 `git push --dry-run` 校验推送权限，
-      # 因此 dry-run job 也需要可写内容权限（否则整条发布链不可达）。
-      contents: write
+      id-token: write # npm Trusted Publishing (OIDC)
+      contents: write # release commit / tag / GitHub Release
+      issues: write
+      pull-requests: write
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v7
-        with:
-          node-version: "lts/*"
-          cache: "pnpm"
-      - run: pnpm install --frozen-lockfile
-      - name: Configure git push credentials
-        env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          USING_RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN != '' }}
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ "${USING_RELEASE_TOKEN}" != "true" ]; then
-            echo "::warning::未配置 RELEASE_TOKEN，回退 GITHUB_TOKEN；若 master 受分支保护，dry-run 的 push 校验可能被拒绝"
-          fi
-          auth="$(printf 'x-access-token:%s' "${RELEASE_TOKEN}" | base64 -w0)"
-          git config --local --unset-all http.https://github.com/.extraheader || true
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${auth}"
-      - name: Calculate next version
-        id: version
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          NO_COLOR: "1"
-          FORCE_COLOR: "0"
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_REF}" != "refs/heads/master" ]; then
-            echo "::error::Release 只允许从 master 触发（当前 ${GITHUB_REF}）"
-            exit 1
-          fi
-          # dry-run 只做版本推断：用最小插件集避免 npm / GitHub 插件凭据校验；推送权限仍由上面的
-          # extraheader 提供（semantic-release 的 verifyAuth 会执行 git push --dry-run）。
-          pnpm exec semantic-release --dry-run \
-            --plugins @semantic-release/commit-analyzer \
-            --plugins @semantic-release/release-notes-generator | tee release-dry-run.log
-          if grep -q 'There are no relevant changes' release-dry-run.log; then
-            echo "version=" >> "$GITHUB_OUTPUT"
-            {
-              echo "### Release dry run"
-              echo ""
-              echo "- 触发方式：workflow_dispatch"
-              echo "- 目标版本：无（没有可发布提交）"
-            } >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          version="$(sed -nE 's/^.*next release version is ([^[:space:]]+).*$/\1/p' release-dry-run.log | tail -1)"
-          if [ -z "$version" ]; then
-            echo "::error::未能从 semantic-release --dry-run 解析下一版本"
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          {
-            echo "### Release dry run"
-            echo ""
-            echo "- 触发方式：workflow_dispatch"
-            echo "- 目标版本：$version"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-  publish:
-    name: Publish
-    needs: dry-run
-    if: ${{ inputs.dry_run == false && needs.dry-run.outputs.version != '' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    environment:
-      name: release
-      url: https://www.npmjs.com/package/caomei-ui
-    permissions:
-      contents: write
-      id-token: write
-      issues: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v7
-        with:
-          node-version: "lts/*"
-          cache: "pnpm"
-          registry-url: https://registry.npmjs.org
-      - run: pnpm install --frozen-lockfile
       - name: Check release branch
         run: |
           set -euo pipefail
+          # 发布只允许 master；非 master 触发时显式标红，避免「绿色 run 但什么都没做」。
           if [ "${GITHUB_REF}" != "refs/heads/master" ]; then
             echo "::error::Release 只允许从 master 触发（当前 ${GITHUB_REF}）"
             exit 1
           fi
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+      - run: pnpm i --frozen-lockfile
       - name: Security alert gate
         env:
           SECURITY_ALERTS_TOKEN: ${{ secrets.SECURITY_ALERTS_TOKEN }}
@@ -156,143 +71,71 @@ jobs:
         run: pnpm test:coverage
       - name: Check coverage thresholds
         run: pnpm check:coverage
-      - name: Check release credentials
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Capture tags before release
+        id: before
         run: |
           set -euo pipefail
-          # `ACTIONS_ID_TOKEN_REQUEST_URL` 只证明 id-token 权限可用，不代表 npm 侧已绑定
-          # Trusted Publisher；真正的可用性由 semantic-release 的 verifyConditions 判定。
-          if [ -z "${NPM_TOKEN}" ] && [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
-            echo "::error::缺少 npm 凭据：请配置 Trusted Publisher（OIDC）或 environment secret NPM_TOKEN"
-            exit 1
-          fi
-          if [ -n "${NPM_TOKEN}" ] && [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]; then
-            echo "::warning::使用 NPM_TOKEN 回退；建议尽快切换 Trusted Publisher 并轮换 token"
-          fi
-      # 凭据只在发布动作前一刻写入，缩小暴露窗口；上面的质量门不携带发布凭据。
-      - name: Configure npm auth
+          echo "tags=$(git tag | sort | paste -sd, -)" >> "$GITHUB_OUTPUT"
+      - name: Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [ -n "${NPM_TOKEN}" ]; then
-            printf '%s\n' "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> "$HOME/.npmrc"
-          fi
-      - name: Configure git push credentials
-        env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          USING_RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN != '' }}
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ "${USING_RELEASE_TOKEN}" != "true" ]; then
-            echo "::warning::未配置 RELEASE_TOKEN，回退 GITHUB_TOKEN；回推 master 可能被分支保护拒绝"
-          fi
-          auth="$(printf 'x-access-token:%s' "${RELEASE_TOKEN}" | base64 -w0)"
-          git config --local --unset-all http.https://github.com/.extraheader || true
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${auth}"
-      - name: Recheck next version
-        env:
-          EXPECTED_VERSION: ${{ needs.dry-run.outputs.version }}
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NO_COLOR: "1"
           FORCE_COLOR: "0"
-        run: |
-          set -euo pipefail
-          # 审批期间 master 可能前进；发布前重新推断，与审批时看到的版本不一致即 fail-closed。
-          pnpm exec semantic-release --dry-run \
-            --plugins @semantic-release/commit-analyzer \
-            --plugins @semantic-release/release-notes-generator | tee release-recheck.log
-          actual="$(sed -nE 's/^.*next release version is ([^[:space:]]+).*$/\1/p' release-recheck.log | tail -1)"
-          if [ -z "$actual" ]; then
-            echo "::error::发布前重检未解析到下一版本（可能已无可发布提交）"
-            exit 1
-          fi
-          if [ "$actual" != "${EXPECTED_VERSION}" ]; then
-            echo "::error::审批后的下一版本已从 ${EXPECTED_VERSION} 变为 ${actual}；请重新触发 dry-run 并重新审批"
-            exit 1
-          fi
-      - name: Capture previous published version
-        id: previous
-        run: |
-          set -euo pipefail
-          # 发布后 API 差分必须有基线；读取失败不得静默跳过（fail-closed）。
-          if ! previous="$(npm view caomei-ui dist-tags.latest 2>/tmp/previous-version.err)"; then
-            cat /tmp/previous-version.err || true
-            echo "::error::无法读取上一 latest 版本，发布后 API 差分无法执行"
-            exit 1
-          fi
-          if [ -z "$previous" ]; then
-            echo "::error::上一 latest 版本为空，拒绝在没有 API 差分基线的情况下发布"
-            exit 1
-          fi
-          echo "version=$previous" >> "$GITHUB_OUTPUT"
-      - name: Publish
+        run: pnpm release
+      - name: Read released version
+        id: version
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: "true"
-          NO_COLOR: "1"
-          FORCE_COLOR: "0"
-          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
+          BEFORE_TAGS: ${{ steps.before.outputs.tags }}
         run: |
           set -euo pipefail
-          pnpm release | tee release.log
+          # 只认本次新增的版本 tag，避免重跑 / tag 已推但 publish 失败时误判；
+          # 用全量 tag 差集而不是 `--points-at HEAD`，不依赖 tag 落点（HEAD 或其父提交均可）。
+          current_tags="$(git tag | sort | paste -sd, -)"
+          new_tags="$(
+            comm -13 \
+              <(printf '%s\n' "${BEFORE_TAGS}" | tr ',' '\n' | sed '/^$/d' | sort) \
+              <(printf '%s\n' "${current_tags}" | tr ',' '\n' | sed '/^$/d' | sort) \
+              || true
+          )"
+          new_tag=""
+          while IFS= read -r candidate; do
+            case "${candidate}" in
+              v[0-9]*) new_tag="${candidate}"; break ;;
+            esac
+          done <<< "${new_tags}"
+          version="${new_tag#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
           {
             echo "### Release"
             echo ""
-            echo "- 触发方式：workflow_dispatch + environment: release 审批"
-            echo "- 目标版本：${RELEASE_VERSION}"
-            echo "- dist-tag：latest（`next` 通道未启用）"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Verify published package
-        env:
-          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
-          PREVIOUS_VERSION: ${{ steps.previous.outputs.version }}
-        run: |
-          set -euo pipefail
-          args=(--version="${RELEASE_VERSION}" --tag=latest --require-base)
-          if [ -n "${PREVIOUS_VERSION}" ]; then
-            args+=(--base="${PREVIOUS_VERSION}")
-          fi
-          node scripts/release/verify-publish.mjs "${args[@]}"
-          {
-            echo ""
-            echo "- 发布后校验：通过（dist-tag / shasum / README / exports 13 / 与上一 latest 的 API 差分）"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Record failure
-        if: failure()
-        run: |
-          {
-            echo "### Workflow failed"
-            echo ""
-            echo "- 请检查失败步骤日志。若失败发生在 Publish 之后，包可能已发布，重跑同版本会 403；按发布指南 §8 处置。"
-            echo "- 安全门禁 / 质量门失败时未执行发布；Publish 或发布后校验失败时需人工复核。"
+            if [ -n "${version}" ]; then
+              echo "- 版本：${version}"
+              echo "- npm：Trusted Publishing（OIDC，无需 NPM_TOKEN）"
+            else
+              echo "- 本次没有新增 tag（无待发布提交，或 tag 已在发布前存在）"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
   dispatch-downstream:
     name: Dispatch downstream compatibility
-    needs: [dry-run, publish]
-    if: ${{ success() }}
+    needs: release
+    if: ${{ needs.release.result == 'success' && needs.release.outputs.version != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      # workflow_dispatch 是 GITHUB_TOKEN 防递归规则的显式豁免，只需 actions:write + 可读仓库。
       actions: write
       contents: read
     steps:
       - name: Trigger downstream compatibility
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_VERSION: ${{ needs.dry-run.outputs.version }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ needs.release.outputs.version }}
         run: |
           set -euo pipefail
-          # GITHUB_TOKEN 创建的 tag / release 不会触发 v* workflow；显式 dispatch 不受该限制。
           since="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           if ! gh workflow run downstream-compat.yml --ref master -f "caomei-ui-version=${RELEASE_VERSION}"; then
-            echo "::error::下游兼容检查 dispatch 失败；请检查 actions:write 权限或手动执行 gh workflow run downstream-compat.yml"
+            echo "::error::下游兼容检查 dispatch 失败；请手动执行 gh workflow run downstream-compat.yml -f caomei-ui-version=${RELEASE_VERSION}"
             exit 1
           fi
           run_url=""
@@ -312,12 +155,4 @@ jobs:
             else
               echo "- dispatch 已提交，run 尚未可见；可在 Actions 页查看 downstream-compat"
             fi
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Record dispatch failure
-        if: failure()
-        run: |
-          {
-            echo "### Release published, downstream dispatch failed"
-            echo ""
-            echo "- 包已发布；请手动执行 gh workflow run downstream-compat.yml -f caomei-ui-version=${{ needs.dry-run.outputs.version }}"
           } >> "$GITHUB_STEP_SUMMARY"

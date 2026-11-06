@@ -24,14 +24,14 @@
 | M4-2 | 品牌预设 `-solid` 对比度治理 | `momei` success 三态与 `caomei` `primary-solid`；把 `-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景） | 已完成 |
 | M4-3 | 阶段构成计数跨载体机检 | `todo.md` 与 `roadmap.md` 的口径句 / 表格对账；负向对照 + 受检面下界 | 已完成 |
 | M4-4 | 依赖告警收口 | `minimatch` medium 覆盖评估或留痕；`deepmerge` low 维持留痕 | 已完成 |
-| M5-1 | `1.1.0` 发布（经 CI） | Run `Release` workflow（`workflow_dispatch` + `environment` 审批）→ semantic-release 计算版本并 publish；手工流仅作回退 | 待执行 |
-| M6-1 | 发布工作流接线与凭据 | 打开 publish；触发与审批；Trusted Publisher / `NPM_TOKEN`；`@semantic-release/git` 回推凭据；并发与超时 | 待执行 |
+| M5-1 | `1.1.0` 发布（经 CI） | Run `Release` workflow（`workflow_dispatch`）→ semantic-release 计算版本并 publish；手工流仅作回退 | 待执行 |
+| M6-1 | 发布工作流接线与凭据 | `release.yml` 直接调用 `pnpm release`；OIDC Trusted Publishing（`id-token: write`，无需 `NPM_TOKEN`）；`GITHUB_TOKEN` 回推；并发与超时 | 待执行 |
 | M6-2 | 版本句与发布说明同步 | `@semantic-release/exec` 同步 README 中英 + roadmap 版本句；里程碑注入；发布后 `docs:check:version` 为绿 | 已完成 |
-| M6-3 | 发布前置与后置门禁 | publish 前安全告警门禁 + verify / coverage；publish 后 dist-tag / shasum / 解包 README / exports / API 差分 | 待执行 |
+| M6-3 | 发布前置门禁 | publish 前安全告警门禁 + verify / coverage；发布后由 semantic-release 成功状态与下游 compat 承接（手写 verify-publish 步骤已移除） | 待执行 |
 | M6-4 | 事件链与下游复验 | `GITHUB_TOKEN` 事件排除 → PAT / App token 或显式 `workflow_dispatch`；发布后下游检查留痕 | 待执行 |
 | M6-5 | CHANGELOG 生成器健壮性 | 空 `# Unreleased` 段、无 remote 降级、语言源自 root | 已完成 |
 
-> **前置与约束**：M6 完成前不启用 `release.yml` 的 publish；发布 run 与推送以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕（发布前义务已于 2026-11-06 执行，见 [recurring.md](./recurring.md) 第 29 轮；阶段收口前若证据面变化须补一轮）；命中区只做 P0，P1 / P2 维持候选。
+> **前置与约束**：`release.yml` 已可直接发布（semantic-release + OIDC）；发布 run 与推送以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕（发布前义务已于 2026-11-06 执行，见 [recurring.md](./recurring.md) 第 29 轮；阶段收口前若证据面变化须补一轮）；命中区只做 P0，P1 / P2 维持候选。
 
 ## 未完成项汇总
 

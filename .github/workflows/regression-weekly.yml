@@ -126,6 +126,9 @@ jobs:
     name: E2E Test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # 与缓存 key、两条 install 命令共用，扩展浏览器集合时只改这一处。
+      PLAYWRIGHT_BROWSERS: chromium
     steps:
       - uses: actions/checkout@v7
       - name: Setup pnpm
@@ -137,8 +140,34 @@ jobs:
           cache: "pnpm"
       - run: pnpm i --frozen-lockfile
 
+      # 浏览器二进制缓存：key 只跟随 Playwright 版本、runner 架构与浏览器集合，
+      # 不受无关依赖升级影响；`pwcache-v1` 为手动 salt（镜像迁移 / 缓存格式变化时 bump）。
+      # 命中时跳过浏览器下载，只补系统依赖；未命中时才执行完整 --with-deps 安装。
+      - name: Resolve Playwright version
+        id: playwright-version
+        run: |
+          set -euo pipefail
+          version="$(pnpm exec playwright --version | awk '{print $2}')"
+          if [ -z "${version}" ]; then
+            echo "::error::未能解析 Playwright 版本，拒绝以空版本生成缓存 key"
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ runner.arch }}-pwcache-v1-playwright-${{ steps.playwright-version.outputs.version }}-${{ env.PLAYWRIGHT_BROWSERS }}
+
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps ${{ env.PLAYWRIGHT_BROWSERS }}
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps ${{ env.PLAYWRIGHT_BROWSERS }}
 
       - name: Run E2E tests
         run: pnpm run test:e2e

@@ -98,6 +98,7 @@
 - 可访问性：`pnpm test:a11y`（组件级 axe 审计与例外清单断言；全量 `pnpm test` 已自动包含）
 - 计算样式等价：`pnpm capture:styles`（采样并与冻结基线比对，有差异 exit 1）；`pnpm capture:styles:freeze`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面）
 - 视觉回归基线：`pnpm test:visual`（真实渲染整体像素与仓库内冻结基线比对，有差异 exit 1）；`pnpm test:visual:update`（重写冻结基线，须随装置同提交并说明收窄 / 扩容面；字体已由仓库内测试字体固定，仍须在与 CI 相同的浏览器 / 运行器环境生成）
+- CI Playwright 缓存：周级回归用 `actions/cache` 缓存 `~/.cache/ms-playwright`；key = `runner.os` + `runner.arch` + Playwright 版本 + 浏览器集合（当前 `chromium`）+ 手动 salt（镜像迁移 / 缓存格式变化时 bump），命中时只跑 `playwright install-deps`，未命中时才跑 `playwright install --with-deps`。不要用 `restore-keys` 跨版本复用：前缀命中不会置 `cache-hit=true`，收益接近零且旧版本目录会占用缓存配额。
 
 > 命令以 `package.json` 实际脚本为准，不得臆造。
 

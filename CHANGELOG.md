@@ -1,5 +1,56 @@
 # caomei-ui
 
+# [1.1.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.0.0...v1.1.0) (2026-11-06)
+
+
+### ✨ 新功能
+
+* **a11y:** P0 清除 / 关闭按钮命中区扩到 24px ([88bf50b](https://github.com/CaoMeiYouRen/caomei-ui/commit/88bf50b))
+* **ai-check:** 补 metadata.internal 与 references 索引守卫 ([1cb41bb](https://github.com/CaoMeiYouRen/caomei-ui/commit/1cb41bb))
+* **form:** 新增 CaomeiForm 与 CaomeiFormItem 组合层 ([b5496ef](https://github.com/CaoMeiYouRen/caomei-ui/commit/b5496ef))
+* **release:** 发布链内置安全告警门禁 ([5752ee0](https://github.com/CaoMeiYouRen/caomei-ui/commit/5752ee0))
+* **release:** 发布链自动同步版本句与里程碑 ([b3e6471](https://github.com/CaoMeiYouRen/caomei-ui/commit/b3e6471))
+* **release:** 安全门禁纳入 dismissed 并收紧豁免分类 ([45a0938](https://github.com/CaoMeiYouRen/caomei-ui/commit/45a0938))
+* **release:** 将 API 差分接入发布链 ([6f60021](https://github.com/CaoMeiYouRen/caomei-ui/commit/6f60021))
+* **release:** 补齐 API 差分的 required 收紧判定 ([f39f613](https://github.com/CaoMeiYouRen/caomei-ui/commit/f39f613))
+* **skills:** 任务开局增加 CI 回执检查 ([1f49e1f](https://github.com/CaoMeiYouRen/caomei-ui/commit/1f49e1f))
+* **styles:** 新增触摸密度轴 data-density ([1fcd32c](https://github.com/CaoMeiYouRen/caomei-ui/commit/1fcd32c))
+
+
+### 🐛 Bug 修复
+
+* **release:** 加固 CHANGELOG 生成器的空段与降级路径 ([d6e9a64](https://github.com/CaoMeiYouRen/caomei-ui/commit/d6e9a64))
+
+
+## 1.1.0 里程碑
+
+本版本聚焦移动端可用性、表单组合层与发布链路收口。
+
+### 移动端与响应式
+
+- 新增 `data-density="touch"` 密度轴：控件高度 36 / 44 / 52、字号 14 / 16 / 18、内容宽度上限 `none`，与预设和明暗正交；未设置属性时逐值不变。
+- 新增 `--caomei-hit-target-min` 与不可见命中区：值片删除 / 清空、密码显隐、Tag 关闭、Message 关闭等 P0 目标扩到 ≥ 24×24，按钮视觉盒不变。
+
+### 表单
+
+- 新增 `CaomeiForm` / `CaomeiFormItem` 独立组合层：`Form` 负责布局与提交编排，`FormItem` 通过插槽作用域提供 `id` / `name` / `aria-labelledby` / `aria-describedby` / `invalid`；12 个字段组件逐项绑定；无 rules 引擎，未扩既有字段契约。
+
+### 发布链路
+
+- 1.1.0 起通过 CI 发布：`workflow_dispatch` + `release` environment 审批；`dry_run` 默认只推断版本。
+- 版本句（README 中英 / roadmap）与里程碑段由发布链自动同步，发布后 `docs:check:version` 保持绿色。
+
+### 升级注意
+
+- 移动端命中区只做 P0；P1 / P2 仍为候选。
+- `Form` 不提供 rules 引擎；校验仍由消费方或字段组件承接。
+- `next` 通道未启用：CI 只发 `latest`，预发布继续使用本地 `pnpm release:manual --tag=next`。
+
+### 已知限制
+
+- 品牌预设 `caomei` 的 `primary-solid` 实底白字对比度为 4.17:1（既有品牌裁定，保留）。
+- `commitizen` 依赖的 `glob@7` 链仍保留 `minimatch@3.1.5`，对应安全告警维持 open medium。
+
 # [1.0.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.0.0-rc.1...v1.0.0) (2026-11-03)
 
 > **首个正式版**。相较 `0.7.0`，本版完成 1.x 兼容承诺、DataTable 行为收口与颜色 / 可访问性收口；**组件集合与包根导出不变**（发布前 API 差分 exit 0：0 删除 / 0 重命名，导出数 328），但有 4 项升级前需确认的注意事项，见「升级注意」。

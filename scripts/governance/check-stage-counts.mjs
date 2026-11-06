@@ -19,6 +19,9 @@
  *
  * 有意边界：
  * - 只认「当前进行中阶段」；`todo-archive.md` / 归档块 / 历史记录不在面内；
+ * - **无进行中阶段**：`todo.md` 的 `## 当前状态` 段显式声明 `**当前无进行中阶段**` 时**跳过**（exit 0）；
+ *   该声明与「当前进行中阶段：Phase N」互斥，同时出现判 `phase-state-conflict`；跳过前仍交叉校验
+ *   `roadmap.md` §1 的同一声明与 `todo.md` 残留的阶段条目段，二者任一不符同样判 `phase-state-conflict`；
  * - 计数与对账式只在 `## 当前状态` 段内取**首个**匹配；`roadmap.md` 只在当前阶段行内取首个匹配，
  *   历史「原登记 … 为时点值」靠位置跳过，不做语义解析；
  * - **格式耦合（fail-closed）**：`## 当前状态`、`## Phase N 原子条目`、阶段表 `**Phase N**` 粗体与
@@ -44,6 +47,15 @@ export const ROADMAP_FILE = 'docs/plan/roadmap.md'
 
 /** 当前进行中阶段编号。 */
 export const CURRENT_PHASE_RE = /\*\*当前进行中阶段：Phase\s+(\d+)/
+
+/**
+ * 「无进行中阶段」显式声明。
+ *
+ * 阶段归档后 `todo.md` 可以没有当前阶段（规划规范允许「当前阶段状态 = 无进行中阶段」）；此时
+ * 构成计数没有对账对象，守卫应**显式跳过**而不是把「未找到 Phase N」判成缺陷。该声明与
+ * `CURRENT_PHASE_RE` 互斥，同时出现视为载体自相矛盾。
+ */
+export const NO_ACTIVE_PHASE_RE = /\*\*当前无进行中阶段[。.]?\*\*/
 
 /** 构成计数：`N 条主线 / M 条原子条目`。 */
 export const MAIN_ATOMIC_RE = /(\d+)\s*条主线\s*\/\s*(\d+)\s*条原子条目/
@@ -79,6 +91,7 @@ export const ISSUE_CODES = {
     rowCountMismatch: 'row-count-mismatch',
     mainLineMismatch: 'main-line-mismatch',
     scopeNarrowed: 'scope-narrowed',
+    phaseStateConflict: 'phase-state-conflict',
 }
 
 const firstMatch = (text, re) => re.exec(text)
@@ -167,7 +180,7 @@ export function parseRoadmap(text, phase) {
  * 对账当前阶段构成计数。
  *
  * @param {string} root 仓库根
- * @returns {{ phase: number | null, mainLines: number | null, atomic: number | null, itemRows: number, carriers: number, issues: Array<{ code: string, detail: string }> }}
+ * @returns {{ phase: number | null, mainLines: number | null, atomic: number | null, itemRows: number, carriers: number, skipped: boolean, issues: Array<{ code: string, detail: string }> }} `skipped` 仅在跳过分支且交叉校验无问题时为 true；任何问题以 `issues` 为准。
  */
 export function checkStageCounts(root) {
     const issues = []
@@ -183,17 +196,51 @@ export function checkStageCounts(root) {
             atomic: null,
             itemRows: 0,
             carriers: 0,
+            skipped: false,
             issues: [{ code: ISSUE_CODES.ioError, detail: `读取规划载体失败：${error.message}` }],
         }
     }
 
     const todo = parseTodo(todoText)
+    const noActivePhase = NO_ACTIVE_PHASE_RE.test(sectionOf(todoText, /^## 当前状态\s*$/m))
     if (todo.phase === null) {
+        if (noActivePhase) {
+            // 跳过模式仍需交叉断言，避免「todo 已收口、roadmap 还挂着阶段」被静默放过。
+            const skippedIssues = []
+            const roadmapState = sectionOf(roadmapText, /^## 1\.[^\n]*$/m)
+            if (!NO_ACTIVE_PHASE_RE.test(roadmapState)) {
+                skippedIssues.push({
+                    code: ISSUE_CODES.phaseStateConflict,
+                    detail: `${ROADMAP_FILE}：§1 未声明「当前无进行中阶段」，与 ${TODO_FILE} 的声明不一致`,
+                })
+            }
+            if (/^## Phase\s+\d+\s+原子条目\s*$/m.test(todoText)) {
+                skippedIssues.push({
+                    code: ISSUE_CODES.phaseStateConflict,
+                    detail: `${TODO_FILE}：声明无进行中阶段，但仍残留「## Phase N 原子条目」段`,
+                })
+            }
+            return {
+                phase: null,
+                mainLines: null,
+                atomic: null,
+                itemRows: 0,
+                carriers: 0,
+                skipped: skippedIssues.length === 0,
+                issues: skippedIssues,
+            }
+        }
         issues.push({
             code: ISSUE_CODES.missingField,
             detail: `${TODO_FILE}：未找到「当前进行中阶段：Phase N」声明`,
         })
-        return { ...todo, itemRows: todo.items.length, carriers: 0, issues }
+        return { ...todo, itemRows: todo.items.length, carriers: 0, skipped: false, issues }
+    }
+    if (noActivePhase) {
+        issues.push({
+            code: ISSUE_CODES.phaseStateConflict,
+            detail: `${TODO_FILE}：同时声明「当前无进行中阶段」与「当前进行中阶段：Phase ${todo.phase}」`,
+        })
     }
     if (todo.mainLines === null || todo.atomic === null) {
         issues.push({
@@ -341,6 +388,7 @@ export function checkStageCounts(root) {
         atomic: todo.atomic,
         itemRows: tableRows,
         carriers,
+        skipped: false,
         issues,
     }
 }
@@ -360,13 +408,17 @@ export function main(argv = process.argv.slice(2)) {
         return 2
     }
 
-    const { phase, mainLines, atomic, itemRows, carriers, issues } = checkStageCounts(root)
+    const { phase, mainLines, atomic, itemRows, carriers, skipped, issues } = checkStageCounts(root)
     if (issues.length > 0) {
         for (const issue of issues) {
             console.error(`[check-stage-counts][error] ${issue.code}: ${issue.detail}`)
         }
         console.error(`[check-stage-counts] ${issues.length} 处问题（载体 ${carriers} / 阶段 ${phase ?? '未知'}）`)
         return 1
+    }
+    if (skipped) {
+        console.info('[check-stage-counts] skipped：当前无进行中阶段（todo.md 显式声明），构成计数无需对账')
+        return 0
     }
     console.info(`[check-stage-counts] OK：Phase ${phase} 构成 ${mainLines} 条主线 / ${atomic} 条原子条目（条目行 ${itemRows}，载体 ${carriers}）`)
     return 0

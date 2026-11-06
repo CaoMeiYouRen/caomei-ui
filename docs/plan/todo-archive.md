@@ -2,7 +2,7 @@
 
 本文档归档已完成阶段的原子条目与验收结论。当前阶段完成后，从 [todo.md](./todo.md) 迁入此处。
 
-> **主窗口口径（2026-11-03 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 20，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 21 ~ Phase 26 共 6 块；目标窗口 5 个，未越阈暂留 6**）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——归档载体只增不减，2026-09-29 曾达 594 行、2026-10-13 达 574 行、2026-10-16 达 404 行、本批前 396 行；Phase 26 入窗后约 470 行（> warn 400），Phase 19 / 20 迁出后回落至 362 行。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
+> **主窗口口径（2026-11-07 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 21，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 22 ~ Phase 27 共 6 块；目标窗口 5 个，未越阈暂留 6**）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）、[phase-21.md](./archive/phase-21.md)（Phase 21）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——归档载体只增不减，2026-09-29 曾达 594 行、2026-10-13 达 574 行、2026-10-16 达 404 行、Phase 26 批前 396 行、Phase 26 入窗后约 470 行；本批（Phase 27）前 362 行、Phase 27 入窗后约 415 行（> warn 400），Phase 21 迁出后回落至 369 行。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
 
 ## 归档格式
 
@@ -18,7 +18,7 @@
 
 ---
 
-## 归档索引（Phase 0 ~ Phase 20）
+## 归档索引（Phase 0 ~ Phase 21）
 
 > 完整归档块见「深度归档」列；阶段交付摘要如下（每行一行，细节以深度归档与治理记录为准）。
 
@@ -46,54 +46,9 @@
 | Phase 18 | 2026-09-30 ~ 10-01 | 发布收口、测试稳定性与一致性治理：0.5.0 发布后校验与版本句同步、并行负载 flaky 类根因修复与并发上限兜底、计算样式采样面扩至 Toast / Switch、设计规范 §6 可机检性分级评估、治理台账漂移消缺 | [phase-18](./archive/phase-18.md) |
 | Phase 19 | 2026-10-02 ~ 10-07 | 设计一致性口径落地、组件文档去重与观感缺陷处置：设计规范 §6 七项口径裁定与 P1 ~ P3 装置、迁移映射去重 3 批、Tab 指示条 / 富文本下拉 / `iconOnly` 示例修复、`.session` 与 `todo` 约束 | [phase-19](./archive/phase-19.md) |
 | Phase 20 | 2026-10-07 ~ 10-09 | 测试装置扩面、治理守卫补口与发布收口：Tabs 采样 / 焦点与禁用态扩面、文档站主题 CSS lint、直连 Reka 守卫、浮层交互 E2E、0.6.0 发布、视觉基线立项评估 | [phase-20](./archive/phase-20.md) |
+| Phase 21 | 2026-10-10 | 下游回归机制启动、发布流统一与视觉基线落地：上游触发的下游兼容检查、`release:manual` 脚本编排、Playwright 视觉基线装置与 CI 非阻断接入 | [phase-21](./archive/phase-21.md) |
 
 ---
-
-## Phase 21：下游回归机制启动、发布流统一与视觉基线落地
-
-- 时间：2026-10-10 用户裁定 D1 ~ D15 后登记；2026-10-10 交付 **7 条原子条目 + 1 条移出**（M1-2 转为遗留项）并完成阶段归档（用户指令「归档」）。
-- 范围与授权（用户决策 2026-10-10）：用户取**组合 A + B + C + D**（= M1 + M2 + M3 + M4），共 **4 条主线 / 8 条原子条目**（M1 2 / M2 2 / M3 2 / M4 2）。逐条裁定——**D2** Phase 8 **启动**（同日经用户复议**变更为「上游触发 + 上游执行」**，见[形态变更记录](../design/governance/2026-10-10-phase21-m1-form-change-upstream-executed.md)）；**D3** 仅 dependfix 试点；**D4** 沿用 §10「兼容性阻塞」；**D5** 不取 A（无跨仓凭据）；**D6** 统一手动流取**脚本编排**；**D7** **暂不进入 1.x**；**D8** 自动化发布**维持手动**；**D10** 视觉回归基线**立项落地**；**D11** 归档载体超阈**维持**；**D12 / D13** 组件能力 / 国际化与 RTL **维持登记**；**D14** 其余候选**维持登记**；**D15** **阶段末统一收口**。范围依据见[下一阶段范围评估（第五轮）](../design/governance/2026-10-10-next-stage-scope-evaluation-5.md) §8。
-- 非目标：不启用定时（cron）自动发布、不放开 `release.yml` publish；不进入 1.x；不建立外部视觉服务 / 快照库；不压缩归档载体；不纳入组件能力与长尾（B1 ~ B7）、国际化与 RTL（B9 ~ B11）；不重写已发布 tag；不做破坏性 API 变更；不修改下游仓库业务代码。
-
-### M1 下游回归机制启动（Phase 8）（2 条；**1 条交付、1 条移出**）
-
-- **M1-1 上游执行的下游兼容检查 workflow**（**含形态变更**）：初版为 reusable workflow `.github/workflows/compat-check.yml`（`on: workflow_call`，提交 `abd55d8`）——用户 2026-10-10 复议指出该形态**不绑定仓库**、实际由下游加调用 job 执行，主张由**上游触发并执行**。**变更**：删除 `compat-check.yml`、新增 **`.github/workflows/downstream-compat.yml`**（提交 `66822e3`）——`on: push: tags: ['v*']` + `workflow_dispatch`；上游 runner **checkout 下游源码** → `pnpm i --frozen-lockfile` → `pnpm --filter @dependfix/platform add caomei-ui@<v>` → 构建 workspace 依赖（core / engine / cli）+ `nuxt prepare` → `platform typecheck` → `platform build`；受检清单登记于 `matrix`；**记录下游 SHA** 归因。**无需下游改动**；形态属**新增第 5 形态**（不在评估 §4 的 A/B/C/D）。RG：R1 `standard` **Reject**（1 blocker：`Setup Node.js` 的 `cache-dependency-path` 指向尚未检出的下游路径 → setup-node 报错；3 warning）→ 修复（下游 checkout 前移 + 活载体口径回扫）→ **R2 `standard` Pass**。**本地等价命令链全链 exit 0**（clone dependfix → install → 覆盖 `caomei-ui@0.6.0` → 三包构建 → `nuxt prepare` → `typecheck` → `build`；下游 SHA `722bbe26`）。记录见[形态变更记录](../design/governance/2026-10-10-phase21-m1-form-change-upstream-executed.md) 与[初版记录](../design/governance/2026-10-10-phase21-m1-1-compat-check-workflow.md)（点时记录）。
-- **M1-2（**移出为遗留项**）**：以 dependfix 为试点的一次**真实贯通验证**——工作流已交付并经本地等价命令链验证；**首次 GitHub 真实触发待推送**（以确认 Actions 运行时：表达式求值 / checkout 权限 / 缓存命中）。**转 [Backlog](./backlog.md) §1.8 在册**（触发条件 = 下次推送）。
-
-### M2 发布流统一（2 条）
-
-- **M2-1 统一手动发布流脚本编排**：新增 `scripts/release/manual-release.mjs` + `pnpm release:manual`——单入口 **7 步**（`preflight` / `bump` / `changelog` / `publish` / `verify` / `sync` / `announce`）+ `run`；**不引入新依赖**；`bump` 只改 `package.json` 版本行、`changelog` 只改 `CHANGELOG.md`（分两次提交命中发布元数据豁免）；变更型步骤由 `MUTATING_STEPS` 集中前置 `--yes` / `--dry-run` 门禁；`sync` 守卫前置 + 独立提交；**不自动 push**；`announce` 用 `--verify-tag`。抽出 `scripts/shared/version-statements.mjs`（版本声明句锚点单一事实源）。单测 **16 例**。RG：R1 `standard` **Reject**（1 blocker：`sync` 写入后不提交致推送态 CI 必红）→ 修复 → **R2 `standard` Pass**。提交 `05d830c`；记录见 [M2-1](../design/governance/2026-10-10-phase21-m2-1-manual-release-flow.md)。
-- **M2-2 发布指南 §3 同步为脚本编排说明面**：§3 由 8 步清单重写为脚本编排说明面（一键 / 分步 / runbook / 提交与豁免边界 / 文档同步边界 / CHANGELOG 口径；原内容全部保留）；固化「3 次提交与发布元数据豁免边界」（`chore(release)` / `docs(changelog)` 豁免、`sync` 版本句提交**不豁免**须先有新鲜 RG 工件）；英文页补「Manual release (local)」节。RG：R1 `standard` **Pass**。提交 `4392309`；记录见 [M2-2](../design/governance/2026-10-10-phase21-m2-2-release-guide-sync.md)。
-
-### M3 视觉基线落地（2 条）
-
-- **M3-1 Playwright 视觉回归基线装置与首批基线**：新增 `playwright.visual.config.ts`（独立配置：固定环境 chromium / 1280×800 / DPR 1 / `zh-CN` / `Asia/Shanghai` / `reducedMotion: reduce`；**双轴容差** `threshold 0.1` + 绝对 `maxDiffPixels 100`；`animations: disabled` / `caret: hide` / `scale: css`；串行 `workers: 1` / `retries: 0`；`snapshotPathTemplate`）+ `test/visual/components.visual.ts`（受检面登记 8 个静态组件 × 亮暗 + **下界守卫** `MIN_SECTIONS`（**当时取值 8**） + **负向对照开关**）+ **16 张冻结基线 PNG** 随仓库提交 + `pnpm test:visual` / `test:visual:update`；复用既有 E2E 夹具（独立端口 4601）。判别力自证：负向对照 **16 张全部报差异**、正常复跑 0 差异。RG：R1 `standard` **Pass**（1 warning：基线生成于本地容器 vs CI，延期首个 CI run）。提交 `88452e1`；记录见 [M3-1](../design/governance/2026-10-10-phase21-m3-1-visual-baseline-device.md)。
-- **M3-2 CI 接入（先非阻断）与文档**：`regression-weekly.yml` 的 `e2e` 作业在 `capture:styles` 后新增 `test:visual`（**`continue-on-error` 非阻断**，沿用同作业 Chromium）；`testing.md` §2.1 新增「真实渲染整体像素层」条 + §6 命令；`development.md` 命令表补 `pnpm test:visual`。口径：先非阻断观测 → 首个 `ubuntu-latest` 全绿 run 且实证字体渲染一致性后评估转阻断；不进 `pnpm verify` 常驻链；Backlog 登记「视觉基线转阻断评估」跟踪项。RG：R1 `standard` **Pass**。提交 `d5bc5c0`；记录见 [M3-2](../design/governance/2026-10-10-phase21-m3-2-visual-baseline-ci-docs.md)。
-
-### M4 治理口径收口（2 条）
-
-- **M4-1 发布指南 §10 下游清单口径修正（接入即登记）**：§10 由「下游兼容性回归（后置）」重写——状态改「已启动」（2026-10-10 随路线图 Phase 8、dependfix 试点，历史注保留）；受检清单改**实测消费面** + 零消费目标下游标注「接入后增量登记」+「接入即登记」约定；补触发与容量边界；英文页同步；`architecture.md §7` 状态口径同步（延迟启用 → 2026-10-10 启动）。**形态变更后**进一步收敛为「受检面 = 工作流 `matrix` 登记」（当前仅 dependfix；momei 已消费待接入）。RG：R1 `standard` **Pass**（3 warning + 3 suggest 已收口，记「已修复未复审」；一处实测发现：从 guide 页链接治理目录为 **VitePress 死链**，故归属引用用行内代码）。提交 `734ed19`；记录见 [M4-1](../design/governance/2026-10-10-phase21-m4-1-release-guide-s10-onboarding.md)。
-- **M4-2 归档载体超阈维持留痕**：Backlog §1.6 候选行补 D11 维持理由（未达 error 阈值 600 / 压缩属预防性）+ **再评估触发**（达 600 时强制压缩）+ 计数口径（479，与 `docs:check:line-count` 一致）。RG：R1 `quick` **Pass**。提交 `5b94b09`；载体留痕见 [Backlog](./backlog.md) §1.6 的「归档载体行数超阈压缩」候选行。
-
-### 附带交付（非阶段条目）
-
-- **形态变更回填**：`61129de`（回填[形态变更记录](../design/governance/2026-10-10-phase21-m1-form-change-upstream-executed.md)的 Review Gate 结论）。
-- **Backlog 新增跟踪项**（窗口内、随 M3/M1 交付产生）：视觉基线转阻断评估（M3-2）、下游兼容检查首次真实贯通验证（M1-2 移出）、提交驱动 CI 自动发布 / 1.x 策略（登记批次）。
-
-### 阶段总结
-
-- **提交对账**：`git log --oneline ba9587f..61129de | wc -l` → **10**（下界 = Phase 20 归档批次提交 `ba9587f`，上界 = 本阶段末条记录提交 `61129de`；**不得写 `HEAD` 相对范围**，归档提交会推进 `HEAD`）。构成（逐项相加 = 10）：阶段登记与范围评估 **1**（`ffbb9fc`）+ Phase 21 本体 **8**（M1 2 = `abd55d8` / `66822e3`；M2 2 = `05d830c` / `4392309`；M3 2 = `88452e1` / `d5bc5c0`；M4 2 = `734ed19` / `5b94b09`）+ 附带回填 **1**（`61129de`）。**归档批次自身提交不计入上式**。
-- **质量门**：`pnpm verify` **exit 0**、`test` / `test:a11y` / `test:e2e` / `test:visual` / `capture:styles` / `docs:check` / `check:governance-records` / `check:distill-archive` / `docs:build` 的**终态数值与复算命令见[归档批次记录](../design/governance/2026-10-10-phase21-archive.md) §8**（单点来源，本块不复写易变计数）。
-- **长期任务**：阶段收口前触发**第 24 轮**门槛复核（规划清理域）——待执行批次 **0 项**；条件触发 **1 项维持**；已判定不纳入 5 项维持；**计数与第 23 轮逐项一致（无漂移）**；证据见[长期任务](./recurring.md) §3 第 24 轮。
-- **回扫口径（三段式）**：见[归档批次记录](../design/governance/2026-10-10-phase21-archive.md) §4（机检面 / 人工面 / 未处理面）。
-- **wisdom 蒸馏**：**0 条活跃条目**（阈值 20，**未达阈值、不蒸馏**）；`check:distill-archive` 段数见批次记录 §8。
-- **归档批次审计**：经 `@code-reviewer` Review Gate **单分区 `standard`**——结论见本块末「归档批次 Review Gate」段。
-- **已知观察**：① Phase 21 **零 `src/**` 行为改动**（全部为 CI / 脚本 / 测试装置 / 文档），**未发布新版本**（`latest` 仍为 0.6.0）；② **M1-2 移出为遗留项**（真实贯通验证待推送）；③ 归档载体行数（Phase 21 块后）超 `docs:check:line-count` warn 阈值（**非阻断**）——归档载体只增不减；④ `docs:check:integrity` 对 `todo.md` 报「H1/H2 结构标题减少」告警——属归档正常移除面，**预期、非阻断**；⑤ 归档后 `check:governance-records` **0 处 `stale-planning-pointer`**（该守卫只识别「链接文字含编号」形态）；另**主动**把 7 份 Phase 21 记录表头的散文指针（链接文字为「待办事项」、编号写在链接之外，机检不命中）改指 `todo-archive.md`；⑥ **本地 `master` 领先 `origin/master` 10 个提交未推送**（Phase 21 全部提交），推送由用户授权；⑦ 实测发现：从 guide 页链接 `docs/design/governance/**` 为 **VitePress 死链**（治理目录不进站点构建），引用一律用行内代码。
-- **遗留与后续候选**：**M1-2 首次真实贯通验证**（Backlog §1.8，触发 = 下次推送）；**视觉基线转阻断评估**（Backlog §1.6，触发 = 首个 `ubuntu-latest` 全绿 run）；**提交驱动 CI 自动发布**与**进入 1.x 的版本策略**（Backlog §1.6，D7 / D8 维持）；下游 0.5.0 升级护航（momei 触发时）；Backlog 其余候选见 [Backlog](./backlog.md)。
-
-### 归档批次 Review Gate
-
-经 `@code-reviewer` Review Gate **单分区 `standard`**（归档批次以规划载体为主，故不分区）：结论见[归档批次记录](../design/governance/2026-10-10-phase21-archive.md) §10。
 
 ## Phase 22：机制真实贯通、依赖安全与升级治理、治理与测试收口
 
@@ -359,3 +314,55 @@
 ### 归档批次 Review Gate
 
 - 经 `@code-reviewer` Review Gate **单分区 `standard`**；结论与复查基线见[归档批次记录](../design/governance/2026-11-03-phase26-archive.md) §6。
+
+## Phase 27：移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布（**2026-11-06 完成并发布 `1.1.0`**）
+
+- 时间：2026-11-03 用户就[第十一轮范围评估](../design/governance/2026-11-03-next-stage-scope-evaluation-11.md) §3 裁定后登记，同日执行期追加 CI 发布链路；2026-11-06 交付 **6 条主线 / 18 条原子条目**，发布 `1.1.0` 并完成阶段归档（用户指令「发布成功，请开始对相应待办进行收尾」）。
+- 范围与授权：取 **A + B + C + D + E** + 执行期追加 **F CI 发布链路**，构成对账 **4 + 2 + 2 + 4 + 1 + 5 = 18**。逐条裁定——**D1** ① 五条主线全取；**D2** ① 密度轴 + P0；**D3** ① 本阶段实现；**D4** ① 阶段末发 `1.1.0`；**D5** ① 国际化二期 / RTL 维持范围外；执行期 **D6** CI 发布触发模型 = `workflow_dispatch`（2026-11-06 简化为 semantic-release 直连 + OIDC，无 `environment` 审批 / `dry_run` / `NPM_TOKEN`，见[简化记录](../design/governance/2026-11-06-phase27-release-workflow-oidc-simplification.md)）。范围与验收口径的单一事实源见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §1 / §2。
+- 非目标：P1 / P2 命中区、RTL、二期语言、长尾组件（Sidebar / ScrollPanel / BackTop / Rating / TimePicker）、`Form` rules 引擎、push 触发自动发布、`next` 预发布分支、破坏性 API 变更、Tailwind / UnoCSS、文档站多版本托管、Storybook、除 CI 发布提交与 tag 外不自动推送。
+
+### M1 移动端与响应式二期（4 条）
+
+- **M1-1 `data-density="touch"` 轴**：控件高度 36 / 44 / 52、字号 14 / 16 / 18、内容宽度上限 `none`；与预设 / 明暗正交，缺省路径零变化（提交 `1fcd32c`）。
+- **M1-2 `--caomei-hit-target-min` P0 命中区**：值片删除 / 清空 / 密码 / Tag / Message 共 **37** 个目标，`::after` 扩到 ≥24×24，按钮视觉盒不变；多行值片行距 +2px（提交 `88bf50b`）。
+- **M1-3 常驻回归与视觉基线**：390 / 768 / 1280 三档密度轴与命中区用例 + 视觉受检面扩入三个多值字段与 `#hit-target`，基线重冻结（提交 `3529475`）。
+- **M1-4 指南与设计口径同步**：响应式设计 / 移动端指南（中英）/ 组件页密度节 / 计数与冻结面回扫（含 token 380 → 381），关闭三处旧心智表述（提交 `a195abe`）。
+
+### M2 `Form` / `FormItem` 组合层（2 条）
+
+- **M2-1 实现与单测**：独立组合层 + 插槽作用域（`id` / `name` / `aria-labelledby` / `aria-describedby` / `invalid`）；12 个字段组件逐项绑定；无 rules 引擎，不扩既有字段契约（提交 `b5496ef`）。
+- **M2-2 文档、示例与计数回扫**：中英组件页 / 示例 / E2E / 组件总览 · 画廊 · locale 台账 · API 基线；「含内联同名字段」32 → 36（+`form/types.ts`；`Form` 为独立组合层、不继承字段契约，条件触发结论不变）（提交 `d6ae100`）。
+
+### M3 下游迁移护航（2 条）
+
+- **M3-1 PrimeVue 迁移经验回收**：指南「常见陷阱」「迁移后自检」「逐组件对照入口」补 Tooltip 行与直接替换 / 桥接策略，缺口分类登记（提交 `09cdde6`、`138a3d0`）。
+- **M3-2 1.0 升级护航**：下游版本快照、跨 minor 升级注意与对外 7 条（6 已知限制 + 1 升级注意）转指南，momei 反馈边界声明（提交 `d448de8`）。
+
+### M4 机制与质量收口（4 条）
+
+- **M4-1 API 表面差分接入发布链**：`diff-api.mjs` 入 `manual-release.mjs`；删除 / 重命名 / required 收紧判 breaking，新增不阻断（提交 `6f60021`、`f39f613`）。
+- **M4-2 品牌预设 `-solid` 对比度治理**：`-solid` 配对（默认 / hover / active）纳入常驻断言面（6 预设 × 明暗 × 2 背景）；`momei` success 三态与 `caomei` `primary-solid` 维持既有品牌裁定（提交 `6bb250d`）。
+- **M4-3 阶段构成计数跨载体机检**：覆盖 `todo.md` 口径句 / 条目表与 `roadmap.md` §1 当前态句 / 阶段表行，带负向对照与受检面下界（提交 `d74aafa`）。
+- **M4-4 依赖告警收口**：`minimatch` medium 覆盖评估与 `deepmerge` low 留痕，不阻塞 1.1.0 发布（提交 `37fbcae`）。
+
+### M5 发布收口（1 条）
+
+- **M5-1 `1.1.0` 经 CI 发布**：`Release` run [`42249119570`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/42249119570) **success**——semantic-release 直连 + npm Trusted Publishing（provenance 签名），`dist-tags.latest = 1.1.0`；tag `v1.1.0` / GitHub Release / 回推提交 `66e94fa` 到位；tarball `shasum 87cedc9…`、`exports` 13、解包 README 版本句 = 1.1.0；下游复验 run [`42251067161`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/42251067161) 全绿（`dependfix @ ad592c92…`）。证据见 [M5-1 记录](../design/governance/2026-11-07-phase27-m5-1-1.1.0-release.md) §2 / §3。
+
+### M6 CI 发布链路（5 条）
+
+- **M6-1 工作流接线与凭据**：`release.yml` 直接调用 `pnpm release`；npm OIDC（`id-token: write`，无 `NPM_TOKEN`）、GitHub `GITHUB_TOKEN` 回推；`concurrency` 固定 group 串行；首个真实 run 取证通过（提交 `da35a0e`；2026-11-06 简化 `44231bb`）。
+- **M6-2 版本句与发布说明同步**：`@semantic-release/exec` 在 npm bump 后、git 提交前同步 README 中英 + roadmap 版本句，里程碑段注入；发布后 `docs:check:version` 绿（提交 `b3e6471`）。
+- **M6-3 前置门禁**：publish 前安全告警门禁 + `pnpm verify` + 覆盖率门禁；1.1.0 run 中全部通过，失败即中止（提交 `f9a30be`）。
+- **M6-4 事件链与下游复验**：`GITHUB_TOKEN` 事件排除 → 显式 `workflow_dispatch`；**运行时补口**——首次自动 dispatch 因 npm 传播延迟报 `ERR_PNPM_NO_MATCHING_VERSION`，已在 dispatch 前加入版本可见性轮询（600s 预算），重跑全绿（提交 `95010cb` + 收尾批次）。
+- **M6-5 `CHANGELOG` 生成器健壮性**：空 `# Unreleased` 段、无 remote 降级、语言源自 root（提交 `d6e9a64`）。
+
+### 阶段总结
+
+- **提交**：阶段登记 → `1.1.0` 发布共 **28** 个提交（`git log --oneline 2515e7a^..66e94fa | wc -l`）；收口批次提交另计。
+- **质量门**：`pnpm verify` exit 0；`test:e2e` **466 passed / 4 skipped**；`test:visual` **38 passed**（字体确定化后，含 / 不含 `fonts-noto-cjk` 均绿）；`docs:check:version` / `lint:md:check` / `governance:check` exit 0。
+- **长期任务**：阶段收口 / 发布后触发**第 30 轮**门槛复核——待执行批次 **0 项**；条件触发 **1 项维持**；计数无漂移；证据见[长期任务](./recurring.md) §3 第 30 轮。
+- **wisdom 蒸馏**：**19 条活跃条目**（阈值 20，未达阈值、不蒸馏；`pnpm distill:wisdom --check` → `WISDOM_OK`）。
+- **归档批次审计**：经 `@code-reviewer` Review Gate **单分区 `standard`**；结论见 [M5-1 记录](../design/governance/2026-11-07-phase27-m5-1-1.1.0-release.md) §7。
+- **已知观察**：① npm publish 成功到 registry 可解析存在分钟级延迟（1.1.0 约 3 分钟），已由发布链轮询承接；② 下游兼容检查仍只覆盖 `dependfix` 的 `typecheck` + `build`；③ `next` 通道未启用，预发布继续走本地 `pnpm release:manual --tag=next`；④ 1.1.0 里程碑的旧发布流文案已订正（`CHANGELOG` / GitHub Release body / `docs/release-notes/1.1.0.md`）。
+- **后续候选**：见 [Backlog](./backlog.md)（含下游 compat 实际安装版本断言、`conventional-changelog` 8 升级等）。

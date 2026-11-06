@@ -223,6 +223,41 @@ describe('checkStageCounts（夹具）', () => {
         expect(codes(root)).toContain(ISSUE_CODES.missingField)
     })
 
+    it('两侧均显式声明无进行中阶段时跳过对账', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。** 下一阶段待授权后登记。\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        const result = checkStageCounts(root)
+        expect(result.skipped).toBe(true)
+        expect(result.issues).toEqual([])
+        expect(result.carriers).toBe(0)
+        expect(result.itemRows).toBe(0)
+    })
+
+    it('todo 无进行中阶段但 roadmap 仍声明阶段判 phase-state-conflict', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。**\n',
+            roadmapFixture(),
+        )
+        expect(codes(root)).toContain(ISSUE_CODES.phaseStateConflict)
+    })
+
+    it('todo 无进行中阶段但残留阶段条目段判 phase-state-conflict', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。**\n\n## Phase 9 原子条目\n\n| M1-1 | x | 已完成 |\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        expect(codes(root)).toContain(ISSUE_CODES.phaseStateConflict)
+    })
+
+    it('同时声明无进行中阶段与进行中阶段判 phase-state-conflict', () => {
+        const root = createFixture(
+            todoFixture().replace('**当前进行中阶段：Phase 9（示例阶段）**', '**当前无进行中阶段** **当前进行中阶段：Phase 9（示例阶段）**'),
+        )
+        expect(codes(root)).toContain(ISSUE_CODES.phaseStateConflict)
+    })
+
     it('载体缺失判 io-error', () => {
         expect(codes(join(tmpdir(), 'check-stage-counts-missing'))).toEqual([ISSUE_CODES.ioError])
     })
@@ -242,5 +277,15 @@ describe('CLI', () => {
     it('参数非法或目录不存在时 exit 2', () => {
         expect(spawnSync('node', [SCRIPT, '--nope'], { encoding: 'utf8' }).status).toBe(2)
         expect(spawnSync('node', [SCRIPT, '--root', join(tmpdir(), 'check-stage-counts-missing')], { encoding: 'utf8' }).status).toBe(2)
+    })
+
+    it('无进行中阶段时 exit 0 并输出 skipped', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。**\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        const result = spawnSync('node', [SCRIPT, '--root', root], { encoding: 'utf8' })
+        expect(result.status).toBe(0)
+        expect(result.stdout).toContain('skipped')
     })
 })

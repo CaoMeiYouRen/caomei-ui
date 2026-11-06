@@ -37,7 +37,7 @@
 
 ### 发布链路
 
-- 1.1.0 起通过 CI 发布：`workflow_dispatch` + `release` environment 审批；`dry_run` 默认只推断版本。
+- 1.1.0 起通过 CI 发布：`workflow_dispatch` 触发 semantic-release 直连，npm 走 Trusted Publishing（OIDC，无需 `NPM_TOKEN`），GitHub 走 `GITHUB_TOKEN`；版本推断、tag、GitHub Release 与回推提交均由发布链完成。
 - 版本句（README 中英 / roadmap）与里程碑段由发布链自动同步，发布后 `docs:check:version` 保持绿色。
 
 ### 升级注意

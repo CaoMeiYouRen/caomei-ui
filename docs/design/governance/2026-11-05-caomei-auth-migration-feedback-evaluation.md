@@ -106,7 +106,7 @@ issue 6 条受检项**逐条有落点，无静默豁免**：
 
 - **零 `src/` / `test/` 改动**；未运行 `pnpm build` / `pnpm test` / `pnpm test:e2e`，本评估为静态比对，不含运行时验证。
 - **未读取 caomei-auth 仓库**：issue 中的下游用例数（DatePicker 1 处、Paginator 1 处、Toast 56 个 `--p-toast-*`、DataTable 多处 `size="small"`）按 issue 自述采信，未在 caomei-auth 侧复核；若后续复测到差异，以复测为准。
-- **版本口径**：本仓 `package.json` 为 `1.0.0`；本地 master 可能包含未发布的 1.1.0 组件。受检 4 个组件的 `src/` 自 `v1.0.0` 未变（`git diff v1.0.0..HEAD --stat -- src/components/{date-picker,toast,paginator,data-table}` 空输出），故按 1.0.0 能力面评估；**未**与 npm `1.0.0` tarball 逐项比对。
+- **版本口径**：本仓 `package.json` 为 `1.0.0`；本地 master 可能包含未发布的 1.1.0 组件。受检 4 个组件的 `src/` 自 `v1.0.0` 未变（`git diff v1.0.0..95010cb --stat -- src/components/{date-picker,toast,paginator,data-table}` 空输出），故按 1.0.0 能力面评估；**未**与 npm `1.0.0` tarball 逐项比对。
 - **存量表格结构**：[Backlog §1.8](../../plan/backlog.md) 有一行既有候选（`momei 根包接入下游兼容检查`）同样为 4 单元格 / 3 列，属本批之前存量，未纳入本次改动；本批新增的 §1.6 行已按 3 列修正。
 - **未决定实现形态**：DatePicker 返回值形态、Toast 是否新增逐语气 token、DataTable 是否新增密度 prop / 选择列宽度 token，均留待用户决策与实施批次论证；本文只登记候选与取证。
 - **未改 GitHub issue**：本评估不向 issue 回帖、不关闭 issue；下游结论以本记录与 Backlog 为准。

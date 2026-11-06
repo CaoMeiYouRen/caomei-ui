@@ -31,7 +31,7 @@
 | M6-4 | 事件链与下游复验 | `GITHUB_TOKEN` 事件排除 → PAT / App token 或显式 `workflow_dispatch`；发布后下游检查留痕 | 待执行 |
 | M6-5 | CHANGELOG 生成器健壮性 | 空 `# Unreleased` 段、无 remote 降级、语言源自 root | 已完成 |
 
-> **前置与约束**：M6 完成前不启用 `release.yml` 的 publish；发布 run 与推送以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕；命中区只做 P0，P1 / P2 维持候选。
+> **前置与约束**：M6 完成前不启用 `release.yml` 的 publish；发布 run 与推送以用户当次明确指令为前提；阶段收口 / 发布前须执行第 29 轮长期任务门槛复核并留痕（发布前义务已于 2026-11-06 执行，见 [recurring.md](./recurring.md) 第 29 轮；阶段收口前若证据面变化须补一轮）；命中区只做 P0，P1 / P2 维持候选。
 
 ## 未完成项汇总
 

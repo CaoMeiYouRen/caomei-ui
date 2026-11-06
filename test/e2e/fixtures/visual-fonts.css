@@ -1,0 +1,35 @@
+/*
+ * 视觉回归专用字体。
+ *
+ * 背景：组件默认 `--caomei-font-sans: system-ui, -apple-system, sans-serif`，
+ * 其 CJK 回退由操作系统字体决定。本地（WenQuanYi / Noto CJK）与 CI
+ * （Playwright deps 字体集）可能不同，导致同一份基线出现字形度量差异。
+ *
+ * 这里把视觉夹具的字体固定为仓库内自带的两个子集：
+ * - `CaomeiTestLatin`：ASCII / Latin-1 / 常用标点；
+ * - `CaomeiTestCJK`：夹具与组件文案使用的 CJK 字符。
+ * 仍保留「Latin 字体 → CJK 字体」的回退链，`font-latin` / `font-mixed`
+ * 采样面继续覆盖跨字体回退路径，但不再依赖系统字体。
+ *
+ * 只在 `?visual=1`（`main.ts` 设置 `data-visual`）时生效，E2E 夹具不受影响。
+ * 字体来源 / 许可 / 重新生成命令见 `fonts/README.md`。
+ */
+@font-face {
+    font-family: "CaomeiTestLatin";
+    src: url("./fonts/caomei-test-latin.woff2") format("woff2");
+    font-display: block;
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "CaomeiTestCJK";
+    src: url("./fonts/caomei-test-cjk.woff2") format("woff2");
+    font-display: block;
+    font-style: normal;
+    font-weight: 400;
+}
+
+:root[data-visual] {
+    --caomei-font-sans: "CaomeiTestLatin", "CaomeiTestCJK", sans-serif;
+}

@@ -13,6 +13,9 @@ import { defineConfig, devices } from '@playwright/test'
  * 纪律：
  * - **固定环境**：chromium、固定 viewport、DPR 1、locale `zh-CN`、固定时区、`colorScheme`、
  *   `reducedMotion: 'reduce'`；基线**须在与 CI 相同环境生成**（本仓 CI = `ubuntu-latest`）。
+ * - **字体确定化**：视觉入口带 `?visual=1`，夹具加载仓库内 `CaomeiTestLatin` / `CaomeiTestCJK`
+ *   子集（见 `test/e2e/fixtures/fonts/README.md`），不依赖系统 CJK 回退字体；`font-latin` /
+ *   `font-mixed` 仍覆盖「Latin → CJK」回退链。
  * - **串行 + 不重试**（`workers: 1` / `retries: 0`）：不稳定即失败并归因，不用重试掩盖抖动。
  * - **双轴容差**：`threshold`（色差轴）+ 绝对 `maxDiffPixels`（面积轴）——细粒度 token 改动不被
  *   视口比例吞掉（下游实证口径）。

@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+import { findMissingGlyphs, openTestFonts } from './font-coverage'
 
 /**
  * 视觉回归基线首批（代表组件抽样 × 亮 / 暗 × 单视口）。
@@ -38,6 +39,24 @@ const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mix
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
 const MIN_SECTIONS = 12
+
+/**
+ * 会渲染 `value` 文本的 input 类型。`hidden` / `checkbox` / `radio` / `range` / `color` /
+ * `file` 的 value 不进入屏幕文本；`password` 单独按掩码字符处理。
+ */
+const TEXT_INPUT_TYPES = new Set([
+    'date',
+    'datetime-local',
+    'email',
+    'month',
+    'number',
+    'search',
+    'tel',
+    'text',
+    'time',
+    'url',
+    'week',
+])
 
 const THEMES = ['light', 'dark'] as const
 
@@ -99,11 +118,28 @@ const HIT_TARGET_VIEWPORT = { width: 390, height: 844 }
 /** 非缺省预设（预设轴）：缺省为 `minimal`（不设 `data-preset`）。 */
 const NON_DEFAULT_PRESET = 'momei'
 
-async function prepareFormAxis(page: import('@playwright/test').Page, setup: string, theme: string): Promise<void> {
+/**
+ * 视觉测试专用入口：启用仓库内测试字体（`visual-fonts.css`），并等待字体加载完成。
+ *
+ * 组件默认字体栈依赖系统 CJK 回退，本地与 CI runner 可能不同；视觉基线不能建立在这种
+ * 环境差异上。`?visual=1` 只影响视觉夹具，E2E 夹具仍走默认系统字体。
+ */
+async function gotoVisual(page: Page): Promise<void> {
+    await page.goto('/?visual=1')
+    await page.evaluate(async () => {
+        await Promise.all([
+            document.fonts.load('16px "CaomeiTestLatin"'),
+            document.fonts.load('16px "CaomeiTestCJK"'),
+        ])
+        await document.fonts.ready
+    })
+}
+
+async function prepareFormAxis(page: Page, setup: string, theme: string): Promise<void> {
     if (setup === 'clock') {
         await page.clock.setFixedTime(FIXED_CLOCK)
     }
-    await page.goto('/')
+    await gotoVisual(page)
     if (setup === 'viewport') {
         await page.setViewportSize(NARROW_VIEWPORT)
         // 前置守卫：768 下必须确实折行（≥2 行），否则该面对视口宽度无判别力
@@ -160,10 +196,66 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
         expect(FORM_AXIS_CASES.length).toBeGreaterThanOrEqual(MIN_FORM_AXIS)
     })
 
+    test('视觉测试字体已加载且覆盖受检面文本', async ({ page }) => {
+        await page.clock.setFixedTime(FIXED_CLOCK)
+        await gotoVisual(page)
+        const loadedFamilies = await page.evaluate(async () => {
+            const faces = await Promise.all([
+                document.fonts.load('16px "CaomeiTestLatin"'),
+                document.fonts.load('16px "CaomeiTestCJK"'),
+            ])
+            await document.fonts.ready
+            return faces.flat().map((face) => face.family)
+        })
+        expect(loadedFamilies.some((family) => family.includes('CaomeiTestLatin')), 'CaomeiTestLatin face 未注册').toBe(true)
+        expect(loadedFamilies.some((family) => family.includes('CaomeiTestCJK')), 'CaomeiTestCJK face 未注册').toBe(true)
+        await page.click('#dialog-open')
+        await page.waitForSelector('.caomei-dialog__content')
+        const selectors = [
+            ...SAMPLE_SECTIONS.map(({ id }) => `#${id}`),
+            ...FORM_AXIS_CASES.map(({ target }) => target),
+        ]
+        const text = await page.evaluate(({ targets, textInputTypes }) => {
+            const allowedInputTypes = new Set(textInputTypes)
+            const chunks: string[] = []
+            for (const selector of targets) {
+                const node = document.querySelector(selector)
+                if (!node) {
+                    continue
+                }
+                chunks.push(node.textContent)
+                for (const field of node.querySelectorAll('input, textarea, [placeholder]')) {
+                    const placeholder = field.getAttribute('placeholder')
+                    if (placeholder) {
+                        chunks.push(placeholder)
+                    }
+                    if (field instanceof HTMLTextAreaElement) {
+                        chunks.push(field.value)
+                    } else if (field instanceof HTMLInputElement) {
+                        if (field.type === 'password') {
+                            chunks.push('•'.repeat(field.value.length))
+                        } else if (allowedInputTypes.has(field.type)) {
+                            chunks.push(field.value)
+                        }
+                    }
+                }
+            }
+            return chunks.join('')
+        }, { targets: selectors, textInputTypes: [...TEXT_INPUT_TYPES] })
+        const fonts = await openTestFonts()
+        const missing = findMissingGlyphs(text, fonts)
+        expect(missing, `字体子集缺少字符：${missing.map((codePoint) => `U+${codePoint.toString(16).toUpperCase()}`).join(', ')}`).toEqual([])
+        const family = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--caomei-font-sans'))
+        expect(family).toContain('CaomeiTestLatin')
+        expect(family).toContain('CaomeiTestCJK')
+        // 自检：cmap 检查必须能识别子集外字形（私用区码点不在两个子集中）。
+        expect(findMissingGlyphs('\uE000', fonts)).toEqual([0xE000])
+    })
+
     for (const theme of THEMES) {
         for (const { id, name } of SAMPLE_SECTIONS) {
             test(`${name}（${theme}）`, async ({ page }) => {
-                await page.goto('/')
+                await gotoVisual(page)
                 await page.waitForSelector(`#${id}`)
                 if (theme === 'dark') {
                     await page.evaluate(() => {

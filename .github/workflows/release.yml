@@ -9,8 +9,9 @@ name: Release
 # - GitHub：`GITHUB_TOKEN`；`persist-credentials: false` 下由 semantic-release
 #   自动把 token 注入推送 URL，供 `@semantic-release/git` 回推与创建 Release。
 # - 发布前保留安全告警门禁 + `pnpm verify` + 覆盖率门禁。
-# - 下游兼容检查由独立 job 在发布成功后显式 dispatch：`GITHUB_TOKEN` 创建的
-#   tag / release 不触发 `v*` workflow，必须用 `workflow_dispatch`。
+# - 下游兼容检查由独立 job 在发布成功后显式 dispatch（dispatch 前轮询 npm 传播，
+#   避免下游装不到刚发布的版本）：`GITHUB_TOKEN` 创建的 tag / release 不触发 `v*`
+#   workflow，必须用 `workflow_dispatch`。
 #
 # 触发：仅 `workflow_dispatch`（手动）。如需周级自动发布，参照 momei / caomei-auth
 # 打开下面的 `schedule`；当前保持手动，避免无变更轮次空跑。
@@ -121,11 +122,44 @@ jobs:
     needs: release
     if: ${{ needs.release.result == 'success' && needs.release.outputs.version != '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # 等待 npm 传播预算 600s + 单次查询 ≤15s + dispatch / run 轮询 ≈ 1 分钟；15 分钟留足余量，
+    # 保证超时错误分支可达（job 超时早于分支触发会让恢复指引丢失）。
+    timeout-minutes: 15
     permissions:
       actions: write
       contents: read
     steps:
+      # npm publish 请求返回成功后，registry 传播仍需数分钟；直接 dispatch 会让下游的
+      # `pnpm add caomei-ui@<v>` 撞 ERR_PNPM_NO_MATCHING_VERSION（1.1.0 首次发布实测）。
+      # 这里轮询到版本可解析再 dispatch，把传播延迟收敛在本 job 内。
+      - name: Wait for npm availability
+        env:
+          RELEASE_VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # 总预算用 SECONDS 计时，而不是「次数 × 间隔」：单次 npm view 最坏 15s，
+          # 次数模型会低估总耗时并与 job 超时冲突。预算 600s + 单次 ≤15s < job 15 分钟。
+          readonly wait_seconds=600
+          readonly interval=20
+          start=$SECONDS
+          deadline=$((start + wait_seconds))
+          attempt=0
+          while (( SECONDS < deadline )); do
+            attempt=$((attempt + 1))
+            if npm view "caomei-ui@${RELEASE_VERSION}" version \
+              --prefer-online \
+              --registry=https://registry.npmjs.org \
+              --fetch-timeout=15000 \
+              --fetch-retries=0 >/dev/null 2>&1; then
+              echo "npm 已可解析 caomei-ui@${RELEASE_VERSION}（第 ${attempt} 次探测，用时 $((SECONDS - start))s）"
+              exit 0
+            fi
+            echo "npm 尚未可解析 caomei-ui@${RELEASE_VERSION}（第 ${attempt} 次，已等待 $((SECONDS - start))s），${interval}s 后重试"
+            sleep "${interval}"
+          done
+          echo "::error::等待 npm 传播超时（${wait_seconds}s）：caomei-ui@${RELEASE_VERSION} 仍不可解析；请稍后手动执行 gh workflow run downstream-compat.yml -f caomei-ui-version=${RELEASE_VERSION}"
+          exit 1
+
       - name: Trigger downstream compatibility
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

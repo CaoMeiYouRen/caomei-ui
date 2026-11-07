@@ -75,6 +75,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-11-04 增量（Form 组合层）**：新增 `CaomeiForm` / `CaomeiFormItem` 与 4 个公开类型（`FormProps` / `FormItemProps` / `FormItemSlotProps` / `FormExposed`），属向后兼容增量。组件目录 **56 → 57**、根导出组件名 **94 → 96**、包根导出名 **324 → 330**（`Caomei*` 98 → 100 / `use*`·`provide*` 7 / 其余 219 → 223）；API 面 props **516 → 517** / events **85 → 86** / slots **70 → 71** / exposed **16 → 18**；`exports` 13 键与 token 有效冻结面 381 不变。复算命令同上；API 面由 `pnpm docs:gen` 后对 `component-meta.json` 求和。
 
+> **2026-11-07 增量（DatePicker 范围选择）**：新增 3 个公开类型 `DatePickerModelValue` / `DatePickerRange` / `DatePickerSelectionMode`，`DatePickerProps` 新增可选 `selectionMode`，属向后兼容增量。包根导出名 **330 → 333**（`Caomei*` 100 / `use*`·`provide*` 7 / 其余 226）；API 面 props **517 → 518**（events 86 / slots 71 / exposed 18 不变）；组件目录 57 与根导出组件名 96 不变；`exports` 13 键不变。复算命令同上（`pnpm docs:gen` 后对 `component-meta.json` 求和）。
+
 ### 2.4 token 契约（用户 2026-10-24 裁定）
 
 **裁定：取「全量 146 + 已披露覆盖钩子」**，不取「全局 68」。

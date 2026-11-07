@@ -204,6 +204,33 @@ describe('CaomeiDatePicker', () => {
         styled.unmount()
     })
 
+    it('显式 id 且初始展开时面板引用指向真实存在的触发器', async () => {
+        const wrapper = mountPicker({ id: 'start-date', open: true })
+        await expectSettled(() => {
+            expect(getContent().attributes('aria-labelledby')).toBe('start-date')
+        })
+
+        expect(wrapper.get('.caomei-date-picker').attributes('id')).toBe('start-date')
+        expect(document.getElementById('start-date')).not.toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('运行时切换显式 id 后 DOM id 与面板引用同步更新', async () => {
+        const wrapper = mountPicker({ id: 'first-date', open: true })
+        await expectSettled(() => {
+            expect(getContent().attributes('aria-labelledby')).toBe('first-date')
+        })
+
+        await wrapper.setProps({ id: 'second-date' })
+        await expectSettled(() => {
+            expect(wrapper.get('.caomei-date-picker').attributes('id')).toBe('second-date')
+            expect(getContent().attributes('aria-labelledby')).toBe('second-date')
+        })
+
+        wrapper.unmount()
+    })
+
     it('受控 open 展开时 aria-controls 指向面板', async () => {
         const wrapper = mountPicker({ modelValue: new Date(2026, 8, 15), open: true })
         await nextTick()

@@ -158,6 +158,10 @@ const splitButtonItems = [
 const datePickerValue = ref<Date | null>(null)
 const datePickerEdgeValue = ref<Date | null>(null)
 const calendarValue = ref<Date | null>(null)
+/** 区间选择夹具：固定 2026-09 初始区间，使面板打开即落在可确定断言的月份 */
+const datePickerRangeValue = ref<[Date, Date] | null>([new Date(2026, 8, 1), new Date(2026, 8, 7)])
+const datePickerRangeMin = new Date(2026, 0, 1)
+const datePickerRangeMax = new Date(2026, 11, 31)
 
 /**
  * 浮层断点宽度用例（响应式设计 §3 矩阵 #17）：断点键取迁移期实测值（1199 / 575），
@@ -537,6 +541,16 @@ const ConfirmDriver = defineComponent({
                 v-model="datePickerEdgeValue"
                 label="截止日期"
                 placeholder="截止"
+            />
+        </section>
+
+        <section id="panel-date-picker-range" class="fixture__case">
+            <CaomeiDatePicker
+                v-model="datePickerRangeValue"
+                selection-mode="range"
+                date-format="yy-mm-dd"
+                :min-value="datePickerRangeMin"
+                :max-value="datePickerRangeMax"
             />
         </section>
 

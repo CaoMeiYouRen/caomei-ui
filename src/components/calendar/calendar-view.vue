@@ -123,6 +123,7 @@ const parts = computed(() => (props.range
                         :day="day"
                         :month="month.value"
                         class="caomei-calendar__day"
+                        :class="{'caomei-calendar__day--range': range}"
                     />
                 </component>
             </component>
@@ -228,20 +229,20 @@ const parts = computed(() => (props.range
 
 /*
   区间内的日期（Reka 对区间内每一天都置 `data-selected`）：用浅色带表达「已选区间」，
-  仅两端保留实底主色，使起点 / 终点在视觉上可区分。单日期模式不产生 `data-selection-*`，
-  故不受影响。
+  仅两端保留实底主色，使起点 / 终点在视觉上可区分。规则**必须以区间标记类限定**——
+  单日期日历的选中日同样带 `data-selected`，且没有 `data-selection-*`，不限定会误伤。
 */
-.caomei-calendar__day[data-selected]:not([data-selection-start], [data-selection-end]) {
+.caomei-calendar__day--range[data-selected]:not([data-selection-start], [data-selection-end]) {
     background: color-mix(in srgb, var(--caomei-color-primary) 16%, transparent);
 }
 
 /* 区间内日期的文本色：跨月 / 禁用日仍由下方同名规则取 muted，避免被区间带压过 */
-.caomei-calendar__day[data-selected]:not([data-selection-start], [data-selection-end]):not([data-outside-view], [data-disabled]) {
+.caomei-calendar__day--range[data-selected]:not([data-selection-start], [data-selection-end], [data-outside-view], [data-disabled]) {
     color: var(--caomei-color-text);
 }
 
-/* 悬停预览：已选起点、尚未确定终点时的区间带（Reka `data-highlighted`） */
-.caomei-calendar__day[data-highlighted]:not([data-selected]) {
+/* 悬停预览：已选起点、尚未确定终点时的区间带（Reka `data-highlighted`，仅区间日历产生） */
+.caomei-calendar__day--range[data-highlighted]:not([data-selected]) {
     background: color-mix(in srgb, var(--caomei-color-primary) 10%, transparent);
 }
 

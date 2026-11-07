@@ -1,6 +1,6 @@
 # DatePicker 日期选择器
 
-由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`。
+由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`；`selectionMode="range"` 时为 `[Date, Date]` 闭区间。
 
 ## 基础用法
 
@@ -29,6 +29,20 @@
     ssg="true"
 />
 
+## 范围选择
+
+设置 `selectionMode="range"` 后改为选择日期区间，`v-model` 为 `[Date, Date]`（开始、结束）；未选择时为 `null`。依次点击起点与终点即完成选择，`closeOnSelect`（默认 `true`）在两端齐全后收起面板。只选到起点时不会写回模型（半开区间不对外），面板内可继续选择终点。清空行为分三种情形：已有完整区间时点击任意日期会以该日为起点重新开始（触发器仍显示旧区间，直到选完终点）；区间为同一天（`[d, d]`）时再次点击该日取消并写回 `null`；`preventDeselect` 为真时不清空。
+
+<demo
+    vue="../examples/date-picker/range.vue"
+    ssg="true"
+/>
+
+- `dateFormat` 同时作用于两端，展示形式为 `开始 – 结束`（分隔符固定为 ` – `）；`minValue` / `maxValue` 对两端分别生效。
+- `selectionMode` 是运行期 prop，`v-model` 的静态类型为 `Date | [Date, Date] | null`；单日期用法请把绑定值**放宽**为该联合（而不是仅 `Date | null`），否则类型检查会在回写时失败。
+- **不支持** `showTime` / `showSeconds` / `hourFormat`：区间只承载日期；同时传入 `showTime` 时忽略时间层并给出开发期告警。需要时间范围时请并列两个单日期选择器。
+- `multiple` 未实现（无下游用例）。
+
 ## 状态与行为
 
 - `disabled` / `readonly` / `invalid` / `size` 与 Input 家族一致。
@@ -41,9 +55,10 @@
 
 ## 无障碍
 
-- 触发器为 `button`，带 `aria-expanded` 表达展开状态；可访问名优先级为 `label` > 透传 `aria-label` > 当前语言的「日期」，三者都不可用时（已有可见日期文本或占位符）不附加 `aria-label`。
+- 触发器为 `button`，带 `aria-expanded` 表达展开状态；可访问名优先级为 `label` > 透传 `aria-label` > 当前语言的「日期」（单日期）/「日期范围」（区间），三者都不可用时（已有可见日期文本或占位符）不附加 `aria-label`。
+- 区间模式已选、且未显式提供 `label` 与透传 `aria-label` 时，不输出 `aria-label`，名称由可见区间文本 + 触发器内隐藏文本「（开始 / 结束）」组成（满足 Label in Name）；显式 `label` / 透传 `aria-label` 仍按上一条优先级优先。
 - `class` / `style` / `id` / `data-*` / `title` 等原生属性落在触发器 `<button>` 上，便于外部布局与 `<label for>` 关联；`aria-label` 由 `label` prop 与透传 `aria-label` 共同决定（见上一条），`aria-invalid` 由 `invalid` 管理，`type` 固定为 `button`。
-- 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。
+- 面板内日历继承 [Calendar](./calendar.md) 的键盘与无障碍行为；Esc 关闭面板。区间面板的起止日期分别输出 `data-selection-start` / `data-selection-end`，区间内日期以浅色带标示。
 - `invalid` 时输出 `aria-invalid="true"`。
 
 ## 样式定制
@@ -65,6 +80,8 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 | PrimeVue | 本组件 |
 | --- | --- |
 | `modelValue`（`Date`） | `v-model`（原生 `Date`，语义一致） |
+| `selection-mode="range"` | `selectionMode="range"`；`v-model` 改为 `[Date, Date]`（`null` 表示未选择）。`multiple` 未实现 |
+| `manual-input="false"` | 无需映射：本组件固定为「触发按钮 + 面板」，不支持手工键入 |
 | `minDate` / `maxDate` | `minValue` / `maxValue` |
 | `dateFormat` | `dateFormat`（PrimeVue 风格 token，缺省按 `locale` 输出本地化短日期） |
 | `showIcon` / `iconDisplay="input"` | `showIcon`（本组件默认即「触发按钮 + 面板」形态） |
@@ -74,9 +91,9 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 | `fluid` | 删除：默认带 `20rem` 上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width` 为 `none`（见[主题与样式 §4.1](../design/theming.md)） |
 | `inputId` | `id`；`aria-label` → `label` |
 
-**已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入。
+**已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入；区间模式的 `v-model` 静态类型为 `Date | [Date, Date] | null`，从 PrimeVue 迁入的单日期页面需把绑定类型**放宽**为该联合。
 
-**未实现**：`selectionMode`（`range` 已登记 Phase 28 M1-1，待执行；`multiple` 维持范围外（无下游用例，未立候选）；caomei-auth 登录日志筛选 1 处 `range` 真实用例见 issue #28）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
+**未实现**：`selectionMode` 的 `multiple` 取值（无下游用例，未立候选）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传；`range` 与 `showTime` 不可同时使用（见「范围选择」）。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

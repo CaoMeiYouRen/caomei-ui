@@ -11,6 +11,7 @@ import { resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiPopoverTrigger } from '../popover'
 import CalendarPanel from '../calendar/calendar-panel.vue'
 import CalendarRangePanel from '../calendar/calendar-range-panel.vue'
+import PopoverTriggerId from './popover-trigger-id.vue'
 import TimeInput from './time-input.vue'
 import type { DatePickerModelValue, DatePickerProps, DatePickerRange, TimeParts } from './types'
 
@@ -97,8 +98,9 @@ const timeParts = computed<TimeParts>(() => ({
 
 /**
  * 触发按钮兜底可访问名：单日期为「日期」；区间为「日期范围」。
- * 区间已选时**不使用** aria-label——可见区间文本即名称主体，另以隐藏文本补「开始 / 结束」语义，
- * 避免 aria-label 覆盖可见文本触发 Label in Name（WCAG 2.5.3）风险。
+ * 区间已选且未提供显式名称时**不输出** aria-label——可见区间文本即名称主体，另以隐藏文本补
+ * 「开始 / 结束」语义，避免 aria-label 覆盖可见文本触发 Label in Name（WCAG 2.5.3）风险；
+ * 显式 `label` / 透传 `aria-label` 仍按三级优先级优先。
  */
 const fallbackLabel = computed(() =>
     isRange.value ? messages.value.datePicker.range : messages.value.datePicker.label)
@@ -114,6 +116,13 @@ const triggerLabel = computed(() =>
         displayText.value || props.placeholder ? undefined : fallbackLabel.value,
     ),
 )
+/**
+ * 面板（PopoverContent，role=dialog）的可访问名兜底：正常路径由 `aria-labelledby` 指向触发器
+ * （名称取自触发器的可访问名）；仅当该 IDREF 无法解析时，本 `aria-label` 才生效。
+ */
+const panelLabel = computed(() =>
+    resolveLabelName(props.label, attrs['aria-label'], fallbackLabel.value))
+
 /** 区间已选时的隐藏语义后缀（进入可访问名，不进入可见布局） */
 const rangeHint = computed(() => (isRange.value && rangeModel.value
     ? `（${messages.value.datePicker.rangeStart} / ${messages.value.datePicker.rangeEnd}）`
@@ -177,7 +186,15 @@ watchEffect(() => {
 </script>
 
 <template>
-    <PopoverRoot v-model:open="open">
+    <!--
+      显式 id 先写入 Root 上下文，使触发器 DOM id 与面板 aria-labelledby 同源（不产生悬空引用）。
+      `:key` 让 id 变更时重建 Root：Reka 的 triggerId 不是响应式值，仅改上下文不会触发重渲染。
+    -->
+    <PopoverRoot
+        :key="id ?? 'auto-id'"
+        v-model:open="open"
+    >
+        <PopoverTriggerId :id="id" />
         <!--
           触发器经本库 CaomeiPopoverTrigger（as-child + unstyled）：由本库触发器统一承载开合与无障碍接线（内部委托 Reka primitive），
           外观仍由下方自持 button 提供（`unstyled` 保证不合并内建触发器外观类）。
@@ -188,7 +205,6 @@ watchEffect(() => {
             :disabled="disabled"
         >
             <button
-                :id="id"
                 v-bind="$attrs"
                 type="button"
                 class="caomei-date-picker"
@@ -217,6 +233,7 @@ watchEffect(() => {
                 class="caomei-date-picker__content"
                 align="start"
                 :side-offset="6"
+                :aria-label="panelLabel"
             >
                 <CalendarPanel
                     v-if="!isRange"

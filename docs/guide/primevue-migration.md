@@ -61,6 +61,7 @@
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
 | 标签录入 | `Chips`（v4 起为 `InputChips` 的旧名） | `CaomeiTagsInput`（**首选**）；`CaomeiAutoComplete` + `multiple`（备选） | `separator` → `delimiter`；`allowDuplicate` **默认相反**（本库默认拒绝重复）；见 §7 与 [TagsInput](../components/tags-input.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |
+| 日期区间 | `selection-mode="range"`；`manual-input="false"` | `selectionMode="range"`；`v-model` 为 `[Date, Date]`（`null` 未选择） | `multiple` 未实现；本组件不支持手工键入；`range` 与 `showTime` 不可同用；`v-model` 静态类型为 `Date \| [Date, Date] \| null`，单日期页面需放宽为该联合；见 [DatePicker](../components/date-picker.md) |
 | Button 纯图标形态 | — | 新增 `iconOnly` boolean prop；开启时按钮变为方形、图标居中、不渲染文本，**需配合 `label` 提供可访问名**（映射 `aria-label`）；此时 `iconPosition` 被忽略 | 见 [Button](../components/button.md) 与 [#iconOnly 形态](../components/button.md#纯图标按钮) |
 | Select 触发器自定义显示 | — | 新增 `#value` 插槽（作用域 `{ option, label, selected }`），仅影响触发器显示，面板仍用 `#option` | 见 [Select](../components/select.md) 与 [#自定义触发器显示](../components/select.md#自定义触发器显示) |
 | Button `iconOnly` 时 `iconPosition` 失效 | — | `iconOnly=true` 时图标始终居中、`iconPosition` 被忽略，**必须提供 `label`**（否则无 `aria-label`） | 见 [Button](../components/button.md) 与 [#纯图标按钮](../components/button.md#纯图标按钮) |
@@ -108,6 +109,7 @@
 - [ ] 表头全选「只作用当前页」的业务影响已确认；需要跨页全选时由父级 `selection` / 选择栏承载；
 - [ ] `size="small"` 等表格密度写法已移除，改用 CSS 内边距覆盖；表级 `#header` / `#footer` 内容已移到表格容器外；
 - [ ] 选择器宽度上限与包裹层已核对（`--caomei-select-max-width` / `:root:root` / 字段外层）；
+- [ ] `DatePicker` 迁到 `selectionMode="range"` 时 `v-model` 已改为 `[Date, Date] | null`，且未同时开启 `showTime`；
 - [ ] 表单控件的 e2e / 单测选择器不再依赖原生 `input`；依赖新值的同步逻辑改用 `@update:model-value`；
 - [ ] CSS 选择器按产物类名 / `aria-sort` 编写，浮层 `hide` 事件已桥接；
 - [ ] 引入过桥接层（token / 函数 / 组件）时，每个桥接文件都有移除条件；调用点已归零的已删除，未清退项已登记 Backlog；

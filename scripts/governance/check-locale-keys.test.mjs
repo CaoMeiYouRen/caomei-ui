@@ -172,7 +172,7 @@ describe('check-locale-keys 仓库不变量', () => {
             file: 'src/locale/zh-cn.ts',
             id: 'zh-CN',
             namespaces: 28,
-            keys: 80,
+            keys: 83,
         })
 
         const ids = result.details.locales.map((locale) => locale.id)
@@ -180,7 +180,7 @@ describe('check-locale-keys 仓库不变量', () => {
         for (const locale of result.details.locales) {
             expect({ namespaces: locale.namespaces, keys: locale.keys }).toEqual({
                 namespaces: 28,
-                keys: 80,
+                keys: 83,
             })
         }
     })

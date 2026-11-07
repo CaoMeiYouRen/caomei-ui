@@ -31,6 +31,13 @@ export const A11Y_EXCEPTIONS: A11yException[] = [
         count: 2,
         judgment: 'Reka `Toast/FocusProxy` 的 `VisuallyHidden` + `tabindex="0"` 焦点哨兵（上游有意模式，非本库标记）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
     },
+    {
+        component: 'CaomeiDatePicker',
+        rule: 'aria-valid-attr-value',
+        kind: 'incomplete',
+        count: 1,
+        judgment: 'axe `controlsWithinPopup`：`aria-haspopup` + `aria-controls` 指向 portal 内的 popover，静态扫描无法判定引用是否存在（axe 明确标记为 needsReview）。引用目标经组件单测（`受控 open 展开时 aria-controls 指向面板`）与 E2E 实测存在；axe 对 `aria-haspopup` + portal 面板的静态可判定性限制本身无法消除，故按待复核登记',
+    },
 ]
 
 /** 例外清单的稳定键（组件 × 类型 × 规则）。 */

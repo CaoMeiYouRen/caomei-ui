@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-11-03T16:45:53.038Z",
+    "capturedAt": "2026-11-07T07:10:56.535Z",
     "chromiumVersion": "156.0.8078.4",
     "viewport": "1280x800",
     "entries": {
@@ -1800,7 +1800,7 @@
             "color": "rgb(185, 28, 28)"
         },
         "trigger.date-picker.attrs": {
-            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
         },
         "trigger.date-picker.style": {
             "height": "36px",
@@ -2360,10 +2360,10 @@
             "z-index": "1"
         },
         "trigger.date-picker.open": {
-            "dump": "BUTTON aria-controls=\"reka-popover-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"open\" type=\"button\""
+            "dump": "BUTTON aria-controls=\"reka-popover-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"open\" id=\"reka-popover-trigger-v-*\" type=\"button\""
         },
         "trigger.date-picker.closed": {
-            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" type=\"button\""
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"日期\" class=\"caomei-date-picker caomei-date-picker--md\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
         },
         "trigger.color-picker.open": {
             "dump": "BUTTON aria-controls=\"reka-popover-content-v-*\" aria-expanded=\"true\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"open\" id=\"reka-popover-trigger-v-*\" type=\"button\""

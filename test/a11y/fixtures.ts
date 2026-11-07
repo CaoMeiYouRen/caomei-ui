@@ -176,6 +176,9 @@ export interface A11yFixture {
     requiredSelectors?: string[]
 }
 
+/** 区间选择夹具：两端齐全，覆盖 `data-selection-*` 与区间内日期的可访问树 */
+const range: [Date, Date] = [new Date(2026, 8, 10), new Date(2026, 8, 20)]
+
 export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiAlert', root: CaomeiAlert, definition: { components: { CaomeiAlert }, template: '<CaomeiAlert tone="warning" title="环境提示" description="当前为沙箱环境，数据不会写入生产库。" />' } },
     { name: 'CaomeiAccordion', root: CaomeiAccordion, definition: { components: { CaomeiAccordion, CaomeiAccordionItem }, template: '<CaomeiAccordion><CaomeiAccordionItem title="一">内容</CaomeiAccordionItem></CaomeiAccordion>' } },
@@ -194,7 +197,17 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiConfirmDialog', root: CaomeiConfirmDialog, definition: ConfirmHost },
     { name: 'CaomeiDataTable', root: CaomeiDataTable, definition: { components: { CaomeiDataTable }, template: '<CaomeiDataTable :columns="columns" :data="rows" row-key="name" row-group-mode="subheader" group-rows-by="type" expandable-row-groups />', setup: () => ({ columns, rows }) }, requiredSelectors: ['.caomei-data-table__row-group-toggle'] },
     { name: 'CaomeiDataView', root: CaomeiDataView, definition: { components: { CaomeiDataView }, template: '<CaomeiDataView :items="[1, 2]"><template #list="{ items }"><p>{{ items.length }}</p></template></CaomeiDataView>' } },
-    { name: 'CaomeiDatePicker', root: CaomeiDatePicker, definition: { components: { CaomeiDatePicker }, template: '<CaomeiDatePicker label="日期" />' } },
+    /*
+     * 打开态的区间选择夹具：覆盖触发器（range 可访问名）与 portal 面板（dialog 名、日历名、端点属性）。
+     * 单日期入口走 `CalendarRoot`（内联 `CaomeiCalendar` 夹具覆盖），区间入口走独立接线；
+     * 单日期 DatePicker 面板与内联日历共用同一呈现层与可访问名接线，差异由组件单测覆盖。
+     */
+    {
+        name: 'CaomeiDatePicker',
+        root: CaomeiDatePicker,
+        definition: { components: { CaomeiDatePicker }, template: '<CaomeiDatePicker selection-mode="range" :open="true" label="日期范围" :model-value="range" />', setup: () => ({ range }) },
+        requiredSelectors: ['.caomei-date-picker__content', '[data-selection-start]'],
+    },
     { name: 'CaomeiDialog', root: CaomeiDialog, definition: { components: { CaomeiDialog }, template: '<CaomeiDialog :open="true" title="对话框"><p>内容</p></CaomeiDialog>' } },
     { name: 'CaomeiDivider', root: CaomeiDivider, definition: { components: { CaomeiDivider }, template: '<CaomeiDivider />' } },
     { name: 'CaomeiDrawer', root: CaomeiDrawer, definition: { components: { CaomeiDrawer }, template: '<CaomeiDrawer :open="true" title="抽屉"><p>内容</p></CaomeiDrawer>' } },

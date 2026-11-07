@@ -35,7 +35,7 @@
 
 - **移除 `::after`（临时给 `src/styles/index.css` 的 `.caomei-hit-target::after` 加 `display: none`）**：**8 failed**（`hit-target.e2e.ts` 主用例 3 个全量档 + `responsive.e2e.ts` 命中区用例 5 个档）/ **8 passed**（`hit-target.e2e.ts` 负向对照 3 个全量档 + `responsive.e2e.ts` 密度轴用例 5 个档）；还原后定向重跑全绿。
 - **视觉基线常驻负向对照**：`VISUAL_NEGATIVE_CONTROL=1 pnpm test:visual` → **32 failed / 3 passed**——新增的 `hit-target-390` 亮暗两面同样报差异，证明它确实被像素比对覆盖。
-- **受检面下界（2026-11-03 时点，后续 M2-2 扩面已调整）**：E2E `MIN_SECTIONS = 20`（当时）、命中区 `MIN_HIT_TARGETS = 37`；capture `DECLARED_KEY_BUDGET = 367`（当时）与折行前置 `MIN_HIT_TARGET_WRAP_FIELDS = 3`；视觉 `MIN_FORM_AXIS = 5`。任一已列出的下界被静默删项都会失败。
+- **受检面下界（2026-11-03 时点，后续 M2-2 扩面已调整）**：E2E `MIN_SECTIONS = 20`（当时）、命中区 `MIN_HIT_TARGETS = 37`；capture `DECLARED_KEY_BUDGET = 367`（当时）与折行前置 `MIN_HIT_TARGET_WRAP_FIELDS = 3`；视觉 `MIN_FORM_AXIS = 5`（当时）。任一已列出的下界被静默删项都会失败。
 
 ## 4. 验证证据
 

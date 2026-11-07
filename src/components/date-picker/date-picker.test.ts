@@ -481,10 +481,20 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         return getContent().find(`[data-value='${day}']`)
     }
 
-    /** 先 hover 再点击：Reka 以 focusedValue 判定第二次点击是「确定终点」而非「重设起点」 */
+    /** 先聚焦 / hover 再点击：Reka 以 focusedValue 判定第二次点击是「确定终点」而非「重设起点」 */
     async function pick(day: string): Promise<void> {
+        await cell(day).trigger('focusin')
         await cell(day).trigger('mouseenter')
+        await nextTick()
         await cell(day).trigger('click')
+    }
+
+    /** 选定起点后等待选择态提交（`startValue` 派生），避免并行负载下第二次点击落到未提交的起点 */
+    async function pickStart(day: string): Promise<void> {
+        await pick(day)
+        await expectSettled(() => {
+            expect(cell(day).attributes('data-selection-start')).toBeDefined()
+        })
     }
 
     function emittedRange(wrapper: ReturnType<typeof mountPicker>, index = 0): [Date, Date] {
@@ -545,7 +555,7 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor })
         await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
 
-        await pick('2026-09-10')
+        await pickStart('2026-09-10')
         // 只选到起点时不得写回模型（半开区间不对外），面板保持展开
         await expectSettled(() => {
             expect(wrapper.emitted('update:modelValue')).toBeUndefined()
@@ -576,7 +586,7 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         }), { attachTo: document.body })
 
         await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
-        await pick('2026-09-10')
+        await pickStart('2026-09-10')
         await pick('2026-09-20')
         await expectSettled(() => {
             expect(wrapper.get('.caomei-date-picker').text()).toContain('26-09-10 – 26-09-20')
@@ -597,14 +607,11 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
 
         // 面板初始显示「今天」所在月；取当月前几个非跨月日期，避免依赖系统时钟
         const days = getContent().findAll('.caomei-calendar__day:not([data-outside-view])')
-        const startCell = days[0]
-        const endCell = days[4]
-        const startValue = String(startCell.attributes('data-value'))
+        const startValue = String(days[0].attributes('data-value'))
+        const endValue = String(days[4].attributes('data-value'))
 
-        await startCell.trigger('mouseenter')
-        await startCell.trigger('click')
-        await endCell.trigger('mouseenter')
-        await endCell.trigger('click')
+        await pickStart(startValue)
+        await pick(endValue)
         await expectSettled(() => {
             expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('false')
         })
@@ -618,7 +625,7 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor })
         await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
 
-        await pick('2026-09-20')
+        await pickStart('2026-09-20')
         await pick('2026-09-10')
         await expectSettled(() => {
             expect(wrapper.emitted('update:modelValue')).toBeDefined()
@@ -634,7 +641,7 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
 
         // 同一天既作起点又作终点：两次点击生成单日闭区间
-        await pick('2026-09-15')
+        await pickStart('2026-09-15')
         await pick('2026-09-15')
         await expectSettled(() => {
             expect(wrapper.emitted('update:modelValue')).toBeDefined()
@@ -655,7 +662,7 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor, closeOnSelect: false })
         await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
 
-        await pick('2026-09-10')
+        await pickStart('2026-09-10')
         await pick('2026-09-20')
         await expectSettled(() => {
             expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBeInstanceOf(Array)

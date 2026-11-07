@@ -105,6 +105,27 @@ Toast styles are based on CSS variables and kept low-specificity for easy overri
 | `--caomei-toast-width` | `min(24rem, 100% - 2 * offset)` | Viewport width |
 | `--caomei-toast-z-index` | `1100` | Viewport stacking level |
 | `--caomei-toast-accent` | by tone (`neutral` or no tone class falls back to `--caomei-color-text-muted`) | Shared by the left accent bar and the icon; overridable per tone class |
+| `--caomei-toast-primary-bg` | `--caomei-color-bg-elevated` | Item background for the primary tone |
+| `--caomei-toast-primary-border` | `--caomei-color-border` | Outer border colour for the primary tone (excludes the left accent) |
+| `--caomei-toast-primary-text` | `--caomei-color-text` | Root text colour for the primary tone (title and inherited text) |
+| `--caomei-toast-primary-shadow` | `--caomei-shadow-md` | Item shadow for the primary tone |
+| `--caomei-toast-success-bg` | `--caomei-color-bg-elevated` | Item background for the success tone |
+| `--caomei-toast-success-border` | `--caomei-color-border` | Outer border colour for the success tone (excludes the left accent) |
+| `--caomei-toast-success-text` | `--caomei-color-text` | Root text colour for the success tone (title and inherited text) |
+| `--caomei-toast-success-shadow` | `--caomei-shadow-md` | Item shadow for the success tone |
+| `--caomei-toast-warning-bg` | `--caomei-color-bg-elevated` | Item background for the warning tone |
+| `--caomei-toast-warning-border` | `--caomei-color-border` | Outer border colour for the warning tone (excludes the left accent) |
+| `--caomei-toast-warning-text` | `--caomei-color-text` | Root text colour for the warning tone (title and inherited text) |
+| `--caomei-toast-warning-shadow` | `--caomei-shadow-md` | Item shadow for the warning tone |
+| `--caomei-toast-danger-bg` | `--caomei-color-bg-elevated` | Item background for the danger tone |
+| `--caomei-toast-danger-border` | `--caomei-color-border` | Outer border colour for the danger tone (excludes the left accent) |
+| `--caomei-toast-danger-text` | `--caomei-color-text` | Root text colour for the danger tone (title and inherited text) |
+| `--caomei-toast-danger-shadow` | `--caomei-shadow-md` | Item shadow for the danger tone |
+
+- `neutral` has no dedicated variables and uses `--caomei-color-bg-elevated` / `--caomei-color-border` / `--caomei-color-text` / `--caomei-shadow-md`.
+- `-text` only affects the item's root text (title and inherited text); the description always uses `--caomei-color-text-muted` and the action button uses `--caomei-color-primary-text`, so neither is controlled by this variable.
+- `-border` accepts a **colour only** (applies to the three outer borders); the left accent is always controlled by `--caomei-toast-accent`, as is the icon colour.
+- Every default falls back to the global token, so the look is unchanged until you override a variable.
 
 ```css
 .caomei-toast-viewport {
@@ -113,6 +134,14 @@ Toast styles are based on CSS variables and kept low-specificity for easy overri
 
 .caomei-toast--success {
     --caomei-toast-accent: #16a34a;
+}
+
+/* Per-tone overrides: set them on any ancestor of the Provider (variables inherit through it into the item) */
+.theme-brand {
+    --caomei-toast-success-bg: #ecfdf3;
+    --caomei-toast-success-border: #12b76a;
+    --caomei-toast-success-text: #05603a;
+    --caomei-toast-success-shadow: 0 4px 12px rgb(5 96 58 / 12%);
 }
 ```
 

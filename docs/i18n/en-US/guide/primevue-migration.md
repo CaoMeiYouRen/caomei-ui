@@ -46,6 +46,32 @@ Typical triggers for a component bridge: the difference needs renaming at every 
 - **Mind Nuxt auto-import names**: components in a `components/` subdirectory are named with the directory prefix (`settings/setting-input.vue` → `AdminSettingsSettingInput`). A bridge in a subdirectory must either import explicitly or use the full name, otherwise the tag silently resolves to an unknown element and the page renders fewer controls without an error.
 - **Retire when call sites reach zero**: a bridge is deletable code. Remove it per its removal condition when the migration closes out, and register anything that cannot be removed yet in the [Backlog](/plan/backlog) (Chinese) rather than keeping it indefinitely.
 
+## Three paths for style customization (Toast as the example)
+
+PrimeVue toasts are often overridden per tone for background / border / text / shadow. When migrating, pick one of the following in order, and do not rebuild a style layer just to match the old look:
+
+1. **Accept the defaults (recommended)**: the default look is designed around semantic colours and the light / dark / preset themes, and is locked by the contrast matrix and visual baselines. Register it as an intentional difference instead of writing overrides.
+2. **Override tokens**: to keep brand tone colours, override `--caomei-toast-{tone}-{bg,border,text,shadow}` on the Provider or any ancestor. The variables inherit into the item, so no extra selector specificity is needed; re-check text contrast after overriding.
+3. **Thin wrapper**: split by need — wrapping `useToast` suits a shared call entry or preset copy; changing the icon, layout or extra fields requires wrapping a component (built-in icons are mapped by tone, so a `useToast` wrapper cannot change the look). In the default styles the tone blocks only declare variables inside `:where()`, so **variable-level** single-class overrides always win; **property-level** single-class overrides (`.caomei-toast--success { background-color: … }`) tie with the base class at 0,1,0 and must load after the consumer stylesheet or raise specificity.
+
+```css
+/* Path 2: change tone colours only, no new class */
+.theme-brand {
+    --caomei-toast-success-bg: #ecfdf3;
+    --caomei-toast-success-text: #05603a;
+}
+```
+
+```ts
+// Path 3: one thin entry point (only when the structure differs)
+const toast = useToast()
+function notifySaved(): void {
+    toast.success({ title: 'Saved' })
+}
+```
+
+> Every default falls back to the global token (no visual change until overridden); `-text` does not control the description or action button, and `-border` accepts a colour only and excludes the left accent.
+
 ## Common pitfalls
 
 | Topic | PrimeVue | caomei-ui | What to do |

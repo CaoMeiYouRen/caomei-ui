@@ -105,6 +105,27 @@ toast.clear()
 | `--caomei-toast-width` | `min(24rem, 100% - 2 * offset)` | 视口宽度 |
 | `--caomei-toast-z-index` | `1100` | 视口层级 |
 | `--caomei-toast-accent` | 随语气（`neutral` 或未命中语气类时回退 `--caomei-color-text-muted`） | 左侧强调描边与图标色共用；可按语气类覆盖 |
+| `--caomei-toast-primary-bg` | `--caomei-color-bg-elevated` | primary 语气提示项背景 |
+| `--caomei-toast-primary-border` | `--caomei-color-border` | primary 语气外框颜色（不含左侧强调条） |
+| `--caomei-toast-primary-text` | `--caomei-color-text` | primary 语气根文本色（标题与继承文本） |
+| `--caomei-toast-primary-shadow` | `--caomei-shadow-md` | primary 语气提示项阴影 |
+| `--caomei-toast-success-bg` | `--caomei-color-bg-elevated` | success 语气提示项背景 |
+| `--caomei-toast-success-border` | `--caomei-color-border` | success 语气外框颜色（不含左侧强调条） |
+| `--caomei-toast-success-text` | `--caomei-color-text` | success 语气根文本色（标题与继承文本） |
+| `--caomei-toast-success-shadow` | `--caomei-shadow-md` | success 语气提示项阴影 |
+| `--caomei-toast-warning-bg` | `--caomei-color-bg-elevated` | warning 语气提示项背景 |
+| `--caomei-toast-warning-border` | `--caomei-color-border` | warning 语气外框颜色（不含左侧强调条） |
+| `--caomei-toast-warning-text` | `--caomei-color-text` | warning 语气根文本色（标题与继承文本） |
+| `--caomei-toast-warning-shadow` | `--caomei-shadow-md` | warning 语气提示项阴影 |
+| `--caomei-toast-danger-bg` | `--caomei-color-bg-elevated` | danger 语气提示项背景 |
+| `--caomei-toast-danger-border` | `--caomei-color-border` | danger 语气外框颜色（不含左侧强调条） |
+| `--caomei-toast-danger-text` | `--caomei-color-text` | danger 语气根文本色（标题与继承文本） |
+| `--caomei-toast-danger-shadow` | `--caomei-shadow-md` | danger 语气提示项阴影 |
+
+- `neutral` 不提供专属变量，沿用 `--caomei-color-bg-elevated` / `--caomei-color-border` / `--caomei-color-text` / `--caomei-shadow-md`。
+- `-text` 只作用于提示项根文本（标题与继承文本）；描述固定取 `--caomei-color-text-muted`，操作按钮固定取 `--caomei-color-primary-text`，二者不受该变量控制。
+- `-border` 只接受**颜色值**（作用于外框三边）；左侧强调条始终由 `--caomei-toast-accent` 控制，图标色同源。
+- 默认值逐项回退到全局 token，未覆盖时与升级前外观一致。
 
 ```css
 .caomei-toast-viewport {
@@ -113,6 +134,14 @@ toast.clear()
 
 .caomei-toast--success {
     --caomei-toast-accent: #16a34a;
+}
+
+/* 逐语气覆盖：可写在 Provider 的任意祖先（变量经 Provider 继承到提示项） */
+.theme-brand {
+    --caomei-toast-success-bg: #ecfdf3;
+    --caomei-toast-success-border: #12b76a;
+    --caomei-toast-success-text: #05603a;
+    --caomei-toast-success-shadow: 0 4px 12px rgb(5 96 58 / 12%);
 }
 ```
 

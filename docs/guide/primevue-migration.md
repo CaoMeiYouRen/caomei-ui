@@ -46,6 +46,32 @@
 - **注意 Nuxt 自动导入命名**：`components/` 子目录的组件按目录前缀命名（`settings/setting-input.vue` → `AdminSettingsSettingInput`），桥接层放子目录时要么显式 import、要么写全名，否则标签静默解析为未知元素，页面少渲染控件且不报错。
 - **调用点归零即清退**：桥接层属可删除代码；迁移收口时按移除条件删除，暂不能删的登记到 [Backlog](../plan/backlog.md)，不长期保留。
 
+## 样式定制的三条路径（以 Toast 为例）
+
+PrimeVue 的 Toast 常被逐语气覆盖背景 / 边框 / 文字 / 阴影。迁到本库时按以下优先级选择，不要为复刻观感再造一套样式层：
+
+1. **接受默认（推荐）**：默认外观已按语义色与主题（亮 / 暗 / 预设）设计，并由对比度矩阵与视觉基线锁定。登记为有意差异即可，不写覆盖。
+2. **token 覆盖**：需要保留品牌语气色时，在 Provider 或任意祖先上覆盖 `--caomei-toast-{tone}-{bg,border,text,shadow}`。变量会继承到提示项，无需提高选择器特异性；覆盖后请自行复核文字对比度。
+3. **薄封装**：按场景分两类——统一调用入口 / 预设文案可封装 `useToast`；需要改图标、布局或额外字段时必须包一层组件（内建图标按语气固定映射，`useToast` 封装无法改变外观）。默认样式中语气块用 `:where()` 只声明变量，**变量级**单类覆盖无条件生效；**属性级**单类覆盖（`.caomei-toast--success { background-color: … }`）与基类同为 0,1,0，须在使用方样式之后加载或提高特异性。
+
+```css
+/* 路径 2：只改语气色，不新增类 */
+.theme-brand {
+    --caomei-toast-success-bg: #ecfdf3;
+    --caomei-toast-success-text: #05603a;
+}
+```
+
+```ts
+// 路径 3：薄封装统一入口（存在结构差异时才需要）
+const toast = useToast()
+function notifySaved(): void {
+    toast.success({ title: '已保存' })
+}
+```
+
+> 未覆盖时逐项回退到全局 token（零视觉变化）；`-text` 不控制描述与操作按钮，`-border` 只接受颜色值且不含左侧强调条。
+
 ## 常见陷阱
 
 | 主题 | PrimeVue | caomei-ui | 处理 |

@@ -35,7 +35,7 @@
 - `pnpm exec playwright test test/e2e/toast-tone-contrast.e2e.ts` → 三档视口全绿。
 - `pnpm capture:styles` → 0 差异；`pnpm test:e2e` → 全绿（共享夹具新增常驻 provider 后的全量回归）。
 - `pnpm verify` → exit 0（含 `build` / `check:build` / `docs:build` / `governance:check`）。
-- 冻结面（**写录时点快照 2026-11-07**）：16 个公共钩子无默认声明，M2-2 文档披露后才进入「已披露钩子」集合；语气块新增 4 个内部中间变量（`--caomei-toast-tone-*`，有默认声明），默认声明集合 156 → 160、有效冻结面 381 → 385；M2-2 披露后按 385 ∪ 306 复算为 **401**。这 4 个中间变量按「有默认声明即冻结」口径计入冻结名，用途限定为组件内部解析层。复算命令见[冻结面终审记录](./2026-10-24-phase26-m1-1-freeze-final-review.md) §2.4。
+- 冻结面（**写录时点快照 2026-11-07**）：16 个公共钩子无默认声明，M2-2 文档披露后才进入「已披露钩子」集合；语气块新增 4 个内部中间变量（`--caomei-toast-tone-*`，有默认声明），默认声明集合 156 → 160、有效冻结面 381 → 385；M2-2 披露后实测为 **401**（160 默认声明 ∪ 307 已披露钩子，交集 66；其中 `--caomei-color-primary-text` 因在 Toast 样式小节被引用而进入披露面）。这 4 个中间变量按「有默认声明即冻结」口径计入冻结名，用途限定为组件内部解析层。复算命令见[冻结面终审记录](./2026-10-24-phase26-m1-1-freeze-final-review.md) §2.4。
 
 ## 4. Review Gate
 

@@ -77,6 +77,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-11-07 增量（DatePicker 范围选择）**：新增 3 个公开类型 `DatePickerModelValue` / `DatePickerRange` / `DatePickerSelectionMode`，`DatePickerProps` 新增可选 `selectionMode`，属向后兼容增量。包根导出名 **330 → 333**（`Caomei*` 100 / `use*`·`provide*` 7 / 其余 226）；API 面 props **517 → 518**（events 86 / slots 71 / exposed 18 不变）；组件目录 57 与根导出组件名 96 不变；`exports` 13 键不变。复算命令同上（`pnpm docs:gen` 后对 `component-meta.json` 求和）。
 
+> **2026-11-07 增量（Toast 逐语气 token）**：新增 16 个公开覆盖钩子 `--caomei-toast-{primary,success,warning,danger}-{bg,border,text,shadow}`（均无默认声明）与 4 个内部中间变量 `--caomei-toast-tone-{bg,border,text,shadow}`（有默认声明）；`neutral` 沿用全局 token。默认声明集合 **156 → 160**，组件页披露钩子 **290 → 307**（16 个新钩子 + `--caomei-color-primary-text` 在 Toast「样式定制」小节被引用），交集 **65 → 66**，有效冻结面 **381 → 401**；消费面 / 未披露拆分同步为 **426 / 119**（含已声明 94 / 纯内部 25）；该增量含 2026-11-04 Form 组合层当时未同步的 `--caomei-form-*` 等项，Toast 自身贡献为 16 个披露钩子 + 4 个内部中间变量。复算命令同 §2.4。
+
 ### 2.4 token 契约（用户 2026-10-24 裁定）
 
 **裁定：取「全量 146 + 已披露覆盖钩子」**，不取「全局 68」。

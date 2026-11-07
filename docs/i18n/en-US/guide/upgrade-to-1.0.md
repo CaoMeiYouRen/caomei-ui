@@ -1,21 +1,8 @@
 # Upgrade to 1.0
 
-This page is for consumers upgrading `caomei-ui` from 0.x to **1.0.0**: it gives a version snapshot (repository readings), upgrade notes per release segment, the publicly disclosed known limitations and an upgrade checklist.
+This page is for consumers upgrading `caomei-ui` from 0.x to **1.0.0**: it gives upgrade notes per release segment, the publicly disclosed known limitations and an upgrade checklist.
 
 > Source of truth: version changes are governed by the corresponding section of the repository [CHANGELOG](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/CHANGELOG.md); compatibility promises and frozen surfaces are in [Versioning & Compatibility](./version-policy.md); per-component differences when moving from PrimeVue are in [Migration from PrimeVue](./primevue-migration.md). This page does not duplicate the mapping tables and does not promise behaviour beyond the CHANGELOG.
-
-## Version snapshot (read 2026-11-04)
-
-Read from both repositories' `master` HEAD on 2026-11-04 (`latest` = `1.0.0`, `next` = `1.0.0-rc.1`). The table below contains **repository declaration and lockfile readings**, not downstream runtime verification:
-
-| Downstream | Declared / locked | master revision | Result |
-| --- | --- | --- | --- |
-| dependfix (`@dependfix/platform`) | `1.0.0-rc.1` (`package.json` and lockfile agree) | `f1b7166` | Not on GA yet; rc.1 and GA have no runtime difference (momei measured tarball diff) |
-| momei (root package) | `1.0.0` (`package.json` and lockfile agree) | `f058193` | rc.1 → GA complete |
-
-- **Pre-upgrade baseline**: both repositories were measured at `0.6.0` on 2026-10-13; momei then moved to `0.7.0` (2026-10-24), `1.0.0-rc.1` (2026-11-01) and `1.0.0` (2026-11-03), while dependfix moved to `0.7.0` (2026-10-25) and `1.0.0-rc.1` (2026-10-30).
-- **Coverage**: this page covers both release segments from `0.6.0` to `1.0.0` (`0.7.0` / `1.0.0`), with each item taken from the matching CHANGELOG section. At the start of the task both repositories were already on `1.0.0-rc.1` / `1.0.0`, so the **only remaining upgrade path is `1.0.0-rc.1 → 1.0.0`** (no minor boundary; the runtime artifacts are byte-identical — see "Downstream feedback and boundaries").
-- **Compatibility evidence**: the downstream check run [`41482763157`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41482763157) for tag `v1.0.0` is successful (dependfix @ `08ad8f1`, target `1.0.0`, `typecheck` + `build`).
 
 ## Upgrade path by release segment
 
@@ -49,7 +36,7 @@ These map one-to-one to the six "Known limitations" items plus the last "Upgrade
 
 | Item | Fact | Impact and action when upgrading |
 | --- | --- | --- |
-| Existing brand-preset contrast gaps | caomei `primary-solid` 4.17 (the only `-solid` pairing exception); momei light `success` three states 2.279 / 2.643 / 3.045 are derived from the **non-`-solid`** `--caomei-color-success` used directly as a fill with white text (the library has no such pairing) | Kept as an existing brand decision; neither fixed nor worsened in this version. The `-solid` pairings (default / hover / active) are covered by a standing assertion since 1.1.0, with caomei `primary-solid` recorded at a 4.0 floor. Projects requiring AA should use the default preset or override the relevant tokens |
+| Existing brand-preset contrast gaps | caomei `primary-solid` 4.17 (the only `-solid` pairing exception); for example, in a light theme, using the **non-`-solid`** `--caomei-color-success` directly as a fill with white text, the derived values are 2.279 / 2.643 / 3.045 (the library has no such pairing) | Kept as an existing brand decision; neither fixed nor worsened in this version. The `-solid` pairings (default / hover / active) are covered by a standing assertion since 1.1.0, with caomei `primary-solid` recorded at a 4.0 floor. Projects requiring AA should use the default preset or override the relevant tokens |
 | Calendar / RichTextEditor interactive borders | Previous / next month navigation buttons and the editor container border are below 3:1 | Not included in this contrast assertion surface; override and re-check when non-text contrast is required |
 | Chromium-only regression | Standing 390 / 768 / 1280 (plus targeted 320 / 900); 375px only for the gallery and DataTable keyboard-scroll checks; Firefox / WebKit are not included | Test on your target engine after upgrading; do not extrapolate Chromium results to all three engines |
 | Disabled-state exemption | Exempt under WCAG 1.4.3 / 1.4.11 | Disabled-state contrast is not guaranteed; do not include it in contrast acceptance |
@@ -59,31 +46,22 @@ These map one-to-one to the six "Known limitations" items plus the last "Upgrade
 
 ## Upgrade checklist
 
-- [ ] Read the target version's CHANGELOG `BREAKING CHANGES` / upgrade notes / known limitations, and record the current pin and downstream revision;
+- [ ] Read the target version's CHANGELOG `BREAKING CHANGES` / upgrade notes / known limitations, and record the current pin and your project revision;
 - [ ] Pin the target version exactly (do not cross a minor with `^` / `~`) and commit the upgrade on its own, separate from feature changes;
 - [ ] Move Node to 22 or later;
 - [ ] Search `DataTable` usages of `selectAll` / `lazy` / `rowKey`, and confirm select-all semantics and cross-page selection;
 - [ ] Search overrides of `--caomei-color-border` and semantic text colours, and move to `control-border` / `*-text`;
 - [ ] For locales other than `zh-CN` / `en-US`, import `caomei-ui/locale/<code>` and call `registerLocale()`;
 - [ ] When using Tooltip, place `CaomeiTooltipProvider` at the app root;
-- [ ] Re-run the downstream `typecheck` and `build` (same scope as the downstream compatibility check);
+- [ ] Re-run `typecheck` and `build` in your project;
 - [ ] Re-run visual regression / computed-style assertions; attribute colour differences to the new roles instead of loosening thresholds;
-- [ ] Record the version, downstream revision, verification results and uncovered items in the upgrade log.
+- [ ] Record the version, your project revision, verification results and uncovered items in your upgrade log.
 
-## Downstream feedback and boundaries
+## Scope
 
-### Feedback received
+This page covers library-side upgrade impact only. Page-level migration, runtime verification and visual regression are performed in the consumer's own project; the upgrade cadence and verification scope may differ between projects.
 
-- **momei**: `0.7.0` (2026-10-24) confirmed `theme.css` and the consumed runtime were unchanged and the component list grew from 81 to 95; `1.0.0-rc.1` (2026-11-01) added the five `-color-*-text` roles, kept the library default for `control-border` and re-captured 10 visual baselines; `1.0.0` (2026-11-03) measured GA and rc.1 as byte-identical for `.js` / `.mjs` / `.css` / `.vue` artifacts, with the same `dist/styles/index.css` sha256 and differences only in `package.json`, README and the member order of 28 `.d.ts` files; `visual` 18/18, `parity` 34/34, `typecheck` / `lint` 0 errors and 5,142 passed / 1 skipped.
-- **dependfix**: the `1.0.0-rc.1` upgrade (2026-10-30) pinned exactly, overrode `--caomei-color-primary-text`, and rebuilt 19 visual baselines because of the `control-border` and `-text` roles; the downstream check run `41482763157` for tag `v1.0.0` is successful.
-- **This repository**: the `v1.0.0` downstream check covers only `typecheck` + `build`, not e2e, visual regression or the full unit suite.
-
-### Gaps and boundary statement
-
-- **Not yet reported by momei**: momei's phase 69 completed and was archived on 2026-11-03 (the overlay-family page results were reported), while **page-level upgrade feedback from phases 70–71 has not been reported yet**; this page does not treat momei's three upgrade re-checks as full 1.0 acceptance. momei is also not in this repository's `downstream-compat.yml` matrix ([Backlog](/plan/backlog) (Chinese) §1.8, a conditional candidate), so the 1.0 downstream compatibility evidence comes from dependfix only.
-- **Not yet reported by dependfix**: at snapshot time it is still on `1.0.0-rc.1`, and page-level feedback after the GA upgrade has **not been reported**; its 19 rebuilt baselines only prove the rc.1 token-role impact and are not a full GA regression.
-- **This repository's boundary**: downstream migration is executed in each downstream repository; this repository maintains only the library-side upgrade notes and version-reading snapshot and does not run page-level verification for downstreams. Behaviour not declared in the CHANGELOG is not promised here.
-- **Time boundary**: the version snapshot is the `master` HEAD on 2026-11-04; later downstream commits may have changed the pinned version, so re-check before upgrading.
+For example: confirm the actually locked version first (e.g. with `pnpm why caomei-ui`), then re-run `typecheck` / `build` and visual regression in your project, and record the version, revision and results in your own upgrade log.
 
 ## See also
 

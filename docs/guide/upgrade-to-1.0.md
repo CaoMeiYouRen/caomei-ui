@@ -1,21 +1,8 @@
 # 升级到 1.0
 
-本页面向把 `caomei-ui` 从 0.x 升到 **1.0.0** 的消费方，给出版本快照（仓库读数）、逐版本段的升级注意、对外披露的已知限制与升级检查表。
+本页面向把 `caomei-ui` 从 0.x 升到 **1.0.0** 的消费方，给出逐版本段的升级注意、对外披露的已知限制与升级检查表。
 
 > 事实源：版本变更以仓库根 [CHANGELOG](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/CHANGELOG.md) 对应段为准；兼容承诺与冻结面见[版本与兼容策略](./version-policy.md)；从 PrimeVue 迁移的组件差异见[从 PrimeVue 迁移](./primevue-migration.md)。本页不重复映射表，也不承诺 CHANGELOG 之外的行为。
-
-## 版本快照（2026-11-04 读取）
-
-2026-11-04 读取两仓 `master` HEAD（`latest` = `1.0.0`、`next` = `1.0.0-rc.1`）。下表是**仓库声明与锁文件读数**，不是下游运行验证：
-
-| 下游 | 声明 / 锁定 | master revision | 结论 |
-| --- | --- | --- | --- |
-| dependfix（`@dependfix/platform`） | `1.0.0-rc.1`（`package.json` 与锁文件一致） | `f1b7166` | 尚未升到 GA；rc.1 与 GA 无运行时差异（momei 实测 tarball diff） |
-| momei（根包） | `1.0.0`（`package.json` 与锁文件一致） | `f058193` | 已完成 rc.1 → GA |
-
-- **升级前基线**：两仓在 2026-10-13 的复核值均为 `0.6.0`；之后 momei 依次升到 `0.7.0`（2026-10-24）、`1.0.0-rc.1`（2026-11-01）、`1.0.0`（2026-11-03），dependfix 升到 `0.7.0`（2026-10-25）、`1.0.0-rc.1`（2026-10-30）。
-- **覆盖面**：本页覆盖 `0.6.0 → 1.0.0` 的两个版本段（`0.7.0` / `1.0.0`），内容逐条取自 CHANGELOG 对应段；条目开始时两仓已在 `1.0.0-rc.1` / `1.0.0`，因此**剩余待升级面只有 `1.0.0-rc.1 → 1.0.0`**（无 minor 跨越，运行时产物逐字节一致，见「下游反馈与边界」）。
-- **兼容证据**：`v1.0.0` tag 的下游检查 run [`41482763157`](https://github.com/CaoMeiYouRen/caomei-ui/actions/runs/41482763157) 为 success（dependfix @ `08ad8f1`，目标 `1.0.0`，`typecheck` + `build`）。
 
 ## 升级路径与版本段
 
@@ -49,7 +36,7 @@
 
 | 条目 | 事实 | 升级时的影响与动作 |
 | --- | --- | --- |
-| 品牌预设的既有对比度缺口 | `caomei` `primary-solid` 4.17（`-solid` 配对唯一例外）；`momei` 亮色 `success` 三态 2.279 / 2.643 / 3.045 是**非 `-solid`** 的 `--caomei-color-success` 直接作实底并配白字的推算值（库内无该配对消费点） | 既有品牌裁定保留，本版未修复也未恶化；`-solid` 配对（默认 / hover / active）自 1.1.0 起纳入常驻断言，`caomei` `primary-solid` 以 4.0 下限留痕。要求 AA 的项目改用默认预设或覆盖对应 token |
+| 品牌预设的既有对比度缺口 | `caomei` `primary-solid` 4.17（`-solid` 配对唯一例外）；例如，亮色下把非 `-solid` 的 `--caomei-color-success` 直接作实底并配白字时，推算值为 2.279 / 2.643 / 3.045（库内无该配对消费点） | 既有品牌裁定保留，本版未修复也未恶化；`-solid` 配对（默认 / hover / active）自 1.1.0 起纳入常驻断言，`caomei` `primary-solid` 以 4.0 下限留痕。要求 AA 的项目改用默认预设或覆盖对应 token |
 | Calendar / RichTextEditor 的交互边界 | 上 / 下月导航按钮与编辑器容器描边 < 3:1 | 未纳入本次对比度断言面；有非文本对比度要求时自行覆盖并复核 |
 | Chromium-only 回归 | 常驻 390 / 768 / 1280（另 320 / 900 定向档）；375px 仅画廊与 DataTable 键盘滚动专项；Firefox / WebKit 未纳入 | 升级后在目标内核自测；不要把 Chromium 结论外推为三内核一致 |
 | 禁用态豁免 | 按 WCAG 1.4.3 / 1.4.11 豁免 | 禁用态对比度不作保证；不要把禁用态纳入对比度验收 |
@@ -59,31 +46,22 @@
 
 ## 升级检查表
 
-- [ ] 读目标版本 CHANGELOG 的 `BREAKING CHANGES` / 升级注意 / 已知限制，并记录当前锁定版本与下游 revision；
+- [ ] 读目标版本 CHANGELOG 的 `BREAKING CHANGES` / 升级注意 / 已知限制，并记录当前锁定版本与业务仓库 revision；
 - [ ] 精确锁定目标版本（不用 `^` / `~` 跨 minor），升级单独提交，避免与功能改动混在一起；
 - [ ] Node 升到 22 及以上；
 - [ ] 检索 `DataTable` 的 `selectAll` / `lazy` / `rowKey` 用法，确认全选语义与跨页选择符合预期；
 - [ ] 检索 `--caomei-color-border` 与语义色文本覆盖，切到 `control-border` / `*-text`；
 - [ ] 非 `zh-CN` / `en-US` 的语言改用 `caomei-ui/locale/<code>` + `registerLocale()`；
 - [ ] 使用 Tooltip 时在应用根部放置 `CaomeiTooltipProvider`；
-- [ ] 复跑下游 `typecheck` 与 `build`（与下游兼容检查同口径）；
+- [ ] 在业务仓库复跑 `typecheck` 与 `build`；
 - [ ] 重跑视觉回归 / 计算样式断言；颜色差异按新角色归因，不直接放宽阈值；
-- [ ] 在升级记录中写明版本、下游 revision、验证结果与未覆盖项。
+- [ ] 在升级记录中写明版本、业务仓库 revision、验证结果与未覆盖项。
 
-## 下游反馈与边界
+## 适用范围
 
-### 已回传的反馈
+本页只说明库侧的升级影响。页面级迁移、运行时验证与视觉回归由使用方在自己的项目中完成；不同项目的升级节奏与验证范围可能不同。
 
-- **momei**：`0.7.0`（2026-10-24）确认 `theme.css` 与已消费运行时零变化、组件清单 81 → 95；`1.0.0-rc.1`（2026-11-01）补接 5 个 `-color-*-text`、`control-border` 采用库默认、重采 10 张视觉基线；`1.0.0`（2026-11-03）实测 GA 与 rc.1 的 `.js` / `.mjs` / `.css` / `.vue` 产物逐字节一致，`dist/styles/index.css` sha256 相同，差异仅在 `package.json`、README 与 28 个 `.d.ts` 的成员顺序；`visual` 18/18、`parity` 34/34、`typecheck` / `lint` 0 error、全量 5,142 passed / 1 skipped。
-- **dependfix**：`1.0.0-rc.1` 升级（2026-10-30）精确钉定、覆盖 `--caomei-color-primary-text`，并因 `control-border` 与 `-text` 角色重建 19 张视觉基线；`v1.0.0` tag 的下游检查 run `41482763157` 为 success。
-- **本仓**：`v1.0.0` 下游检查只覆盖 `typecheck` + `build`，不含 e2e、视觉回归与全量单测。
-
-### 缺口与边界声明
-
-- **momei 未回传的部分**：momei 的第 69 阶段已于 2026-11-03 完成并归档（浮层族页面结果已回传），**第 70–71 阶段的页面迁移后升级反馈尚未回传**；本页不把 momei 的三次升级复测当作 1.0 的全量验收。momei 也未接入本仓 `downstream-compat.yml` 的 matrix（[Backlog](../plan/backlog.md) §1.8 条件候选），因此 1.0 的下游兼容证据只来自 dependfix。
-- **dependfix 未回传的部分**：快照时仍为 `1.0.0-rc.1`，GA 升级后的页面级反馈**尚未回传**；其 19 张基线重建只证明 rc.1 的 token 角色影响，不等同 GA 的全量回归。
-- **本仓边界**：下游迁移由各自仓库执行，本仓只维护库侧升级说明与版本读数快照，不代替下游做页面级验证；未在 CHANGELOG 声明的行为不在本页承诺。
-- **时点边界**：版本快照为 2026-11-04 的 `master` HEAD；下游之后的新提交可能已改变锁定版本，升级前请重新核对。
+例如：先确认实际锁定版本（如 `pnpm why caomei-ui`），再在业务仓库复跑 `typecheck` / `build` 与视觉回归，并把版本、revision 与结果记录到自己的升级记录中。
 
 ## 相关阅读
 

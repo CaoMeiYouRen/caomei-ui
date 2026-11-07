@@ -61,6 +61,7 @@ import {
     CaomeiTabContent,
     CaomeiTag,
     CaomeiTextarea,
+    CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
     CaomeiToolbarButton,
@@ -76,6 +77,7 @@ import {
     CaomeiSubMenu,
     useConfirm,
 } from '@/index'
+import ToastContrastDriver from './toast-contrast-driver.vue'
 
 /*
  * E2E 夹具：为响应式设计 §4 的断言提供可复现的被测形态。
@@ -520,6 +522,12 @@ const ConfirmDriver = defineComponent({
                     {{ action }}
                 </CaomeiButton>
             </CaomeiButtonGroup>
+        </section>
+
+        <section id="toast-contrast" class="fixture__case">
+            <CaomeiToastProvider>
+                <ToastContrastDriver />
+            </CaomeiToastProvider>
         </section>
 
         <section id="scroll-split-button" class="fixture__case">

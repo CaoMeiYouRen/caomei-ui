@@ -413,6 +413,15 @@ export const OVERLAY_SAMPLES = [
  */
 export const TOAST_SAMPLES = [
     { key: 'toast.viewport', selector: '[data-cap="toast:viewport"] .caomei-toast-viewport', props: TOAST_VIEWPORT_PROPS },
+    /**
+     * 逐语气覆盖钩子的解析链：4 个语气各自就地覆盖 4 个钩子，计算样式必须逐项命中覆盖值。
+     * 单一语气取样无法区分「钩子接错变量」与「回退默认值」，故按语气逐项冻结。
+     */
+    ...['primary', 'success', 'warning', 'danger'].map((tone) => ({
+        key: `toast.tokens.${tone}`,
+        selector: `[data-cap="toast:tokens"] .caomei-toast--${tone}`,
+        props: TOAST_ROOT_PROPS,
+    })),
     ...TOAST_TONES.flatMap((tone) => [
         { key: `toast.${tone}.root`, selector: `[data-cap="toast:viewport"] .caomei-toast--${tone}`, props: TOAST_ROOT_PROPS },
         { key: `toast.${tone}.icon`, selector: `[data-cap="toast:viewport"] .caomei-toast--${tone} .caomei-toast__icon`, props: ['color'] },

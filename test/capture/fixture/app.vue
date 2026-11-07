@@ -516,6 +516,45 @@ ui.setDialog = (size, open) => {
             </CaomeiToastProvider>
         </section>
 
+        <!--
+          11b. Toast 逐语气覆盖钩子：静态复刻 toast 根节点并就地覆盖各语气的 4 个钩子，
+          用于证明 `--caomei-toast-{tone}-{bg,border,text,shadow}` 的解析链确实落到计算样式。
+        -->
+        <section data-cap="toast:tokens">
+            <div
+                class="caomei-toast caomei-toast--primary"
+                style="--caomei-toast-primary-bg: rgb(200, 210, 220); --caomei-toast-primary-border: rgb(10, 20, 30); --caomei-toast-primary-text: rgb(40, 50, 60); --caomei-toast-primary-shadow: 0 0 0 1px rgb(70, 80, 90);"
+            >
+                <span class="caomei-toast__content">
+                    <span class="caomei-toast__title">primary 覆盖</span>
+                </span>
+            </div>
+            <div
+                class="caomei-toast caomei-toast--success"
+                style="--caomei-toast-success-bg: rgb(201, 211, 221); --caomei-toast-success-border: rgb(11, 21, 31); --caomei-toast-success-text: rgb(41, 51, 61); --caomei-toast-success-shadow: 0 0 0 1px rgb(71, 81, 91);"
+            >
+                <span class="caomei-toast__content">
+                    <span class="caomei-toast__title">success 覆盖</span>
+                </span>
+            </div>
+            <div
+                class="caomei-toast caomei-toast--warning"
+                style="--caomei-toast-warning-bg: rgb(202, 212, 222); --caomei-toast-warning-border: rgb(12, 22, 32); --caomei-toast-warning-text: rgb(42, 52, 62); --caomei-toast-warning-shadow: 0 0 0 1px rgb(72, 82, 92);"
+            >
+                <span class="caomei-toast__content">
+                    <span class="caomei-toast__title">warning 覆盖</span>
+                </span>
+            </div>
+            <div
+                class="caomei-toast caomei-toast--danger"
+                style="--caomei-toast-danger-bg: rgb(203, 213, 223); --caomei-toast-danger-border: rgb(13, 23, 33); --caomei-toast-danger-text: rgb(43, 53, 63); --caomei-toast-danger-shadow: 0 0 0 1px rgb(73, 83, 93);"
+            >
+                <span class="caomei-toast__content">
+                    <span class="caomei-toast__title">danger 覆盖</span>
+                </span>
+            </div>
+        </section>
+
         <!-- 12. 锚定浮层面板：浮层视觉契约的面板背景 / 圆角 / 阴影（由采样脚本逐个开合） -->
         <section>
             <div class="case" data-cap="panel:select">

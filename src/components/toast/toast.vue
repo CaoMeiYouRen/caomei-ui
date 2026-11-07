@@ -208,29 +208,55 @@ function onOpenChange(id: string, open: boolean): void {
     gap: var(--caomei-space-2);
     box-sizing: border-box;
     padding: var(--caomei-space-3);
-    border: 1px solid var(--caomei-color-border);
+    border: 1px solid var(--caomei-toast-tone-border, var(--caomei-color-border));
     border-left: 3px solid var(--caomei-toast-accent, var(--caomei-color-text-muted));
     border-radius: var(--caomei-radius-md);
-    background: var(--caomei-color-bg-elevated);
-    color: var(--caomei-color-text);
-    box-shadow: var(--caomei-shadow-md);
+    background: var(--caomei-toast-tone-bg, var(--caomei-color-bg-elevated));
+    color: var(--caomei-toast-tone-text, var(--caomei-color-text));
+    box-shadow: var(--caomei-toast-tone-shadow, var(--caomei-shadow-md));
     pointer-events: auto;
 }
 
+/*
+  逐语气覆盖钩子（`--caomei-toast-{tone}-{bg,border,text,shadow}`）：
+  `:where()` 语气块只声明中间变量，基类以 `var(中间变量, 全局 token)` 消费——保持 0 特异性、
+  不压过使用方的单类覆盖（下游 `.caomei-toast--success { background-color: … }` 仍生效）。
+  未覆盖时逐属性解析到全局 token，与改动前逐值一致；`neutral` 不设专属钩子。
+
+  作用域：`-text` 作用于根文本（标题及继承文本）；描述固定 `--caomei-color-text-muted`，
+  操作按钮固定 `--caomei-color-primary-text`，两者不受本钩子控制。
+  `-border` 只接受**颜色值**（作用于外框三边）；左侧强调条始终由 `--caomei-toast-accent` 控制。
+*/
 :where(.caomei-toast--primary) {
     --caomei-toast-accent: var(--caomei-color-primary);
+    --caomei-toast-tone-bg: var(--caomei-toast-primary-bg, var(--caomei-color-bg-elevated));
+    --caomei-toast-tone-border: var(--caomei-toast-primary-border, var(--caomei-color-border));
+    --caomei-toast-tone-text: var(--caomei-toast-primary-text, var(--caomei-color-text));
+    --caomei-toast-tone-shadow: var(--caomei-toast-primary-shadow, var(--caomei-shadow-md));
 }
 
 :where(.caomei-toast--success) {
     --caomei-toast-accent: var(--caomei-color-success);
+    --caomei-toast-tone-bg: var(--caomei-toast-success-bg, var(--caomei-color-bg-elevated));
+    --caomei-toast-tone-border: var(--caomei-toast-success-border, var(--caomei-color-border));
+    --caomei-toast-tone-text: var(--caomei-toast-success-text, var(--caomei-color-text));
+    --caomei-toast-tone-shadow: var(--caomei-toast-success-shadow, var(--caomei-shadow-md));
 }
 
 :where(.caomei-toast--warning) {
     --caomei-toast-accent: var(--caomei-color-warning);
+    --caomei-toast-tone-bg: var(--caomei-toast-warning-bg, var(--caomei-color-bg-elevated));
+    --caomei-toast-tone-border: var(--caomei-toast-warning-border, var(--caomei-color-border));
+    --caomei-toast-tone-text: var(--caomei-toast-warning-text, var(--caomei-color-text));
+    --caomei-toast-tone-shadow: var(--caomei-toast-warning-shadow, var(--caomei-shadow-md));
 }
 
 :where(.caomei-toast--danger) {
     --caomei-toast-accent: var(--caomei-color-danger);
+    --caomei-toast-tone-bg: var(--caomei-toast-danger-bg, var(--caomei-color-bg-elevated));
+    --caomei-toast-tone-border: var(--caomei-toast-danger-border, var(--caomei-color-border));
+    --caomei-toast-tone-text: var(--caomei-toast-danger-text, var(--caomei-color-text));
+    --caomei-toast-tone-shadow: var(--caomei-toast-danger-shadow, var(--caomei-shadow-md));
 }
 
 .caomei-toast[data-state='open'] {

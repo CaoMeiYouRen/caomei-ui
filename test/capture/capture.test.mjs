@@ -3,7 +3,7 @@ import { BUTTON_STATE_PROPS, BUTTON_STATE_SAMPLES, chromiumArgs, declaredKeys, H
 import { diffEntries, formatDiffs } from './diff.mjs'
 
 /** 受检面基线规模：新增 / 删除采样项必须同步此值，使「收窄受检范围」在 diff 中显式可见。 */
-const DECLARED_KEY_BUDGET = 378
+const DECLARED_KEY_BUDGET = 386
 
 describe('采样面声明', () => {
     it('样本键唯一且与预算一致', () => {

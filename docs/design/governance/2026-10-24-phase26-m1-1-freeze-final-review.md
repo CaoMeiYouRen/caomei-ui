@@ -79,6 +79,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-11-07 增量（Toast 逐语气 token）**：新增 16 个公开覆盖钩子 `--caomei-toast-{primary,success,warning,danger}-{bg,border,text,shadow}`（均无默认声明）与 4 个内部中间变量 `--caomei-toast-tone-{bg,border,text,shadow}`（有默认声明）；`neutral` 沿用全局 token。默认声明集合 **156 → 160**，组件页披露钩子 **290 → 307**（16 个新钩子 + `--caomei-color-primary-text` 在 Toast「样式定制」小节被引用），交集 **65 → 66**，有效冻结面 **381 → 401**；消费面 / 未披露拆分同步为 **426 / 119**（含已声明 94 / 纯内部 25）；该增量含 2026-11-04 Form 组合层当时未同步的 `--caomei-form-*` 等项，Toast 自身贡献为 16 个披露钩子 + 4 个内部中间变量。复算命令同 §2.4。
 
+> **2026-11-07 增量（DataTable 密度与选择列 token）**：新增 4 个公开覆盖钩子 `--caomei-data-table-{cell-padding-block,cell-padding-inline,selection-column-width,selection-cell-padding-inline}`（均无默认声明）。默认声明集合保持 **160**、有效冻结面保持 **401**（披露前）；消费面 / 未披露拆分由 **426 / 119** 更新为 **430 / 123**（含已声明 94 / 纯内部 29）。M3-2 文档披露后按 **405**（160 ∪ 311，交集 66）复算。复算命令同 §2.4。
+
 ### 2.4 token 契约（用户 2026-10-24 裁定）
 
 **裁定：取「全量 146 + 已披露覆盖钩子」**，不取「全局 68」。

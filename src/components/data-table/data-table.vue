@@ -1096,7 +1096,7 @@ function setPageSize(rows: number): void {
 
 .caomei-data-table__th,
 .caomei-data-table__td {
-    padding: var(--caomei-space-2) var(--caomei-space-3);
+    padding: var(--caomei-data-table-cell-padding-block, var(--caomei-space-2)) var(--caomei-data-table-cell-padding-inline, var(--caomei-space-3));
     border-bottom: 1px solid var(--caomei-data-table-border, var(--caomei-color-border));
     text-align: left;
     vertical-align: middle;
@@ -1161,8 +1161,8 @@ function setPageSize(rows: number): void {
 }
 
 .caomei-data-table__select-cell {
-    width: 1%;
-    padding-inline: var(--caomei-space-2);
+    width: var(--caomei-data-table-selection-column-width, 1%);
+    padding-inline: var(--caomei-data-table-selection-cell-padding-inline, var(--caomei-space-2));
     text-align: center;
     white-space: nowrap;
 }
@@ -1204,7 +1204,7 @@ function setPageSize(rows: number): void {
 
 /* 分组标题行：横跨全部数据列；不参与冻结列吸边（单一跨列单元格无法逐列吸附） */
 .caomei-data-table__row-group > .caomei-data-table__row-group-cell {
-    padding: var(--caomei-space-2) var(--caomei-space-3);
+    padding: var(--caomei-data-table-cell-padding-block, var(--caomei-space-2)) var(--caomei-data-table-cell-padding-inline, var(--caomei-space-3));
     border-bottom: 1px solid var(--caomei-data-table-border, var(--caomei-color-border));
     background: var(--caomei-data-table-group-bg, var(--caomei-color-bg-elevated));
     color: var(--caomei-color-text);
@@ -1252,7 +1252,7 @@ function setPageSize(rows: number): void {
 
 /* 展开区：横跨全部数据列（含展开列与选择列），不参与冻结列吸边 */
 .caomei-data-table__row-expansion > .caomei-data-table__row-expansion-cell {
-    padding: var(--caomei-space-2) var(--caomei-space-3);
+    padding: var(--caomei-data-table-cell-padding-block, var(--caomei-space-2)) var(--caomei-data-table-cell-padding-inline, var(--caomei-space-3));
     border-bottom: 1px solid var(--caomei-data-table-border, var(--caomei-color-border));
     background: var(--caomei-data-table-expansion-bg, var(--caomei-color-bg-elevated));
     color: var(--caomei-color-text);
@@ -1261,7 +1261,7 @@ function setPageSize(rows: number): void {
 
 .caomei-data-table__empty,
 .caomei-data-table__loading {
-    padding: calc(var(--caomei-space-4) + var(--caomei-space-2)) var(--caomei-space-3);
+    padding: calc(var(--caomei-space-4) + var(--caomei-data-table-cell-padding-block, var(--caomei-space-2))) var(--caomei-data-table-cell-padding-inline, var(--caomei-space-3));
     color: var(--caomei-color-text-muted);
     text-align: center;
 }

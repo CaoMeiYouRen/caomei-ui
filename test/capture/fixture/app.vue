@@ -667,6 +667,40 @@ ui.setDialog = (size, open) => {
                     row-key="name"
                 />
             </div>
+
+            <!-- 密度与选择列 token：默认值 / 空态 / 就地覆盖三组 -->
+            <div class="case" data-cap="data-table:tokens">
+                <CaomeiDataTable
+                    :columns="sortColumns"
+                    :data="sortRows"
+                    row-key="name"
+                    selection-mode="multiple"
+                />
+            </div>
+            <div class="case" data-cap="data-table:empty">
+                <CaomeiDataTable
+                    :columns="sortColumns"
+                    :data="[]"
+                    empty-text="暂无数据"
+                />
+            </div>
+            <div
+                class="case"
+                data-cap="data-table:tokens-override"
+                style="--caomei-data-table-cell-padding-block: 12px; --caomei-data-table-cell-padding-inline: 20px; --caomei-data-table-selection-column-width: 64px; --caomei-data-table-selection-cell-padding-inline: 10px;"
+            >
+                <CaomeiDataTable
+                    :columns="sortColumns"
+                    :data="sortRows"
+                    row-key="name"
+                    selection-mode="multiple"
+                />
+                <CaomeiDataTable
+                    :columns="sortColumns"
+                    :data="[]"
+                    empty-text="暂无数据"
+                />
+            </div>
         </section>
 
         <!-- 14. 登记点名项：Button rounded / Calendar 选中与今日 -->

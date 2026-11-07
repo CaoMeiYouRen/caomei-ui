@@ -185,6 +185,10 @@ const PASSWORD_METER_PROPS = ['height', 'border-top-left-radius']
  */
 const PASSWORD_FILL_PROPS = ['background-color']
 const DATA_TABLE_CELL_PROPS = ['border-bottom-color']
+/** DataTable 密度 / 选择列覆盖钩子：块级与行内内边距、选择列宽度与选择格行内距。 */
+const DATA_TABLE_PADDING_PROPS = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
+const DATA_TABLE_SELECT_PROPS = ['width', 'padding-left', 'padding-right']
+const DATA_TABLE_EMPTY_PROPS = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
 const CARD_VARIANTS = ['outlined', 'elevated', 'filled']
 const PASSWORD_LEVELS = ['weak', 'medium', 'strong']
 
@@ -285,6 +289,16 @@ function buildStaticSamples() {
     add('data-table.th', '[data-cap="data-table:sort"] .caomei-data-table__th', DATA_TABLE_CELL_PROPS)
     add('data-table.td', '[data-cap="data-table:sort"] .caomei-data-table__td', DATA_TABLE_CELL_PROPS)
     add('data-table.sort-icon', '[data-cap="data-table:sort"] .caomei-data-table__sort-icon', ['color'])
+
+    // 密度与选择列 token：默认值 / 覆盖值 / 空态（覆盖值须逐项命中，证明钩子接对）
+    add('data-table.tokens.th', '[data-cap="data-table:tokens"] .caomei-data-table__th:not(.caomei-data-table__select-cell)', DATA_TABLE_PADDING_PROPS)
+    add('data-table.tokens.td', '[data-cap="data-table:tokens"] .caomei-data-table__td:not(.caomei-data-table__select-cell)', DATA_TABLE_PADDING_PROPS)
+    add('data-table.tokens.select', '[data-cap="data-table:tokens"] .caomei-data-table__select-cell', DATA_TABLE_SELECT_PROPS)
+    add('data-table.tokens.empty', '[data-cap="data-table:empty"] .caomei-data-table__empty', DATA_TABLE_EMPTY_PROPS)
+    add('data-table.override.th', '[data-cap="data-table:tokens-override"] .caomei-data-table__th:not(.caomei-data-table__select-cell)', DATA_TABLE_PADDING_PROPS)
+    add('data-table.override.td', '[data-cap="data-table:tokens-override"] .caomei-data-table__td:not(.caomei-data-table__select-cell)', DATA_TABLE_PADDING_PROPS)
+    add('data-table.override.select', '[data-cap="data-table:tokens-override"] .caomei-data-table__select-cell', DATA_TABLE_SELECT_PROPS)
+    add('data-table.override.empty', '[data-cap="data-table:tokens-override"] .caomei-data-table__empty', DATA_TABLE_EMPTY_PROPS)
 
     // 登记点名项：Button rounded / Calendar 选中与今日 / ColorPicker 触发器方形 / SplitButton 拼接
     add('button.rounded', '[data-cap="button-rounded"] .caomei-button', ['border-top-left-radius'])

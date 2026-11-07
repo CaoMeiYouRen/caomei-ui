@@ -76,7 +76,7 @@ PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) f
 
 **Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` only controls the date/calendar language and is independent of the built-in text language — pass it explicitly when they must match.
 
-**Not implemented**: `selectionMode` (`multiple` / `range`; one real `range` use case in caomei-auth login-log filtering (issue #28), candidate awaiting decision — see §7 and the [Backlog](/plan/backlog), Chinese), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding.
+**Not implemented**: `selectionMode` (`range` is registered for implementation in Phase 28 M1-1 and is pending; `multiple` stays out of scope (no downstream use case, no Backlog entry); one real `range` use case in caomei-auth login-log filtering, issue #28), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

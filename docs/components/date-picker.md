@@ -76,7 +76,7 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 
 **已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入。
 
-**未实现**：`selectionMode`（`multiple` / `range` 多选与范围；caomei-auth 登录日志筛选 1 处 `range` 真实用例（issue #28），候选待决策，见 §7 与 [Backlog](../plan/backlog.md) §1.1）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
+**未实现**：`selectionMode`（`range` 已登记 Phase 28 M1-1，待执行；`multiple` 维持范围外（无下游用例，未立候选）；caomei-auth 登录日志筛选 1 处 `range` 真实用例见 issue #28）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

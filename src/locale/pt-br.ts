@@ -37,6 +37,9 @@ const ptBR: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: 'Data',
+        range: 'Intervalo de datas',
+        rangeStart: 'Início',
+        rangeEnd: 'Fim',
         time: 'Hora',
         hour: 'Hora',
         minute: 'Minuto',

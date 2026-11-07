@@ -130,6 +130,8 @@ comm -23 tokens-consumed-undocumented.txt tokens-defined.txt | wc -l
 - **冻结语义**：命名空间名称、既有键的名称与语义冻结；**新增**键属向后兼容增量；删除 / 重命名既有键属破坏性变更。预注册集合的改变（扩大或缩小）属破坏性变更。
 - **复算命令**：`ls src/locale/*.ts | grep -v -E "index|types" | wc -l` → 10；命名空间 / 键计数：`node -e "const fs=require('fs'),f=fs.readFileSync('src/locale/zh-cn.ts','utf8');console.log((f.match(/^ {4}[a-zA-Z0-9_]+:/gm)||[]).length,(f.match(/^ {8}[a-zA-Z0-9_]+:/gm)||[]).length)"` → 28 / 80。`check:locale-keys` 负责跨语一致性与分发对应，绝对计数以本记录复算值为准。
 
+> **2026-11-07 增量（DatePicker 范围选择）**：`datePicker` 命名空间新增 `range` / `rangeStart` / `rangeEnd` 三键（10 语同步），属向后兼容增量；每语文案键由 **80** 更新为 **83**（命名空间数与语言数不变，预注册集合不变）。复算同上方命令，期望读数 28 / 83。
+
 ### 2.6 `InputNumber` 的 `step` 语义（按 `reka-ui` 2.10.4 冻结）
 
 `reka-ui` 版本固定为 **2.10.4**（`package.json` 的 `dependencies`）。当前语义：

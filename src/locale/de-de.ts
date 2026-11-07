@@ -37,6 +37,9 @@ const deDE: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: 'Datum',
+        range: 'Datumsbereich',
+        rangeStart: 'Start',
+        rangeEnd: 'Ende',
         time: 'Zeit',
         hour: 'Stunde',
         minute: 'Minute',

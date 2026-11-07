@@ -37,6 +37,9 @@ const jaJP: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: '日付',
+        range: '日付範囲',
+        rangeStart: '開始',
+        rangeEnd: '終了',
         time: '時刻',
         hour: '時',
         minute: '分',

@@ -37,6 +37,9 @@ const koKR: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: '날짜',
+        range: '날짜 범위',
+        rangeStart: '시작',
+        rangeEnd: '종료',
         time: '시간',
         hour: '시',
         minute: '분',

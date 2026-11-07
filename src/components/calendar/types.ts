@@ -1,4 +1,5 @@
 import type { DateValue } from '@internationalized/date'
+import type { DateRangeValue } from '../_shared/date'
 
 /** Reka 日历网格：按月分组，`rows` 为按周切分的日期（与 reka-ui 的 `Grid<T>` 结构一致） */
 export interface CalendarGrid {
@@ -11,6 +12,11 @@ export interface CalendarViewProps {
     weekDays: string[]
     /** 月份网格 */
     grid: CalendarGrid[]
+    /**
+     * 是否按范围日历渲染：仅切换 Reka 的单元格 primitive（`RangeCalendar*`），
+     * 网格 / 表头 / 翻页结构与样式保持同一份实现。
+     */
+    range?: boolean
 }
 
 export interface CalendarProps {
@@ -94,3 +100,35 @@ export interface CalendarProps {
  * 供 `CaomeiCalendar` 与 `CaomeiDatePicker` 复用同一份 Root 接线，避免两处漂移。
  */
 export type CalendarPanelProps = CalendarProps
+
+/**
+ * 内部范围日历面板（`RangeCalendarRoot` + 同一呈现层）的 props。
+ *
+ * 供 `CaomeiDatePicker` 的 `selectionMode="range"` 使用；只保留与区间选择相关的项，
+ * 不提供的项依赖 Reka 默认值。`showTime` 不在范围模式下支持（见 DatePicker 文档）。
+ */
+export interface CalendarRangePanelProps {
+    /** 可选最早日期 */
+    minValue?: Date
+    /** 可选最晚日期 */
+    maxValue?: Date
+    /** 是否禁用 */
+    disabled?: boolean
+    /** 是否只读（可聚焦但不可改值） */
+    readonly?: boolean
+    /** 日期格式化与文案语言（BCP 47） */
+    locale?: string
+    /** 每周起始日，0 为周日 */
+    weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+    /** 星期表头格式 */
+    weekdayFormat?: 'narrow' | 'short' | 'long'
+    /** 固定 6 行，避免月份切换时高度跳动 */
+    fixedWeeks?: boolean
+    /** 禁止取消已选日期（再次点击不会清空） */
+    preventDeselect?: boolean
+    /** 日历容器的可访问名；优先级为「本 prop > 透传 `aria-label` > 当前语言的「日历」」 */
+    label?: string
+}
+
+/** 范围面板对外抛出的闭区间（两端齐全才抛出） */
+export type CalendarRangeValue = DateRangeValue

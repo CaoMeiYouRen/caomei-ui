@@ -37,6 +37,9 @@ const ruRU: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: 'Дата',
+        range: 'Диапазон дат',
+        rangeStart: 'Начало',
+        rangeEnd: 'Конец',
         time: 'Время',
         hour: 'Час',
         minute: 'Минута',

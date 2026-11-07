@@ -1,4 +1,5 @@
 import type { ComponentSize } from '../../types'
+import type { DateRangeValue } from '../_shared/date'
 
 /** 时间三段（时 / 分 / 秒），供内部时间输入使用 */
 export interface TimeParts {
@@ -7,7 +8,28 @@ export interface TimeParts {
     second: number
 }
 
+/** 范围选择值：已完成的闭区间（开始、结束） */
+export type DatePickerRange = DateRangeValue
+
+/** 选择模式：单日期或日期区间 */
+export type DatePickerSelectionMode = 'single' | 'range'
+
+/**
+ * 组件模型：`single` 为原生 `Date`，`range` 为 `[Date, Date]` 闭区间；未选择时为 `null`。
+ *
+ * 类型为联合而非按 `selectionMode` 收窄：`selectionMode` 是运行期 prop，无法在消费方
+ * 静态窄化模型类型；`single` 用法请把绑定值声明为 `Date | null` 之外的联合（见组件页说明）。
+ */
+export type DatePickerModelValue = Date | DatePickerRange | null
+
 export interface DatePickerProps {
+    /**
+     * 选择模式：`single` 单选日期，`range` 选择日期区间
+     * @default 'single'
+     * @en Selection mode: `single` for one date, `range` for a date interval
+     */
+    selectionMode?: DatePickerSelectionMode
+
     /**
      * 可选最早日期
      * @en Earliest selectable date
@@ -60,9 +82,9 @@ export interface DatePickerProps {
      */
     showIcon?: boolean
     /**
-     * 是否在面板中选择时间（时 / 分，可选秒）
+     * 是否在面板中选择时间（时 / 分，可选秒）；`selectionMode="range"` 时不支持（日期区间只含日期，时间部分被忽略）
      * @default false
-     * @en Whether to pick a time (hour / minute, optionally seconds) in the panel
+     * @en Whether to pick a time (hour / minute, optionally seconds) in the panel; not supported when `selectionMode="range"` (a range only carries dates, the time part is ignored)
      */
     showTime?: boolean
     /**

@@ -43,6 +43,9 @@ export interface CaomeiLocaleMessages {
     }
     datePicker: {
         label: string
+        range: string
+        rangeStart: string
+        rangeEnd: string
         time: string
         hour: string
         minute: string

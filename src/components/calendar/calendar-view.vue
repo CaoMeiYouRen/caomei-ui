@@ -11,75 +11,123 @@ import {
     CalendarHeading,
     CalendarNext,
     CalendarPrev,
+    RangeCalendarCell,
+    RangeCalendarCellTrigger,
+    RangeCalendarGrid,
+    RangeCalendarGridBody,
+    RangeCalendarGridHead,
+    RangeCalendarGridRow,
+    RangeCalendarHeadCell,
+    RangeCalendarHeading,
+    RangeCalendarNext,
+    RangeCalendarPrev,
 } from 'reka-ui'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import type { CalendarViewProps } from './types'
 
-// 呈现层：仅消费祖先 CalendarRoot / DatePickerCalendar 提供的日历上下文
+// 呈现层：仅消费祖先 CalendarRoot / RangeCalendarRoot 提供的日历上下文。
+// 单日期与范围两族 primitive 的结构与 props 逐项一致，差异只在单元格注入的上下文；
+// 故用同一份标记与样式，按 `range` 切换组件族，避免两套 DOM / 样式漂移。
 defineOptions({ name: 'CaomeiCalendarView' })
 
-defineProps<CalendarViewProps>()
+const props = defineProps<CalendarViewProps>()
 
 const locale = useLocale()
 const prevLabel = computed(() => locale.value.calendar.prev)
 const nextLabel = computed(() => locale.value.calendar.next)
+
+const parts = computed(() => (props.range
+    ? {
+            cell: RangeCalendarCell,
+            trigger: RangeCalendarCellTrigger,
+            grid: RangeCalendarGrid,
+            gridHead: RangeCalendarGridHead,
+            gridBody: RangeCalendarGridBody,
+            gridRow: RangeCalendarGridRow,
+            headCell: RangeCalendarHeadCell,
+            heading: RangeCalendarHeading,
+            prev: RangeCalendarPrev,
+            next: RangeCalendarNext,
+        }
+    : {
+            cell: CalendarCell,
+            trigger: CalendarCellTrigger,
+            grid: CalendarGrid,
+            gridHead: CalendarGridHead,
+            gridBody: CalendarGridBody,
+            gridRow: CalendarGridRow,
+            headCell: CalendarHeadCell,
+            heading: CalendarHeading,
+            prev: CalendarPrev,
+            next: CalendarNext,
+        }))
 </script>
 
 <template>
     <div class="caomei-calendar__header">
-        <CalendarPrev
+        <component
+            :is="parts.prev"
             class="caomei-calendar__nav"
             :aria-label="prevLabel"
         >
             <CaomeiIcon :icon="ChevronLeft" />
-        </CalendarPrev>
-        <CalendarHeading class="caomei-calendar__heading" />
-        <CalendarNext
+        </component>
+        <component
+            :is="parts.heading"
+            class="caomei-calendar__heading"
+        />
+        <component
+            :is="parts.next"
             class="caomei-calendar__nav"
             :aria-label="nextLabel"
         >
             <CaomeiIcon :icon="ChevronRight" />
-        </CalendarNext>
+        </component>
     </div>
-    <CalendarGrid
+    <component
+        :is="parts.grid"
         v-for="month in grid"
         :key="month.value.toString()"
         class="caomei-calendar__grid"
     >
-        <CalendarGridHead>
-            <CalendarGridRow>
-                <CalendarHeadCell
+        <component :is="parts.gridHead">
+            <component :is="parts.gridRow">
+                <component
+                    :is="parts.headCell"
                     v-for="weekDay in weekDays"
                     :key="weekDay"
                     scope="col"
                     class="caomei-calendar__weekday"
                 >
                     {{ weekDay }}
-                </CalendarHeadCell>
-            </CalendarGridRow>
-        </CalendarGridHead>
-        <CalendarGridBody>
-            <CalendarGridRow
+                </component>
+            </component>
+        </component>
+        <component :is="parts.gridBody">
+            <component
+                :is="parts.gridRow"
                 v-for="(week, index) in month.rows"
                 :key="index"
             >
-                <CalendarCell
+                <component
+                    :is="parts.cell"
                     v-for="day in week"
                     :key="day.toString()"
                     :date="day"
                     class="caomei-calendar__cell"
                 >
-                    <CalendarCellTrigger
+                    <component
+                        :is="parts.trigger"
                         :day="day"
                         :month="month.value"
                         class="caomei-calendar__day"
                     />
-                </CalendarCell>
-            </CalendarGridRow>
-        </CalendarGridBody>
-    </CalendarGrid>
+                </component>
+            </component>
+        </component>
+    </component>
 </template>
 
 <style scoped>
@@ -176,6 +224,25 @@ const nextLabel = computed(() => locale.value.calendar.next)
 .caomei-calendar__day[data-selected] {
     background: var(--caomei-color-primary);
     color: var(--caomei-color-primary-foreground);
+}
+
+/*
+  区间内的日期（Reka 对区间内每一天都置 `data-selected`）：用浅色带表达「已选区间」，
+  仅两端保留实底主色，使起点 / 终点在视觉上可区分。单日期模式不产生 `data-selection-*`，
+  故不受影响。
+*/
+.caomei-calendar__day[data-selected]:not([data-selection-start], [data-selection-end]) {
+    background: color-mix(in srgb, var(--caomei-color-primary) 16%, transparent);
+}
+
+/* 区间内日期的文本色：跨月 / 禁用日仍由下方同名规则取 muted，避免被区间带压过 */
+.caomei-calendar__day[data-selected]:not([data-selection-start], [data-selection-end]):not([data-outside-view], [data-disabled]) {
+    color: var(--caomei-color-text);
+}
+
+/* 悬停预览：已选起点、尚未确定终点时的区间带（Reka `data-highlighted`） */
+.caomei-calendar__day[data-highlighted]:not([data-selected]) {
+    background: color-mix(in srgb, var(--caomei-color-primary) 10%, transparent);
 }
 
 .caomei-calendar__day[data-outside-view] {

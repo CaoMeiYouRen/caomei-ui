@@ -1,8 +1,9 @@
 import { DOMWrapper, mount } from '@vue/test-utils'
-import { computed, nextTick } from 'vue'
-import { afterEach, describe, expect, it } from 'vitest'
+import { computed, defineComponent, nextTick, ref } from 'vue'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
+import { expectSettled } from '../../../test/helpers/settle'
 import { CaomeiDatePicker } from './index'
 
 function mountPicker(props: Record<string, unknown> = {}) {
@@ -433,5 +434,288 @@ describe('CaomeiDatePicker', () => {
         })
         expect(forwarded.get('.caomei-date-picker').attributes('aria-label')).toBe('透传名')
         forwarded.unmount()
+    })
+
+})
+
+describe('CaomeiDatePicker selectionMode="range"', () => {
+    const range = [new Date(2026, 8, 10), new Date(2026, 8, 20)] as [Date, Date]
+    // 面板默认显示「今天」所在月；交互类用例以 9 月锚点区间把面板定位到受检月份
+    const anchor = [new Date(2026, 8, 1), new Date(2026, 8, 2)] as [Date, Date]
+
+    async function openPanel(trigger: () => Promise<unknown>): Promise<void> {
+        await trigger()
+        await expectSettled(() => {
+            expect(getContent().findAll('.caomei-calendar__day').length).toBeGreaterThan(0)
+        })
+    }
+
+    function cell(day: string): DOMWrapper<Element> {
+        return getContent().find(`[data-value='${day}']`)
+    }
+
+    /** 先 hover 再点击：Reka 以 focusedValue 判定第二次点击是「确定终点」而非「重设起点」 */
+    async function pick(day: string): Promise<void> {
+        await cell(day).trigger('mouseenter')
+        await cell(day).trigger('click')
+    }
+
+    function emittedRange(wrapper: ReturnType<typeof mountPicker>, index = 0): [Date, Date] {
+        return wrapper.emitted('update:modelValue')?.[index]?.[0] as [Date, Date]
+    }
+
+    it('按 dateFormat 展示闭区间文本', () => {
+        const wrapper = mountPicker({
+            selectionMode: 'range',
+            modelValue: range,
+            dateFormat: 'yy-mm-dd',
+        })
+
+        expect(wrapper.get('.caomei-date-picker').text()).toContain('26-09-10 – 26-09-20')
+
+        wrapper.unmount()
+    })
+
+    it('未选择时使用「日期范围」兜底可访问名', () => {
+        const wrapper = mountPicker({ selectionMode: 'range' })
+
+        expect(wrapper.get('.caomei-date-picker').attributes('aria-label')).toBe('日期范围')
+
+        wrapper.unmount()
+    })
+
+    it('已选区间时可访问名保留可见文本并补开始 / 结束语义', () => {
+        const wrapper = mountPicker({
+            selectionMode: 'range',
+            modelValue: range,
+            dateFormat: 'yy-mm-dd',
+        })
+        const trigger = wrapper.get('.caomei-date-picker')
+
+        // Label in Name（WCAG 2.5.3）：不得用 aria-label 覆盖可见区间文本
+        expect(trigger.attributes('aria-label')).toBeUndefined()
+        expect(trigger.text()).toContain('26-09-10 – 26-09-20')
+        expect(trigger.text()).toContain('开始 / 结束')
+
+        wrapper.unmount()
+    })
+
+    it('显式 label 与透传 aria-label 仍优先于区间兜底名', () => {
+        const labeled = mountPicker({ selectionMode: 'range', modelValue: range, label: '筛选区间' })
+        expect(labeled.get('.caomei-date-picker').attributes('aria-label')).toBe('筛选区间')
+        labeled.unmount()
+
+        const forwarded = mount(CaomeiDatePicker, {
+            props: { selectionMode: 'range' as const, modelValue: range },
+            attrs: { 'aria-label': '透传区间名' },
+            attachTo: document.body,
+        })
+        expect(forwarded.get('.caomei-date-picker').attributes('aria-label')).toBe('透传区间名')
+        forwarded.unmount()
+    })
+
+    it('依次点击起点与终点后抛出原生 Date 二元组并收起面板', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        await pick('2026-09-10')
+        // 只选到起点时不得写回模型（半开区间不对外），面板保持展开
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+            expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('true')
+        })
+
+        await pick('2026-09-20')
+        await expectSettled(() => {
+            expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('false')
+        })
+        const emitted = emittedRange(wrapper)
+        expect(Array.isArray(emitted)).toBe(true)
+        expect(emitted[0]).toBeInstanceOf(Date)
+        expect(emitted[1]).toBeInstanceOf(Date)
+        expect([emitted[0].getDate(), emitted[1].getDate()]).toEqual([10, 20])
+
+        wrapper.unmount()
+    })
+
+    it('受控 v-model 回写后区间保持', async () => {
+        const wrapper = mount(defineComponent({
+            components: { CaomeiDatePicker },
+            setup() {
+                const value = ref<[Date, Date] | null>(anchor)
+                return { value }
+            },
+            template: '<CaomeiDatePicker v-model="value" selection-mode="range" date-format="yy-mm-dd" />',
+        }), { attachTo: document.body })
+
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+        await pick('2026-09-10')
+        await pick('2026-09-20')
+        await expectSettled(() => {
+            expect(wrapper.get('.caomei-date-picker').text()).toContain('26-09-10 – 26-09-20')
+        })
+        expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('false')
+
+        // 回写后再次展开：端点仍按区间渲染（受控写回未把 Reka 内部起点清空）
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+        expect(cell('2026-09-10').attributes('data-selection-start')).toBeDefined()
+        expect(cell('2026-09-20').attributes('data-selection-end')).toBeDefined()
+
+        wrapper.unmount()
+    })
+
+    it('非受控（不传 modelValue）可完成区间选择', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', dateFormat: 'yy-mm-dd' })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        // 面板初始显示「今天」所在月；取当月前几个非跨月日期，避免依赖系统时钟
+        const days = getContent().findAll('.caomei-calendar__day:not([data-outside-view])')
+        const startCell = days[0]
+        const endCell = days[4]
+        const startValue = String(startCell.attributes('data-value'))
+
+        await startCell.trigger('mouseenter')
+        await startCell.trigger('click')
+        await endCell.trigger('mouseenter')
+        await endCell.trigger('click')
+        await expectSettled(() => {
+            expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('false')
+        })
+        expect(wrapper.get('.caomei-date-picker').text()).toContain(' – ')
+        expect(wrapper.get('.caomei-date-picker').text()).toContain(startValue.slice(5))
+
+        wrapper.unmount()
+    })
+
+    it('反向点击（先终点后起点）归一化为升序闭区间', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        await pick('2026-09-20')
+        await pick('2026-09-10')
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')).toBeDefined()
+        })
+        const emitted = emittedRange(wrapper)
+        expect([emitted[0].getDate(), emitted[1].getDate()]).toEqual([10, 20])
+
+        wrapper.unmount()
+    })
+
+    it('已选同一闭区间时再次点击同一天取消并抛出 null', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor, closeOnSelect: false })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        // 同一天既作起点又作终点：两次点击生成单日闭区间
+        await pick('2026-09-15')
+        await pick('2026-09-15')
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')).toBeDefined()
+        })
+        const singleDay = emittedRange(wrapper)
+        expect([singleDay[0].getDate(), singleDay[1].getDate()]).toEqual([15, 15])
+
+        // 已存在完整区间时再次点击同一天 → 取消整个区间
+        await cell('2026-09-15').trigger('click')
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')?.[1]?.[0]).toBeNull()
+        })
+
+        wrapper.unmount()
+    })
+
+    it('closeOnSelect 为 false 时保持面板展开', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor, closeOnSelect: false })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        await pick('2026-09-10')
+        await pick('2026-09-20')
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')?.[0]?.[0]).toBeInstanceOf(Array)
+        })
+        expect(wrapper.get('.caomei-date-picker').attributes('aria-expanded')).toBe('true')
+
+        wrapper.unmount()
+    })
+
+    it('受控模型在面板中显示为已选区间', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: range, open: true })
+        await expectSettled(() => {
+            expect(getContent().findAll('.caomei-calendar__day').length).toBeGreaterThan(0)
+        })
+
+        expect(cell('2026-09-10').attributes('data-selection-start')).toBeDefined()
+        expect(cell('2026-09-20').attributes('data-selection-end')).toBeDefined()
+        expect(cell('2026-09-15').attributes('data-selected')).toBeDefined()
+
+        wrapper.unmount()
+    })
+
+    it('minValue / maxValue 之外的日期禁用', async () => {
+        const wrapper = mountPicker({
+            selectionMode: 'range',
+            modelValue: anchor,
+            minValue: new Date(2026, 8, 10),
+            maxValue: new Date(2026, 8, 20),
+        })
+        await openPanel(() => wrapper.get('.caomei-date-picker').trigger('click'))
+
+        expect(cell('2026-09-09').attributes('data-disabled')).toBeDefined()
+        expect(cell('2026-09-21').attributes('data-disabled')).toBeDefined()
+
+        wrapper.unmount()
+    })
+
+    it('键盘可用方向键移动焦点并用 Enter 确定两端', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor, open: true })
+        await expectSettled(() => {
+            expect(getContent().findAll('.caomei-calendar__day').length).toBeGreaterThan(0)
+        })
+
+        await cell('2026-09-10').trigger('focusin')
+        await cell('2026-09-10').trigger('keydown', { code: 'ArrowRight', key: 'ArrowRight' })
+        await cell('2026-09-10').trigger('keydown', { code: 'Enter', key: 'Enter' })
+        await cell('2026-09-15').trigger('focusin')
+        await cell('2026-09-15').trigger('keydown', { code: 'Enter', key: 'Enter' })
+
+        await expectSettled(() => {
+            expect(wrapper.emitted('update:modelValue')).toBeDefined()
+        })
+        const emitted = emittedRange(wrapper)
+        expect([emitted[0].getDate(), emitted[1].getDate()]).toEqual([10, 15])
+
+        wrapper.unmount()
+    })
+
+    it('面板使用本地化可访问名', async () => {
+        const wrapper = mountPicker({ selectionMode: 'range', modelValue: anchor, open: true })
+        await expectSettled(() => {
+            expect(getContent().get('.caomei-calendar').attributes('aria-label')).toContain('日历')
+        })
+
+        wrapper.unmount()
+    })
+
+    it('range 模式忽略 showTime 并给出开发期告警', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mountPicker({
+            selectionMode: 'range',
+            modelValue: range,
+            showTime: true,
+        })
+
+        expect(document.body.querySelector('.caomei-date-picker__time')).toBeNull()
+        expect(warn.mock.calls.some(([message]) => String(message).includes('不支持 showTime'))).toBe(true)
+
+        wrapper.unmount()
+        warn.mockRestore()
+    })
+
+    it('single 模式模型不受区间值污染', () => {
+        const wrapper = mountPicker({ modelValue: range, dateFormat: 'yy-mm-dd' })
+
+        expect(wrapper.get('.caomei-date-picker').text()).not.toContain('26-09-10')
+
+        wrapper.unmount()
     })
 })

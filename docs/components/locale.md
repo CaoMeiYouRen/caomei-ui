@@ -56,7 +56,7 @@ import {
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `dataView` | `empty` | DataView |
-| `datePicker` | `label` `time` `hour` `minute` `second` | DatePicker |
+| `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
 | `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` | FileUpload |

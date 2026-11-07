@@ -37,6 +37,9 @@ const zhTW: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: '日期',
+        range: '日期範圍',
+        rangeStart: '開始',
+        rangeEnd: '結束',
         time: '時間',
         hour: '時',
         minute: '分',

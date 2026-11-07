@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Calendar as CalendarIcon } from '@lucide/vue'
 import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, watchEffect } from 'vue'
+import { warnDev } from '../../_shared/dev-warn'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon } from '../../icons'
 import { defaultLocale } from '../../locale'
@@ -9,14 +10,16 @@ import { formatDate, formatTime } from '../_shared/date-format'
 import { resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiPopoverTrigger } from '../popover'
 import CalendarPanel from '../calendar/calendar-panel.vue'
+import CalendarRangePanel from '../calendar/calendar-range-panel.vue'
 import TimeInput from './time-input.vue'
-import type { DatePickerProps, TimeParts } from './types'
+import type { DatePickerModelValue, DatePickerProps, DatePickerRange, TimeParts } from './types'
 
-// 组合 Reka Popover + 内部 CalendarPanel：面板日历与本库 Calendar 共用接线与可访问名，
-// 避免 Reka DatePicker 内建英文文案（Event Date）无法本地化。
+// 组合 Reka Popover + 内部 CalendarPanel / CalendarRangePanel：面板日历与本库 Calendar 共用接线与可访问名，
+// 避免 Reka DatePicker / DateRangePicker 内建英文文案（Event Date）无法本地化。
 defineOptions({ name: 'CaomeiDatePicker', inheritAttrs: false })
 
 const props = withDefaults(defineProps<DatePickerProps>(), {
+    selectionMode: 'single',
     disabled: false,
     readonly: false,
     invalid: false,
@@ -33,17 +36,43 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
     preventDeselect: false,
 })
 
-const model = defineModel<Date | null>({ default: null })
+const model = defineModel<DatePickerModelValue>({ default: null })
 const open = defineModel<boolean>('open', { default: false })
+
+const isRange = computed(() => props.selectionMode === 'range')
+
+/** 单日期模型：非 `single` 模式或模型为区间时视为未选择 */
+const singleDate = computed<Date | null>(() => (model.value instanceof Date ? model.value : null))
+/** 区间模型：仅 `range` 模式且模型为「两个原生 Date」时成立；异常形状按未选择处理 */
+const rangeModel = computed<DatePickerRange | null>(() => {
+    if (!isRange.value) {
+        return null
+    }
+
+    const value = model.value
+    if (!Array.isArray(value) || !(value[0] instanceof Date) || !(value[1] instanceof Date)) {
+        return null
+    }
+
+    return [value[0], value[1]]
+})
 
 const messages = useLocale()
 const displayText = computed(() => {
-    const dateText = formatDate(model.value, props.dateFormat, props.locale)
+    if (isRange.value) {
+        const range = rangeModel.value
+        if (!range) {
+            return ''
+        }
+        return `${formatDate(range[0], props.dateFormat, props.locale)} – ${formatDate(range[1], props.dateFormat, props.locale)}`
+    }
+
+    const dateText = formatDate(singleDate.value, props.dateFormat, props.locale)
     if (!props.showTime) {
         return dateText
     }
 
-    return [dateText, formatTime(model.value, {
+    return [dateText, formatTime(singleDate.value, {
         hourFormat: props.hourFormat,
         showSeconds: props.showSeconds,
         locale: props.locale,
@@ -52,21 +81,27 @@ const displayText = computed(() => {
 
 // 面板日历只消费日期部分，时间另行编辑后合并回模型
 const dateOnly = computed(() => {
-    if (!model.value) {
+    if (!singleDate.value) {
         return null
     }
 
-    const next = new Date(model.value)
+    const next = new Date(singleDate.value)
     next.setHours(0, 0, 0, 0)
     return next
 })
 const timeParts = computed<TimeParts>(() => ({
-    hour: model.value?.getHours() ?? 0,
-    minute: model.value?.getMinutes() ?? 0,
-    second: model.value?.getSeconds() ?? 0,
+    hour: singleDate.value?.getHours() ?? 0,
+    minute: singleDate.value?.getMinutes() ?? 0,
+    second: singleDate.value?.getSeconds() ?? 0,
 }))
 
-const fallbackLabel = computed(() => messages.value.datePicker.label)
+/**
+ * 触发按钮兜底可访问名：单日期为「日期」；区间为「日期范围」。
+ * 区间已选时**不使用** aria-label——可见区间文本即名称主体，另以隐藏文本补「开始 / 结束」语义，
+ * 避免 aria-label 覆盖可见文本触发 Label in Name（WCAG 2.5.3）风险。
+ */
+const fallbackLabel = computed(() =>
+    isRange.value ? messages.value.datePicker.range : messages.value.datePicker.label)
 const attrs = useAttrs()
 /**
  * 触发器可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案；
@@ -79,6 +114,10 @@ const triggerLabel = computed(() =>
         displayText.value || props.placeholder ? undefined : fallbackLabel.value,
     ),
 )
+/** 区间已选时的隐藏语义后缀（进入可访问名，不进入可见布局） */
+const rangeHint = computed(() => (isRange.value && rangeModel.value
+    ? `（${messages.value.datePicker.rangeStart} / ${messages.value.datePicker.rangeEnd}）`
+    : ''))
 
 const rootClass = computed(() => [
     `caomei-date-picker--${props.size}`,
@@ -100,7 +139,7 @@ function onDateUpdate(value: Date | null): void {
     }
 
     const next = new Date(value)
-    const current = model.value
+    const current = singleDate.value
     if (current) {
         next.setHours(current.getHours(), current.getMinutes(), current.getSeconds(), 0)
     }
@@ -113,10 +152,28 @@ function onDateUpdate(value: Date | null): void {
 }
 
 function onTimeUpdate(value: TimeParts): void {
-    const next = model.value ? new Date(model.value) : new Date()
+    const next = singleDate.value ? new Date(singleDate.value) : new Date()
     next.setHours(value.hour, value.minute, value.second, 0)
     model.value = next
 }
+
+/** 范围面板只在两端齐全（或完全清空）时抛值；半开区间由面板内部保留，不会打断选择 */
+function onRangeUpdate(value: DatePickerRange | null): void {
+    model.value = value
+    if (props.closeOnSelect) {
+        open.value = false
+    }
+}
+
+// `showTime` 与区间选择不兼容：Reka 的 RangeCalendar 不含时间层，忽略而非静默降级到「只选开始时间」
+let warnedRangeTime = false
+watchEffect(() => {
+    if (warnedRangeTime || !isRange.value || !props.showTime) {
+        return
+    }
+    warnedRangeTime = true
+    warnDev('[CaomeiDatePicker] selectionMode="range" 不支持 showTime，时间部分将被忽略。')
+})
 </script>
 
 <template>
@@ -144,6 +201,10 @@ function onTimeUpdate(value: TimeParts): void {
                     class="caomei-date-picker__text"
                     :data-empty="displayText ? undefined : 'true'"
                 >{{ displayText || placeholder }}</span>
+                <span
+                    v-if="rangeHint"
+                    class="caomei-date-picker__range-hint"
+                >{{ rangeHint }}</span>
                 <CaomeiIcon
                     v-if="showIcon"
                     :icon="CalendarIcon"
@@ -158,6 +219,7 @@ function onTimeUpdate(value: TimeParts): void {
                 :side-offset="6"
             >
                 <CalendarPanel
+                    v-if="!isRange"
                     :model-value="dateOnly"
                     :min-value="minValue"
                     :max-value="maxValue"
@@ -171,8 +233,23 @@ function onTimeUpdate(value: TimeParts): void {
                     class="caomei-calendar"
                     @update:model-value="onDateUpdate"
                 />
+                <CalendarRangePanel
+                    v-else
+                    :model-value="rangeModel"
+                    :min-value="minValue"
+                    :max-value="maxValue"
+                    :disabled="disabled"
+                    :readonly="readonly"
+                    :locale="locale"
+                    :week-starts-on="weekStartsOn"
+                    :weekday-format="weekdayFormat"
+                    :fixed-weeks="fixedWeeks"
+                    :prevent-deselect="preventDeselect"
+                    class="caomei-calendar"
+                    @update:model-value="onRangeUpdate"
+                />
                 <div
-                    v-if="showTime"
+                    v-if="showTime && !isRange"
                     class="caomei-date-picker__time"
                 >
                     <TimeInput
@@ -180,7 +257,7 @@ function onTimeUpdate(value: TimeParts): void {
                         :show-seconds="showSeconds"
                         :hour-format="hourFormat"
                         :locale="locale"
-                        :disabled="disabled || !model"
+                        :disabled="disabled || !singleDate"
                         :readonly="readonly"
                         @update:model-value="onTimeUpdate"
                     />
@@ -198,6 +275,7 @@ function onTimeUpdate(value: TimeParts): void {
 */
 .caomei-date-picker {
     box-sizing: border-box;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
@@ -265,6 +343,18 @@ function onTimeUpdate(value: TimeParts): void {
 
 .caomei-date-picker__text[data-empty] {
     color: var(--caomei-color-text-muted);
+}
+
+/* 区间语义后缀：只在可访问树中提供「开始 / 结束」，不参与布局 */
+.caomei-date-picker__range-hint {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 .caomei-date-picker__icon {

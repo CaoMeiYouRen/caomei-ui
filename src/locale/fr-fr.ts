@@ -37,6 +37,9 @@ const frFR: CaomeiLocaleMessages = {
     },
     datePicker: {
         label: 'Date',
+        range: 'Plage de dates',
+        rangeStart: 'Début',
+        rangeEnd: 'Fin',
         time: 'Heure',
         hour: 'Heure',
         minute: 'Minute',

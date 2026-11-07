@@ -40,6 +40,15 @@
 
 > 未提供 `rowsPerPageOptions` 时不渲染选择器，行为与既有版本一致；`itemsPerPage` 仍为受控 prop，配合 `v-model:items-per-page` 使用时由父级接收新值。
 
+## 自渲染报表
+
+分页器不提供内建报表 / 模板插槽；需要「第 x 到 y 条，共 z 条」时，按 `page` / `itemsPerPage` / `total` 自渲染即可（对应 PrimeVue 的 `currentPageReportTemplate`）。首行偏移为 `(page - 1) * itemsPerPage + 1`，末行为 `min(page * itemsPerPage, total)`；`total` 为 0 时报表显示 0 条，页码越界时请对首行与末行同时做下限兜底。
+
+<demo
+    vue="../examples/paginator/report.vue"
+    ssg="true"
+/>
+
 ## 无障碍
 
 - 根节点为 `<nav>`，可访问名优先级为 `label` > 透传 `aria-label` > 当前语言分页文案（默认中文「分页」）；未提供 `label`（或传空串）时透传值生效；同一页面存在多个分页器时建议分别命名，便于 landmark 导航区分。
@@ -81,7 +90,7 @@
 | `:total-records` | `:total` |
 | `@page="({ page, rows, first }) => ..."` | 监听 `update:page` / `update:itemsPerPage`；需要偏移时按 `(page - 1) * itemsPerPage` 换算 |
 | `:rows-per-page-options` | `rowsPerPageOptions`（切换时监听 `update:itemsPerPage`） |
-| `template`（含 `CurrentPageReport`） | **未实现**：分页器不提供模板插槽与「第 x / 共 y 页」报表；如需报表，在分页器旁按 `page` / `itemsPerPage` / `total` 自行渲染（见上方示例的区间文本） |
+| `template`（含 `CurrentPageReport`） | **未实现**：分页器不提供模板插槽与「第 x / 共 y 页」报表；按 `page` / `itemsPerPage` / `total` 自渲染（见「自渲染报表」示例） |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

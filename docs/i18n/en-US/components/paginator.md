@@ -40,6 +40,15 @@ When `rowsPerPageOptions` is provided, a rows-per-page selector is rendered at t
 
 > Without `rowsPerPageOptions` no selector is rendered and behavior matches the previous release; `itemsPerPage` stays a controlled prop, so bind `v-model:items-per-page` to receive the new value.
 
+## Self-rendered report
+
+The paginator has no built-in report or template slot. To show "showing x to y of z", render it from `page` / `itemsPerPage` / `total` (the PrimeVue `currentPageReportTemplate` equivalent). The first row offset is `(page - 1) * itemsPerPage + 1` and the last row is `min(page * itemsPerPage, total)`; when `total` is 0 the report shows 0, and clamp both ends when the page can go out of range.
+
+<demo
+    vue="../examples/paginator/report.vue"
+    ssg="true"
+/>
+
 ## Accessibility
 
 - The root is a `<nav>` whose accessible name resolves as `label` > forwarded `aria-label` > the current locale's pagination label (Chinese by default); a forwarded `aria-label` applies when `label` is absent (or empty). When a page has several paginators, it is best to name them individually so landmark navigation can distinguish them.
@@ -81,7 +90,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `:total-records` | `:total` |
 | `@page="({ page, rows, first }) => ..."` | Listen to `update:page` / `update:itemsPerPage`; compute an offset as `(page - 1) * itemsPerPage` when needed |
 | `:rows-per-page-options` | `rowsPerPageOptions` (listen to `update:itemsPerPage` for changes) |
-| `template` (including `CurrentPageReport`) | **Not implemented**: the paginator offers no template slots or "page x of y" report; render your own report beside the paginator from `page` / `itemsPerPage` / `total` (see the range text in the example above) |
+| `template` (including `CurrentPageReport`) | **Not implemented**: the paginator offers no template slots or "page x of y" report; render it from `page` / `itemsPerPage` / `total` (see the "Self-rendered report" example) |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

@@ -146,12 +146,32 @@ Mark a column with `expander: true` and that column's body cells render an **exp
 
 ## Row selection
 
-When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header that **applies to the current page only**: with client-side pagination, moving between pages keeps selections made on other pages, and the header state (all / partial) reflects the current page only; the same holds under `lazy`; without pagination it behaves like selecting the whole table. To select every row at once, have the parent write the target rows into the controlled `selection` (there is no extra whole-table / server-side select-all prop). Under `lazy`, pass an explicit `rowKey` (the default page-local index cannot identify rows stably across pages). Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled.
+When `selectionMode` is `multiple` or `single`, a selection column is rendered first; bind it with `v-model:selection` (an array for `multiple`, a single row or `null` for `single`). `multiple` mode adds a select-all checkbox in the header that **applies to the current page only**: with client-side pagination, moving between pages keeps selections made on other pages, and the header state (all / partial) reflects the current page only; the same holds under `lazy`; without pagination it behaves like selecting the whole table. To select every row at once, have the parent write the target rows into the controlled `selection` (there is no extra whole-table / server-side select-all prop). Under `lazy`, pass an explicit `rowKey` (the default page-local index cannot identify rows stably across pages). Adding or removing `selection` at runtime switches between controlled and component-managed modes; `selectionMode` must be set at mount. The `update:selection` event is emitted even when uncontrolled. This select-all scope is an **intentional difference** (unlike PrimeVue's whole-table select-all) and has been confirmed; the contract stays unchanged.
 
 <demo
     vue="../examples/data-table/selection.vue"
     ssg="true"
 />
+
+## Density and selection column
+
+There is no `size` prop; density is adjusted through tokens, and the selection column width and padding are configurable too. Set the overrides on the table container or any ancestor — no `.caomei-data-table__th` / `__td` selectors needed:
+
+```css
+.demo-compact {
+    --caomei-data-table-cell-padding-block: 4px;
+    --caomei-data-table-cell-padding-inline: 8px;
+    --caomei-data-table-selection-column-width: 48px;
+    --caomei-data-table-selection-cell-padding-inline: 4px;
+}
+```
+
+<demo
+    vue="../examples/data-table/density.vue"
+    ssg="true"
+/>
+
+> The block / inline paddings apply to the header, data cells, group header row, expansion row and empty state (the empty state adds the block padding on top of `--caomei-space-4`); the selection column width applies to both the header and data rows. Defaults are `--caomei-space-2` / `--caomei-space-3` / `1%` / `--caomei-space-2`, so the look is unchanged until overridden.
 
 ## Pagination
 
@@ -230,6 +250,10 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-selected-bg` | 8% primary color mix | Selected row background color |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | Group header row background color |
 | `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | Row expansion area background color |
+| `--caomei-data-table-cell-padding-block` | `--caomei-space-2` | Block padding of the header / cells / group row / expansion row / empty state |
+| `--caomei-data-table-cell-padding-inline` | `--caomei-space-3` | Inline padding of the header / cells / group row / expansion row / empty state |
+| `--caomei-data-table-selection-column-width` | `1%` | Selection column width (header and data rows) |
+| `--caomei-data-table-selection-cell-padding-inline` | `--caomei-space-2` | Selection cell inline padding |
 | `--caomei-data-table-pagination-justify` | `flex-end` | Pagination container main-axis alignment (PrimeVue centers it by default; set to `center` to match) |
 
 ## Migration from PrimeVue

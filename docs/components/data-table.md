@@ -146,12 +146,32 @@
 
 ## 行选择
 
-`selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框，**只作用于当前页**：客户端分页下切换页面不会清除其它页已选行，表头状态（全选 / 半选）也只反映当前页；`lazy` 下同样只作用当前页；未启用分页时等同于全选整表。需要一次选中整表时，由父级在受控 `selection` 中写入目标行（组件不提供额外的全表 / 服务端全选 prop）。`lazy` 下请显式提供 `rowKey`（缺省按页内索引，翻页后无法稳定标识行）。运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 需在挂载时确定。非受控时同样抛出 `update:selection`（供观察）。
+`selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框，**只作用于当前页**：客户端分页下切换页面不会清除其它页已选行，表头状态（全选 / 半选）也只反映当前页；`lazy` 下同样只作用当前页；未启用分页时等同于全选整表。需要一次选中整表时，由父级在受控 `selection` 中写入目标行（组件不提供额外的全表 / 服务端全选 prop）。`lazy` 下请显式提供 `rowKey`（缺省按页内索引，翻页后无法稳定标识行）。运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 需在挂载时确定。非受控时同样抛出 `update:selection`（供观察）。该全选作用域为**有意差异**（与 PrimeVue 的整表全选不同），已由下游迁移评估确认，契约不变。
 
 <demo
     vue="../examples/data-table/selection.vue"
     ssg="true"
 />
+
+## 密度与选择列
+
+不提供 `size` prop；密度通过 token 调整，选择列宽度与内边距同样可配。覆盖写在表格容器或任意祖先上即可，无需再为 `.caomei-data-table__th` / `__td` 写选择器：
+
+```css
+.demo-compact {
+    --caomei-data-table-cell-padding-block: 4px;
+    --caomei-data-table-cell-padding-inline: 8px;
+    --caomei-data-table-selection-column-width: 48px;
+    --caomei-data-table-selection-cell-padding-inline: 4px;
+}
+```
+
+<demo
+    vue="../examples/data-table/density.vue"
+    ssg="true"
+/>
+
+> 块级 / 行内内边距同时作用于表头、数据单元格、分组标题行、展开区与空态（空态在 `--caomei-space-4` 基础上叠加块级内边距）；选择列宽度作用于表头与数据行。默认值分别为 `--caomei-space-2` / `--caomei-space-3` / `1%` / `--caomei-space-2`，不覆盖时与升级前一致。
 
 ## 分页
 
@@ -230,6 +250,10 @@
 | `--caomei-data-table-selected-bg` | 主色 8% 混合 | 选中行背景色 |
 | `--caomei-data-table-group-bg` | `--caomei-color-bg-elevated` | 分组标题行背景色 |
 | `--caomei-data-table-expansion-bg` | `--caomei-color-bg-elevated` | 行展开区背景色 |
+| `--caomei-data-table-cell-padding-block` | `--caomei-space-2` | 表头 / 单元格 / 分组标题 / 展开区 / 空态的块级内边距 |
+| `--caomei-data-table-cell-padding-inline` | `--caomei-space-3` | 表头 / 单元格 / 分组标题 / 展开区 / 空态的行内内边距 |
+| `--caomei-data-table-selection-column-width` | `1%` | 选择列宽度（表头与数据行） |
+| `--caomei-data-table-selection-cell-padding-inline` | `--caomei-space-2` | 选择列行内内边距 |
 | `--caomei-data-table-pagination-justify` | `flex-end` | 分页容器主轴对齐（PrimeVue 默认居中，可设为 `center`） |
 
 ## 从 PrimeVue 迁移
@@ -241,7 +265,7 @@
 | 列级 `<template #header>` | `<template #header-{key}="{ column }">` |
 | 表级 `<template #header>` / `#footer` | 无表级 header / footer 插槽；标题改用 `caption`，操作区放在表格容器外 |
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'`（单个字段同时表达是否冻结与停靠方向） |
-| `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，**其宽度与样式不可配置**（内建 `1%` 宽 + 内边距） |
+| `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，宽度与内边距可用 `--caomei-data-table-selection-column-width` / `-selection-cell-padding-inline` 配置 |
 | 表头全选作用域（客户端分页） | **当前页**（跨页选择保留；整表选择由父级写 `selection`）；PrimeVue 的客户端分页表头全选作用于整表 |
 | `rows-per-page-options` | 同名 `rowsPerPageOptions`，切换抛出 `update:rows` 并按偏移保持语义重新推导页码 |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"`（字段口径一致，另带 `pageCount`） |

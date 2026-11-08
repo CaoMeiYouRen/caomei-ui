@@ -54,52 +54,14 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
 </template>
 
 <style scoped>
-/* 项外观对链接与按钮同构（`a` 也需复位，故两选择器共用一组声明）。 */
+/*
+  项外观由 `menu.vue` 的非 scoped 块统一提供（MenuItem 与 SubMenu 触发器共用）。
+  约束：两者须在 `<CaomeiMenu>` 内使用；单独渲染 MenuItem 不会带入 `.caomei-menu` 前缀的共享样式。
+*/
 .caomei-menu__item-wrapper {
     min-width: 0;
-}
 
-.caomei-menu__item {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: var(--caomei-menu-item-gap, var(--caomei-space-2));
-    width: 100%;
-    padding: var(--caomei-menu-item-padding, var(--caomei-space-2) var(--caomei-space-3));
-    border: 0;
-    border-radius: var(--caomei-menu-item-radius, var(--caomei-radius-md));
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    text-align: start;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
-}
-
-.caomei-menu__item:hover:not([aria-disabled='true']) {
-    background: var(--caomei-menu-item-hover-bg, var(--caomei-color-bg-elevated));
-}
-
-.caomei-menu__item:focus-visible {
-    outline: 2px solid var(--caomei-color-primary);
-    outline-offset: -2px;
-}
-
-.caomei-menu__item[aria-current] {
-    background: var(--caomei-menu-item-current-bg, var(--caomei-color-bg-elevated));
-    color: var(--caomei-menu-item-current-color, var(--caomei-color-primary-text));
-    font-weight: 600;
-}
-
-.caomei-menu__item[aria-disabled='true'] {
-    cursor: not-allowed;
-    opacity: var(--caomei-disabled-opacity);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .caomei-menu__item {
-        transition: none;
-    }
+    /* 复位宿主文档对相邻 `li` 的间距，避免菜单项间距被放大 */
+    margin-block: 0;
 }
 </style>

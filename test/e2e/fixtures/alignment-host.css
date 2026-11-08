@@ -1,0 +1,18 @@
+/*
+  复刻文档宿主（`.vp-doc` / `.prose`）的级联规则，仅作用于 `#component-alignment` 夹具。
+  这些规则**不带**组件 scope 属性，且 `a` 规则（0,1,1）/ `a:hover`（0,2,1）高于单类选择器
+  （0,1,0）——正是菜单链接被劫持的复现前提，组件须以更高特异性保住自身外观。
+*/
+.alignment-prose li + li {
+    margin-top: 8px;
+}
+
+.alignment-prose a {
+    color: rgb(52 81 178);
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.alignment-prose a:hover {
+    color: rgb(52 81 178);
+}

@@ -841,6 +841,55 @@ const ConfirmDriver = defineComponent({
             </CaomeiBreadcrumb>
         </section>
 
+        <!--
+          组件对齐用例（见 `test/e2e/component-alignment.e2e.ts`）：宿主文档常带
+          `li + li { margin-top }`（如 `.prose` / `.vp-doc`），组件若不复位相邻项间距，
+          面包屑首项与其余项、菜单项与子菜单触发器会错位。此处的 `.alignment-prose`
+          复刻该宿主规则，作为常驻回归。
+        -->
+        <section
+            id="component-alignment"
+            class="alignment-prose fixture__case"
+        >
+            <CaomeiBreadcrumb label="对齐面包屑">
+                <CaomeiBreadcrumbItem href="#component-alignment">
+                    首页
+                </CaomeiBreadcrumbItem>
+                <CaomeiBreadcrumbItem href="#component-alignment">
+                    内容管理
+                </CaomeiBreadcrumbItem>
+                <CaomeiBreadcrumbItem current>
+                    文章详情
+                </CaomeiBreadcrumbItem>
+            </CaomeiBreadcrumb>
+            <CaomeiMenu label="对齐菜单">
+                <CaomeiMenuItem
+                    href="#component-alignment"
+                    current
+                >
+                    概览
+                </CaomeiMenuItem>
+                <CaomeiSubMenu label="内容管理">
+                    <CaomeiMenuItem href="#component-alignment">
+                        文章
+                    </CaomeiMenuItem>
+                    <CaomeiMenuItem href="#component-alignment">
+                        评论
+                    </CaomeiMenuItem>
+                </CaomeiSubMenu>
+                <CaomeiMenuItem href="#component-alignment">
+                    帮助
+                </CaomeiMenuItem>
+                <CaomeiMenuItem
+                    href="#component-alignment"
+                    disabled
+                >
+                    归档（禁用）
+                </CaomeiMenuItem>
+                <CaomeiMenuItem>退出登录</CaomeiMenuItem>
+            </CaomeiMenu>
+        </section>
+
         <section id="inline-color-picker" class="fixture__case">
             <CaomeiColorPicker
                 v-model="inlineColorValue"

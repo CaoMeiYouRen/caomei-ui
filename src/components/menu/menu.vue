@@ -190,3 +190,65 @@ function handleKeydown(event: KeyboardEvent): void {
     flex-flow: row wrap;
 }
 </style>
+
+<style>
+/*
+  菜单项外观统一在此声明（非 scoped）：`CaomeiMenuItem` 与 `CaomeiSubMenu` 的触发器共用
+  `.caomei-menu__item` 类，跨组件 scoped 选择器无法互相命中，放在根组件可保证两者一致
+  （子菜单触发器此前只有布局类、缺少内边距与 flex，表现为比普通项矮一截）。
+  选择器前缀 `.caomei-menu` 用于恢复特异性（0,2,0）：宿主文档的 `.vp-doc a` / `.prose a`
+  （0,1,1）会压过单类选择器，导致菜单链接被加上下划线 / 品牌色。类名带 BEM 前缀且以
+  `CaomeiMenu` 为唯一使用场景，不做全局扩散。
+*/
+.caomei-menu .caomei-menu__item {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--caomei-menu-item-gap, var(--caomei-space-2));
+    width: 100%;
+    padding: var(--caomei-menu-item-padding, var(--caomei-space-2) var(--caomei-space-3));
+    border: 0;
+    border-radius: var(--caomei-menu-item-radius, var(--caomei-radius-md));
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+.caomei-menu .caomei-menu__item:hover:not([aria-disabled='true'], [aria-current]) {
+    background: var(--caomei-menu-item-hover-bg, var(--caomei-color-bg-elevated));
+
+    /* 显式声明颜色：宿主 `.vp-doc a:hover`（0,2,1）会压过基础规则的 `color: inherit` */
+    color: var(--caomei-menu-item-hover-color, inherit);
+}
+
+.caomei-menu .caomei-menu__item:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: -2px;
+}
+
+.caomei-menu .caomei-menu__item[aria-current] {
+    background: var(--caomei-menu-item-current-bg, var(--caomei-color-bg-elevated));
+    color: var(--caomei-menu-item-current-color, var(--caomei-color-primary-text));
+    font-weight: 600;
+}
+
+.caomei-menu .caomei-menu__item[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: var(--caomei-disabled-opacity);
+}
+
+/* 禁用链接同样要挡住宿主 `a:hover` 的颜色（不得改变文字色） */
+.caomei-menu .caomei-menu__item[aria-disabled='true']:not([aria-current]) {
+    color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .caomei-menu .caomei-menu__item {
+        transition: none;
+    }
+}
+</style>

@@ -95,6 +95,9 @@ function setOpen(value: boolean): void {
 */
 .caomei-menu__submenu {
     min-width: 0;
+
+    /* 复位宿主文档对相邻 `li` 的间距（与普通项一致） */
+    margin-block: 0;
 }
 
 .caomei-menu__submenu-trigger {

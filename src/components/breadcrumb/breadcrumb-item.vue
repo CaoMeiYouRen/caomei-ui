@@ -49,6 +49,9 @@ const separator = computed(() => context?.separator.value ?? '/')
     display: inline-flex;
     align-items: center;
     min-width: 0;
+
+    /* 复位宿主文档对相邻 `li` 的间距（如 `.prose li + li { margin-top }`），否则首项与其余项错位 */
+    margin-block: 0;
     gap: var(--caomei-breadcrumb-gap, var(--caomei-space-2));
 }
 

@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-09-phase29-m6-1-motion-acceptance.md](./2026-11-09-phase29-m6-1-motion-acceptance.md)：**Phase 29 M6-1 动效验收与人工复核**。L1 ~ L4 验收矩阵（M1-1 / M2-1 / M3-1）；新增 `test/e2e/helpers/motion.ts`（有界帧轮询 + `pause()` + `currentTime`，无 `sleep`）与 `motion-acceptance.e2e.ts`（9 例 × 3 project）；`check-motion-contract` 扩布局属性白名单（21 → 35 单测）；长任务 2 条 / 最大 66ms、reduce 无位移 / 缩放且焦点环保留；`theming.md` §5.3 补验收分层与示例。人工复核素材已生成、结论待签字。**Review Gate**：见本记录 §8。
 - [2026-11-08-phase29-m4-3-icon-tokens.md](./2026-11-08-phase29-m4-3-icon-tokens.md)：**Phase 29 M4-3 图标样式 token 与迁移文档**。新增 `--caomei-icon-size-{sm,md,lg}` 与 `--caomei-icon-stroke-width`，`CaomeiIcon` 支持 `size="sm|md|lg"` 档位；中英图标页补样式定制、构建期接入与 `pi pi-*` 映射；冻结面 425 → 429（并补记 M2-1 未同步的 7 个组件级变量）。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase29-m4-2-icon-mapping.md](./2026-11-08-phase29-m4-2-icon-mapping.md)：**Phase 29 M4-2 内置图标映射**。22 个语义键统一收敛到 `src/icons/internal-icons.ts`，25 个组件移除 `@lucide/vue` 直接导入；新增 `provideIconOverrides()` / `useInternalIcons()`（对象 / ref / getter，SSR 隔离），`error` / `danger` 保持独立；包根导出 338 → 345。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase29-m4-1-icon-adapter.md](./2026-11-08-phase29-m4-1-icon-adapter.md)：**Phase 29 M4-1 CaomeiIcon 三态适配层**。`icon` / `name` / 注册表三态解析，`provideIconRegistry()` 按请求注入（SSR 隔离），`label` > 透传 a11y > 默认 `aria-hidden` 的可访问名优先级；`icon` 改可选、新增 `strokeWidth`；中英图标页与示例同步，包根导出 333 → 338。**Review Gate**：见本记录 §5。

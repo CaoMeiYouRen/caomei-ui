@@ -202,7 +202,14 @@
 - **默认零变化**：`minimal` 的时长 / 缓动与迁移前硬编码值逐项等价；未设置 `data-motion` 时渲染与既有版本一致。
 - **减弱动效**：`prefers-reduced-motion: reduce` 下全部时长归零（`0s`）、位移归零、缩放回 `1`；组件内显式 `transition: none` / `animation: none` 仍优先。加载类循环动画（spinner / skeleton / indeterminate progress / image pulse）保留组件级降速，不归并为单一 loop token。
 - **克制的 expressive**：只调整时长 / 缓动 / 位移 / 缩放，不做弹跳、长时间循环或影响阅读的位移。反馈与浮层（Dialog / ConfirmDialog / Popover / DropdownMenu / Tooltip / Toast / Message / Alert）已消费 `--caomei-motion-distance-*` / `--caomei-motion-scale-from`；`ease-in-out` / `ease-linear` 与表单 / 布局 / 选择器 / 数据展示批次继续扩展。
-- **守卫**：`pnpm check:motion-contract` 校验默认 / 轴 / reduce 三组声明与「源码不得出现裸时长（加载类白名单除外）」；`test/contracts/motion-tokens.test.ts` 锁定 token 值，`test/e2e/focus-and-motion.e2e.ts` 验证轴切换与 reduce 的真实计算值。
+- **守卫**：`pnpm check:motion-contract` 校验默认 / 轴 / reduce 三组声明、「源码不得出现裸时长（加载类白名单除外）」与**布局属性动画白名单**（`height` / `width` / `top` 等触发布局的过渡与关键帧须逐项登记理由）；`test/contracts/motion-tokens.test.ts` 锁定 token 值，`test/e2e/focus-and-motion.e2e.ts` 验证轴切换与 reduce 的真实计算值。
+- **验收分层**：L1 静态守卫（上述 `check:motion-contract`）→ L2 组件单测 → L3 Playwright 时间轴（`focus-and-motion` / `overlay-motion` / `navigation-motion` / `motion-acceptance`）→ L4 人工复核（清单与录屏见 [M6-1 记录](./governance/2026-11-09-phase29-m6-1-motion-acceptance.md)）。时间轴用例按需用 `getAnimations()` / `pause()` / `currentTime` 采样中间帧（`motion-acceptance` 已统一走采样装置，`navigation-motion` / `overlay-motion` 亦有同类用法），不用 `sleep` 等待；其余 L3 以计算值与动画名判定。
+- **性能与无障碍**：长任务只做宽松冒烟（单条 > 1.5s 阻断，> 50ms 记录），主观流畅度交 L4；`reduce` 下不得有位移 / 缩放，无限循环动画不快于 3 次 / 秒，焦点环不因动效延迟。
+
+<demo
+    vue="../examples/theming/motion.vue"
+    ssg="true"
+/>
 
 ## 6. 无障碍
 

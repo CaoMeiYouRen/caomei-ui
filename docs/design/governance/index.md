@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-08-motion-system-evaluation.md](./2026-11-08-motion-system-evaluation.md)：**动效体系与新动效轴评估**。建议不新增配色预设，改用与配色 / 明暗 / 密度正交的 `data-motion="expressive"`（缺省 `minimal` 与现状等价）；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示拆为 A1 ~ A8，并给出 `getAnimations()` + `currentTime` 的确定性测试与人工复核方案；现状计数、共享层缺口与候选映射见记录 §2 / §8。**Review Gate**：见本记录 §10（同批回填）。
 - [2026-11-08-phase28-m5-1-release-readiness.md](./2026-11-08-phase28-m5-1-release-readiness.md)：**Phase 28 发布前检查 / 1.2.0 就绪度**。目标版本推断 minor `1.2.0`（4 feat / 0 breaking）；`verify`、覆盖率、a11y、E2E、视觉基线与 `capture:styles` 全绿，API 差分仅新增，安全告警无 critical / high；发布说明 `docs/release-notes/1.2.0.md` 已落盘；仅余用户授权触发 `Release` workflow，本轮未执行任何发布动作。**Review Gate**：见本记录 §7。
 - [2026-11-07-phase28-registration.md](./2026-11-07-phase28-registration.md)：**Phase 28 登记**。caomei-auth 迁移反馈 #28 收口 + 图标体系调研：DatePicker `range`、Toast 逐语气 token、DataTable 密度 / 选择列宽度 token、图标调研与 `1.2.0` 发布；5 条主线 / 8 条原子条目；候选池 42 → 37。**Review Gate**：见本记录 §6。
 - [2026-11-07-phase28-m1-1-datetime-range-design.md](./2026-11-07-phase28-m1-1-datetime-range-design.md)：**Phase 28 M1-1 设计定形**。`selectionMode="range"` 的模型 / 半开区间 / 清空 / `closeOnSelect` / `showTime` 不支持 / 可访问名「开始 · 结束」/ 视觉端点区分逐项定形；新增 3 个 `datePicker` 文案键（80 → 83）。**Review Gate**：见本记录 §6。

@@ -95,6 +95,21 @@
 | I4 构建期接入与迁移指引 | M4-1 调研 §5 / §6 | `unplugin-icons` / `@iconify-json/*` / 自备 SVG / 品牌 logo 三条路径；`pi pi-*` 映射文档化；不引入库内运行时依赖 | 低 |
 | I5 可选运行时 `@iconify/vue` peer | M4-1 调研 §5 | **条件触发**：仅当出现「必须运行时按字符串加载」的真实下游用例；须同时给出 CSP / 离线 / SSR 指引；默认不引入 | 低 |
 
+### 1.10 动效体系候选
+
+> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；本表只保留实现候选，不重复评估事实。
+
+| 候选 | 来源 | 说明 | 优先级 |
+|------|------|------|:-:|
+| A1 动效基础层与 `data-motion` 轴 | 评估 §4 / §8 | motion tokens（duration / easing / distance / scale）、`minimal` 与现值逐项等价、`data-motion="expressive"` 覆盖、`prefers-reduced-motion` 兜底（含 `field-shell.css`）、`check-motion-contract` 守卫、E2E helper | 中 |
+| A2 反馈与浮层动效 | 评估 §5 / §8 | Dialog / ConfirmDialog 进出场、Drawer 收口、Popover / DropdownMenu / Tooltip / Toast / Message / Alert 的状态切换；退场与 Presence 行为；Toast reduced-motion 补齐；DropdownMenu 浮层唯一归本批 | 中 |
+| A3 导航与操作动效 | 评估 §5 / §8 | Tabs 内容 / 指示器、Accordion、Menu / SubMenu、Breadcrumb、Stepper、Toolbar、Button / ButtonGroup / SplitButton（DropdownMenu 归 A2） | 中 |
+| A4 表单输入动效 | 评估 §5 / §8 | Input / InputNumber / Textarea 共享层 token 化与 reduce（A1 统一）；InputGroup / CheckboxGroup / Form / Slider 补状态动效；既有控件统一；TagsInput reduced-motion | 低 |
+| A5 基础与布局动效 | 评估 §5 / §8 | Avatar / Tag / Divider / Row / Col 补齐；Card / Image / Badge 统一 token（Button / ButtonGroup / SplitButton 归 A3） | 低 |
+| A6 选择器动效 | 评估 §5 / §8 | ColorPicker / Calendar 补齐；AutoComplete / DatePicker / MultiSelect / SelectButton / ToggleButton 统一；Select 共享层由 A1 / A4 统一（本批只补面板状态）；MultiSelect reduced-motion | 低 |
+| A7 数据展示动效 | 评估 §5 / §8 | DataTable 行 / 展开 / 排序 / 选择、DataView 切换、Paginator / Progress / Skeleton 统一；Chart / RichTextEditor 仅容器层加载 / 空态；避免布局抖动 | 低 |
+| A8 动效验收与人工复核 | 评估 §6 | `getAnimations` + `currentTime` 时间轴采样、reduced-motion 双向断言、性能 / a11y 审计、人工复核清单与录屏记录、主题文档与示例 | 中 |
+
 ## 2. 维护约定
 
 - 新增候选时注明来源与初步优先级。

@@ -21,6 +21,8 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-08-phase29-registration.md](./2026-11-08-phase29-registration.md)：**Phase 29 登记**。动效体系与图标体系落地：motion tokens 与 `data-motion` 轴、反馈与浮层动效、导航与操作动效、`CaomeiIcon` 三态 / 内置映射 / 图标 token、Paginator 尺寸对齐、动效验收与人工复核；6 条主线 / 8 条原子条目；**本阶段不发布**（`latest` 维持 `1.2.0`）；候选池 46 → 37。**Review Gate**：见本记录 §6（同批回填）。
+- [2026-11-08-next-stage-scope-evaluation-13.md](./2026-11-08-next-stage-scope-evaluation-13.md)：**下一阶段范围评估（第十三轮）**。候选池 46 条按能力归并并逐条给落点；以动效 A1 ~ A8、图标 I1 ~ I5、Paginator 尺寸与质量小项组合出 6 主线 / 8 条目草案；用户裁定 D1 ② / D2 ① / D3 ① / D4 ① / D5 ②（取 A1 ~ A3 + A8 + I1 ~ I4 文档面 + Paginator，不发布），已登记 Phase 29；候选池 46 → 37。**Review Gate**：见本记录 §6。
 - [2026-11-08-phase28-archive.md](./2026-11-08-phase28-archive.md)：**Phase 28 归档批次**。`todo.md` 转为「当前无进行中阶段」；Phase 28 入主窗口归档块，Phase 22 机械迁入深度归档，主窗口回到阈值内；roadmap / archive index / `.session` 同步；wisdom 蒸馏完成，经验归档新增 2026-11-08 批次。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase28-m5-1-1.2.0-release.md](./2026-11-08-phase28-m5-1-1.2.0-release.md)：**Phase 28 M5-1 / 1.2.0 CI 发布**。`Release` run `42440852062` 经 semantic-release + npm OIDC 发布 `1.2.0`（`latest` / `v1.2.0` tag / GitHub Release / 回推提交）；tarball / 解包 README / `exports` / API 差分（仅新增）校验通过；下游 compat run `42441345211` success（dependfix @ `208bb579…`）；阶段 8/8 已交付，待归档。**Review Gate**：见本记录 §8。
 - [2026-11-08-paginator-rows-per-page-sizing-evaluation.md](./2026-11-08-paginator-rows-per-page-sizing-evaluation.md)：**Paginator 每页条数选择器尺寸评估**。页码控件与每页选择器使用两套尺寸系统，高度差随 `data-density` 翻转；建议高度统一到 `--caomei-paginator-control-size`，默认宽度收窄，并补 E2E 尺寸断言与视觉基线。候选已登记 Backlog §1.1。**Review Gate**：见本记录 §8（同批回填）。

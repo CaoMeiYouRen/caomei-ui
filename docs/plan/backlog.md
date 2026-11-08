@@ -14,13 +14,14 @@
 
 ### 1.1 组件增强候选
 
+> Paginator 每页条数选择器尺寸已于 2026-11-08 登记 Phase 29（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2），已从本表移出；其余候选维持。
+
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
 | ColorPicker 色板导航增强 | M4 条目 5 follow-up | 色板改为 `radiogroup` + `aria-checked` 并补 roving tabindex。触发条件：下游启用 `swatches` 且出现键盘密集使用场景。**2026-09-20 M2-1 判定：不达标** | 低 |
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 + [caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28) | **条件候选**：下游 dependfix 3 处 + caomei-auth 1 处（`table.vue` 的 `current-page-report-template`）使用模板报表；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
-| Paginator 每页条数选择器尺寸对齐 | 用户截图反馈（2026-11-08） | 页码控件与每页选择器使用两套尺寸系统，高度差随 `data-density` 翻转；建议高度统一到 `--caomei-paginator-control-size`、默认宽度 6rem → 5rem、圆角可选对齐 `--caomei-paginator-radius`；补 E2E 尺寸断言与视觉基线。评估见[尺寸评估](../design/governance/2026-11-08-paginator-rows-per-page-sizing-evaluation.md) §1 / §4 | 中 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
@@ -86,30 +87,22 @@
 
 ### 1.9 图标体系候选
 
-> 来源：用户 2026-11-07 指令「图标是无穷无尽的，本项目无法也不应提供所有图标；需要预留接口让第三方图标更好引入，同时预设样式以兼容本项目样式」。**Phase 28 M4-1 已完成调研（2026-11-07，零实现 / 零依赖）**，结论与接口草案见[图标体系调研](../design/governance/2026-11-07-phase28-m4-1-icon-system-research.md)；本表只保留拆分后的实现候选，不再复写调研事实。
+> 来源：用户 2026-11-07 指令「图标是无穷无尽的，本项目无法也不应提供所有图标；需要预留接口让第三方图标更好引入，同时预设样式以兼容本项目样式」。**Phase 28 M4-1 已完成调研（2026-11-07，零实现 / 零依赖）**，结论与接口草案见[图标体系调研](../design/governance/2026-11-07-phase28-m4-1-icon-system-research.md)；**I1 ~ I4 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2），本表只保留条件触发项。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|:-:|
-| I1 `CaomeiIcon` 三态适配层与可访问名 | M4-1 调研 §2 | `CaomeiIcon` 支持 `icon` / `name` / 注册表三态（其余图标入口保持 `Component`）；`provideIconRegistry` 按请求注入；可访问名优先级 `label` > 透传 a11y attrs > `aria-hidden`；`icon` 由必填改为可选（向后兼容） | 中 |
-| I2 内置图标映射表与覆盖入口 | M4-1 调研 §3 | 25 个导入文件 / 22 图标收敛为语义映射表（4 个仅提及文件改注释）；`provideIconOverrides` 应用级替换；保留 `#icon` 插槽优先级；禁止桶导出破坏 tree-shaking；不得跨上下文合并 `error` / `danger` 现值 | 中 |
-| I3 图标样式 token 与容器联动 | M4-1 调研 §4 | `--caomei-icon-size-sm/md/lg`、`--caomei-icon-stroke-width`；容器内继续用 `font-size` 驱动 `1em`，独立图标用档位 | 中 |
-| I4 构建期接入与迁移指引 | M4-1 调研 §5 / §6 | `unplugin-icons` / `@iconify-json/*` / 自备 SVG / 品牌 logo 三条路径；`pi pi-*` 映射文档化；不引入库内运行时依赖 | 低 |
 | I5 可选运行时 `@iconify/vue` peer | M4-1 调研 §5 | **条件触发**：仅当出现「必须运行时按字符串加载」的真实下游用例；须同时给出 CSP / 离线 / SSR 指引；默认不引入 | 低 |
 
 ### 1.10 动效体系候选
 
-> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；本表只保留实现候选，不重复评估事实。
+> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2），本表只保留后续实现候选。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|:-:|
-| A1 动效基础层与 `data-motion` 轴 | 评估 §4 / §8 | motion tokens（duration / easing / distance / scale）、`minimal` 与现值逐项等价、`data-motion="expressive"` 覆盖、`prefers-reduced-motion` 兜底（含 `field-shell.css`）、`check-motion-contract` 守卫、E2E helper | 中 |
-| A2 反馈与浮层动效 | 评估 §5 / §8 | Dialog / ConfirmDialog 进出场、Drawer 收口、Popover / DropdownMenu / Tooltip / Toast / Message / Alert 的状态切换；退场与 Presence 行为；Toast reduced-motion 补齐；DropdownMenu 浮层唯一归本批 | 中 |
-| A3 导航与操作动效 | 评估 §5 / §8 | Tabs 内容 / 指示器、Accordion、Menu / SubMenu、Breadcrumb、Stepper、Toolbar、Button / ButtonGroup / SplitButton（DropdownMenu 归 A2） | 中 |
 | A4 表单输入动效 | 评估 §5 / §8 | Input / InputNumber / Textarea 共享层 token 化与 reduce（A1 统一）；InputGroup / CheckboxGroup / Form / Slider 补状态动效；既有控件统一；TagsInput reduced-motion | 低 |
 | A5 基础与布局动效 | 评估 §5 / §8 | Avatar / Tag / Divider / Row / Col 补齐；Card / Image / Badge 统一 token（Button / ButtonGroup / SplitButton 归 A3） | 低 |
 | A6 选择器动效 | 评估 §5 / §8 | ColorPicker / Calendar 补齐；AutoComplete / DatePicker / MultiSelect / SelectButton / ToggleButton 统一；Select 共享层由 A1 / A4 统一（本批只补面板状态）；MultiSelect reduced-motion | 低 |
 | A7 数据展示动效 | 评估 §5 / §8 | DataTable 行 / 展开 / 排序 / 选择、DataView 切换、Paginator / Progress / Skeleton 统一；Chart / RichTextEditor 仅容器层加载 / 空态；避免布局抖动 | 低 |
-| A8 动效验收与人工复核 | 评估 §6 | `getAnimations` + `currentTime` 时间轴采样、reduced-motion 双向断言、性能 / a11y 审计、人工复核清单与录屏记录、主题文档与示例 | 中 |
 
 ## 2. 维护约定
 

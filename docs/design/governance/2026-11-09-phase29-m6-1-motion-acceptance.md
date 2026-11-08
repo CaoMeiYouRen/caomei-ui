@@ -78,20 +78,21 @@
 
 ## 5. 人工复核（待签字）
 
-- **环境**：Chromium 156.0.8078.4（Playwright 1.63.0）；桌面 1280×800 亮色、移动 390×844 暗色。
-- **素材**（本地 `artifacts/`，gitignored）：
-  - `motion-review/videos/desktop-light.webm`（手风琴开合 → Tabs 切换 → Dialog 开关）
-  - `motion-review/videos/mobile-dark.webm`（同序列，暗色 / 移动）
-  - `motion-review/dialog-enter-sheet.png`（入场 0 / 25 / 50 / 75 / 100% 慢放接触表）
-  - `motion-review/accordion-enter-sheet.png`（展开高度接触表）
-  - `motion-review/still-desktop-light.png` / `still-mobile-dark.png`（终态）
+- **审查入口**：`pnpm review:motion` → `http://localhost:4401/motion.html`（独立页面，不加载文档站样式；页头显示系统动效偏好与逐项 token）。文档站的 VitePress 全局 `prefers-reduced-motion` 压平属无障碍行为，目视复核请关闭系统 / DevTools 的 reduce 模拟。
+- **环境**：Chromium 156.0.8078.4（Playwright 1.63.0）；桌面 1280×900 亮色、移动 390×844 暗色。
+- **素材 v2**（本地 `artifacts/motion-review/v2/`，gitignored）：
+  - `videos/desktop-light.webm`（对话框开关 → Toast → 手风琴 → Tabs → 子菜单 → 轴切换）
+  - `videos/mobile-dark.webm`（同序列，暗色 / 移动）
+  - `dialog-enter-sheet.png`（入场 0 / 25 / 50 / 75 / 100% 慢放接触表）
+  - `still-desktop-light.png` / `still-mobile-dark.png`（终态）
+- **首轮素材**（`motion-review/{videos,frames,*-sheet.png}`）保留作对比：当时取自夹具页，未覆盖审查页入口。
 
 | # | 复核项 | 判定 |
 |:--|:---|:---|
 | 1 | 1x 与 0.25x 观感：动画表达「发生了什么」而非装饰 | 待签字 |
 | 2 | 连续快速触发 / 反向切换 / 中途取消：无排队、无卡死、无终态错位 | 待签字 |
 | 3 | 亮 / 暗 × 320 / 390 / 768 / 1280：无横向溢出、无 CLS、文字不模糊 | 待签字 |
-| 4 | `reduce` 下无位移 / 缩放，加载仍可感知；焦点环不被延迟 | 待签字（自动侧已断言，观感待确认） |
+| 4 | `reduce` 下无位移 / 缩放，加载仍可感知；焦点环不被延迟 | 待签字（自动侧已断言，观感待确认；对照审查页的「模拟 reduce」） |
 | 5 | 暗色下浮层 / 手风琴对比与亮色一致，无发灰 | 待签字 |
 
 > 签字后把「待签字」改为「通过（日期）」，并同步 `todo.md` 的 M6-1 状态。

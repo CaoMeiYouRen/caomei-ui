@@ -61,8 +61,9 @@
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | 项内边距 |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | 项圆角 |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | 悬停背景 |
+| `--caomei-menu-item-hover-color` | `inherit` | 悬停文字色；当前项悬停保持 `current-color` |
 | `--caomei-menu-item-current-bg` | `--caomei-color-bg-elevated` | 当前项背景 |
-| `--caomei-menu-item-current-color` | `--caomei-color-primary` | 当前项文字色 |
+| `--caomei-menu-item-current-color` | `--caomei-color-primary-text` | 当前项文字色 |
 
 ## 从 PrimeVue 迁移
 

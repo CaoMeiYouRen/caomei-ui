@@ -61,8 +61,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | Item padding |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | Item corner radius |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | Hover background |
+| `--caomei-menu-item-hover-color` | `inherit` | Hover text colour; the current item keeps `current-color` on hover |
 | `--caomei-menu-item-current-bg` | `--caomei-color-bg-elevated` | Current item background |
-| `--caomei-menu-item-current-color` | `--caomei-color-primary` | Current item text colour |
+| `--caomei-menu-item-current-color` | `--caomei-color-primary-text` | Current item text colour |
 
 ## Migration from PrimeVue
 

@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 28（caomei-auth 迁移反馈收口与图标体系调研；目标 `1.2.0`）**，2026-11-07 用户就[第十二轮范围评估](../design/governance/2026-11-07-next-stage-scope-evaluation-12.md) §3 裁定后登记。构成 **5 条主线 / 8 条原子条目**（DatePicker 范围选择 2 / Toast 逐语气样式 2 / DataTable 迁移适配 2 / 图标体系调研 1 / 发布收口 1；构成对账 2 + 2 + 2 + 1 + 1 = 8）。范围与验收口径的单一事实源见 [Phase 28 登记批次记录](../design/governance/2026-11-07-phase28-registration.md) §1 / §2；目标版本 `1.2.0`（`latest` 当前为 `1.1.0`）。
+**当前进行中阶段：Phase 28（caomei-auth 迁移反馈收口与图标体系调研；目标 `1.2.0`）**，2026-11-07 用户就[第十二轮范围评估](../design/governance/2026-11-07-next-stage-scope-evaluation-12.md) §3 裁定后登记。构成 **5 条主线 / 8 条原子条目**（DatePicker 范围选择 2 / Toast 逐语气样式 2 / DataTable 迁移适配 2 / 图标体系调研 1 / 发布收口 1；构成对账 2 + 2 + 2 + 1 + 1 = 8）。范围与验收口径的单一事实源见 [Phase 28 登记批次记录](../design/governance/2026-11-07-phase28-registration.md) §1 / §2；目标版本 `1.2.0`（2026-11-08 已通过 CI 发布，`latest = 1.2.0`）；本阶段 8 条已全部交付，阶段归档待用户指令。
 
 ## Phase 28 原子条目
 
@@ -17,11 +17,11 @@
 | M3-1 | DataTable 密度与选择列宽度 token | 单元格 padding 与选择列宽度 token；默认值 = 现值；覆盖表头 / 单元格 / 选择列 / 空态；不新增 `size` prop | 已完成 |
 | M3-2 | DataTable / Paginator 迁移文档与确认项 | DataTable 密度 / 选择列配方；Paginator「自渲染报表」中英示例；全选作用域确认口径；迁移指南同步 | 已完成 |
 | M4-1 | 图标体系调研（只调研） | 第三方接入接口 / 内置图标替换 / 样式预设 / 运行时 vs 构建期 / 下游迁移；产出治理记录 + Backlog 拆分；零实现、零依赖 | 已完成 |
-| M5-1 | `1.2.0` 经 CI 发布 | `Release` workflow（OIDC）→ npm `latest` / tag / GitHub Release / 回推；下游 compat 复验；发布后回填版本句与规划载体 | 待执行 |
+| M5-1 | `1.2.0` 经 CI 发布 | `Release` workflow（OIDC）→ npm `latest` / tag / GitHub Release / 回推；下游 compat 复验；发布后回填版本句与规划载体 | 已完成 |
 
-> **交付状态**：本阶段 7 项能力条目已交付并各自经 Review Gate 放行（提交 `41b113e` / `2e9a814` / `445af3c` / `51d8494` / `eb364b9` / `5cd24da` / `a19b3f1` / `13c2adb`）；发布条目仍待用户明确授权。
+> **交付状态**：本阶段 **8/8** 已交付。7 项能力条目各自经 Review Gate 放行（提交 `41b113e` / `2e9a814` / `445af3c` / `51d8494` / `eb364b9` / `5cd24da` / `a19b3f1` / `13c2adb`）；发布条目经 CI 发布 `1.2.0` 并完成运行时验收（`latest`，见 [1.2.0 发布记录](../design/governance/2026-11-08-phase28-m5-1-1.2.0-release.md)）。阶段待归档。
 >
-> **前置与约束**：`M5-1` 的推送与发布以用户当次明确指令为前提；阶段收口 / 发布前须执行第 31 轮长期任务门槛复核并留痕；`multiple`、触摸目标 P1 / P2、图标实现、RTL / 二期语言、长尾组件维持范围外。
+> **前置与约束**：`M5-1` 已按用户 2026-11-08 明确授权执行；第 31 轮长期任务门槛复核已留痕（发布前检查记录）；阶段归档待用户指令；`multiple`、触摸目标 P1 / P2、图标实现、RTL / 二期语言、长尾组件维持范围外。
 
 ## 未完成项汇总
 

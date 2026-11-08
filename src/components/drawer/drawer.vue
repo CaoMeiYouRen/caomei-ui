@@ -353,43 +353,43 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
 }
 
 .caomei-drawer__overlay[data-state='open'] {
-    animation: caomei-drawer-fade-in var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-fade-in var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__overlay[data-state='closed'] {
-    animation: caomei-drawer-fade-out var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-fade-out var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--right[data-state='open'] {
-    animation: caomei-drawer-in-right var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-in-right var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--right[data-state='closed'] {
-    animation: caomei-drawer-out-right var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-out-right var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--left[data-state='open'] {
-    animation: caomei-drawer-in-left var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-in-left var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--left[data-state='closed'] {
-    animation: caomei-drawer-out-left var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-out-left var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--top[data-state='open'] {
-    animation: caomei-drawer-in-top var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-in-top var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--top[data-state='closed'] {
-    animation: caomei-drawer-out-top var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-out-top var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--bottom[data-state='open'] {
-    animation: caomei-drawer-in-bottom var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-in-bottom var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 .caomei-drawer__content--bottom[data-state='closed'] {
-    animation: caomei-drawer-out-bottom var(--caomei-drawer-duration, 200ms) ease;
+    animation: caomei-drawer-out-bottom var(--caomei-drawer-duration, var(--caomei-motion-duration-slow)) var(--caomei-motion-ease-standard);
 }
 
 @media (prefers-reduced-motion: reduce) {

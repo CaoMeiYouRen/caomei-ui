@@ -117,7 +117,7 @@ const ariaAttrs = computed<Record<string, string>>(() => ({
     line-height: 1;
     white-space: nowrap;
     vertical-align: middle;
-    transition: background-color 0.15s ease, color 0.15s ease, min-width 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), min-width var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-badge-wrapper > .caomei-badge {

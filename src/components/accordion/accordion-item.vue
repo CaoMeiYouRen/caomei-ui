@@ -81,7 +81,7 @@ const triggerAria = { 'aria-controls': null } as const
     line-height: 1.4;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-accordion__trigger:hover:not([data-disabled]) {
@@ -106,7 +106,7 @@ const triggerAria = { 'aria-controls': null } as const
 
 .caomei-accordion__chevron {
     color: var(--caomei-color-text-muted);
-    transition: transform 0.2s ease;
+    transition: transform var(--caomei-motion-duration-slow) var(--caomei-motion-ease-standard);
 }
 
 .caomei-accordion__trigger[data-state='open'] .caomei-accordion__chevron {
@@ -120,11 +120,11 @@ const triggerAria = { 'aria-controls': null } as const
 }
 
 .caomei-accordion__content[data-state='open'] {
-    animation: caomei-accordion-slide-down 0.2s ease-out;
+    animation: caomei-accordion-slide-down var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
 }
 
 .caomei-accordion__content[data-state='closed'] {
-    animation: caomei-accordion-slide-up 0.2s ease-out;
+    animation: caomei-accordion-slide-up var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
 }
 
 .caomei-accordion__panel {

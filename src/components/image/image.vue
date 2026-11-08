@@ -276,7 +276,7 @@ function handleError(event: Event): void {
 
 .caomei-image__preview-icon {
     opacity: 0;
-    transition: opacity 150ms ease;
+    transition: opacity var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-image__preview-trigger:hover .caomei-image__preview-icon,

@@ -59,6 +59,24 @@
     --caomei-control-height-md: 36px;
     --caomei-control-height-lg: 44px;
 
+    /*
+     * 动效 token：缺省 `minimal` 与既有硬编码值逐项等价（0.15s / 0.12s / 0.1s / 0.18s / 0.2s / 0.3s）；
+     * `data-motion="expressive"` 只覆盖这些值，不改变配色 / 明暗 / 密度；加载类循环动画保留组件级声明。
+     */
+    --caomei-motion-duration-instant: 100ms;
+    --caomei-motion-duration-fast: 120ms;
+    --caomei-motion-duration-base: 150ms;
+    --caomei-motion-duration-emphasis: 180ms;
+    --caomei-motion-duration-slow: 200ms;
+    --caomei-motion-duration-slower: 300ms;
+    --caomei-motion-ease-standard: ease;
+    --caomei-motion-ease-out: ease-out;
+    --caomei-motion-ease-in-out: ease-in-out;
+    --caomei-motion-ease-linear: linear;
+    --caomei-motion-distance-sm: 0px;
+    --caomei-motion-distance-md: 0px;
+    --caomei-motion-scale-from: 1;
+
     /* 不可见命中区下限（WCAG 2.5.8）：icon 按钮通过 `.caomei-hit-target` 扩到该尺寸 */
     --caomei-hit-target-min: 24px;
     --caomei-input-number-max-width: 12rem;
@@ -99,6 +117,52 @@
     --caomei-font-size-lg: 18px;
     --caomei-input-number-max-width: none;
     --caomei-select-max-width: none;
+}
+
+/**
+ * 动效轴：`data-motion="expressive"` 启用动效优先模式，`minimal`（缺省）与现状逐值一致。
+ *
+ * - **与预设 / 明暗 / 密度正交**：只覆盖动效类 token，不改变配色与尺寸；
+ * - **可挂在任意祖先元素**：token 继承，Portal 面板需把属性挂在 `<html>` 才随根节点生效；
+ * - **仍是克制强度**：只调整时长 / 缓动 / 位移 / 缩放，不做弹跳与长时间循环；
+ * - `prefers-reduced-motion: reduce` 下由本文件末尾的媒体查询压平为 0s / 0px / 1。
+ */
+[data-motion='expressive'] {
+    --caomei-motion-duration-instant: 120ms;
+    --caomei-motion-duration-fast: 160ms;
+    --caomei-motion-duration-base: 220ms;
+    --caomei-motion-duration-emphasis: 240ms;
+    --caomei-motion-duration-slow: 300ms;
+    --caomei-motion-duration-slower: 400ms;
+    --caomei-motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --caomei-motion-ease-out: cubic-bezier(0.2, 0, 0, 1);
+    --caomei-motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --caomei-motion-ease-linear: linear;
+    --caomei-motion-distance-sm: 4px;
+    --caomei-motion-distance-md: 8px;
+    --caomei-motion-scale-from: 0.96;
+}
+
+/**
+ * 减弱动效：把全部动效 token 压平为「无时长 / 无位移 / 无缩放」。
+ *
+ * 组件内的一次性过渡与入场动画统一消费 `--caomei-motion-*`，因此无需逐组件重复媒体查询；
+ * 使用显式 `transition: none` / `animation: none` 的组件规则仍然优先（同一状态更强的处置）。
+ * 加载类循环动画（spinner / skeleton / progress / image pulse）保留组件级降速，不在此处归零。
+ */
+@media (prefers-reduced-motion: reduce) {
+    :root,
+    [data-motion] {
+        --caomei-motion-duration-instant: 0s;
+        --caomei-motion-duration-fast: 0s;
+        --caomei-motion-duration-base: 0s;
+        --caomei-motion-duration-emphasis: 0s;
+        --caomei-motion-duration-slow: 0s;
+        --caomei-motion-duration-slower: 0s;
+        --caomei-motion-distance-sm: 0px;
+        --caomei-motion-distance-md: 0px;
+        --caomei-motion-scale-from: 1;
+    }
 }
 
 :is(.dark, [data-theme='dark']) {

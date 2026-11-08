@@ -87,7 +87,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     border: 1px solid var(--caomei-radio-border, var(--caomei-color-control-border));
     border-radius: 50%;
     background: var(--caomei-radio-bg, var(--caomei-color-bg));
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-radio-button__indicator::after {
@@ -100,7 +100,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     border-radius: 50%;
     background: var(--caomei-radio-dot, var(--caomei-color-primary-foreground));
     transform: scale(0);
-    transition: transform 0.15s ease;
+    transition: transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-radio-button[data-state='checked'] .caomei-radio-button__indicator {

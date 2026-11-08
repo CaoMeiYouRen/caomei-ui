@@ -45,10 +45,10 @@ const rootClass = computed(() => `caomei-float-label--${props.variant}`)
     line-height: 1;
     pointer-events: none;
     transition:
-        top var(--caomei-float-label-transition-duration, 0.15s) ease,
-        font-size var(--caomei-float-label-transition-duration, 0.15s) ease,
-        color var(--caomei-float-label-transition-duration, 0.15s) ease,
-        transform var(--caomei-float-label-transition-duration, 0.15s) ease;
+        top var(--caomei-float-label-transition-duration, var(--caomei-motion-duration-base)) var(--caomei-motion-ease-standard),
+        font-size var(--caomei-float-label-transition-duration, var(--caomei-motion-duration-base)) var(--caomei-motion-ease-standard),
+        color var(--caomei-float-label-transition-duration, var(--caomei-motion-duration-base)) var(--caomei-motion-ease-standard),
+        transform var(--caomei-float-label-transition-duration, var(--caomei-motion-duration-base)) var(--caomei-motion-ease-standard);
 }
 
 /* over：空值且未聚焦时，标签居中充当占位提示 */

@@ -207,7 +207,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-font-size-sm);
     cursor: pointer;
-    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-paginator__control:hover:not(:disabled, [data-selected='true']) {

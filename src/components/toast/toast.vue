@@ -260,7 +260,7 @@ function onOpenChange(id: string, open: boolean): void {
 }
 
 .caomei-toast[data-state='open'] {
-    animation: caomei-toast-in 0.18s ease-out;
+    animation: caomei-toast-in var(--caomei-motion-duration-emphasis) var(--caomei-motion-ease-out);
 }
 
 .caomei-toast[data-swipe='move'] {
@@ -269,11 +269,11 @@ function onOpenChange(id: string, open: boolean): void {
 
 .caomei-toast[data-swipe='cancel'] {
     transform: translate(0, 0);
-    transition: transform 0.2s ease-out;
+    transition: transform var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
 }
 
 .caomei-toast[data-swipe='end'] {
-    animation: caomei-toast-swipe-out 0.1s ease-out forwards;
+    animation: caomei-toast-swipe-out var(--caomei-motion-duration-instant) var(--caomei-motion-ease-out) forwards;
 }
 
 .caomei-toast__icon {
@@ -357,6 +357,18 @@ function onOpenChange(id: string, open: boolean): void {
             var(--reka-toast-swipe-end-x, 0),
             var(--reka-toast-swipe-end-y, 0)
         );
+    }
+}
+
+/* 减弱动效：入场 / 滑出动画与取消回弹过渡关闭（此前缺该兜底） */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-toast[data-state='open'],
+    .caomei-toast[data-swipe='end'] {
+        animation: none;
+    }
+
+    .caomei-toast[data-swipe='cancel'] {
+        transition: none;
     }
 }
 </style>

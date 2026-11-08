@@ -164,7 +164,7 @@ const rootClass = computed(() => [
     background: var(--caomei-checkbox-bg, var(--caomei-color-bg));
     color: var(--caomei-checkbox-foreground, var(--caomei-color-primary-foreground));
     cursor: inherit;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-checkbox__control[data-state='checked'],

@@ -139,6 +139,54 @@ test.describe('默认动效路径（no-preference）', () => {
     })
 })
 
+test.describe('动效轴（data-motion）', () => {
+    test.use({ reducedMotion: 'no-preference' })
+
+    test('expressive 覆盖时长，移除后回落 minimal', async ({ page }) => {
+        const root = page.locator('html')
+        const readBase = () => root.evaluate((el) => getComputedStyle(el).getPropertyValue('--caomei-motion-duration-base').trim())
+        const readItemDuration = async () => {
+            const item = page.locator(SELECT_BUTTON_ITEM).first()
+            await expect(item).toBeVisible()
+            return parseDurations(await item.evaluate((el) => getComputedStyle(el).transitionDuration))
+        }
+
+        expect(await readBase(), '缺省应为 minimal 的 150ms').toBe('150ms')
+        const minimal = await readItemDuration()
+        expect(minimal.every((value) => value > 0), `minimal 过渡应非零：${minimal.join(', ')}`).toBe(true)
+
+        await page.evaluate(() => {
+            document.documentElement.setAttribute('data-motion', 'expressive')
+        })
+        expect(await readBase(), 'expressive 应覆盖为 220ms').toBe('220ms')
+        const expressive = await readItemDuration()
+        expect(expressive.every((value) => value > 0), `expressive 过渡应非零：${expressive.join(', ')}`).toBe(true)
+        expect(Math.max(...expressive), 'expressive 过渡时长应大于 minimal').toBeGreaterThan(Math.max(...minimal))
+
+        await page.evaluate(() => {
+            document.documentElement.removeAttribute('data-motion')
+        })
+        expect(await readBase(), '移除轴后应回落 150ms').toBe('150ms')
+    })
+
+    test('局部容器挂载同样生效', async ({ page }) => {
+        await page.evaluate(() => {
+            document.querySelector('#wrap-select-button')?.setAttribute('data-motion', 'expressive')
+        })
+        const wrapper = page.locator('#wrap-select-button')
+        expect(
+            await wrapper.evaluate((el) => getComputedStyle(el).getPropertyValue('--caomei-motion-duration-base').trim()),
+        ).toBe('220ms')
+        const item = page.locator(SELECT_BUTTON_ITEM).first()
+        await expect(item).toBeVisible()
+        const durations = parseDurations(await item.evaluate((el) => getComputedStyle(el).transitionDuration))
+        expect(durations.every((value) => value > 0), `局部 expressive 过渡应非零：${durations.join(', ')}`).toBe(true)
+        await page.evaluate(() => {
+            document.querySelector('#wrap-select-button')?.removeAttribute('data-motion')
+        })
+    })
+})
+
 test.describe('reduced-motion 分支（项目默认 reduce）', () => {
     test('SelectButton 项过渡被压平', async ({ page }) => {
         const item = page.locator(SELECT_BUTTON_ITEM).first()
@@ -151,6 +199,27 @@ test.describe('reduced-motion 分支（项目默认 reduce）', () => {
             isMotionDisabled(style.property, style.duration),
             `reduced-motion 下过渡应被关闭，实测 property=${style.property} duration=${style.duration}`,
         ).toBe(true)
+    })
+
+    test('动效 token 在 reduce 下压平为 0s', async ({ page }) => {
+        const tokenValue = await page
+            .locator('html')
+            .evaluate((el) => getComputedStyle(el).getPropertyValue('--caomei-motion-duration-base').trim())
+        expect(tokenValue, 'reduce 下 base 时长 token 应为 0s').toBe('0s')
+    })
+
+    test('局部容器 expressive 在 reduce 下仍被压平', async ({ page }) => {
+        await page.evaluate(() => {
+            document.querySelector('#wrap-select-button')?.setAttribute('data-motion', 'expressive')
+        })
+        const wrapper = page.locator('#wrap-select-button')
+        expect(
+            await wrapper.evaluate((el) => getComputedStyle(el).getPropertyValue('--caomei-motion-duration-base').trim()),
+            'reduce 规则应覆盖局部 expressive',
+        ).toBe('0s')
+        await page.evaluate(() => {
+            document.querySelector('#wrap-select-button')?.removeAttribute('data-motion')
+        })
     })
 
     test('DatePicker 面板入场动画被压平', async ({ page }) => {

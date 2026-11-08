@@ -103,7 +103,7 @@ function setOpen(value: boolean): void {
 .caomei-menu__submenu-indicator {
     flex-shrink: 0;
     color: var(--caomei-color-text-muted);
-    transition: transform 0.15s ease;
+    transition: transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-menu__submenu-trigger--open .caomei-menu__submenu-indicator {

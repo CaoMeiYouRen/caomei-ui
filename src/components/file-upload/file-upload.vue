@@ -411,7 +411,7 @@ defineExpose({ upload, clear })
     font: inherit;
     font-size: var(--caomei-font-size-md);
     cursor: pointer;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-file-upload__dropzone:hover:not(:disabled) {

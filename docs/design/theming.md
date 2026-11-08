@@ -179,6 +179,31 @@
 - **命中区不在本轴内**：密度轴只改尺寸，不改变可点范围。P0 的清除 / 关闭按钮另由 `--caomei-hit-target-min`（默认 `24px`，WCAG 2.5.8）与 `.caomei-hit-target` 不可见命中区原语承载，按钮视觉盒不变；多行值片的行距 +2px（4 → 6）使相邻 24px 命中区不重叠；调大该 token 时须保证**相邻目标的轴距（`max(|dx|, |dy|)`）不小于该值**，并同时覆盖 `.caomei-tags-input` / `.caomei-multi-select` / `.caomei-auto-complete` 的 `row-gap`（默认行距只按 24px 计算）。P1 / P2 不在 1.1.0 范围内，触发条件见 [Backlog §1.5](../plan/backlog.md)。
 - 使用方视角的用法与示例见[移动端与响应式 §触摸密度轴](../guide/mobile.md)。
 
+### 5.3 动效轴
+
+`1.3.0` 起提供独立于预设、明暗与密度的**动效轴**：`data-motion="expressive"` 启用动效优先模式，缺省 `minimal`。挂载方式与 `data-density` 一致（token 继承，可挂在任意祖先；Portal 面板需把属性挂在 `<html>` 才随根节点生效），**不进入 `data-preset` 命名空间**。
+
+| token | `minimal`（缺省） | `expressive` | 用途 |
+| --- | --- | --- | --- |
+| `--caomei-motion-duration-instant` | `100ms` | `120ms` | 极短反馈 / 滑动收尾 |
+| `--caomei-motion-duration-fast` | `120ms` | `160ms` | 浮层淡入 |
+| `--caomei-motion-duration-base` | `150ms` | `220ms` | 颜色 / 边框 / 位移状态 |
+| `--caomei-motion-duration-emphasis` | `180ms` | `240ms` | Toast 等强调入场 |
+| `--caomei-motion-duration-slow` | `200ms` | `300ms` | 展开 / 收起、面板 |
+| `--caomei-motion-duration-slower` | `300ms` | `400ms` | 进度宽度等 |
+| `--caomei-motion-ease-standard` | `ease` | `cubic-bezier(0.2, 0, 0, 1)` | 常规进入 / 状态变化 |
+| `--caomei-motion-ease-out` | `ease-out` | `cubic-bezier(0.2, 0, 0, 1)` | 浮层 / 一次性入场 |
+| `--caomei-motion-ease-in-out` | `ease-in-out` | `cubic-bezier(0.4, 0, 0.2, 1)` | 往复 / 循环节奏 |
+| `--caomei-motion-ease-linear` | `linear` | `linear` | 匀速（加载指示） |
+| `--caomei-motion-distance-sm` | `0px` | `4px` | 轻微位移 |
+| `--caomei-motion-distance-md` | `0px` | `8px` | 浮层 / 面板位移 |
+| `--caomei-motion-scale-from` | `1` | `0.96` | 浮层缩放入场 |
+
+- **默认零变化**：`minimal` 的时长 / 缓动与迁移前硬编码值逐项等价；未设置 `data-motion` 时渲染与既有版本一致。
+- **减弱动效**：`prefers-reduced-motion: reduce` 下全部时长归零（`0s`）、位移归零、缩放回 `1`；组件内显式 `transition: none` / `animation: none` 仍优先。加载类循环动画（spinner / skeleton / indeterminate progress / image pulse）保留组件级降速，不归并为单一 loop token。
+- **克制的 expressive**：只调整时长 / 缓动 / 位移 / 缩放，不做弹跳、长时间循环或影响阅读的位移。其中 `--caomei-motion-distance-*` / `--caomei-motion-scale-from` 与 `ease-in-out` / `ease-linear` 为后续批次（反馈 / 浮层、导航 / 操作）预留，当前组件尚未消费；开启 `data-motion="expressive"` 先体现为时长 / 缓动变化。
+- **守卫**：`pnpm check:motion-contract` 校验默认 / 轴 / reduce 三组声明与「源码不得出现裸时长（加载类白名单除外）」；`test/contracts/motion-tokens.test.ts` 锁定 token 值，`test/e2e/focus-and-motion.e2e.ts` 验证轴切换与 reduce 的真实计算值。
+
 ## 6. 无障碍
 
 - 基于 Reka UI 的无障碍语义（ARIA、键盘导航、焦点管理）。

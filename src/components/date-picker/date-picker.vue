@@ -309,7 +309,7 @@ watchEffect(() => {
     font-size: var(--caomei-date-picker-font-size, var(--caomei-font-size-md));
     text-align: start;
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-date-picker:focus-visible {
@@ -406,7 +406,7 @@ watchEffect(() => {
     font-size: var(--caomei-font-size-md);
     outline: none;
     transform-origin: var(--reka-popover-content-transform-origin);
-    animation: caomei-date-picker-in 0.12s ease-out;
+    animation: caomei-date-picker-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
 }
 
 .caomei-date-picker__time {

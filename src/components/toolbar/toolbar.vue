@@ -146,7 +146,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     font-size: var(--caomei-font-size-md);
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {

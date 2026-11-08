@@ -112,7 +112,7 @@ const rootClass = computed(() => [
 }
 
 .caomei-card--hoverable {
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    transition: box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-card--hoverable:hover {

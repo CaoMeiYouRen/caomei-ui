@@ -74,7 +74,7 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
     text-align: start;
     text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-menu__item:hover:not([aria-disabled='true']) {

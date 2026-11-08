@@ -161,7 +161,7 @@ function handleUpdate(value: unknown): void {
     font-size: var(--caomei-select-button-item-font-size, var(--caomei-font-size-md));
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-select-button__item:first-child {

@@ -24,7 +24,7 @@
     --caomei-field-bg: var(--caomei-color-bg);
     --caomei-field-color: var(--caomei-color-text);
     --caomei-field-font-family: var(--caomei-font-sans);
-    --caomei-field-transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    --caomei-field-transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 
     /* 聚焦态 */
     --caomei-field-focus-border-color: var(--caomei-color-primary);
@@ -161,4 +161,11 @@
 
 .caomei-field__clear:hover {
     color: var(--caomei-color-text);
+}
+
+/* 减弱动效：字段外壳的边框 / 聚焦阴影过渡整体关闭（共享层此前缺该兜底） */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-field {
+        transition: none;
+    }
 }

@@ -127,7 +127,7 @@ function onClick(event: MouseEvent): void {
     line-height: 1;
     cursor: pointer;
     user-select: none;
-    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+    transition: opacity var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-button:disabled {

@@ -62,7 +62,7 @@ const stateLabel = computed(() => {
     font-size: var(--caomei-toggle-button-font-size, var(--caomei-font-size-md));
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-toggle-button:hover:not([data-disabled], [data-state='on']) {

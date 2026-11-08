@@ -89,7 +89,7 @@ const forwardedAttrs = useLabelAttrs(label)
     height: 100%;
     border-radius: inherit;
     background: var(--caomei-progress-bar-color, var(--caomei-color-primary));
-    transition: width 0.3s ease;
+    transition: width var(--caomei-motion-duration-slower) var(--caomei-motion-ease-standard);
 }
 
 .caomei-progress-bar[data-state='indeterminate'] .caomei-progress-bar__indicator {

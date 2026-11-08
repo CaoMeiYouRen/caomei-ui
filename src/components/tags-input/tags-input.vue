@@ -171,7 +171,7 @@ function restoreInputFocus(): void {
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-tags-input-font-size, var(--caomei-font-size-md));
     cursor: text;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-tags-input:focus-within {
@@ -289,5 +289,12 @@ function restoreInputFocus(): void {
     border-radius: var(--caomei-radius-sm);
     outline: 2px solid var(--caomei-color-primary);
     outline-offset: 1px;
+}
+
+/* 减弱动效：字段边框 / 聚焦阴影过渡关闭（此前缺该兜底） */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-tags-input {
+        transition: none;
+    }
 }
 </style>

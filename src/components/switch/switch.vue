@@ -74,7 +74,7 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
     border-radius: var(--caomei-switch-radius, 999px);
     background: var(--caomei-switch-bg, var(--caomei-color-control-border));
     cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-switch[data-state='checked'] {
@@ -98,7 +98,7 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
     height: var(--caomei-switch-thumb-size, 16px);
     border-radius: 50%;
     background: var(--caomei-switch-thumb-bg, var(--caomei-color-primary-foreground));
-    transition: transform 0.15s ease;
+    transition: transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-switch[data-state='checked'] .caomei-switch__thumb {

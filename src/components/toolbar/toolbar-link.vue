@@ -37,7 +37,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     font-size: var(--caomei-font-size-md);
     text-decoration: none;
     white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-toolbar__link:hover {

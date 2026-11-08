@@ -56,7 +56,7 @@ withDefaults(defineProps<TooltipContentProps>(), {
     text-wrap: pretty;
     outline: none;
     transform-origin: var(--reka-popper-transform-origin);
-    animation: caomei-tooltip-in 0.1s ease-out;
+    animation: caomei-tooltip-in var(--caomei-motion-duration-instant) var(--caomei-motion-ease-out);
 }
 
 .caomei-tooltip__arrow {

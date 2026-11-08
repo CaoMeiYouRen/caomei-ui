@@ -194,7 +194,7 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
     box-shadow: var(--caomei-shadow-md);
     font-family: var(--caomei-font-sans);
     transform-origin: var(--reka-dropdown-menu-content-transform-origin);
-    animation: caomei-dropdown-menu-in 0.12s ease-out;
+    animation: caomei-dropdown-menu-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
 }
 
 .caomei-dropdown-menu__group {

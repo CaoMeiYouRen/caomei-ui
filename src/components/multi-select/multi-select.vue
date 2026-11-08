@@ -277,7 +277,7 @@ function onAnchorClick(event: MouseEvent): void {
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-multi-select-font-size, var(--caomei-font-size-md));
     cursor: text;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-multi-select:focus-within {
@@ -483,5 +483,12 @@ function onAnchorClick(event: MouseEvent): void {
     display: inline-flex;
     flex-shrink: 0;
     color: var(--caomei-color-primary-text);
+}
+
+/* 减弱动效：字段边框 / 聚焦阴影过渡关闭（此前缺该兜底） */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-multi-select {
+        transition: none;
+    }
 }
 </style>

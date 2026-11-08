@@ -57,7 +57,7 @@ withDefaults(defineProps<PopoverContentProps>(), {
     font-size: var(--caomei-font-size-md);
     outline: none;
     transform-origin: var(--reka-popover-content-transform-origin);
-    animation: caomei-popover-in 0.12s ease-out;
+    animation: caomei-popover-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
 }
 
 .caomei-popover__arrow {

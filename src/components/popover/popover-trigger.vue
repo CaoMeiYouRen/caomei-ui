@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<PopoverTriggerProps>(), {
     font-size: var(--caomei-font-size-md);
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-popover__trigger:hover:not(:disabled) {

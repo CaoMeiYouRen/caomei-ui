@@ -77,7 +77,7 @@ const idrefBinds = computed<Record<string, string | undefined>>(() => {
     font: inherit;
     text-align: start;
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-stepper__trigger:hover:not([data-disabled]) {

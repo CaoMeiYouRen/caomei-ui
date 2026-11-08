@@ -49,7 +49,7 @@ registerPanelIdref(injectDropdownMenuRootContext() as unknown as PanelIdrefConte
     line-height: 1.4;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-dropdown-menu__trigger:hover:not([data-disabled]),

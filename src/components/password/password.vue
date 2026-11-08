@@ -253,7 +253,7 @@ defineExpose({ focus, blur })
     height: 100%;
     border-radius: inherit;
     background: var(--caomei-color-text-muted);
-    transition: width 0.15s ease, background-color 0.15s ease;
+    transition: width var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-password__meter-fill[data-level='1'] {

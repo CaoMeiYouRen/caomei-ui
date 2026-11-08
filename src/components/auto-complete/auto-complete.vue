@@ -417,7 +417,7 @@ watch(normalizedOptions, () => {
     font-family: var(--caomei-font-sans);
     font-size: var(--caomei-auto-complete-font-size, var(--caomei-font-size-md));
     cursor: text;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
 .caomei-auto-complete:focus-within {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { MOTION_TOKEN_NAMES } from '../../test/e2e/helpers/motion.ts'
 import {
     DEFAULT_TOKENS,
     ISSUE_CODES,
@@ -151,6 +152,118 @@ describe('animation 白名单', () => {
         expect(animationNameOf('150ms ease caomei-x')).toBe('caomei-x')
         expect(animationNameOf('caomei-x 150ms ease')).toBe('caomei-x')
         expect(animationNameOf('none')).toBeNull()
+    })
+})
+
+describe('动效验收装置', () => {
+    it('E2E 采样装置的 token 清单与默认集合一致', () => {
+        expect([...MOTION_TOKEN_NAMES].sort()).toEqual(Object.keys(DEFAULT_TOKENS).sort())
+    })
+})
+
+describe('布局属性动画审计', () => {
+    it('未登记的布局属性过渡被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '.x { transition: width var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutTransition)
+    })
+
+    it('白名单内的布局属性过渡通过', () => {
+        const result = analyze({
+            path: 'src/components/password/password.vue',
+            text: '.x { transition: width var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard); }',
+        })
+        expect(result.issues).toEqual([])
+    })
+
+    it('白名单文件新增未登记属性仍被标记', () => {
+        const result = analyze({
+            path: 'src/components/password/password.vue',
+            text: '.x { transition: height var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutTransition)
+    })
+
+    it('未登记的布局属性关键帧被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '@keyframes custom-slide { from { height: 0; } to { height: 40px; } }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutKeyframe)
+    })
+
+    it('白名单关键帧通过', () => {
+        const result = analyze({
+            path: 'src/components/accordion/accordion-item.vue',
+            text: '@keyframes caomei-accordion-slide-down { from { height: 0; } to { height: var(--x); } }',
+        })
+        expect(result.issues).toEqual([])
+    })
+
+    it('时长前置的 transition 简写仍能识别布局属性', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '.x { transition: var(--caomei-motion-duration-base) width var(--caomei-motion-ease-standard); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutTransition)
+    })
+
+    it('transition-property 长写被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '.x { transition-property: width, color; transition-duration: var(--caomei-motion-duration-base); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutTransition)
+    })
+
+    it('transition-property: all 被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '.x { transition-property: all; transition-duration: var(--caomei-motion-duration-base); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.transitionAll)
+    })
+
+    it('逻辑属性过渡被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '.x { transition: margin-inline-start var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard); }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutTransition)
+    })
+
+    it('白名单文件使用长写形式通过', () => {
+        const result = analyze({
+            path: 'src/components/progress-bar/progress-bar.vue',
+            text: '.x { transition-property: width; transition-duration: var(--caomei-motion-duration-slower); }',
+        })
+        expect(result.issues).toEqual([])
+    })
+
+    it('白名单关键帧跨文件借用名称被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '@keyframes caomei-accordion-slide-down { from { height: 0; } to { height: 20px; } }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutKeyframe)
+    })
+
+    it('行高等扩展布局属性的关键帧被标记', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '@keyframes custom-line { from { line-height: 10px; } to { line-height: 20px; } }',
+        })
+        expect(codesOf(result)).toContain(ISSUE_CODES.layoutKeyframe)
+    })
+
+    it('只动画 transform / opacity 的关键帧不受限', () => {
+        const result = analyze({
+            path: 'src/components/a/a.vue',
+            text: '@keyframes custom-fade { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: none; } }',
+        })
+        expect(result.issues).toEqual([])
     })
 })
 

@@ -89,6 +89,90 @@ export const LOADING_DURATION_FILES = {
     'src/components/skeleton/skeleton.vue': ['2.4s'],
 }
 
+/** 触发布局的 CSS 属性（过渡 / 关键帧）；命中即需在下方白名单登记。 */
+export const LAYOUT_PROPERTIES = new Set([
+    'height',
+    'width',
+    'min-width',
+    'max-width',
+    'min-height',
+    'max-height',
+    'top',
+    'left',
+    'right',
+    'bottom',
+    'inset',
+    'margin',
+    'margin-top',
+    'margin-right',
+    'margin-bottom',
+    'margin-left',
+    'padding',
+    'padding-top',
+    'padding-right',
+    'padding-bottom',
+    'padding-left',
+    'grid-template-rows',
+    'grid-template-columns',
+    'font-size',
+    'line-height',
+    'border-width',
+    'border-top-width',
+    'border-right-width',
+    'border-bottom-width',
+    'border-left-width',
+    'inline-size',
+    'block-size',
+    'min-inline-size',
+    'max-inline-size',
+    'min-block-size',
+    'max-block-size',
+    'gap',
+    'row-gap',
+    'column-gap',
+    'margin-inline-start',
+    'margin-inline-end',
+    'margin-block-start',
+    'margin-block-end',
+    'padding-inline-start',
+    'padding-inline-end',
+    'padding-block-start',
+    'padding-block-end',
+    'inset-inline-start',
+    'inset-inline-end',
+    'inset-block-start',
+    'inset-block-end',
+    'border-inline-width',
+    'border-block-width',
+])
+// 说明：只枚举物理 / 逻辑属性与 size 家族；`border` / `font` / `flex` 等含布局分量的
+// 复合简写不在面内（当前源码无此写法），新增时按需补登记。
+
+/**
+ * 布局属性过渡白名单：键为仓库相对路径，值为允许的属性与理由。
+ *
+ * 新增条目须先评估成本（尺寸小、非高频、可接受重排），并在交付记录登记；未登记即失败。
+ */
+export const LAYOUT_TRANSITIONS = {
+    'src/components/password/password.vue': { properties: ['width'], reason: '密码强度条宽度（单条、非高频）' },
+    'src/components/progress-bar/progress-bar.vue': { properties: ['width'], reason: '确定态进度宽度（单调变化、非高频）' },
+    'src/components/badge/badge.vue': { properties: ['min-width'], reason: '计数位宽变化（单项、短时长）' },
+    'src/components/float-label/float-label.vue': {
+        properties: ['top', 'font-size'],
+        reason: '浮动标签收放（单标签、覆盖钩子已公开）',
+    },
+}
+
+/**
+ * 布局属性关键帧白名单：键为 keyframes 名，值为来源文件与理由。
+ */
+export const LAYOUT_KEYFRAMES = {
+    'caomei-accordion-slide-down': { file: 'src/components/accordion/accordion-item.vue', reason: '展开高度（单面板、时长 200 / 300ms）' },
+    'caomei-accordion-slide-up': { file: 'src/components/accordion/accordion-item.vue', reason: '收起高度（单面板、时长 200 / 300ms）' },
+    'caomei-menu-submenu-down': { file: 'src/components/menu/sub-menu.vue', reason: '子菜单展开高度（单层、非高频）' },
+    'caomei-menu-submenu-up': { file: 'src/components/menu/sub-menu.vue', reason: '子菜单收起高度（单层、非高频）' },
+}
+
 /**
  * 必须显式声明 `prefers-reduced-motion: reduce` 的动效来源。
  *
@@ -120,6 +204,8 @@ export const ISSUE_CODES = {
     missingReduce: 'missing-reduce-token',
     missingReduceCoverage: 'missing-reduce-coverage',
     reduceMismatch: 'reduce-token-mismatch',
+    layoutTransition: 'layout-transition',
+    layoutKeyframe: 'layout-keyframe',
     scopeNarrowed: 'scope-narrowed',
 }
 
@@ -279,6 +365,40 @@ export function splitTopLevelComma(value) {
     return parts.filter(Boolean)
 }
 
+/** `transition` 简写中的非属性关键字（缓动 / 方向 / 填充 / 时长无关词）。 */
+const TRANSITION_PROPERTY_KEYWORDS = new Set([
+    'ease',
+    'ease-in',
+    'ease-out',
+    'ease-in-out',
+    'linear',
+    'step-start',
+    'step-end',
+    'normal',
+    'infinite',
+    'inherit',
+    'initial',
+    'unset',
+    'none',
+])
+
+/**
+ * 从 `transition` 简写单项中取过渡属性名（兼容时长 / 缓动前置的合法写法）。
+ *
+ * @param {string} item 顶层逗号拆分后的单项
+ * @returns {string} 属性名；无法识别时返回空串
+ */
+export function transitionPropertyOf(item) {
+    const tokens = item
+        .replace(TIME_LITERAL_RE, ' ')
+        .replace(/(?:cubic-bezier|steps)\([^)]*\)/g, ' ')
+        .trim()
+        .split(/\s+/)
+        // 函数值（`var(--x)` 等）可能是时长 / 缓动的回退形式，不参与属性名判定
+        .filter((token) => token && !token.includes('(') && !token.startsWith('--'))
+    return tokens.find((token) => !TRANSITION_PROPERTY_KEYWORDS.has(token)) ?? ''
+}
+
 /**
  * 分析动效契约。
  *
@@ -330,7 +450,7 @@ export function analyzeMotionContract({ themeCss, files }, { enforceScopeFloor =
     }
 
     // 4) 源文件声明与 token 消费
-    const declarationRe = /\b(transition-duration|transition-delay|transition|animation-duration|animation-delay|animation)\s*:\s*([^;}]+)/g
+    const declarationRe = /\b(transition-property|transition-duration|transition-delay|transition|animation-duration|animation-delay|animation)\s*:\s*([^;}]+)/g
     const isZeroDuration = (value) => /^0(?:\.0+)?(?:ms|s)$/.test(value)
     let declarationCount = 0
     let scannedFiles = 0
@@ -361,6 +481,42 @@ export function analyzeMotionContract({ themeCss, files }, { enforceScopeFloor =
                         line,
                         detail: `transition 使用裸时长 ${literals.join(' / ')}：${value}`,
                     })
+                }
+                const allowedLayout = new Set(LAYOUT_TRANSITIONS[file]?.properties ?? [])
+                for (const item of splitTopLevelComma(value)) {
+                    const property = transitionPropertyOf(item)
+                    if (LAYOUT_PROPERTIES.has(property) && !allowedLayout.has(property)) {
+                        issues.push({
+                            code: ISSUE_CODES.layoutTransition,
+                            file,
+                            line,
+                            detail: `未登记的布局属性过渡 ${property}：${item}`,
+                        })
+                    }
+                }
+                continue
+            }
+
+            if (property === 'transition-property') {
+                if (/(?:^|[\s,])all(?:[\s,]|$)/.test(value)) {
+                    issues.push({
+                        code: ISSUE_CODES.transitionAll,
+                        file,
+                        line,
+                        detail: 'transition-property 不得使用 all',
+                    })
+                }
+                const allowedLayout = new Set(LAYOUT_TRANSITIONS[file]?.properties ?? [])
+                for (const item of splitTopLevelComma(value)) {
+                    const name = item.trim()
+                    if (LAYOUT_PROPERTIES.has(name) && !allowedLayout.has(name)) {
+                        issues.push({
+                            code: ISSUE_CODES.layoutTransition,
+                            file,
+                            line,
+                            detail: `未登记的布局属性过渡 ${name}：transition-property`,
+                        })
+                    }
                 }
                 continue
             }
@@ -412,6 +568,43 @@ export function analyzeMotionContract({ themeCss, files }, { enforceScopeFloor =
         }
         if (fileDeclarations > 0) {
             scannedFiles += 1
+        }
+
+        for (const match of text.matchAll(/@keyframes\s+([A-Za-z][\w-]*)\s*\{/g)) {
+            const name = match[1]
+            const start = match.index + match[0].length
+            let depth = 1
+            let end = start
+            while (end < text.length && depth > 0) {
+                if (text[end] === '{') {
+                    depth += 1
+                } else if (text[end] === '}') {
+                    depth -= 1
+                }
+                end += 1
+            }
+            const body = text.slice(start, end)
+            const layout = [...body.matchAll(/(?:^|[;{\s])([a-z-]+)\s*:/g)]
+                .map((propertyMatch) => propertyMatch[1])
+                .filter((property) => LAYOUT_PROPERTIES.has(property))
+            if (layout.length > 0) {
+                const registered = Object.hasOwn(LAYOUT_KEYFRAMES, name) ? LAYOUT_KEYFRAMES[name] : null
+                if (!registered) {
+                    issues.push({
+                        code: ISSUE_CODES.layoutKeyframe,
+                        file,
+                        line: (text.slice(0, match.index).match(/\n/g) ?? []).length + 1,
+                        detail: `未登记的布局属性关键帧 ${name}（${[...new Set(layout)].join(' / ')}）`,
+                    })
+                } else if (registered.file !== file) {
+                    issues.push({
+                        code: ISSUE_CODES.layoutKeyframe,
+                        file,
+                        line: (text.slice(0, match.index).match(/\n/g) ?? []).length + 1,
+                        detail: `布局属性关键帧 ${name} 登记在 ${registered.file}，实际定义在 ${file}`,
+                    })
+                }
+            }
         }
 
         for (const token of text.match(MOTION_TOKEN_RE) ?? []) {

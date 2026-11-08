@@ -4,6 +4,31 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-11-08 阶段归档蒸馏（Phase 28）
+
+> 本批活跃 **20 条全部处置**：分态 `migrate 0 / compress 20 / remove 0 / keep 0`。归档摘要 **20 行**（可复算：`awk '/^## 2026-11-08 阶段归档蒸馏（Phase 28）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。落点：[发布指南 §3 / §5](../../guide/release.md)、[AI 协作规范 §3.1 / §9](../../standards/ai-collaboration.md)、[测试规范 §2.1 / §7](../../standards/testing.md)、[规划规范 §3.9 / §5 / §7](../../standards/planning.md)、[开发规范 §5 / §8](../../standards/development.md)、[文档规范 §3](../../standards/documentation.md)、[文档与演示站设计 §13](../documentation-site.md)、[版本与兼容策略](../../guide/version-policy.md)；全部为**已存在落点**，本批只做压缩与指针化。
+
+- [2026-11-07] [fact] `npm publish` 成功 ≠ registry 可解析；发布链须在 dispatch 前轮询 `npm view <pkg>@<v> version --prefer-online`，用 `SECONDS` 总预算并保证 job 超时大于预算 → docs/guide/release.md §5
+- [2026-10-14] [pattern] 跨载体摘要不得把附条件结论升格为更强断言；摘要须与本体同级携带限定词 → docs/standards/ai-collaboration.md §9
+- [2026-10-14] [env] 全量 `vitest` 的并行负载 flaky 存在宿主负载外溢；处置为隔离复跑 + `--maxWorkers=2` 全量取证，不据此改门禁 → docs/standards/testing.md §7
+- [2026-10-16] [pattern] 大改动按交付面拆批，相互耦合面同批；`lint-staged` 的 `eslint . --fix` 会污染暂存，提交前先让 `--fix` 幂等并复核 `git show --stat` → docs/standards/planning.md §5
+- [2026-10-16] [pattern] 契约改义后回扫「把旧语义当清单用」的同页示例与其它载体中的清单来源表述 → docs/standards/documentation.md §3
+- [2026-10-16] [pattern] 包形态 / 体积评估须用打包器实测消费方条件，不用总量 / 个数外推；实测值与推算值分列 → docs/standards/development.md §8
+- [2026-10-16] [pattern] 规划载体的 §1 现状句 / 阶段表行 / 状态行是三个独立落点；改构成或计数时逐处回扫 → docs/standards/planning.md §3.9
+- [2026-10-16] [pattern] 治理索引一行含多个治理记录链接时，`§N` 指针会逐链接校验；主行只留本记录一个链接，其余引用拆续行 → docs/standards/ai-collaboration.md §9
+- [2026-10-16] [pattern] `keyof typeof <常量>` 派生类型会随常量瘦身收窄；冻结前先查「值集合」与「类型集合」是否共用同一常量 → docs/standards/development.md
+- [2026-10-16] [pattern] 装置 / 探针与 composite 配置共享常量时不要跨项目 import（TS6305）；改为配置侧单点导出 + 运行时对账 → docs/standards/testing.md §7
+- [2026-10-16] [pattern] 命中区 / 可点目标实测须先定口径（目标盒 ∪ label 盒、按目标型角色收窄、浮层内测、不可由 token 推断达标集合） → docs/standards/testing.md
+- [2026-10-16] [pattern] 自驱视口探针不应随每个矩阵档重复承载；限定到全量档并写明口径，避免 DPR 取整刀刃差异 → docs/standards/testing.md §2.1
+- [2026-10-16] [pattern] 可复算命令避开 `$` 与命令替换形态（`$p` / `$VAR` / 反引号）；中文正文不用省略号，避免 `lint-md` error → docs/standards/ai-collaboration.md §9
+- [2026-10-16] [pattern] 归档迁移只写「删除面 N / 新增面 M」+ 复算命令，不主张具体 hunk span；补独立实证证明无其它行变动 → docs/standards/planning.md §7
+- [2026-10-16] [pattern] 测试夹具若在夹具内提交，必须自带仓库本地 git 身份；核对面 = 全部含提交动作的测试文件 → docs/standards/testing.md §7
+- [2026-10-24] [pattern] 冻结 token 面取「默认声明 ∪ 文档披露」并集；同时给出定义 / 披露 / 有效并集 / 仅消费内部四组计数 → docs/guide/version-policy.md
+- [2026-10-24] [pattern] 字段契约注入点评估不能把 12 个组件同质化；逐组件列 `id` 落点 / 可访问名 / 校验态 / attrs 优先级 → docs/standards/development.md §5
+- [2026-10-24] [pattern] 发布承诺须与工具链能力同批校验；API 差分基线按目标 dist-tag 取同通道上一版，并预留已批准破坏的显式通道 → docs/guide/release.md §3
+- [2026-10-24] [pattern] en-US 文档指向中文治理记录须用站点根绝对路径；`docs:check:links` 通过不等于 `docs:build` 通过，公共文档改动须把 `docs:build` 纳入门禁 → docs/design/documentation-site.md §13
+- [2026-10-24] [process] 行为收口批次的 Review Gate 首轮证据须含 build 与真实浏览器；工件按 mtime 判新鲜，复审后重写再提交 → docs/standards/ai-collaboration.md §3.1
+
 ## 2026-10-13 阶段归档蒸馏（Phase 23）
 
 > 本批活跃 **21 条全部处置**：分态 `migrate 21 / compress 0 / remove 0 / keep 0`。归档摘要 **21 行**（可复算：`awk '/^## 2026-10-13 阶段归档蒸馏（Phase 23）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。迁移落点：[AI 协作规范 §9](../../standards/ai-collaboration.md)、[测试规范 §2 / §10](../../standards/testing.md)（§2.1 两条落点已存在）、[规划规范 §3 / §4 / §7](../../standards/planning.md)、[Git 规范 §3](../../standards/git.md)、[文档与演示站设计 §13](../documentation-site.md)；其中 **6 条**落点此前已存在（行末标「落点已存在」）。`wisdom.md` 活跃段清空并保留指针。

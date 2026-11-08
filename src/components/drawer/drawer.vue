@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue'
 import {
     DialogClose,
     DialogContent,
@@ -12,10 +11,12 @@ import {
 } from 'reka-ui'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { DrawerProps } from './types'
 
 defineOptions({ name: 'CaomeiDrawer', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DrawerProps>(), {
     description: '',
@@ -96,7 +97,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
                         class="caomei-drawer__close"
                         :aria-label="closeLabel"
                     >
-                        <CaomeiIcon :icon="X" />
+                        <CaomeiIcon :icon="icons.dismiss" />
                     </DialogClose>
                 </div>
                 <div class="caomei-drawer__body">

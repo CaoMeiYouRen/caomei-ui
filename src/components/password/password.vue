@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Eye, EyeOff } from '@lucide/vue'
 import { computed, ref, useId } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { CaomeiInput } from '../input'
 import { useFocusControl } from '../_shared/use-focus-control'
@@ -10,6 +9,8 @@ import type { PasswordProps } from './types'
 
 // type 由可见性状态管理，不可由外部透传覆盖（否则会静默关闭密码掩码）
 defineOptions({ name: 'CaomeiPassword', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<PasswordProps>(), {
     size: 'md',
@@ -163,7 +164,7 @@ defineExpose({ focus, blur })
                     :disabled="disabled"
                     @click="toggle"
                 >
-                    <CaomeiIcon :icon="revealed ? EyeOff : Eye" />
+                    <CaomeiIcon :icon="revealed ? icons.eyeOff : icons.eye" />
                 </button>
             </template>
         </CaomeiInput>

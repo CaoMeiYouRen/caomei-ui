@@ -1,8 +1,9 @@
 import { mount } from '@vue/test-utils'
-import { computed } from 'vue'
+import { computed, defineComponent, h, nextTick, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
+import { provideIconOverrides } from '../../icons'
 import { CaomeiMessage } from './index'
 
 function getRoot(wrapper: ReturnType<typeof mount>) {
@@ -67,6 +68,31 @@ describe('CaomeiMessage', () => {
         const wrapper = mount(CaomeiMessage, { props: { icon: false } })
 
         expect(wrapper.find('.caomei-message__icon').exists()).toBe(false)
+    })
+
+    it('danger 语气使用 CircleAlert（error）而非 Toast 的 CircleX', () => {
+        const wrapper = mount(CaomeiMessage, { props: { tone: 'danger' } })
+
+        expect(wrapper.get('.caomei-message__icon svg').attributes('class')).toContain('lucide-circle-alert')
+        expect(wrapper.get('.caomei-message__icon svg').attributes('class')).not.toContain('lucide-circle-x')
+    })
+
+    it('provideIconOverrides 可替换语义图标并响应变化', async () => {
+        const CustomIcon = defineComponent({ template: '<svg data-custom="icon" />' })
+        const overrides = ref<Record<string, typeof CustomIcon>>({ error: CustomIcon })
+        const Host = defineComponent({
+            setup() {
+                provideIconOverrides(overrides)
+                return () => h(CaomeiMessage, { tone: 'danger' })
+            },
+        })
+        const wrapper = mount(Host)
+        expect(wrapper.find('[data-custom="icon"]').exists()).toBe(true)
+
+        overrides.value = {}
+        await nextTick()
+        expect(wrapper.find('[data-custom="icon"]').exists()).toBe(false)
+        expect(wrapper.get('.caomei-message__icon svg').attributes('class')).toContain('lucide-circle-alert')
     })
 
     it('icon 插槽覆盖默认图标', () => {

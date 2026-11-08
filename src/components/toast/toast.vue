@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { CircleCheck, CircleX, Info, TriangleAlert, X } from '@lucide/vue'
 import {
     ToastAction,
     ToastClose,
@@ -12,11 +11,13 @@ import {
 import { computed, useAttrs, watch, type Component } from 'vue'
 import { createToastStore, provideToastStore, type ToastItem, type ToastTone } from '../../composables/use-toast'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { resolveLabelName } from '../_shared/use-label-attrs'
 import type { ToastProviderProps } from './types'
 
 defineOptions({ name: 'CaomeiToastProvider', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<ToastProviderProps>(), {
     position: 'top-right',
@@ -53,13 +54,13 @@ watch(
     },
 )
 
-const toneIcons: Record<ToastTone, Component> = {
-    neutral: Info,
-    primary: Info,
-    success: CircleCheck,
-    warning: TriangleAlert,
-    danger: CircleX,
-}
+const toneIcons = computed<Record<ToastTone, Component>>(() => ({
+    neutral: icons.value.info,
+    primary: icons.value.info,
+    success: icons.value.success,
+    warning: icons.value.warning,
+    danger: icons.value.danger,
+}))
 
 const viewportClass = computed(() => `caomei-toast-viewport--${props.position}`)
 
@@ -68,7 +69,7 @@ function toneClass(item: ToastItem): string {
 }
 
 function toneIcon(item: ToastItem): Component {
-    return toneIcons[item.tone ?? 'neutral']
+    return toneIcons.value[item.tone ?? 'neutral']
 }
 
 /**
@@ -152,7 +153,7 @@ function onAnimationEnd(id: string, event: AnimationEvent): void {
                 class="caomei-toast__close"
                 :aria-label="closeLabel"
             >
-                <CaomeiIcon :icon="X" />
+                <CaomeiIcon :icon="icons.dismiss" />
             </ToastClose>
         </ToastRoot>
         <ToastViewport

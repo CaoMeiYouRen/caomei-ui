@@ -54,6 +54,22 @@ provideIconRegistry({ star: Star })
 - `icon` stays optional (`icon?: Component`) rather than a union type, preserving existing `:icon` usage and props extraction tools; at runtime provide at least one of `icon` / `name`.
 - Advanced usage: `useIconRegistry()` reads the current registry; `caomeiIconRegistryKey` is available for a manual `provide` (rarely needed).
 
+## Replacing built-in icons
+
+Built-in component icons come from the `internal-icons` semantic map (for example `dismiss`, `chevronDown`, `check`). Use `provideIconOverrides()` to replace them by semantic name; keys you do not override keep the Lucide default. A component `#icon` slot only replaces the icon at that position; positions without a slot (such as dismiss buttons) still use the override map.
+
+```ts
+import { provideIconOverrides } from 'caomei-ui'
+import { X } from '@lucide/vue'
+
+provideIconOverrides({
+    dismiss: X, // only replace the dismiss icon
+})
+```
+
+- Overrides apply by semantic name: `error` (Message) and `danger` (Toast) are separate and are never merged.
+- Overrides also accept a `ref` or getter and are isolated per request; call it in the app root or a layout.
+
 ## Icon gallery
 
 Built-in component icons come from `@lucide/vue`; the gallery below lists icons commonly used in the documentation, with the `@lucide/vue` export name as the caption (see the [lucide icon site](https://lucide.dev/icons/) for the full set).

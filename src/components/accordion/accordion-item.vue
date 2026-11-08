@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ChevronDown } from '@lucide/vue'
 import {
     AccordionContent,
     AccordionHeader,
     AccordionItem,
     AccordionTrigger,
 } from 'reka-ui'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { AccordionItemProps } from './types'
 
 defineOptions({ name: 'CaomeiAccordionItem', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 withDefaults(defineProps<AccordionItemProps>(), {
     title: '',
@@ -42,7 +43,7 @@ const triggerAria = { 'aria-controls': null } as const
                     <slot name="trigger">{{ title }}</slot>
                 </span>
                 <CaomeiIcon
-                    :icon="ChevronDown"
+                    :icon="icons.chevronDown"
                     class="caomei-accordion__chevron"
                 />
             </AccordionTrigger>

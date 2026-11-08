@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue'
 import {
     TagsInputClear,
     TagsInputInput,
@@ -10,12 +9,14 @@ import {
 } from 'reka-ui'
 import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { TagsInputProps } from './types'
 
 defineOptions({ name: 'CaomeiTagsInput', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<TagsInputProps>(), {
     id: undefined,
@@ -125,7 +126,7 @@ function restoreInputFocus(): void {
         >
             <TagsInputItemText class="caomei-tags-input__tag-label" />
             <TagsInputItemDelete class="caomei-hit-target caomei-tags-input__tag-remove">
-                <CaomeiIcon :icon="X" />
+                <CaomeiIcon :icon="icons.dismiss" />
             </TagsInputItemDelete>
         </TagsInputItem>
         <TagsInputInput
@@ -142,7 +143,7 @@ function restoreInputFocus(): void {
             :aria-label="clearLabel"
             @click="restoreInputFocus"
         >
-            <CaomeiIcon :icon="X" />
+            <CaomeiIcon :icon="icons.dismiss" />
         </TagsInputClear>
     </TagsInputRoot>
 </template>

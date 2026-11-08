@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from '@lucide/vue'
 import {
     PaginationEllipsis,
     PaginationFirst,
@@ -12,13 +11,15 @@ import {
 } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { OptionValue } from '../_shared/option'
 import { useLabelAttrs, resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiSelect } from '../select'
 import type { PaginatorProps } from './types'
 
 defineOptions({ name: 'CaomeiPaginator', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<PaginatorProps>(), {
     itemsPerPage: 10,
@@ -93,7 +94,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                     class="caomei-paginator__control"
                     :aria-label="firstLabel"
                 >
-                    <CaomeiIcon :icon="ChevronsLeft" />
+                    <CaomeiIcon :icon="icons.chevronsLeft" />
                 </PaginationFirst>
             </li>
             <li class="caomei-paginator__item">
@@ -101,7 +102,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                     class="caomei-paginator__control"
                     :aria-label="previousLabel"
                 >
-                    <CaomeiIcon :icon="ChevronLeft" />
+                    <CaomeiIcon :icon="icons.chevronLeft" />
                 </PaginationPrev>
             </li>
             <template
@@ -129,7 +130,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                     class="caomei-paginator__control"
                     :aria-label="nextLabel"
                 >
-                    <CaomeiIcon :icon="ChevronRight" />
+                    <CaomeiIcon :icon="icons.chevronRight" />
                 </PaginationNext>
             </li>
             <li v-if="showEdges" class="caomei-paginator__item">
@@ -137,7 +138,7 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                     class="caomei-paginator__control"
                     :aria-label="lastLabel"
                 >
-                    <CaomeiIcon :icon="ChevronsRight" />
+                    <CaomeiIcon :icon="icons.chevronsRight" />
                 </PaginationLast>
             </li>
         </PaginationList>

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue'
 import { computed, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useFocusControl } from '../_shared/use-focus-control'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { InputProps } from './types'
 
 defineOptions({ name: 'CaomeiInput', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<InputProps>(), {
     size: 'md',
@@ -105,7 +106,7 @@ defineExpose({ focus, blur, inputRef })
             :aria-label="clearLabel"
             @click="onClear"
         >
-            <CaomeiIcon :icon="X" />
+            <CaomeiIcon :icon="icons.dismiss" />
         </button>
         <span v-if="$slots.suffix" class="caomei-input__suffix">
             <slot name="suffix" />

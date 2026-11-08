@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ChevronRight } from '@lucide/vue'
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui'
 import { computed, ref } from 'vue'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { SubMenuProps } from './types'
 
 defineOptions({ name: 'CaomeiSubMenu' })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<SubMenuProps>(), {
     label: '',
@@ -71,7 +72,7 @@ function setOpen(value: boolean): void {
             </slot>
             <CaomeiIcon
                 class="caomei-menu__submenu-indicator"
-                :icon="ChevronRight"
+                :icon="icons.chevronRight"
                 aria-hidden="true"
             />
         </CollapsibleTrigger>

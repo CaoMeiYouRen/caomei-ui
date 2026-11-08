@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { CircleDot } from '@lucide/vue'
 import { DropdownMenuItemIndicator, DropdownMenuRadioItem } from 'reka-ui'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { DropdownMenuRadioItemProps } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuRadioItem', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 withDefaults(defineProps<DropdownMenuRadioItemProps>(), {
     disabled: false,
@@ -22,7 +23,7 @@ withDefaults(defineProps<DropdownMenuRadioItemProps>(), {
     >
         <span class="caomei-dropdown-menu__indicator">
             <DropdownMenuItemIndicator>
-                <CaomeiIcon :icon="CircleDot" />
+                <CaomeiIcon :icon="icons.radio" />
             </DropdownMenuItemIndicator>
         </span>
         <span class="caomei-dropdown-menu__item-text">

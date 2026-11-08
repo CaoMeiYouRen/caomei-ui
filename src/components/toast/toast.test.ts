@@ -72,6 +72,20 @@ describe('CaomeiToastProvider', () => {
         expect(toast?.getAttribute('data-state')).toBe('open')
     })
 
+    it('success / danger 语气分别使用 CircleCheck / CircleX', async () => {
+        await mountProvider()
+
+        api?.success({ title: '成功' })
+        await flushPromises()
+        expect(getToast()?.querySelector('.caomei-toast__icon svg')?.getAttribute('class')).toContain('lucide-circle-check')
+
+        api?.show({ title: '危险', tone: 'danger' })
+        await flushPromises()
+        const danger = document.querySelectorAll('.caomei-toast')[1]
+        expect(danger?.querySelector('.caomei-toast__icon svg')?.getAttribute('class')).toContain('lucide-circle-x')
+        expect(danger?.querySelector('.caomei-toast__icon svg')?.getAttribute('class')).not.toContain('lucide-circle-alert')
+    })
+
     it('primary 语气应用对应强调类', async () => {
         await mountProvider()
 

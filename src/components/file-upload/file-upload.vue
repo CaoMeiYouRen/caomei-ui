@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { FileUp, X } from '@lucide/vue'
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type {
     FileUploadProps,
@@ -12,6 +11,8 @@ import type {
 } from './types'
 
 defineOptions({ name: 'CaomeiFileUpload', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 defineSlots<{
     default?: (props: { open: () => void, dragging: boolean }) => unknown
@@ -283,7 +284,7 @@ defineExpose({ upload, clear })
         >
             <slot :open="openPicker" :dragging="false">
                 <CaomeiIcon
-                    :icon="FileUp"
+                    :icon="icons.upload"
                     class="caomei-file-upload__icon"
                 />
                 <span class="caomei-file-upload__text">{{ chooseText }}</span>
@@ -306,7 +307,7 @@ defineExpose({ upload, clear })
             >
                 <slot :open="openPicker" :dragging="isDragging">
                     <CaomeiIcon
-                        :icon="FileUp"
+                        :icon="icons.upload"
                         class="caomei-file-upload__icon"
                     />
                     <span class="caomei-file-upload__text">{{ chooseText }}</span>
@@ -337,7 +338,7 @@ defineExpose({ upload, clear })
                             :aria-label="`移除 ${file.name}`"
                             @click="remove(index)"
                         >
-                            <CaomeiIcon :icon="X" />
+                            <CaomeiIcon :icon="icons.dismiss" />
                         </button>
                     </slot>
                 </li>

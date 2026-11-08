@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { TagProps } from './types'
 
 defineOptions({ name: 'CaomeiTag' })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<TagProps>(), {
     tone: 'neutral',
@@ -83,7 +84,7 @@ function onToggle(): void {
             :aria-label="closeLabel"
             @click.stop="onClose"
         >
-            <CaomeiIcon :icon="X" />
+            <CaomeiIcon :icon="icons.dismiss" />
         </button>
     </span>
 </template>

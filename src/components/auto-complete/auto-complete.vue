@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Check, ChevronDown, LoaderCircle, X } from '@lucide/vue'
 import {
     ComboboxAnchor,
     ComboboxContent,
@@ -15,7 +14,7 @@ import {
 } from 'reka-ui'
 import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
@@ -26,6 +25,8 @@ import type {
 } from './types'
 
 defineOptions({ name: 'CaomeiAutoComplete', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<AutoCompleteProps>(), {
     options: () => [],
@@ -316,7 +317,7 @@ watch(normalizedOptions, () => {
                     :aria-label="`${clearLabel} ${labelFor(value)}`"
                     @click.stop="removeValue(value)"
                 >
-                    <CaomeiIcon :icon="X" />
+                    <CaomeiIcon :icon="icons.dismiss" />
                 </button>
             </span>
             <ComboboxInput
@@ -339,7 +340,7 @@ watch(normalizedOptions, () => {
                 role="status"
                 :aria-label="loadingLabel"
             >
-                <CaomeiIcon :icon="LoaderCircle" />
+                <CaomeiIcon :icon="icons.loading" />
             </span>
             <button
                 v-else-if="showClear"
@@ -348,7 +349,7 @@ watch(normalizedOptions, () => {
                 :aria-label="clearLabel"
                 @click.stop="onClear"
             >
-                <CaomeiIcon :icon="X" />
+                <CaomeiIcon :icon="icons.dismiss" />
             </button>
             <ComboboxTrigger
                 v-if="dropdown"
@@ -357,7 +358,7 @@ watch(normalizedOptions, () => {
                 :aria-label="openLabel"
                 :aria-controls="panelControlsAttr(panelIdref)"
             >
-                <CaomeiIcon :icon="ChevronDown" />
+                <CaomeiIcon :icon="icons.chevronDown" />
             </ComboboxTrigger>
         </ComboboxAnchor>
         <ComboboxPortal>
@@ -383,7 +384,7 @@ watch(normalizedOptions, () => {
                     >
                         <span class="caomei-auto-complete__item-label">{{ option.label }}</span>
                         <ComboboxItemIndicator class="caomei-auto-complete__indicator">
-                            <CaomeiIcon :icon="Check" />
+                            <CaomeiIcon :icon="icons.check" />
                         </ComboboxItemIndicator>
                     </ComboboxItem>
                 </ComboboxViewport>

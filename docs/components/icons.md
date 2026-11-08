@@ -54,6 +54,22 @@ provideIconRegistry({ star: Star })
 - `icon` 保持可选（`icon?: Component`）而非联合类型，以兼容既有 `:icon` 用法与 props 提取工具；运行时至少提供 `icon` / `name` 之一。
 - 高级用法：`useIconRegistry()` 读取当前注册表；`caomeiIconRegistryKey` 可用于手写 `provide`（通常不需要）。
 
+## 替换内置图标
+
+组件内建图标来自 `internal-icons` 的语义映射表（如 `dismiss` / `chevronDown` / `check`）。通过 `provideIconOverrides()` 可按语义名做应用级替换，未覆盖的键保持 Lucide 默认；组件暴露的 `#icon` 插槽只覆盖其对应位置的图标，关闭等无插槽位置仍走覆盖映射。
+
+```ts
+import { provideIconOverrides } from 'caomei-ui'
+import { X } from '@lucide/vue'
+
+provideIconOverrides({
+    dismiss: X, // 只替换关闭图标，其余保持默认
+})
+```
+
+- 覆盖项按语义名生效：`error`（Message）与 `danger`（Toast）分别覆盖，不会合并。
+- 覆盖同样支持 `ref` / getter，按请求隔离；建议在应用根组件 / 布局中调用。
+
 ## 图标一览
 
 组件内建图标取自 `@lucide/vue`；下方图标一览列出文档演示中常用的图标，名称即 `@lucide/vue` 的导出名（完整列表见 [lucide 图标站](https://lucide.dev/icons/)）。

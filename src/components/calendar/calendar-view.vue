@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight } from '@lucide/vue'
 import {
     CalendarCell,
     CalendarCellTrigger,
@@ -24,13 +23,15 @@ import {
 } from 'reka-ui'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { CalendarViewProps } from './types'
 
 // 呈现层：仅消费祖先 CalendarRoot / RangeCalendarRoot 提供的日历上下文。
 // 单日期与范围两族 primitive 的结构与 props 逐项一致，差异只在单元格注入的上下文；
 // 故用同一份标记与样式，按 `range` 切换组件族，避免两套 DOM / 样式漂移。
 defineOptions({ name: 'CaomeiCalendarView' })
+
+const icons = useInternalIcons()
 
 const props = defineProps<CalendarViewProps>()
 
@@ -72,7 +73,7 @@ const parts = computed(() => (props.range
             class="caomei-calendar__nav"
             :aria-label="prevLabel"
         >
-            <CaomeiIcon :icon="ChevronLeft" />
+            <CaomeiIcon :icon="icons.chevronLeft" />
         </component>
         <component
             :is="parts.heading"
@@ -83,7 +84,7 @@ const parts = computed(() => (props.range
             class="caomei-calendar__nav"
             :aria-label="nextLabel"
         >
-            <CaomeiIcon :icon="ChevronRight" />
+            <CaomeiIcon :icon="icons.chevronRight" />
         </component>
     </div>
     <component

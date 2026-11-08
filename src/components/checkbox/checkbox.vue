@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { Check, Minus } from '@lucide/vue'
 import { CheckboxRoot } from 'reka-ui'
 import { computed, useId, useSlots } from 'vue'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useLabelAttrs } from '../_shared/use-label-attrs'
 import type { CheckboxModel, CheckboxProps, CheckboxState } from './types'
 
 defineOptions({ name: 'CaomeiCheckbox', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<CheckboxProps>(), {
     size: 'md',
@@ -101,7 +102,7 @@ const rootClass = computed(() => [
                     class="caomei-checkbox__indicator"
                     :data-state="state === 'indeterminate' ? 'indeterminate' : 'checked'"
                 >
-                    <CaomeiIcon :icon="state === 'indeterminate' ? Minus : Check" />
+                    <CaomeiIcon :icon="state === 'indeterminate' ? icons.minus : icons.check" />
                 </span>
             </template>
         </CheckboxRoot>

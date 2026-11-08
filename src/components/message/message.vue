@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from '@lucide/vue'
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { MessageProps } from './types'
 
 defineOptions({ name: 'CaomeiMessage' })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<MessageProps>(), {
     tone: 'neutral',
@@ -34,13 +35,13 @@ defineSlots<{
 const toneIcon = computed(() => {
     switch (props.tone) {
         case 'success':
-            return CircleCheck
+            return icons.value.success
         case 'warning':
-            return TriangleAlert
+            return icons.value.warning
         case 'danger':
-            return CircleAlert
+            return icons.value.error
         default:
-            return Info
+            return icons.value.info
     }
 })
 
@@ -88,7 +89,7 @@ const rootClass = computed(() => [
             :aria-label="closeLabel"
             @click="emit('close')"
         >
-            <CaomeiIcon :icon="X" />
+            <CaomeiIcon :icon="icons.dismiss" />
         </button>
     </div>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Info, TriangleAlert } from '@lucide/vue'
 import {
     AlertDialogAction,
     AlertDialogCancel,
@@ -17,11 +16,13 @@ import {
     type ConfirmRequest,
 } from '../../composables/use-confirm'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { CaomeiButton } from '../button'
 import type { ConfirmDialogProps } from './types'
 
 defineOptions({ name: 'CaomeiConfirmDialog', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = defineProps<ConfirmDialogProps>()
 
@@ -44,14 +45,14 @@ const confirmClass = computed(() =>
 )
 
 /*
-  图标为装饰性内容（可访问名由标题提供），缺省按语气回退：neutral → Info、danger → TriangleAlert。
+  图标为装饰性内容（可访问名由标题提供），缺省按语气回退：neutral → info、danger → warning。
   语气映射复用 Message 的语义直觉，但不与 Message 的档位一一对应——确认对话框只区分「常规 / 破坏性」。
 */
 const iconClass = computed(() =>
     request.value?.tone === 'danger' ? 'caomei-confirm-dialog__icon--danger' : undefined,
 )
 const icon = computed<Component>(() =>
-    request.value?.icon ?? (request.value?.tone === 'danger' ? TriangleAlert : Info),
+    request.value?.icon ?? (request.value?.tone === 'danger' ? icons.value.warning : icons.value.info),
 )
 
 /*

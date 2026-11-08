@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Eye, ImageOff, X } from '@lucide/vue'
 import {
     DialogClose,
     DialogContent,
@@ -12,10 +11,12 @@ import {
 } from 'reka-ui'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { ImageProps, ImageStatus } from './types'
 
 defineOptions({ name: 'CaomeiImage', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 defineSlots<{
     loading?: () => unknown
@@ -168,7 +169,7 @@ function handleError(event: Event): void {
                 >
                     <span class="caomei-image__preview-icon">
                         <slot name="indicatoricon">
-                            <CaomeiIcon :icon="previewIcon ?? Eye" />
+                            <CaomeiIcon :icon="previewIcon ?? icons.eye" />
                         </slot>
                     </span>
                 </button>
@@ -189,7 +190,7 @@ function handleError(event: Event): void {
                         class="caomei-image__preview-close"
                         :aria-label="closeLabel"
                     >
-                        <CaomeiIcon :icon="X" />
+                        <CaomeiIcon :icon="icons.dismiss" />
                     </DialogClose>
                     <img
                         class="caomei-image__preview-img"
@@ -212,7 +213,7 @@ function handleError(event: Event): void {
         >
             <slot name="error">
                 <CaomeiIcon
-                    :icon="ImageOff"
+                    :icon="icons.imageOff"
                     class="caomei-image__fallback"
                 />
             </slot>

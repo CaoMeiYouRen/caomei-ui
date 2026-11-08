@@ -1,4 +1,6 @@
 export { default as CaomeiIcon } from './icon.vue'
 export { caomeiIconRegistryKey, provideIconRegistry, useIconRegistry } from './registry'
 export type { IconRegistrySource } from './registry'
+export { caomeiIconOverridesKey, internalIcons, provideIconOverrides, useInternalIcons } from './internal-icons'
+export type { IconOverridesSource, InternalIconMap, InternalIconName } from './internal-icons'
 export type { IconProps, IconRegistry } from './types'

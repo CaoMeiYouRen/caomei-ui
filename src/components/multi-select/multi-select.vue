@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="T extends object">
-import { Check, ChevronDown, X } from '@lucide/vue'
 import {
     ComboboxAnchor,
     ComboboxContent,
@@ -14,7 +13,7 @@ import {
 } from 'reka-ui'
 import { computed, nextTick, ref, useId } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import {
@@ -27,6 +26,8 @@ import { labelAttrs } from '../_shared/use-label-attrs'
 import type { MultiSelectProps } from './types'
 
 defineOptions({ name: 'CaomeiMultiSelect', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<MultiSelectProps<T>>(), {
     options: () => [],
@@ -184,7 +185,7 @@ function onAnchorClick(event: MouseEvent): void {
                     :aria-label="`${removeLabel} ${option.label}`"
                     @click.stop="removeValue(option.value)"
                 >
-                    <CaomeiIcon :icon="X" />
+                    <CaomeiIcon :icon="icons.dismiss" />
                 </button>
             </span>
             <ComboboxInput
@@ -203,7 +204,7 @@ function onAnchorClick(event: MouseEvent): void {
                 :aria-label="clearLabel"
                 @click.stop="clearValue"
             >
-                <CaomeiIcon :icon="X" />
+                <CaomeiIcon :icon="icons.dismiss" />
             </button>
             <ComboboxTrigger
                 class="caomei-multi-select__icon"
@@ -211,7 +212,7 @@ function onAnchorClick(event: MouseEvent): void {
                 :aria-label="openLabel"
                 :aria-controls="panelControlsAttr(panelIdref)"
             >
-                <CaomeiIcon :icon="ChevronDown" />
+                <CaomeiIcon :icon="icons.chevronDown" />
             </ComboboxTrigger>
         </ComboboxAnchor>
         <ComboboxPortal>
@@ -243,7 +244,7 @@ function onAnchorClick(event: MouseEvent): void {
                             </slot>
                         </span>
                         <ComboboxItemIndicator class="caomei-multi-select__indicator">
-                            <CaomeiIcon :icon="Check" />
+                            <CaomeiIcon :icon="icons.check" />
                         </ComboboxItemIndicator>
                     </ComboboxItem>
                 </ComboboxViewport>

@@ -1,8 +1,8 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
-import { ChevronDown, ChevronRight, ChevronUp } from '@lucide/vue'
 import { computed, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
+import { useInternalIcons } from '../../icons'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
@@ -10,6 +10,8 @@ import { dataTableFeatures } from './table-features'
 import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent, DataTableSortMeta } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DataTableProps<T>>(), {
     rowKey: undefined,
@@ -877,14 +879,16 @@ function setPageSize(rows: number): void {
                                     :column="columnDef(header.column.id)"
                                 />
                                 <span v-else>{{ headerTitle(header.column.id) }}</span>
-                                <ChevronUp
+                                <component
+                                    :is="icons.chevronUp"
                                     v-if="sortState(header.column.id) !== 'desc'"
                                     class="caomei-data-table__sort-icon"
                                     :class="{'caomei-data-table__sort-icon--reserved': !sortState(header.column.id)}"
                                     :size="14"
                                     aria-hidden="true"
                                 />
-                                <ChevronDown
+                                <component
+                                    :is="icons.chevronDown"
                                     v-else
                                     class="caomei-data-table__sort-icon"
                                     :size="14"
@@ -947,12 +951,14 @@ function setPageSize(rows: number): void {
                                     :aria-label="entry.expanded ? collapseRowGroupLabel : expandRowGroupLabel"
                                     @click="toggleRowGroup($event, entry.groupKey)"
                                 >
-                                    <ChevronDown
+                                    <component
+                                        :is="icons.chevronDown"
                                         v-if="entry.expanded"
                                         :size="14"
                                         aria-hidden="true"
                                     />
-                                    <ChevronRight
+                                    <component
+                                        :is="icons.chevronRight"
                                         v-else
                                         :size="14"
                                         aria-hidden="true"
@@ -1001,12 +1007,14 @@ function setPageSize(rows: number): void {
                                         :aria-label="isRowExpanded(entry.row.id) ? collapseRowLabel : expandRowLabel"
                                         @click.stop="toggleRowExpansion($event, entry.row.id, entry.row.original)"
                                     >
-                                        <ChevronDown
+                                        <component
+                                            :is="icons.chevronDown"
                                             v-if="isRowExpanded(entry.row.id)"
                                             :size="14"
                                             aria-hidden="true"
                                         />
-                                        <ChevronRight
+                                        <component
+                                            :is="icons.chevronRight"
                                             v-else
                                             :size="14"
                                             aria-hidden="true"

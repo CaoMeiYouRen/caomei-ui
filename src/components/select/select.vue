@@ -1,5 +1,4 @@
 <script setup lang="ts" generic="T extends object">
-import { Check, ChevronDown, X } from '@lucide/vue'
 import {
     SelectContent,
     SelectIcon,
@@ -16,12 +15,14 @@ import {
 } from 'reka-ui'
 import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { SelectOptionGroup, SelectProps } from './types'
 
 defineOptions({ name: 'CaomeiSelect', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<SelectProps<T>>(), {
     options: () => [],
@@ -212,7 +213,7 @@ function clearValue(): void {
                     </slot>
                 </SelectValue>
                 <SelectIcon class="caomei-select__icon">
-                    <CaomeiIcon :icon="ChevronDown" />
+                    <CaomeiIcon :icon="icons.chevronDown" />
                 </SelectIcon>
             </SelectTrigger>
             <button
@@ -222,7 +223,7 @@ function clearValue(): void {
                 :aria-label="clearLabel"
                 @click="clearValue"
             >
-                <CaomeiIcon :icon="X" />
+                <CaomeiIcon :icon="icons.dismiss" />
             </button>
         </div>
         <SelectPortal>
@@ -252,7 +253,7 @@ function clearValue(): void {
                                 </slot>
                             </SelectItemText>
                             <SelectItemIndicator class="caomei-select__indicator">
-                                <CaomeiIcon :icon="Check" />
+                                <CaomeiIcon :icon="icons.check" />
                             </SelectItemIndicator>
                         </SelectItem>
                     </template>
@@ -276,7 +277,7 @@ function clearValue(): void {
                                 </slot>
                             </SelectItemText>
                             <SelectItemIndicator class="caomei-select__indicator">
-                                <CaomeiIcon :icon="Check" />
+                                <CaomeiIcon :icon="icons.check" />
                             </SelectItemIndicator>
                         </SelectItem>
                         <!-- 分组 -->
@@ -305,7 +306,7 @@ function clearValue(): void {
                                     </slot>
                                 </SelectItemText>
                                 <SelectItemIndicator class="caomei-select__indicator">
-                                    <CaomeiIcon :icon="Check" />
+                                    <CaomeiIcon :icon="icons.check" />
                                 </SelectItemIndicator>
                             </SelectItem>
                         </SelectGroup>

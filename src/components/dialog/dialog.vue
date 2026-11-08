@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue'
 import {
     DialogClose,
     DialogContent,
@@ -12,7 +11,7 @@ import {
 } from 'reka-ui'
 import { computed, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import {
     buildDialogBreakpointCss,
     createDialogBreakpointId,
@@ -21,6 +20,8 @@ import {
 import type { DialogProps } from './types'
 
 defineOptions({ name: 'CaomeiDialog', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DialogProps>(), {
     description: '',
@@ -125,7 +126,7 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
                         class="caomei-dialog__close"
                         :aria-label="closeLabel"
                     >
-                        <CaomeiIcon :icon="X" />
+                        <CaomeiIcon :icon="icons.dismiss" />
                     </DialogClose>
                 </div>
                 <DialogTitle

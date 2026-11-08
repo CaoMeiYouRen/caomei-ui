@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ChevronDown } from '@lucide/vue'
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiButton } from '../button'
 // 两按钮的拼接（去内侧边框宽度 + 相邻圆角）复用 ButtonGroup，避免重复实现同一套规则
@@ -17,6 +16,8 @@ import {
 import type { SplitButtonMenuItem, SplitButtonProps } from './types'
 
 defineOptions({ name: 'CaomeiSplitButton', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<SplitButtonProps>(), {
     variant: 'primary',
@@ -97,7 +98,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
                     :label="menuLabel"
                 >
                     <template #icon>
-                        <CaomeiIcon :icon="ChevronDown" />
+                        <CaomeiIcon :icon="icons.chevronDown" />
                     </template>
                 </CaomeiButton>
             </CaomeiDropdownMenuTrigger>

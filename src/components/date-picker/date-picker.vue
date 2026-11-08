@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Calendar as CalendarIcon } from '@lucide/vue'
 import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
 import { computed, useAttrs, watchEffect } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { defaultLocale } from '../../locale'
 import { formatDate, formatTime } from '../_shared/date-format'
 import { resolveLabelName } from '../_shared/use-label-attrs'
@@ -18,6 +17,8 @@ import type { DatePickerModelValue, DatePickerProps, DatePickerRange, TimeParts 
 // 组合 Reka Popover + 内部 CalendarPanel / CalendarRangePanel：面板日历与本库 Calendar 共用接线与可访问名，
 // 避免 Reka DatePicker / DateRangePicker 内建英文文案（Event Date）无法本地化。
 defineOptions({ name: 'CaomeiDatePicker', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DatePickerProps>(), {
     selectionMode: 'single',
@@ -223,7 +224,7 @@ watchEffect(() => {
                 >{{ rangeHint }}</span>
                 <CaomeiIcon
                     v-if="showIcon"
-                    :icon="CalendarIcon"
+                    :icon="icons.calendar"
                     class="caomei-date-picker__icon"
                 />
             </button>

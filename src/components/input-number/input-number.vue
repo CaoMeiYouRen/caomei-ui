@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Minus, Plus } from '@lucide/vue'
 import {
     NumberFieldDecrement,
     NumberFieldIncrement,
@@ -8,13 +7,15 @@ import {
 } from 'reka-ui'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useFocusControl } from '../_shared/use-focus-control'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { InputNumberProps } from './types'
 
 defineOptions({ name: 'CaomeiInputNumber', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<InputNumberProps>(), {
     size: 'md',
@@ -225,7 +226,7 @@ defineExpose({ focus, blur, inputRef })
             @pointerup="flushStepChange"
             @pointercancel="flushStepChange"
         >
-            <CaomeiIcon :icon="Minus" />
+            <CaomeiIcon :icon="icons.minus" />
         </NumberFieldDecrement>
         <NumberFieldInput
             :ref="setInputRef"
@@ -245,7 +246,7 @@ defineExpose({ focus, blur, inputRef })
             @pointerup="flushStepChange"
             @pointercancel="flushStepChange"
         >
-            <CaomeiIcon :icon="Plus" />
+            <CaomeiIcon :icon="icons.plus" />
         </NumberFieldIncrement>
     </NumberFieldRoot>
 </template>

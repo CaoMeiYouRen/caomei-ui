@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Check } from '@lucide/vue'
 import { DropdownMenuCheckboxItem, DropdownMenuItemIndicator } from 'reka-ui'
-import { CaomeiIcon } from '../../icons'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { DropdownMenuCheckboxItemProps } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuCheckboxItem', inheritAttrs: false })
+
+const icons = useInternalIcons()
 
 withDefaults(defineProps<DropdownMenuCheckboxItemProps>(), {
     disabled: false,
@@ -24,7 +25,7 @@ const model = defineModel<boolean | 'indeterminate'>()
     >
         <span class="caomei-dropdown-menu__indicator">
             <DropdownMenuItemIndicator>
-                <CaomeiIcon :icon="Check" />
+                <CaomeiIcon :icon="icons.check" />
             </DropdownMenuItemIndicator>
         </span>
         <span class="caomei-dropdown-menu__item-text">

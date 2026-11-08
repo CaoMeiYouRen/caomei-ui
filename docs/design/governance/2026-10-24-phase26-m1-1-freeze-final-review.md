@@ -83,6 +83,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-11-07 增量（DataTable 文档披露）**：4 个 DataTable 钩子进入组件页「样式定制」披露面，披露钩子 **307 → 311**、有效冻结面 **401 → 405**（160 默认声明 ∪ 311 披露，交集 66 不变）；披露后未披露由 **123** 回落至 **119**（已声明 94 / 纯内部 25），消费面保持 **430**。复算命令同 §2.4。
 
+> **2026-11-08 增量（内置图标映射）**：新增包根导出 `internalIcons` / `provideIconOverrides` / `useInternalIcons` / `caomeiIconOverridesKey` 与类型 `InternalIconName` / `InternalIconMap` / `IconOverridesSource`；组件内建图标（22 个）收敛到 `src/icons/internal-icons.ts` 语义映射。包根导出名 **338 → 345**（`Caomei*` 100 / `use*`·`provide*` **9 → 11** / 其余 229 → 234）；`exports` 13 键、组件目录 57 与组件名 96 不变。复算命令同 §2.3。
+
 > **2026-11-08 增量（图标注册表）**：新增包根导出 `provideIconRegistry` / `useIconRegistry` / `caomeiIconRegistryKey` 与类型 `IconRegistry` / `IconRegistrySource`；`IconProps` 新增可选 `name` / `strokeWidth` / `label`，`icon` 由必填改可选（向后兼容）。包根导出名 **333 → 338**（`Caomei*` 100 / `use*`·`provide*` **7 → 9** / 其余 226 → 229）；`exports` 13 键、组件目录 57 与组件名 96 不变。复算命令同 §2.3。
 
 > **2026-11-08 增量（动效 token）**：新增 **13** 个全局动效 token（6 个 duration + 4 个 easing + 3 个 distance / scale，均有默认声明），属向后兼容增量；默认声明集合 **160 → 173**，有效冻结面 **405 → 418**（173 ∪ 311，交集 66 不变）。该组只进入默认声明集合，不进入组件页「样式定制」披露面；消费面 **430 → 443**，未披露拆分同步为 **132**（已声明 107 / 纯内部 25）。复算命令同 §2.4。

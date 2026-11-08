@@ -16,6 +16,11 @@ const sizes = [16, 20, 24, 32]
             />
         </div>
         <div class="demo-row">
+            <span class="demo-text">sm <CaomeiIcon :icon="Search" size="sm" /></span>
+            <span class="demo-text">md <CaomeiIcon :icon="Search" size="md" /></span>
+            <span class="demo-text">lg <CaomeiIcon :icon="Search" size="lg" /></span>
+        </div>
+        <div class="demo-row">
             <span class="demo-text demo-text--sm">Small <CaomeiIcon :icon="Check" /></span>
             <span class="demo-text demo-text--md">Body <CaomeiIcon :icon="Check" /></span>
             <span class="demo-text demo-text--lg">Heading <CaomeiIcon :icon="Check" /></span>

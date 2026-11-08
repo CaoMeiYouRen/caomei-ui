@@ -77,6 +77,12 @@
     --caomei-motion-distance-md: 0px;
     --caomei-motion-scale-from: 1;
 
+    /* 图标尺寸档位与线宽：独立图标用档位；容器内仍由 `font-size` 驱动 `1em` */
+    --caomei-icon-size-sm: 16px;
+    --caomei-icon-size-md: 20px;
+    --caomei-icon-size-lg: 24px;
+    --caomei-icon-stroke-width: 2;
+
     /* 不可见命中区下限（WCAG 2.5.8）：icon 按钮通过 `.caomei-hit-target` 扩到该尺寸 */
     --caomei-hit-target-min: 24px;
     --caomei-input-number-max-width: 12rem;

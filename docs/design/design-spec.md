@@ -88,7 +88,7 @@
 | --- | --- |
 | `--caomei-font-sans` | `system-ui, -apple-system, sans-serif` |
 
-### 2.5 层级 token（已实现）与规划新增 token
+### 2.5 层级 / 图标 token（已实现）与规划新增 token
 
 #### 层级 token（已实现）
 
@@ -112,13 +112,25 @@
 - Image 放大内容取 `calc(var(--caomei-image-preview-z-index, var(--caomei-z-toast)) + 1)`。
 - 局部层叠 token（`raise` / `pinned` / `pinned-header`）只用于同一容器内的相对抬升，不与浮层层级混用。
 
+#### 图标 token（已实现）
+
+独立图标使用档位 token；容器内图标继续由容器 `font-size` 驱动 `1em`，不叠加档位。
+
+| token | 默认 | 说明 |
+| --- | --- | --- |
+| `--caomei-icon-size-sm` | `16px` | `CaomeiIcon size="sm"` 的字号 |
+| `--caomei-icon-size-md` | `20px` | `CaomeiIcon size="md"` 的字号 |
+| `--caomei-icon-size-lg` | `24px` | `CaomeiIcon size="lg"` 的字号 |
+| `--caomei-icon-stroke-width` | `2` | 未显式传 `strokeWidth` 时 Lucide 图标的线宽（自备 SVG 保留自身线宽） |
+
+> 档位取固定 px 阶梯 16 / 20 / 24（不随 `data-density` 变化）；容器内图标仍由容器 `font-size` 驱动 `1em`，不叠加档位。
+
 #### 规划新增 token（待实现）
 
-为落实「图标尺寸」「焦点环」等细节，规划新增以下 token（实现归入后续组件增强）：
+为落实「焦点环」等细节，规划新增以下 token（实现归入后续组件增强）：
 
 | 类别 | 规划 token | 说明 |
 | --- | --- | --- |
-| 图标 | `--caomei-icon-size-sm` / `-md` / `-lg` | 统一 `@lucide/vue` 图标尺寸 |
 | 交互 | `--caomei-color-focus-ring` | 焦点环（`--caomei-color-mask` 见 §2.6） |
 | 字体 | `--caomei-font-mono` | 代码 / 密钥等场景 |
 | 排版 | `--caomei-line-height-tight` / `-normal` / `-relaxed` | 标题与正文行高 |

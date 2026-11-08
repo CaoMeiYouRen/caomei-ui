@@ -83,6 +83,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 
 > **2026-11-07 增量（DataTable 文档披露）**：4 个 DataTable 钩子进入组件页「样式定制」披露面，披露钩子 **307 → 311**、有效冻结面 **401 → 405**（160 默认声明 ∪ 311 披露，交集 66 不变）；披露后未披露由 **123** 回落至 **119**（已声明 94 / 纯内部 25），消费面保持 **430**。复算命令同 §2.4。
 
+> **2026-11-08 增量（图标 token）**：新增 4 个全局图标 token（`--caomei-icon-size-{sm,md,lg}` + `--caomei-icon-stroke-width`，均有默认声明，并进入图标页「样式定制」披露面）；默认声明 **180 → 184**、披露钩子 **311 → 315**、有效冻结面 **425 → 429**（交集 **66 → 70**）。同批补记 M2-1 未同步的 7 个组件级默认变量（`--caomei-{popover,dropdown-menu,tooltip}-enter-{y,scale}` / `--caomei-toast-enter-scale`），故本注记基数 180 / 425 为 M2-1 后的实际值；历史 173 / 418 为 **Phase 29 M1-1** 时点值，不回改。消费面 / 未披露同步为 **443 → 454 / 132 → 139**（已声明 107 → 114 / 纯内部 25 不变）。复算命令同 §2.4。
+
 > **2026-11-08 增量（内置图标映射）**：新增包根导出 `internalIcons` / `provideIconOverrides` / `useInternalIcons` / `caomeiIconOverridesKey` 与类型 `InternalIconName` / `InternalIconMap` / `IconOverridesSource`；组件内建图标（22 个）收敛到 `src/icons/internal-icons.ts` 语义映射。包根导出名 **338 → 345**（`Caomei*` 100 / `use*`·`provide*` **9 → 11** / 其余 229 → 234）；`exports` 13 键、组件目录 57 与组件名 96 不变。复算命令同 §2.3。
 
 > **2026-11-08 增量（图标注册表）**：新增包根导出 `provideIconRegistry` / `useIconRegistry` / `caomeiIconRegistryKey` 与类型 `IconRegistry` / `IconRegistrySource`；`IconProps` 新增可选 `name` / `strokeWidth` / `label`，`icon` 由必填改可选（向后兼容）。包根导出名 **333 → 338**（`Caomei*` 100 / `use*`·`provide*` **7 → 9** / 其余 226 → 229）；`exports` 13 键、组件目录 57 与组件名 96 不变。复算命令同 §2.3。

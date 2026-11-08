@@ -15,7 +15,7 @@ caomei-ui 的图标能力由 `@lucide/vue` 与 `CaomeiIcon` 组成：`@lucide/vu
 | --- | --- | --- | --- |
 | `icon` | `Component` | — | 图标组件；与 `name` 同时提供时优先使用 |
 | `name` | `string` | — | 注册表中的图标名称；`icon` 缺省时使用 |
-| `size` | `number \| string` | `'1em'` | 尺寸；数字按 px，字符串原样使用 |
+| `size` | `number \| string` | `'1em'` | 尺寸；数字按 px，`sm` / `md` / `lg` 走图标尺寸 token，其余字符串原样使用 |
 | `strokeWidth` | `number \| string` | — | 线宽；仅对 stroke 型图标生效 |
 | `label` | `string` | — | 有语义时的可访问名；提供后输出 `role="img"` + `aria-label` |
 
@@ -25,12 +25,23 @@ caomei-ui 的图标能力由 `@lucide/vue` 与 `CaomeiIcon` 组成：`@lucide/vu
 
 ## 尺寸
 
-`CaomeiIcon` 默认继承字号（`1em`），与相邻文本基线对齐；需要固定尺寸时传入 `size`（数字按 px，如 `16` / `20`）。
+`CaomeiIcon` 默认继承字号（`1em`），与相邻文本基线对齐；需要固定尺寸时传入 `size`（数字按 px，如 `16` / `20`），或用 `sm` / `md` / `lg` 选择 token 档位。容器内图标继续由容器 `font-size` 驱动，不要同时设档位。
 
 <demo
     vue="../examples/icons/sizing.vue"
     ssg="true"
 />
+
+## 样式定制
+
+| token | 默认 | 说明 |
+| --- | --- | --- |
+| `--caomei-icon-size-sm` | `16px` | `size="sm"` 的独立图标字号 |
+| `--caomei-icon-size-md` | `20px` | `size="md"` 的独立图标字号 |
+| `--caomei-icon-size-lg` | `24px` | `size="lg"` 的独立图标字号 |
+| `--caomei-icon-stroke-width` | `2` | 未显式传 `strokeWidth` 时 Lucide 图标的线宽 |
+
+> 线宽改用 `--caomei-icon-stroke-width` 控制（仅作用于 Lucide 图标；自备 SVG 保留自身 `stroke-width`，需要统一时显式传 `strokeWidth` 或调整 SVG 属性），不要再依赖 `svg { stroke-width }` 等全局选择器覆盖。`sm` / `md` / `lg` 为保留值，不要传给自定义图标组件作为其尺寸枚举；档位依赖 `width/height: 1em`，固定像素的自绘 SVG 不会随档位缩放。
 
 ## 图标注册表与可访问名
 
@@ -69,6 +80,45 @@ provideIconOverrides({
 
 - 覆盖项按语义名生效：`error`（Message）与 `danger`（Toast）分别覆盖，不会合并。
 - 覆盖同样支持 `ref` / getter，按请求隔离；建议在应用根组件 / 布局中调用。
+
+## 构建期接入与迁移
+
+`CaomeiIcon` 的 `icon` 接收任意 Vue 组件，因此不要求下游使用 Lucide；以下三条路径按需选择。
+
+1. **unplugin-icons / Iconify（推荐按需）**：安装 `unplugin-icons` 与所需图标集（如 `@iconify-json/lucide`），在构建配置中启用后直接导入生成的组件：
+
+    ```ts
+    import IconCheck from '~icons/lucide/check'
+
+    // <CaomeiIcon :icon="IconCheck" />
+    ```
+
+2. **自备 SVG**：将 SVG 作为 Vue 组件（或经 `vite-svg-loader` 等工具）导入，直接传给 `icon`；需要统一配色时使用 `currentColor`。品牌 logo 等固定图形建议保留原始配色并显式提供 `label`。
+
+3. **替换组件内建图标**：用 `provideIconOverrides()` 按语义名替换；`#icon` 插槽仍可覆盖对应位置的图标（见上节）。
+
+PrimeVue `pi pi-*` 迁移时按下表映射到语义名；无直接对应的图标保留 Lucide / 自备 SVG：
+
+| 语义名 | PrimeIcons |
+| --- | --- |
+| `dismiss` | `pi-times` |
+| `check` | `pi-check` |
+| `chevronDown` / `chevronUp` / `chevronLeft` / `chevronRight` | `pi-chevron-*` |
+| `chevronsLeft` / `chevronsRight` | `pi-angle-double-left` / `pi-angle-double-right` |
+| `calendar` | `pi-calendar` |
+| `info` | `pi-info-circle` |
+| `warning` | `pi-exclamation-triangle` |
+| `success` | `pi-check-circle` |
+| `error` | `pi-exclamation-circle` |
+| `danger` | `pi-times-circle` |
+| `eye` / `eyeOff` | `pi-eye` / `pi-eye-slash` |
+| `upload` | `pi-upload` |
+| `loading` | `pi-spin pi-spinner` |
+| `minus` / `plus` | `pi-minus` / `pi-plus` |
+| `radio` | `pi-circle-on` |
+| `imageOff` | 无直接对应，保留 Lucide 或自备 SVG |
+
+> 库内不引入 `@iconify/vue` 等运行时依赖；`provideIconOverrides()` 只改变组件默认图标，不改变 `#icon` 插槽 / 外部 `icon` 组件的优先级。
 
 ## 图标一览
 

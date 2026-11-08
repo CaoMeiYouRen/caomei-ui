@@ -63,6 +63,26 @@ describe('CaomeiIcon 三态解析', () => {
         expect(wrapper.find('[data-dummy="icon"]').exists()).toBe(true)
     })
 
+    it('size 档位映射到 token class，其余值原样传递', () => {
+        const tier = mount(CaomeiIcon, { props: { icon: DummyIcon, size: 'md' } })
+        const tierIcon = tier.find('[data-dummy="icon"]')
+        expect(tierIcon.classes()).toContain('caomei-icon--md')
+        expect(tierIcon.attributes('data-size')).toBe('1em')
+
+        const fixed = mount(CaomeiIcon, { props: { icon: DummyIcon, size: '20' } })
+        expect(fixed.find('[data-dummy="icon"]').classes()).not.toContain('caomei-icon--md')
+        expect(fixed.find('[data-dummy="icon"]').attributes('data-size')).toBe('20')
+    })
+
+    it('未传 strokeWidth 时使用 token 默认线宽，显式值仍透传', () => {
+        const fallback = mount(CaomeiIcon, { props: { icon: DummyIcon } })
+        expect(fallback.find('[data-dummy="icon"]').classes()).toContain('caomei-icon--default-stroke')
+
+        const explicit = mount(CaomeiIcon, { props: { icon: DummyIcon, strokeWidth: 1.5 } })
+        expect(explicit.find('[data-dummy="icon"]').classes()).not.toContain('caomei-icon--default-stroke')
+        expect(explicit.find('[data-dummy="icon"]').attributes('data-stroke')).toBe('1.5')
+    })
+
     it('size / strokeWidth 传递给图标组件', () => {
         const wrapper = mount(CaomeiIcon, { props: { icon: DummyIcon, size: 16, strokeWidth: 1.5 } })
         const icon = wrapper.find('[data-dummy="icon"]')

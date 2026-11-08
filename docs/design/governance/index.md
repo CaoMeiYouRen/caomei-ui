@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-08-phase29-m4-1-icon-adapter.md](./2026-11-08-phase29-m4-1-icon-adapter.md)：**Phase 29 M4-1 CaomeiIcon 三态适配层**。`icon` / `name` / 注册表三态解析，`provideIconRegistry()` 按请求注入（SSR 隔离），`label` > 透传 a11y > 默认 `aria-hidden` 的可访问名优先级；`icon` 改可选、新增 `strokeWidth`；中英图标页与示例同步，包根导出 333 → 338。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase29-m5-1-paginator-sizing.md](./2026-11-08-phase29-m5-1-paginator-sizing.md)：**Phase 29 M5-1 Paginator 尺寸对齐**。每页条数选择器高度统一到 `--caomei-paginator-control-size`（默认 / touch 均 32px，与页码控件等高），默认宽度 6rem → 5rem，3 位数不裁切；中英组件页同步，并新增亮 / 暗视觉基线。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase29-m3-1-navigation-motion.md](./2026-11-08-phase29-m3-1-navigation-motion.md)：**Phase 29 M3-1 导航与操作动效**。expressive 下 Tabs 内容淡入、Accordion 高度 + 淡入、Menu 子菜单高度、Breadcrumb / Stepper 过渡、Toolbar / Button 抬升与按下、ButtonGroup 拼接重置、SplitButton chevron 旋转；minimal 保持既有行为，reduce 显式压平。**Review Gate**：见本记录 §5。
 - [2026-11-08-phase29-m2-1-overlay-motion.md](./2026-11-08-phase29-m2-1-overlay-motion.md)：**Phase 29 M2-1 反馈与浮层动效**。expressive 下 Dialog / ConfirmDialog 进出场、Popover / DropdownMenu / Tooltip 退场与位移、Toast 缩放 + 关闭退场（延后移除）、Message / Alert 出现；minimal 保持既有行为，reduce 由 motion token 压平；新增 `overlay-motion` E2E 39 例，`capture:styles` 0 差异 / 视觉 40 / 单测 3010 通过。**Review Gate**：见本记录 §5。

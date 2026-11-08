@@ -13,8 +13,11 @@ Icons in caomei-ui come from `@lucide/vue` and `CaomeiIcon`: `@lucide/vue` provi
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `icon` | `Component` | — | Icon component, required |
+| `icon` | `Component` | — | Icon component; used first when both `icon` and `name` are provided |
+| `name` | `string` | — | Icon name in the registry; used when `icon` is omitted |
 | `size` | `number \| string` | `'1em'` | Size; numbers are pixels, strings are used as-is |
+| `strokeWidth` | `number \| string` | — | Stroke width; only applies to stroke-based icons |
+| `label` | `string` | — | Accessible name for meaningful icons; emits `role="img"` + `aria-label` |
 
 > To reference icon components in your own templates, install `@lucide/vue` in the project (`pnpm add @lucide/vue`). It is a runtime dependency of caomei-ui, but under pnpm's strict dependency layout it is not guaranteed to be resolvable downstream.
 >
@@ -28,6 +31,28 @@ Icons in caomei-ui come from `@lucide/vue` and `CaomeiIcon`: `@lucide/vue` provi
     vue="../examples/icons/sizing.vue"
     ssg="true"
 />
+
+## Icon registry and accessible names
+
+`CaomeiIcon` supports three forms: pass an `icon` component, resolve a `name` from the registry, or render an empty placeholder with a development warning when both are missing. The registry is provided per request through `provideIconRegistry()`; it never uses a module-level singleton, so SSR is safe.
+
+<demo
+    vue="../examples/icons/registry.vue"
+    ssg="true"
+/>
+
+```ts
+import { provideIconRegistry } from 'caomei-ui'
+import { Star } from '@lucide/vue'
+
+provideIconRegistry({ star: Star })
+```
+
+- Resolution order: `icon` component > registry `name`; when both are missing an empty placeholder is rendered with a warning.
+- The registry accepts a plain object, a `ref`, or a getter; call it in the app root or a layout.
+- Accessible-name order: explicit `label` > forwarded `aria-*` / `role` / `title` > default `aria-hidden="true"`. Providing `label` emits `role="img"` + `aria-label`; only decorative icons are hidden by default.
+- `icon` stays optional (`icon?: Component`) rather than a union type, preserving existing `:icon` usage and props extraction tools; at runtime provide at least one of `icon` / `name`.
+- Advanced usage: `useIconRegistry()` reads the current registry; `caomeiIconRegistryKey` is available for a manual `provide` (rarely needed).
 
 ## Icon gallery
 

@@ -1,2 +1,4 @@
 export { default as CaomeiIcon } from './icon.vue'
-export type { IconProps } from './types'
+export { caomeiIconRegistryKey, provideIconRegistry, useIconRegistry } from './registry'
+export type { IconRegistrySource } from './registry'
+export type { IconProps, IconRegistry } from './types'

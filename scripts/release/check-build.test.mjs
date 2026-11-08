@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
-import { collectExportFiles, findInvalidFiles, findLocaleSubpathProblems, findMissingCssImports, findMissingExports } from './check-build.mjs'
+import { collectExportFiles, findInvalidFiles, findLocaleSubpathProblems, findMissingCssImports, findMissingExports, findUnsafeImportMetaEnv } from './check-build.mjs'
 
 const tempDirs = []
 
@@ -49,6 +49,21 @@ describe('collectExportFiles', () => {
             './dist/index.js',
         ])
         expect(collectExportFiles(undefined)).toEqual([])
+    })
+})
+
+describe('findUnsafeImportMetaEnv', () => {
+    it('检出产物中的裸 import.meta.env', () => {
+        const root = createFixture({
+            'dist/icons/icon.js': 'if (!import.meta.env.DEV) { console.warn("x") }',
+        })
+        expect(findUnsafeImportMetaEnv(root)).toEqual(['dist/icons/icon.js'])
+    })
+
+    it('无 dist 或产物干净时通过', () => {
+        expect(findUnsafeImportMetaEnv(createFixture({}))).toEqual([])
+        const root = createFixture({ 'dist/index.js': 'console.warn("x")' })
+        expect(findUnsafeImportMetaEnv(root)).toEqual([])
     })
 })
 

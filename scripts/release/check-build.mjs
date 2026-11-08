@@ -243,6 +243,36 @@ export function findLocaleSubpathProblems(root, minSubpaths = MIN_SUBPATH_LOCALE
     return problems
 }
 
+/**
+ * 递归扫描 dist 下全部 .js 中的裸 `import.meta.env`。
+ *
+ * 为什么需要它：`import.meta.env` 是 Vite 注入的非标准属性；tsdown 产物若原样保留，
+ * Node SSR / 非 Vite 消费环境读取 `.DEV` 会直接抛错。构建期判定必须走 `warnDev()` 的
+ * `globalThis.process` 路径，产物中不得出现该表达式。
+ *
+ * @param {string} root 仓库根
+ * @returns {string[]} 违规文件列表
+ */
+export function findUnsafeImportMetaEnv(root) {
+    const problems = []
+    const dist = join(root, 'dist')
+    if (!existsSync(dist)) {
+        return problems
+    }
+    const walk = (dir) => {
+        for (const entry of readdirSync(dir)) {
+            const path = join(dir, entry)
+            if (statSync(path).isDirectory()) {
+                walk(path)
+            } else if (entry.endsWith('.js') && readFileSync(path, 'utf8').includes('import.meta.env')) {
+                problems.push(path.slice(root.length + 1))
+            }
+        }
+    }
+    walk(dist)
+    return problems
+}
+
 /** 执行全部产物冒烟校验，返回 `{ ok, errors, details }`。 */
 export function checkBuild(root = REPO_ROOT) {
     const errors = []
@@ -259,6 +289,15 @@ export function checkBuild(root = REPO_ROOT) {
     }
     for (const file of empty) {
         errors.push(`产物文件为空：${file}`)
+    }
+
+    // SSR / 非 Vite 环境安全：产物不得残留裸 `import.meta.env`（见 findUnsafeImportMetaEnv 的说明）。
+    if (missing.length === 0 && empty.length === 0) {
+        const unsafeEnvFiles = findUnsafeImportMetaEnv(root)
+        details.unsafeEnvFiles = unsafeEnvFiles
+        for (const file of unsafeEnvFiles) {
+            errors.push(`产物残留裸 import.meta.env：${file}（SSR / 非 Vite 环境会抛错）`)
+        }
     }
 
     // 承重机制正向断言：产物 JS 必须保留 CSS import（见 findMissingCssImports 的说明）。

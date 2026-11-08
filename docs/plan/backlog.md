@@ -20,6 +20,7 @@
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 + [caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28) | **条件候选**：下游 dependfix 3 处 + caomei-auth 1 处（`table.vue` 的 `current-page-report-template`）使用模板报表；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
+| Paginator 每页条数选择器尺寸对齐 | 用户截图反馈（2026-11-08） | 页码控件与每页选择器使用两套尺寸系统，高度差随 `data-density` 翻转；建议高度统一到 `--caomei-paginator-control-size`、默认宽度 6rem → 5rem、圆角可选对齐 `--caomei-paginator-radius`；补 E2E 尺寸断言与视觉基线。评估见[尺寸评估](../design/governance/2026-11-08-paginator-rows-per-page-sizing-evaluation.md) §1 / §4 | 中 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）

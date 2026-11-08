@@ -7,7 +7,7 @@
 ## 1. 现状与背景
 
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 当前状态：当前版本 `1.1.0`。**当前进行中阶段：Phase 28（caomei-auth 迁移反馈收口与图标体系调研；目标 `1.2.0`）**。
+- 当前状态：当前版本 `1.2.0`。**当前进行中阶段：Phase 28（caomei-auth 迁移反馈收口与图标体系调研；目标 `1.2.0`）**。
 - 版本与阶段：`1.1.0` 于 2026-11-06 经 CI 发布（`latest`）。**Phase 27 已完成并发布 `1.1.0`**（移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布；6 条主线 / 18 条原子条目），发布运行时验收见 [M5-1 记录](../design/governance/2026-11-07-phase27-m5-1-1.1.0-release.md)，阶段块已归档（Phase 27 入窗、Phase 21 迁深度归档），见[待办归档](./todo-archive.md)。**Phase 26 已完成并发布 `1.0.0`**（冻结面终审、行为收口、发布链路；含 G0 ~ G4 门禁、M5 插队批次与 S1 ~ S3 安全批次），发布执行见 [M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)。**Phase 28 已于 2026-11-07 用户裁定后登记**（caomei-auth 迁移反馈 #28 收口 + 图标体系调研；5 条主线 / 8 条原子条目），范围与验收口径见 [Phase 28 登记批次记录](../design/governance/2026-11-07-phase28-registration.md)；其余方向（国际化二期、RTL、长尾组件等）见 [Backlog](./backlog.md) 与 [长期任务](./recurring.md)。
 - 组件与已落地能力清单以[组件设计](../design/components.md) 与仓库根 `README` 为单一事实源；版本变更史见仓库根 `CHANGELOG`。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。

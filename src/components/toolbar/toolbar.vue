@@ -149,6 +149,18 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
     transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
+:where([data-motion='expressive']) .caomei-toolbar__button {
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {
+    transform: translateY(calc(-1 * var(--caomei-motion-distance-sm)));
+}
+
+:where([data-motion='expressive']) .caomei-toolbar__button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
 .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {
     background: var(--caomei-color-bg-elevated);
 }
@@ -172,6 +184,11 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 @media (prefers-reduced-motion: reduce) {
     .caomei-toolbar__button {
         transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-toolbar__button:hover:not(:disabled, [data-state='on']),
+    :where([data-motion='expressive']) .caomei-toolbar__button:active:not(:disabled) {
+        transform: none;
     }
 }
 </style>

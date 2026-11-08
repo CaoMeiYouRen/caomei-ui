@@ -151,6 +151,35 @@ const triggerAria = { 'aria-controls': null } as const
     }
 }
 
+@keyframes caomei-accordion-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes caomei-accordion-fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* 动效优先模式：高度动画叠加淡入 / 淡出，强化展开意图 */
+:where([data-motion='expressive']) .caomei-accordion__content[data-state='open'] {
+    animation: caomei-accordion-slide-down var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out), caomei-accordion-fade-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-accordion__content[data-state='closed'] {
+    animation: caomei-accordion-slide-up var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out), caomei-accordion-fade-out var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .caomei-accordion__trigger {
         transition: none;

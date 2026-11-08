@@ -115,9 +115,45 @@ function setOpen(value: boolean): void {
     padding-inline-start: var(--caomei-menu-indent, var(--caomei-space-4));
 }
 
+@keyframes caomei-menu-submenu-down {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: var(--reka-collapsible-content-height);
+    }
+}
+
+@keyframes caomei-menu-submenu-up {
+    from {
+        height: var(--reka-collapsible-content-height);
+    }
+
+    to {
+        height: 0;
+    }
+}
+
+/* 动效优先模式：子菜单展开 / 收起使用高度动画；minimal 保持即时开合 */
+:where([data-motion='expressive']) .caomei-menu__submenu-content[data-state='open'] {
+    overflow: hidden;
+    animation: caomei-menu-submenu-down var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-menu__submenu-content[data-state='closed'] {
+    overflow: hidden;
+    animation: caomei-menu-submenu-up var(--caomei-motion-duration-slow) var(--caomei-motion-ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .caomei-menu__submenu-indicator {
         transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-menu__submenu-content[data-state='open'],
+    :where([data-motion='expressive']) .caomei-menu__submenu-content[data-state='closed'] {
+        animation: none;
     }
 }
 </style>

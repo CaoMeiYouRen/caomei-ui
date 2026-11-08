@@ -120,6 +120,12 @@ const rootClass = computed(() => `caomei-button-group--${props.orientation}`)
     border-start-end-radius: 0;
 }
 
+/* 动效优先模式下，拼接成员不参与 Button 的悬浮抬升 / 按压缩放，避免拼接边框错位 */
+:where([data-motion='expressive']) .caomei-button-group :deep(> .caomei-button:hover),
+:where([data-motion='expressive']) .caomei-button-group :deep(> .caomei-button:active) {
+    transform: none;
+}
+
 /* 聚焦成员抬升，保证自身边框压在相邻成员之上 */
 .caomei-button-group :deep(> *:focus-within) {
     position: relative;

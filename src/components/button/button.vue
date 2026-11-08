@@ -130,6 +130,18 @@ function onClick(event: MouseEvent): void {
     transition: opacity var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
+:where([data-motion='expressive']) .caomei-button {
+    transition: opacity var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-button:hover:not(:disabled) {
+    transform: translateY(calc(-1 * var(--caomei-motion-distance-sm)));
+}
+
+:where([data-motion='expressive']) .caomei-button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
 .caomei-button:disabled {
     cursor: not-allowed;
     opacity: var(--caomei-disabled-opacity);
@@ -334,6 +346,15 @@ function onClick(event: MouseEvent): void {
 @keyframes caomei-button-spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-button,
+    :where([data-motion='expressive']) .caomei-button:hover:not(:disabled),
+    :where([data-motion='expressive']) .caomei-button:active:not(:disabled) {
+        transform: none;
+        transition: none;
     }
 }
 </style>

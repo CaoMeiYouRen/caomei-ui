@@ -38,4 +38,21 @@ withDefaults(defineProps<TabContentProps>(), {
 :where(.caomei-tabs--vertical) .caomei-tabs__content {
     flex: 1;
 }
+
+@keyframes caomei-tabs-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--caomei-motion-distance-sm));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 动效优先模式：切换内容时淡入 + 轻微上移；指示器（触发器下边框）由既有 color / border-color 过渡承载 */
+:where([data-motion='expressive']) .caomei-tabs__content[data-state='active'] {
+    animation: caomei-tabs-content-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
 </style>

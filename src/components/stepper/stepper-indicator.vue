@@ -47,6 +47,10 @@ defineSlots<{
     line-height: 1;
 }
 
+:where([data-motion='expressive']) .caomei-stepper__indicator {
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
 .caomei-stepper__item[data-state='active'] .caomei-stepper__indicator {
     border-color: var(--caomei-stepper-active-color, var(--caomei-color-primary));
     background: var(--caomei-stepper-active-bg, var(--caomei-color-primary));

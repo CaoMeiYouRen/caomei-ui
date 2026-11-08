@@ -71,6 +71,10 @@ const separator = computed(() => context?.separator.value ?? '/')
     text-decoration: none;
 }
 
+:where([data-motion='expressive']) .caomei-breadcrumb__link {
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
 .caomei-breadcrumb__link:hover {
     color: var(--caomei-breadcrumb-link-hover-color, var(--caomei-color-primary-text));
 }

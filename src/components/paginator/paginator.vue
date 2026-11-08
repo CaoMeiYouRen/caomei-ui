@@ -173,7 +173,17 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
     --caomei-select-max-width: 100%;
 
     display: inline-flex;
-    width: var(--caomei-paginator-rows-width, 6rem);
+    width: var(--caomei-paginator-rows-width, 5rem);
+}
+
+/*
+  选择器内部字段跟随 Paginator 的控制尺寸：Select 的 `size="sm"` 在触发器上直接声明
+  `--caomei-field-height`（`:where()` 零特异性），故需在触发器本身上覆盖；高度固定为
+  页码控件的 32px，默认密度与 `data-density="touch"` 下都不再随 sm 档（28 / 36）翻转。
+  字号 / 图标 / 内边距仍由 `size="sm"` 决定，保持与页码控件一致。
+*/
+.caomei-paginator__rows-per-page :deep(.caomei-select) {
+    --caomei-field-height: var(--caomei-paginator-control-size, 32px);
 }
 
 .caomei-paginator__list {

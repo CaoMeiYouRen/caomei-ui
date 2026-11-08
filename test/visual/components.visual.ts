@@ -15,7 +15,7 @@ import { findMissingGlyphs, openTestFonts } from './font-coverage'
  * 用于自证比对具判别力（不留常驻）。
  */
 
-/** 受检面登记（首批 8 个核心静态组件默认态 + 字体路径扩面 3 段）。 */
+/** 受检面登记（9 个核心静态组件默认态 + 字体路径扩面 3 段 + Paginator）。 */
 const SAMPLE_SECTIONS = [
     { id: 'ds-button-default', name: 'button' },
     { id: 'ds-tag-default', name: 'tag' },
@@ -24,6 +24,7 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-radio-button-default', name: 'radio-button' },
     { id: 'ds-input-default', name: 'input' },
     { id: 'form', name: 'form' },
+    { id: 'fv-paginator', name: 'paginator' },
     { id: 'ds-select-default', name: 'select' },
     { id: 'ds-slider-default', name: 'slider' },
     { id: 'ds-font-latin', name: 'font-latin-button' },
@@ -38,7 +39,7 @@ const SAMPLE_SECTIONS = [
 const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 12
+const MIN_SECTIONS = 13
 
 /**
  * 会渲染 `value` 文本的 input 类型。`hidden` / `checkbox` / `radio` / `range` / `color` /

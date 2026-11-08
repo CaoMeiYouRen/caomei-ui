@@ -72,7 +72,9 @@
 | `--caomei-paginator-color` | `--caomei-color-text` | 控件文字色 |
 | `--caomei-paginator-active-bg` | `--caomei-color-primary` | 当前页背景与描边色 |
 | `--caomei-paginator-active-color` | `--caomei-color-primary-foreground` | 当前页文字色 |
-| `--caomei-paginator-rows-width` | `6rem` | 每页条数选择器宽度（仅提供 `rowsPerPageOptions` 时生效） |
+| `--caomei-paginator-rows-width` | `5rem` | 每页条数选择器宽度（仅提供 `rowsPerPageOptions` 时生效） |
+
+> 每页条数选择器的高度固定跟随 `--caomei-paginator-control-size`（默认 32px），默认与 `data-density="touch"` 下均与页码控件等高；字号仍沿用 `size="sm"`，宽度可由 `--caomei-paginator-rows-width` 覆盖。
 
 ```css
 .caomei-paginator {

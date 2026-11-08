@@ -346,6 +346,7 @@ const drawerBottomOpen = ref(false)
 const fvRadio = ref('a')
 const fvSlider = ref(40)
 const fvStep = ref(1)
+const fvItemsPerPage = ref(10)
 const fvSteps = ['账户', '资料', '完成']
 const fvColor = ref('#60a5fa')
 const fvPassword = ref('Abcdefg1')
@@ -1261,8 +1262,9 @@ const ConfirmDriver = defineComponent({
             </div>
             <div id="fv-paginator">
                 <CaomeiPaginator
+                    v-model:items-per-page="fvItemsPerPage"
                     :total="40"
-                    :items-per-page="10"
+                    :rows-per-page-options="[10, 20, 50, 100]"
                     label="分页"
                 />
             </div>

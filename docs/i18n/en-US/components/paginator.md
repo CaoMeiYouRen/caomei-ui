@@ -72,7 +72,9 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-paginator-color` | `--caomei-color-text` | Control text color |
 | `--caomei-paginator-active-bg` | `--caomei-color-primary` | Current-page background and border color |
 | `--caomei-paginator-active-color` | `--caomei-color-primary-foreground` | Current-page text color |
-| `--caomei-paginator-rows-width` | `6rem` | Rows-per-page selector width (only when `rowsPerPageOptions` is provided) |
+| `--caomei-paginator-rows-width` | `5rem` | Rows-per-page selector width (only when `rowsPerPageOptions` is provided) |
+
+> The rows-per-page selector height follows `--caomei-paginator-control-size` (32px by default), matching the page controls in both the default and `data-density="touch"` modes. Its font size still uses `size="sm"`; override the width with `--caomei-paginator-rows-width`.
 
 ```css
 .caomei-paginator {

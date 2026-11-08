@@ -201,7 +201,7 @@
 
 - **默认零变化**：`minimal` 的时长 / 缓动与迁移前硬编码值逐项等价；未设置 `data-motion` 时渲染与既有版本一致。
 - **减弱动效**：`prefers-reduced-motion: reduce` 下全部时长归零（`0s`）、位移归零、缩放回 `1`；组件内显式 `transition: none` / `animation: none` 仍优先。加载类循环动画（spinner / skeleton / indeterminate progress / image pulse）保留组件级降速，不归并为单一 loop token。
-- **克制的 expressive**：只调整时长 / 缓动 / 位移 / 缩放，不做弹跳、长时间循环或影响阅读的位移。其中 `--caomei-motion-distance-*` / `--caomei-motion-scale-from` 与 `ease-in-out` / `ease-linear` 为后续批次（反馈 / 浮层、导航 / 操作）预留，当前组件尚未消费；开启 `data-motion="expressive"` 先体现为时长 / 缓动变化。
+- **克制的 expressive**：只调整时长 / 缓动 / 位移 / 缩放，不做弹跳、长时间循环或影响阅读的位移。反馈与浮层（Dialog / ConfirmDialog / Popover / DropdownMenu / Tooltip / Toast / Message / Alert）已消费 `--caomei-motion-distance-*` / `--caomei-motion-scale-from`；`ease-in-out` / `ease-linear` 与表单 / 布局 / 选择器 / 数据展示批次继续扩展。
 - **守卫**：`pnpm check:motion-contract` 校验默认 / 轴 / reduce 三组声明与「源码不得出现裸时长（加载类白名单除外）」；`test/contracts/motion-tokens.test.ts` 锁定 token 值，`test/e2e/focus-and-motion.e2e.ts` 验证轴切换与 reduce 的真实计算值。
 
 ## 6. 无障碍

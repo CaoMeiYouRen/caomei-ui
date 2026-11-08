@@ -66,17 +66,40 @@ withDefaults(defineProps<TooltipContentProps>(), {
 @keyframes caomei-tooltip-in {
     from {
         opacity: 0;
-        transform: scale(0.96);
+        transform: translateY(var(--caomei-tooltip-enter-y, 0)) scale(var(--caomei-tooltip-enter-scale, 0.96));
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
+@keyframes caomei-tooltip-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(var(--caomei-tooltip-enter-y, 0)) scale(var(--caomei-tooltip-enter-scale, 0.96));
+    }
+}
+
+/* 动效优先模式：入场增加轻微位移；退场在 Presence 保留 DOM 期间播放 */
+:where([data-motion='expressive']) .caomei-tooltip__content {
+    --caomei-tooltip-enter-y: var(--caomei-motion-distance-sm);
+    --caomei-tooltip-enter-scale: var(--caomei-motion-scale-from);
+}
+
+:where([data-motion='expressive']) .caomei-tooltip__content[data-state='closed'] {
+    animation: caomei-tooltip-out var(--caomei-motion-duration-instant) var(--caomei-motion-ease-out) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .caomei-tooltip__content {
+    .caomei-tooltip__content,
+    .caomei-tooltip__content[data-state='closed'] {
         animation: none;
     }
 }

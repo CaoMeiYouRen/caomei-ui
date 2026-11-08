@@ -275,9 +275,80 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     outline-offset: 1px;
 }
 
+/*
+  动效优先模式下的进出场：缺省 `minimal` 保持既有的「无动画」行为；
+  `data-motion="expressive"` 才挂载以下 keyframes（退场需 Presence 保留 DOM 至动画结束）。
+*/
+@keyframes caomei-dialog-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes caomei-dialog-overlay-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes caomei-dialog-content-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + var(--caomei-motion-distance-md))) scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes caomei-dialog-content-out {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + var(--caomei-motion-distance-md))) scale(var(--caomei-motion-scale-from));
+    }
+}
+
+:where([data-motion='expressive']) .caomei-dialog__overlay[data-state='open'] {
+    animation: caomei-dialog-overlay-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-dialog__overlay[data-state='closed'] {
+    animation: caomei-dialog-overlay-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
+:where([data-motion='expressive']) .caomei-dialog__content[data-state='open'] {
+    animation: caomei-dialog-content-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-dialog__content[data-state='closed'] {
+    animation: caomei-dialog-content-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
 @media (width <= 640px) {
     .caomei-dialog__content {
         width: calc(100vw - 2 * var(--caomei-space-4));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-dialog__overlay[data-state],
+    :where([data-motion='expressive']) .caomei-dialog__content[data-state] {
+        animation: none;
     }
 }
 </style>

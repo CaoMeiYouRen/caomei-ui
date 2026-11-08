@@ -71,8 +71,39 @@ function toneIcon(item: ToastItem): Component {
     return toneIcons[item.tone ?? 'neutral']
 }
 
+/**
+ * 是否延后移除 Toast：`expressive` 且未开启 reduced-motion 时，先让 Reka Presence 播放退场动画，
+ * 再由 `animationend` 移除；否则保持既有的「关闭即移除」行为（含 minimal / reduce）。
+ */
+function shouldDeferDismiss(): boolean {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+        return false
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return false
+    }
+    const sample = document.querySelector('.caomei-toast')
+    if (!sample) {
+        return false
+    }
+    // 与 CSS 选择器同源：任意祖先（含 html / 局部容器）的 expressive 轴都命中
+    return sample.closest('[data-motion="expressive"]') !== null
+}
+
 function onOpenChange(id: string, open: boolean): void {
-    if (!open) {
+    if (open) {
+        return
+    }
+    if (!shouldDeferDismiss()) {
+        store.dismiss(id)
+    }
+}
+
+function onAnimationEnd(id: string, event: AnimationEvent): void {
+    if (!shouldDeferDismiss()) {
+        return
+    }
+    if (event.animationName.includes('caomei-toast-out') || event.animationName.includes('caomei-toast-swipe-out')) {
         store.dismiss(id)
     }
 }
@@ -95,6 +126,7 @@ function onOpenChange(id: string, open: boolean): void {
             class="caomei-toast"
             :class="toneClass(item)"
             @update:open="(open: boolean) => onOpenChange(item.id, open)"
+            @animationend="(event: AnimationEvent) => onAnimationEnd(item.id, event)"
         >
             <span class="caomei-toast__icon" aria-hidden="true">
                 <CaomeiIcon :icon="toneIcon(item)" />
@@ -337,12 +369,12 @@ function onOpenChange(id: string, open: boolean): void {
 @keyframes caomei-toast-in {
     from {
         opacity: 0;
-        transform: translateY(-4px);
+        transform: translateY(-4px) scale(var(--caomei-toast-enter-scale, 1));
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -360,9 +392,31 @@ function onOpenChange(id: string, open: boolean): void {
     }
 }
 
-/* 减弱动效：入场 / 滑出动画与取消回弹过渡关闭（此前缺该兜底） */
+@keyframes caomei-toast-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(calc(-1 * var(--caomei-motion-distance-sm))) scale(var(--caomei-motion-scale-from));
+    }
+}
+
+/* 动效优先模式：入场增加缩放；关闭（非滑动）在 Presence 保留 DOM 期间播放退场 */
+:where([data-motion='expressive']) .caomei-toast {
+    --caomei-toast-enter-scale: var(--caomei-motion-scale-from);
+}
+
+:where([data-motion='expressive']) .caomei-toast[data-state='closed']:where(:not([data-swipe='end'])) {
+    animation: caomei-toast-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
+/* 减弱动效：入场 / 滑出 / 关闭退场动画与取消回弹过渡关闭（此前缺该兜底） */
 @media (prefers-reduced-motion: reduce) {
     .caomei-toast[data-state='open'],
+    .caomei-toast[data-state='closed'],
     .caomei-toast[data-swipe='end'] {
         animation: none;
     }

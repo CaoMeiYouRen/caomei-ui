@@ -280,17 +280,40 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
 @keyframes caomei-dropdown-menu-in {
     from {
         opacity: 0;
-        transform: scale(0.96);
+        transform: translateY(var(--caomei-dropdown-menu-enter-y, 0)) scale(var(--caomei-dropdown-menu-enter-scale, 0.96));
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
+@keyframes caomei-dropdown-menu-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(var(--caomei-dropdown-menu-enter-y, 0)) scale(var(--caomei-dropdown-menu-enter-scale, 0.96));
+    }
+}
+
+/* 动效优先模式：入场增加轻微位移；退场在 Presence 保留 DOM 期间播放 */
+:where([data-motion='expressive']) .caomei-dropdown-menu__content {
+    --caomei-dropdown-menu-enter-y: var(--caomei-motion-distance-sm);
+    --caomei-dropdown-menu-enter-scale: var(--caomei-motion-scale-from);
+}
+
+:where([data-motion='expressive']) .caomei-dropdown-menu__content[data-state='closed'] {
+    animation: caomei-dropdown-menu-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .caomei-dropdown-menu__content {
+    .caomei-dropdown-menu__content,
+    .caomei-dropdown-menu__content[data-state='closed'] {
         animation: none;
     }
 }

@@ -234,4 +234,30 @@ const rootClass = computed(() => [
     outline: 2px solid currentcolor;
     outline-offset: 2px;
 }
+
+/*
+  动效优先模式下的出现动画：Message / Alert 为静态挂载元素，退场由使用方移除节点，
+  故只定义入场；缺省 `minimal` 不挂动画。
+*/
+@keyframes caomei-message-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--caomei-motion-distance-sm));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+:where([data-motion='expressive']) .caomei-message {
+    animation: caomei-message-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-message {
+        animation: none;
+    }
+}
 </style>

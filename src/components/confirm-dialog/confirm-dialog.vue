@@ -244,4 +244,74 @@ onUnmounted(() => {
         width: calc(100vw - 2 * var(--caomei-space-4));
     }
 }
+
+/*
+  动效优先模式下的进出场：缺省 `minimal` 保持既有的「无动画」行为。
+*/
+@keyframes caomei-confirm-dialog-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes caomei-confirm-dialog-overlay-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes caomei-confirm-dialog-content-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + var(--caomei-motion-distance-md))) scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes caomei-confirm-dialog-content-out {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + var(--caomei-motion-distance-md))) scale(var(--caomei-motion-scale-from));
+    }
+}
+
+:where([data-motion='expressive']) .caomei-confirm-dialog__overlay[data-state='open'] {
+    animation: caomei-confirm-dialog-overlay-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-confirm-dialog__overlay[data-state='closed'] {
+    animation: caomei-confirm-dialog-overlay-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
+:where([data-motion='expressive']) .caomei-confirm-dialog__content[data-state='open'] {
+    animation: caomei-confirm-dialog-content-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-confirm-dialog__content[data-state='closed'] {
+    animation: caomei-confirm-dialog-content-out var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-confirm-dialog__overlay[data-state],
+    :where([data-motion='expressive']) .caomei-confirm-dialog__content[data-state] {
+        animation: none;
+    }
+}
 </style>

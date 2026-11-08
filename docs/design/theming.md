@@ -205,6 +205,7 @@
 - **守卫**：`pnpm check:motion-contract` 校验默认 / 轴 / reduce 三组声明、「源码不得出现裸时长（加载类白名单除外）」与**布局属性动画白名单**（`height` / `width` / `top` 等触发布局的过渡与关键帧须逐项登记理由）；`test/contracts/motion-tokens.test.ts` 锁定 token 值，`test/e2e/focus-and-motion.e2e.ts` 验证轴切换与 reduce 的真实计算值。
 - **验收分层**：L1 静态守卫（上述 `check:motion-contract`）→ L2 组件单测 → L3 Playwright 时间轴（`focus-and-motion` / `overlay-motion` / `navigation-motion` / `motion-acceptance`）→ L4 人工复核（清单与录屏见 [M6-1 记录](./governance/2026-11-09-phase29-m6-1-motion-acceptance.md)）。时间轴用例按需用 `getAnimations()` / `pause()` / `currentTime` 采样中间帧（`motion-acceptance` 已统一走采样装置，`navigation-motion` / `overlay-motion` 亦有同类用法），不用 `sleep` 等待；其余 L3 以计算值与动画名判定。
 - **性能与无障碍**：长任务只做宽松冒烟（单条 > 1.5s 阻断，> 50ms 记录），主观流畅度交 L4；`reduce` 下不得有位移 / 缩放，无限循环动画不快于 3 次 / 秒，焦点环不因动效延迟。
+- **文档站与审查页**：文档站的 VitePress 默认主题在系统「减少动态效果」下注入 `* { transition-duration: 0s !important; animation-duration: 1ms !important }`，演示区只按组件恢复部分 `animation`，过渡与未登记组件会被压平——这是无障碍行为，不是渲染缺陷。目视审查请用独立页面 `pnpm review:motion`（`playground/motion.html`，不加载文档站样式），并关闭系统 / DevTools 的 `prefers-reduced-motion` 模拟；页面会显示当前偏好与逐项 token 值。
 
 <demo
     vue="../examples/theming/motion.vue"

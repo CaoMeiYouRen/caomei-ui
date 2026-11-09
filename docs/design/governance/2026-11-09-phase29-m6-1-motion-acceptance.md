@@ -14,7 +14,7 @@
 | 布局动画审计 | `check-motion-contract` 新增布局属性过渡 / 关键帧白名单（`layout-transition` / `layout-keyframe`），守卫单测 **21 → 35** |
 | 性能 | 代表性动画窗口内长任务实测（§4.1）；CI 只做宽松冒烟（> 1.5s 阻断、> 50ms 记录） |
 | 无障碍 | reduce 下无位移 / 缩放、无限循环不快于 3 次 / 秒、焦点环仍可见（§4.2） |
-| 人工复核 | 清单与录屏素材（§5）；结论待用户签字 |
+| 人工复核 | 清单与录屏素材（§5）；用户已于 2026-11-09 确认动画效果并同意标记完成 |
 | 主题文档与示例 | `docs/design/theming.md` §5.3 补验收分层 / 性能与无障碍约定 + 轴切换示例 `docs/examples/theming/motion.vue` |
 | A4 ~ A7 边界 | 写入 §6，不重复建条目 |
 
@@ -27,7 +27,7 @@
 | M3-1 导航与操作 | 同一守卫（Accordion / Menu 高度关键帧已登记） | 状态类单测 | `motion-acceptance`「Accordion 高度 / Button 过渡」2 例 × 3；`navigation-motion`（含连续切换） | 连续切换打断（§5） |
 
 - **覆盖边界**：矩阵只对 M1-1 ~ M3-1 已交付批次承担验收；M4-1 ~ M4-3（图标）与 M5-1（Paginator）无新增动效，不重复纳入。
-- **L4 状态**：素材已生成，主观结论由用户在 §5 清单上签字；本记录在签字前不宣称 L4 通过。
+- **L4 状态**：用户于 2026-11-09 确认动画效果并同意标记 M6-1 完成；签字载体为审查单文件（`review:build`）与 v2 录屏（亮 1280 / 暗 390），记录见 §5。逐项结论只记结论与可指认载体，不补写未记录的复核动作。
 
 ## 3. 确定性采样装置
 
@@ -76,7 +76,7 @@
 - **焦点可见**：`reduce` 下经 CDP 强制 `:focus-visible`，Tabs 触发器仍命中 `outline: 2px`——减弱动效不移除焦点反馈。
 - **闪烁**：无自动播放类一次性动画；加载指示为连续旋转 / 脉冲，非闪烁。
 
-## 5. 人工复核（待签字）
+## 5. 人工复核（已签字）
 
 - **审查入口**：`pnpm review:motion` → `http://localhost:4401/motion.html`；或 `pnpm review:build` 产出单文件 `artifacts/motion-review/site/motion-review.html`（可直接双击，file:// 运行；审查用途已移除 reduce 规则，始终播放动画）。两页都不加载文档站样式，页头显示系统动效偏好、逐项 token 与「减少动效」警告，并在打开后自动演示一轮。文档站的 VitePress 全局 `prefers-reduced-motion` 压平属无障碍行为，目视复核请关闭系统 / DevTools 的 reduce 模拟。
 - **环境**：Chromium 156.0.8078.4（Playwright 1.63.0）；桌面 1280×900 亮色、移动 390×844 暗色。
@@ -89,13 +89,13 @@
 
 | # | 复核项 | 判定 |
 |:--|:---|:---|
-| 1 | 1x 与 0.25x 观感：动画表达「发生了什么」而非装饰 | 待签字 |
-| 2 | 连续快速触发 / 反向切换 / 中途取消：无排队、无卡死、无终态错位 | 待签字 |
-| 3 | 亮 / 暗 × 320 / 390 / 768 / 1280：无横向溢出、无 CLS、文字不模糊 | 待签字 |
-| 4 | `reduce` 下无位移 / 缩放，加载仍可感知；焦点环不被延迟 | 待签字（自动侧已断言，观感待确认；对照审查页的「模拟 reduce」） |
-| 5 | 暗色下浮层 / 手风琴对比与亮色一致，无发灰 | 待签字 |
+| 1 | 1x 与 0.25x 观感：动画表达「发生了什么」而非装饰 | 通过（2026-11-09） |
+| 2 | 连续快速触发 / 反向切换 / 中途取消：无排队、无卡死、无终态错位 | 通过（2026-11-09） |
+| 3 | 亮 / 暗 × 320 / 390 / 768 / 1280：无横向溢出、无 CLS、文字不模糊 | 通过（2026-11-09）；320 / 768 未单独目视复核，几何由 §9 与响应式矩阵配置覆盖 |
+| 4 | `reduce` 下无位移 / 缩放，加载仍可感知；焦点环不被延迟 | 通过（2026-11-09）；reduce 人工面以 DevTools 模拟系统 reduce + 开发态页 `review:motion` 验证（方法说明；单文件为审查用途移除了 reduce 规则） |
+| 5 | 暗色下浮层 / 手风琴对比与亮色一致，无发灰 | 通过（2026-11-09） |
 
-> 签字后把「待签字」改为「通过（日期）」，并同步 `todo.md` 的 M6-1 状态。
+> 签字：用户确认动画效果（2026-11-09），同意标记 M6-1 完成；可指认载体为 `artifacts/motion-review/site/motion-review.html` 与 `artifacts/motion-review/v2/`（亮 1280 / 暗 390 录屏）。`todo.md` 的 M6-1 已同步为「已完成」。
 
 ## 6. A4 ~ A7 边界
 
@@ -128,6 +128,7 @@
   - W1 `transition-property: all` 绕过「禁 all」：**已修**——长写分支复用判定 + 1 例单测。
   - W2 `theming.md` 对旧规格的描述仍不准确：**已修**——明确 `navigation-motion` / `overlay-motion` 亦有同类采样用法。
   - S1 逻辑属性覆盖不全：**已采纳**——补 `margin/padding/inset` 逻辑属性与 `border-inline/block-width`，并注释声明复合简写不在面内。
+- **R3（`quick` delta，签字回填）**：R1 `Reject`（§1 旧状态残留 / 逐项方法归因超出用户原话 / reduce 载体矛盾 / 阶段句缺归档说明）→ R2 `Pass`（1 blocker / 2 warning 全部关闭；320/768 与 reduce 载体表述订正）。
 - **复查基线**：本记录 §2 ~ §5；`test/e2e/helpers/motion.ts`；`test/e2e/motion-acceptance.e2e.ts`；`scripts/governance/check-motion-contract.{mjs,test.mjs}`；`docs/design/theming.md` §5.3；`docs/examples/theming/motion.vue`。
 
 ## 9. 未覆盖边界

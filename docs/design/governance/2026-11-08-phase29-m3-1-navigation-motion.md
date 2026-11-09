@@ -6,6 +6,8 @@
 
 ## 1. 交付清单
 
+> **2026-11-09 调整（复核反馈）**：Button / Toolbar 的悬浮位移由 `-4px` 收敛为 `-1px`（按下缩放 0.98 不变）。原 4px 在用户复核中被判定为「违和、位移过大」；`expressive` 仍保留轻微抬升，`minimal` / `reduce` 行为不变。本记录其余数据为交付时点值，不回改。
+
 | 组件 | 模式 | 动效 |
 |:---|:---|:---|
 | Tabs | `expressive` 新增 | 内容切换淡入 + 4px 上移；激活指示条（触发器下边框）沿用既有 color / border-color 过渡，`expressive` 下时长升到 220ms |
@@ -45,7 +47,7 @@
 
 ## 4. 风险与边界
 
-1. **Button 位移与拼接**：ButtonGroup 内已重置；若下游把 Button 放进自定义 flex 拼接容器，可能仍出现 4px 悬浮位移，需要自行覆写。
+1. **Button 位移与拼接**：ButtonGroup 内已重置；若下游把 Button 放进自定义 flex 拼接容器，可能仍出现悬浮位移（2026-11-09 起为 1px，原 4px），需要自行覆写。
 2. **Menu 高度动画**：依赖 Reka Collapsible 的 `--reka-collapsible-content-height`；上游改该变量名时动画会退化为无高度变化（仍可开合）。
 3. **Tabs 指示条**：没有独立滑块，只有边框颜色过渡；若未来改为独立指示条，需重做本批选择器与 `tabs-indicator.e2e.ts`。
 4. **Button 按下缩放**：0.98 为 expressive 固定值，不进入 motion token 冻结面；若需要下游覆盖，可后续补组件级钩子。

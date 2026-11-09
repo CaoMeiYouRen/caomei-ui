@@ -130,7 +130,7 @@ test.describe('Breadcrumb / Stepper / Toolbar', () => {
     test('Toolbar 按钮悬浮抬升', async ({ page }) => {
         const button = '#fv-toolbar .caomei-toolbar__button'
         await page.locator(button).hover()
-        await expect.poll(() => transformOf(button, page)).toContain('-4')
+        await expect.poll(() => transformOf(button, page)).toBe('matrix(1, 0, 0, 1, 0, -1)')
     })
 })
 
@@ -138,7 +138,7 @@ test.describe('Button / ButtonGroup / SplitButton', () => {
     test('Button 悬浮抬升，ButtonGroup 成员不位移', async ({ page }) => {
         const standalone = '#wrap-toolbar .caomei-button'
         await page.locator(standalone).first().hover()
-        await expect.poll(() => transformOf(standalone, page)).toContain('-4')
+        await expect.poll(() => transformOf(standalone, page)).toBe('matrix(1, 0, 0, 1, 0, -1)')
 
         const member = '#scroll-button-group .caomei-button'
         await page.locator(member).first().hover()

@@ -154,7 +154,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 }
 
 :where([data-motion='expressive']) .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {
-    transform: translateY(calc(-1 * var(--caomei-motion-distance-sm)));
+    transform: translateY(var(--caomei-toolbar-button-hover-lift, -1px));
 }
 
 :where([data-motion='expressive']) .caomei-toolbar__button:active:not(:disabled) {

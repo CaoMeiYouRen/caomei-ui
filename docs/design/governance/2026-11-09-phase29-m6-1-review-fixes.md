@@ -20,7 +20,8 @@
 2. **菜单项外观共享**：`.caomei-menu__item` 外观从 `menu-item.vue` 的 scoped 块移到 `menu.vue` 的非 scoped 块，并以 `.caomei-menu .caomei-menu__item` 前缀保持特异性 0,2,0——宿主 `.vp-doc a` / `.prose a`（0,1,1）否则会压过单类选择器，把菜单链接变成下划线 + 品牌色（Review Gate R1 实测）。MenuItem 与 SubMenu 触发器共用同一组声明；`:hover` 态显式声明 `color`（宿主 `.vp-doc a:hover` 0,2,1 会压过基础规则）；`menu-item-wrapper` / `submenu` 补 `margin-block: 0`。
 3. **独立审查页**：新增 `playground/motion.html` + `motion-review.vue`（`pnpm review:motion` → 端口 4401），并提供 `pnpm review:build` 产出可直接双击的单文件 `artifacts/motion-review/site/motion-review.html`（IIFE 内联 JS/CSS，file:// 可运行；构建期断言无模块脚本 / 外链资源 / `process.` 残留；为审查用途移除 reduce 规则，系统开启减少动效时仍播放动画，真实 reduce 行为以开发态页面与自动测试为准）。页头显示系统动效偏好、13 token 与「减少动效」说明；打开后自动演示一轮，用户首次操作即中止，不加载文档站样式；页头显示系统动效偏好、13 个 token 实测值与轴切换 / 模拟 reduce 开关，覆盖 Dialog / Popover / DropdownMenu / Tooltip / Toast / Accordion / Tabs / Menu / Breadcrumb / Button。
 4. **文档说明**：`docs/design/theming.md` §5.3 补「文档站与审查页」段落，解释 VitePress 压平属无障碍行为，目视审查改用独立页面并关闭系统 / DevTools 的 reduce 模拟。
-5. **回归**：夹具新增 `#component-alignment`（用**非 scoped** 宿主 CSS 复刻 `li + li`、`a` 与 `a:hover` 规则）与 `component-alignment.e2e.ts`（面包屑顶端 / `margin-top` 一致、菜单项与子菜单触发器同高、`li` 间距复位、菜单链接静置 / hover 不被宿主 `a` 样式劫持）。已做负向对照：把选择器降回单类后该用例失败，确认判别力。
+5. **按钮悬浮位移收敛**：Button / Toolbar 的 `expressive` 悬浮位移由 `-4px` 改为 `-1px`（按下缩放 0.98 不变），避免鼠标移入时的明显「跳一下」；`minimal` / `reduce` 仍无位移。`navigation-motion` E2E 断言同步。
+6. **回归**：夹具新增 `#component-alignment`（用**非 scoped** 宿主 CSS 复刻 `li + li`、`a` 与 `a:hover` 规则）与 `component-alignment.e2e.ts`（面包屑顶端 / `margin-top` 一致、菜单项与子菜单触发器同高、`li` 间距复位、菜单链接静置 / hover 不被宿主 `a` 样式劫持）。已做负向对照：把选择器降回单类后该用例失败，确认判别力。
 
 ## 3. 验证证据
 
@@ -30,10 +31,11 @@
 | 审查页实测（`/motion.html` 与单文件） | 轴切换：`duration-base` 150ms → 220ms、`distance-md` 0px → 8px；Dialog 入场动画 220ms；无控制台错误；菜单项均 34px（与页面字号一致）；单文件 file:// 打开无 console error；`no-preference` 与系统 reduce 下均播放 Dialog 入场 220ms（单文件为审查用途忽略 reduce），并显示对应说明 |
 | `pnpm exec playwright test test/e2e/component-alignment.e2e.ts` | **9 passed**（3 例 × 3 project）；负向对照（选择器降回单类）该链接用例**失败** |
 | 文档站 hover 态 | 非当前项 hover 走 `--caomei-menu-item-hover-color`（不被 `.vp-doc a:hover` 改色）；当前项 hover 保持 `current-color`；禁用项 hover 不变色 |
-| 冻结面 | 新增 `--caomei-menu-item-hover-color` 披露钩子（无默认声明）：有效冻结面 **429 → 430**、消费面 **454 → 455** |
+| 冻结面 | 新增 `--caomei-menu-item-hover-color` 披露钩子（无默认声明）：有效冻结面 **429 → 430**、消费面 **454 → 455**；按钮位移收敛引入 2 个内部 fallback 钩子，消费面 **455 → 457**、未披露 **139 → 141**（纯内部 **25 → 27**），冻结面无变化 |
 | `pnpm vitest run src/components/breadcrumb src/components/menu` | 26 passed |
 | `pnpm capture:styles` | **0 差异**（386 项；组件孤立渲染无变化。注意：该口径**不覆盖宿主级联**，宿主文档下的链接外观由文档站实测与 `component-alignment` 覆盖） |
 | `pnpm test:visual` | **42 passed** |
+| Button / Toolbar 位移 | `expressive` hover 实测 `translateY(-1px)`；`minimal` / `reduce` 无位移（`navigation-motion` 10 例 × 3 project = 30 passed） |
 | 审查素材 v2 | `artifacts/motion-review/v2/{videos/{desktop-light,mobile-dark}.webm,frames/*,dialog-enter-sheet.png,still-*.png}`（gitignored） |
 
 ## 4. 风险与边界

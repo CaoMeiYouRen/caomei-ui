@@ -135,7 +135,7 @@ function onClick(event: MouseEvent): void {
 }
 
 :where([data-motion='expressive']) .caomei-button:hover:not(:disabled) {
-    transform: translateY(calc(-1 * var(--caomei-motion-distance-sm)));
+    transform: translateY(var(--caomei-button-hover-lift, -1px));
 }
 
 :where([data-motion='expressive']) .caomei-button:active:not(:disabled) {

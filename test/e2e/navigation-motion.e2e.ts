@@ -4,7 +4,7 @@ import { expect, test as base } from '@playwright/test'
  * 导航与操作类动效（`data-motion="expressive"`）的浏览器回归。
  *
  * 覆盖 Tabs 内容、Accordion 高度 + 淡入、Menu 子菜单高度、Breadcrumb / Stepper 过渡、
- * Toolbar / Button 抬升、ButtonGroup 拼接成员不位移、SplitButton chevron 旋转；
+ * Toolbar / Button 悬浮无位移、按下缩放、ButtonGroup 拼接成员不位移、SplitButton chevron 旋转；
  * 另验证 minimal 与 reduce 两条回退路径。
  */
 
@@ -39,6 +39,21 @@ async function animationNameOf(selector: string, page: import('@playwright/test'
 
 async function transformOf(selector: string, page: import('@playwright/test').Page): Promise<string> {
     return page.locator(selector).first().evaluate((element) => getComputedStyle(element).transform)
+}
+
+/** 经 CDP 强制 `:hover` + `:active`，用于断言按压缩放（触屏 project 也能稳定复现）。 */
+async function forceActive(page: import('@playwright/test').Page, selector: string): Promise<() => Promise<void>> {
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('DOM.enable')
+    await cdp.send('CSS.enable')
+    const { root } = await cdp.send('DOM.getDocument', { depth: -1 })
+    const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector })
+    expect(nodeId, `${selector} 选择器未命中`).not.toBe(0)
+    await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: ['hover', 'active'] })
+    return async () => {
+        await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [] })
+        await cdp.detach()
+    }
 }
 
 test.describe('Tabs / Accordion / Menu', () => {
@@ -127,18 +142,29 @@ test.describe('Breadcrumb / Stepper / Toolbar', () => {
         expect(indicatorDurations.every((value) => value > 0), `stepper 过渡应非零：${indicatorDurations.join(', ')}`).toBe(true)
     })
 
-    test('Toolbar 按钮悬浮抬升', async ({ page }) => {
+    test('Toolbar 按钮悬浮不位移，仅保留颜色过渡', async ({ page }) => {
         const button = '#fv-toolbar .caomei-toolbar__button'
-        await page.locator(button).hover()
-        await expect.poll(() => transformOf(button, page)).toBe('matrix(1, 0, 0, 1, 0, -1)')
+        const durations = await page.locator(button).first().evaluate((element) => getComputedStyle(element).transitionDuration)
+        expect(durations, 'expressive 下过渡时长应取 duration-base').toContain('0.22s')
+        await page.locator(button).first().hover()
+        await expect.poll(() => transformOf(button, page)).toBe('none')
     })
 })
 
 test.describe('Button / ButtonGroup / SplitButton', () => {
-    test('Button 悬浮抬升，ButtonGroup 成员不位移', async ({ page }) => {
+    test('Button 悬浮不位移，按下缩放，ButtonGroup 成员保持稳定', async ({ page }) => {
         const standalone = '#wrap-toolbar .caomei-button'
+        const durations = await page.locator(standalone).first().evaluate((element) => getComputedStyle(element).transitionDuration)
+        expect(durations, 'expressive 下过渡时长应取 duration-base').toContain('0.22s')
         await page.locator(standalone).first().hover()
-        await expect.poll(() => transformOf(standalone, page)).toBe('matrix(1, 0, 0, 1, 0, -1)')
+        await expect.poll(() => transformOf(standalone, page)).toBe('none')
+
+        const releaseActive = await forceActive(page, standalone)
+        try {
+            await expect.poll(() => transformOf(standalone, page)).toBe('matrix(0.98, 0, 0, 0.98, 0, 0)')
+        } finally {
+            await releaseActive()
+        }
 
         const member = '#scroll-button-group .caomei-button'
         await page.locator(member).first().hover()

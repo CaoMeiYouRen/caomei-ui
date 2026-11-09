@@ -150,15 +150,12 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
 }
 
 :where([data-motion='expressive']) .caomei-toolbar__button {
+    /* transform 仅用于按压缩放（悬浮不再位移） */
     transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
-:where([data-motion='expressive']) .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {
-    transform: translateY(var(--caomei-toolbar-button-hover-lift, -1px));
-}
-
 :where([data-motion='expressive']) .caomei-toolbar__button:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
 }
 
 .caomei-toolbar__button:hover:not(:disabled, [data-state='on']) {

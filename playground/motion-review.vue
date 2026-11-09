@@ -407,7 +407,7 @@ onUnmounted(() => {
                                     </CaomeiButton>
                                 </div>
                                 <p class="review-note">
-                                    悬停按钮看抬升与颜色过渡；连续点击对话框可观察打断与终态。
+                                    悬停按钮看颜色过渡，按下可看缩放；连续点击对话框可观察打断与终态。
                                 </p>
                             </div>
                         </div>

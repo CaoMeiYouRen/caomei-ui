@@ -131,15 +131,12 @@ function onClick(event: MouseEvent): void {
 }
 
 :where([data-motion='expressive']) .caomei-button {
+    /* transform 仅用于按压缩放（悬浮不再位移） */
     transition: opacity var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
-:where([data-motion='expressive']) .caomei-button:hover:not(:disabled) {
-    transform: translateY(var(--caomei-button-hover-lift, -1px));
-}
-
 :where([data-motion='expressive']) .caomei-button:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
 }
 
 .caomei-button:disabled {

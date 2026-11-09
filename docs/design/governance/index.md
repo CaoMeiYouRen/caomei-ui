@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-09-phase29-archive.md](./2026-11-09-phase29-archive.md)：**Phase 29 归档批次**。8/8 条目入 [待办归档](../../plan/todo-archive.md) Phase 29 块；Phase 23 迁深度归档（[phase-23.md](../../plan/archive/phase-23.md)）；roadmap / recurring 第 32 轮 / `.session` 同步；本阶段不发布、未推送；wisdom 4 条未达蒸馏阈值。**Review Gate**：见本记录 §5。
 - [2026-11-09-phase29-m6-1-review-fixes.md](./2026-11-09-phase29-m6-1-review-fixes.md)：**M6-1 复核反馈修复**。文档站动效被 VitePress 全局 `prefers-reduced-motion` 压平（无障碍行为）→ 新增独立审查页 `pnpm review:motion`；修复面包屑首项 4px 错位与子菜单触发器缺菜单项样式（宿主 `li + li` 间距 + 跨组件 scoped 不命中）；新增 `component-alignment` E2E。**Review Gate**：见本记录 §5。
 - [2026-11-09-phase29-m6-1-motion-acceptance.md](./2026-11-09-phase29-m6-1-motion-acceptance.md)：**Phase 29 M6-1 动效验收与人工复核**。L1 ~ L4 验收矩阵（M1-1 / M2-1 / M3-1）；新增 `test/e2e/helpers/motion.ts`（有界帧轮询 + `pause()` + `currentTime`，无 `sleep`）与 `motion-acceptance.e2e.ts`（9 例 × 3 project）；`check-motion-contract` 扩布局属性白名单（21 → 35 单测）；长任务 2 条 / 最大 66ms、reduce 无位移 / 缩放且焦点环保留；`theming.md` §5.3 补验收分层与示例。人工复核已由用户于 2026-11-09 签字通过。**Review Gate**：见本记录 §8。
 - [2026-11-08-phase29-m4-3-icon-tokens.md](./2026-11-08-phase29-m4-3-icon-tokens.md)：**Phase 29 M4-3 图标样式 token 与迁移文档**。新增 `--caomei-icon-size-{sm,md,lg}` 与 `--caomei-icon-stroke-width`，`CaomeiIcon` 支持 `size="sm|md|lg"` 档位；中英图标页补样式定制、构建期接入与 `pi pi-*` 映射；冻结面 425 → 429（并补记 M2-1 未同步的 7 个组件级变量）。**Review Gate**：见本记录 §5。

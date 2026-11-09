@@ -35,6 +35,7 @@
 | `pnpm vitest run src/components/breadcrumb src/components/menu` | 26 passed |
 | `pnpm capture:styles` | **0 差异**（386 项；组件孤立渲染无变化。注意：该口径**不覆盖宿主级联**，宿主文档下的链接外观由文档站实测与 `component-alignment` 覆盖） |
 | `pnpm test:visual` | **42 passed** |
+| `pnpm verify` | exit 0（158 文件 / 3062 例） |
 | Button / Toolbar 位移 | `expressive` hover 实测 `transform: none`，`:active` 实测 `matrix(0.98, 0, 0, 0.98, 0, 0)`（220ms 过渡）；`minimal` / `reduce` 无位移（`navigation-motion` 10 例 × 3 project = 30 passed；一次并发 flake 重跑通过） |
 | 审查素材 v2 | `artifacts/motion-review/v2/{videos/{desktop-light,mobile-dark}.webm,frames/*,dialog-enter-sheet.png,still-*.png}`（gitignored） |
 

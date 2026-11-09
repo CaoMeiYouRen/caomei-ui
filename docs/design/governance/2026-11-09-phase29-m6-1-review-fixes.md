@@ -18,7 +18,7 @@
 
 1. **面包屑**：`.caomei-breadcrumb__item` 增加 `margin-block: 0`，复位宿主相邻项间距。
 2. **菜单项外观共享**：`.caomei-menu__item` 外观从 `menu-item.vue` 的 scoped 块移到 `menu.vue` 的非 scoped 块，并以 `.caomei-menu .caomei-menu__item` 前缀保持特异性 0,2,0——宿主 `.vp-doc a` / `.prose a`（0,1,1）否则会压过单类选择器，把菜单链接变成下划线 + 品牌色（Review Gate R1 实测）。MenuItem 与 SubMenu 触发器共用同一组声明；`:hover` 态显式声明 `color`（宿主 `.vp-doc a:hover` 0,2,1 会压过基础规则）；`menu-item-wrapper` / `submenu` 补 `margin-block: 0`。
-3. **独立审查页**：新增 `playground/motion.html` + `motion-review.vue`（`pnpm review:motion` → 端口 4401，避免与 `pnpm dev` 冲突），不加载文档站样式；页头显示系统动效偏好、13 个 token 实测值与轴切换 / 模拟 reduce 开关，覆盖 Dialog / Popover / DropdownMenu / Tooltip / Toast / Accordion / Tabs / Menu / Breadcrumb / Button。
+3. **独立审查页**：新增 `playground/motion.html` + `motion-review.vue`（`pnpm review:motion` → 端口 4401），并提供 `pnpm review:build` 产出可直接双击的单文件 `artifacts/motion-review/site/motion-review.html`（IIFE 内联 JS/CSS，file:// 可运行；构建期断言无模块脚本 / 外链资源 / `process.` 残留）。页头显示系统动效偏好、13 token 与「减少动效」警告；`no-preference` 下打开自动演示一轮，用户首次操作即中止，`reduce` 下只展示警告，不加载文档站样式；页头显示系统动效偏好、13 个 token 实测值与轴切换 / 模拟 reduce 开关，覆盖 Dialog / Popover / DropdownMenu / Tooltip / Toast / Accordion / Tabs / Menu / Breadcrumb / Button。
 4. **文档说明**：`docs/design/theming.md` §5.3 补「文档站与审查页」段落，解释 VitePress 压平属无障碍行为，目视审查改用独立页面并关闭系统 / DevTools 的 reduce 模拟。
 5. **回归**：夹具新增 `#component-alignment`（用**非 scoped** 宿主 CSS 复刻 `li + li`、`a` 与 `a:hover` 规则）与 `component-alignment.e2e.ts`（面包屑顶端 / `margin-top` 一致、菜单项与子菜单触发器同高、`li` 间距复位、菜单链接静置 / hover 不被宿主 `a` 样式劫持）。已做负向对照：把选择器降回单类后该用例失败，确认判别力。
 
@@ -27,7 +27,7 @@
 | 项 | 结果 |
 |:---|:---|
 | 文档站实测（`vitepress dev`） | 面包屑三项 `y` 均为 474；菜单项 / 触发器均 40px（修复前 478/482/482 与 24 / 40）；菜单链接 `text-decoration: none`、颜色走 token、字重 400 / 600（修复前被 `.vp-doc a` 覆盖为下划线 + `rgb(52,81,178)` + 500） |
-| 审查页实测（`/motion.html`） | 轴切换：`duration-base` 150ms → 220ms、`distance-md` 0px → 8px；Dialog 入场动画 220ms；无控制台错误；菜单项均 34px（与页面字号一致） |
+| 审查页实测（`/motion.html` 与单文件） | 轴切换：`duration-base` 150ms → 220ms、`distance-md` 0px → 8px；Dialog 入场动画 220ms；无控制台错误；菜单项均 34px（与页面字号一致）；单文件 file:// 打开无 console error，`no-preference` 下 Dialog 入场 220ms，`reduce` 下显示警告且无动画 |
 | `pnpm exec playwright test test/e2e/component-alignment.e2e.ts` | **9 passed**（3 例 × 3 project）；负向对照（选择器降回单类）该链接用例**失败** |
 | 文档站 hover 态 | 非当前项 hover 走 `--caomei-menu-item-hover-color`（不被 `.vp-doc a:hover` 改色）；当前项 hover 保持 `current-color`；禁用项 hover 不变色 |
 | 冻结面 | 新增 `--caomei-menu-item-hover-color` 披露钩子（无默认声明）：有效冻结面 **429 → 430**、消费面 **454 → 455** |
@@ -45,7 +45,7 @@
 
 ## 5. Review Gate
 
-- **audit-depth**：R1 `standard`（2 个组件样式修复 + 审查页 + 夹具 / E2E + 文档；≤ 10 分钟）；R2 `quick` delta（≤ 5 分钟）。
+- **audit-depth**：R1 `standard`（2 个组件样式修复 + 审查页 + 夹具 / E2E + 文档；≤ 10 分钟）；R2 ~ R4、R5 `quick` delta（≤ 5 分钟）。
 - **R1（`standard`）**：`Reject`（1 blocker / 2 warning / 4 suggest；实测约 13 分钟，超 ≤ 10 分钟约 3 分钟）——
   - B1 `.caomei-menu__item` 非 scoped 化后特异性 0,2,0 → 0,1,0，宿主 `.vp-doc a`（0,1,1）压过组件声明（下划线 / 品牌色 / 字重 500）：**已修**——前缀 `.caomei-menu` 恢复 0,2,0，夹具补宿主 `a` 规则与「链接不被劫持」用例。
   - W1 仅断言高度，未覆盖「`li` 间距偏大」：**已修**——补 `margin-top === 0` 断言（面包屑 / 菜单）。
@@ -62,6 +62,9 @@
   - S1 禁用链接悬停仍会被宿主 `a:hover` 改色：**已修**——补 `[aria-disabled='true']:not([aria-current]) { color: inherit }`，夹具增加禁用链接项与 hover 断言。
   - S2 冻结面增量注记插在 11-08 批次之前：**已修**——移到 11-08 四条注记之后，内容不变。
   - 复查确认：hover 三态（非当前 / 当前 / 禁用）均保持预期；token 计数 184 / 316 / 430 / 70 / 455 / 139 与三处载体一致。
+- **R5（`quick`，免启动单文件与自动演示）**：`Pass`（0 blocker / 1 warning / 4 suggest；实测约 7 分钟，超 ≤ 5 分钟约 2 分钟）——
+  - W1 自动演示会覆盖用户操作 / reduce 下仍自动弹窗：**已修**——用户首次 `pointerdown` / `keydown` 即中止演示，`reduce` 下跳过自动演示。
+  - S1 记录句子重复：**已修**；S2 移除无效的 `inlineDynamicImports`；S3 产物只按文件清理并转义 `</style`；S4 构建期增加单文件不变量断言（无 `type="module"` / 相对外链 / `process.`）。均已采纳。
 - **复查基线**：本记录 §1 ~ §3；`src/components/{breadcrumb/breadcrumb-item.vue,menu/menu.vue,menu/menu-item.vue,menu/sub-menu.vue}`；`playground/motion*`；`test/e2e/component-alignment.e2e.ts`；`test/e2e/fixtures/{app.vue,main.ts,alignment-host.css}`；`docs/design/theming.md` §5.3。
 
 ## 6. 未覆盖边界

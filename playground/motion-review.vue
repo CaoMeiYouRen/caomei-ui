@@ -55,15 +55,69 @@ const TOKEN_KEYS = [
     '--caomei-motion-scale-from',
 ] as const
 
-const expressive = ref(false)
+const expressive = ref(true)
 const simulateReduce = ref(false)
 const systemReduce = ref(false)
 const dialogOpen = ref(false)
+const demoRunning = ref(false)
 const accordionOpen = ref<string | string[] | undefined>('shipping')
 const activeTab = ref('account')
 const tokens = ref<Record<string, string>>({})
 
 let mediaQuery: MediaQueryList | null = null
+let demoTimer: ReturnType<typeof setTimeout> | null = null
+/** 用户一旦操作页面即中止演示，避免自动切换覆盖手动状态。 */
+let demoAborted = false
+
+/** 审查用自动演示：不点击也能看到进出场 / 展开 / 切换。 */
+function cancelDemo(): void {
+    demoAborted = true
+    if (demoTimer) {
+        clearTimeout(demoTimer)
+    }
+}
+
+async function runDemo(): Promise<void> {
+    if (demoRunning.value) {
+        return
+    }
+    demoRunning.value = true
+    demoAborted = false
+    const wait = (ms: number) => new Promise((resolve) => {
+        demoTimer = setTimeout(resolve, ms)
+    })
+    const stopped = () => demoAborted
+    try {
+        dialogOpen.value = true
+        await wait(900)
+        if (stopped()) {
+            return
+        }
+        dialogOpen.value = false
+        await wait(600)
+        if (stopped()) {
+            return
+        }
+        accordionOpen.value = accordionOpen.value ? undefined : 'shipping'
+        await wait(600)
+        if (stopped()) {
+            return
+        }
+        accordionOpen.value = 'shipping'
+        await wait(400)
+        if (stopped()) {
+            return
+        }
+        activeTab.value = activeTab.value === 'account' ? 'password' : 'account'
+        await wait(500)
+        if (stopped()) {
+            return
+        }
+        activeTab.value = 'account'
+    } finally {
+        demoRunning.value = false
+    }
+}
 
 function readTokens(): void {
     const computed = getComputedStyle(document.documentElement)
@@ -101,9 +155,22 @@ onMounted(() => {
     systemReduce.value = mediaQuery.matches
     mediaQuery.addEventListener('change', onSystemPreferenceChange)
     applyAxis()
+    // 用户首次操作即停止自动演示；reduce 下动画会被压平，只展示警告不自动弹窗
+    window.addEventListener('pointerdown', cancelDemo, { once: true })
+    window.addEventListener('keydown', cancelDemo, { once: true })
+    if (!systemReduce.value) {
+        demoTimer = setTimeout(() => {
+            if (!demoAborted) {
+                void runDemo()
+            }
+        }, 800)
+    }
 })
 
 onUnmounted(() => {
+    cancelDemo()
+    window.removeEventListener('pointerdown', cancelDemo)
+    window.removeEventListener('keydown', cancelDemo)
     mediaQuery?.removeEventListener('change', onSystemPreferenceChange)
     document.documentElement.removeAttribute('data-motion')
     document.documentElement.classList.remove('motion-review--reduce')
@@ -139,6 +206,18 @@ onUnmounted(() => {
                     >
                         系统动效偏好：{{ systemReduce ? 'reduce（组件库会按无障碍规范压平；审查前请在系统或 DevTools 关闭）' : 'no-preference' }}
                     </p>
+                    <div
+                        v-if="systemReduce"
+                        class="review-warning"
+                        role="status"
+                    >
+                        <strong>检测到系统已开启「减少动态效果」，本页与文档站都会压平动画——这是无障碍行为，不是缺陷。</strong>
+                        <span>
+                            关闭方式：Windows 设置 → 辅助功能 → 视觉效果 → 动画效果；macOS 辅助功能 → 显示 → 减少动态效果；
+                            或在 Chrome DevTools → Rendering → Emulate CSS media feature
+                            <code>prefers-reduced-motion</code> 选择 <code>no-preference</code> 后刷新。
+                        </span>
+                    </div>
                     <dl class="review-tokens">
                         <div
                             v-for="key in TOKEN_KEYS"
@@ -396,6 +475,22 @@ body {
     color: var(--caomei-color-warning-text, var(--caomei-color-text));
 }
 
+.review-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    border: 1px solid var(--caomei-color-warning, #b45309);
+    border-radius: var(--caomei-radius-md);
+    background: color-mix(in srgb, var(--caomei-color-warning, #b45309) 10%, transparent);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.review-warning code {
+    font-family: var(--caomei-font-mono, monospace);
+}
+
 .review-tokens {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -475,7 +570,7 @@ body {
     font-family: var(--caomei-font-mono, monospace);
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .review-columns {
         grid-template-columns: minmax(0, 1fr);
     }

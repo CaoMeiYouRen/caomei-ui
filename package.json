@@ -60,6 +60,7 @@
   "scripts": {
     "dev": "vite",
     "review:motion": "vite --port 4401 --open /motion.html",
+    "review:build": "node scripts/review/build-motion-review.mjs",
     "build": "tsdown",
     "build:watch": "tsdown --watch",
     "lint": "cross-env NODE_ENV=production eslint . --fix",

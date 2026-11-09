@@ -39,6 +39,11 @@ import MotionToast from './motion-toast.vue'
  * 系统级 `prefers-reduced-motion` 仍会被组件库尊重（这是正确行为），页头会显示当前状态。
  */
 
+declare const __CAOMEI_REVIEW_FORCE_MOTION__: boolean | undefined
+
+/** 单文件审查产物在构建期移除了 reduce 规则，因此不受系统偏好影响。 */
+const FORCE_MOTION = typeof __CAOMEI_REVIEW_FORCE_MOTION__ !== 'undefined' && __CAOMEI_REVIEW_FORCE_MOTION__
+
 const TOKEN_KEYS = [
     '--caomei-motion-duration-instant',
     '--caomei-motion-duration-fast',
@@ -158,7 +163,7 @@ onMounted(() => {
     // 用户首次操作即停止自动演示；reduce 下动画会被压平，只展示警告不自动弹窗
     window.addEventListener('pointerdown', cancelDemo, { once: true })
     window.addEventListener('keydown', cancelDemo, { once: true })
-    if (!systemReduce.value) {
+    if (!systemReduce.value || FORCE_MOTION) {
         demoTimer = setTimeout(() => {
             if (!demoAborted) {
                 void runDemo()
@@ -204,15 +209,24 @@ onUnmounted(() => {
                         class="review-status"
                         :data-active="systemReduce"
                     >
-                        系统动效偏好：{{ systemReduce ? 'reduce（组件库会按无障碍规范压平；审查前请在系统或 DevTools 关闭）' : 'no-preference' }}
+                        系统动效偏好：{{ systemReduce ? (FORCE_MOTION ? 'reduce（本审查单文件已忽略该偏好）' : 'reduce（组件库会按无障碍规范压平；审查前请在系统或 DevTools 关闭）') : 'no-preference' }}
                     </p>
                     <div
                         v-if="systemReduce"
                         class="review-warning"
+                        :class="{'review-warning--info': FORCE_MOTION}"
                         role="status"
                     >
-                        <strong>检测到系统已开启「减少动态效果」，本页与文档站都会压平动画——这是无障碍行为，不是缺陷。</strong>
-                        <span>
+                        <strong v-if="FORCE_MOTION">
+                            检测到系统已开启「减少动态效果」；本单文件为审查用途已移除 reduce 规则，因此仍会播放动画。
+                        </strong>
+                        <strong v-else>
+                            检测到系统已开启「减少动态效果」，本页与文档站都会压平动画——这是无障碍行为，不是缺陷。
+                        </strong>
+                        <span v-if="FORCE_MOTION">
+                            真实减少动效行为请用 <code>pnpm review:motion</code>（开发态）或自动测试证据核对。
+                        </span>
+                        <span v-else>
                             关闭方式：Windows 设置 → 辅助功能 → 视觉效果 → 动画效果；macOS 辅助功能 → 显示 → 减少动态效果；
                             或在 Chrome DevTools → Rendering → Emulate CSS media feature
                             <code>prefers-reduced-motion</code> 选择 <code>no-preference</code> 后刷新。
@@ -485,6 +499,11 @@ body {
     background: color-mix(in srgb, var(--caomei-color-warning, #b45309) 10%, transparent);
     font-size: 14px;
     line-height: 1.7;
+}
+
+.review-warning--info {
+    border-color: var(--caomei-color-info, #2563eb);
+    background: color-mix(in srgb, var(--caomei-color-info, #2563eb) 8%, transparent);
 }
 
 .review-warning code {

@@ -30,6 +30,7 @@ await build({
     logLevel: 'warn',
     define: {
         'process.env.NODE_ENV': JSON.stringify('production'),
+        __CAOMEI_REVIEW_FORCE_MOTION__: 'true',
         __VUE_OPTIONS_API__: 'true',
         __VUE_PROD_DEVTOOLS__: 'false',
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
@@ -64,13 +65,51 @@ if (!jsFile) {
 
 const script = await readFile(path.join(outDir, jsFile), 'utf8')
 const style = cssFile ? await readFile(path.join(outDir, cssFile), 'utf8') : ''
+
+/**
+ * 移除 `@media (prefers-reduced-motion: reduce)` 块：审查单文件需要**始终**展示动效，
+ * 否则系统开启减少动效时页面仍然是静态的。真实 reduce 行为由开发态页面与自动测试覆盖。
+ *
+ * @param {string} css 原始 CSS
+ * @returns {string} 移除 reduce 块后的 CSS
+ */
+function stripReducedMotion(css) {
+    // 构建产物经过压缩，媒体查询可能没有空格：`@media (prefers-reduced-motion:reduce)`
+    const markerRe = /@media\s*\(prefers-reduced-motion:\s*reduce\)/
+    let output = css
+    let match = markerRe.exec(output)
+    while (match) {
+        const index = match.index
+        const open = output.indexOf('{', index + match[0].length)
+        if (open === -1) {
+            break
+        }
+        let depth = 0
+        let end = open
+        for (; end < output.length; end += 1) {
+            if (output[end] === '{') {
+                depth += 1
+            } else if (output[end] === '}') {
+                depth -= 1
+                if (depth === 0) {
+                    break
+                }
+            }
+        }
+        output = output.slice(0, index) + output.slice(end + 1)
+        match = markerRe.exec(output)
+    }
+    return output
+}
+
+const motionStyle = stripReducedMotion(style)
 const html = `<!doctype html>
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>动效审查 · caomei-ui</title>
-        <style>${style.replaceAll('</style', '<\\/style')}</style>
+        <style>${motionStyle.replaceAll('</style', '<\\/style')}</style>
     </head>
     <body>
         <div id="app"></div>

@@ -78,7 +78,7 @@
 
 ## 5. 人工复核（待签字）
 
-- **审查入口**：`pnpm review:motion` → `http://localhost:4401/motion.html`；或 `pnpm review:build` 产出单文件 `artifacts/motion-review/site/motion-review.html`（可直接双击，file:// 运行）。两页都不加载文档站样式，页头显示系统动效偏好、逐项 token 与「减少动效」警告，并在打开后自动演示一轮。文档站的 VitePress 全局 `prefers-reduced-motion` 压平属无障碍行为，目视复核请关闭系统 / DevTools 的 reduce 模拟。
+- **审查入口**：`pnpm review:motion` → `http://localhost:4401/motion.html`；或 `pnpm review:build` 产出单文件 `artifacts/motion-review/site/motion-review.html`（可直接双击，file:// 运行；审查用途已移除 reduce 规则，始终播放动画）。两页都不加载文档站样式，页头显示系统动效偏好、逐项 token 与「减少动效」警告，并在打开后自动演示一轮。文档站的 VitePress 全局 `prefers-reduced-motion` 压平属无障碍行为，目视复核请关闭系统 / DevTools 的 reduce 模拟。
 - **环境**：Chromium 156.0.8078.4（Playwright 1.63.0）；桌面 1280×900 亮色、移动 390×844 暗色。
 - **素材 v2**（本地 `artifacts/motion-review/v2/`，gitignored）：
   - `videos/desktop-light.webm`（对话框开关 → Toast → 手风琴 → Tabs → 子菜单 → 轴切换）

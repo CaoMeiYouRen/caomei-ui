@@ -414,6 +414,15 @@ function onSubmitForm(): void {
 }
 
 /**
+ * 表单动效夹具（见 `test/e2e/form-motion.e2e.ts`）：`data-motion` 状态采样。
+ */
+const formMotionRoles = ref<string[]>([])
+const formMotionInput = ref('')
+const formMotionNumber = ref(1)
+const formMotionSlider = ref(30)
+const formMotionError = ref(false)
+
+/**
  * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
  * 滚动锁复位。确认框走命令式 `useConfirm()`，驱动按钮渲染在 `<CaomeiConfirmDialog>` 后代内。
  */
@@ -1766,6 +1775,67 @@ const ConfirmDriver = defineComponent({
             <p id="form-submitted">
                 {{ formSubmitted ? `已提交：${formSubmittedName || '（空）'}` : '未提交' }}
             </p>
+        </section>
+
+        <!--
+          表单动效夹具（见 `test/e2e/form-motion.e2e.ts`）：勾选 / 聚焦 / 步进 / 滑块 / invalid
+          五类状态各一个可采样目标；初始态不触发动画，由用例显式切换。
+        -->
+        <section id="form-motion" class="fixture__case">
+            <div id="form-motion-checkbox-group" class="fixture__state">
+                <CaomeiCheckboxGroup
+                    v-model="formMotionRoles"
+                    :options="formRoleOptions"
+                />
+            </div>
+            <div id="form-motion-input-group" class="fixture__state">
+                <CaomeiInputGroup orientation="horizontal">
+                    <CaomeiInput
+                        v-model="formMotionInput"
+                        label="动效组内输入"
+                    />
+                    <CaomeiInputNumber
+                        v-model="formMotionNumber"
+                        label="动效组内步进"
+                    />
+                </CaomeiInputGroup>
+            </div>
+            <div id="form-motion-input-number" class="fixture__state">
+                <CaomeiInputNumber
+                    v-model="formMotionNumber"
+                    label="动效步进"
+                />
+            </div>
+            <div id="form-motion-slider" class="fixture__state">
+                <CaomeiSlider
+                    v-model="formMotionSlider"
+                    label="动效滑块"
+                />
+            </div>
+            <div id="form-motion-form">
+                <CaomeiForm>
+                    <CaomeiFormItem
+                        label="动效字段"
+                        :error="formMotionError ? '动效错误提示' : ''"
+                    >
+                        <template #default="{id, invalid, ...aria}">
+                            <CaomeiInput
+                                :id="id"
+                                v-model="formMotionInput"
+                                :invalid="invalid"
+                                v-bind="aria"
+                            />
+                        </template>
+                    </CaomeiFormItem>
+                </CaomeiForm>
+            </div>
+            <button
+                id="form-motion-error-toggle"
+                type="button"
+                @click="formMotionError = !formMotionError"
+            >
+                切换错误
+            </button>
         </section>
     </main>
 </template>

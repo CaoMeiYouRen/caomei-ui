@@ -204,4 +204,42 @@ function handleCommit(values: number[]): void {
 .caomei-slider--disabled .caomei-slider__thumb {
     cursor: not-allowed;
 }
+
+/*
+  动效优先模式：手柄悬浮 / 按下时轻微缩放，轨道与已选区间保留颜色过渡。
+  缩放走独立 `scale` 属性（不覆盖 Reka 写入的定位 transform，也不触发布局），
+  `minimal` 无对应规则，`reduce` 在末尾显式压平。
+*/
+:where([data-motion='expressive']) .caomei-slider__track,
+:where([data-motion='expressive']) .caomei-slider__range {
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-slider__thumb {
+    transition:
+        scale var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard),
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-slider:not(.caomei-slider--disabled) .caomei-slider__thumb:hover {
+    scale: 1.08;
+}
+
+:where([data-motion='expressive']) .caomei-slider:not(.caomei-slider--disabled) .caomei-slider__thumb:active {
+    scale: var(--caomei-motion-scale-from);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-slider__track,
+    :where([data-motion='expressive']) .caomei-slider__range,
+    :where([data-motion='expressive']) .caomei-slider__thumb {
+        transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-slider:not(.caomei-slider--disabled) .caomei-slider__thumb:hover,
+    :where([data-motion='expressive']) .caomei-slider:not(.caomei-slider--disabled) .caomei-slider__thumb:active {
+        scale: none;
+    }
+}
 </style>

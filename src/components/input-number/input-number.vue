@@ -309,6 +309,31 @@ defineExpose({ focus, blur, inputRef })
     color: var(--caomei-color-text);
 }
 
+/*
+  动效优先模式：步进按钮按下时轻微缩放、颜色过渡保留；缩放只作用于 transform，不触发布局。
+  `minimal` 无对应规则，`reduce` 在末尾显式归零。
+*/
+:where([data-motion='expressive']) .caomei-input-number__button {
+    transition:
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-input-number__button:active:not(:disabled) {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-input-number__button {
+        transition: none;
+        transform: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-input-number__button:active:not(:disabled) {
+        transform: none;
+    }
+}
+
 /* 尺寸档位仅声明按钮宽度变量（高度/字号由 .caomei-field 基类的变量控制） */
 :where(.caomei-field--sm) {
     --caomei-input-number-button-width: var(--caomei-control-height-sm);

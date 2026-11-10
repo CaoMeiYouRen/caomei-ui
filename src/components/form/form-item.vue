@@ -135,4 +135,39 @@ const slotProps = computed<FormItemSlotProps>(() => ({
 .caomei-form-item--invalid .caomei-form-item__label {
     color: var(--caomei-form-item-invalid-label-color, var(--caomei-color-danger-text));
 }
+
+@keyframes caomei-form-item-error-in {
+    from {
+        opacity: 0;
+        transform: translateY(calc(var(--caomei-motion-distance-sm) * -1));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*
+  动效优先模式：标签颜色随校验状态过渡，错误行出现时淡入 + 轻微下移归位。
+  错误行由 `v-if` 挂载 / 卸载，动效只承担入场；`minimal` 无对应规则，`reduce` 在末尾压平。
+*/
+:where([data-motion='expressive']) .caomei-form-item__label {
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-form-item__error {
+    animation: caomei-form-item-error-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-form-item__label {
+        transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-form-item__error {
+        animation: none;
+        transform: none;
+    }
+}
 </style>

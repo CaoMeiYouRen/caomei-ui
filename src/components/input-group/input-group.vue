@@ -131,4 +131,32 @@ const rootClass = computed(() => `caomei-input-group--${props.orientation}`)
     position: relative;
     z-index: var(--caomei-z-raise);
 }
+
+/*
+  动效优先模式：聚焦成员轻微上移（transform 不触发布局），过渡沿用共享字段层的
+  属性清单并追加 transform；`minimal` 无对应规则，`reduce` 在末尾显式归零。
+  `[class]` 属性选择器用于把特异性稳定抬到成员自身过渡规则之上（成员为
+  `.caomei-field[data-v]`），避免依赖样式源序；属性恒存在，不改变匹配范围。
+*/
+:where([data-motion='expressive']) .caomei-input-group[class] :deep(> *) {
+    transition:
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-input-group[class] :deep(> *:focus-within) {
+    transform: translateY(calc(var(--caomei-motion-distance-sm) * -0.5));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-input-group[class] :deep(> *) {
+        transition: none;
+        transform: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-input-group[class] :deep(> *:focus-within) {
+        transform: none;
+    }
+}
 </style>

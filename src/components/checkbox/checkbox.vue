@@ -197,6 +197,26 @@ const rootClass = computed(() => [
     pointer-events: none;
 }
 
+@keyframes caomei-checkbox-indicator-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/*
+  动效优先模式：勾选 / 半选指示器出现时轻微缩放淡入（组合的 CheckboxGroup 复用同一实现）。
+  指示器在未选中时卸载，故动效只承担入场；`reduce` 在末尾显式关闭。
+*/
+:where([data-motion='expressive']) .caomei-checkbox__indicator {
+    animation: caomei-checkbox-indicator-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
 .caomei-checkbox__label {
     cursor: inherit;
     user-select: none;
@@ -205,6 +225,10 @@ const rootClass = computed(() => [
 @media (prefers-reduced-motion: reduce) {
     .caomei-checkbox__control {
         transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-checkbox__indicator {
+        animation: none;
     }
 }
 </style>

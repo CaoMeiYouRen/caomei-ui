@@ -40,6 +40,7 @@
 | `pnpm capture:styles` | **0 差异**（既有 386 项逐属性不变）；冻结后新增 13 项 |
 | `pnpm test:visual` | **42 passed**（亮暗 / 视口 / 预设 / 命中区 / 区间面板基线 0 差异） |
 | `pnpm governance:check` / `pnpm docs:check` | 通过 |
+| CI 首跑 `Test` run 42802217045（commit `8b2583b`） | **失败 → 已修**：`capture.test.mjs` 的 `DECLARED_KEY_BUDGET` 仍为 386，与新增后的 399 不符；R2 同步为 399 并补入 `hit-form.` 前缀校验 |
 
 ### 3.1 `capture:styles` 新增项（真实 Chromium 1280×800）
 
@@ -68,7 +69,8 @@
 - **R1**：`Pass`（两分区，0 blocker / 4 warning / 6 suggest；实测 A ≈ 6 分钟、B ≈ 9 分钟，均未超 ≤ 10 分钟时间盒）。
   - **分区 A（组件样式面）`Pass`**：0 blocker / 0 warning / 3 suggest——伪元素冲突（RadioButton 圆点在指示器、其余宿主无 `::after`）、overflow / 包含块 / `pointer-events` 均逐项核验；capture 未命中路径返回 `__missing` 并计入 errors，无静默通过。S1 提示 Slider / ColorPicker / 指示器此前无几何基线（视觉不变由 `test:visual` 兜底）：**已登记**于本记录 §3.1 与 §6；S2 建议补采 `box-sizing` / 边框宽：**登记为后续增强**（当前由视觉基线覆盖）；S3 提示 `hit-form.radio` 与夹具文案耦合：**已登记**（由 `hit-form.radio-indicator` 单独锁 18px）。
   - **分区 B（测试与文档面）`Pass`**：0 blocker / 4 warning / 3 suggest——W1 用户面 `guide/mobile.md`（中英）与 `backlog.md` 仍称 P1 未做：**已修**（两语种改为 P1 已交付 + 指针）；W2 本记录行数 690 与实测不符：**已修**（约 470，含计算口径）；W3 `INSIDE_POINTS` / `OUTSIDE_POINTS` / `samplingOffsets` 三个死导出：**已修**（删除，判据只保留浏览器侧一处并写明理由）；W4 键盘 / 焦点缺运行证据：**已补**（`focus-visible-expansion` 96 passed 写入 §3）；S1 E2E 只锁短边：**已登记**于 §6；S2 P0 侧按 `#hit-target` 全域配对（比文档更严）：**已在响应式设计 §4 断言 7 注明**；S3 todo 状态与 R1 未定不一致：**已按 R1 Pass 回填**。
-- **复查基线**：本记录 §1 ~ §3；`test/e2e/helpers/hit-target.ts` 的逐轴采样；`test/e2e/hit-target.e2e.ts` 的分族断言；`docs/design/responsive.md` §3 #16 / §4 断言 7 / §5；`docs/design/theming.md` §5.2；`docs/guide/mobile.md` 与 `docs/i18n/en-US/guide/mobile.md` 的触摸目标段。
+- **R2（`quick` delta）**：`Pass`（0 blocker / 0 warning / 3 suggest；实测约 3 分钟，未超 ≤ 5 分钟时间盒）——修复点 = `test/capture/capture.test.mjs` 的采样预算 386 → 399 与前缀清单补 `hit-form.`。审计独立复算：`declaredKeys()` 399 / `baseline.entries` 399 / 常量 399 三方一致，键集双向零差，13 个 `hit-form.*` 恰为增量；全仓无其它硬编码 386（命中的均为历史归档，属时点记录）；断言未放宽。S1 建议补「声明面 ↔ 基线」双向集合断言（防等量替换）：**登记为后续增强**（当前由总数下界 + 前缀族存在性 + 运行期 `verifyCoverage` 三道覆盖）；S2 记录留痕：**已采纳**（本节与 §3）；S3 预算常量机制权衡：**不改**（人工同步使收窄在 diff 中可见）。
+- **复查基线**：本记录 §1 ~ §3；`test/e2e/helpers/hit-target.ts` 的逐轴采样；`test/e2e/hit-target.e2e.ts` 的分族断言；`docs/design/responsive.md` §3 #16 / §4 断言 7 / §5；`docs/design/theming.md` §5.2；`docs/guide/mobile.md` 与 `docs/i18n/en-US/guide/mobile.md` 的触摸目标段；`test/capture/capture.test.mjs`。
 
 ## 6. 未覆盖边界
 
@@ -78,3 +80,10 @@
 - 未把 P1 夹具纳入 `responsive.e2e.ts` 的矩阵扩面清单（仍只在三档全量 project 上跑）。
 - **E2E 只锁宿主短边**（`min(宽, 高) ≤ 视觉盒上限`）：长边被放大的情形由 `capture:styles` 的 `hit-form.*` `width` / `height` 与 `test:visual` 兜底，不在几何探针内。
 - Slider 滑柄、RadioButton 指示器、ColorPicker 滑柄在改动前**没有**几何基线，其 `width` / `height` 是变更后冻结的绝对值；「视觉不变」由 `test:visual` 42 passed 与期望值（18 / 18 / 18 边框盒）共同锁定，而非前后 diff。
+- **等量替换仍不可见**：`capture.test.mjs` 只锁总键数与采样族前缀存在性，「删 1 键同时加 1 键」在单测层不可见，由运行期 `verifyCoverage` 兜底；补「声明面 ↔ 基线」双向集合断言已登记为后续增强。
+
+## 7. R2 修复记录（CI 预算同步）
+
+- **触发**：`Test` run `42802217045`（commit `8b2583b`）在 `Test with coverage` 失败——`capture.test.mjs` 断言 `DECLARED_KEY_BUDGET = 386`，而实际声明键数与基线均为 399。
+- **修复**：预算改为 399；「覆盖各采样段的前缀」清单补 `'hit-form.'`，使新增采样族的缺失不再只靠总数下界发现。
+- **验证**：`npx vitest run test/capture/capture.test.mjs` 23 passed；`pnpm test` 158 文件 / 3062 passed；`pnpm lint:check` 通过。R2 结论见 §5。

@@ -51,7 +51,7 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| 触摸目标增强 P1 / P2（不可见命中区 ≥24×24） | [触摸目标审计](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 | **P0 已由 Phase 27 承接**（5 组件 34 个清除 / 关闭 icon 按钮 + Message 关闭）；本行只保留 **P1**（表单控件盒：Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3 / ColorPicker 滑柄 4 = 17 个）与 **P2**（行高受限与内联行 = 35 个，须逐项确认交互绑定；改行高会触及视觉基线）。触发条件 = 用户裁定或下一轮移动端 / 无障碍治理。**未入册**：Toast / Dialog / Drawer / Popover 的关闭按钮（13.33 / 21.33）在 2026-10-16 夹具未渲染，待实测后归类 | 低 |
+| 触摸目标增强 P2（不可见命中区 ≥24×24） | [触摸目标审计](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 | **P0 已由 Phase 27 承接**（5 组件 34 个清除 / 关闭 icon 按钮 + Message 关闭）；**P1（表单控件盒 17 个）已于 2026-11-10 登记 Phase 30**；本行只保留 **P2**（行高受限与内联行 = 35 个，须逐项确认交互绑定；改行高会触及视觉基线）。触发条件 = 用户裁定或下一轮移动端 / 无障碍治理。**未入册**：Toast / Dialog / Drawer / Popover 的关闭按钮（13.33 / 21.33）在 2026-10-16 夹具未渲染，待实测后归类 | 低 |
 
 ### 1.6 基建与治理候选
 
@@ -70,7 +70,6 @@
 | Calendar / RichTextEditor 交互边界对比度 | Phase 26 G1-F §6。Calendar 上 / 下月导航按钮与 RichTextEditor 容器描边属**可交互边界**，当前 < 3:1，未纳入 G1-F 的 4 条边界断言面。**触发条件 = 下一轮颜色 / 非文本对比度治理，或下游报可读性问题时**；收口须把两者加入 `test/e2e/preset-contrast.e2e.ts` 边界矩阵并以 3:1 断言 | 低 |
 | CI 运行器镜像迁移检测（`ubuntu-26.04`） | Phase 24 M2-1 归档后承接的**待触发检测义务**：`ubuntu-latest` 自 2026-10-19 起分批迁移 Ubuntu 26.04；检测点 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04`；命中后按重冻结 5 步执行视觉基线并留痕。**触发条件 = 该检测点命中** | 中 |
 | 文档站 a11y 抽检矩阵外示例 | 来源：2026-10-27 axe 抽检脚本落地时发现；`docs/examples/input-group/with-select.vue` 的 `CaomeiSelect` 仍以 placeholder 代替可访问名，所在 `/components/input-group` 不在 `check-docs-axe` 的 5 页矩阵内，门禁不会发现（`float-label/*` 经可见 `<label for>` 关联，暂不计）。**触发条件 = 用户指定或扩面到该页时**；处置为补 `label` 并把页面加入 `PAGES` | 低 |
-| `check-stage-counts` 无阶段分支交叉校验 | Phase 29 归档 Review Gate S2（跨阶段复发：Phase 26 ~ 29 归档时 `todo.md` 均残留阶段编号 / 交付摘要 / 归档指针） | 在「无进行中阶段」分支增加**两项增量**断言：`todo.md` 的 `## 当前状态` 段不得出现 `Phase \d+`、不得含 `todo-archive.md` 链接；`roadmap.md` 同一声明校验已实现（`check-stage-counts.mjs` 现有逻辑），不重复计入增量。**触发条件 = 下一阶段归档或治理巡检**；改守卫需同步单测与负向用例 | 低 |
 | 文档站 demo 过渡恢复评估 | Phase 29 M6-1 人工复核反馈（文档站动效「稀烂」） | VitePress 在系统 reduce 下注入 `* { transition-duration: 0s !important }`，`docs/.vitepress/theme/motion.css` 只恢复部分 `animation`、不恢复 transition；当前以独立审查页承接。候选为按组件恢复 demo 容器内的过渡（需逐组件声明），或维持「尊重系统偏好 + 独立审查页」。**触发条件 = 用户要求文档站本身直接展示过渡** | 低 |
 | `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
 
@@ -97,13 +96,10 @@
 
 ### 1.10 动效体系候选
 
-> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2），本表只保留后续实现候选。
+> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2）；**A4 / A5 / A6 已于 2026-11-10 登记 Phase 30**（见[Phase 30 登记批次记录](../design/governance/2026-11-10-phase30-registration.md) §2），本表只保留后续实现候选。
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|:-:|
-| A4 表单输入动效 | 评估 §5 / §8 | Input / InputNumber / Textarea 共享层 token 化与 reduce（A1 统一）；InputGroup / CheckboxGroup / Form / Slider 补状态动效；既有控件统一；TagsInput reduced-motion | 低 |
-| A5 基础与布局动效 | 评估 §5 / §8 | Avatar / Tag / Divider / Row / Col 补齐；Card / Image / Badge 统一 token（Button / ButtonGroup / SplitButton 归 A3） | 低 |
-| A6 选择器动效 | 评估 §5 / §8 | ColorPicker / Calendar 补齐；AutoComplete / DatePicker / MultiSelect / SelectButton / ToggleButton 统一；Select 共享层由 A1 / A4 统一（本批只补面板状态）；MultiSelect reduced-motion | 低 |
 | A7 数据展示动效 | 评估 §5 / §8 | DataTable 行 / 展开 / 排序 / 选择、DataView 切换、Paginator / Progress / Skeleton 统一；Chart / RichTextEditor 仅容器层加载 / 空态；避免布局抖动 | 低 |
 
 ## 2. 维护约定

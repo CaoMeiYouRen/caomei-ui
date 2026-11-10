@@ -1357,7 +1357,11 @@ const ConfirmDriver = defineComponent({
                 </CaomeiDropdownMenu>
             </div>
             <div id="fv-color-picker">
-                <CaomeiColorPicker v-model="fvColor" label="颜色" />
+                <CaomeiColorPicker
+                    v-model="fvColor"
+                    :swatches="['#2563eb', '#dc2626', '#16a34a']"
+                    label="颜色"
+                />
             </div>
             <div id="fv-file-upload-advanced">
                 <CaomeiFileUpload label="上传文件" />

@@ -307,4 +307,48 @@ function onUpdate(value: unknown): void {
     opacity: var(--caomei-disabled-opacity);
 }
 
+/*
+  动效优先模式：拖拽手柄悬浮 / 按下轻微缩放（独立 `scale` 属性，不覆盖 Reka 写入的定位
+  `transform`），色板选中态过渡边框 / 阴影；只改合成层与颜色，不触发布局。
+*/
+:where([data-motion='expressive']) .caomei-color-picker__area-thumb,
+:where([data-motion='expressive']) .caomei-color-picker__hue-thumb {
+    transition:
+        scale var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard),
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-color-picker__area-thumb:hover,
+:where([data-motion='expressive']) .caomei-color-picker__hue-thumb:hover {
+    scale: 1.08;
+}
+
+:where([data-motion='expressive']) .caomei-color-picker__area-thumb:active,
+:where([data-motion='expressive']) .caomei-color-picker__hue-thumb:active {
+    scale: var(--caomei-motion-scale-from);
+}
+
+:where([data-motion='expressive']) .caomei-color-picker__swatch {
+    transition:
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        box-shadow var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        outline-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-color-picker__area-thumb,
+    :where([data-motion='expressive']) .caomei-color-picker__hue-thumb,
+    :where([data-motion='expressive']) .caomei-color-picker__swatch {
+        transition: none;
+        scale: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-color-picker__area-thumb:hover,
+    :where([data-motion='expressive']) .caomei-color-picker__hue-thumb:hover,
+    :where([data-motion='expressive']) .caomei-color-picker__area-thumb:active,
+    :where([data-motion='expressive']) .caomei-color-picker__hue-thumb:active {
+        scale: none;
+    }
+}
 </style>

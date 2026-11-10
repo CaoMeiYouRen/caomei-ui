@@ -85,10 +85,12 @@ export interface TimelineOptions {
 }
 
 export interface TriggerTimelineOptions extends TimelineOptions {
-    /** 触发元素选择器（在页面内 `click()`，与采样同一宏任务起点） */
+    /** 触发元素选择器（在页面内派发 `triggerEvent`，与采样同一宏任务起点） */
     trigger: string
     /** 动画宿主选择器 */
     target: string
+    /** 触发事件：默认 `click`；Reka SelectTrigger 在 `pointerdown` 打开面板 */
+    triggerEvent?: 'click' | 'pointerdown'
     /** `enter` 等入场动画；`exit` 先等 `data-state="closed"` 再取退场动画 */
     mode?: 'enter' | 'exit'
     /** 有界等待上限（毫秒），默认 3000 */
@@ -104,12 +106,12 @@ export async function sampleTriggeredTimeline(
     page: Page,
     options: TriggerTimelineOptions,
 ): Promise<TimelineResult | null> {
-    const { trigger, target, mode = 'enter', timeout = 3000 } = options
+    const { trigger, target, mode = 'enter', triggerEvent = 'click', timeout = 3000 } = options
     const ratios = [...(options.ratios ?? DEFAULT_RATIOS)]
     const props = [...(options.props ?? DEFAULT_PROPS)]
 
     return page.evaluate(
-        async ({ trigger: triggerSelector, target: targetSelector, mode: sampleMode, timeout: budget, ratios: sampleRatios, props: sampleProps }) => {
+        async ({ trigger: triggerSelector, target: targetSelector, mode: sampleMode, triggerEvent: sampleTriggerEvent, timeout: budget, ratios: sampleRatios, props: sampleProps }) => {
             const nextFrame = () => new Promise<void>((resolve) => {
                 requestAnimationFrame(() => {
                     resolve()
@@ -168,7 +170,16 @@ export async function sampleTriggeredTimeline(
             if (!triggerElement) {
                 throw new Error(`触发元素不存在：${triggerSelector}`)
             }
-            ;(triggerElement as HTMLElement).click()
+            if (sampleTriggerEvent === 'pointerdown') {
+                triggerElement.dispatchEvent(new PointerEvent('pointerdown', {
+                    bubbles: true,
+                    cancelable: true,
+                    pointerType: 'mouse',
+                    button: 0,
+                }))
+            } else {
+                ;(triggerElement as HTMLElement).click()
+            }
 
             const deadline = performance.now() + budget
             // 定时器只作预算兜底（rAF 被节流时不会出帧），不作为「等动画结束」的手段
@@ -198,6 +209,7 @@ export async function sampleTriggeredTimeline(
             trigger,
             target,
             mode,
+            triggerEvent,
             timeout,
             ratios,
             props,

@@ -103,9 +103,28 @@ const stateLabel = computed(() => {
     --caomei-toggle-button-font-size: var(--caomei-font-size-lg);
 }
 
+/* 动效优先模式：选中颜色过渡保留，按下追加轻微缩放（transform 不触发布局） */
+:where([data-motion='expressive']) .caomei-toggle-button {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-toggle-button:active:not([data-disabled]) {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
 @media (prefers-reduced-motion: reduce) {
     .caomei-toggle-button {
         transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-toggle-button,
+    :where([data-motion='expressive']) .caomei-toggle-button:active:not([data-disabled]) {
+        transition: none;
+        transform: none;
     }
 }
 </style>

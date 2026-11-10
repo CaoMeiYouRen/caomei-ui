@@ -223,9 +223,27 @@ function handleUpdate(value: unknown): void {
     --caomei-select-button-item-min-height: calc(var(--caomei-control-height-lg) - 2px);
 }
 
+/* 动效优先模式：选中颜色过渡保留，按下追加轻微缩放（拼接边框不错位，transform 不触发布局） */
+:where([data-motion='expressive']) .caomei-select-button__item {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-select-button__item:active:not([data-disabled]) {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
 @media (prefers-reduced-motion: reduce) {
     .caomei-select-button__item {
         transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-select-button__item,
+    :where([data-motion='expressive']) .caomei-select-button__item:active:not([data-disabled]) {
+        transition: none;
+        transform: none;
     }
 }
 </style>

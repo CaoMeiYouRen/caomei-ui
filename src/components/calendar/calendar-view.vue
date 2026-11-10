@@ -260,4 +260,26 @@ const parts = computed(() => (props.range
 .caomei-calendar__day[data-unavailable] {
     text-decoration: line-through;
 }
+
+/*
+  动效优先模式：日期格的选中 / 区间 / 悬停预览与导航按钮颜色过渡；
+  只改颜色 / 背景，不改变几何，`minimal` 保持即时切换，`reduce` 在末尾归零。
+*/
+:where([data-motion='expressive']) .caomei-calendar__day {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-calendar__nav {
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-calendar__day,
+    :where([data-motion='expressive']) .caomei-calendar__nav {
+        transition: none;
+    }
+}
 </style>

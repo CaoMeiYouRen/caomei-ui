@@ -565,11 +565,59 @@ watch(normalizedOptions, () => {
     }
 }
 
+@keyframes caomei-auto-complete-tag-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 动效优先模式：选中标签入场 + 清除 / 下拉按钮颜色过渡与按下反馈 */
+:where([data-motion='expressive']) .caomei-auto-complete__tag {
+    animation: caomei-auto-complete-tag-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-auto-complete__tag-remove,
+:where([data-motion='expressive']) .caomei-auto-complete__clear,
+:where([data-motion='expressive']) .caomei-auto-complete__trigger {
+    transition:
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-auto-complete__tag-remove:active:not(:disabled),
+:where([data-motion='expressive']) .caomei-auto-complete__clear:active,
+:where([data-motion='expressive']) .caomei-auto-complete__trigger:active:not(:disabled) {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
 @media (prefers-reduced-motion: reduce) {
     .caomei-auto-complete,
     .caomei-auto-complete__spinner {
         transition: none;
         animation-duration: 1.6s;
+    }
+
+    :where([data-motion='expressive']) .caomei-auto-complete__tag {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-auto-complete__tag-remove,
+    :where([data-motion='expressive']) .caomei-auto-complete__clear,
+    :where([data-motion='expressive']) .caomei-auto-complete__trigger {
+        transition: none;
+        transform: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-auto-complete__tag-remove:active:not(:disabled),
+    :where([data-motion='expressive']) .caomei-auto-complete__clear:active,
+    :where([data-motion='expressive']) .caomei-auto-complete__trigger:active:not(:disabled) {
+        transform: none;
     }
 }
 </style>
@@ -646,5 +694,55 @@ watch(normalizedOptions, () => {
     display: inline-flex;
     flex-shrink: 0;
     color: var(--caomei-color-primary-text);
+}
+
+@keyframes caomei-auto-complete-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--caomei-motion-distance-sm)) scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes caomei-auto-complete-indicator-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 动效优先模式：面板入场、条目高亮过渡、选中指示器入场；关闭态不命中，避免 Presence 等待无重放的退场 */
+:where([data-motion='expressive']) .caomei-auto-complete__content[data-state='open'] {
+    animation: caomei-auto-complete-content-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-auto-complete__item {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-auto-complete__indicator {
+    animation: caomei-auto-complete-indicator-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-auto-complete__content[data-state='open'],
+    :where([data-motion='expressive']) .caomei-auto-complete__indicator {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-auto-complete__item {
+        transition: none;
+    }
 }
 </style>

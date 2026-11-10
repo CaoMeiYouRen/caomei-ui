@@ -439,6 +439,28 @@ function clearValue(): void {
     width: var(--caomei-select-icon-size, 1rem);
     height: var(--caomei-select-icon-size, 1rem);
 }
+
+/* 动效优先模式：清空按钮颜色过渡 + 按下反馈（清空动作的即时反馈）；reduce 归零 */
+:where([data-motion='expressive']) .caomei-select__clear {
+    transition:
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-select__clear:active {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-select__clear {
+        transition: none;
+        transform: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-select__clear:active {
+        transform: none;
+    }
+}
 </style>
 
 <!--
@@ -527,5 +549,59 @@ function clearValue(): void {
     font-weight: 600;
     color: var(--caomei-color-text-muted);
     user-select: none;
+}
+
+@keyframes caomei-select-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--caomei-motion-distance-sm)) scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes caomei-select-indicator-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/*
+  动效优先模式：面板仅以 `[data-state='open']` 承载入场，关闭后选择器不再命中，
+  Reka Presence 不会等待一个不会重放的退场动画；条目高亮与选中指示器各自过渡 / 入场。
+  Portal 继承 `<html data-motion>`，局部容器不穿透（与 `data-density` 同一边界）。
+*/
+:where([data-motion='expressive']) .caomei-select__content[data-state='open'] {
+    animation: caomei-select-content-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-select__item {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-select__indicator {
+    animation: caomei-select-indicator-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-select__content[data-state='open'],
+    :where([data-motion='expressive']) .caomei-select__indicator {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-select__item {
+        transition: none;
+    }
 }
 </style>

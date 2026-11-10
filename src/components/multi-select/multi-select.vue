@@ -410,6 +410,57 @@ function onAnchorClick(event: MouseEvent): void {
     flex-shrink: 0;
     color: var(--caomei-color-text-muted);
 }
+
+@keyframes caomei-multi-select-tag-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 动效优先模式：选中标签入场 + 清除 / 关闭按钮颜色过渡与按下反馈 */
+:where([data-motion='expressive']) .caomei-multi-select__tag {
+    animation: caomei-multi-select-tag-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-multi-select__tag-remove,
+:where([data-motion='expressive']) .caomei-multi-select__clear {
+    transition:
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        transform var(--caomei-motion-duration-fast) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-multi-select__tag-remove:active:not(:disabled),
+:where([data-motion='expressive']) .caomei-multi-select__clear:active {
+    transform: scale(var(--caomei-motion-scale-from));
+}
+
+/* 减弱动效：字段 / 标签 / 按钮动效整体关闭 */
+@media (prefers-reduced-motion: reduce) {
+    .caomei-multi-select {
+        transition: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-multi-select__tag {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-multi-select__tag-remove,
+    :where([data-motion='expressive']) .caomei-multi-select__clear {
+        transition: none;
+        transform: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-multi-select__tag-remove:active:not(:disabled),
+    :where([data-motion='expressive']) .caomei-multi-select__clear:active {
+        transform: none;
+    }
+}
 </style>
 
 <!--
@@ -486,9 +537,52 @@ function onAnchorClick(event: MouseEvent): void {
     color: var(--caomei-color-primary-text);
 }
 
-/* 减弱动效：字段边框 / 聚焦阴影过渡关闭（此前缺该兜底） */
+@keyframes caomei-multi-select-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--caomei-motion-distance-sm)) scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes caomei-multi-select-indicator-in {
+    from {
+        opacity: 0;
+        transform: scale(var(--caomei-motion-scale-from));
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 动效优先模式：面板入场、条目高亮过渡、选中指示器入场；关闭态不命中，避免 Presence 等待无重放的退场 */
+:where([data-motion='expressive']) .caomei-multi-select__content[data-state='open'] {
+    animation: caomei-multi-select-content-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
+:where([data-motion='expressive']) .caomei-multi-select__item {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-multi-select__indicator {
+    animation: caomei-multi-select-indicator-in var(--caomei-motion-duration-fast) var(--caomei-motion-ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .caomei-multi-select {
+    :where([data-motion='expressive']) .caomei-multi-select__content[data-state='open'],
+    :where([data-motion='expressive']) .caomei-multi-select__indicator {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-multi-select__item {
         transition: none;
     }
 }

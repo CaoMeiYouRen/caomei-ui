@@ -10,9 +10,12 @@ import {
     CaomeiAccordionItem,
     CaomeiAlert,
     CaomeiAutoComplete,
+    CaomeiAvatar,
+    CaomeiBadge,
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiCalendar,
+    CaomeiCard,
     CaomeiChart,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
@@ -22,6 +25,7 @@ import {
     CaomeiDataTable,
     CaomeiDatePicker,
     CaomeiDialog,
+    CaomeiDivider,
     CaomeiDrawer,
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
@@ -29,6 +33,7 @@ import {
     CaomeiFileUpload,
     CaomeiForm,
     CaomeiFormItem,
+    CaomeiImage,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -414,13 +419,18 @@ function onSubmitForm(): void {
 }
 
 /**
- * 表单动效夹具（见 `test/e2e/form-motion.e2e.ts`）：`data-motion` 状态采样。
+ * 动效夹具（见 `test/e2e/form-motion.e2e.ts` / `basic-layout-motion.e2e.ts`）：
+ * 表单输入与基础布局的 `data-motion` 状态采样。图片用内联 SVG，避免外网依赖。
  */
+const FORM_MOTION_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%232563eb'/%3E%3C/svg%3E`
 const formMotionRoles = ref<string[]>([])
 const formMotionInput = ref('')
 const formMotionNumber = ref(1)
 const formMotionSlider = ref(30)
 const formMotionError = ref(false)
+const formMotionAvatarSrc = ref('')
+const formMotionImageSrc = ref('')
+const formMotionTagSelected = ref(false)
 
 /**
  * 浮层交互用例（见 `test/e2e/overlay-interaction.e2e.ts`）：Dialog 与 ConfirmDialog 的焦点落位 /
@@ -1836,6 +1846,75 @@ const ConfirmDriver = defineComponent({
             >
                 切换错误
             </button>
+        </section>
+
+        <!--
+          基础与布局动效夹具（见 `test/e2e/basic-layout-motion.e2e.ts`）：
+          Avatar / Image 以按钮切换空 src 与内联 SVG，采样加载入场；Tag / Card 采样状态过渡；
+          Divider / Row / Col 作为静态对照（不应产生位移 / 缩放）。
+        -->
+        <section id="basic-layout-motion" class="fixture__case">
+            <div id="basic-layout-avatar" class="fixture__state">
+                <CaomeiAvatar
+                    :src="formMotionAvatarSrc"
+                    alt="动效头像"
+                    fallback="动"
+                />
+            </div>
+            <button
+                id="basic-layout-avatar-toggle"
+                type="button"
+                @click="formMotionAvatarSrc = formMotionAvatarSrc ? '' : FORM_MOTION_IMAGE"
+            >
+                切换头像
+            </button>
+            <div id="basic-layout-tag" class="fixture__state">
+                <CaomeiTag
+                    v-model:selected="formMotionTagSelected"
+                    selectable
+                >
+                    可选标签
+                </CaomeiTag>
+            </div>
+            <CaomeiDivider id="basic-layout-divider">
+                分隔
+            </CaomeiDivider>
+            <div id="basic-layout-grid" class="fixture__state">
+                <CaomeiRow :gutter="[8, 8]">
+                    <CaomeiCol :span="12">
+                        栅格 A
+                    </CaomeiCol>
+                    <CaomeiCol :span="12">
+                        栅格 B
+                    </CaomeiCol>
+                </CaomeiRow>
+            </div>
+            <div id="basic-layout-card" class="fixture__state">
+                <CaomeiCard
+                    variant="elevated"
+                    hoverable
+                >
+                    动效卡片
+                </CaomeiCard>
+            </div>
+            <div id="basic-layout-image" class="fixture__state">
+                <CaomeiImage
+                    :src="formMotionImageSrc"
+                    alt="动效图片"
+                    :ratio="1"
+                    preview
+                />
+            </div>
+            <button
+                id="basic-layout-image-toggle"
+                type="button"
+                @click="formMotionImageSrc = formMotionImageSrc ? '' : FORM_MOTION_IMAGE"
+            >
+                切换图片
+            </button>
+            <div id="basic-layout-badge" class="fixture__state">
+                <CaomeiBadge :value="5" />
+            </div>
         </section>
     </main>
 </template>

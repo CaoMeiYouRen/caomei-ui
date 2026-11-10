@@ -216,6 +216,34 @@ function onToggle(): void {
     outline-offset: 1px;
 }
 
+/*
+  动效优先模式：可选中标签在悬浮 / 选中切换时过渡底色、边框与文字色；
+  悬浮只作用于未选中项，避免覆盖选中态的加深底色。`minimal` 无对应规则，`reduce` 在末尾压平。
+*/
+:where([data-motion='expressive']) .caomei-tag {
+    transition:
+        background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        border-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard),
+        color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-tag__close {
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    :where([data-motion='expressive']) .caomei-tag--selectable:hover:not(.caomei-tag--disabled, .caomei-tag--selected) {
+        background: color-mix(in srgb, var(--caomei-tag-tone) 12%, transparent);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-tag,
+    :where([data-motion='expressive']) .caomei-tag__close {
+        transition: none;
+    }
+}
+
 /* 选中态：边框 + 背景加深 */
 .caomei-tag--selected {
     border-color: var(--caomei-tag-text);

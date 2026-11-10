@@ -134,4 +134,28 @@ const rootClass = computed(() => [
     width: 100%;
     height: 100%;
 }
+
+@keyframes caomei-avatar-image-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/*
+  动效优先模式：图片加载完成后淡入；只改不透明度，不产生位移 / 缩放。
+  `minimal` 无对应规则，`reduce` 在末尾显式关闭。
+*/
+:where([data-motion='expressive']) .caomei-avatar__image {
+    animation: caomei-avatar-image-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :where([data-motion='expressive']) .caomei-avatar__image {
+        animation: none;
+    }
+}
 </style>

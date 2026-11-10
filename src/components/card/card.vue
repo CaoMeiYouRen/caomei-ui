@@ -120,6 +120,11 @@ const rootClass = computed(() => [
     transform: translateY(-2px);
 }
 
+/* 动效优先模式：悬浮抬升幅度改用位移 token（4px）；`minimal` 保持既有 -2px，`reduce` 在末尾归零 */
+:where([data-motion='expressive']) .caomei-card--hoverable:hover {
+    transform: translateY(calc(var(--caomei-motion-distance-sm) * -1));
+}
+
 .caomei-card__header {
     display: flex;
     align-items: flex-start;

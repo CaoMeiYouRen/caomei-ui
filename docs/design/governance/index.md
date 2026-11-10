@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-10-phase30-m2-1-basic-layout-motion.md](./2026-11-10-phase30-m2-1-basic-layout-motion.md)：**Phase 30 M2-1 基础与布局动效（A5）**。Avatar / Image 加载淡入、Tag 状态过渡与悬浮、Card 悬浮抬升 token 化；Badge 审计、Divider / Row / Col 静态对照；`minimal` 零差异、`reduce` 压平；新增 `basic-layout-motion` E2E；`capture:styles` 0 差异、视觉基线不变。**Review Gate**：见本记录 §5。
 - [2026-11-10-phase30-m1-1-form-motion.md](./2026-11-10-phase30-m1-1-form-motion.md)：**Phase 30 M1-1 表单输入动效（A4）**。InputGroup 聚焦上移、CheckboxGroup 勾选指示器（复用 Checkbox）、Form invalid 标签 / 错误行、Slider 手柄缩放、InputNumber 步进反馈；`minimal` 零差异、`reduce` 压平；新增 `form-motion` E2E；`capture:styles` 0 差异、视觉基线不变。**Review Gate**：见本记录 §5。
 - [2026-11-10-phase30-registration.md](./2026-11-10-phase30-registration.md)：**Phase 30 登记批次**。用户裁定 D0 ① / D1 ⑤（A4 + A5 + A6）/ D2 ② 不发布 / D3 ② 仅触摸 P1 / D4 ① 治理小项 / D5 ①；**5 条主线 / 5 条原子条目**；候选池 39 → 35（A4/A5/A6 + `check-stage-counts` 移出，触摸行收敛为 P2）；`latest` 维持 `1.2.0`。**Review Gate**：见本记录 §6。
 - [2026-11-10-next-stage-scope-evaluation-14.md](./2026-11-10-next-stage-scope-evaluation-14.md)：**下一阶段范围评估（第十四轮）**。Phase 29 归档后无进行中阶段；候选池 37 → 39（新增 `check-stage-counts` 无阶段交叉校验、文档站 demo 过渡恢复评估）；按用户优先级给出推荐组合与 D0 ~ D5 决策点（含 A7 / 触摸 P1 · P2 备选），**未登记阶段**。

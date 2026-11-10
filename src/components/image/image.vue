@@ -235,6 +235,21 @@ function handleError(event: Event): void {
     height: 100%;
 }
 
+@keyframes caomei-image-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 动效优先模式：图片元素出现 / 更换 src 后淡入；只改不透明度，不产生位移 */
+:where([data-motion='expressive']) .caomei-image__img {
+    animation: caomei-image-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+}
+
 .caomei-image__placeholder {
     position: absolute;
     inset: 0;
@@ -372,6 +387,10 @@ function handleError(event: Event): void {
 
 @media (prefers-reduced-motion: reduce) {
     .caomei-image__placeholder--loading {
+        animation: none;
+    }
+
+    :where([data-motion='expressive']) .caomei-image__img {
         animation: none;
     }
 

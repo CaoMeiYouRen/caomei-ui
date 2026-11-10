@@ -7,6 +7,13 @@ updates:
       interval: monthly
       timezone: Asia/Shanghai
       time: "04:00"
+    # 版本更新只保留 patch / minor，major 转人工处理；安全更新不受 update-types 限制。
+    # 规则与推导见 docs/standards/github-collaboration.md §3，一致性由 check:dependabot-policy 守卫。
+    allow:
+      - dependency-type: "all"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
   - package-ecosystem: github-actions
     directory: /
     open-pull-requests-limit: 20
@@ -14,3 +21,8 @@ updates:
       interval: monthly
       time: "04:00"
       timezone: Asia/Shanghai
+    allow:
+      - dependency-type: "all"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"

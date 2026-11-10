@@ -34,6 +34,7 @@ description: 负责端到端编排的全局 agent，适用于需要统筹需求�
 - [规范索引](../../docs/standards/index.md)
 - [开发规范](../../docs/standards/development.md)
 - [规划规范](../../docs/standards/planning.md)
+- [GitHub 协作规范](../../docs/standards/github-collaboration.md)：可信提交者、issue / PR 处置、推送与分支授权、跨仓 issue。
 - 当前任务直接相关的源码、文档、测试与配置
 
 ## 核心职责

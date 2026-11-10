@@ -13,6 +13,9 @@ pull_request_rules:
       - -draft
       - check-success = Quality
       - check-success = Test & Build
+      # 发布链路配置不进入自动合并：与 docs/standards/github-collaboration.md §3 一致。
+      - -files~=^release\.config\.js$
+      - -files~=^\.github/workflows/release\.yml$
     actions:
       merge:
         method: rebase

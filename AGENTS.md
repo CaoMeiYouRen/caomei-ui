@@ -151,6 +151,7 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 ### 9.3 Git 规范
 
 - **禁止擅自推送**：`git commit` 后不得自动 `git push`，除非用户明确要求。
+- **自动化会话例外**：定时任务的推送授权见 [GitHub 协作规范](./docs/standards/github-collaboration.md) §4；其余场景仍须用户明确要求。
 - **提交必须通过 `conventional-committer` skill**，禁止裸 `git commit -m "..."`。
 - 提交消息符合 Conventional Commits（`type(scope): description`），描述使用中文。
 - 提交前必须确认 `@code-reviewer` 已放行，且 `lint` / `typecheck` / 必要测试通过。
@@ -166,7 +167,7 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 ## 11. 相关文档
 
 - **规划**: [路线图](./docs/plan/roadmap.md) | [待办事项](./docs/plan/todo.md) | [Backlog](./docs/plan/backlog.md) | [长期任务](./docs/plan/recurring.md)
-- **规范**: [规范索引](./docs/standards/index.md) | [开发](./docs/standards/development.md) | [测试](./docs/standards/testing.md) | [文档](./docs/standards/documentation.md) | [Git](./docs/standards/git.md) | [安全](./docs/standards/security.md) | [规划](./docs/standards/planning.md) | [AI 协作](./docs/standards/ai-collaboration.md) | [AI 资产治理](./docs/standards/ai-governance.md) | [GitHub Projects 看板约定](./docs/standards/github-projects.md)
+- **规范**: [规范索引](./docs/standards/index.md) | [开发](./docs/standards/development.md) | [测试](./docs/standards/testing.md) | [文档](./docs/standards/documentation.md) | [Git](./docs/standards/git.md) | [GitHub 协作](./docs/standards/github-collaboration.md) | [安全](./docs/standards/security.md) | [规划](./docs/standards/planning.md) | [AI 协作](./docs/standards/ai-collaboration.md) | [AI 资产治理](./docs/standards/ai-governance.md) | [GitHub Projects 看板约定](./docs/standards/github-projects.md)
 - **设计**: [设计索引](./docs/design/index.md) | [架构](./docs/design/architecture.md) | [主题](./docs/design/theming.md) | [组件](./docs/design/components.md)
 - **会话机制**: [Session Wisdom 蒸馏](./docs/standards/session-wisdom-distillation.md)
 - **指南**: [上手](./docs/guide/getting-started.md) | [开发](./docs/guide/development.md) | [发布](./docs/guide/release.md) | [AI 协同](./docs/guide/ai-development.md)

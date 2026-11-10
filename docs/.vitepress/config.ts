@@ -624,6 +624,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: '测试规范', link: '/standards/testing' },
                         { text: '文档规范', link: '/standards/documentation' },
                         { text: 'Git 规范', link: '/standards/git' },
+                        { text: 'GitHub 协作规范', link: '/standards/github-collaboration' },
                         { text: '安全规范', link: '/standards/security' },
                         { text: '规划规范', link: '/standards/planning' },
                         { text: 'AI 协作规范', link: '/standards/ai-collaboration' },

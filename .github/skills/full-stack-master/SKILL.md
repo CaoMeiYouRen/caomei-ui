@@ -32,7 +32,7 @@ metadata:
   - [ ] 5.2 测试补强交 `test-engineer`。
 - [ ] Step 6: 收口（F）
   - [ ] 6.1 文档同步交 `documentation-specialist`。
-  - [ ] 6.2 用 `conventional-committer` 提交，不自动 push。
+  - [ ] 6.2 用 `conventional-committer` 提交，不自动 push；推送授权与 issue / PR 处置见 [GitHub 协作规范](../../../docs/standards/github-collaboration.md)。
   - [ ] 6.3 批次内已有子范围通过 Review Gate 时先提交该子范围（部分交付），不累积到整批通过。
 
 ## 反模式

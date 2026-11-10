@@ -70,6 +70,7 @@
   - **分区 A（组件样式面）`Pass`**：0 blocker / 0 warning / 3 suggest——伪元素冲突（RadioButton 圆点在指示器、其余宿主无 `::after`）、overflow / 包含块 / `pointer-events` 均逐项核验；capture 未命中路径返回 `__missing` 并计入 errors，无静默通过。S1 提示 Slider / ColorPicker / 指示器此前无几何基线（视觉不变由 `test:visual` 兜底）：**已登记**于本记录 §3.1 与 §6；S2 建议补采 `box-sizing` / 边框宽：**登记为后续增强**（当前由视觉基线覆盖）；S3 提示 `hit-form.radio` 与夹具文案耦合：**已登记**（由 `hit-form.radio-indicator` 单独锁 18px）。
   - **分区 B（测试与文档面）`Pass`**：0 blocker / 4 warning / 3 suggest——W1 用户面 `guide/mobile.md`（中英）与 `backlog.md` 仍称 P1 未做：**已修**（两语种改为 P1 已交付 + 指针）；W2 本记录行数 690 与实测不符：**已修**（约 470，含计算口径）；W3 `INSIDE_POINTS` / `OUTSIDE_POINTS` / `samplingOffsets` 三个死导出：**已修**（删除，判据只保留浏览器侧一处并写明理由）；W4 键盘 / 焦点缺运行证据：**已补**（`focus-visible-expansion` 96 passed 写入 §3）；S1 E2E 只锁短边：**已登记**于 §6；S2 P0 侧按 `#hit-target` 全域配对（比文档更严）：**已在响应式设计 §4 断言 7 注明**；S3 todo 状态与 R1 未定不一致：**已按 R1 Pass 回填**。
 - **R2（`quick` delta）**：`Pass`（0 blocker / 0 warning / 3 suggest；实测约 3 分钟，未超 ≤ 5 分钟时间盒）——修复点 = `test/capture/capture.test.mjs` 的采样预算 386 → 399 与前缀清单补 `hit-form.`。审计独立复算：`declaredKeys()` 399 / `baseline.entries` 399 / 常量 399 三方一致，键集双向零差，13 个 `hit-form.*` 恰为增量；全仓无其它硬编码 386（命中的均为历史归档，属时点记录）；断言未放宽。S1 建议补「声明面 ↔ 基线」双向集合断言（防等量替换）：**登记为后续增强**（当前由总数下界 + 前缀族存在性 + 运行期 `verifyCoverage` 三道覆盖）；S2 记录留痕：**已采纳**（本节与 §3）；S3 预算常量机制权衡：**不改**（人工同步使收窄在 diff 中可见）。
+- **R2 delta（`quick`）**：`Pass`（0 blocker / 1 warning / 1 suggest；实测约 2 分钟，未超 ≤ 5 分钟时间盒）——CI run `42804206756` 的 `check-governance-counts` 判定 §7 的常量引述与代码不符；订正为「当时 `DECLARED_KEY_BUDGET = 386`（写录时点，现行 399）」，保留可追溯引述并按守卫的时点快照标记放行。W1（保留引述形态 + 快照标记）：**已采纳**；S1（§3 裸数字补「时点」）：**不改**（已由「失败 → 已修」语境锚定）。
 - **复查基线**：本记录 §1 ~ §3；`test/e2e/helpers/hit-target.ts` 的逐轴采样；`test/e2e/hit-target.e2e.ts` 的分族断言；`docs/design/responsive.md` §3 #16 / §4 断言 7 / §5；`docs/design/theming.md` §5.2；`docs/guide/mobile.md` 与 `docs/i18n/en-US/guide/mobile.md` 的触摸目标段；`test/capture/capture.test.mjs`。
 
 ## 6. 未覆盖边界
@@ -84,6 +85,6 @@
 
 ## 7. R2 修复记录（CI 预算同步）
 
-- **触发**：`Test` run `42802217045`（commit `8b2583b`）在 `Test with coverage` 失败——`capture.test.mjs` 断言 `DECLARED_KEY_BUDGET = 386`，而实际声明键数与基线均为 399。
+- **触发**：`Test` run `42802217045`（commit `8b2583b`）在 `Test with coverage` 失败——当时 `DECLARED_KEY_BUDGET = 386`（写录时点，现行 399），而实际声明键数与基线均为 399。
 - **修复**：预算改为 399；「覆盖各采样段的前缀」清单补 `'hit-form.'`，使新增采样族的缺失不再只靠总数下界发现。
 - **验证**：`npx vitest run test/capture/capture.test.mjs` 23 passed；`pnpm test` 158 文件 / 3062 passed；`pnpm lint:check` 通过。R2 结论见 §5。

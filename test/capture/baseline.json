@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-11-07T13:47:17.421Z",
+    "capturedAt": "2026-11-10T10:21:28.781Z",
     "chromiumVersion": "156.0.8078.4",
     "viewport": "1280x800",
     "entries": {
@@ -1807,6 +1807,64 @@
             "position": "absolute",
             "width": "24px",
             "height": "24px"
+        },
+        "hit-form.checkbox": {
+            "width": "18px",
+            "height": "18px"
+        },
+        "hit-form.checkbox-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.radio": {
+            "width": "68px",
+            "height": "18px"
+        },
+        "hit-form.radio-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.switch": {
+            "width": "40px",
+            "height": "22px"
+        },
+        "hit-form.switch-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.slider": {
+            "width": "18px",
+            "height": "18px"
+        },
+        "hit-form.slider-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.color-area": {
+            "width": "14px",
+            "height": "14px"
+        },
+        "hit-form.color-area-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.color-hue": {
+            "width": "14px",
+            "height": "14px"
+        },
+        "hit-form.color-hue-hit": {
+            "position": "absolute",
+            "width": "24px",
+            "height": "24px"
+        },
+        "hit-form.radio-indicator": {
+            "width": "18px",
+            "height": "18px"
         },
         "form.root": {
             "display": "flex",

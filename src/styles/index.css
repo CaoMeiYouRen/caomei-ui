@@ -7,9 +7,12 @@
 @import './field-shell.css';
 
 /**
- * 不可见命中区原语（P0）：清除 / 关闭类 icon 按钮的视觉盒保持原尺寸，命中范围扩到
- * `--caomei-hit-target-min`（默认 24px，WCAG 2.5.8）。伪元素绝对定位、不参与布局，
- * 因此不改变几何与视觉基线；`pointer-events` 沿用按钮本身。
+ * 不可见命中区原语（P0 / P1）：清除 / 关闭类 icon 按钮与表单控件盒的视觉盒保持原尺寸，
+ * 命中范围扩到 `--caomei-hit-target-min`（默认 24px，WCAG 2.5.8）。伪元素绝对定位、
+ * 不参与布局，因此不改变几何与视觉基线；`pointer-events` 沿用宿主本身。
+ *
+ * 宿主已是 `position: absolute`（Slider / ColorPicker 滑柄由 Reka 内联定位）时，
+ * 这里的 `relative` 会被内联样式覆盖，`::after` 仍以宿主 padding 盒为包含块，无需特殊处理。
  */
 .caomei-hit-target {
     position: relative;

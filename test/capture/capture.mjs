@@ -360,6 +360,26 @@ function buildStaticSamples() {
         add(`hit-target.${target.key}-hit`, selector, HIT_PSEUDO_PROPS, { pseudo: '::after' })
     }
 
+    /*
+     * P1 命中区（表单控件盒）：视觉盒保持原尺寸 + `::after` 扩展到 ≥24×24。
+     * RadioButton 的宿主是根节点（含标签并集），视觉盒 width 随标签文本变化，故只冻结
+     * 高度语义的 `::after`；控件的 18px 视觉盒由 RadioButton 指示器另行锁定。
+     */
+    const formHitTargets = [
+        { key: 'checkbox', cap: 'checkbox:md', selector: '.caomei-checkbox__control' },
+        { key: 'radio', cap: 'stack:radio-group-invalid', selector: '.caomei-radio-button' },
+        { key: 'switch', cap: 'switch:off', selector: '.caomei-switch' },
+        { key: 'slider', cap: 'hit-form:slider', selector: '.caomei-slider__thumb' },
+        { key: 'color-area', cap: 'hit-form:color', selector: '.caomei-color-picker__area-thumb' },
+        { key: 'color-hue', cap: 'hit-form:color', selector: '.caomei-color-picker__hue-thumb' },
+    ]
+    for (const target of formHitTargets) {
+        const selector = `[data-cap="${target.cap}"] ${target.selector}`
+        add(`hit-form.${target.key}`, selector, HIT_VISUAL_BOX_PROPS)
+        add(`hit-form.${target.key}-hit`, selector, HIT_PSEUDO_PROPS, { pseudo: '::after' })
+    }
+    add('hit-form.radio-indicator', '[data-cap="stack:radio-group-invalid"] .caomei-radio-button__indicator', HIT_VISUAL_BOX_PROPS)
+
     // 表单组合层：Form 根 / FormItem / label / required / hint / error / 失败态 label
     add('form.root', '[data-cap="form:default"] .caomei-form', FORM_PROPS)
     add('form.item', '[data-cap="form:default"] .caomei-form-item', FORM_ITEM_PROPS)
@@ -400,7 +420,7 @@ export const STATE_SAMPLES = [
 /** 触发器采样：属性快照（过滤无句义的 scoped 哈希）+ 外观计算样式，含闭合 / 开合两态。 */
 export const TRIGGER_SAMPLES = [
     { name: 'date-picker', selector: '[data-cap="trigger:date-picker"] .caomei-date-picker', panel: '.caomei-date-picker__content' },
-    { name: 'color-picker', selector: '[data-cap="trigger:color-picker"] .caomei-color-picker__trigger', panel: '.caomei-color-picker__panel' },
+    { name: 'color-picker', selector: '[data-cap="trigger:color-picker"] .caomei-color-picker__trigger', panel: '.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)' },
     { name: 'split-button-menu', selector: '[data-cap="trigger:split-button"] .caomei-split-button__menu', panel: '.caomei-dropdown-menu__content' },
 ]
 

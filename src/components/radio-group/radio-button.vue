@@ -32,7 +32,7 @@ const forwardedAttrs = useLabelAttrs(() => props.label)
         :id="radioId"
         :value="value"
         :disabled="disabled"
-        class="caomei-radio-button"
+        class="caomei-hit-target caomei-radio-button"
     >
         <!--
           指示器在 RadioGroupItem 默认插槽内自绘而非使用 Reka 的 RadioGroupIndicator：

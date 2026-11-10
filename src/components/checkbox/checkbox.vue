@@ -83,7 +83,7 @@ const rootClass = computed(() => [
             v-bind="forwardedAttrs"
             :id="checkboxId"
             :model-value="controlValue"
-            class="caomei-checkbox__control"
+            class="caomei-checkbox__control caomei-hit-target"
             :disabled="disabled"
             :required="required || undefined"
             :name="name"

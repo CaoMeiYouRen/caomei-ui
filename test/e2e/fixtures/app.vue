@@ -394,6 +394,22 @@ const htAutoOptions = Array.from({ length: 10 }, (_, index) => ({
 }))
 
 /**
+ * P1 命中区夹具（见 `test/e2e/hit-target.e2e.ts`）：表单控件盒共 17 个目标——
+ * Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3（单值 1 + 区间 2）/ ColorPicker 滑柄 4
+ * （两块内联面板各含区域 / 色相 2 个）。区间滑块取 20 / 80，使两个滑柄的 24px 方命中区不相交。
+ */
+const htFormCheckA = ref(false)
+const htFormCheckB = ref(true)
+const htFormRadio = ref('选项一')
+const htFormRadioOptions = ['选项一', '选项二', '选项三', '选项四', '选项五', '选项六']
+const htFormSwitchA = ref(false)
+const htFormSwitchB = ref(true)
+const htFormSlider = ref(40)
+const htFormRange = ref([20, 80])
+const htFormColorA = ref('#2563eb')
+const htFormColorB = ref('#dc2626')
+
+/**
  * 表单组合层用例（见 `test/e2e/form.e2e.ts` 与视觉基线）：
  * 空名称提交后展示错误态与 `aria-invalid`；`#form-submitted` 记录提交结果。
  */
@@ -1710,6 +1726,51 @@ const ConfirmDriver = defineComponent({
         </section>
 
         <!--
+          P1 命中区用例（见 `test/e2e/hit-target.e2e.ts`）：表单控件盒 17 个目标的不可见命中区。
+          视觉盒维持原尺寸，仅命中范围扩到 ≥24×24；各族目标在同一交互族内纵向间距 ≥24。
+        -->
+        <section id="hit-target-form" class="fixture__case">
+            <div id="hit-form-checkbox" class="hit-form-stack">
+                <CaomeiCheckbox v-model="htFormCheckA" label="复选框一" />
+                <CaomeiCheckbox v-model="htFormCheckB" label="复选框二" />
+            </div>
+            <CaomeiRadioGroup
+                id="hit-form-radio"
+                v-model="htFormRadio"
+                label="单选组"
+                class="hit-form-stack"
+            >
+                <CaomeiRadioButton
+                    v-for="item in htFormRadioOptions"
+                    :key="item"
+                    :value="item"
+                >
+                    {{ item }}
+                </CaomeiRadioButton>
+            </CaomeiRadioGroup>
+            <div id="hit-form-switch" class="hit-form-stack">
+                <CaomeiSwitch v-model="htFormSwitchA" label="开关一" />
+                <CaomeiSwitch v-model="htFormSwitchB" label="开关二" />
+            </div>
+            <div id="hit-form-slider" class="hit-form-stack">
+                <CaomeiSlider v-model="htFormSlider" label="单值滑块" />
+                <CaomeiSlider v-model="htFormRange" label="区间滑块" />
+            </div>
+            <div id="hit-form-color" class="hit-form-stack">
+                <CaomeiColorPicker
+                    v-model="htFormColorA"
+                    inline
+                    label="内联颜色一"
+                />
+                <CaomeiColorPicker
+                    v-model="htFormColorB"
+                    inline
+                    label="内联颜色二"
+                />
+            </div>
+        </section>
+
+        <!--
           表单组合层用例（见 `test/e2e/form.e2e.ts`、视觉基线与响应式矩阵）：
           四种继承面各一；空名称提交后展示错误态与 aria-invalid。
         -->
@@ -2109,5 +2170,21 @@ const ConfirmDriver = defineComponent({
 .fixture-muted {
     margin: 0;
     color: var(--caomei-color-text-muted);
+}
+
+/*
+  P1 命中区用例：同一交互族的目标纵向排布。
+  `space-3`（12px）与各控件自身高度相加后，相邻目标的中心距 ≥24（两个 24×24 方命中区不相交）。
+*/
+#hit-target-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-4);
+}
+
+.hit-form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-3);
 }
 </style>

@@ -132,7 +132,7 @@ function onUpdate(value: unknown): void {
                     >
                         <!-- Reka 的 anatomy 要求 thumb 位于 area 内，否则区域键盘与抓 thumb 拖拽都收不到事件 -->
                         <ColorAreaThumb
-                            class="caomei-color-picker__area-thumb"
+                            class="caomei-color-picker__area-thumb caomei-hit-target"
                             :aria-label="areaLabel"
                             :aria-roledescription="thumbRole"
                             :aria-valuenow="areaValueNow"
@@ -154,7 +154,7 @@ function onUpdate(value: unknown): void {
         >
             <ColorSliderTrack class="caomei-color-picker__hue-track">
                 <ColorSliderThumb
-                    class="caomei-color-picker__hue-thumb"
+                    class="caomei-color-picker__hue-thumb caomei-hit-target"
                     :aria-label="hueLabel"
                 />
             </ColorSliderTrack>

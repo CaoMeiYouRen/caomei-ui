@@ -36,6 +36,7 @@ import {
     CaomeiRadioGroup,
     CaomeiRow,
     CaomeiSelect,
+    CaomeiSlider,
     CaomeiSelectButton,
     CaomeiSplitButton,
     CaomeiSwitch,
@@ -147,6 +148,14 @@ const checkboxSm = ref(false)
 const checkboxMd = ref(true)
 const checkboxLg = ref(false)
 const checkboxGroupValue = ref<string[]>(['a'])
+
+/**
+ * P1 命中区（表单控件盒）：Slider 滑柄 / ColorPicker 滑柄的视觉盒与 `::after` 命中区。
+ * 区间滑块取 20 / 80，使两个 24px 方命中区不相交。
+ */
+const hitFormSlider = ref(40)
+const hitFormRange = ref([20, 80])
+const hitFormColor = ref('#2563eb')
 
 /** 抽屉 / 对话框开合状态接到共享驱动接口（`ui` 见 `./ui.ts`；无渲染驱动组件见 `./drivers.ts`）。 */
 ui.setDrawer = (size, open) => {
@@ -940,6 +949,26 @@ ui.setDialog = (size, open) => {
                         </template>
                     </CaomeiFormItem>
                 </CaomeiForm>
+            </div>
+        </section>
+
+        <!-- 24. P1 命中区：Slider / ColorPicker 滑柄的视觉盒与 `::after` 不可见扩展（≥24×24） -->
+        <section>
+            <div
+                class="case"
+                data-cap="hit-form:slider"
+            >
+                <CaomeiSlider v-model="hitFormSlider" />
+                <CaomeiSlider v-model="hitFormRange" />
+            </div>
+            <div
+                class="case"
+                data-cap="hit-form:color"
+            >
+                <CaomeiColorPicker
+                    v-model="hitFormColor"
+                    inline
+                />
             </div>
         </section>
 

@@ -49,7 +49,7 @@ const switchAttrs = useLabelAttrs(() => props.label, () => ({
         :value="value"
         :disabled="disabled"
         :required="required || undefined"
-        class="caomei-switch"
+        class="caomei-hit-target caomei-switch"
         :class="{'caomei-switch--disabled': disabled}"
         @update:model-value="onModelUpdate"
     >

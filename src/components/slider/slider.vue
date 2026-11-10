@@ -122,7 +122,7 @@ function handleCommit(values: number[]): void {
             v-for="index in thumbCount"
             :key="index"
             v-bind="thumbSharedAttrs"
-            class="caomei-slider__thumb"
+            class="caomei-hit-target caomei-slider__thumb"
             :aria-label="resolveThumbLabel(index - 1, thumbCount)"
         />
     </SliderRoot>

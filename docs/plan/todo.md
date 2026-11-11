@@ -14,7 +14,7 @@
 | M2-1 | 基础与布局动效（A5） | 基础与布局动效 | 已交付（RG R1 Pass → R2 Pass） |
 | M3-1 | 选择器动效（A6） | 选择器动效 | 已交付（RG R1 Pass → R2 Pass） |
 | M4-1 | 触摸目标 P1（17 个表单控件盒） | 触摸目标 | 已交付（RG R1 Pass，两分区） |
-| M5-1 | `check-stage-counts` 无阶段交叉校验 | 治理小项 | 待执行 |
+| M5-1 | `check-stage-counts` 无阶段交叉校验 | 治理小项 | 已交付（RG R1 Pass → R2 Pass） |
 
 ## 未完成项汇总
 

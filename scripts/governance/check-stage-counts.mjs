@@ -22,6 +22,8 @@
  * - **无进行中阶段**：`todo.md` 的 `## 当前状态` 段显式声明 `**当前无进行中阶段**` 时**跳过**（exit 0）；
  *   该声明与「当前进行中阶段：Phase N」互斥，同时出现判 `phase-state-conflict`；跳过前仍交叉校验
  *   `roadmap.md` §1 的同一声明与 `todo.md` 残留的阶段条目段，二者任一不符同样判 `phase-state-conflict`；
+ *   该段还须是**纯状态指针**：出现阶段编号（`Phase` + 数字）或待办归档链接判 `phase-state-residue`——
+ *   归档后把「上一阶段已交付 / 已归档」写进当前状态段会让下一个 session 据其误判恢复起点；
  * - 计数与对账式只在 `## 当前状态` 段内取**首个**匹配；`roadmap.md` 只在当前阶段行内取首个匹配，
  *   历史「原登记 … 为时点值」靠位置跳过，不做语义解析；
  * - **格式耦合（fail-closed）**：`## 当前状态`、`## Phase N 原子条目`、阶段表 `**Phase N**` 粗体与
@@ -56,6 +58,23 @@ export const CURRENT_PHASE_RE = /\*\*当前进行中阶段：Phase\s+(\d+)/
  * `CURRENT_PHASE_RE` 互斥，同时出现视为载体自相矛盾。
  */
 export const NO_ACTIVE_PHASE_RE = /\*\*当前无进行中阶段[。.]?\*\*/
+
+/** `todo.md` 的当前状态段标题（解析与残留校验共用同一判别）。 */
+export const TODO_STATE_HEADING_RE = /^## 当前状态\s*$/m
+
+/**
+ * 「无进行中阶段」时当前状态段不得残留的阶段编号形态。
+ *
+ * 归档后该段只承载状态指针；写入上一阶段的编号（如「X 已归档」）会让后续 session 把
+ * 历史阶段当作现行阶段恢复。
+ */
+export const STALE_PHASE_MENTION_RE = /Phase\s+\d+/
+
+/** 待办归档载体（交付信息的唯一去处，与 git 历史并列）。 */
+export const TODO_ARCHIVE_FILE = 'docs/plan/todo-archive.md'
+
+/** 「无进行中阶段」时当前状态段不得出现的待办归档链接：按路径尾段判定，相对 / 绝对写法都算。 */
+export const STALE_ARCHIVE_LINK_RE = /todo-archive\.md/
 
 /** 构成计数：`N 条主线 / M 条原子条目`。 */
 export const MAIN_ATOMIC_RE = /(\d+)\s*条主线\s*\/\s*(\d+)\s*条原子条目/
@@ -92,6 +111,7 @@ export const ISSUE_CODES = {
     mainLineMismatch: 'main-line-mismatch',
     scopeNarrowed: 'scope-narrowed',
     phaseStateConflict: 'phase-state-conflict',
+    phaseStateResidue: 'phase-state-residue',
 }
 
 const firstMatch = (text, re) => re.exec(text)
@@ -128,7 +148,7 @@ function sectionOf(text, headingRe) {
  */
 export function parseTodo(text) {
     const phase = Number(firstMatch(text, CURRENT_PHASE_RE)?.[1] ?? Number.NaN)
-    const stateSection = sectionOf(text, /^## 当前状态\s*$/m)
+    const stateSection = sectionOf(text, TODO_STATE_HEADING_RE)
     const counts = firstMatch(stateSection, MAIN_ATOMIC_RE)
     const sum = parseSum(firstMatch(stateSection, SUM_RE))
     const heading = Number.isNaN(phase) ? null : firstMatch(text, phaseHeadingRe(phase))
@@ -202,7 +222,8 @@ export function checkStageCounts(root) {
     }
 
     const todo = parseTodo(todoText)
-    const noActivePhase = NO_ACTIVE_PHASE_RE.test(sectionOf(todoText, /^## 当前状态\s*$/m))
+    const todoStateSection = sectionOf(todoText, TODO_STATE_HEADING_RE)
+    const noActivePhase = NO_ACTIVE_PHASE_RE.test(todoStateSection)
     if (todo.phase === null) {
         if (noActivePhase) {
             // 跳过模式仍需交叉断言，避免「todo 已收口、roadmap 还挂着阶段」被静默放过。
@@ -218,6 +239,19 @@ export function checkStageCounts(root) {
                 skippedIssues.push({
                     code: ISSUE_CODES.phaseStateConflict,
                     detail: `${TODO_FILE}：声明无进行中阶段，但仍残留「## Phase N 原子条目」段`,
+                })
+            }
+            const stalePhase = firstMatch(todoStateSection, STALE_PHASE_MENTION_RE)
+            if (stalePhase) {
+                skippedIssues.push({
+                    code: ISSUE_CODES.phaseStateResidue,
+                    detail: `${TODO_FILE}：声明无进行中阶段，但「## 当前状态」段仍出现阶段编号（${stalePhase[0]}）`,
+                })
+            }
+            if (STALE_ARCHIVE_LINK_RE.test(todoStateSection)) {
+                skippedIssues.push({
+                    code: ISSUE_CODES.phaseStateResidue,
+                    detail: `${TODO_FILE}：声明无进行中阶段，但「## 当前状态」段仍链接待办归档（${TODO_ARCHIVE_FILE}）`,
                 })
             }
             return {

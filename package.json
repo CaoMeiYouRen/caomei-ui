@@ -113,6 +113,7 @@
     "check:design-catalog": "node scripts/governance/check-design-catalog.mjs",
     "check:migration-consistency": "node scripts/governance/check-migration-consistency.mjs",
     "check:dependabot-policy": "node scripts/governance/check-dependabot-policy.mjs",
+    "check:outdated-major": "node scripts/governance/check-outdated-major.mjs",
     "check:build": "node scripts/release/check-build.mjs",
     "check:nuxt": "node scripts/release/check-nuxt.mjs",
     "check:coverage": "node scripts/governance/check-coverage.mjs",

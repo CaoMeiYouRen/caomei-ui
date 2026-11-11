@@ -85,7 +85,7 @@ importers:
         version: 2.5.1(@vue/compiler-dom@3.5.45)(@vue/server-renderer@3.5.45)(vue@3.5.44(typescript@6.0.3))
       axe-core:
         specifier: ^4.13.0
-        version: 4.13.0
+        version: 4.14.0
       commitizen:
         specifier: ^4.3.2
         version: 4.3.2(@types/node@26.6.6)(typescript@6.0.3)
@@ -3264,8 +3264,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axe-core@4.13.0:
-    resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
+  axe-core@4.14.0:
+    resolution: {integrity: sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==}
     engines: {node: '>=4'}
 
   b4a@1.9.0:
@@ -11357,7 +11357,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axe-core@4.13.0: {}
+  axe-core@4.14.0: {}
 
   b4a@1.9.0: {}
 
@@ -16687,7 +16687,6 @@ time:
   '@tsdown/css@0.23.0': '2026-09-03T17:45:41.135Z'
   '@vavt/cm-extension@2.0.0': '2026-09-16T09:48:41.152Z'
   '@vue/test-utils@2.5.1': '2026-09-16T09:38:12.951Z'
-  axe-core@4.13.0: '2026-08-05T16:53:07.262Z'
   commitizen@4.3.2: '2026-06-12T12:50:44.903Z'
   commitlint-config-cmyr@1.0.1: '2026-05-24T14:35:35.917Z'
   conventional-changelog-cmyr-config@3.0.0: '2025-08-27T13:11:33.344Z'

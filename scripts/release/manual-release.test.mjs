@@ -13,6 +13,7 @@ import {
     buildPublishArgs,
     checkDistTagState,
     decideSyncCommit,
+    evaluateReleaseBranch,
     extractChangelogSection,
     formatLocalTagNotPushed,
     isPrereleaseVersion,
@@ -582,6 +583,26 @@ describe('manual-release shasum 形态', () => {
         expect(isValidShasum('A'.repeat(40))).toBe(false)
         expect(isValidShasum('abc')).toBe(false)
         expect(isValidShasum('')).toBe(false)
+    })
+})
+
+describe('manual-release 分支守卫', () => {
+    it('master 上无提示、不阻断', () => {
+        expect(evaluateReleaseBranch('master', false)).toEqual({ blocked: false, notice: null })
+        expect(evaluateReleaseBranch('master', true)).toEqual({ blocked: false, notice: null })
+    })
+
+    it('dry-run 在非 master 分支（含 detached HEAD）只提示、不阻断', () => {
+        for (const branch of ['fix/preflight-dry-run-branch', 'HEAD']) {
+            const result = evaluateReleaseBranch(branch, true)
+            expect(result.blocked).toBe(false)
+            expect(result.notice).toContain(branch)
+            expect(result.notice).toContain('真实运行会阻断')
+        }
+    })
+
+    it('真实运行在非 master 分支阻断', () => {
+        expect(evaluateReleaseBranch('fix/x', false)).toEqual({ blocked: true, notice: null })
     })
 })
 

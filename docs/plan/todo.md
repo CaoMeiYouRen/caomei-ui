@@ -14,7 +14,7 @@
 | M2-1 | 实际安装版本断言（override 后 fail-closed） | 实际安装版本断言 | 已交付（RG R3 Pass；真实 run 待取证） |
 | M3-1 | 数据展示动效（A7） | 数据展示动效 | 已交付（RG R3 Pass；见[交付记录](../design/governance/2026-11-12-phase31-m3-1-data-display-motion.md)） |
 | M4-1 | 触摸目标 P2（35 个行高受限 / 内联行目标） | 触摸目标 | 待执行 |
-| M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 待执行 |
+| M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 进行中（`stepper` 类型去重已提交；10.12 下的 `lint:check` 待依赖 PR 复跑取证） |
 | M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 待执行 |
 
 ## 未完成项汇总

@@ -15,7 +15,7 @@
 | M3-1 | 数据展示动效（A7） | 数据展示动效 | 已交付（RG R3 Pass；见[交付记录](../design/governance/2026-11-12-phase31-m3-1-data-display-motion.md)） |
 | M4-1 | 触摸目标 P2（35 个行高受限 / 内联行目标） | 触摸目标 | 待执行 |
 | M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 已交付（RG R1 quick Pass；`stepper` 类型去重；依赖 PR #48 CI 全绿并合并；见[交付记录](../design/governance/2026-11-12-phase31-m5-1-eslint-plugin-vue-unblock.md)） |
-| M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 待执行 |
+| M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 进行中（登记读数 21 → 15 已合并 + 5 open + 1 待枚举；open 5 个已逐个结论：`#30` / `#41` 缺许可证台账、`#32` 待无障碍例外登记、`#34` 冲突待重建、`#33` 阻断留痕；`#48` 由 M5-1 收口；合并待辅助维护落地） |
 
 ## 未完成项汇总
 

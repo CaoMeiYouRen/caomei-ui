@@ -8,7 +8,8 @@ name: Downstream Compat
 # 上游 checkout 无需额外凭据）。
 #
 # 受检清单（**接入即登记**）：见 `strategy.matrix.include`——新增下游即在此登记
-# （`repository` / `target-package` / `setup-command` / `typecheck-command` / `build-command`）。
+# （`repository` / `target-package` / `setup-command` / `typecheck-command` / `build-command` /
+# `timeout-minutes`）。各下游的 setup 差异（workspace 子包预构建、Nuxt prepare）在该条目内声明。
 #
 # 边界与口径（权威见 docs/guide/release.md §10）：
 # - 检查范围**最低 `typecheck` + `build`**，不含 e2e / 视觉回归 / 全量单测 / 覆盖率。
@@ -16,6 +17,7 @@ name: Downstream Compat
 # - **下游默认分支是移动目标**：本工作流记录下游 revision（SHA）到 job summary，便于归因；
 #   红可能是下游自身改动所致（非 caomei-ui 回归）。
 # - 需复刻下游构建链（命令漂移风险由上游承担）；下游改命令可能使本检查失效。
+# - override 后断言实际安装版本 == 目标版本（fail-closed），避免「命令成功但未重装生效」。
 
 on:
   push:
@@ -36,7 +38,7 @@ jobs:
   compat:
     name: Compat / ${{ matrix.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: ${{ matrix.timeout-minutes }}
     strategy:
       fail-fast: false
       matrix:
@@ -44,6 +46,7 @@ jobs:
           - name: dependfix
             repository: dependfix/dependfix
             target-package: '@dependfix/platform'
+            timeout-minutes: 30
             setup-command: |
               pnpm --filter @dependfix/core build
               pnpm --filter @dependfix/engine build
@@ -51,6 +54,24 @@ jobs:
               pnpm --filter @dependfix/platform exec nuxt prepare
             typecheck-command: pnpm --filter @dependfix/platform typecheck
             build-command: pnpm --filter @dependfix/platform build
+          - name: caomei-auth
+            repository: CaoMeiYouRen/caomei-auth
+            target-package: caomei-auth
+            timeout-minutes: 45
+            setup-command: |
+              pnpm exec nuxt prepare
+            typecheck-command: pnpm typecheck
+            build-command: pnpm build
+          - name: momei
+            repository: CaoMeiYouRen/momei
+            target-package: momei
+            timeout-minutes: 60
+            setup-command: |
+              pnpm --filter @momei-blog/api-client build
+              pnpm --filter momei-mcp-server build
+              pnpm exec nuxt prepare
+            typecheck-command: pnpm typecheck
+            build-command: pnpm build
     steps:
       - name: Checkout caomei-ui (for toolchain metadata)
         uses: actions/checkout@v7
@@ -116,6 +137,33 @@ jobs:
       - name: Setup downstream build chain
         working-directory: downstream
         run: ${{ matrix.setup-command }}
+      # build chain 可能触发隐式 install / 重解析；在 setup 之后再断言一次，确保 typecheck / build
+      # 实际使用的 caomei-ui 版本就是目标版本，避免「add 后生效、setup 后回退」的静默失效。
+      - name: Assert installed caomei-ui version
+        working-directory: downstream
+        shell: bash
+        env:
+          EXPECTED_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          pnpm --filter ${{ matrix.target-package }} exec node -e '
+          const fs = require("node:fs")
+          const expected = process.env.EXPECTED_VERSION
+          const path = "node_modules/caomei-ui/package.json"
+          if (!fs.existsSync(path)) {
+            console.error(`caomei-ui not found at ${process.cwd()}/${path}`)
+            process.exit(1)
+          }
+          const actual = JSON.parse(fs.readFileSync(path, "utf8")).version
+          if (actual !== expected) {
+            console.error(`caomei-ui version mismatch: expected ${expected}, installed ${actual}`)
+            process.exit(1)
+          }
+          console.log(`installed caomei-ui ${actual}`)
+          if (process.env.GITHUB_STEP_SUMMARY) {
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `- installed caomei-ui **${actual}** (expected ${expected})\n`)
+          }
+          '
       - name: Typecheck downstream
         working-directory: downstream
         run: ${{ matrix.typecheck-command }}

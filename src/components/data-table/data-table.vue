@@ -1297,4 +1297,41 @@ function setPageSize(rows: number): void {
 .caomei-data-table__loading {
     color: var(--caomei-color-primary-text);
 }
+
+/*
+  动效轴（数据展示，见 `docs/design/governance/2026-11-08-motion-system-evaluation.md` §4 A7）：
+  只过渡颜色与透明度，不为排序 / 分页引发的整表重排做动画，因此行的状态切换不会改变盒模型。
+  `minimal` 下无匹配选择器 ⇒ 计算样式与冻结基线逐值一致。
+*/
+:where([data-motion='expressive']) .caomei-data-table__row {
+    transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+:where([data-motion='expressive']) .caomei-data-table__sort-icon,
+:where([data-motion='expressive']) .caomei-data-table__sort-index {
+    transition: color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
+}
+
+/* 排序激活列：图标与多列序号随 `th[aria-sort]` 提亮（只改颜色，列宽由占位元素保持） */
+:where([data-motion='expressive']) .caomei-data-table__th[aria-sort='ascending'] :is(.caomei-data-table__sort-icon, .caomei-data-table__sort-index),
+:where([data-motion='expressive']) .caomei-data-table__th[aria-sort='descending'] :is(.caomei-data-table__sort-icon, .caomei-data-table__sort-index) {
+    color: var(--caomei-color-primary-text);
+}
+
+/* 展开区：只做透明度入场；高度由新增行承担，动画不触发布局属性 */
+@media (prefers-reduced-motion: no-preference) {
+    :where([data-motion='expressive']) .caomei-data-table__row-expansion-cell {
+        animation: caomei-data-table-expansion-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+    }
+}
+
+@keyframes caomei-data-table-expansion-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 </style>

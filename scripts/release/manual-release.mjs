@@ -427,6 +427,30 @@ async function runSecurityGate(ctx, label) {
     await gate(securityGateOptions(ctx))
 }
 
+/**
+ * 判断发布分支守卫的处置方式。
+ *
+ * 真实运行必须在 `RELEASE_BRANCH` 上，否则阻断；`--dry-run` 不落盘、不改 git、不发布，
+ * 故与「工作区不干净」同口径降级为提示——任意分支（含 PR 检出的 detached HEAD）都能预览计划，
+ * 避免 dry-run 只是为了看计划就被前置条件拦死。
+ *
+ * @param {string} branch 当前分支名（detached HEAD 时为 `HEAD`）
+ * @param {boolean} dryRun 是否为 dry-run 预览
+ * @returns {{ blocked: boolean, notice: string | null }} 是否阻断、需要打印的提示
+ */
+export function evaluateReleaseBranch(branch, dryRun) {
+    if (branch === RELEASE_BRANCH) {
+        return { blocked: false, notice: null }
+    }
+    if (dryRun) {
+        return {
+            blocked: false,
+            notice: `[preflight] dry-run：当前分支为 ${branch}（仅提示，真实运行会阻断：须在 ${RELEASE_BRANCH}）\n`,
+        }
+    }
+    return { blocked: true, notice: null }
+}
+
 async function stepPreflight(ctx) {
     const { root } = ctx
     if (output(capture('git', ['status', '--porcelain'], { cwd: root })) !== '') {
@@ -437,7 +461,11 @@ async function stepPreflight(ctx) {
         }
     }
     const branch = output(capture('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: root }))
-    if (branch !== RELEASE_BRANCH) {
+    const branchGuard = evaluateReleaseBranch(branch, ctx.dryRun)
+    if (branchGuard.notice) {
+        process.stdout.write(branchGuard.notice)
+    }
+    if (branchGuard.blocked) {
         throw new Error(`当前分支为 ${branch}，发布须在 ${RELEASE_BRANCH}`)
     }
     const aheadResult = capture('git', ['rev-list', '--count', `origin/${RELEASE_BRANCH}..HEAD`], { cwd: root })

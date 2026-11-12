@@ -30,23 +30,28 @@
   - 不成立 / 无法复现 / 与实现不符 → 评论说明依据后关闭。
 - 关闭任何 issue 都必须给可核对依据（复现命令、版本、文件与行号），不得凭印象关闭。
 - 外部 issue 进 Backlog 须开发者审批：审批载体为 `OWNER` 在该 issue 的明确评论，或会话中的明确授权；`backlog.md` 对应行须写审批出处（评论 URL 或授权日期）。未留痕的「已批准」不成立。
+- **评论去重**：取 `gh issue view <n> --json comments,updatedAt`，比较最后一条评论的 `createdAt` 与 issue 的 `updatedAt`。若最后一条评论由本仓维护者（`OWNER` 账号或白名单机器人）发出、两者时间一致，且其间无状态变化或结论改变，则**仅跳过重复评论**——调研与处置仍须按本节复核。字段缺失或时间不可比时一律视为有更新。
 - 看板状态同步按 [GitHub Projects 看板约定](./github-projects.md) 执行。
 
 ## 3. PR 处置
 
 - 一律审查：读 diff、跑必要验证、给出结论；来源可信不减免审查。
 - 处置结论三选一并写明理由：保留开放 / 关闭 / 合并。
+- **自动合并**：`dependabot[bot]` 的常规依赖升级（patch / minor）由 Mergify 自动合并，兼容性风险由 CI 门禁承担；条件见本节「dependabot 自动合并路径」条。
+- **`dependfix[bot]` 尚未接入自动合并**：其修复 PR 目前由 `OWNER` 账号提交，按可信来源的常规流程审查与合并。接入自动合并须先改 `.github/mergify.yml` 与 `check-dependabot-policy`，并同批更新本文档。
+- **未自动合并的 PR**：检查未通过、冲突、命中排除项（`release.config.js` / release workflow）或不在自动合并范围的 PR，转常规流程处理——审查、简单修复、重新推送、合并或关闭。
+- **评论去重（PR）**：取 `gh pr view <n> --json comments,reviews,headRefOid,updatedAt`；仅当最后一条评论由本仓维护者（`OWNER` 账号或白名单机器人）发出、`updatedAt` 等于该评论 `createdAt`、且无新 review 与新 commit 时，跳过重复评论。字段缺失或无法比较时视为有更新。
 - 合并前提（全部满足）：
   - 作者为可信来源（§1）；
   - `Quality`、`Test & Build` 及该 PR 触发的其它 workflow 全绿；
-  - Review Gate `Pass`（dependabot 自动合并路径见本节「dependabot 自动合并路径」条）；
+  - Review Gate `Pass`（自动合并路径豁免，见本节「dependabot 自动合并路径」条）；
   - 无冲突；
   - 改动不触碰 `AGENTS.md`、`.env*`、`release.config.js`、`.github/workflows/release.yml`。
 - **dependabot 自动合并路径**（配置文件 `.github/mergify.yml`）：
-  - 覆盖范围只有常规版本升级：`dependabot.yml` 的 `allow.update-types` 只放行 patch / minor，major 不产生自动 PR，由人工发起与合并。
+  - 覆盖范围只有常规版本升级（非安全更新）：`dependabot.yml` 的 `allow.update-types` 只放行 patch / minor，常规 major 不产生 PR，由人工发起与合并。
   - 放行条件含 `base = master`、`author = dependabot[bot]`、`label = dependencies`、非 draft、`Quality` 与 `Test & Build` 全绿，并排除 `release.config.js` 与 `.github/workflows/release.yml`。
   - 该路径不要求 Review Gate。逐条条件文本以 `.github/mergify.yml` 为准，本节只保留策略意图与例外；收紧或放宽策略须同批修改本节、配置文件与 `check-dependabot-policy` 的常量（`ALLOWED_UPDATE_TYPES` / `MERGIFY_FILE_EXCLUSIONS`），一致性由 `pnpm check:dependabot-policy` 守卫。
-  - 安全更新不受 `update-types` 限制，可能以 major 形式出现并走该路径合入；合入后出现不兼容时由巡检开 revert，不因此放宽或回退配置。
+  - 安全更新若以 major 形式合入后出现不兼容，由巡检开 revert，不因此放宽或回退配置。
   - 大版本检测：`pnpm check:outdated-major` 列出落后大版本的直接依赖（默认只报告，供人工核对；`--strict` 供发布前门禁；需访问 registry，通常 1～2 分钟，超时按失败处理）。受检面仅 `package.json` 直接声明，overrides 与传递依赖由安全告警覆盖。
 - 外部来源的 PR：只审查与评论，不合并；质量不足或方向不符时说明理由后关闭。
 - 可信来源的 PR 可代为修改，但限于简单修改：rebase、`pnpm-lock.yaml` 冲突、lint 格式、`package.json` 的依赖版本、CI 配置中的明显笔误。本包 `version` 字段由 semantic-release 管理，不得手改。

@@ -7,7 +7,11 @@ import type { StepperExposed, StepperProps } from './types'
 
 defineOptions({ name: 'CaomeiStepper', inheritAttrs: false })
 
-const props = withDefaults(defineProps<StepperProps>(), {
+/**
+ * `modelValue` 由 `defineModel` 声明：`vue/no-dupe-keys` 会把 props 类型里的同名项判为重复键。
+ * 这里用 `Omit` 在编译期去重，导出类型 `StepperProps` 仍保留 `modelValue`（对外 API 不变）。
+ */
+const props = withDefaults(defineProps<Omit<StepperProps, 'modelValue'>>(), {
     orientation: 'horizontal',
     linear: true,
 })

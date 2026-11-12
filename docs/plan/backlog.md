@@ -51,7 +51,6 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| 触摸目标增强 P2（不可见命中区 ≥24×24） | [触摸目标审计](../design/governance/2026-10-16-phase25-m2-2-touch-target-audit.md) §4 | **P0 已由 Phase 27 承接**（5 组件 34 个清除 / 关闭 icon 按钮 + Message 关闭）；**P1（表单控件盒 17 个）已由 Phase 30 M4-1 于 2026-11-10 交付**（见[交付记录](../design/governance/2026-11-10-phase30-m4-1-hit-target-p1.md)）；本行只保留 **P2**（行高受限与内联行 = 35 个，须逐项确认交互绑定；改行高会触及视觉基线）。触发条件 = 用户裁定或下一轮移动端 / 无障碍治理。**未入册**：Toast / Dialog / Drawer / Popover 的关闭按钮（13.33 / 21.33）在 2026-10-16 夹具未渲染，待实测后归类 | 低 |
 
 ### 1.6 基建与治理候选
 
@@ -63,7 +62,6 @@
 | 文档站首页 hydration mismatch | 待定位是否上游行为 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
-| 下游兼容检查：校验实际安装版本步骤 | 来源：Phase 23 M2-1 follow-up；工作流的 override 步骤当前**不校验实际安装版本**（本仓 run #2 只能由「版本差 + `+1 −1` + 命令语义」推断重装生效）。候选为在 override 后断言 `caomei-ui` 实际版本 == 目标版本（fail-closed）并把结果写入 job summary。**触发条件 = 下次发布前后可在真实 run 中验证时**（workflow 改动只能在真实 run 中验证，未验证前不入库） | 低 |
 | `reka-ui` 补丁升级（2.10.5 / 2.11.0） | 来源：Phase 22 M2-3 follow-up（Phase 23 M3-2 复核）；2.10.5 起致 `CaomeiInputNumber` 步进模型 emit 回归；本仓维持 **2.10.4**（精确钉定）。**2026-10-13 实测复核**：以 `reka-ui@2.11.0` 覆盖后 `pnpm vitest run src/components/input-number/input-number.test.ts` **4 例失败 / 45 例通过** → 回归未消除（失败面 = 点击增加按钮按 step 步进并应用 precision / 点击减少按钮按 step 步进并钳制 / `step` 非正时回退为 1 / 步进按 step 累加且不被吸附到 step 整数倍）。**触发条件（可判定）= 在 `reka-ui` ≥ `2.11.0` 下该命令 4 例全过**，**或**本仓显式适配其步进行为变更 | 低 |
 | `conventional-changelog` 8 升级 | 来源：Phase 22 M2-3 follow-up（Phase 23 M3-2 复核）；v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；本仓维持 **7.2.0**。**2026-10-13 复核**：`npm view conventional-changelog-cmyr-config version` 仍为 **3.0.0**（未发布支持 writer 9 的新版）。**触发条件（可判定）= 该命令返回值 > 3.0.0 且其模板 API 兼容 writer 9**（届时复跑 `pnpm changelog` 无 `headerPartial is not a function`） | 低 |
 | 文档站示例外链守卫漏判面扩展 | 来源：Phase 23 M5-1 follow-up（第八轮 N2）；现行守卫为**整文件 fail-closed**（`docs/**/examples/**` 出现 `http(s)://` 即判 `external-image-source` 失败），无法区分「图片源」与「合法非图片外链」。**触发条件 = 出现合法非图片外链用例**（如示例中引用外部 API / 文档链接）时需重新划面；**复算 = `pnpm docs:check:demo-external-images`**（受检面 363 个示例文件 / 下界 `MIN_SCANNED_EXAMPLES = 300`，含中英两侧示例目录覆盖断言）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 低 |
@@ -83,7 +81,6 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 根包接入下游兼容检查 | Phase 23 M2-1 follow-up | `momei` 已消费 `caomei-ui@0.6.0`（根包）但**未接入** `downstream-compat.yml` 的 `matrix`。**单条阻塞**：`momei` 的 `build`（`NODE_OPTIONS=--max-old-space-size=6144 nuxt build`）在上游 runner 的**无凭据可行性未验证**（`typecheck` = `nuxt typecheck` 相对轻量；`pnpm --filter <name>` 可**按根包名选中根工程**，override 步骤无需参数化）。**触发条件 = 该验证通过，或用户指定** | 低 |
 | momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
 
 ### 1.9 图标体系候选
@@ -96,11 +93,7 @@
 
 ### 1.10 动效体系候选
 
-> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2）；**A4 / A5 / A6 已于 2026-11-10 登记 Phase 30**（见[Phase 30 登记批次记录](../design/governance/2026-11-10-phase30-registration.md) §2），本表只保留后续实现候选。
-
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|:-:|
-| A7 数据展示动效 | 评估 §5 / §8 | DataTable 行 / 展开 / 排序 / 选择、DataView 切换、Paginator / Progress / Skeleton 统一；Chart / RichTextEditor 仅容器层加载 / 空态；避免布局抖动 | 低 |
+> 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2）；**A4 / A5 / A6 已于 2026-11-10 登记 Phase 30**（见[Phase 30 登记批次记录](../design/governance/2026-11-10-phase30-registration.md) §2）；**A7 已于 2026-11-12 登记 Phase 31**（见[Phase 31 登记批次记录](../design/governance/2026-11-12-phase31-registration.md) §2）。**本组暂无在册候选。**
 
 ## 2. 维护约定
 

@@ -44,6 +44,17 @@ const loadingText = computed(() => props.loadingText ?? locale.value.progress.lo
 
 const items = computed<T[]>(() => props.value ?? [])
 const isEmpty = computed(() => items.value.length === 0)
+
+/** 内容区重挂载键：只在状态或布局变化时切换，`value` 刷新不触发重挂载。 */
+const contentKey = computed(() => {
+    if (props.loading) {
+        return 'loading'
+    }
+    if (isEmpty.value) {
+        return 'empty'
+    }
+    return `ready-${props.layout}`
+})
 </script>
 
 <template>
@@ -56,7 +67,15 @@ const isEmpty = computed(() => items.value.length === 0)
             <slot name="header" />
         </div>
 
-        <div class="caomei-data-view__content">
+        <!--
+          状态 + 布局键驱动重挂载：加载 / 空态 / 内容切换与列表 ↔ 网格切换都重放入场动画。
+          布局切换本就替换 `#list` / `#grid` 插槽内容（不同插槽），故不额外损失消费方状态；
+          `value` 刻意不入键——筛选 / 翻页刷新数据时不应重挂载消费方内容。
+        -->
+        <div
+            :key="contentKey"
+            class="caomei-data-view__content"
+        >
             <div v-if="loading" class="caomei-data-view__loading">
                 {{ loadingText }}
             </div>
@@ -104,5 +123,25 @@ const isEmpty = computed(() => items.value.length === 0)
 
 .caomei-data-view__loading {
     color: var(--caomei-color-primary-text);
+}
+
+/*
+  动效轴（数据展示）：状态切换与列表 ↔ 网格切换都以透明度入场，只动 `opacity`、不触发布局。
+  容器不带 `min-height`，入场前后内容高度由插槽内容决定（与迁移前逐值一致）。
+*/
+@media (prefers-reduced-motion: no-preference) {
+    :where([data-motion='expressive']) .caomei-data-view__content {
+        animation: caomei-data-view-content-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+    }
+}
+
+@keyframes caomei-data-view-content-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 </style>

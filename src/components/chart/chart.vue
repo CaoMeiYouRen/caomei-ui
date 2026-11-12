@@ -168,6 +168,23 @@ watch(localeCode, async (code) => {
     height: 100%;
 }
 
+/* 动效轴（数据展示）：内核就绪后画布透明度入场，占位与画布同盒，不产生位移 */
+@media (prefers-reduced-motion: no-preference) {
+    :where([data-motion='expressive']) .caomei-chart__canvas {
+        animation: caomei-chart-canvas-in var(--caomei-motion-duration-base) var(--caomei-motion-ease-out);
+    }
+}
+
+@keyframes caomei-chart-canvas-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 .caomei-chart__status {
     display: flex;
     align-items: center;

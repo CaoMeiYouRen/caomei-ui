@@ -15,7 +15,7 @@
 | #41 | `@lucide/vue` 1.54.0 → 1.70.0 | **已合并** | 同上：缺 `@lucide/vue@1.70.0` 台账条目；补台账后全绿（`9e642b4`），图标 API 无回归 |
 | #32 | `axe-core` 4.13.0 → 4.14.0 | **已合并** | Test 失败根因 = 4.14 默认启用 `label-content-name-mismatch`，8 个组件各 1 条 needsReview；人工复核后登记例外（`ed274af`），全绿后合并 |
 | #34 | `unplugin-vue` 8.0.0 → 8.0.1 | **已合并** | 初始与 lockfile 冲突，`update-branch` 无法更新；请求 dependabot 重建后冲突消解，Test run `43222033712` 全绿，Mergify 合并（`6556380`，2026-11-12T12:53:10Z） |
-| #33 | `reka-ui` 2.10.4 → 2.11.0 | **维持阻断**（登记 D5 ① 之外的已知回归） | PR 评论留痕：≥2.11.0 下 `input-number.test.ts` 4 例失败 / 45 例通过；跟踪载体 `docs/plan/backlog.md`「`reka-ui` 补丁升级」行 |
+| #33 | `reka-ui` 2.10.4 → 2.11.0 | **维持阻断**（登记 D5 ① 之外的已知回归） | PR 评论留痕：≥2.11.0 下 `input-number.test.ts` 4 例失败 / 45 例通过；跟踪载体 `docs/plan/backlog.md`「`reka-ui` 补丁升级」行（**2026-11-12 后续评估更新见该行与 PR #33 评论**） |
 
 - **无「无结论」项**：结尾 open 列表仅 #33（维持阻断），结论与理由已落盘（本节 + PR 评论）。
 - **不触碰发布面**：未修改 `release.config.js` / `release.yml`；未放宽 Mergify 条件。
@@ -56,7 +56,7 @@
 1. **台账随安装版本漂移**：`@nuxt/kit` / `@lucide/vue` 在 `package.json` 里是 caret 范围，lockfile 变化后台账标题仍需同步；已由 `check-licenses` 在 CI 阻断，属可发现面。
 2. **例外清单增长**：清单 2 → 10 条，其中 `label-content-name-mismatch` 8 条（均 `count: 1`）；`count` 指纹会在命中面变化时报错，需重新裁定，不会静默失效。
 3. **#34 已收口**：冲突经 dependabot 重建消解后正常合并；期间未改 lockfile、未强推。
-4. **#33 维持阻断**：解除条件写在 backlog（`input-number.test.ts` 4 例全过或显式适配），不在本批处理。
+4. **#33 维持阻断**：解除条件写在 backlog（`input-number.test.ts` 4 例全过或显式适配），不在本批处理；**2026-11-12 后续评估**将 4 例细分为 3 例测试装置 + 1 例触摸时序，适配规模 5 文件 / 约 14 行，取证见 PR #33 评论与 backlog 该行。
 5. **自动合并未放宽**：本轮只做「让已绿者变绿」的辅助维护，没有修改 Mergify 规则或必需检查集。
 
 ## 6. Review Gate

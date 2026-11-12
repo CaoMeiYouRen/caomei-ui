@@ -30,6 +30,7 @@
 
 - 登记批次 R1 / R2 `Reject` → R3 `Pass`（详见[登记批次记录](./2026-11-12-phase31-registration.md) §6）；本批为工作流改动，按「触及构建面走分支 + PR」提交。
 - **PR**：[#51](https://github.com/CaoMeiYouRen/caomei-ui/pull/51)，CI（Quality / Test & Build / CodeQL）全绿后 squash 合并为 `1ec8464`。
+- **本记录批次**（`quick`）：R1 `Reject`（1 blocker：发布指南 §10 仍写「待取证」）→ R2 `Pass`（0 blocker / 0 warning / 3 suggest，已按建议收口）。
 
 ## 5. 风险与边界
 

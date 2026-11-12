@@ -54,5 +54,5 @@
 ## 5. Review Gate
 
 - **audit-depth**：`standard`（组件样式类名挂载 + 控件盒拉伸 + 探针新增分族；无发布、无依赖、无运行时配置）；时间盒 ≤10 分钟。
-- **结论**：见本轮 RG 记录（R1）。
+- **结论**：R1 `Reject`（1 blocker：TagsInput 交互绑定误判；4 warning / 4 suggest）→ R2 `Pass`（0 blocker / 2 warning 已收口 / 1 suggest 采纳）。
 - **复查基线**：本记录 §1 / §2；`src/components/{data-table/data-table.vue,select/select.vue,breadcrumb/breadcrumb-item.vue,input/input.vue}`；`test/e2e/hit-target.e2e.ts` 的 `P2_FAMILIES`；`test/e2e/helpers/hit-target.ts` 的 `MIN_HIT_TARGETS_P2`；`docs/design/responsive.md` §3 #16 / §4 断言 7。

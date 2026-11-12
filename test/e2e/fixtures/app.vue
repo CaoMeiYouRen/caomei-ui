@@ -23,6 +23,7 @@ import {
     CaomeiColorPicker,
     CaomeiConfirmDialog,
     CaomeiDataTable,
+    CaomeiDataView,
     CaomeiDatePicker,
     CaomeiDialog,
     CaomeiDivider,
@@ -311,6 +312,27 @@ const keyboardScrollData = Array.from({ length: 3 }, (_, rowIndex) =>
         ]),
     ),
 )
+
+/**
+ * 数据展示动效夹具（见 `test/e2e/data-display-motion.e2e.ts`）：同时提供可排序列、`expander`
+ * 列与 `#expansion` 插槽，使行悬浮 / 选中 / 排序 / 展开四类状态面都能在夹具页内触发。
+ */
+const dataDisplayMotionColumns = [
+    { key: 'expand', expander: true, width: '48px' },
+    { key: 'name', header: '姓名', sortable: true },
+    { key: 'score', header: '评分', sortable: true, align: 'right' as const },
+]
+
+const dataDisplayMotionData = [
+    { name: '张三', score: 88 },
+    { name: '李四', score: 92 },
+    { name: '王五', score: 75 },
+]
+
+/** DataView 状态 / 布局切换用例：透明度入场在状态键或布局键变化时重放。 */
+const dataViewMotionLoading = ref(false)
+const dataViewMotionLayout = ref<'list' | 'grid'>('list')
+const dataViewMotionItems = [{ id: 1, name: '条目一' }, { id: 2, name: '条目二' }]
 
 /**
  * 禁用态尺寸不变用例（见 `test/e2e/disabled-size.e2e.ts`）：默认态与禁用态成对，
@@ -1061,6 +1083,57 @@ const ConfirmDriver = defineComponent({
                 :columns="keyboardScrollColumns"
                 caption="键盘横向滚动"
             />
+        </section>
+
+        <!--
+          数据展示动效夹具（见 `test/e2e/data-display-motion.e2e.ts`）：行悬浮 / 选中 / 排序 /
+          展开四类状态面；`expander` 列与 `#expansion` 插槽同时提供以渲染展开区。
+        -->
+        <section id="data-display-motion" class="fixture__case">
+            <CaomeiDataTable
+                :data="dataDisplayMotionData"
+                :columns="dataDisplayMotionColumns"
+                row-key="name"
+                hoverable
+                striped
+                selection-mode="multiple"
+                sort-mode="multiple"
+                caption="数据展示动效"
+            >
+                <template #expansion="{data}">
+                    <div class="ddm-expansion">
+                        展开内容：{{ data.name }}
+                    </div>
+                </template>
+            </CaomeiDataTable>
+            <div id="data-display-motion-view" class="fixture__state">
+                <CaomeiDataView
+                    :value="dataViewMotionItems"
+                    :loading="dataViewMotionLoading"
+                    :layout="dataViewMotionLayout"
+                >
+                    <template #list="{items}">
+                        <span class="ddm-view-item">列表：{{ items.length }} 条数据</span>
+                    </template>
+                    <template #grid="{items}">
+                        <span class="ddm-view-item">网格：{{ items.length }} 条数据</span>
+                    </template>
+                </CaomeiDataView>
+                <button
+                    id="data-display-motion-view-toggle"
+                    type="button"
+                    @click="dataViewMotionLoading = !dataViewMotionLoading"
+                >
+                    切换 DataView 加载态
+                </button>
+                <button
+                    id="data-display-motion-layout-toggle"
+                    type="button"
+                    @click="dataViewMotionLayout = dataViewMotionLayout === 'list' ? 'grid' : 'list'"
+                >
+                    切换 DataView 布局
+                </button>
+            </div>
         </section>
 
         <!-- 禁用态尺寸不变：默认态 / 禁用态成对，档位与内容一致，仅 disabled 不同 -->

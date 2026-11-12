@@ -161,6 +161,27 @@ watch(localeCode, async (code) => {
     font-size: var(--caomei-font-size-sm);
 }
 
+/*
+  动效轴（数据展示）：内核就绪后编辑器透明度入场。动画本身只改 `opacity`、不引入位移
+  （占位 `min-height` 与内核自高之间的尺寸差属既有行为）。取 `instant` 而非 `base`：
+  `autoFocus` 时焦点环随挂载立即可见，时长越短越不易被入场层遮住。
+*/
+@media (prefers-reduced-motion: no-preference) {
+    :where([data-motion='expressive']) .caomei-rich-text-editor__editor {
+        animation: caomei-rich-text-editor-in var(--caomei-motion-duration-instant) var(--caomei-motion-ease-out);
+    }
+}
+
+@keyframes caomei-rich-text-editor-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 /* 编辑器内核外部化，样式由 md-editor-v3 自带；此处仅约束容器与可选高度覆盖钩子 */
 .caomei-rich-text-editor :deep(.md-editor) {
     border-radius: var(--caomei-rich-text-editor-radius, var(--caomei-radius-md));

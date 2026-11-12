@@ -258,6 +258,42 @@ describe('checkStageCounts（夹具）', () => {
         expect(codes(root)).toContain(ISSUE_CODES.phaseStateConflict)
     })
 
+    it('todo 无进行中阶段但当前状态段残留阶段编号判 phase-state-residue', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。** 上一阶段（Phase 9）已交付并归档。\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        expect(codes(root)).toContain(ISSUE_CODES.phaseStateResidue)
+    })
+
+    it('todo 无进行中阶段但当前状态段链接待办归档判 phase-state-residue', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。** 上一批交付见[待办归档](../plan/todo-archive.md)。\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        expect(codes(root)).toContain(ISSUE_CODES.phaseStateResidue)
+    })
+
+    it('当前状态段干净时未完成项汇总里的阶段编号与归档链接不判残留', () => {
+        const root = createFixture(
+            [
+                '# 待办事项',
+                '',
+                '## 当前状态',
+                '',
+                '**当前无进行中阶段。** 下一阶段待授权后登记。',
+                '',
+                '## 未完成项汇总',
+                '',
+                '- 上一阶段（Phase 9）交付见[待办归档](../plan/todo-archive.md)。',
+            ].join('\n'),
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        const result = checkStageCounts(root)
+        expect(result.skipped).toBe(true)
+        expect(result.issues).toEqual([])
+    })
+
     it('载体缺失判 io-error', () => {
         expect(codes(join(tmpdir(), 'check-stage-counts-missing'))).toEqual([ISSUE_CODES.ioError])
     })
@@ -287,5 +323,15 @@ describe('CLI', () => {
         const result = spawnSync('node', [SCRIPT, '--root', root], { encoding: 'utf8' })
         expect(result.status).toBe(0)
         expect(result.stdout).toContain('skipped')
+    })
+
+    it('当前状态段残留阶段编号时 exit 1 并输出失败码', () => {
+        const root = createFixture(
+            '# 待办事项\n\n## 当前状态\n\n**当前无进行中阶段。** 上一阶段（Phase 9）已交付。\n',
+            roadmapFixture({ state: '**当前无进行中阶段**' }),
+        )
+        const result = spawnSync('node', [SCRIPT, '--root', root], { encoding: 'utf8' })
+        expect(result.status).toBe(1)
+        expect(result.stderr).toContain(ISSUE_CODES.phaseStateResidue)
     })
 })

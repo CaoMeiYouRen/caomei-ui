@@ -157,6 +157,11 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 - 提交前必须确认 `@code-reviewer` 已放行，且 `lint` / `typecheck` / 必要测试通过。
 - 一个提交对应一个逻辑变更。详见 [Git 规范](./docs/standards/git.md)。
 
+### 9.4 外部协作
+
+- issue / PR 的可信来源判定、合并授权、推送例外、评论去重与跨仓 issue 见 [GitHub 协作规范](./docs/standards/github-collaboration.md)。
+- `dependabot[bot]` 的常规依赖升级由 Mergify 自动合并，兼容性风险由 CI 门禁承担；未自动合并的 PR 与 `dependfix` 的修复 PR 按常规流程处理。
+
 ## 10. 其他要求
 
 1. **多语言响应**：使用用户发送的语言回复（默认中文）。

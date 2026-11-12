@@ -28,7 +28,7 @@ const separator = computed(() => context?.separator.value ?? '/')
         >{{ separator }}</span>
         <a
             v-if="href"
-            class="caomei-breadcrumb__link"
+            class="caomei-breadcrumb__link caomei-hit-target"
             :href="href"
             :aria-current="current ? 'page' : undefined"
         >

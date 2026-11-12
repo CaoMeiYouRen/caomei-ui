@@ -420,6 +420,17 @@ const htAutoOptions = Array.from({ length: 10 }, (_, index) => ({
  * Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3（单值 1 + 区间 2）/ ColorPicker 滑柄 4
  * （两块内联面板各含区域 / 色相 2 个）。区间滑块取 20 / 80，使两个滑柄的 24px 方命中区不相交。
  */
+/** P2 夹具（行高受限 + 内联行）：Select 清除需要非空值，Breadcrumb 需要带 href 的链接项。 */
+const htP2Select = ref<string | null>('选项一')
+const htP2SelectOptions = [
+    { label: '选项一', value: '选项一' },
+    { label: '选项二', value: '选项二' },
+]
+const htP2Input = ref('')
+const htP2Tags = ref(['标签一'])
+const htP2Multi = ref(['选项一'])
+const htP2Auto = ref('')
+
 const htFormCheckA = ref(false)
 const htFormCheckB = ref(true)
 const htFormRadio = ref('选项一')
@@ -2052,6 +2063,61 @@ const ConfirmDriver = defineComponent({
             </button>
             <div id="basic-layout-badge" class="fixture__state">
                 <CaomeiBadge :value="5" />
+            </div>
+        </section>
+
+        <!--
+          P2 夹具（见 `test/e2e/hit-target.e2e.ts`）：行高受限目标（Breadcrumb 链接 / DataTable 排序 /
+          Select 清除）与字段族内联行（普通 Input）。追加在模板末尾，不改变既有受检元素的绝对位置。
+        -->
+        <section id="hit-target-p2" class="fixture__case">
+            <div id="hit-p2-input">
+                <CaomeiInput v-model="htP2Input" placeholder="内联输入行" />
+            </div>
+            <div id="hit-p2-tags">
+                <CaomeiTagsInput v-model="htP2Tags" placeholder="标签输入" />
+            </div>
+            <div id="hit-p2-multi">
+                <CaomeiMultiSelect
+                    v-model="htP2Multi"
+                    :options="htP2SelectOptions"
+                    placeholder="多选输入"
+                />
+            </div>
+            <div id="hit-p2-auto">
+                <CaomeiAutoComplete
+                    v-model="htP2Auto"
+                    :options="htP2SelectOptions"
+                    placeholder="自动完成输入"
+                />
+            </div>
+            <div id="hit-p2-limited" class="hit-form-stack">
+                <CaomeiBreadcrumb id="hit-p2-breadcrumb">
+                    <CaomeiBreadcrumbItem href="#hit-p2-breadcrumb">
+                        首页
+                    </CaomeiBreadcrumbItem>
+                    <CaomeiBreadcrumbItem href="#hit-p2-breadcrumb">
+                        组件总览
+                    </CaomeiBreadcrumbItem>
+                    <CaomeiBreadcrumbItem current>
+                        面包屑
+                    </CaomeiBreadcrumbItem>
+                </CaomeiBreadcrumb>
+                <div id="hit-p2-select">
+                    <CaomeiSelect
+                        v-model="htP2Select"
+                        :options="htP2SelectOptions"
+                        show-clear
+                        aria-label="可清除选择"
+                    />
+                </div>
+                <CaomeiDataTable
+                    id="hit-p2-table"
+                    :data="sortWidthData"
+                    :columns="sortWidthColumns"
+                    row-key="name"
+                    caption="排序目标"
+                />
             </div>
         </section>
     </main>

@@ -75,6 +75,15 @@ const clearable = computed(() => props.showClear && model.value.length > 0 && !p
 
 const inputRef = ref<{ $el?: unknown } | null>(null)
 
+/** 点击字段空白处聚焦输入框：输入行仅 16px 高，根节点需承接点击才能形成 ≥24 的有效目标 */
+function onRootClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null
+    if (target?.closest('button, input')) {
+        return
+    }
+    ;(event.currentTarget as HTMLElement | null)?.querySelector('input')?.focus()
+}
+
 /**
  * 清空后清除按钮自身被移除，把焦点交回输入框，否则焦点会掉到 body。
  * 受控用法下外层可能拒绝更新：此时按钮仍在，不应把它自身的焦点抢走。
@@ -109,6 +118,7 @@ function restoreInputFocus(): void {
         :add-on-tab="addOnTab"
         :add-on-blur="addOnBlur"
         :data-filled="model.length > 0 ? 'true' : undefined"
+        @click="onRootClick"
         @add-tag="emit('addTag', $event)"
         @remove-tag="emit('removeTag', $event)"
         @invalid="emit('invalidInput', $event)"

@@ -219,7 +219,7 @@ function clearValue(): void {
             <button
                 v-if="clearable"
                 type="button"
-                class="caomei-select__clear"
+                class="caomei-hit-target caomei-select__clear"
                 :aria-label="clearLabel"
                 @click="clearValue"
             >

@@ -13,9 +13,9 @@
 | M1-1 | 下游兼容扩容（`caomei-auth` + `momei`） | 下游兼容扩容 | 已交付（RG R3 Pass；真实 run `43211984429` 三仓 success；见[交付记录](../design/governance/2026-11-12-phase31-m1-1-m2-1-downstream-compat.md)） |
 | M2-1 | 实际安装版本断言（override 后 fail-closed） | 实际安装版本断言 | 已交付（RG R3 Pass；真实 run `43211984429` 未触发 fail-closed；同上记录） |
 | M3-1 | 数据展示动效（A7） | 数据展示动效 | 已交付（RG R3 Pass；见[交付记录](../design/governance/2026-11-12-phase31-m3-1-data-display-motion.md)） |
-| M4-1 | 触摸目标 P2（35 个行高受限 / 内联行目标） | 触摸目标 | 待执行 |
+| M4-1 | 触摸目标 P2（35 个行高受限 / 内联行目标） | 触摸目标 | 已交付（RG R2 Pass；28 个指针目标 + 7 个非目标排除；见[交付记录](../design/governance/2026-11-12-phase31-m4-1-touch-target-p2.md)） |
 | M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 已交付（RG R1 quick Pass；`stepper` 类型去重；依赖 PR #48 CI 全绿并合并；见[交付记录](../design/governance/2026-11-12-phase31-m5-1-eslint-plugin-vue-unblock.md)） |
-| M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 已交付（6 个在册 PR：5 合并 / `#33` 阻断留痕；见[交付记录](../design/governance/2026-11-12-phase31-m5-2-dependency-pr-closure.md)） |
+| M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 已交付（RG deep R3 Pass；6 个在册 PR：5 合并 / `#33` 阻断留痕；见[交付记录](../design/governance/2026-11-12-phase31-m5-2-dependency-pr-closure.md)） |
 
 ## 未完成项汇总
 

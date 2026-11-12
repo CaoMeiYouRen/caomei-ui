@@ -77,8 +77,8 @@
 - 按 **WCAG 2.5.8（≥24×24）** 判据，289 个可点目标中约**三成**（87 个）未达标，其中**清除 / 关闭类 icon 按钮（13.33px）共 34 个**为最大构成；按 **Apple HIG（≥44×44）** 判据，达标者共 9 个（文件选择拖拽区 / 步骤条触发器 / 多行文本域）。
 - **P0 已实现（1.1.0）**：六类清除 / 关闭按钮（TagsInput / MultiSelect / AutoComplete / Password / Tag / Message，含值片删除）的命中区扩到 **≥24×24**，**按钮视觉盒不变**；多行值片的行距 +2px 以保证相邻命中区不重叠。下限可用 `--caomei-hit-target-min` 调整，但调大时须保证相邻目标的轴距不小于该值，并同时覆盖三个多值字段的 `row-gap`。
 - **P1 已实现（2026-11-10，Phase 30 M4-1）**：表单控件盒的 17 个目标（Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3 / ColorPicker 滑柄 4）同样扩到 **≥24×24**，视觉盒不变（Checkbox 18、RadioButton 高 18、Switch 40×22、Slider 18、ColorPicker 18 边框盒）；同一交互族的相邻目标需保持轴距 ≥24。口径见[响应式设计 §4](../design/responsive.md) 断言 7 与[交付记录](../design/governance/2026-11-10-phase30-m4-1-hit-target-p1.md)。
-- 其余目标（**P2** 行高受限与内联行，如字段族内联输入行、Breadcrumb、DataTable 排序）**维持现状**，触发条件登记在 [Backlog §1.5](../plan/backlog.md)。
-- **给你的建议**：面向手指操作的触摸密集区（表单、工具栏、列表项操作），可在使用层用容器 `padding` 或包装元素扩大可点区域；P0（1.1.0）与 P1（Phase 30）已交付，P2 的处置以 [Backlog §1.5](../plan/backlog.md) 的登记条件为准。
+- **P2 已实现（2026-11-12，Phase 31 M4-1）**：行高受限目标（Breadcrumb 链接 / DataTable 排序 / Select 清除）同样扩到 **≥24×24**，视觉盒不变；普通 Input 的内联输入行由控件盒填满外壳内容高，其余多值字段的锚点本就承接点击聚焦。口径见[响应式设计 §4](../design/responsive.md) 断言 7 与[交付记录](../design/governance/2026-11-12-phase31-m4-1-touch-target-p2.md)。
+- **给你的建议**：面向手指操作的触摸密集区（表单、工具栏、列表项操作），可在使用层用容器 `padding` 或包装元素扩大可点区域；P0（1.1.0）、P1（Phase 30）与 P2（Phase 31）均已在库内交付；使用层仍可按需扩大包装元素。
 
 ## 自测清单（窄屏）
 
@@ -94,4 +94,4 @@
 - [响应式设计](../design/responsive.md)——断点语义 / 窄屏行为矩阵 / 验收标准（单一事实源）
 - [主题与样式](../design/theming.md)——控件宽度上限与 token 覆盖
 - [组件总览](../components/index.md)——各组件的能力与用法
-- [Backlog](../plan/backlog.md)——移动端与响应式候选（含 P2 触摸目标）
+- [Backlog](../plan/backlog.md)——移动端与响应式候选

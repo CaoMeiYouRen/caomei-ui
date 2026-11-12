@@ -128,9 +128,14 @@ defineExpose({ focus, blur, inputRef })
     /* width: 100% 由 .caomei-field 基类提供 */
 }
 
+/*
+  命中区：输入框自身即指针目标（根容器没有 click-to-focus），而 16px 的行盒低于 24px 下限。
+  以 `align-self: stretch` 让控件盒填满外壳内容高（md 34px），文字仍垂直居中、视觉盒不变。
+*/
 .caomei-input__control {
     flex: 1;
     min-width: 0;
+    align-self: stretch;
     padding: 0;
     border: 0;
     outline: 0;

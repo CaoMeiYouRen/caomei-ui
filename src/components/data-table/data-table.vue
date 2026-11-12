@@ -870,7 +870,7 @@ function setPageSize(rows: number): void {
                             <button
                                 v-if="isSortable(header.column.id)"
                                 type="button"
-                                class="caomei-data-table__sort"
+                                class="caomei-data-table__sort caomei-hit-target"
                                 @click="toggleSort(header.column.id, $event)"
                             >
                                 <slot

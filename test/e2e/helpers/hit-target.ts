@@ -27,6 +27,12 @@ export const MIN_HIT_TARGETS = 37
 export const MIN_HIT_TARGETS_FORM = 17
 
 /**
+ * P2 受检目标下界（`#hit-target-p2`）：Breadcrumb 链接 2 + DataTable 排序 3 + Select 清除 1 = 6。
+ * 字段族内联行（普通 Input）走「宿主真实放大到 ≥24」路径，由独立用例断言，不计入 `caomei-hit-target` 计数。
+ */
+export const MIN_HIT_TARGETS_P2 = 6
+
+/**
  * P1 目标族的视觉盒上限：命中区是**不可见**扩展，视觉盒必须保持原尺寸。
  *
  * Switch 轨道 40×22（短边 22）与 Checkbox / RadioButton / Slider 滑柄 18 不同；

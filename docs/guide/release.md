@@ -5,6 +5,7 @@
 - 版本推断与发布工具为 **semantic-release**，依据 Conventional Commits 自动推断版本并发布。
 - **1.0 期决策（历史，2026-10）**：采用**本地手动发布**；**当时暂不启动 CI 自动发布流程**。1.0 走「rc 预发布 → 正式版」两步：预发布发 npm `next`，正式版发 `latest`。`manual-release.mjs` 已支持 `--tag=next|latest`（缺省按版本推断：预发布 → `next`、正式版 → `latest`；**预发布 + `latest` 会被直接拒绝**，不会落到正式通道）。通道口径与验证证据见 [M3-1 发布预检记录](../design/governance/2026-10-26-phase26-m3-1-release-tag-coverage-preflight.md)。
 - **转向（2026-11-03，2026-11-06 简化）**：用户裁定**下一阶段起通过 CI 发布**。`release.yml` 直接调用 `pnpm release`（semantic-release），版本推断、`CHANGELOG`、版本句、里程碑、npm publish、GitHub Release 与 tag 全部由 `release.config.js` 驱动；npm 使用 **Trusted Publishing（OIDC）**，`id-token: write` 即可，**不再需要 `NPM_TOKEN`**；GitHub 使用 `GITHUB_TOKEN`。触发模型 = `workflow_dispatch`（无 `dry_run` 输入、无 `environment` 审批）。手工流保留为回退路径。范围与验收口径见 [Phase 27 登记批次记录](../design/governance/2026-11-03-phase27-registration.md) §1.1 / §2，简化决策见 [发布工作流 OIDC 简化记录](../design/governance/2026-11-06-phase27-release-workflow-oidc-simplification.md)。
+- **发布节奏（2026-11-13 用户裁定）**：默认**每周最多发布一次**（有可发布提交时才发版，无变更不发版），以**每周固定手动触发** `Release` workflow 执行；试运行 **4 周**，自**首个允许发布的阶段**起算（定义 = 首个未声明「本阶段不发布」的阶段，实际起点在该阶段登记时回填）。**阶段决策优先**：阶段可显式声明「本阶段不发布」，此时暂停周更。**可提前发布**的情形：① 安全修复；② 下游构建 / 发布阻塞修复；③ `BREAKING CHANGE`；④ 大型能力或里程碑；其中安全修复可在阶段暂停期内单独授权发布。后期更新频率下降时按需放宽（周 → 月），**每季度复核一次**（自政策落定日 2026-11-13 起算，下次 2027-02-13）；本次**不启用 `schedule`**，如需无人值守发布须另行授权。
 
 > **1.0 发布门禁（2026-10-26 起）**：`1.0.0-rc.1` 发布前须通过 **G0 / G1（若 G1 裁定「修复」，另需 G1-F）/ G2**，以及 S1 / S2 / S3 前置批次；`1.0.0` 正式版发布前须通过 **G0 ~ G4**（含 G3 的 rc 与下游复验）。**所有 `publish`（含 rc）前另须通过[安全规范 §2.1](/standards/security#_2-1-发布前安全告警门禁)的告警门禁（critical 不允许豁免；high 须修复或留痕豁免）**。未通过前不得执行对应 `publish`。目标评审 2026-11-13、硬截止 2026-11-27，到期未通过不得自动延期。门禁口径见[Phase 26 执行期追加与 1.0 发布门禁](../design/governance/2026-10-26-phase26-ui-gate-planning.md) §4。
 
@@ -102,7 +103,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 ## 5. CI 发布链路（semantic-release + OIDC）
 
 - `.github/workflows/release.yml` **直接调用 `pnpm release`（semantic-release）**，与 momei / caomei-auth 同一模式：workflow 不手写版本计算、不重检版本、不手工 `npm publish`；版本推断、`CHANGELOG.md`、README / roadmap 版本句、里程碑注入、npm publish、GitHub Release 与 tag 全部由 `release.config.js` 的插件链完成。
-- **触发**：仅 `workflow_dispatch`（手动），且只允许 `master`（首步显式失败，非 master 会标红）。如需周级自动发布，参照 momei / caomei-auth 打开 workflow 顶部的 `schedule` 注释；当前保持手动，避免无变更轮次空跑。
+- **触发**：仅 `workflow_dispatch`（手动），且只允许 `master`（首步显式失败，非 master 会标红）。周更按 §1 的发布节奏以手动触发执行；`schedule` 维持注释（`0 12 * * 6`），启用无人值守发布须按 §1 单独授权。
 - **发布前门禁**：`pnpm check:security-alerts`（`SECURITY_ALERTS_TOKEN` 缺失或 critical / high 未处置即中止）→ `pnpm verify` → `pnpm test:coverage` + `pnpm check:coverage` → `pnpm release`。
 - **npm 凭据**：Trusted Publishing（OIDC）。workflow 声明 `id-token: write`，npm 自动生成 provenance，**不再需要 `NPM_TOKEN`**；仓库 / npm 侧只需绑定 Trusted Publisher（workflow filename 必须精确匹配 `release.yml`；Node ≥ 22.14 / npm ≥ 11.5.1，当前 `lts/*` 满足）。
 - **GitHub 凭据**：`GITHUB_TOKEN`（`contents: write`）。`persist-credentials: false` 下 semantic-release 会把 `GITHUB_TOKEN` 注入推送 URL，用于 `@semantic-release/git` 回推 `CHANGELOG.md` / `package.json` / README / roadmap 与创建 GitHub Release；不再使用 `RELEASE_TOKEN` 或手写 `extraheader`。若 `master` 受分支保护，需为 `GITHUB_TOKEN` 对应身份配置 bypass。

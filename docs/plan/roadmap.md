@@ -7,7 +7,7 @@
 ## 1. 现状与背景
 
 - 技术栈：Vite + Vue 3 + TypeScript，单仓库单包；组件库构建用 tsdown。
-- 当前状态：当前版本 `1.2.0`。**当前进行中阶段：Phase 32**（质量收口与文档站回归；2026-11-12 用户就[第十六轮范围评估](../design/governance/2026-11-12-next-stage-scope-evaluation-16.md) §3 裁定 D0 ① / D1 ② / D2 ① / D3 ① 后登记，**3 条主线 / 4 条原子条目**，**本阶段不发布**）；`latest` 维持 `1.2.0`。Phase 31（下游兼容扩容、数据展示动效与依赖卫生）已于 2026-11-12 交付 **5 条主线 / 6 条原子条目**并归档（本阶段不发布），见[待办归档](./todo-archive.md)与[归档批次记录](../design/governance/2026-11-12-phase31-archive.md)。Phase 30（表单、布局与选择器动效 + 触摸目标 P1 + 治理小项）已于 2026-11-11 交付 **5 条主线 / 5 条原子条目**并归档（本阶段不发布），见[待办归档](./todo-archive.md)与[归档批次记录](../design/governance/2026-11-11-phase30-archive.md)。Phase 29（动效体系与图标体系落地）已于 2026-11-09 完成并归档（本阶段不发布）。
+- 当前状态：当前版本 `1.2.0`。**当前进行中阶段：Phase 32**（质量收口与文档站回归；2026-11-12 用户就[第十六轮范围评估](../design/governance/2026-11-12-next-stage-scope-evaluation-16.md) §3 裁定 D0 ① / D1 ② / D2 ① / D3 ① 后登记，**3 条主线 / 4 条原子条目**，**本阶段不发布**）；`latest` 维持 `1.2.0`。Phase 31（下游兼容扩容、数据展示动效与依赖卫生）已于 2026-11-12 交付 **5 条主线 / 6 条原子条目**并归档（本阶段不发布），见[待办归档](./todo-archive.md)与[归档批次记录](../design/governance/2026-11-12-phase31-archive.md)。Phase 30（表单、布局与选择器动效 + 触摸目标 P1 + 治理小项）已于 2026-11-11 交付 **5 条主线 / 5 条原子条目**并归档（本阶段不发布），见[待办归档](./todo-archive.md)与[归档批次记录](../design/governance/2026-11-11-phase30-archive.md)。Phase 29（动效体系与图标体系落地）已于 2026-11-09 完成并归档（本阶段不发布）。**发布节奏**：默认每周最多一次（手动触发，无变更不发版），阶段可显式暂停；提前发布与降频口径见[发布指南 §1](../guide/release.md)。
 - 版本与阶段：`1.1.0` 于 2026-11-06 经 CI 发布（发布时为 `latest`）。**Phase 27 已完成并发布 `1.1.0`**（移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布；6 条主线 / 18 条原子条目），发布运行时验收见 [M5-1 记录](../design/governance/2026-11-07-phase27-m5-1-1.1.0-release.md)，阶段块已归档（Phase 27 入窗、Phase 21 迁深度归档），见[待办归档](./todo-archive.md)。**Phase 26 已完成并发布 `1.0.0`**（冻结面终审、行为收口、发布链路；含 G0 ~ G4 门禁、M5 插队批次与 S1 ~ S3 安全批次），发布执行见 [M3-3 记录](../design/governance/2026-11-03-phase26-m3-3-1.0.0-release.md)。**Phase 28 已于 2026-11-07 用户裁定后登记**（caomei-auth 迁移反馈 #28 收口 + 图标体系调研；5 条主线 / 8 条原子条目），范围与验收口径见 [Phase 28 登记批次记录](../design/governance/2026-11-07-phase28-registration.md)；**2026-11-08 完成并发布 `1.2.0`**（8/8 条目，发布记录见 [M5-1 记录](../design/governance/2026-11-08-phase28-m5-1-1.2.0-release.md)），阶段已归档；其余方向（国际化二期、RTL、长尾组件等）见 [Backlog](./backlog.md) 与 [长期任务](./recurring.md)。
 - 组件与已落地能力清单以[组件设计](../design/components.md) 与仓库根 `README` 为单一事实源；版本变更史见仓库根 `CHANGELOG`。
 - 目标下游：afdian-linker、caomei-auth、momei、rss-impact-next、dependfix/apps/platform。
@@ -57,7 +57,7 @@
 ## 3. 设计依据
 
 - 命名决策：`caomei-ui`（npm 与 GitHub 均未占用，不新建 org，单包发布）。
-- 框架与结构：单仓库单包；tsdown 构建；发布走本地手动流（`pnpm release:manual`，CI 自动发布暂缓）；**不引入 Tailwind**。
+- 框架与结构：单仓库单包；tsdown 构建；发布走 CI semantic-release（`Release` workflow 手动触发，OIDC 发布；本地 `pnpm release:manual` 仅作回退），周更节奏见[发布指南 §1](../guide/release.md)；**不引入 Tailwind**。
 - 组件清单：详见 [组件设计](../design/components.md) 与 [架构设计](../design/architecture.md)。
 
 ## 4. 阶段验收通则

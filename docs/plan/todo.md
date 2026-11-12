@@ -10,15 +10,15 @@
 
 | 条目 | 说明 | 主线 | 验收状态 |
 |:---|:---|:---|:---|
-| M1-1 | 下游兼容扩容（`caomei-auth` + `momei`） | 下游兼容扩容 | 已交付（RG R3 Pass；真实 run 待取证） |
-| M2-1 | 实际安装版本断言（override 后 fail-closed） | 实际安装版本断言 | 已交付（RG R3 Pass；真实 run 待取证） |
+| M1-1 | 下游兼容扩容（`caomei-auth` + `momei`） | 下游兼容扩容 | 已交付（RG R3 Pass；真实 run `43211984429` 三仓 success；见[交付记录](../design/governance/2026-11-12-phase31-m1-1-m2-1-downstream-compat.md)） |
+| M2-1 | 实际安装版本断言（override 后 fail-closed） | 实际安装版本断言 | 已交付（RG R3 Pass；真实 run `43211984429` 未触发 fail-closed；同上记录） |
 | M3-1 | 数据展示动效（A7） | 数据展示动效 | 已交付（RG R3 Pass；见[交付记录](../design/governance/2026-11-12-phase31-m3-1-data-display-motion.md)） |
 | M4-1 | 触摸目标 P2（35 个行高受限 / 内联行目标） | 触摸目标 | 待执行 |
-| M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 进行中（`stepper` 类型去重已提交；10.12 下的 `lint:check` 待依赖 PR 复跑取证） |
+| M5-1 | `eslint-plugin-vue` 10.12 解阻与同名清理 | 依赖 PR 卫生 | 已交付（RG R1 quick Pass；`stepper` 类型去重；依赖 PR #48 CI 全绿并合并；见[交付记录](../design/governance/2026-11-12-phase31-m5-1-eslint-plugin-vue-unblock.md)） |
 | M5-2 | 依赖 PR 复核与合并（含 `reka-ui` 阻断留痕） | 依赖 PR 卫生 | 待执行 |
 
 ## 未完成项汇总
 
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。条件触发候选、已发布版本、长期任务与归档遗留均以各自单一载体为准，本节不再复写。
 
-- **等待外部反馈**：momei 侧迁移由对应仓库执行、本仓等待反馈；三仓 `caomei-ui` 锁定版本读数（2026-11-12，仓库 HEAD）：dependfix **`1.0.0`** / caomei-auth **`1.2.0`** / momei **`1.0.0`**。`v1.0.0` tag 的下游兼容检查已通过（run 41482763157）；`v1.1.0` 已通过（run 42251067161，dependfix @ `ad592c92…`）；`v1.2.0` 已通过（run 42441345211）。1.0 升级护航的版本快照与 momei 页面级反馈缺口见[升级护航交付记录](../design/governance/2026-11-04-phase27-m3-2-1.0-upgrade-escort.md) §2 / §5；面向消费方的升级注意与对外 7 条见[升级到 1.0](../guide/upgrade-to-1.0.md)。
+- **等待外部反馈**：momei 侧迁移由对应仓库执行、本仓等待反馈；三仓 `caomei-ui` 锁定版本读数（2026-11-12，仓库 HEAD）：dependfix **`1.0.0`** / caomei-auth **`1.2.0`** / momei **`1.0.0`**。`v1.0.0` tag 的下游兼容检查已通过（run 41482763157）；`v1.1.0` 已通过（run 42251067161，dependfix @ `ad592c92…`）；`v1.2.0` 已通过（run 42441345211）。**2026-11-12 扩容后首跑**（`caomei-auth` / `momei` 纳入矩阵）run `43211984429` 三仓 success，被测版本 `1.2.0`，见[交付记录](../design/governance/2026-11-12-phase31-m1-1-m2-1-downstream-compat.md)。1.0 升级护航的版本快照与 momei 页面级反馈缺口见[升级护航交付记录](../design/governance/2026-11-04-phase27-m3-2-1.0-upgrade-escort.md) §2 / §5；面向消费方的升级注意与对外 7 条见[升级到 1.0](../guide/upgrade-to-1.0.md)。

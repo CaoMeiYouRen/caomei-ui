@@ -27,7 +27,7 @@
 | `@vue/compiler-sfc` `compileScript` 实测 | props / emits / `withDefaults` 合并结构与改动前一致 |
 | `vue-component-meta` 双态对比 | props 6 项、events `update:modelValue` 不变 |
 
-- **10.12 下的 `pnpm lint:check` 证据**：由依赖 PR（`eslint-plugin-vue` 10.11.1 → 10.12.0）在 rebase 后重跑 CI 提供；本批代码修复先落地，PR 重跑通过即视为解阻完成（合并结果与 CI 结论回填本节）。
+- **10.12 下的 `pnpm lint:check` 证据（已回填）**：依赖 PR #48（`eslint-plugin-vue` 10.11.1 → 10.12.0）在 `master` 带上本批 `Omit` 修复后重跑 CI：**Quality（含 `lint:check --max-warnings 0`）pass、Test & Build pass**，PR 已合并——新判据在 10.12 下不再报 `vue/no-dupe-keys`，解阻完成。
 
 ## 4. Review Gate
 
@@ -42,4 +42,4 @@
 
 1. **`modelValue` 描述丢失**：API 自动生成表中该 prop 描述为空（手写文档页仍完整描述 `v-model` 用法），接受。
 2. **本地无 10.12 实跑**：仓库当前锁定 10.11.1，新判据的消除只能由依赖 PR 的 CI 证明；PR 未绿前本条目不算完整交付。
-3. **不涉及其他组件**：`rich-text-editor` / `tags-input` 预期为 no-op，升级后由同一 CI 覆盖，不额外改动。
+3. **不涉及其他组件**：`rich-text-editor` / `tags-input` 预期为 no-op，升级后由 PR #48 的 CI 覆盖（未新增告警），不额外改动。

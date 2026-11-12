@@ -23,6 +23,7 @@
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
 | Paginator 页码报表（`CurrentPageReport` 等价物） | dependfix 迁移反馈 + [caomei-auth 迁移反馈 #28](https://github.com/CaoMeiYouRen/caomei-ui/issues/28) | **条件候选**：下游 dependfix 3 处 + caomei-auth 1 处（`table.vue` 的 `current-page-report-template`）使用模板报表；本仓可用 `v-model:page`（1 基）+ `rowsPerPageOptions` 自渲染承接（不构成阻塞）。触发条件：出现必须内建模板的真实用例 | 低 |
 | Select `null` 选项开发期告警 | momei 迁移反馈 2026-09-25 §1.2 | **条件候选**：`optionValue` 解析为非 `string` / `number` 的选项静默丢弃属**已声明契约**（[设计规范 §7](../design/design-spec.md)）；候选为开发期对 `null` / `undefined` 值告警 | 低 |
+| DataTable 分页状态在数据刷新时的保持（`autoResetPageIndex`） | 下游 `dependfix` `apps/platform/app/pages/repos.vue` 反馈（2026-11-13；核对版本 `@tanstack/vue-table 9.2.4`） | **现状**：客户端分页（`lazy=false`）下 `useTable` 未设 `autoResetPageIndex`，@tanstack 默认在 `data` 引用变化时回第 1 页，并经 `onPaginationChange` 抛出 `update:page(1)`（`v-model:page` 也会收到）；同源重置还覆盖**排序 / 筛选 / 分组**（`createSortedRowModel` / `createFilteredRowModel` / `createGroupedRowModel`），实施时不能只按「刷新」评估；每页条数在 `rows` 未受控且表格卸载重建时回默认 10。**候选**：透传 `autoResetPageIndex` 开关（与上游同名，默认保持现状以避免行为变更）；文档补口径「刷新不保留页码需受控 page + 忽略刷新期间的 `update:page`，且数据缩水时父级须回收空页」与 `v-model:rows` 持久化建议。**触发条件 = 下一阶段范围评估纳入或下游再次报告**（无技术前置；需先裁定默认值）。优先级「中」依据 = 下游实测 + 改动面小 + 无技术前置 | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 

@@ -104,6 +104,7 @@ docs/
     - **两处实现约束**（改动该层前必读）：① 组件的 scoped keyframes 名称被编译期重写、无法跨文件引用，故层内以 `caomei-demo-*` 重声明等价 keyframes（组件动画变更需同步），且**入场与退出必须是不同的 keyframes 名**——Reka 的 Presence 以 `animation-name` 是否变化判定出场，复用同名 + `reverse` 会被判为无动画而立即卸载；② Accordion 的 `animation-name` **不得**用 `!important` 声明——Reka 的 Collapsible 先以内联 `animation-name: none` 抑制动画再测自然高度，`!important` 会压过该抑制并把内容高度变量写成 0（仅 duration / timing / iteration 可用 `!important` 压过 VitePress）。**`!important` 必须按属性判定，不可整块套用**。
     - 取舍与实测证据见 [M3 演示动效验证记录](./governance/2026-09-16-m3-demo-motion-validation.md)（reduced-motion 下 demo 内 Drawer 入场 `0.2s` + 逐帧位移、`demo 外`仍 `1ms`）。
 - VitePress 默认把 `.vp-doc` 内的 `<table>` 设为 `display: block`（便于页内横向滚动），会脱离表格布局上下文、使组件表格的 `position: sticky` 冻结列失效；文档站需对组件表格还原 `display: table`（见 `docs/.vitepress/theme/caomei-demo.css`）。
+- **取证脚本约定（`scripts/docs/*`）**：必须做构建产物前置校验（如 `dist/index.html` 存在）与受检选择器最小命中数下界，**受检面归零判失败**；探针（`probe-*`）在差异、告警或受检面归零时 `exit 1`，并在文件头声明判别面与已知边界。样例见 `scripts/docs/probe-home-hydration.mjs`（首页 hydration 定性，见 [M2-2 记录](./governance/2026-11-13-phase32-m2-2-home-hydration.md)）。
 
 ## 10. 国际化（i18n）与翻译路径
 

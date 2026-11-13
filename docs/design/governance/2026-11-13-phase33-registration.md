@@ -8,11 +8,11 @@
 ## 1. 编号分配与构成
 
 - **编号**：取授权启动时已有最大编号（Phase 32）+ 1 = **Phase 33**。
-- **阶段名**：依赖与工具链升级、下游适配、组件增强与质量守卫、发布收口（D0 ① + D1 ①）。
-- **构成（原登记 5 条主线 / 11 条原子条目；2026-11-14 执行期追加 M3-4 后为 5 条主线 / 12 条原子条目）**：依赖与工具链 **4** + 下游适配 **1** + 组件增强与可访问性 **3 → 4** + 质量守卫与对比度 **2** + 发布收口 **1**；对账 **4 + 1 + 4 + 2 + 1 = 12**。
-- **提名期标签映射**：评估期 A → M1、B → M2、C → M3、D → M4、E → M5。
+- **阶段名**：依赖与工具链升级、下游适配、组件增强与质量守卫、协作测试 P0、发布收口（D0 ① + D1 ①）。
+- **构成（原登记 5 条主线 / 11 条原子条目；2026-11-14 执行期追加 M3-4 后为 5 / 12；同日再追加 M6 协作测试 P0 后为 6 条主线 / 14 条原子条目）**：依赖与工具链 **4** + 下游适配 **1** + 组件增强与可访问性 **3 → 4** + 质量守卫与对比度 **2** + 发布收口 **1** + 协作测试 **2**；对账 **4 + 1 + 4 + 2 + 1 + 2 = 14**。
+- **提名期标签映射**：评估期 A → M1、B → M2、C → M3、D → M4、E → M5；协作测试批次 **T1 / T2 → M6-1 / M6-2**（仅 P0 进入当前阶段）；T3 / T4 登记 Backlog 候选，**不占阶段编号**（2026-11-14 用户裁定）。
 - **执行期追加（2026-11-14）**：**M3-4** Select 长列表面板滚动可达性——下游 caomei-auth「修改手机号」国家码实测：选项多时面板被内容撑高、越出视口，模态锁滚动后超出部分不可达。属**直接影响可用性的 blocker 级缺陷**（[规划规范 §3.5](../../standards/planning.md) 插队例外），未入候选池即登记。
-- **候选池变化**：`backlog.md` §1 由 **32 → 24**（移出 9 行：§1.1 4 行 = ColorPicker / Select 告警 / Paginator 报表 / DataTable 分页状态保持；§1.6 5 行 = `eslint` 10 / `vitest` 5 / `stylelint` 18 / `fontkit` 3 / Calendar-RTE 对比度）；**N1 transition 副本守卫**为本轮新候选、未入池即登记；**N2 dev 形态 hydration 守护**登记为候选（§1.6 +1）。§1.1 6 → 2、§1.6 14 → 10。
+- **候选池变化**：`backlog.md` §1 由 **32 → 24**（2026-11-14 追加 T3 / T4 后 **24 → 26**，§1.6 10 → 12）（移出 9 行：§1.1 4 行 = ColorPicker / Select 告警 / Paginator 报表 / DataTable 分页状态保持；§1.6 5 行 = `eslint` 10 / `vitest` 5 / `stylelint` 18 / `fontkit` 3 / Calendar-RTE 对比度）；**N1 transition 副本守卫**为本轮新候选、未入池即登记；**N2 dev 形态 hydration 守护**登记为候选（§1.6 +1）。§1.1 6 → 2、§1.6 14 → 10。
 - **发布**：本阶段**收口发布 `1.3.0`**（D1 ①）；判据 = `v1.2.0..HEAD` 含 **20 个 `feat`** 提交（semantic-release 判 minor）；发布仍按[发布指南](../../guide/release.md)手动触发，release note 落 `docs/release-notes/1.3.0.md`，发布前执行长期任务门槛复核轮与 API 差分校验。
 - **原否定判定与覆盖**：ColorPicker 色板「2026-09-20 M2-1 判定：不达标」、Paginator 报表「条件候选 / 触发条件 = 必须内建模板」两项原判定，均由用户 D0 ① 裁定覆盖后纳入；判定原文保留在[第十七轮评估](./2026-11-13-next-stage-scope-evaluation-17.md) §2。
 
@@ -32,6 +32,10 @@
 | **M4-1** | 质量守卫与对比度 | N1 transition 副本守卫：数据源 = [M3-1 记录](./2026-11-13-phase32-m3-1-demo-transition.md) §2 的 25 行清单；比较维度 = 选择器 → 组件基础层 `transition` 属性名集合；豁免 = `expressive` 专属与 Portal 手势 | 同名单测 + 负向用例；受检面下界 25 条；接入 `governance:check`；组件新增过渡时守卫可判失败 |
 | **M4-2** | 质量守卫与对比度 | Calendar 上 / 下月导航按钮与 RichTextEditor 容器描边加入 `test/e2e/preset-contrast.e2e.ts` 边界矩阵 | 6 预设 × 明暗 × 2 背景全绿；阈值 **3:1 不放宽**；如首次失败按设计裁定改 token |
 | **M5-1** | 发布收口 | `1.3.0` 发布（含 Phase 32 累积与本阶段变更）；semantic-release 手动触发 | `latest = 1.3.0`、tag / GitHub Release / 回推提交一致；`docs/release-notes/1.3.0.md` 已落盘并被 `generateNotesCmd` 读取；发布后校验与 API 差分通过；下游兼容 run success |
+| **M6-1** | 协作测试 | T1 协作主链路（**单层**）：C1（Dialog / Drawer 内 Select 指针展开 + 选择 + 焦点归还）、C2 单层残留、C3 单层滚动锁、C4（Drawer 长列表滚动）、C5（Esc / 外部点击分层） | 真实 Chromium + 真实指针；**C1 ~ C5 各 ≥1 条、合计 ≥5**；不重复 `overlay-stacking` 的层级 / 命中测试结论 |
+| **M6-2** | 协作测试 | T2 残留与栈（**多层 + 负向对照的唯一归属**）：Dialog + Select（`bodyLock`）/ Dialog + Drawer 叠加、C2 负向对照（关闭后强制 `pointer-events: none` 必须失败） | `body.pointer-events` / `overflow` / `padding-right` 恢复为打开前取值；最后一层关闭后恢复；几何位移 ≤ 实测滚动条宽 |
+
+> T3（嵌套与焦点，C6 ~ C9）与 T4（打开态 axe，C10）登记为 [Backlog](../../plan/backlog.md) 候选，不进入本阶段（用户裁定仅 P0 插入）。
 
 ## 3. 非目标（本阶段）
 
@@ -44,9 +48,9 @@
 
 | 载体 | 动作 |
 |:---|:---|
-| `docs/plan/todo.md` | 声明「当前进行中阶段：Phase 33」+ `## Phase 33 原子条目` 段（11 行，状态「待执行」） |
-| `docs/plan/roadmap.md` | §1 当前态改为 Phase 33；阶段表新增 Phase 33 行（登记时点 5 主线 / 11 条 + 对账式；2026-11-14 追加后为 12 条） |
-| `docs/plan/backlog.md` | 移出 9 行（§1.1 4 / §1.6 5）；新增 N2 行（dev 形态 hydration 守护）；候选池 **32 → 24**，§1.1 6 → 2、§1.6 14 → 10 |
+| `docs/plan/todo.md` | （登记时点快照）声明「当前进行中阶段：Phase 33」+ 条目段（登记 11 行；2026-11-14 追加后 14 行） |
+| `docs/plan/roadmap.md` | （登记时点快照）§1 与阶段表新增 Phase 33 行（5 主线 / 11 条；2026-11-14 追加后为 6 / 14） |
+| `docs/plan/backlog.md` | （登记时点快照）移出 9 行（§1.1 4 / §1.6 5）；新增 N2 行；候选池 **32 → 24**；2026-11-14 追加 T3 / T4 后为 **26**（§1.6 12） |
 | `docs/design/governance/index.md` | 新增本记录 |
 | `.session`（git-ignored） | `current_phase` / `active_plan` / `next_steps` 与 `runtime_state.plan_state` 同批同步 |
 
@@ -58,7 +62,8 @@
 4. **`vitest` 5 语义收紧**：默认清 mock、未 await 异步断言判失败，可能暴露存量用例。
 5. **C 主线的 API / 行为面**：Paginator `#report` 须 API 差分与中英文档同批，并改写组件页既有「不提供插槽」两处表述；ColorPicker 键盘模型变更须同步 a11y 用例与 release note；Select 告警不得影响生产输出。
 6. **D 主线对比度**：Calendar / RTE 边界纳入矩阵后可能首次失败，须改 token 而非放宽阈值。
-7. **发布**：发布前执行长期任务门槛复核轮（当前第 35 轮已执行，发布前需再执行一轮）与 API 差分；发布失败按发布指南回退，不重试同一构建。
+7. **待产出评估**：嵌套遮罩层级（第二层遮罩低于父层内容）按用户裁定**单独立项评估**，产出记录后再决定是否登记批次。
+8. **发布**：发布前执行长期任务门槛复核轮（当前第 35 轮已执行，发布前需再执行一轮）与 API 差分；发布失败按发布指南回退，不重试同一构建。
 
 ## 6. Review Gate
 
@@ -67,3 +72,4 @@
   - warning（均同批收口）：① `.session` 只同步了一半（`next_steps` / `blocked_on` / `decisions` 未更新）→ 已完整同步；② N2 来源锚点 `§5.3` 不存在 → 改「§5 第 3 条」，评估记录同源锚点一并修正；③ M3-1 / M3-3 文档回扫面不全（ColorPicker 另涉 `design-spec` 两处与 `components.md`；Paginator 实为 5 处）→ 逐条列名；④ M1-4 验收字面不可达成（既有 6 项字体族失败）→ 改为「除既有 6 项外零失败且失败集合一致」；⑤ 「Backlog 迁出保留原判定」无可执行载体 → 删除，改在 §1 记录原否定判定与 D0 覆盖。
   - suggest：补 1.3.0 判据（20 feat → minor）、`check:outdated-major` 实测读数、release note 载体 `docs/release-notes/1.3.0.md`、非目标补 §1.5 / §1.8 与 M1-3 受检面基线 → 全部采纳。
 - **复查基线**：本记录 §1 / §2 / §4 / §5；`docs/plan/todo.md` 当前状态句与条目表；`docs/plan/roadmap.md` §1 与 Phase 33 行；`docs/plan/backlog.md` §1.1 / §1.6（含 N2 行）；`docs/design/governance/index.md` 新增条目；`.session`（gitignored）。
+- **执行期追加复核（2026-11-14）**：M3-4 与协作测试 P0 的追加批次经 R1 `standard` `Reject`（2 blocker / 5 warning / 5 suggest：roadmap §1 未同步、backlog 表格列错位等）→ R2 `quick` `Pass`（0 blocker）；计数 6 主线 / 14 条、候选池 26 四处一致。

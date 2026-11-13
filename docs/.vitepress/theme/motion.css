@@ -16,7 +16,8 @@
         **无法**用容器作用域命中（实测父链为 `DIV < BODY < HTML`），故按组件选择器恢复 ——
         文档站当前只在 demo 路径触发这些组件（12 页抽查：demo 容器外无任何恢复项；站点元素仍为 1ms 见 M3 验证记录），
         站点自身 UI 不受影响；将来若新增站点级触发（站点级 Toast / Confirm 等）需重新评估该作用域；
-      - 仅恢复 `animation`（入场 / 退出 / 加载），**不恢复 transition**：hover 与状态过渡继续尊重系统偏好。
+      - 演示区恢复 `animation`（入场 / 退出 / 加载）后，再按组件恢复 `transition`（见下文「演示区过渡 opt-in」）：
+        开启「减少动态效果」的访客在 demo 内仍能看到组件的状态过渡；站点 UI 仍由 VitePress 的 `0s !important` 压平。
 
   keyframes 说明：组件若在 scoped 样式块中定义 keyframes，其名称会被编译期重写（`caomei-*-<hash>`），
   无法跨文件引用，故下文的 `caomei-demo-*` 与组件内定义等价（值同步自组件源码；组件动画变更时需一并更新，
@@ -161,6 +162,173 @@
 
     .caomei-date-picker__content {
         animation: caomei-date-picker-in 0.12s ease-out !important;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   演示区过渡 opt-in（容器内可达）—— 与上面的 animation 层配套
+
+   VitePress 在 reduce 下以 `* { transition-duration: 0s !important }` 压平过渡；组件侧还有两层兜底：
+   ① 全局 token 在 reduce 下把 `--caomei-motion-duration-*` 全部归零；② 部分组件再显式写
+   `transition: none`。要恢复只能逐组件重声明完整 shorthand，并使用**文档站本地时长变量**
+   （不能复用已归零的 motion token）。
+   收口范围 = 组件自身声明过 transition、且能在 demo 容器内到达的元素；`expressive` 专属过渡
+   （Tag / Slider / Calendar / DataTable / InputGroup 成员位移 / Stepper 指示器等）不在此列——
+   它们在 minimal 下本就没有声明，恢复会创造出组件不存在的过渡。
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .vitepress-demo-plugin__container {
+        --caomei-demo-duration-base: 150ms;
+        --caomei-demo-duration-slow: 200ms;
+        --caomei-demo-duration-slower: 300ms;
+
+        /* 复写字段外壳的公开过渡入口，保留下游覆盖语义（只把时长换成 demo 档位） */
+        --caomei-field-transition:
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            box-shadow var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard);
+    }
+
+    .vitepress-demo-plugin__container .caomei-field {
+        transition: var(--caomei-field-transition) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-button {
+        transition:
+            opacity var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-float-label > label {
+        transition:
+            top var(--caomei-float-label-transition-duration, var(--caomei-demo-duration-base)) var(--caomei-motion-ease-standard),
+            font-size var(--caomei-float-label-transition-duration, var(--caomei-demo-duration-base)) var(--caomei-motion-ease-standard),
+            color var(--caomei-float-label-transition-duration, var(--caomei-demo-duration-base)) var(--caomei-motion-ease-standard),
+            transform var(--caomei-float-label-transition-duration, var(--caomei-demo-duration-base)) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-accordion__trigger {
+        transition: background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-accordion__chevron {
+        transition: transform var(--caomei-demo-duration-slow) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-badge {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            min-width var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-card--hoverable {
+        transition:
+            box-shadow var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            transform var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-checkbox__control {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-file-upload__dropzone {
+        transition:
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-image__preview-icon {
+        transition: opacity var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-menu .caomei-menu__item {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-menu__submenu-indicator {
+        transition: transform var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-paginator__control {
+        transition:
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-password__meter-fill {
+        transition:
+            width var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-progress-bar__indicator {
+        transition: width var(--caomei-demo-duration-slower) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-radio-button__indicator {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-radio-button__indicator::after {
+        transition: transform var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-select-button__item {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-switch {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-switch__thumb {
+        transition: transform var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-tabs__trigger {
+        transition:
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-stepper__trigger {
+        transition:
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-toolbar__button,
+    .vitepress-demo-plugin__container .caomei-toolbar__link {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-toggle-button {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
+    }
+
+    .vitepress-demo-plugin__container .caomei-dropdown-menu__trigger,
+    .vitepress-demo-plugin__container .caomei-popover__trigger {
+        transition:
+            background-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard),
+            border-color var(--caomei-demo-duration-base) var(--caomei-motion-ease-standard) !important;
     }
 }
 

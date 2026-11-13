@@ -358,7 +358,8 @@ export function resolveRegistry({ env = process.env, exec = spawnSync } = {}) {
  * @returns {string} packument 地址
  */
 export function buildPackumentUrl(name, registry = DEFAULT_REGISTRY) {
-    const encoded = name.startsWith('@') ? name.replace('/', '%2f') : name
+    // scoped 包名中的 "/" 需全局编码
+    const encoded = name.startsWith('@') ? name.replaceAll('/', '%2f') : name
     return `${registry.replace(/\/+$/, '')}/${encoded}`
 }
 

@@ -93,7 +93,7 @@ describe('probe-home-hydration 主题预设键读取', () => {
 
 describe('probe-home-hydration 静态服务', () => {
     it('目录请求返回 index.html，缺失与越界返回 404', async () => {
-        const server = createStaticServer(root)
+        const server = await createStaticServer(root)
         await new Promise((done) => server.listen(0, '127.0.0.1', done))
         const { port } = server.address()
         try {

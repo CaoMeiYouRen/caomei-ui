@@ -18,6 +18,7 @@ const status = ref('')
         <CaomeiSelect
             v-model="status"
             :options="options"
+            aria-label="筛选状态"
             placeholder="筛选状态"
         />
         <CaomeiButton variant="secondary">

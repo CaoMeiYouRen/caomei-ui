@@ -18,6 +18,7 @@ const status = ref('')
         <CaomeiSelect
             v-model="status"
             :options="options"
+            aria-label="Filter by status"
             placeholder="Filter by status"
         />
         <CaomeiButton variant="secondary">

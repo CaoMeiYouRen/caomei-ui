@@ -4,16 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 32（质量收口与文档站回归）。** 2026-11-12 用户就[第十六轮范围评估](../design/governance/2026-11-12-next-stage-scope-evaluation-16.md) §3 裁定 D0 ① / D1 ② / D2 ① / D3 ① 后登记：**3 条主线 / 4 条原子条目**（依赖适配与例外收口 1 / 文档站质量收口 2 / 文档站 demo 过渡 1；构成对账 1 + 2 + 1 = 4）；**本阶段不发布**，`latest` 维持 `1.2.0`。范围与验收口径的唯一载体见 [Phase 32 登记批次记录](../design/governance/2026-11-12-phase32-registration.md) §1 / §2。
-
-## Phase 32 原子条目
-
-| 条目 | 说明 | 主线 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | `reka-ui` 2.11.0 适配与 Toast 例外收口（原 dependabot PR #33，由 [#52](https://github.com/CaoMeiYouRen/caomei-ui/pull/52) 交付） | 依赖适配与例外收口 | 已完成（PR #52 合并 `5b72563`；见[记录](../design/governance/2026-11-13-phase32-m1-1-reka-ui-2.11-adaptation.md)） |
-| M2-1 | 文档站 `with-select` 示例可访问名 | 文档站质量收口 | 已完成（示例补齐 + 源码契约守卫；见[记录](../design/governance/2026-11-13-phase32-m2-1-input-group-select-name.md)） |
-| M2-2 | 文档站首页 hydration mismatch 定性 | 文档站质量收口 | 已完成（未复现，SSG 快照 + dev 对照取证；见[记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md)） |
-| M3-1 | 文档站 demo 过渡恢复（含 reduce 压平） | 文档站 demo 过渡 | 已完成（demo 过渡按组件恢复，站点仍压平；见[记录](../design/governance/2026-11-13-phase32-m3-1-demo-transition.md)） |
+**当前无进行中阶段。** 下一阶段启动需用户明确授权（规划纪律见[规划规范 §3 / §4](../standards/planning.md)）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## 未完成项汇总
 

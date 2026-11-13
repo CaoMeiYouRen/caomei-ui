@@ -117,6 +117,8 @@
 
 **可搜索单选**：PrimeVue 的 `filter` **未实现**——Reka Select 把 `role="listbox"` 固定在面板元素上，面板内搜索框会使其成为 listbox 的 owned child、违反 WAI-ARIA `aria-required-children`；需要「可搜索单选」时改用 `CaomeiAutoComplete`（**允许自由文本**，与 PrimeVue「值须来自选项」有差异，见 [AutoComplete 页](./auto-complete.md) 与 [Backlog](../plan/backlog.md)）。
 
+**面板高度**：选项视口上限取 `min(15rem, popper 可用高)`，超出时在面板内滚动（约 9 项以上）；需要更高列表时覆盖 `.caomei-select__viewport` 的 `max-height`。`scrollHeight` 仍不提供（高度由面板自适应 + 上限决定）。
+
 **未实现**：`filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`、`editable`、`optionGroupLabel` / `optionGroupChildren`、`scrollHeight` / `dataKey`、`variant`（`outlined` / `filled`）、`labelId` / `labelStyle` / `labelClass`、`appendTo` 与面板样式 / 类名透传。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)（**陷阱表新增**：Select `#value` 插槽、`#value` 与 `#option` 分离、`iconOnly` 时忽略 `iconPosition`）。

@@ -498,6 +498,15 @@ function clearValue(): void {
 }
 
 .caomei-select__viewport {
+    /*
+      长列表可达性：视口上限取「面板可用高」与「与选择器家族一致的 15rem」的较小值。
+      Reka 在 SelectContent 写入 `--reka-select-content-available-height`（popper 可用高），
+      缺失时回退 15rem（与 MultiSelect / AutoComplete 一致）；无上限时选项会把面板撑出视口，而模态已锁页面滚动，
+      导致超出部分不可达（下游「修改手机号」国家码列表实测）。
+    */
+    max-height: min(15rem, var(--reka-select-content-available-height, 15rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: var(--caomei-space-1);
 }
 

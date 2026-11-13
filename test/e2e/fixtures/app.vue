@@ -235,6 +235,16 @@ const overlayAutoValue = ref<string>()
 const overlayColorValue = ref('#60a5fa')
 const overlayDateValue = ref<Date | null>(null)
 const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
+/**
+ * Select 长列表可滚动用例（见 `test/e2e/select-long-list.e2e.ts`）：60 个选项使面板自然高度
+ * 远超视口；视口必须带上限并在面板内滚动，否则模态锁滚动后超出部分不可达。
+ */
+const longListDialogOpen = ref(false)
+const longListValue = ref<string | null>(null)
+const longListOptions = Array.from({ length: 60 }, (_, index) => ({
+    label: `国家 ${index + 1}`,
+    value: `c${index + 1}`,
+}))
 
 /*
  * 图表内核的按需注册（使用方职责）：只注册受检用例用到的渲染器 / 图表类型 / 组件，
@@ -2119,6 +2129,23 @@ const ConfirmDriver = defineComponent({
                     caption="排序目标"
                 />
             </div>
+        </section>
+        <section id="select-long-list" class="fixture__case">
+            <CaomeiButton id="select-long-list-trigger" @click="longListDialogOpen = true">
+                打开长列表对话框
+            </CaomeiButton>
+            <CaomeiDialog
+                v-model:open="longListDialogOpen"
+                title="长列表选择"
+            >
+                <div id="long-select-host" style="height: 320px">
+                    <CaomeiSelect
+                        v-model="longListValue"
+                        :options="longListOptions"
+                        placeholder="选择国家"
+                    />
+                </div>
+            </CaomeiDialog>
         </section>
     </main>
 </template>

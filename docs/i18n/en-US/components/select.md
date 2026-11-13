@@ -117,6 +117,8 @@ No events besides `update:modelValue`; the option list is passed in a controlled
 
 **Searchable single select**: PrimeVue's `filter` is **not implemented** — Reka Select keeps `role="listbox"` on the panel element, so a search box inside it would become an owned child of the listbox and violate WAI-ARIA `aria-required-children`; use `CaomeiAutoComplete` for searchable single select (it **allows free text**, a difference from PrimeVue's "value must come from the options" — see the [AutoComplete page](./auto-complete.md) and the [Backlog](/plan/backlog), Chinese).
 
+**Panel height**: the option viewport is capped at `min(15rem, popper available height)` and scrolls inside the panel beyond that (~9 items); override `max-height` on `.caomei-select__viewport` for taller lists. `scrollHeight` is still not supported (height is driven by content plus the cap).
+
 **Not implemented**: `filter` / `filterPlaceholder` / `filterMatchMode` / `filterFields`, `editable`, `optionGroupLabel` / `optionGroupChildren`, `scrollHeight` / `dataKey`, `variant` (`outlined` / `filled`), `labelId` / `labelStyle` / `labelClass`, `appendTo` and panel style/class forwarding.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration) (**trap table additions**: Select `#value` slot, `#value` vs `#option` separation, `iconOnly` ignores `iconPosition`).

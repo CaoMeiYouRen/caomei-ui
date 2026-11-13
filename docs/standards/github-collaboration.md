@@ -52,7 +52,7 @@
   - 放行条件含 `base = master`、`author = dependabot[bot]`、`label = dependencies`、非 draft、`Quality` 与 `Test & Build` 全绿，并排除 `release.config.js` 与 `.github/workflows/release.yml`。
   - 该路径不要求 Review Gate。逐条条件文本以 `.github/mergify.yml` 为准，本节只保留策略意图与例外；收紧或放宽策略须同批修改本节、配置文件与 `check-dependabot-policy` 的常量（`ALLOWED_UPDATE_TYPES` / `MERGIFY_FILE_EXCLUSIONS`），一致性由 `pnpm check:dependabot-policy` 守卫。
   - 安全更新若以 major 形式合入后出现不兼容，由巡检开 revert，不因此放宽或回退配置。
-  - 大版本检测：`pnpm check:outdated-major` 列出落后大版本的直接依赖（默认只报告，供人工核对；`--strict` 供发布前门禁；需访问 registry，通常 1～2 分钟，超时按失败处理）。受检面仅 `package.json` 直接声明，overrides 与传递依赖由安全告警覆盖。
+  - 大版本检测：`pnpm check:outdated-major` 列出落后大版本的直接依赖（默认只报告，供人工核对；`--strict` 供发布前门禁）。默认按 `registry` 源直连（端点跟随 `npm_config_registry` / `pnpm config get registry`，数十项通常在数秒内），`--source=pnpm` 改走 `pnpm outdated` 解析整棵依赖图（耗时随依赖图规模增长）；任一依赖取值失败一律按失败处理。受检面仅 `package.json` 直接声明，overrides 与传递依赖由安全告警覆盖。
 - 外部来源的 PR：只审查与评论，不合并；质量不足或方向不符时说明理由后关闭。
 - 可信来源的 PR 可代为修改，但限于简单修改：rebase、`pnpm-lock.yaml` 冲突、lint 格式、`package.json` 的依赖版本、CI 配置中的明显笔误。本包 `version` 字段由 semantic-release 管理，不得手改。
 - 复杂修改（业务逻辑、公共 API、测试结构）不得代改：另开分支提交本仓 PR，并在原 PR 说明处置关系。

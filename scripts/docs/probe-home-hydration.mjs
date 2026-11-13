@@ -35,8 +35,8 @@
  *   pnpm docs:probe:hydration --stored-preset=sakura
  */
 import { createServer } from 'node:http'
-import { readFile, stat } from 'node:fs/promises'
-import { extname, join, normalize, resolve, sep } from 'node:path'
+import { readFile, readdir, stat } from 'node:fs/promises'
+import { extname, join, relative, resolve, sep } from 'node:path'
 import process from 'node:process'
 import { chromium } from '@playwright/test'
 import { isDirectExecution, parseCliOptions } from '../shared/cli.mjs'
@@ -136,25 +136,37 @@ export async function readPresetStorageKey(file = PRESET_SWITCHER_FILE) {
     return matched[1]
 }
 
-/** 静态文件服务（仅受检构建产物，路径越界一律 404） */
-export function createStaticServer(root = DEFAULT_DIST_ROOT) {
+/** 构建产物索引：请求期只做 Map 查找，不拼接用户输入路径（规避路径注入） */
+async function indexDistFiles(root) {
+    const entries = await readdir(root, { recursive: true, withFileTypes: true })
+    const files = new Map()
+    for (const entry of entries) {
+        if (!entry.isFile()) {
+            continue
+        }
+        const absolute = join(entry.parentPath, entry.name)
+        files.set(relative(root, absolute).split(sep).join('/'), absolute)
+    }
+    return files
+}
+
+/** 静态文件服务：只服务构建产物索引内的文件，未命中一律 404 */
+export async function createStaticServer(root = DEFAULT_DIST_ROOT) {
     const normalizedRoot = resolve(root)
+    const files = await indexDistFiles(normalizedRoot)
     return createServer(async (req, res) => {
-        const pathname = (req.url ?? '/').split('?')[0]
-        let normalizedPath
+        let key
         try {
-            normalizedPath = normalize(decodeURIComponent(pathname)).replace(/^([/\\])+/, '')
+            key = decodeURIComponent((req.url ?? '/').split('?')[0])
         } catch {
             // 畸形百分号序列：按 404 fail-closed，避免未处理异常把连接挂住
             res.statusCode = 404
             res.end('not found')
             return
         }
-        const file = resolve(normalizedRoot, normalizedPath.endsWith('/') || normalizedPath === ''
-            ? join(normalizedPath, 'index.html')
-            : normalizedPath)
-        // 越界判定用「根 + 分隔符」前缀，避免 /a/b 前缀匹配到 /a/bc
-        if (file !== normalizedRoot && !file.startsWith(`${normalizedRoot}${sep}`)) {
+        const relativePath = key.replace(/^\/+/, '')
+        const file = files.get(relativePath === '' || relativePath.endsWith('/') ? `${relativePath}index.html` : relativePath)
+        if (file === undefined) {
             res.statusCode = 404
             res.end('not found')
             return
@@ -238,7 +250,7 @@ async function main() {
         ? { key: await readPresetStorageKey(), value: options.storedPreset }
         : null
 
-    const server = createStaticServer(distRoot)
+    const server = await createStaticServer(distRoot)
     await new Promise((done) => server.listen(port, '127.0.0.1', done))
     const url = `http://127.0.0.1:${port}${pagePath.startsWith('/') ? pagePath : `/${pagePath}`}`
 

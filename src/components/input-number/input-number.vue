@@ -5,7 +5,7 @@ import {
     NumberFieldInput,
     NumberFieldRoot,
 } from 'reka-ui'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -160,7 +160,10 @@ function flushStepChange(): void {
         return
     }
     stepActive = false
-    emit('change', model.value)
+    // Reka 2.11 起触摸步进延后到上游 window 的 pointerup 监听里，本组件的 pointerup 先触发会读到旧模型
+    void nextTick(() => {
+        emit('change', model.value)
+    })
 }
 
 function onWindowPointerEnd(): void {

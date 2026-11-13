@@ -1,15 +1,18 @@
-import { flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
+import { enableAutoUnmount, flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
 import { computed, defineComponent, h, ref } from 'vue'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import type { InputNumberProps } from './types'
 import { CaomeiInputNumber } from './index'
 
+enableAutoUnmount(afterEach)
+
 async function mountReady(
     props: InputNumberProps & { modelValue?: number | null },
 ): Promise<ReturnType<typeof mount>> {
-    const wrapper = mount(CaomeiInputNumber, { props })
+    // Reka 2.11 把步进提交挂在 window 的 pointer 监听上，未挂载到文档时收不到冒泡事件
+    const wrapper = mount(CaomeiInputNumber, { props, attachTo: document.body })
     await flushPromises()
     return wrapper
 }
@@ -357,6 +360,20 @@ describe('CaomeiInputNumber', () => {
         await press(wrapper.findAll('.caomei-input-number__button')[1])
 
         expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1.5])
+        expect(wrapper.emitted('change')).toHaveLength(1)
+    })
+
+    it('鼠标按下即步进，松开后 change 只发一次', async () => {
+        const wrapper = await mountReady({ modelValue: 1 })
+        const button = wrapper.findAll('.caomei-input-number__button')[1]
+
+        await button.trigger('pointerdown', { pointerType: 'mouse', button: 0 })
+        await flushPromises()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+
+        await button.trigger('pointerup', { pointerType: 'mouse', button: 0 })
+        await flushPromises()
+        expect(wrapper.emitted('change')).toHaveLength(1)
     })
 
     it('按 Enter 提交并触发 change', async () => {
@@ -385,6 +402,7 @@ describe('CaomeiInputNumber', () => {
 
         expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
         expect(wrapper.emitted('change')?.at(-1)).toEqual([2])
+        expect(wrapper.emitted('change')).toHaveLength(1)
     })
 
     it('precision 超出范围时不取整且不报错', async () => {

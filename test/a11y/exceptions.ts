@@ -25,13 +25,6 @@ export interface A11yException {
 
 export const A11Y_EXCEPTIONS: A11yException[] = [
     {
-        component: 'CaomeiToastProvider',
-        rule: 'aria-hidden-focus',
-        kind: 'violation',
-        count: 2,
-        judgment: 'Reka `Toast/FocusProxy` 的 `VisuallyHidden` + `tabindex="0"` 焦点哨兵（上游有意模式，非本库标记）；依据见 `docs/design/governance/2026-09-22-m4-1-a11y-baseline-inventory.md` §3',
-    },
-    {
         component: 'CaomeiCalendar',
         rule: 'label-content-name-mismatch',
         kind: 'incomplete',

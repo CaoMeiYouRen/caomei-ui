@@ -10,7 +10,7 @@
 
 | 条目 | 说明 | 主线 | 验收状态 |
 |:---|:---|:---|:---|
-| M1-1 | `reka-ui` 2.11.0 适配与 Toast 例外收口（原 dependabot PR #33，改由本仓分支 PR 交付） | 依赖适配与例外收口 | 进行中（本地适配与验证完成，待建 PR；见[记录](../design/governance/2026-11-13-phase32-m1-1-reka-ui-2.11-adaptation.md)） |
+| M1-1 | `reka-ui` 2.11.0 适配与 Toast 例外收口（原 dependabot PR #33，由 [#52](https://github.com/CaoMeiYouRen/caomei-ui/pull/52) 交付） | 依赖适配与例外收口 | 已完成（PR #52 合并 `5b72563`；见[记录](../design/governance/2026-11-13-phase32-m1-1-reka-ui-2.11-adaptation.md)） |
 | M2-1 | 文档站 `with-select` 示例可访问名 | 文档站质量收口 | 待执行 |
 | M2-2 | 文档站首页 hydration mismatch 定性 | 文档站质量收口 | 待执行 |
 | M3-1 | 文档站 demo 过渡恢复（含 reduce 压平） | 文档站 demo 过渡 | 待执行 |

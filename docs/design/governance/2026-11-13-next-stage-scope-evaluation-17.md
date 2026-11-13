@@ -70,7 +70,7 @@
 | §1.8 momei 侧迁移 | 维持（等待外部反馈） |
 | §1.9 I5 `@iconify/vue` peer | 维持（条件触发） |
 | **N1（新候选）文档站 transition 副本守卫** | 来源：[M3-1 记录](./2026-11-13-phase32-m3-1-demo-transition.md) §4.2——demo 层 25 条 transition 是组件源的手工副本，无守卫。建议**登记并纳入**质量主线（对齐 `check:demo-keyframes` 的机检形态） |
-| **N2（新候选）dev 形态 hydration 守护** | 来源：[M2-2 记录](./2026-11-13-phase32-m2-2-home-hydration.md) §5.3——生产构建无告警，dev 真机对照是一次性流程。建议**仅登记**，触发条件 = 首页结构或主题层新增客户端状态 |
+| **N2（新候选）dev 形态 hydration 守护** | 来源：[M2-2 记录](./2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条——生产构建无告警，dev 真机对照是一次性流程。建议**仅登记**，触发条件 = 首页结构或主题层新增客户端状态 |
 > **候选覆盖声明**：§1.1 6 + §1.2 5 + §1.3 0 + §1.4 2 + §1.5 2 + §1.6 14 + §1.7 1 + §1.8 1 + §1.9 1 + §1.10 0 = **32 条，逐条均有落点，无静默豁免**；另 N1 / N2 为新候选（单列，不计入 32）。按组合并的行已逐项列名，可单独检索：§1.2 = Sidebar / ScrollPanel / BackTop / Rating / TimePicker；§1.4 = 语言矩阵二期 / RTL；§1.5 = 滚动容器键盘聚焦 / Toolbar 769–1023 档；§1.6 聚合行 = 多版本托管 / Storybook / Tailwind preset 与 `typescript` 7 / `glob` override / CI 镜像 / `conventional-changelog` 8。
 
 

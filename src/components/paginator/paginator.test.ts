@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { computed, createSSRApp, h, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiPaginator } from './index'
@@ -427,5 +427,62 @@ describe('CaomeiPaginator 报表插槽', () => {
         const html = await renderToString(app)
         expect(html).toContain('caomei-paginator__report')
         expect(html).toContain('2/5')
+    })
+})
+
+describe('CaomeiPaginator 内建提示', () => {
+    afterEach(() => {
+        document.body.innerHTML = ''
+    })
+
+    /** 读取**当前打开**的面板（同一用例里连续聚焦多个按钮时，先前的面板退出期间仍留在 DOM） */
+    async function openTooltip(element: Element): Promise<string | null> {
+        element.dispatchEvent(new FocusEvent('focus'))
+        await nextTick()
+        await nextTick()
+        const panel = document.querySelector('.caomei-tooltip__content[data-state*="open"]')
+        return panel?.querySelector('[role="tooltip"]')?.textContent?.trim() ?? null
+    }
+
+    it('默认开启：四个图标翻页按钮均显示提示，内容取可访问名且可访问名不变', async () => {
+        // 停在第 2 页：首页 / 上一页在第 1 页是原生 `disabled`，聚焦路径在其上不成立
+        const wrapper = mount(CaomeiPaginator, {
+            attachTo: document.body,
+            props: { total: 50, showEdges: true, page: 2 },
+        })
+
+        for (const name of ['首页', '上一页', '下一页', '末页']) {
+            const button = wrapper.get(`[aria-label="${name}"]`)
+            expect(button.attributes('aria-label')).toBe(name)
+            expect(await openTooltip(button.element)).toBe(name)
+        }
+
+        wrapper.unmount()
+    })
+
+    it('自定义按钮文案同时作用于可访问名与提示内容', async () => {
+        const wrapper = mount(CaomeiPaginator, {
+            attachTo: document.body,
+            props: { total: 50, previousLabel: '往前翻' },
+        })
+
+        expect(await openTooltip(wrapper.get('[aria-label="往前翻"]').element)).toBe('往前翻')
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传 false 时全部图标按钮不挂载提示', async () => {
+        const wrapper = mount(CaomeiPaginator, {
+            attachTo: document.body,
+            props: { total: 50, showEdges: true, tooltip: false },
+        })
+
+        for (const name of ['首页', '上一页', '下一页', '末页']) {
+            const button = wrapper.get(`[aria-label="${name}"]`)
+            expect(await openTooltip(button.element)).toBeNull()
+            expect(button.attributes('data-state')).toBeUndefined()
+        }
+
+        wrapper.unmount()
     })
 })

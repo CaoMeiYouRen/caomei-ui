@@ -12,6 +12,7 @@ import {
 import { computed, useAttrs } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import type { OptionValue } from '../_shared/option'
 import { useLabelAttrs, resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiSelect } from '../select'
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<PaginatorProps>(), {
     siblingCount: 2,
     showEdges: false,
     disabled: false,
+    tooltip: true,
 })
 
 const page = defineModel<number>('page', { default: 1 })
@@ -108,20 +110,24 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                 class="caomei-paginator__list"
             >
                 <li v-if="showEdges" class="caomei-paginator__item">
-                    <PaginationFirst
-                        class="caomei-paginator__control"
-                        :aria-label="firstLabel"
-                    >
-                        <CaomeiIcon :icon="icons.chevronsLeft" />
-                    </PaginationFirst>
+                    <CaomeiIconTooltip :content="firstLabel" :disabled="!tooltip">
+                        <PaginationFirst
+                            class="caomei-paginator__control"
+                            :aria-label="firstLabel"
+                        >
+                            <CaomeiIcon :icon="icons.chevronsLeft" />
+                        </PaginationFirst>
+                    </CaomeiIconTooltip>
                 </li>
                 <li class="caomei-paginator__item">
-                    <PaginationPrev
-                        class="caomei-paginator__control"
-                        :aria-label="previousLabel"
-                    >
-                        <CaomeiIcon :icon="icons.chevronLeft" />
-                    </PaginationPrev>
+                    <CaomeiIconTooltip :content="previousLabel" :disabled="!tooltip">
+                        <PaginationPrev
+                            class="caomei-paginator__control"
+                            :aria-label="previousLabel"
+                        >
+                            <CaomeiIcon :icon="icons.chevronLeft" />
+                        </PaginationPrev>
+                    </CaomeiIconTooltip>
                 </li>
                 <template
                     v-for="(item, index) in items"
@@ -144,20 +150,24 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
                     </li>
                 </template>
                 <li class="caomei-paginator__item">
-                    <PaginationNext
-                        class="caomei-paginator__control"
-                        :aria-label="nextLabel"
-                    >
-                        <CaomeiIcon :icon="icons.chevronRight" />
-                    </PaginationNext>
+                    <CaomeiIconTooltip :content="nextLabel" :disabled="!tooltip">
+                        <PaginationNext
+                            class="caomei-paginator__control"
+                            :aria-label="nextLabel"
+                        >
+                            <CaomeiIcon :icon="icons.chevronRight" />
+                        </PaginationNext>
+                    </CaomeiIconTooltip>
                 </li>
                 <li v-if="showEdges" class="caomei-paginator__item">
-                    <PaginationLast
-                        class="caomei-paginator__control"
-                        :aria-label="lastLabel"
-                    >
-                        <CaomeiIcon :icon="icons.chevronsRight" />
-                    </PaginationLast>
+                    <CaomeiIconTooltip :content="lastLabel" :disabled="!tooltip">
+                        <PaginationLast
+                            class="caomei-paginator__control"
+                            :aria-label="lastLabel"
+                        >
+                            <CaomeiIcon :icon="icons.chevronsRight" />
+                        </PaginationLast>
+                    </CaomeiIconTooltip>
                 </li>
             </PaginationList>
             <span v-if="rowsPerPageChoices.length > 0" class="caomei-paginator__rows-per-page">

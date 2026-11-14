@@ -35,6 +35,14 @@ export interface PaginatorProps {
      */
     disabled?: boolean
     /**
+     * 是否为图标翻页按钮（首页 / 上一页 / 下一页 / 末页）启用内建提示，内容取各按钮的可访问名。
+     *
+     * 图标按钮没有可见文本，默认开启；传 `false` 关闭。
+     * @default true
+     * @en Whether to enable built-in tooltips for the icon page buttons (first / previous / next / last), using each button's accessible name as content. Icon buttons have no visible text, so this is on by default; pass `false` to disable.
+     */
+    tooltip?: boolean
+    /**
      * 根节点的可访问名，映射 `aria-label`；优先级高于透传的 `aria-label`，两者都未提供时取当前语言的分页文案
      * @en Accessible name of the root, maps to `aria-label`; takes precedence over a forwarded `aria-label`, falling back to the current locale's pagination label when neither is given
      */

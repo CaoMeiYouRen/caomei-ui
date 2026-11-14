@@ -35,7 +35,7 @@
 
 阈值保持 **3:1 + 0.05 裕度**，未放宽；修复方向为换用控件边界 token。
 
-**发布前补记（2026-11-14）**：本条提交时未重跑 `pnpm test:visual`；1.3.0 发布前检查发现 `calendar@固定时钟` / `date-picker 区间面板` 亮暗共 4 张基线差异（Playwright `toHaveScreenshot` 按 pixelmatch 阈值计 174 ~ 190 px，低于原始逐像素差异 248 / 292；差异簇均落在导航按钮位置，与描边加深一致）。已在发布前用 `--update-snapshots` 仅刷新这 4 张，复跑后 36 passed / 6 failed（仅既有字体族本地失败）。
+**发布前补记（2026-11-14）**：本条提交时未重跑 `pnpm test:visual`；1.3.0 发布前检查发现 `calendar@固定时钟` / `date-picker 区间面板` 亮暗共 4 张基线差异（Playwright `toHaveScreenshot` 按 pixelmatch 阈值计 174 ~ 190 px，低于原始逐像素差异 248 / 292；差异簇均落在导航按钮位置，与描边加深一致）。已在发布前用 `--update-snapshots` 仅刷新这 4 张，复跑后 36 passed / 6 failed（当时判断为字体族失败；该判断已在发布前检查中修正为 Playwright / Chromium 漂移导致的陈旧基线，6 张字体基线同批刷新，见[就绪度评估](./2026-11-14-phase33-m5-1-release-readiness.md) §4）。
 
 ## 4. 边界
 

@@ -34,7 +34,7 @@
 | 3 | 覆盖率 | `pnpm test:coverage` + `pnpm check:coverage` | Statements **93.52%** / Branches **86.35%** / Functions **95.40%** / Lines **92.92%**（阈值 90 / 80 / 90 / 90） | ✅ |
 | 4 | 无障碍 | `pnpm test:a11y` | **68 passed** | ✅ |
 | 5 | 浏览器回归 | `pnpm test:e2e` | **772 passed / 4 skipped**（13.8m） | ✅ |
-| 6 | 视觉基线 | `pnpm test:visual` | **36 passed / 6 failed**；失败集合 = `font-latin-button` / `font-latin-input` / `font-mixed-button` × 亮暗，与 M1-4 记录的本地字体族基线失败一致（本机环境，非本版引入） | ✅（已知环境失败） |
+| 6 | 视觉基线 | `pnpm test:visual` | **42 passed**（首轮 36 passed / 6 failed：`font-latin-button` / `font-latin-input` / `font-mixed-button` × 亮暗；已确认是 Playwright / Chromium 升级后拉丁文本排版与字形栅格化变化造成的**陈旧基线**，本地与 CI 的实际渲染一致（差异像素数逐项相同），刷新 6 张后全绿，见 §4） | ✅ |
 | 7 | 计算样式等价 | `pnpm capture:styles` | **399 项 0 差异** | ✅ |
 | 8 | 安全告警门禁 | `pnpm check:security-alerts` | critical **0** / high **0** / medium **0** / low **1** / note **0**；open 1 / dismissed 0；豁免 0 | ✅（low 可暂缓） |
 | 9 | API 表面差分 | `pnpm release:manual api-diff --version=1.3.0 --tag=latest` | 基线 `1.2.0`；声明文件 **203 → 205**、导出 **337 → 349**；**无删除 / 重命名 / 成员删除 / required 收紧**（详见 §3.1） | ✅ |
@@ -58,8 +58,9 @@
 | 项 | 现象 | 处置 | 证据 |
 | :--- | :--- | :--- | :--- |
 | `data-table.features.test.ts` | `lint:check` 失败：describe 回调 **634 行**，超 `max-lines-per-function` 600（由 M2-1 新增用例累积） | 把 6 条冻结列用例拆到 `data-table.frozen.test.ts`，生产代码零改动 | `pnpm exec eslint`（两文件）零 error；`vitest run src/components/data-table` **136 passed**；`pnpm verify` 复跑 exit 0 |
-| 视觉基线 | `calendar@固定时钟` / `date-picker 区间面板` 亮暗 4 张差异（约 174 ~ 190 px） | M4-2 的导航描边可见变化未同步基线；`--update-snapshots` 仅刷新这 4 张 | 复跑 `test:visual` → 36 passed / 6 failed（仅既有字体族失败） |
+| 视觉基线 | `calendar@固定时钟` / `date-picker 区间面板` 亮暗 4 张差异（约 174 ~ 190 px） | M4-2 的导航描边可见变化未同步基线；`--update-snapshots` 仅刷新这 4 张 | 复跑 `test:visual` → 36 passed / 6 failed（当时归因为字体族，已在下一行更正为陈旧基线） |
 | 记录补记 | M4-2 记录 §3 未含视觉基线读数 | 补「发布前补记」一行，不改写原结论 | 见 [M4-2 记录](./2026-11-14-phase33-m4-2-calendar-rte-contrast.md) §3 |
+| 字体路径基线（6 张） | `font-latin-button` / `font-latin-input` / `font-mixed-button` × 亮暗，由周回归 CI（run `43575662738`）暴露；差异集中在拉丁文本行，本地与 CI 的 Playwright `toHaveScreenshot` 差异像素数逐项一致（184 / 188 / 524 / 184 / 189 / 520） | 判定为 Playwright / Chromium 版本漂移后的**陈旧基线**（字体文件与字体栈未变、CJK 面 42 项中其余全绿），刷新这 6 张；`test:visual` 复跑 **42 passed** | 刷新后本地全绿。两张按钮同时收窄 1px（`116 → 115` / `226 → 225`），由拉丁文本 advance 变化造成，非盒模型 / padding / 配色变化；CI 渲染与本地一致（同一 Chromium 内核、同一 woff2），下次周回归验证 |
 
 > 两项均属**发布前质量门暴露的收口缺口**，不改变已放行条目的事实结论；处置后上述质量门读数即为本记录实测值。
 
@@ -82,3 +83,7 @@
   - M4-2 两组视觉读数关系 → 已注明 Playwright 计数低于原始逐像素计数。
   - 发布说明「值片」两处口径 → 已知限制补「MultiSelect 值片容器 5 + 值片内装饰 icon 2；删除按钮属 P0 已扩」。
 - **复查基线**：本记录 §2 ~ §5；`docs/release-notes/1.3.0.md`；`docs/design/governance/index.md` 条目；`recurring.md` 第 36 轮；`todo.md` M5-1 行；M4-2 记录 §3 补记与 §4；`data-table.frozen.test.ts` 用例集；4 张视觉基线 PNG。
+
+## 7. 后续候选（未纳入本批）
+
+- **Playwright 版本与视觉基线联动**：`@playwright/test` 为 `^` 范围，Chromium 随 minor 升级变化会再次使冻结基线陈旧（本次即由此触发）。本批只在[测试规范](../../standards/testing.md) 补「Playwright 升级须同批重冻结视觉基线」的程序性约束；是否再加机检守卫（比对安装版本与基线冻结版本）或改钉精确版本，需用户决策后另行登记。

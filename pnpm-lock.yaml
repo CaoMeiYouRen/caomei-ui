@@ -39,7 +39,7 @@ importers:
         version: 3.12.4
       '@lucide/vue':
         specifier: ^1.48.0
-        version: 1.70.0(vue@3.5.44(typescript@6.0.3))
+        version: 1.72.0(vue@3.5.44(typescript@6.0.3))
       '@tanstack/vue-table':
         specifier: 9.3.1
         version: 9.3.1(vue@3.5.44(typescript@6.0.3))
@@ -1268,8 +1268,8 @@ packages:
     resolution: {integrity: sha512-i3ZPmlDYrv/W1299u2cR/slQc8JuKFbOJeMQPS3/65LXqeIqtrEF6MNnHnFYAoWWFuocJqoUCWeFC0lPV70S3g==}
     engines: {node: '>=20'}
 
-  '@lucide/vue@1.70.0':
-    resolution: {integrity: sha512-kutUu3oEtfQnyaP6hh76ShG2dxa8PiL6uY3rk3DqclQe0Vd2FtPlnclezR0XMQtlFMPiEaCOXDSuhehFHW5ErQ==}
+  '@lucide/vue@1.72.0':
+    resolution: {integrity: sha512-BPcYejGErv+kg4ilXyPU7j6YdA0kQaMiBnlcCElTsoLdQgD+6aoquA/0I4amN5yzkJrZgpULvpDonXui94ez8A==}
     peerDependencies:
       vue: '>=3.0.1'
 
@@ -9109,7 +9109,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@lucide/vue@1.70.0(vue@3.5.44(typescript@6.0.3))':
+  '@lucide/vue@1.72.0(vue@3.5.44(typescript@6.0.3))':
     dependencies:
       vue: 3.5.44(typescript@6.0.3)
 
@@ -13372,7 +13372,7 @@ snapshots:
       '@codemirror/state': 6.7.6
       '@codemirror/view': 6.43.13
       '@lezer/highlight': 1.2.5
-      '@lucide/vue': 1.70.0(vue@3.5.44(typescript@6.0.3))
+      '@lucide/vue': 1.72.0(vue@3.5.44(typescript@6.0.3))
       '@types/markdown-it': 14.2.0
       '@vavt/copy2clipboard': 1.0.3
       '@vavt/markdown-theme': 6.0.1

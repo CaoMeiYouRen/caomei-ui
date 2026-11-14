@@ -10,7 +10,7 @@
 
 | 编号 | 主线 | 条目 | 验收状态 |
 |:---|:---|:---|:---|
-| M1-1 | Tooltip 提示体系 | `useOverflowTooltip` + `CaomeiTooltipText` + `tooltip` 契约 + Provider 缺失策略 + Button（icon-only / overflow + 截断 CSS + 视觉基线） | 待执行 |
+| M1-1 | Tooltip 提示体系 | `useOverflowTooltip` + `CaomeiTooltipText` + `tooltip` 契约 + Provider 缺失策略 + Button（icon-only / overflow + 截断 CSS + 视觉基线） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-1-tooltip-base.md)） |
 | M1-2 | Tooltip 提示体系 | P0 其余：Toolbar / Paginator / SplitButton 图标触发器接入 | 待执行 |
 | M1-3 | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 接入 | 待执行 |
 | M1-4 | Tooltip 提示体系 | P1 icon-only 第一批：Select 族清除、InputNumber 步进、Password 显隐 | 待执行 |

@@ -22,7 +22,9 @@
  *    1.0 时随该节语义重写，故不命中；`0.4` 这类两段式非 `x` 形态亦不在面内。
  * 7. `current-version-statement`（**弱守卫**）——**对外可读的「当前版本」句**须存在且等于
  *    `package.json` 的 `version`：仓库根 README（中英两版）与 `docs/plan/roadmap.md` §1 的
- *    「当前版本 `X`」句；版本 token 支持预发布后缀（如 `1.0.0-rc.1`）。句式被改写即 `statement-missing`。
+ *    「当前版本 `X`」句；版本 token 支持预发布后缀（如 `1.0.0-rc.1`）。句式被改写即 `statement-missing`；
+ *    roadmap 的版本句须独立成行（同行带发布日期或「下一目标版本」即 `version-sentence-mixed`，
+ *    与发布期 `sync-version-statements` 的判据一致）。
  *    本守卫只校验**文本与 package.json 一致**；发布通道（`next` / `latest`）由发布流 `verify` 对 registry
  *    断言，静态文案不再写死 dist-tag（预发布期间写 `latest` 会与事实不符，命中 `dist-tag-in-statement`）。
  *    这三个文件都按设计保留**历史版本叙述**（各版本做了什么），故不能对全文件版本字面量施加相等要求,
@@ -139,6 +141,20 @@ export function findCurrentVersionDrift(root, version, statements = CURRENT_VERS
                 line,
                 message: `${statement.label}声明了 npm dist-tag「${tag[1]}」：静态文案易与 registry 事实不符；发布通道由发布流 verify 对 registry 断言`,
             })
+        }
+        // roadmap 的版本句必须独立成句：同一行若带发布日期或「下一目标版本」，发布时
+        // sync-version-statements 会直接失败（同步后会产生矛盾文案）；提前到 verify 阶段拦截。
+        if (statement.file.endsWith('plan/roadmap.md')) {
+            const line = content.slice(0, match.index).split(/\r?\n/u).length
+            const lineText = content.split(/\r?\n/u)[line - 1] ?? ''
+            if (/\d{4}-\d{2}-\d{2}/u.test(lineText) || lineText.includes('下一目标版本')) {
+                issues.push({
+                    type: 'version-sentence-mixed',
+                    file: statement.file,
+                    line,
+                    message: `${statement.label}与发布日期 / 下一目标版本同句：发布同步会失败，请把版本句拆成独立行`,
+                })
+            }
         }
     }
     return issues

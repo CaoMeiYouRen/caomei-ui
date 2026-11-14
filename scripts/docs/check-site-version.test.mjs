@@ -286,6 +286,33 @@ describe('「当前版本」句弱守卫（README + roadmap 同一套窄锚策�
         expect(issues[0]).toMatchObject({ type: 'current-version-drift', file: 'docs/plan/roadmap.md' })
     })
 
+    it('roadmap 版本句与发布日期同句时报 version-sentence-mixed', () => {
+        const root = createFixture({
+            ...clean,
+            'docs/plan/roadmap.md': '当前状态：当前版本 `1.2.3`。Phase 33 于 2026-11-13 登记',
+        })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toMatchObject({ type: 'version-sentence-mixed', line: 1 })
+    })
+
+    it('日期在相邻行时不误报（版本句独立成行）', () => {
+        const root = createFixture({
+            ...clean,
+            'docs/plan/roadmap.md': '- 当前状态：当前版本 `1.2.3`。\n- Phase 33 于 2026-11-13 登记；下一目标版本 `1.3.0`',
+        })
+        expect(findCurrentVersionDrift(root, '1.2.3', statements)).toEqual([])
+    })
+
+    it('roadmap 版本句与「下一目标版本」同句时报 version-sentence-mixed', () => {
+        const root = createFixture({
+            ...clean,
+            'docs/plan/roadmap.md': '当前状态：当前版本 `1.2.3`；下一目标版本 `1.3.0`',
+        })
+        const issues = findCurrentVersionDrift(root, '1.2.3', statements)
+        expect(issues.map((issue) => issue.type)).toEqual(['version-sentence-mixed'])
+    })
+
     it('README 版本漂移时报 current-version-drift 并给出行号', () => {
         const root = createFixture({ ...clean, 'README.md': '首行\n- 当前版本：`0.3.0`' })
         const issues = findCurrentVersionDrift(root, '1.2.3', statements)

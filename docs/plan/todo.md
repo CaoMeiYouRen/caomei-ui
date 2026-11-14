@@ -21,7 +21,7 @@
 | M3-4 | Select 长列表面板滚动可达性 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-select-long-list-scroll.md)） |
 | M4-1 | 文档站 transition 副本守卫 | 质量守卫与对比度 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m4-1-transition-copy-guard.md)） |
 | M4-2 | Calendar / RTE 交互边界对比度 | 质量守卫与对比度 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m4-2-calendar-rte-contrast.md)） |
-| M5-1 | `1.3.0` 发布（release note 需含 M3-1 色板 `radiogroup` / `aria-checked` 与 M3-4 视口上限两项行为变化） | 发布收口 | 待执行 |
+| M5-1 | `1.3.0` 发布（release note 需含 M3-1 色板 `radiogroup` / `aria-checked` 与 M3-4 视口上限两项行为变化） | 发布收口 | 进行中（发布前检查完成，待用户授权推送与触发 `Release`；见[就绪度评估](../design/governance/2026-11-14-phase33-m5-1-release-readiness.md)） |
 | M6-1 | 协作主链路（C1 ~ C5） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
 | M6-2 | 残留与滚动锁栈（C2 / C3 多层） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
 

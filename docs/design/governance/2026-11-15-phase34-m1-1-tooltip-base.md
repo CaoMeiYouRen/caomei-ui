@@ -80,9 +80,9 @@
 |:---|:---|:---|
 | F1（守卫） | 为「可测量盒」补**真实布局级持久守卫**（e2e：截断配方 → 悬停出面板；未截断 → 无面板；或把 `display` 纳入 capture 基线） | 并入 M1-6 / M4-1 的 E2E 批次（两批都要新增真实浏览器断言） |
 | F2（补写） | 在 `docs/components/tooltip.md` 的「文本溢出提示」段（英文页 `Overflow tooltips` 小节）显式声明「覆盖 `display` 时须保留可测量盒」，并复核 `:where()` 字段范围（`display` / `box-sizing` 是否提到常规特异性） | M1-8（组件页说明批次；若 M1-7 的能力清单需要，另在该批加一行回链） |
-| F3 | `watchEffect` 告警去重（避免 label / mode 抖动时刷屏） | 下一次改动 Tooltip 接入面时评估（M1-2 起） |
+| F3 | `watchEffect` 告警去重（避免 label / mode 抖动时刷屏） | **已评估（2026-11-15，[M1-2 批次记录](./2026-11-15-phase34-m1-2-icon-tooltips.md) §2 第 8 条）：暂不处理**；消费者反馈噪声后再执行 |
 | F4 | `docs/guide/upgrade-to-1.0.md`、`docs/i18n/en-US/guide/upgrade-to-1.0.md`、`docs/guide/primevue-migration.md` 的「需放置 Provider」措辞统一为「建议放置 + 兜底」 | M1-7 |
-| F5 | `Passthrough` + 动态包装层在 Button / TooltipText / Tooltip 各写一份，抽到 `components/_shared/` | 第 4 处消费出现时抽取（当前 3 处形态已稳定） |
+| F5 | `Passthrough` + 动态包装层在 Button / TooltipText / Tooltip 各写一份，抽到 `components/_shared/` | **已关闭（2026-11-15，[M1-2 批次记录](./2026-11-15-phase34-m1-2-icon-tooltips.md) §2 第 9 条）**：已抽到 `components/_shared/passthrough.ts` 并回收四处 |
 | F6 | 示例不演示 `mode: 'auto'`（组件页只有行内提及），复用者缺少可复制片段 | M1-8（组件页说明批次）补一例 |
 
 ## 7. 复查基线

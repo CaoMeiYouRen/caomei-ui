@@ -4,14 +4,16 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 34**（Tooltip 提示体系、协作测试 T3、质量门禁、DataTable 数据面与长尾组件）。**5 条主线 / 20 条原子条目**（构成对账 8 + 3 + 2 + 2 + 5 = 20）；范围与验收口径的唯一载体见 [Phase 34 登记批次](../design/governance/2026-11-14-phase34-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
+**当前进行中阶段：Phase 34**（Tooltip 提示体系、协作测试 T3、质量门禁、DataTable 数据面与长尾组件）。**5 条主线 / 22 条原子条目**（构成对账 10 + 3 + 2 + 2 + 5 = 22）；范围与验收口径的唯一载体见 [Phase 34 登记批次](../design/governance/2026-11-14-phase34-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## Phase 34 原子条目
 
 | 编号 | 主线 | 条目 | 验收状态 |
 |:---|:---|:---|:---|
 | M1-1 | Tooltip 提示体系 | `useOverflowTooltip` + `CaomeiTooltipText` + `tooltip` 契约 + Provider 缺失策略 + Button（icon-only / overflow + 截断 CSS + 视觉基线） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-1-tooltip-base.md)） |
-| M1-2 | Tooltip 提示体系 | P0 其余：Toolbar / Paginator / SplitButton 图标触发器接入 | 待执行 |
+| M1-2 | Tooltip 提示体系 | P0 其余（Toolbar）：`CaomeiToolbarButton` / `CaomeiToolbarLink` 接入 `tooltip` 契约（含内部 `CaomeiIconTooltip`）；顺带关闭 M1-1 F5（`Passthrough` 抽取） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
+| M1-9 | Tooltip 提示体系 | P0 其余（Paginator）：四个图标翻页按钮接入 `tooltip: boolean` | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
+| M1-10 | Tooltip 提示体系 | P0 其余（SplitButton）：下拉图标按钮接入 `tooltip` 契约 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
 | M1-3 | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 接入 | 待执行 |
 | M1-4 | Tooltip 提示体系 | P1 icon-only 第一批：Select 族清除、InputNumber 步进、Password 显隐 | 待执行 |
 | M1-5 | Tooltip 提示体系 | P1 icon-only 第二批：Calendar / FileUpload / ColorPicker / DatePicker / Image / Alert·Message | 待执行 |

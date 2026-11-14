@@ -22,8 +22,8 @@
 | M4-1 | 文档站 transition 副本守卫 | 质量守卫与对比度 | 待执行 |
 | M4-2 | Calendar / RTE 交互边界对比度 | 质量守卫与对比度 | 待执行 |
 | M5-1 | `1.3.0` 发布 | 发布收口 | 待执行 |
-| M6-1 | 协作主链路（C1 ~ C5） | 协作测试 | 待执行 |
-| M6-2 | 残留与滚动锁栈（C2 / C3 多层） | 协作测试 | 待执行 |
+| M6-1 | 协作主链路（C1 ~ C5） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
+| M6-2 | 残留与滚动锁栈（C2 / C3 多层） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
 
 ## 未完成项汇总
 

@@ -246,6 +246,23 @@ const longListOptions = Array.from({ length: 60 }, (_, index) => ({
     value: `c${index + 1}`,
 }))
 
+/**
+ * 遮罩协作夹具（见 `test/e2e/overlay-collaboration.e2e.ts`）：单层主链路的真实指针路径与多层
+ * 滚动锁栈。
+ * - `collabClickCount`：关闭遮罩后真实点击探针的计数，用于证明页面已重新可交互（指针事件残留）；
+ * - `collab-*-value`：与 Select 的 `v-model` 同源的回显，用于证明选项点击真的更新了模型；
+ * - `collab-geometry-probe`：全宽元素，用于量测滚动条补偿造成的几何位移；
+ * - `collab-locked-select`：页面级 `bodyLock` 选择器，用于单独验证取锁一侧（不经模态父层）。
+ */
+const collabDialogOpen = ref(false)
+const collabDialogValue = ref<string | null>(null)
+const collabLockedValue = ref<string | null>(null)
+const collabDrawerOpen = ref(false)
+const collabDrawerValue = ref<string | null>(null)
+const collabStackDrawerOpen = ref(false)
+const collabPageLockedValue = ref<string | null>(null)
+const collabClickCount = ref(0)
+
 /*
  * 图表内核的按需注册（使用方职责）：只注册受检用例用到的渲染器 / 图表类型 / 组件，
  * 以此证明封装层不代注册、也不把全量内核带进产物。用例见 `test/e2e/chart.e2e.ts`。
@@ -2147,6 +2164,100 @@ const ConfirmDriver = defineComponent({
                 </div>
             </CaomeiDialog>
         </section>
+        <!--
+          遮罩协作夹具（见 `test/e2e/overlay-collaboration.e2e.ts`）：单层主链路的真实指针路径、
+          残留负向对照与多层滚动锁栈共用。**追加在夹具末尾**：新增受检面不得改变既有用例元素的
+          绝对位置（页面增高会推移其后元素，使对滚动位置敏感的用例失去几何前置）。
+        -->
+        <section id="overlay-collaboration" class="fixture__case">
+            <div class="fixture__collab-row">
+                <CaomeiButton id="collab-dialog-open" @click="collabDialogOpen = true">
+                    打开协作对话框
+                </CaomeiButton>
+                <CaomeiButton id="collab-drawer-open" @click="collabDrawerOpen = true">
+                    打开协作抽屉
+                </CaomeiButton>
+                <CaomeiButton id="collab-click-probe" @click="collabClickCount += 1">
+                    点击探针
+                </CaomeiButton>
+                <span id="collab-click-count">{{ collabClickCount }}</span>
+            </div>
+            <div id="collab-geometry-probe" class="fixture__collab-probe">
+                几何探针
+            </div>
+            <!-- 页面级 bodyLock：不经模态父层，单独验证「取锁」一侧 -->
+            <CaomeiSelect
+                id="collab-locked-select"
+                v-model="collabPageLockedValue"
+                :options="panelOptions"
+                body-lock
+                placeholder="页面级锁定选择"
+                label="页面级锁定"
+            />
+
+            <CaomeiDialog
+                v-model:open="collabDialogOpen"
+                title="协作对话框"
+                description="用于验证遮罩协作。"
+            >
+                <div class="fixture__collab-stack">
+                    <!--
+                      面板打开时点击该区域只应关闭面板（上游会把模态内容置为 pointer-events: none，
+                      物理命中落在遮罩；断言只判「面板关闭 / 对话框存活」）
+                    -->
+                    <div id="collab-dialog-blank" class="fixture__collab-blank">
+                        对话框空白区
+                    </div>
+                    <CaomeiSelect
+                        id="collab-dialog-select"
+                        v-model="collabDialogValue"
+                        :options="panelOptions"
+                        placeholder="选择排序"
+                        label="排序方式"
+                    />
+                    <span id="collab-dialog-value" class="fixture__note">{{ collabDialogValue ?? '空' }}</span>
+                    <!-- 多层滚动锁栈：bodyLock 与对话框的滚动锁按 owner 计数叠加 -->
+                    <CaomeiSelect
+                        id="collab-dialog-select-locked"
+                        v-model="collabLockedValue"
+                        :options="panelOptions"
+                        body-lock
+                        placeholder="叠加锁定选择"
+                        label="叠加锁定"
+                    />
+                    <CaomeiButton id="collab-dialog-open-drawer" @click="collabStackDrawerOpen = true">
+                        打开叠加抽屉
+                    </CaomeiButton>
+                </div>
+            </CaomeiDialog>
+
+            <CaomeiDrawer
+                v-model:open="collabDrawerOpen"
+                position="right"
+                size="lg"
+                title="协作抽屉"
+            >
+                <div id="collab-drawer-select-host" style="height: 320px">
+                    <CaomeiSelect
+                        id="collab-drawer-select"
+                        v-model="collabDrawerValue"
+                        :options="longListOptions"
+                        placeholder="选择国家"
+                        label="国家"
+                    />
+                </div>
+                <span id="collab-drawer-value" class="fixture__note">{{ collabDrawerValue ?? '空' }}</span>
+            </CaomeiDrawer>
+
+            <CaomeiDrawer
+                v-model:open="collabStackDrawerOpen"
+                position="right"
+                size="lg"
+                title="叠加抽屉"
+            >
+                <p>叠加抽屉内容</p>
+            </CaomeiDrawer>
+        </section>
     </main>
 </template>
 
@@ -2245,6 +2356,46 @@ const ConfirmDriver = defineComponent({
     flex-direction: column;
     gap: var(--caomei-space-4);
     width: min(20rem, 100%);
+}
+
+#overlay-collaboration {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-3);
+    width: 100%;
+}
+
+#overlay-collaboration .fixture__collab-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--caomei-space-2);
+    align-items: center;
+}
+
+/* 全宽元素：滚动条补偿会改变 body 可用宽，位移量可在此量测 */
+#collab-geometry-probe {
+    width: 100%;
+    padding: var(--caomei-space-1) 0;
+    border: 1px dashed var(--caomei-color-border);
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-sm);
+}
+
+.fixture__collab-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--caomei-space-3);
+}
+
+/* 对话框内空白区：面板打开时点击此处应只关闭面板 */
+.fixture__collab-blank {
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0 var(--caomei-space-2);
+    border: 1px dashed var(--caomei-color-border);
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-sm);
 }
 
 .fixture__note {

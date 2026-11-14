@@ -1,4 +1,5 @@
 import type { ComponentSize, ComponentTone, ComponentVariant } from '../../types'
+import type { IconTooltipProp } from '../tooltip/types'
 import type {
     DropdownMenuAlign,
     DropdownMenuCommandEvent,
@@ -75,6 +76,15 @@ export interface SplitButtonProps {
      * @en Accessible label of the menu button; defaults to the current locale's "More actions" text
      */
     menuLabel?: string
+    /**
+     * 下拉（图标）按钮的内建提示；缺省开启，有内容即显示（图标触发器无 `mode`），内容取
+     * `menuLabel`（字符串 / `{ content }` 可覆盖）。
+     *
+     * 主按钮不在此列——它有可见文本时不应冒提示，需要时在默认插槽外自行使用 `CaomeiTooltip`。
+     * @default true
+     * @en Built-in tooltip for the dropdown (icon) button; on by default and shown whenever it has content (an icon trigger has no `mode`), with `menuLabel` as content (a string / `{ content }` overrides it). The main button is not included: a button with visible text should not sprout a tooltip; wrap it in `CaomeiTooltip` yourself when needed.
+     */
+    tooltip?: IconTooltipProp
     /**
      * 菜单弹出方向
      * @default 'bottom'

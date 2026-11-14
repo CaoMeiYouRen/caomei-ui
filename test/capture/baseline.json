@@ -1,6 +1,6 @@
 {
-    "capturedAt": "2026-11-10T10:21:28.781Z",
-    "chromiumVersion": "156.0.8078.4",
+    "capturedAt": "2026-11-14T21:02:54.624Z",
+    "chromiumVersion": "158.0.8127.18",
     "viewport": "1280x800",
     "entries": {
         "size.auto-complete.sm": {
@@ -1928,7 +1928,7 @@
             "font-size": "13.3333px"
         },
         "trigger.split-button-menu.attrs": {
-            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-grace-area-trigger=\"\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
         },
         "trigger.split-button-menu.style": {
             "height": "36px",
@@ -2476,10 +2476,10 @@
             "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"颜色\" class=\"caomei-color-picker__trigger\" data-state=\"closed\" id=\"reka-popover-trigger-v-*\" type=\"button\""
         },
         "trigger.split-button-menu.open": {
-            "dump": "BUTTON aria-controls=\"caomei-dropdown-menu-panel-v-*\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"open\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+            "dump": "BUTTON aria-controls=\"caomei-dropdown-menu-panel-v-*\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-grace-area-trigger=\"\" data-state=\"open\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
         },
         "trigger.split-button-menu.closed": {
-            "dump": "BUTTON aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
+            "dump": "BUTTON aria-describedby=\"reka-tooltip-content-v-*\" aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"更多操作\" class=\"caomei-split-button__menu caomei-button caomei-button--primary caomei-button--md\" data-grace-area-trigger=\"\" data-state=\"closed\" id=\"reka-dropdown-menu-trigger-v-*\" type=\"button\""
         },
         "panel.select": {
             "background-color": "rgb(247, 247, 248)"

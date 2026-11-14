@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<SplitButtonProps>(), {
     loading: false,
     menuSide: 'bottom',
     menuAlign: 'end',
+    tooltip: true,
 })
 
 const emit = defineEmits<{
@@ -96,6 +97,7 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
                     :size="size"
                     :rounded="rounded"
                     :label="menuLabel"
+                    :tooltip="tooltip"
                 >
                     <template #icon>
                         <CaomeiIcon :icon="icons.chevronDown" />

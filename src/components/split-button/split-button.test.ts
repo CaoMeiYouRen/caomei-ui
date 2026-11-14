@@ -251,3 +251,54 @@ describe('CaomeiSplitButton', () => {
         expect(wrapper.get('.caomei-split-button').attributes('id')).toBe('split-1')
     })
 })
+
+describe('CaomeiSplitButton 内建提示', () => {
+    async function openTooltip(element: Element): Promise<string | null> {
+        element.dispatchEvent(new FocusEvent('focus'))
+        await flush()
+        const panel = document.querySelector('.caomei-tooltip__content[data-state*="open"]')
+        return panel?.querySelector('[role="tooltip"]')?.textContent?.trim() ?? null
+    }
+
+    it('默认开启：下拉按钮显示 menuLabel 提示，可访问名不变', async () => {
+        const wrapper = mountSplit({ model: [{ label: '导出' }] }, { default: () => '操作' })
+        const menu = menuButton(wrapper)
+
+        expect(menu.attributes('aria-label')).toBe('更多操作')
+        expect(await openTooltip(menu.element)).toBe('更多操作')
+
+        wrapper.unmount()
+    })
+
+    it('自定义 menuLabel 同步到提示内容', async () => {
+        const wrapper = mountSplit({ menuLabel: '打开更多操作', model: [] }, { default: () => '操作' })
+
+        expect(await openTooltip(menuButton(wrapper).element)).toBe('打开更多操作')
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传字符串覆盖内容', async () => {
+        const wrapper = mountSplit({ tooltip: '展开附加操作', model: [] }, { default: () => '操作' })
+
+        expect(await openTooltip(menuButton(wrapper).element)).toBe('展开附加操作')
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传 false 关闭下拉按钮提示', async () => {
+        const wrapper = mountSplit({ tooltip: false, model: [] }, { default: () => '操作' })
+
+        expect(await openTooltip(menuButton(wrapper).element)).toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('主按钮不挂载提示', async () => {
+        const wrapper = mountSplit({ model: [] }, { default: () => '操作' })
+
+        expect(await openTooltip(mainButton(wrapper).element)).toBeNull()
+
+        wrapper.unmount()
+    })
+})

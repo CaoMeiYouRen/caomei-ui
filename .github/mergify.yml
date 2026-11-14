@@ -1,8 +1,9 @@
 # Mergify 配置。
 #
 # 关键点：`check-success` 匹配的是 GitHub Actions 的 **job name**（`jobs.<id>.name`），
-# 而不是 workflow name。本仓库 Test 工作流的 job 为 `Quality` 与 `Test & Build`
-# （见 .github/workflows/test.yml）；此前误用 workflow 名 `Test`，导致规则条件永不满足。
+# 而不是 workflow name。此前误用 workflow 名 `Test`，导致规则条件永不满足。
+# 条件须与 Test 工作流的 job 集合一致（以本文件下方 check-success 列表为准）；
+# check:dependabot-policy 双向对账：job 新增 / 改名未同步条件即失败。
 # 参考：https://docs.mergify.com/conditions
 pull_request_rules:
   - name: automatic merge for Dependabot pull requests
@@ -13,6 +14,8 @@ pull_request_rules:
       - -draft
       - check-success = Quality
       - check-success = Test & Build
+      # 视觉回归：Playwright / Chromium 升级会改变栅格化结果，须在合并前可见。
+      - check-success = Visual
       # 发布链路配置不进入自动合并：与 docs/standards/github-collaboration.md §3 一致。
       - -files~=^release\.config\.js$
       - -files~=^\.github/workflows/release\.yml$

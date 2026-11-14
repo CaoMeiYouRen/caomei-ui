@@ -3,8 +3,10 @@ import {
     ALLOWED_UPDATE_TYPES,
     checkDependabot,
     checkMergify,
+    checkMergifyJobSync,
     checkRepo,
     extractAllowBlock,
+    extractWorkflowJobNames,
     MERGIFY_FILE_EXCLUSIONS,
     REPO_ROOT,
     splitEcosystems,
@@ -191,5 +193,137 @@ describe('splitMergeRules', () => {
 describe('checkRepo', () => {
     it('真实仓库配置通过（集成用例，防止守卫与配置脱节）', () => {
         expect(checkRepo(REPO_ROOT)).toEqual([])
+    })
+})
+
+const TEST_WORKFLOW = `name: Test
+
+on:
+  pull_request:
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint (ESLint)
+        run: pnpm lint:check
+
+  test-build:
+    name: Test & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build library
+        run: pnpm build
+
+  visual:
+    name: Visual
+    runs-on: ubuntu-latest
+    steps:
+      - name: Visual regression baseline
+        run: pnpm test:visual
+`
+
+const MERGIFY_WITH_CHECKS = `pull_request_rules:
+  - name: automatic merge
+    conditions:
+      - base = master
+      - author = dependabot[bot]
+      - check-success = Quality
+      - check-success = Test & Build
+      - check-success = Visual
+    actions:
+      merge:
+        method: rebase
+`
+
+describe('extractWorkflowJobNames', () => {
+    it('只取 jobs 下的 name，忽略 steps 的 name', () => {
+        expect(extractWorkflowJobNames(TEST_WORKFLOW)).toEqual(['Quality', 'Test & Build', 'Visual'])
+    })
+
+    it('缺少 jobs 段时返回空数组', () => {
+        expect(extractWorkflowJobNames('name: NoJobs\n')).toEqual([])
+    })
+})
+
+describe('checkMergifyJobSync', () => {
+    it('条件与 Test 工作流 job 集合一致时通过', () => {
+        expect(checkMergifyJobSync(MERGIFY_WITH_CHECKS, TEST_WORKFLOW)).toEqual([])
+    })
+
+    it('Test 新增 job 未进入条件时失败', () => {
+        const mergify = MERGIFY_WITH_CHECKS.replace('      - check-success = Visual\n', '')
+        expect(checkMergifyJobSync(mergify, TEST_WORKFLOW)).toEqual([
+            'Test 工作流的 job「Visual」未进入自动合并条件（条件须与 Test CI 项目一致）',
+        ])
+    })
+
+    it('条件引用了不存在的 job 时失败', () => {
+        const workflow = TEST_WORKFLOW.replace('    name: Visual', '    name: Visual Regression')
+        expect(checkMergifyJobSync(MERGIFY_WITH_CHECKS, workflow)).toEqual([
+            'check-success = Visual 在 Test 工作流中不存在（job 改名后未同步？）',
+            'Test 工作流的 job「Visual Regression」未进入自动合并条件（条件须与 Test CI 项目一致）',
+        ])
+    })
+
+    it('未解析到任何 job 时失败（守卫失效）', () => {
+        expect(checkMergifyJobSync(MERGIFY_WITH_CHECKS, 'name: Empty\n')).toEqual([
+            '未从 Test 工作流解析到任何 job name（守卫失效，需人工确认）',
+        ])
+    })
+})
+
+describe('checkMergifyJobSync：fail-closed 边界', () => {
+    const workflowWithoutName = `${TEST_WORKFLOW}
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pnpm test:e2e
+`
+
+    it('未声明 name 的 job 以 job id 参与对账', () => {
+        expect(extractWorkflowJobNames(workflowWithoutName)).toEqual(['Quality', 'Test & Build', 'Visual', 'e2e'])
+        expect(checkMergifyJobSync(MERGIFY_WITH_CHECKS, workflowWithoutName)).toEqual([
+            'Test 工作流的 job「e2e」未进入自动合并条件（条件须与 Test CI 项目一致）',
+        ])
+    })
+
+    it('多条 dependabot 规则全部对账，不只看第一条', () => {
+        const twoRules = `${MERGIFY_WITH_CHECKS}  - name: second rule
+    conditions:
+      - author = dependabot[bot]
+      - check-success = Quality
+    actions:
+      merge:
+        method: rebase
+`
+        const problems = checkMergifyJobSync(twoRules, TEST_WORKFLOW)
+        expect(problems).toEqual([
+            '第 2 条 dependabot 合并规则：Test 工作流的 job「Test & Build」未进入自动合并条件（条件须与 Test CI 项目一致）',
+            '第 2 条 dependabot 合并规则：Test 工作流的 job「Visual」未进入自动合并条件（条件须与 Test CI 项目一致）',
+        ])
+    })
+
+    it('条件行尾注释不参与 check 名', () => {
+        const withComment = MERGIFY_WITH_CHECKS.replace(
+            '      - check-success = Visual',
+            '      - check-success = Visual # 视觉回归门禁',
+        )
+        expect(checkMergifyJobSync(withComment, TEST_WORKFLOW)).toEqual([])
+    })
+})
+
+describe('extractWorkflowJobNames：结构变体', () => {
+    it('引号键与键行尾注释都被识别', () => {
+        const workflow = `jobs:
+  "quality":
+    name: Quality
+  test-build: # 构建与单测
+    name: Test & Build
+  visual:
+    name: Visual # 视觉回归
+`
+        expect(extractWorkflowJobNames(workflow)).toEqual(['Quality', 'Test & Build', 'Visual'])
     })
 })

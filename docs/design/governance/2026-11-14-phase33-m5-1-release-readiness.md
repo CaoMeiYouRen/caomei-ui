@@ -87,5 +87,5 @@
 ## 7. 后续候选（未纳入本批）
 
 - **Playwright 版本与视觉基线联动**：`@playwright/test` 为 `^` 范围，Chromium 随 minor 升级变化会再次使冻结基线陈旧（本次即由此触发）。
-  - **已按用户裁定实施（2026-11-14）**：`@playwright/test` 钉精确版本 `1.65.0`；dependabot 对 `@playwright/test` 的 minor `ignore`（升级转人工，须与基线重冻结同批）；[测试规范](../../standards/testing.md) 补「Playwright 升级须同批重冻结视觉基线」；[发布指南](../../guide/release.md) §1 增加周回归绿门禁。
+  - **已按用户裁定实施（2026-11-14）**：`@playwright/test` 钉精确版本 `1.65.0`（不设 dependabot `ignore`，避免版本陈旧）；Test 工作流新增 `Visual` job（`pnpm test:visual`），Mergify 自动合并条件补齐 `check-success = Visual`，并由 `check:dependabot-policy` 对「Test job 集合 ↔ Mergify 条件」双向对账；[测试规范](../../standards/testing.md) 补「Playwright 升级须同批重冻结视觉基线」；[发布指南](../../guide/release.md) §1 增加周回归绿门禁。
   - **待定**：`release.yml` 尚未机检周回归结论（当前 `verify` 链不含 `test:visual`），门禁依赖人工执行；是否接入机检守卫需另行决策（会改变 `release.yml` 既有语义）。

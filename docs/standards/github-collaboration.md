@@ -43,14 +43,15 @@
 - **评论去重（PR）**：取 `gh pr view <n> --json comments,reviews,headRefOid,updatedAt`；仅当最后一条评论由本仓维护者（`OWNER` 账号或白名单机器人）发出、`updatedAt` 等于该评论 `createdAt`、且无新 review 与新 commit 时，跳过重复评论。字段缺失或无法比较时视为有更新。
 - 合并前提（全部满足）：
   - 作者为可信来源（§1）；
-  - `Quality`、`Test & Build` 及该 PR 触发的其它 workflow 全绿；
+  - `Quality`、`Test & Build`、`Visual` 及该 PR 触发的其它 workflow 全绿；
   - Review Gate `Pass`（自动合并路径豁免，见本节「dependabot 自动合并路径」条）；
   - 无冲突；
   - 改动不触碰 `AGENTS.md`、`.env*`、`release.config.js`、`.github/workflows/release.yml`。
 - **dependabot 自动合并路径**（配置文件 `.github/mergify.yml`）：
   - 覆盖范围只有常规版本升级（非安全更新）：`dependabot.yml` 的 `allow.update-types` 只放行 patch / minor，常规 major 不产生 PR，由人工发起与合并。
-  - 放行条件含 `base = master`、`author = dependabot[bot]`、`label = dependencies`、非 draft、`Quality` 与 `Test & Build` 全绿，并排除 `release.config.js` 与 `.github/workflows/release.yml`。
-  - 该路径不要求 Review Gate。逐条条件文本以 `.github/mergify.yml` 为准，本节只保留策略意图与例外；收紧或放宽策略须同批修改本节、配置文件与 `check-dependabot-policy` 的常量（`ALLOWED_UPDATE_TYPES` / `MERGIFY_FILE_EXCLUSIONS`），一致性由 `pnpm check:dependabot-policy` 守卫。
+  - 放行条件含 `base = master`、`author = dependabot[bot]`、`label = dependencies`、非 draft、`Quality` / `Test & Build` / `Visual` 全绿，并排除 `release.config.js` 与 `.github/workflows/release.yml`。`Visual` 承担 `pnpm test:visual`：Playwright / Chromium 升级会改变栅格化结果，视觉回归必须在合并前可见。
+  - **条件集合须与 Test 工作流的 job 集合双向一致**：新增 / 改名 job 未同步条件、或条件引用不存在的 job，`pnpm check:dependabot-policy` 即失败（测试类改动同样走该守卫）。
+  - 该路径不要求 Review Gate。逐条条件文本以 `.github/mergify.yml` 为准，本节只保留策略意图与例外；收紧或放宽策略须同批修改本节、配置文件与 `check-dependabot-policy` 的常量（`ALLOWED_UPDATE_TYPES` / `MERGIFY_FILE_EXCLUSIONS`）或 job 对账逻辑，一致性由 `pnpm check:dependabot-policy` 守卫。
   - 安全更新若以 major 形式合入后出现不兼容，由巡检开 revert，不因此放宽或回退配置。
   - 大版本检测：`pnpm check:outdated-major` 列出落后大版本的直接依赖（默认只报告，供人工核对；`--strict` 供发布前门禁）。默认按 `registry` 源直连（端点跟随 `npm_config_registry` / `pnpm config get registry`，数十项通常在数秒内），`--source=pnpm` 改走 `pnpm outdated` 解析整棵依赖图（耗时随依赖图规模增长）；任一依赖取值失败一律按失败处理。受检面仅 `package.json` 直接声明，overrides 与传递依赖由安全告警覆盖。
 - 外部来源的 PR：只审查与评论，不合并；质量不足或方向不符时说明理由后关闭。

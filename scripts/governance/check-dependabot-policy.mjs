@@ -9,6 +9,9 @@
  *    出现 `version-update:semver-major` 即失败（大版本应转人工，不得进入自动合并路径）。
  * 2. `.github/mergify.yml` 必须排除 `release.config.js` 与 `.github/workflows/release.yml`，
  *    避免发布链路配置被自动合并改写。
+ * 3. `.github/mergify.yml` 的 `check-success` 条件须与 `.github/workflows/test.yml` 的 job name
+ *    集合**双向一致**（Test 新增 / 改名 job 未同步条件即失败），避免依赖升级绕过某些 CI 项目
+ *    ——典型是视觉回归（`Visual`）：Playwright / Chromium 升级会改变栅格化结果。
  *
  * 受检面下界：ecosystem 条目数低于 `MIN_ECOSYSTEMS` 时失败，避免「配置被删 ⇒ 零命中通过」。
  * 不解析完整 YAML：本仓这两份配置结构稳定，正则切块足够定位「某条 ecosystem 缺 allow」，
@@ -172,6 +175,91 @@ export function splitMergeRules(text) {
 }
 
 /**
+ * 去掉包裹在标量外的引号。
+ *
+ * @param {string} value 原始标量
+ * @returns {string} 去引号后的值
+ */
+function unquote(value) {
+    return value.replace(/^(['"])(.*)\1$/u, '$2').trim()
+}
+
+/**
+ * 从 GitHub Actions 工作流提取 job name 集合（`jobs.<id>.name`）。
+ *
+ * @param {string} text 工作流原文
+ * @returns {string[]} job name 清单
+ */
+export function extractWorkflowJobNames(text) {
+    const lines = stripComments(text).split(/\r?\n/)
+    const jobsIndex = lines.findIndex((line) => /^jobs:\s*$/u.test(line))
+    if (jobsIndex === -1) {
+        return []
+    }
+    const jobs = []
+    let current = null
+    for (let index = jobsIndex + 1; index < lines.length; index += 1) {
+        const line = lines[index]
+        if (line !== '' && !/^\s/u.test(line)) {
+            break
+        }
+        const jobMatch = /^ {2}(['"]?)([A-Za-z0-9_-]+)\1:\s*(?:#.*)?$/u.exec(line)
+        if (jobMatch) {
+            current = { id: jobMatch[2], name: null }
+            jobs.push(current)
+            continue
+        }
+        if (!current || current.name) {
+            continue
+        }
+        const nameMatch = /^ {4}name:\s*(.+?)\s*$/u.exec(line)
+        if (nameMatch) {
+            // 标量取到行尾注释之前（仅当 `#` 前有空白），再剥引号。
+            current.name = unquote(nameMatch[1].split(/\s+#/u)[0])
+        }
+    }
+    // 未声明 name 的 job 以 job id 作为 check 名（GitHub 语义），不得静默漏放。
+    return jobs.map((job) => job.name ?? job.id)
+}
+
+/**
+ * 校验 mergify.yml 的 `check-success` 条件与 Test 工作流 job 集合双向一致。
+ *
+ * @param {string} mergifyText mergify.yml 原文
+ * @param {string} workflowText test.yml 原文
+ * @returns {string[]} 问题清单（空数组表示通过）
+ */
+export function checkMergifyJobSync(mergifyText, workflowText) {
+    const rules = splitMergeRules(mergifyText).filter((block) => block.includes('dependabot[bot]'))
+    if (rules.length === 0) {
+        return ['mergify.yml 未找到 dependabot 自动合并规则（策略已失效，需人工确认）']
+    }
+    const jobs = extractWorkflowJobNames(workflowText)
+    if (jobs.length === 0) {
+        return ['未从 Test 工作流解析到任何 job name（守卫失效，需人工确认）']
+    }
+    const problems = []
+    rules.forEach((rule, index) => {
+        const prefix = rules.length > 1 ? `第 ${index + 1} 条 dependabot 合并规则：` : ''
+        // 条件值取到行尾注释之前（仅当 `#` 前有空白），避免注释被当成 check 名；
+        // 代价是 check 名内部含 ` #` 的极端写法会被截断，本仓 job name 不含该形态。
+        const required = [...rule.matchAll(/check-success\s*=\s*([^\n]+)/gu)].map((match) =>
+            match[1].split(/\s+#/u)[0].trim())
+        for (const name of required) {
+            if (!jobs.includes(name)) {
+                problems.push(`${prefix}check-success = ${name} 在 Test 工作流中不存在（job 改名后未同步？）`)
+            }
+        }
+        for (const job of jobs) {
+            if (!required.includes(job)) {
+                problems.push(`${prefix}Test 工作流的 job「${job}」未进入自动合并条件（条件须与 Test CI 项目一致）`)
+            }
+        }
+    })
+    return problems
+}
+
+/**
  * 校验 mergify.yml：每条自动合并 dependabot PR 的规则都必须排除发布链路文件。
  *
  * @param {string} text 配置原文
@@ -202,7 +290,12 @@ export function checkMergify(text) {
 export function checkRepo(repoRoot = REPO_ROOT) {
     const dependabot = readFileSync(join(repoRoot, '.github/dependabot.yml'), 'utf8')
     const mergify = readFileSync(join(repoRoot, '.github/mergify.yml'), 'utf8')
-    return [...checkDependabot(dependabot), ...checkMergify(mergify)]
+    const testWorkflow = readFileSync(join(repoRoot, '.github/workflows/test.yml'), 'utf8')
+    return [
+        ...checkDependabot(dependabot),
+        ...checkMergify(mergify),
+        ...checkMergifyJobSync(mergify, testWorkflow),
+    ]
 }
 
 function main() {

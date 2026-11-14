@@ -14,13 +14,6 @@ updates:
         update-types:
           - "version-update:semver-patch"
           - "version-update:semver-minor"
-    # Playwright 的 Chromium 随 minor 升级，会改变拉丁文本排版 / 字形栅格化，使冻结的视觉基线陈旧
-    # （2026-11-14 周回归实测）。minor 转人工：升级 PR 必须与视觉基线重冻结同批，
-    # 见 docs/standards/testing.md「基线生成环境纪律」。
-    ignore:
-      - dependency-name: "@playwright/test"
-        update-types:
-          - "version-update:semver-minor"
   - package-ecosystem: github-actions
     directory: /
     open-pull-requests-limit: 20

@@ -81,3 +81,34 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+  # 视觉回归基线：真实渲染整体像素与仓库内冻结基线比对。依赖升级（尤其 Playwright / Chromium）会
+  # 改变栅格化结果，因此该 job 也是 dependabot 自动合并的必经门禁（见 .github/mergify.yml）。
+  # 新增 / 重命名本工作流的 job 时，须同批更新 mergify.yml 的 check-success；
+  # check:dependabot-policy 对此做双向对账。
+  visual:
+    name: Visual
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "lts/*"
+          cache: "pnpm"
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Visual regression baseline
+        run: pnpm test:visual
+      - name: Upload visual diff
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-diff-${{ github.run_id }}
+          path: test-results/
+          if-no-files-found: warn

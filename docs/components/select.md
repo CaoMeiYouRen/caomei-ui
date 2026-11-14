@@ -22,7 +22,7 @@
 
 > 可搜索单选（PrimeVue `Select filter`）请改用 [`CaomeiAutoComplete`](./auto-complete.md)：Reka Select 的面板固定 `role="listbox"`，面板内搜索框会违反 `aria-required-children`，故不在 Select 上提供 `filter`。
 >
-> 字段解析：`optionLabel` / `optionValue` 字符串形态支持 `a.b` 点号嵌套路径；`optionValue` 解析结果不是字符串 / 数字（如 `null`、布尔、字段缺省）时该选项**不渲染**，`optionLabel` 解析不到文本时该项文本为空、触发器回退显示 `placeholder`。
+> 字段解析：`optionLabel` / `optionValue` 字符串形态支持 `a.b` 点号嵌套路径；`optionValue` 解析结果不是字符串 / 数字（如 `null`、布尔、字段缺省）时该选项**不渲染**，`optionLabel` 解析不到文本时该项文本为空、触发器回退显示 `placeholder`。解析为 `null` / `undefined` 的选项在开发期会通过 `console.warn` 提示（`NODE_ENV === 'production'` 时静默；浏览器产物在未定义 `globalThis.process` 时仍会输出）；解析结果与渲染不变。
 
 ## 清除
 

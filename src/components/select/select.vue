@@ -16,7 +16,8 @@ import {
 import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
-import { resolveOptionDisabled, resolveOptionField, resolveOptionValue, type OptionValue } from '../_shared/option'
+import { warnDev } from '../../_shared/dev-warn'
+import { narrowOptionValue, resolveOptionDisabled, resolveOptionField, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { SelectOptionGroup, SelectProps } from './types'
 
@@ -64,8 +65,18 @@ interface NormalizedOption {
     /** 解析后的显示文本；字段缺省时为 undefined */
     label: string | undefined
     disabled: boolean
-    /** 是否为当前选中项 */
-    selected: boolean
+}
+
+/**
+ * 开发期提示：选项 value 解析为 `null` / `undefined` 时该选项会被丢弃。
+ * 只做提示，不改变解析结果与生产输出（`warnDev` 在生产构建中静默）。
+ */
+function warnUnresolvedOption(raw: unknown, index: number): void {
+    if (raw === null || raw === undefined) {
+        warnDev(
+            `[CaomeiSelect] 第 ${index + 1} 个选项的 value 解析为 ${raw === null ? 'null' : 'undefined'}，该选项不会渲染。`,
+        )
+    }
 }
 
 /** 判断是否为分组形态 */
@@ -76,13 +87,15 @@ function isOptionGroup(option: T | SelectOptionGroup<T>): option is SelectOption
 /** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
 const normalizedOptions = computed<NormalizedOption[]>(() => {
     const result: NormalizedOption[] = []
-    for (const option of props.options) {
+    for (const [index, option] of props.options.entries()) {
         // 跳过分组项，由模板单独处理
         if (isOptionGroup(option)) {
             continue
         }
-        const value = resolveOptionValue(option, props.optionValue, 'value')
+        const rawValue = resolveOptionField<T, unknown>(option, props.optionValue, 'value')
+        const value = narrowOptionValue(rawValue)
         if (value === undefined) {
+            warnUnresolvedOption(rawValue, index)
             continue
         }
         result.push({
@@ -90,7 +103,6 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
             value,
             label: resolveOptionField(option, props.optionLabel, 'label'),
             disabled: resolveOptionDisabled(option),
-            selected: value === model.value,
         })
     }
     return result
@@ -104,9 +116,11 @@ const normalizedGroups = computed(() => {
             continue
         }
         const groupOptions: NormalizedOption[] = []
-        for (const item of option.options) {
-            const value = resolveOptionValue(item, props.optionValue, 'value')
+        for (const [index, item] of option.options.entries()) {
+            const rawValue = resolveOptionField<T, unknown>(item, props.optionValue, 'value')
+            const value = narrowOptionValue(rawValue)
             if (value === undefined) {
+                warnUnresolvedOption(rawValue, index)
                 continue
             }
             groupOptions.push({
@@ -114,7 +128,6 @@ const normalizedGroups = computed(() => {
                 value,
                 label: resolveOptionField(item, props.optionLabel, 'label'),
                 disabled: resolveOptionDisabled(item),
-                selected: value === model.value,
             })
         }
         result.push({ label: option.label, options: groupOptions })
@@ -247,7 +260,7 @@ function clearValue(): void {
                                 <slot
                                     name="option"
                                     :option="option.raw"
-                                    :selected="option.selected"
+                                    :selected="option.value === model"
                                 >
                                     {{ option.label }}
                                 </slot>
@@ -271,7 +284,7 @@ function clearValue(): void {
                                 <slot
                                     name="option"
                                     :option="option.raw"
-                                    :selected="option.selected"
+                                    :selected="option.value === model"
                                 >
                                     {{ option.label }}
                                 </slot>
@@ -300,7 +313,7 @@ function clearValue(): void {
                                     <slot
                                         name="option"
                                         :option="option.raw"
-                                        :selected="option.selected"
+                                        :selected="option.value === model"
                                     >
                                         {{ option.label }}
                                     </slot>

@@ -54,7 +54,16 @@ export function resolveOptionValue<T extends object>(
     defaultKey: string,
 ): OptionValue | undefined {
     const value: unknown = resolveOptionField(option, accessor, defaultKey)
-    return typeof value === 'string' || typeof value === 'number' ? value : undefined
+    return narrowOptionValue(value)
+}
+
+/**
+ * 把任意原始值收窄为 `OptionValue`：仅字符串 / 数字通过，其余（`null`、布尔、对象、缺省）返回 `undefined`。
+ * @en Narrow any raw value to `OptionValue`: only strings / numbers pass; everything else (`null`, booleans,
+ * objects, missing) returns `undefined`.
+ */
+export function narrowOptionValue(raw: unknown): OptionValue | undefined {
+    return typeof raw === 'string' || typeof raw === 'number' ? raw : undefined
 }
 
 /**

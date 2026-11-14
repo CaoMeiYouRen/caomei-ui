@@ -1,11 +1,13 @@
 import { mount } from '@vue/test-utils'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createSSRApp, h, nextTick, type DefineComponent } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import type { SelectProps } from './types'
 import { CaomeiSelect, CaomeiSelectGroup } from './index'
 
 afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
     document.body.innerHTML = ''
     document.body.style.overflow = ''
     document.body.style.pointerEvents = ''
@@ -352,6 +354,84 @@ describe('CaomeiSelect 对象选项映射', () => {
         await nextTick()
 
         expect(document.querySelectorAll('[role="option"]')).toHaveLength(2)
+
+        wrapper.unmount()
+    })
+
+    it('value 解析为 null / undefined 时开发期告警（含源序号），且不改变渲染结果', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{ name: '有效', id: 1 }, { name: '空值', id: null }, { name: '缺字段' }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(1)
+        // 序号按源数组位置：第 2 个为 null、第 3 个缺字段；有效项在前时也不得错位
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('第 2 个选项的 value 解析为 null'),
+            expect.stringContaining('第 3 个选项的 value 解析为 undefined'),
+        ])
+
+        // 选择变化不得触发归一化重算，因而不得重复告警（Reka SelectItem 以 pointerup 提交选中）
+        document.querySelector<HTMLElement>('[role="option"]')?.dispatchEvent(new Event('pointerup', { bubbles: true }))
+        await nextTick()
+        await nextTick()
+        expect(warn).toHaveBeenCalledTimes(2)
+
+        wrapper.unmount()
+    })
+
+    it('分组选项的无效值按组内序号告警，渲染结果不变', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{
+                    label: '分组',
+                    options: [{ name: '空值一', id: null }, { name: '有效', id: 1 }, { name: '空值二', id: null }],
+                }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(1)
+        // 无效项在前 / 连续无效项时，组内序号不得错位为「已接受数」
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('第 1 个选项的 value 解析为 null'),
+            expect.stringContaining('第 3 个选项的 value 解析为 null'),
+        ])
+
+        wrapper.unmount()
+    })
+
+    it('生产环境下同一输入不告警，解析结果不变', async () => {
+        vi.stubEnv('NODE_ENV', 'production')
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(MappedSelect, {
+            props: {
+                options: [{ name: '有效', id: 1 }, { name: '空值', id: null }, { name: '缺字段' }],
+                optionLabel: 'name',
+                optionValue: 'id',
+                attachTo: document.body,
+            },
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(warn).not.toHaveBeenCalled()
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(1)
 
         wrapper.unmount()
     })

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { resolveOptionDisabled, resolveOptionField, resolveOptionValue } from './option'
+import { narrowOptionValue, resolveOptionDisabled, resolveOptionField, resolveOptionValue } from './option'
 
 interface MappedOption {
     name: string
@@ -48,6 +48,17 @@ describe('resolveOptionField', () => {
         const nested = { meta: null }
         expect(resolveOptionField<typeof nested, string>(nested, 'meta.name', 'label')).toBeUndefined()
         expect(resolveOptionField<typeof nested, string>(nested, 'missing.name', 'label')).toBeUndefined()
+    })
+})
+
+describe('narrowOptionValue', () => {
+    it('仅放行字符串与数字', () => {
+        expect(narrowOptionValue('a')).toBe('a')
+        expect(narrowOptionValue(1)).toBe(1)
+        expect(narrowOptionValue(null)).toBeUndefined()
+        expect(narrowOptionValue(undefined)).toBeUndefined()
+        expect(narrowOptionValue(true)).toBeUndefined()
+        expect(narrowOptionValue({ value: 1 })).toBeUndefined()
     })
 })
 

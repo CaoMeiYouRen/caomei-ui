@@ -16,7 +16,7 @@
 | M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-4-fontkit-3.md)） |
 | M2-1 | DataTable `autoResetPageIndex` 透传与文档口径 | 下游适配 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m2-1-datatable-auto-reset-page-index.md)） |
 | M3-1 | ColorPicker 色板 `radiogroup` 导航增强 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-1-colorpicker-radiogroup.md)） |
-| M3-2 | Select 选项 `null` / `undefined` 开发期告警 | 组件增强与可访问性 | 待执行 |
+| M3-2 | Select 选项 `null` / `undefined` 开发期告警 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-2-select-option-warning.md)） |
 | M3-3 | Paginator `#report` 插槽 | 组件增强与可访问性 | 待执行 |
 | M3-4 | Select 长列表面板滚动可达性 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-select-long-list-scroll.md)） |
 | M4-1 | 文档站 transition 副本守卫 | 质量守卫与对比度 | 待执行 |

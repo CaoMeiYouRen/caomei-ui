@@ -77,7 +77,7 @@
 ## 8. 已知观察与后续候选
 
 1. `latest = 1.3.0`；`next` 仍为 `1.0.0-rc.1`（未启用）。
-2. 依赖告警：`node-forge` low（dependabot #69）仍 open；`@tanstack/vue-table` / `@lucide/vue` / `vue` 三个 dependabot PR 因许可证台账标题未随安装版本更新导致 `Quality` 红，待人工处理。
+2. 依赖告警：`deepmerge` low（dependabot #69，无 patched version）仍 open（2026-11-14 订正：原记 `node-forge` 有误，以 `gh api .../dependabot/alerts/69` 为准）；`@tanstack/vue-table` / `@lucide/vue` / `vue` 三个 dependabot PR 因许可证台账标题未随安装版本更新导致 `Quality` 红，**归档时点待人工处理**（后续处置见 [第十八轮评估](./2026-11-14-next-stage-scope-evaluation-18.md) §1.2）。
 3. 发布前置门禁（周回归绿）当前靠人工执行；`release.yml` 未接入机检，是否接入需用户决策（[就绪度记录](./2026-11-14-phase33-m5-1-release-readiness.md) §7）。
 4. `test:visual` 的字体路径基线已按当前 Chromium 重冻结；后续 Playwright 升级须同批复核（[测试规范](../../standards/testing.md) 已补纪律）。
 5. 下一阶段候选见 [Backlog](../../plan/backlog.md)；启动需用户明确授权。

@@ -51,3 +51,7 @@ strictPeerDependencies: false
 minimumReleaseAgeExclude:
   # happy-dom 20.14.5 属新发布，同上；待冷却期后移除
   - happy-dom@20.14.5
+  # eslint 10.15.0（2026-11-13T21:33Z）与 @eslint/config-array 0.23.6（同日 20:14Z）属新发布；
+  # 2026-11-15 起可尝试移除，判据 = `pnpm install` 不再自动回写该条且 lockfile 无变化
+  - '@eslint/config-array@0.23.6'
+  - eslint@10.15.0

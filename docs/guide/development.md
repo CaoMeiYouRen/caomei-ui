@@ -2,7 +2,7 @@
 
 ## 环境要求
 
-- Node.js >= 22
+- Node.js >= 22.22.2（stylelint 18 起；CI 使用 `lts/*`）
 - pnpm（版本以根 `package.json` 的 `packageManager` 为准）
 
 ## 初始化

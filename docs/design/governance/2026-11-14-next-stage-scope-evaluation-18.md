@@ -27,7 +27,7 @@
 
 - `master` HEAD `6426046`（依赖同步批次）：**Test / Security Alerts / Pages / TODO / Push on master 全部 success**（`gh run list --limit 8`）。
 - 版本面：`latest = 1.3.0`（tag `v1.3.0`，GitHub Release 到位）；`next` 仍为 `v1.0.0-rc.1`（未启用）。
-  - `git rev-list --count v1.3.0..HEAD` → **9** 个提交，其中 `feat` **0** 个（`chore(deps)` 4 / `fix(release)` 2 / `docs` 3；`git log --pretty=%s v1.3.0..HEAD`）。
+  - `git rev-list --count v1.3.0..6426046` → **9** 个提交，其中 `feat` **0** 个（`chore(deps)` 4 / `fix(release)` 2 / `docs` 3；`git log --pretty=%s v1.3.0..6426046`）。
 - 对外面：open PR **0** / open issue **0**（`gh pr|issue list --state open`）；Code Scanning open **0**；Dependabot open **1**（#69 `deepmerge` low，无 patched version；接受依据见[依赖告警处置记录](./2026-11-04-phase27-m4-4-dependency-alerts.md)，不在 Backlog）。
   - Phase 33 归档 §8 第 2 条记录的三个「许可证台账标题导致 Quality 红」的依赖 PR 已全部合并（`5eb3562` / `aa363fe` / `d7170d5` / `6426046`），当前无待处理项。
 - 依赖大版本：`pnpm check:outdated-major` → 直接依赖落后项 **2** 项（`conventional-changelog` 7.2.1 → 8.1.3、`typescript` 6.0.3 → 7.0.2），**均为已登记的条件触发 / 阻塞项**，本轮无新增可升级项。

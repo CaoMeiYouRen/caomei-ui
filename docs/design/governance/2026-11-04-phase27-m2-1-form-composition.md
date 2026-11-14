@@ -38,7 +38,7 @@
 
 - `pnpm exec vitest run src/components/form/form.test.ts` → **15 passed**（含 `submit()` 真实 `requestSubmit` 链路；SSR `renderToString` 无 `console.warn` / `console.error`）。
 - `pnpm test` → **146 文件 / 2871 passed**。
-- `pnpm test:a11y` → **68 passed**（`A11Y_FIXTURE_BUDGET = 61`）。
+- `pnpm test:a11y` → **68 passed**（`A11Y_FIXTURE_BUDGET = 61`，写录时点快照）。
 - `pnpm verify` → **exit 0**（含 `docs:build`、`ref-attr-guard` 触发的 `capture:styles` 367 项 0 差异）。
 - **首跑 flaky（按测试规范 §6.1 登记）**：`pnpm verify` 首跑 `pnpm test` 段 1 例失败、未捕获文件名；随后 `pnpm test` 连续两次全绿、`pnpm verify` 复跑 exit 0，判为并行负载偶发，与本批改动无因果。
 - **真实浏览器（playground，1440 亮 / 暗 + 390 / 834 / 1440）**：23 / 23 项通过——4 个 FormItem、Input / Select / CheckboxGroup / Switch 的 `aria-labelledby` 与 `aria-describedby` 解析、空名称提交后 `aria-invalid` + 双 id describedby + `role=alert`、补全后错误消失、Switch 无 `aria-invalid`、三档无横向溢出、移动端 4 项纵向堆叠、console / pageerror 0。截图与原始读数在 `test-results/m2-1/`（gitignored）。

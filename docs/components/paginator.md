@@ -40,9 +40,9 @@
 
 > 未提供 `rowsPerPageOptions` 时不渲染选择器，行为与既有版本一致；`itemsPerPage` 仍为受控 prop，配合 `v-model:items-per-page` 使用时由父级接收新值。
 
-## 自渲染报表
+## 报表插槽
 
-分页器不提供内建报表 / 模板插槽；需要「第 x 到 y 条，共 z 条」时，按 `page` / `itemsPerPage` / `total` 自渲染即可（对应 PrimeVue 的 `currentPageReportTemplate`）。首行偏移为 `(page - 1) * itemsPerPage + 1`，末行为 `min(page * itemsPerPage, total)`；`total` 为 0 时报表显示 0 条，页码越界时请对首行与末行同时做下限兜底。
+`#report` 插槽渲染在页码列表之前，作用域为 `{ page, pages, total }`（1 基页码 / 总页数 / 总条数；`total = 0` 时 `pages` 为 1）。需要「第 x 到 y 条，共 z 条」时，可在插槽内按 `page` 与 `itemsPerPage` 计算首行 / 末行（首行 `(page - 1) * itemsPerPage + 1`、末行 `min(page * itemsPerPage, total)`），对应 PrimeVue 的 `currentPageReportTemplate`；更复杂的模板可继续由父级完全自渲染。页码越界时请对首行与末行同时做下限兜底。
 
 <demo
     vue="../examples/paginator/report.vue"
@@ -92,7 +92,7 @@
 | `:total-records` | `:total` |
 | `@page="({ page, rows, first }) => ..."` | 监听 `update:page` / `update:itemsPerPage`；需要偏移时按 `(page - 1) * itemsPerPage` 换算 |
 | `:rows-per-page-options` | `rowsPerPageOptions`（切换时监听 `update:itemsPerPage`） |
-| `template`（含 `CurrentPageReport`） | **未实现**：分页器不提供模板插槽与「第 x / 共 y 页」报表；按 `page` / `itemsPerPage` / `total` 自渲染（见「自渲染报表」示例） |
+| `template`（含 `CurrentPageReport`） | `#report` 插槽（作用域 `page` / `pages` / `total`，见「报表插槽」示例）；更复杂的 `template` 内容仍由父级自渲染 |
 
 > 迁移流程、通用陷阱与逐组件对照入口见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

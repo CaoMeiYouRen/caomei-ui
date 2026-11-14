@@ -34,6 +34,14 @@ const emit = defineEmits<{
     'update:itemsPerPage': [value: number]
 }>()
 
+defineSlots<{
+    /**
+     * 报表插槽（渲染在页码列表之前），作用域为当前页 / 总页数 / 总条数
+     * @en Report slot (rendered before the page list); scope is the current page / page count / total items
+     */
+    report?: (props: { page: number, pages: number, total: number }) => unknown
+}>()
+
 const locale = useLocale()
 const attrs = useAttrs()
 /** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
@@ -84,74 +92,85 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
         :disabled="disabled"
         class="caomei-paginator"
     >
-        <PaginationList
-            v-slot="{items}"
-            as="ul"
-            class="caomei-paginator__list"
-        >
-            <li v-if="showEdges" class="caomei-paginator__item">
-                <PaginationFirst
-                    class="caomei-paginator__control"
-                    :aria-label="firstLabel"
-                >
-                    <CaomeiIcon :icon="icons.chevronsLeft" />
-                </PaginationFirst>
-            </li>
-            <li class="caomei-paginator__item">
-                <PaginationPrev
-                    class="caomei-paginator__control"
-                    :aria-label="previousLabel"
-                >
-                    <CaomeiIcon :icon="icons.chevronLeft" />
-                </PaginationPrev>
-            </li>
-            <template
-                v-for="(item, index) in items"
-                :key="item.type === 'page' ? `page-${item.value}` : `ellipsis-${index}`"
+        <template #default="{page: currentPage, pageCount}">
+            <!-- div 而非 span：插槽内容可能含块级元素，span 会造成非法嵌套与 hydration 风险 -->
+            <div v-if="$slots.report" class="caomei-paginator__report">
+                <slot
+                    name="report"
+                    :page="currentPage"
+                    :pages="pageCount"
+                    :total="total"
+                />
+            </div>
+            <PaginationList
+                v-slot="{items}"
+                as="ul"
+                class="caomei-paginator__list"
             >
-                <li v-if="item.type === 'ellipsis'" class="caomei-paginator__item">
-                    <PaginationEllipsis
-                        class="caomei-paginator__ellipsis"
-                        aria-hidden="true"
-                    />
-                </li>
-                <li v-else class="caomei-paginator__item">
-                    <PaginationListItem
+                <li v-if="showEdges" class="caomei-paginator__item">
+                    <PaginationFirst
                         class="caomei-paginator__control"
-                        :value="item.value"
-                        :aria-label="resolvePageLabel(item.value)"
+                        :aria-label="firstLabel"
                     >
-                        {{ item.value }}
-                    </PaginationListItem>
+                        <CaomeiIcon :icon="icons.chevronsLeft" />
+                    </PaginationFirst>
                 </li>
-            </template>
-            <li class="caomei-paginator__item">
-                <PaginationNext
-                    class="caomei-paginator__control"
-                    :aria-label="nextLabel"
+                <li class="caomei-paginator__item">
+                    <PaginationPrev
+                        class="caomei-paginator__control"
+                        :aria-label="previousLabel"
+                    >
+                        <CaomeiIcon :icon="icons.chevronLeft" />
+                    </PaginationPrev>
+                </li>
+                <template
+                    v-for="(item, index) in items"
+                    :key="item.type === 'page' ? `page-${item.value}` : `ellipsis-${index}`"
                 >
-                    <CaomeiIcon :icon="icons.chevronRight" />
-                </PaginationNext>
-            </li>
-            <li v-if="showEdges" class="caomei-paginator__item">
-                <PaginationLast
-                    class="caomei-paginator__control"
-                    :aria-label="lastLabel"
-                >
-                    <CaomeiIcon :icon="icons.chevronsRight" />
-                </PaginationLast>
-            </li>
-        </PaginationList>
-        <span v-if="rowsPerPageChoices.length > 0" class="caomei-paginator__rows-per-page">
-            <CaomeiSelect
-                :model-value="itemsPerPage"
-                :options="rowsPerPageChoices"
-                :label="rowsPerPageLabel"
-                :disabled="disabled"
-                size="sm"
-                @update:model-value="onRowsPerPageChange"
-            />
-        </span>
+                    <li v-if="item.type === 'ellipsis'" class="caomei-paginator__item">
+                        <PaginationEllipsis
+                            class="caomei-paginator__ellipsis"
+                            aria-hidden="true"
+                        />
+                    </li>
+                    <li v-else class="caomei-paginator__item">
+                        <PaginationListItem
+                            class="caomei-paginator__control"
+                            :value="item.value"
+                            :aria-label="resolvePageLabel(item.value)"
+                        >
+                            {{ item.value }}
+                        </PaginationListItem>
+                    </li>
+                </template>
+                <li class="caomei-paginator__item">
+                    <PaginationNext
+                        class="caomei-paginator__control"
+                        :aria-label="nextLabel"
+                    >
+                        <CaomeiIcon :icon="icons.chevronRight" />
+                    </PaginationNext>
+                </li>
+                <li v-if="showEdges" class="caomei-paginator__item">
+                    <PaginationLast
+                        class="caomei-paginator__control"
+                        :aria-label="lastLabel"
+                    >
+                        <CaomeiIcon :icon="icons.chevronsRight" />
+                    </PaginationLast>
+                </li>
+            </PaginationList>
+            <span v-if="rowsPerPageChoices.length > 0" class="caomei-paginator__rows-per-page">
+                <CaomeiSelect
+                    :model-value="itemsPerPage"
+                    :options="rowsPerPageChoices"
+                    :label="rowsPerPageLabel"
+                    :disabled="disabled"
+                    size="sm"
+                    @update:model-value="onRowsPerPageChange"
+                />
+            </span>
+        </template>
     </PaginationRoot>
 </template>
 
@@ -185,6 +204,13 @@ function onRowsPerPageChange(value: OptionValue | null | undefined): void {
 */
 .caomei-paginator__rows-per-page :deep(.caomei-select) {
     --caomei-field-height: var(--caomei-paginator-control-size, 32px);
+}
+
+.caomei-paginator__report {
+    display: inline-flex;
+    align-items: center;
+    color: var(--caomei-color-text-muted);
+    font-size: var(--caomei-font-size-sm);
 }
 
 .caomei-paginator__list {

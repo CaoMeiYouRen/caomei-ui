@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { CaomeiPaginator } from '@/components/paginator'
 
 const page = ref(3)
 const itemsPerPage = ref(10)
 const total = 96
-
-const first = computed(() => (page.value - 1) * itemsPerPage.value + 1)
-const last = computed(() => Math.min(page.value * itemsPerPage.value, total))
 </script>
 
 <template>
     <div class="demo-column">
-        <p class="demo-value">
-            {{ first }} 到 {{ last }} 共 {{ total }} 条
-        </p>
         <CaomeiPaginator
             v-model:page="page"
             v-model:items-per-page="itemsPerPage"
             :total="total"
             :rows-per-page-options="[10, 20, 50]"
-        />
+        >
+            <template #report="{page: currentPage, pages, total: totalCount}">
+                <span class="demo-value">
+                    {{ (currentPage - 1) * itemsPerPage + 1 }} 到
+                    {{ Math.min(currentPage * itemsPerPage, totalCount) }} 共 {{ totalCount }} 条（{{ currentPage }}/{{ pages }} 页）
+                </span>
+            </template>
+        </CaomeiPaginator>
     </div>
 </template>
 

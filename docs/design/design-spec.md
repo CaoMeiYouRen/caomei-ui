@@ -347,7 +347,7 @@
 >
 > ToggleButton 迁移映射（已实现）：`on-label` / `off-label` → `onLabel` / `offLabel`；`aria-label` → `label`（本库统一为不可见可访问名）。**已知差异（有意）**：PrimeVue 为两态文案内建 `Yes` / `No` 默认值、且 `hasLabel` 仅在两者都非空时成立；本库不内建任何默认文案，`onLabel` / `offLabel` 需**同时**提供才渲染，否则回退默认插槽。**未实现**：`on-icon` / `off-icon`（字符串图标名；图标用默认插槽内的 `@lucide/vue` 组件表达，不新增 `#icon` 插槽）。
 >
-> Paginator 迁移映射（已实现）：`rows` → `itemsPerPage`、`total-records` → `total`、`v-model:first`（0 基偏移）→ `v-model:page`（1 基页码）；`rows-per-page-options` → `rowsPerPageOptions`（切换时抛出 `update:itemsPerPage`，并按 PrimeVue 的偏移保持语义保留首行偏移、重新推导页码；`disabled` 一并传递到选择器）；`@page` 的分页状态改用 `update:page` / `update:itemsPerPage` 组合，需要 0 基偏移时按 `(page - 1) * itemsPerPage` 换算。**未实现（下游 1 处用量）**：`template` 与 `CurrentPageReport`——分页器不提供模板插槽与「第 x / 共 y 页」报表，迁移时在分页器旁按 `page` / `itemsPerPage` / `total` 自行渲染。
+> Paginator 迁移映射（已实现）：`rows` → `itemsPerPage`、`total-records` → `total`、`v-model:first`（0 基偏移）→ `v-model:page`（1 基页码）；`rows-per-page-options` → `rowsPerPageOptions`（切换时抛出 `update:itemsPerPage`，并按 PrimeVue 的偏移保持语义保留首行偏移、重新推导页码；`disabled` 一并传递到选择器）；`@page` 的分页状态改用 `update:page` / `update:itemsPerPage` 组合，需要 0 基偏移时按 `(page - 1) * itemsPerPage` 换算。**部分实现**：`template` 中的 `CurrentPageReport` → `#report` 插槽（作用域 `page` / `pages` / `total`）；其余 `template` 自定义内容仍未实现，按 `page` / `itemsPerPage` / `total` 由父级自渲染。
 >
 > MultiSelect 清空与自定义选项（已实现）：`show-clear` → `showClear`（清除后模型置为**空数组**、焦点交回搜索输入框）；`#option` 插槽收到原始选项对象与选中态。**与 PrimeVue 的三点差异（均属有意）**：① PrimeVue `#option` 额外提供 `index`，本库未提供（Select 的 `#option` 同此口径），仅用 `option` / `selected` 的下游写法可直接迁移；② 清除按钮为字段内的常规 flex 成员（本组件字段可多行换行，绝对定位叠加会压住标签），非 PrimeVue 的绝对定位形态，可通过 CSS 覆盖；③ 清除按钮显隐条件为 `showClear && 有选中项 && 未禁用`，不附加 PrimeVue 的「`options` 非空」与 `loading` 条件——允许选项未加载或选中值不在 `options` 内时仍可清空。
 >

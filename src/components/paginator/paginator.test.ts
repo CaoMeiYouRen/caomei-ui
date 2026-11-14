@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
-import { computed, nextTick, ref } from 'vue'
+import { computed, createSSRApp, h, nextTick, ref } from 'vue'
+import { renderToString } from 'vue/server-renderer'
 import { describe, expect, it } from 'vitest'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
@@ -326,5 +327,105 @@ describe('CaomeiPaginator', () => {
             props: { total: 50, rowsPerPageOptions: [10, 20], rowsPerPageLabel: '每页显示' },
         })
         expect(byProp.get('.caomei-select').attributes('aria-label')).toBe('每页显示')
+    })
+})
+
+describe('CaomeiPaginator 报表插槽', () => {
+    interface ReportScope {
+        page: number
+        pages: number
+        total: number
+    }
+
+    it('作用域为 page / pages / total', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 45, itemsPerPage: 10, page: 3 },
+            slots: {
+                report: ({ page, pages, total }: ReportScope) =>
+                    h('span', { class: 'report' }, `${page}/${pages}/${total}`),
+            },
+        })
+
+        expect(wrapper.get('.caomei-paginator__report .report').text()).toBe('3/5/45')
+    })
+
+    it('total=0 时 pages 为 1，报表可渲染', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 0, itemsPerPage: 10 },
+            slots: {
+                report: ({ page, pages, total }: ReportScope) =>
+                    h('span', { class: 'report' }, `${page}/${pages}/${total}`),
+            },
+        })
+
+        expect(wrapper.get('.caomei-paginator__report .report').text()).toBe('1/1/0')
+    })
+
+    it('未提供 report 插槽时不渲染报表容器', () => {
+        const wrapper = mount(CaomeiPaginator, { props: { total: 45, itemsPerPage: 10 } })
+
+        expect(wrapper.find('.caomei-paginator__report').exists()).toBe(false)
+    })
+
+    it('pages 与页码按钮 / 作用域实时同步', async () => {
+        const wrapper = mount(CaomeiPaginator, {
+            // showEdges 让末页按钮也渲染（默认列表只渲染当前页附近的页码，末项不等于 pageCount）
+            props: { total: 45, itemsPerPage: 10, page: 3, showEdges: true },
+            slots: {
+                report: ({ page, pages, total }: ReportScope) =>
+                    h('span', { class: 'report' }, `${page}/${pages}/${total}`),
+            },
+        })
+
+        expect(pageButtons(wrapper).at(-1)?.text()).toBe('5')
+        expect(wrapper.get('.report').text()).toBe('3/5/45')
+
+        // 改变 total 才能同时验证「页码按钮」与「插槽 pages」同源
+        await wrapper.setProps({ total: 55, page: 4 })
+        await nextTick()
+
+        expect(pageButtons(wrapper).at(-1)?.text()).toBe('6')
+        expect(wrapper.get('.report').text()).toBe('4/6/55')
+    })
+
+    it('报表容器位于页码列表之前', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 45, itemsPerPage: 10 },
+            slots: { report: () => h('span', { class: 'report' }, '报表') },
+        })
+
+        const report = wrapper.get('.caomei-paginator__report').element
+        const list = wrapper.get('.caomei-paginator__list').element
+        // Node.DOCUMENT_POSITION_FOLLOWING = 4；list 在 report 之后
+        expect(report.compareDocumentPosition(list) & 4).toBe(4)
+    })
+
+    it('itemsPerPage 为 0 时 pages 与 Reka 同口径（按 1 页大小计算）', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 45, itemsPerPage: 0, showEdges: true },
+            slots: {
+                report: ({ pages }: ReportScope) => h('span', { class: 'report' }, String(pages)),
+            },
+        })
+
+        expect(wrapper.get('.report').text()).toBe('45')
+        expect(pageButtons(wrapper).at(-1)?.text()).toBe('45')
+    })
+
+    it('SSR 下插槽作用域可用', async () => {
+        const app = createSSRApp({
+            render: () => h(
+                CaomeiPaginator,
+                { total: 45, itemsPerPage: 10, page: 2 },
+                {
+                    report: ({ page, pages }: ReportScope) =>
+                        h('span', { class: 'report' }, `${page}/${pages}`),
+                },
+            ),
+        })
+
+        const html = await renderToString(app)
+        expect(html).toContain('caomei-paginator__report')
+        expect(html).toContain('2/5')
     })
 })

@@ -40,9 +40,9 @@ When `rowsPerPageOptions` is provided, a rows-per-page selector is rendered at t
 
 > Without `rowsPerPageOptions` no selector is rendered and behavior matches the previous release; `itemsPerPage` stays a controlled prop, so bind `v-model:items-per-page` to receive the new value.
 
-## Self-rendered report
+## Report slot
 
-The paginator has no built-in report or template slot. To show "showing x to y of z", render it from `page` / `itemsPerPage` / `total` (the PrimeVue `currentPageReportTemplate` equivalent). The first row offset is `(page - 1) * itemsPerPage + 1` and the last row is `min(page * itemsPerPage, total)`; when `total` is 0 the report shows 0, and clamp both ends when the page can go out of range.
+The `#report` slot renders before the page list with the scope `{ page, pages, total }` (1-based page / page count / total items; `pages` is 1 when `total` is 0). To show "showing x to y of z", compute the first / last row from `page` and `itemsPerPage` inside the slot (first row `(page - 1) * itemsPerPage + 1`, last row `min(page * itemsPerPage, total)`); this is the PrimeVue `currentPageReportTemplate` equivalent, and more complex templates can still be rendered entirely by the parent. Clamp both ends when the page can go out of range.
 
 <demo
     vue="../examples/paginator/report.vue"
@@ -92,7 +92,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `:total-records` | `:total` |
 | `@page="({ page, rows, first }) => ..."` | Listen to `update:page` / `update:itemsPerPage`; compute an offset as `(page - 1) * itemsPerPage` when needed |
 | `:rows-per-page-options` | `rowsPerPageOptions` (listen to `update:itemsPerPage` for changes) |
-| `template` (including `CurrentPageReport`) | **Not implemented**: the paginator offers no template slots or "page x of y" report; render it from `page` / `itemsPerPage` / `total` (see the "Self-rendered report" example) |
+| `template` (including `CurrentPageReport`) | The `#report` slot (scope `page` / `pages` / `total`; see the "Report slot" example); more complex `template` content is still rendered by the parent |
 
 > For the workflow, common pitfalls and the per-component index see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

@@ -20,6 +20,7 @@
 |------|------|------|--------|
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
+| Tooltip 溢出 / 纯图标提示增强（方案 C） | [Tooltip 增强分析](../design/governance/2026-11-14-tooltip-enhancement-analysis.md) §5 / §6（2026-11-14 用户裁定：采用方案 C，进入 Backlog） | 共享 `useOverflowTooltip` + `CaomeiTooltip`：P0 高频组件内建 `tooltip` prop（Button / Toolbar / Paginator / Dialog·Drawer 关闭 / SplitButton），其余用包装组件；仅在文本溢出（`scrollWidth > clientWidth + 1`）或 icon-only 时显示。接入组件须剥离原生 `title`，否则双提示。**建议**批次 U1（Button + 截断 CSS / 视觉基线）→ U2（P0 其余）→ U3（P1 表单与数据展示，建议拆两条）→ U4（文档站 Provider / 示例 / 迁移说明），批次与前置细节以分析记录 §6 / §9 为准。**前置**：Button / Tag / DataTable / Breadcrumb / Menu 当前无截断 CSS，须先补前提样式 | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 

@@ -40,7 +40,56 @@ const emit = defineEmits<{
     'update:modelValue': [value: string]
 }>()
 
-const normalizedSwatches = computed(() => (props.swatches ?? []).map((swatch) => toHex6(swatch)))
+// 归一后去重：`#0f0` 与 `#00ff00` 是同一颜色，重复渲染会让 radiogroup 出现多个选中项
+const normalizedSwatches = computed(() => Array.from(new Set((props.swatches ?? []).map((swatch) => toHex6(swatch)))))
+
+/** 当前模型命中的色板索引；未命中时为 -1（roving tabindex 落到首项） */
+const selectedSwatchIndex = computed(() =>
+    normalizedSwatches.value.findIndex((swatch) => swatch === props.modelValue),
+)
+
+/** roving tabindex：组内只有一个 0，Tab 只进入一次 */
+function swatchTabIndex(index: number): number {
+    const selected = selectedSwatchIndex.value
+    return index === (selected === -1 ? 0 : selected) ? 0 : -1
+}
+
+/**
+ * 色板的 ARIA radiogroup 键盘模型：方向键在组内循环移动**并选中**（单选语义），
+ * Home / End 跳到首 / 尾；移动后把焦点交给目标项（其 tabindex 随模型更新）。
+ */
+function onSwatchKeydown(event: KeyboardEvent, index: number): void {
+    // 防御性守卫：原生 disabled 按钮不会派发 keydown，这里只兜住程序化派发
+    if (props.disabled) {
+        return
+    }
+    const last = normalizedSwatches.value.length - 1
+    let next: number
+    switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+            next = index === last ? 0 : index + 1
+            break
+        case 'ArrowLeft':
+        case 'ArrowUp':
+            next = index === 0 ? last : index - 1
+            break
+        case 'Home':
+            next = 0
+            break
+        case 'End':
+            next = last
+            break
+        default:
+            return
+    }
+    event.preventDefault()
+    onUpdate(normalizedSwatches.value[next])
+    const target = (event.currentTarget as HTMLElement | null)?.parentElement?.children[next]
+    if (target instanceof HTMLElement) {
+        target.focus()
+    }
+}
 
 /**
  * 区域（ColorArea）声明 `color-space="hsb"`，其渐变与指针映射都按 HSB 饱和度计算；
@@ -173,22 +222,26 @@ function onUpdate(value: unknown): void {
             />
         </ColorFieldRoot>
 
+        <!-- 色板 = 单选组：radiogroup + aria-checked + roving tabindex（方向键 / Home / End） -->
         <div
             v-if="normalizedSwatches.length"
             class="caomei-color-picker__swatches"
-            role="group"
+            role="radiogroup"
             :aria-label="swatchesLabel"
         >
             <button
-                v-for="swatch in normalizedSwatches"
+                v-for="(swatch, index) in normalizedSwatches"
                 :key="swatch"
                 type="button"
+                role="radio"
                 class="caomei-color-picker__swatch"
                 :style="{backgroundColor: swatch}"
                 :aria-label="swatch"
-                :aria-pressed="swatch === modelValue ? 'true' : 'false'"
+                :aria-checked="index === selectedSwatchIndex ? 'true' : 'false'"
+                :tabindex="swatchTabIndex(index)"
                 :disabled="disabled"
                 @click="onUpdate(swatch)"
+                @keydown="onSwatchKeydown($event, index)"
             />
         </div>
     </div>
@@ -290,7 +343,7 @@ function onUpdate(value: unknown): void {
     cursor: pointer;
 }
 
-.caomei-color-picker__swatch[aria-pressed='true'] {
+.caomei-color-picker__swatch[aria-checked='true'] {
     border-color: var(--caomei-color-primary);
     box-shadow: inset 0 0 0 1px var(--caomei-color-bg);
     outline: 2px solid var(--caomei-color-primary);

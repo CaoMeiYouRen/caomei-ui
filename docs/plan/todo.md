@@ -15,13 +15,13 @@
 | M1-3 | `stylelint` 18 + `stylelint-config-cmyr` 1.1 同批升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-3-stylelint-18.md)） |
 | M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-4-fontkit-3.md)） |
 | M2-1 | DataTable `autoResetPageIndex` 透传与文档口径 | 下游适配 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m2-1-datatable-auto-reset-page-index.md)） |
-| M3-1 | ColorPicker 色板 `radiogroup` 导航增强 | 组件增强与可访问性 | 待执行 |
+| M3-1 | ColorPicker 色板 `radiogroup` 导航增强 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-1-colorpicker-radiogroup.md)） |
 | M3-2 | Select 选项 `null` / `undefined` 开发期告警 | 组件增强与可访问性 | 待执行 |
 | M3-3 | Paginator `#report` 插槽 | 组件增强与可访问性 | 待执行 |
 | M3-4 | Select 长列表面板滚动可达性 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-select-long-list-scroll.md)） |
 | M4-1 | 文档站 transition 副本守卫 | 质量守卫与对比度 | 待执行 |
 | M4-2 | Calendar / RTE 交互边界对比度 | 质量守卫与对比度 | 待执行 |
-| M5-1 | `1.3.0` 发布 | 发布收口 | 待执行 |
+| M5-1 | `1.3.0` 发布（release note 需含 M3-1 色板 `radiogroup` / `aria-checked` 与 M3-4 视口上限两项行为变化） | 发布收口 | 待执行 |
 | M6-1 | 协作主链路（C1 ~ C5） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
 | M6-2 | 残留与滚动锁栈（C2 / C3 多层） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
 

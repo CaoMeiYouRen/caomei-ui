@@ -262,7 +262,7 @@ describe('CaomeiColorPicker', () => {
 
         const item = panel(wrapper)?.querySelector('.caomei-color-picker__swatch')
         expect(item?.getAttribute('aria-label')).toBe('#00ff00')
-        expect(item?.getAttribute('aria-pressed')).toBe('true')
+        expect(item?.getAttribute('aria-checked')).toBe('true')
     })
 
     it('带 alpha 的输入被剥离为 6 位十六进制', () => {
@@ -282,17 +282,105 @@ describe('CaomeiColorPicker', () => {
         expect(valueText).not.toContain('Saturation')
     })
 
-    it('色板以按钮组呈现，可访问名与按下态来自当前模型', async () => {
+    it('色板以单选组呈现，可访问名与选中态来自当前模型', async () => {
         const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#e63946', '#22c55e'] })
 
         await openPanel(wrapper)
 
         const items = () => Array.from(panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
-        expect(panel(wrapper)?.querySelector('.caomei-color-picker__swatches')?.getAttribute('role')).toBe('group')
+        expect(panel(wrapper)?.querySelector('.caomei-color-picker__swatches')?.getAttribute('role')).toBe('radiogroup')
         expect(items()[0]?.tagName).toBe('BUTTON')
+        expect(items()[0]?.getAttribute('role')).toBe('radio')
         expect(items()[0]?.getAttribute('aria-label')).toBe('#e63946')
-        expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
-        expect(items()[1]?.getAttribute('aria-pressed')).toBe('false')
+        expect(items()[0]?.getAttribute('aria-checked')).toBe('true')
+        expect(items()[1]?.getAttribute('aria-checked')).toBe('false')
+        // roving tabindex：只有选中项可 Tab 进入
+        expect(items()[0]?.getAttribute('tabindex')).toBe('0')
+        expect(items()[1]?.getAttribute('tabindex')).toBe('-1')
+    })
+
+    it('色板方向键 / Home / End 在组内移动并选中，焦点随目标项', async () => {
+        const wrapper = mountPicker({
+            modelValue: '#e63946',
+            swatches: ['#e63946', '#22c55e', '#3b82f6'],
+        })
+
+        await openPanel(wrapper)
+
+        const items = () => Array.from(
+            panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [],
+        ) as HTMLElement[]
+
+        items()[0].focus()
+        await new DOMWrapper(items()[0]).trigger('keydown', { key: 'ArrowRight' })
+        await flush()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#22c55e')
+        expect(document.activeElement).toBe(items()[1])
+        expect(items()[1].getAttribute('aria-checked')).toBe('true')
+        expect(items()[1].getAttribute('tabindex')).toBe('0')
+        expect(items()[0].getAttribute('tabindex')).toBe('-1')
+
+        // 继续前进到末项
+        await new DOMWrapper(items()[1]).trigger('keydown', { key: 'ArrowRight' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#3b82f6')
+        expect(document.activeElement).toBe(items()[2])
+
+        await new DOMWrapper(items()[2]).trigger('keydown', { key: 'Home' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#e63946')
+        expect(document.activeElement).toBe(items()[0])
+
+        await new DOMWrapper(items()[0]).trigger('keydown', { key: 'End' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#3b82f6')
+        expect(document.activeElement).toBe(items()[2])
+    })
+
+    it('色板反向 / 上下方向键与未命中回落', async () => {
+        const wrapper = mountPicker({
+            modelValue: '#000000',
+            swatches: ['#e63946', '#22c55e', '#3b82f6'],
+        })
+
+        await openPanel(wrapper)
+
+        const items = () => Array.from(
+            panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [],
+        ) as HTMLElement[]
+
+        // 模型未命中任何色板：无选中项，roving tabindex 落到首项
+        expect(items()[0].getAttribute('tabindex')).toBe('0')
+        expect(items().every((item) => item.getAttribute('aria-checked') === 'false')).toBe(true)
+
+        items()[0].focus()
+        await new DOMWrapper(items()[0]).trigger('keydown', { key: 'ArrowLeft' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#3b82f6')
+        expect(document.activeElement).toBe(items()[2])
+
+        await new DOMWrapper(items()[2]).trigger('keydown', { key: 'ArrowDown' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#e63946')
+        expect(document.activeElement).toBe(items()[0])
+
+        await new DOMWrapper(items()[0]).trigger('keydown', { key: 'ArrowUp' })
+        await flush()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe('#3b82f6')
+        expect(document.activeElement).toBe(items()[2])
+    })
+
+    it('归一后重复的色板只渲染一次（radiogroup 不出现多个选中项）', async () => {
+        const wrapper = mountPicker({ modelValue: '#00ff00', swatches: ['#0f0', '#00ff00'] })
+
+        await openPanel(wrapper)
+
+        const items = Array.from(
+            panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [],
+        ) as HTMLElement[]
+        expect(items).toHaveLength(1)
+        expect(items[0].getAttribute('aria-checked')).toBe('true')
     })
     it.each([
         ['#ffcccc', 20],
@@ -355,19 +443,19 @@ describe('CaomeiColorPicker', () => {
         expect(after?.getAttribute('aria-valuetext')).toContain('饱和度 76')
     })
 
-    it('色板按下态随外部改色同步', async () => {
+    it('色板选中态随外部改色同步', async () => {
         const wrapper = mountPicker({ modelValue: '#e63946', swatches: ['#e63946', '#22c55e'] })
 
         await openPanel(wrapper)
         const items = () => Array.from(panel(wrapper)?.querySelectorAll('.caomei-color-picker__swatch') ?? [])
 
-        expect(items()[0]?.getAttribute('aria-pressed')).toBe('true')
-        expect(items()[1]?.getAttribute('aria-pressed')).toBe('false')
+        expect(items()[0]?.getAttribute('aria-checked')).toBe('true')
+        expect(items()[1]?.getAttribute('aria-checked')).toBe('false')
 
         await wrapper.setProps({ modelValue: '#22c55e' })
         await flush()
 
-        expect(items()[0]?.getAttribute('aria-pressed')).toBe('false')
-        expect(items()[1]?.getAttribute('aria-pressed')).toBe('true')
+        expect(items()[0]?.getAttribute('aria-checked')).toBe('false')
+        expect(items()[1]?.getAttribute('aria-checked')).toBe('true')
     })
 })

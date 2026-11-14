@@ -39,7 +39,7 @@
 
 - [AutoComplete 自动补全](./auto-complete)：自动补全是一个「异步建议 + 自由输入」的输入框：既可以从建议列表中选择，也可以直接输入任意文本作为值。基于 Reka UI Combobox 封装。
 - [Calendar 日历](./calendar)：月历选择组件（封装 Reka UI Calendar primitive），用于在页面内直接选择日期。对外统一使用原生 `Date`。
-- [ColorPicker 颜色选择器](./color-picker)：颜色选择器由色块触发按钮与浮层面板组成，面板内提供饱和度 / 明度区域、色相滑条与十六进制输入框；组合 Reka UI 的 ColorArea / ColorSlider / ColorField primitive，预设色板为自建按钮组（Reka `ColorSwatchPicker` 未采用，见[设计规范 §7](../design/design-spec.md)）。
+- [ColorPicker 颜色选择器](./color-picker)：颜色选择器由色块触发按钮与浮层面板组成，面板内提供饱和度 / 明度区域、色相滑条与十六进制输入框；组合 Reka UI 的 ColorArea / ColorSlider / ColorField primitive，预设色板为自建单选组（`radiogroup` + `aria-checked`；Reka `ColorSwatchPicker` 未采用，见[设计规范 §7](../design/design-spec.md)）。
 - [DatePicker 日期选择器](./date-picker)：由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`。
 - [MultiSelect 多选选择器](./multi-select)：多选选择器基于 Reka UI `Combobox` 封装，支持多选、`v-model` 数组、已选项标签与输入过滤。展开后可直接输入关键字筛选本地选项。
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。

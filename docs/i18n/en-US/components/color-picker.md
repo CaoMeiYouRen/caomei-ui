@@ -1,6 +1,6 @@
 # ColorPicker
 
-The color picker pairs a swatch trigger button with an overlay panel that contains a saturation/brightness area, a hue slider and a hex input; it composes the Reka UI ColorArea / ColorSlider / ColorField primitives, while the preset swatches are a built-in button group (Reka's `ColorSwatchPicker` is not used, see the design spec §7).
+The color picker pairs a swatch trigger button with an overlay panel that contains a saturation/brightness area, a hue slider and a hex input; it composes the Reka UI ColorArea / ColorSlider / ColorField primitives, while the preset swatches are a built-in radio group (`radiogroup` + `aria-checked`; Reka's `ColorSwatchPicker` is not used, see the design spec §7).
 
 ## Basic usage
 
@@ -25,16 +25,16 @@ The model accepts `#rgb` / `#rrggbb` / `#rrggbbaa`, `rgb()` / `rgba()`, `hsl()` 
 ## Panel and states
 
 - `inline`: render the panel inline, without a trigger button or overlay.
-- `swatches`: preset swatches (a `role="group"` button group with `aria-pressed`), selected on click; no swatch row is rendered when omitted.
+- `swatches`: preset swatches (a `radiogroup` / `aria-checked` radio group navigated with arrow keys / Home / End), selected on click; no swatch row is rendered when omitted.
 - `showInput`: whether to show the hex input, defaults to `true`.
 - `disabled` / `invalid`: disabled and invalid states.
 
 ## Accessibility
 
 - The trigger button's accessible name resolves as `label` > forwarded `aria-label` > the built-in "Color" text; `invalid` marks `aria-invalid`.
-- Every focusable control inside the panel (area / hue thumbs, hex input, swatch buttons) takes its **accessible name** and `aria-roledescription` from the built-in locale messages; the area thumb's `aria-valuenow` and `aria-valuetext` share one source (both derived from the model and integral), while the hue thumb's `aria-valuetext` is Reka's raw number. Swatch buttons are named by their color value and their `aria-pressed` follows the current color live.
-- Keyboard: arrow keys adjust the area / hue; Enter or blur commits the input.
-- **Known limitations**: the swatch buttons do not support arrow-key roving navigation (use Tab); the hue thumb's `aria-valuetext` remains Reka's raw number (no localization needed).
+- Every focusable control inside the panel (area / hue thumbs, hex input, swatch buttons) takes its **accessible name** and `aria-roledescription` from the built-in locale messages; the area thumb's `aria-valuenow` and `aria-valuetext` share one source (both derived from the model and integral), while the hue thumb's `aria-valuetext` is Reka's raw number. The swatches form a `radiogroup` (arrow keys / Home / End move and select within the group, the selected swatch's `aria-checked` follows the model, and roving tabindex keeps a single Tab stop); buttons are named by their color value.
+- Keyboard: arrow keys adjust the area / hue; arrow keys / Home / End move and select within the swatch group; Enter or blur commits the input.
+- **Known limitations**: the hue thumb's `aria-valuetext` remains Reka's raw number (no localization needed).
 
 ## Migration from PrimeVue
 

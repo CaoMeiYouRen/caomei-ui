@@ -263,6 +263,10 @@ const collabStackDrawerOpen = ref(false)
 const collabPageLockedValue = ref<string | null>(null)
 const collabClickCount = ref(0)
 
+/** 色板键盘 / 选中态样式用例（见 `test/e2e/color-picker-swatches.e2e.ts`）。 */
+const swatchPickerValue = ref('#e63946')
+const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
+
 /*
  * 图表内核的按需注册（使用方职责）：只注册受检用例用到的渲染器 / 图表类型 / 组件，
  * 以此证明封装层不代注册、也不把全量内核带进产物。用例见 `test/e2e/chart.e2e.ts`。
@@ -2257,6 +2261,14 @@ const ConfirmDriver = defineComponent({
             >
                 <p>叠加抽屉内容</p>
             </CaomeiDrawer>
+        </section>
+        <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
+        <section id="color-picker-swatches" class="fixture__case">
+            <CaomeiColorPicker
+                v-model="swatchPickerValue"
+                label="色板颜色"
+                :swatches="swatchPickerOptions"
+            />
         </section>
     </main>
 </template>

@@ -1,5 +1,117 @@
 # caomei-ui
 
+# [1.3.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.2.0...v1.3.0) (2026-11-14)
+
+
+### ✨ 新功能
+
+* **a11y:** 补齐行高受限与内联行触摸目标 ([09a7205](https://github.com/CaoMeiYouRen/caomei-ui/commit/09a7205))
+* **a11y:** 补齐表单控件盒不可见命中区 ([8b2583b](https://github.com/CaoMeiYouRen/caomei-ui/commit/8b2583b))
+* **color-picker:** 色板改为 radiogroup 并支持方向键导航 ([2319ed6](https://github.com/CaoMeiYouRen/caomei-ui/commit/2319ed6))
+* **data-table:** 透传 autoResetPageIndex 分页重置选项 ([31f9787](https://github.com/CaoMeiYouRen/caomei-ui/commit/31f9787))
+* **docs:** 恢复文档站 demo 内的组件过渡 ([a678be3](https://github.com/CaoMeiYouRen/caomei-ui/commit/a678be3))
+* **docs:** 新增首页 hydration 探针并定性未复现 ([f5542da](https://github.com/CaoMeiYouRen/caomei-ui/commit/f5542da))
+* **governance:** 依赖大版本检测改为 registry 直连 ([81ccfbc](https://github.com/CaoMeiYouRen/caomei-ui/commit/81ccfbc))
+* **governance:** 动效守卫补齐布局属性白名单 ([91d3948](https://github.com/CaoMeiYouRen/caomei-ui/commit/91d3948))
+* **governance:** 新增大版本依赖检测脚本 ([3fa5b7a](https://github.com/CaoMeiYouRen/caomei-ui/commit/3fa5b7a))
+* **governance:** 新增当前状态段残留机检 ([72cb756](https://github.com/CaoMeiYouRen/caomei-ui/commit/72cb756))
+* **icon:** 支持三态解析与图标注册表 ([d7b2c50](https://github.com/CaoMeiYouRen/caomei-ui/commit/d7b2c50))
+* **icon:** 收敛内置图标映射并支持覆盖 ([129758d](https://github.com/CaoMeiYouRen/caomei-ui/commit/129758d))
+* **icon:** 新增图标尺寸档位与样式 token ([cb7caed](https://github.com/CaoMeiYouRen/caomei-ui/commit/cb7caed))
+* **motion:** 增加反馈与浮层 expressive 进出场 ([bf32784](https://github.com/CaoMeiYouRen/caomei-ui/commit/bf32784))
+* **motion:** 增加导航与操作 expressive 动效 ([ee74dbf](https://github.com/CaoMeiYouRen/caomei-ui/commit/ee74dbf))
+* **motion:** 落地动效 token 与 data-motion 轴 ([076eb15](https://github.com/CaoMeiYouRen/caomei-ui/commit/076eb15))
+* **motion:** 补齐基础与布局状态动效 ([5c22c30](https://github.com/CaoMeiYouRen/caomei-ui/commit/5c22c30))
+* **motion:** 补齐数据展示状态与入场动效 ([dbe87cc](https://github.com/CaoMeiYouRen/caomei-ui/commit/dbe87cc))
+* **motion:** 补齐表单输入状态动效 ([6f4a6d4](https://github.com/CaoMeiYouRen/caomei-ui/commit/6f4a6d4))
+* **motion:** 补齐选择器与面板状态动效 ([ddf9a22](https://github.com/CaoMeiYouRen/caomei-ui/commit/ddf9a22))
+* **paginator:** 新增 report 报表插槽 ([d2d0322](https://github.com/CaoMeiYouRen/caomei-ui/commit/d2d0322)), closes [#report](https://github.com/CaoMeiYouRen/caomei-ui/issues/report)
+* **playground:** 支持免启动的动效审查单文件 ([28096fd](https://github.com/CaoMeiYouRen/caomei-ui/commit/28096fd))
+* **playground:** 新增动效审查页 ([d49ca39](https://github.com/CaoMeiYouRen/caomei-ui/commit/d49ca39))
+* **select:** 选项值解析为 null 或 undefined 时开发期告警 ([2714ead](https://github.com/CaoMeiYouRen/caomei-ui/commit/2714ead))
+
+
+### 🐛 Bug 修复
+
+* **a11y:** 修复 Calendar 导航与 RTE 容器边界对比度 ([05b722c](https://github.com/CaoMeiYouRen/caomei-ui/commit/05b722c))
+* **button:** 取消悬浮位移，仅保留按压缩放 ([137865e](https://github.com/CaoMeiYouRen/caomei-ui/commit/137865e))
+* **button:** 收敛悬浮位移为 1px ([6f39ea3](https://github.com/CaoMeiYouRen/caomei-ui/commit/6f39ea3))
+* **governance:** 修复 packument URL 的 scoped 包名编码 ([#53](https://github.com/CaoMeiYouRen/caomei-ui/issues/53)) ([46c00f9](https://github.com/CaoMeiYouRen/caomei-ui/commit/46c00f9)), closes [#6](https://github.com/CaoMeiYouRen/caomei-ui/issues/6)
+* **input-number:** 适配 reka-ui 2.11 的触摸步进时序 ([#52](https://github.com/CaoMeiYouRen/caomei-ui/issues/52)) ([5b72563](https://github.com/CaoMeiYouRen/caomei-ui/commit/5b72563))
+* **menu:** 修复导航与面包屑在宿主样式下的错位 ([e042c68](https://github.com/CaoMeiYouRen/caomei-ui/commit/e042c68))
+* **paginator:** 对齐每页条数选择器高度与宽度 ([2ef42ab](https://github.com/CaoMeiYouRen/caomei-ui/commit/2ef42ab))
+* **playground:** 审查单文件忽略系统减少动效偏好 ([8a05e76](https://github.com/CaoMeiYouRen/caomei-ui/commit/8a05e76))
+* **release:** 修正 preflight 在 dry-run 下的分支守卫 ([#50](https://github.com/CaoMeiYouRen/caomei-ui/issues/50)) ([0b1a6d2](https://github.com/CaoMeiYouRen/caomei-ui/commit/0b1a6d2))
+* **release:** 拆分 roadmap 版本句并前置校验 ([5b5c2c7](https://github.com/CaoMeiYouRen/caomei-ui/commit/5b5c2c7))
+* **scripts:** 静态探针服务改用构建产物索引规避路径注入 ([#54](https://github.com/CaoMeiYouRen/caomei-ui/issues/54)) ([6c0cd35](https://github.com/CaoMeiYouRen/caomei-ui/commit/6c0cd35)), closes [#7](https://github.com/CaoMeiYouRen/caomei-ui/issues/7)
+* **select:** 长列表面板内滚动可达 ([3b4f7c3](https://github.com/CaoMeiYouRen/caomei-ui/commit/3b4f7c3))
+* **test:** 同步 capture 采样预算并纳入命中区采样族 ([99d7152](https://github.com/CaoMeiYouRen/caomei-ui/commit/99d7152))
+
+
+### 📦 代码重构
+
+* **stepper:** 编译期去重 modelValue 声明 ([814ed2b](https://github.com/CaoMeiYouRen/caomei-ui/commit/814ed2b))
+
+
+## 1.3.0 里程碑
+
+本版本收敛 `1.2.0` 之后积累的 Phase 29 ~ 33（动效体系、图标体系、触摸目标、组件增强与工具链；Phase 32 为质量收口，消费方可见面仅 `reka-ui` 2.11 适配与文档站过渡守卫）。自 `1.0.0` 以来，本版是消费方可见变化最集中的一版：新增两条可选轴（动效、图标）与若干可访问性 / 交互行为调整。默认路径保持逐值等价，需要新行为时显式开启。
+
+### 动效体系
+
+- 新增 `data-motion="expressive"` 动效轴：13 个 `--caomei-motion-*`（6 时长 / 4 缓动 / 3 位移 · 缩放），与预设、明暗、密度正交；缺省 `minimal` 与迁移前硬编码值逐项等价，未设置属性时**零视觉变化**。
+- 覆盖反馈与浮层（Dialog / Popover / DropdownMenu / Tooltip / Toast / Message / Alert）、导航与操作（Tabs / Accordion / Menu / Breadcrumb / Stepper / Toolbar / Button 族）、表单输入、基础与布局、选择器与面板、数据展示（DataTable / DataView / Paginator / Progress / Skeleton）。
+- `prefers-reduced-motion: reduce` 下时长归零、位移归零、缩放回 `1`；加载类循环动画保留组件级降速。
+- 新增 `check:motion-contract` 守卫：默认 / 轴 / reduce 三组声明、源码裸时长白名单与布局属性动画白名单；`pnpm review:motion` 与 `pnpm review:build` 提供独立审查页。
+
+### 图标体系
+
+- 新增 `CaomeiIcon`：支持 `icon` 组件、`name` 注册表与缺省空占位三态；可访问名优先级为 `label` > 透传 a11y > 默认 `aria-hidden`。
+- 新增 `provideIconRegistry()`（按请求注入、SSR 隔离，不用模块级单例）与 `provideIconOverrides()`（按语义名做应用级替换，支持对象 / ref / getter）。
+- 组件内建图标收敛到 22 个语义键（`internal-icons`），25 个组件不再直接导入 `@lucide/vue`；`#icon` 插槽仍覆盖对应位置。
+- 新增图标尺寸档位 `size="sm|md|lg"` 与 `--caomei-icon-size-*` / `--caomei-icon-stroke-width`；默认线宽只作用于 Lucide。
+
+### 触摸目标
+
+- 交互命中区统一扩到 ≥ 24×24（`--caomei-hit-target-min`），**视觉盒不变**：P0（输入清除 / 值片删除 / Tag 与 Message 关闭）、P1（17 个表单控件盒）、P2（28 个交互目标 = 行高受限 6 + 内联行 22；另 7 项判为非指针目标，不扩）。
+- 多数目标用不可见 `::after` 扩命中区；`Input` 的控件盒直接填满外壳内容高，`TagsInput` 由根节点点击聚焦承接——这两处是控件自身行为，不是纯不可见扩展。
+
+### 组件增强
+
+- `ColorPicker` 色板改为单选组语义：`role="radiogroup"` + `role="radio"` + `aria-checked`，roving tabindex（组内单停靠点），方向键 / Home / End 移动即选中；**无公共 API（props / 事件 / 插槽）变更**，DOM 语义与等价色块归一行为见「升级注意」。
+- `Select` 面板增加高度上限 `min(15rem, 可用高)` + 内部滚动 + `overscroll-behavior: contain`，长列表不再撑出视口。
+- `Select` 选项解析为 `null` / `undefined` 时**仅在开发期**告警；解析结果、丢弃行为与生产输出不变。
+- `Paginator` 新增 `#report` 插槽，作用域 `{ page, pages, total }`，可自渲染「第 x 到 y 条，共 z 条」。
+- `DataTable` 透传 `autoResetPageIndex`（与上游同名）；默认值仍为「非 `lazy` 时自动重置」，默认行为不变。
+
+### 可访问性与样式
+
+- `Calendar` 上 / 下月导航按钮与 `RichTextEditor` 容器描边改用交互控件边界 token，6 预设 × 明暗 × 对 `bg` / `bg-elevated` 均 ≥ 3:1（WCAG 1.4.11）；边界比此前明显。
+- `reka-ui` 2.11 适配（InputNumber 触摸步进时序、Toast 例外收窄）与 `calendar-rte` 边界矩阵纳入常驻对比度检查。
+- 版本发布前新增协作测试 P0：Dialog / Drawer 与 Select 的指针展开、选择、滚动锁、Esc 分层与多层残留恢复。
+
+### 工具链
+
+- 开发依赖升级：`eslint` 10、`vitest` 5（+ coverage 5）、`stylelint` 18（+ `stylelint-config-cmyr` 1.1）、`fontkit` 3；规则面未放宽、受检面未缩窄，均不影响运行时产物。
+- 新增文档站 transition 副本守卫（防演示样式与组件基础层漂移）并接入 `governance:check`。
+
+### 升级注意
+
+- **ColorPicker 色板 DOM 语义变更**：`role="group"` → `role="radiogroup"`，色块 `aria-pressed` → `aria-checked`；Tab 由逐块遍历变为单停靠点；等价色值（如 `#0f0` 与 `#00ff00`）归一为同一色块，色块数量可能减少。下游若有依赖 `[aria-pressed]`、色块索引或数量的测试 / 样式需同步；视觉选中环不变。
+- **TagsInput 点击外壳会聚焦输入**：外壳空白处（含容器内边距）现在会把焦点交给输入框；`Input` 的控件盒已填满外壳内容高。视觉盒不变，但点击行为更积极。
+- **Select 面板改为内部滚动**：上限 15rem（约 9 项），更多选项在面板内滚动；需要更高列表时覆盖 `.caomei-select__viewport` 的 `max-height`。桌面端滚动条由 Reka 隐藏，可发现性偏弱。
+- **Calendar / RichTextEditor 边界加深**：属可见外观变化，需要回退时覆盖对应 token（`--caomei-color-control-border`）。
+- **DataTable 默认不变**：`autoResetPageIndex` 缺省仍等于 `!lazy`；显式传 `false` 才保留当前页（仅建议客户端分页）。
+- **动效默认不变**：未设置 `data-motion` 时与原行为一致；`expressive` 为显式选择，Portal 面板需把属性挂在 `<html>`。
+- **图标替换路径变化**：组件内建图标改由语义映射解析，替换请用 `provideIconOverrides()`；`#icon` 插槽优先级不变。无新增运行时依赖。
+
+### 已知限制
+
+- 触摸目标以命中区扩展为主（`Input` 控件盒填满外壳、`TagsInput` 根节点点击聚焦除外），视觉盒不变；7 项非指针目标未扩，指 MultiSelect 值片容器 5 + 值片内装饰 icon 2（值片删除按钮属 P0，已扩）。
+- `RichTextEditor` 内核根元素的 `data-theme` 会使其内部其它 `--caomei-*` 回退到基础主题；本版只桥接容器描边所需的 token。
+- `Calendar` 的「今日」描边仍用装饰性 `--caomei-color-border`，未纳入 3:1 边界。
+- 动效与协作测试以 Chromium 单浏览器覆盖，Firefox / WebKit 未复跑。
+
 # [1.2.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.1.0...v1.2.0) (2026-11-08)
 
 

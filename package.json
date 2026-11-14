@@ -153,7 +153,7 @@
   "dependencies": {
     "@internationalized/date": "3.12.4",
     "@lucide/vue": "^1.48.0",
-    "@tanstack/vue-table": "9.2.4",
+    "@tanstack/vue-table": "9.3.1",
     "@vavt/cm-extension": "^2.0.0",
     "reka-ui": "2.11.0"
   },

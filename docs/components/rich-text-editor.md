@@ -52,6 +52,7 @@
 - `md-editor-v3` 未安装时：**引入本组件**会在打包期报「无法解析 md-editor-v3」（Vite / Rolldown 实测，2026-09-30）；**未使用本组件**的下游不受影响（包根不静态引用内核，模块被 tree-shaking 丢弃）。组件内的占位降级覆盖内核**运行期加载失败**（如 SSR 将 peer 外部化、资源加载失败），此时渲染 `role="alert"` 占位并给出控制台告警。
 - 内核样式与文案由组件**按需加载**（`md-editor-v3/lib/style.css` 等），宿主无需手工 `import`。
 - 覆盖钩子：`--caomei-rich-text-editor-radius`（圆角）、`--caomei-rich-text-editor-min-height`（占位最小高度）。
+- 容器描边取交互控件边界 token（`--caomei-color-control-border`，对 `bg` / `bg-elevated` ≥ 3:1）；内核根元素的 `data-theme` 会触发本库暗色 token，组件在包装层桥接后再应用，保证预设取值不被回退。
 
 ## 从 mavon-editor 迁移
 

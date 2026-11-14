@@ -52,6 +52,7 @@ A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor:
 - When `md-editor-v3` is not installed: **importing this component** fails at build time with "cannot resolve md-editor-v3" (Vite / Rolldown, measured 2026-09-30); consumers that **do not use this component** are unaffected (the package root does not statically import the kernel, so the module is tree-shaken away). The component's placeholder covers **runtime load failures** of the kernel (for example when SSR externalizes the peer, or the assets fail to load): it renders a `role="alert"` placeholder and emits a console warning.
 - The kernel styles and texts are loaded **on demand** by the component (`md-editor-v3/lib/style.css` and friends); the host does not need to `import` them manually.
 - Override hooks: `--caomei-rich-text-editor-radius` (radius), `--caomei-rich-text-editor-min-height` (placeholder min height).
+- The container border uses the interactive control-boundary token (`--caomei-color-control-border`, ≥ 3:1 against `bg` / `bg-elevated`); the kernel root's `data-theme` triggers this library's dark tokens, so the wrapper bridges the value before applying it and keeps the preset value intact.
 
 ## Migrating from mavon-editor
 

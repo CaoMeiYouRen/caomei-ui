@@ -147,6 +147,16 @@ watch(localeCode, async (code) => {
     width: 100%;
 }
 
+/*
+  桥接变量：md-editor-v3 会在编辑器根元素写 `data-theme`，命中本库 `[data-theme='dark']`
+  的基础 token 规则，使编辑器内部消费的 `--caomei-*` 回退到基础主题（而非预设）。
+  在包装层先求值到独立变量，深规则再消费它，避免被根元素上的主题声明覆盖。
+  基类不预声明默认值，故用 `:where()` 归一（见 `check:design` 的 G2 口径）。
+*/
+:where(.caomei-rich-text-editor) {
+    --caomei-rte-control-border: var(--caomei-color-control-border);
+}
+
 .caomei-rich-text-editor__status {
     display: flex;
     align-items: center;
@@ -185,6 +195,8 @@ watch(localeCode, async (code) => {
 /* 编辑器内核外部化，样式由 md-editor-v3 自带；此处仅约束容器与可选高度覆盖钩子 */
 .caomei-rich-text-editor :deep(.md-editor) {
     border-radius: var(--caomei-rich-text-editor-radius, var(--caomei-radius-md));
-    border-color: var(--caomei-color-border);
+
+    /* 编辑器容器属可交互边界，取 3:1 控件边界 token（经包装层桥接，见上方说明） */
+    border-color: var(--caomei-rte-control-border);
 }
 </style>

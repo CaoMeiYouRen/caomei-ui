@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, ref } from 'vue'
 import { Settings } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
@@ -49,6 +49,7 @@ import {
     CaomeiRadioGroup,
     CaomeiRow,
     CaomeiSelect,
+    CaomeiRichTextEditor,
     CaomeiSelectButton,
     CaomeiSlider,
     CaomeiSplitButton,
@@ -294,6 +295,17 @@ const buttonContrastCombos = buttonContrastVariants.flatMap((variant) => buttonC
 
 /* 预设对比度矩阵受检面：5 语气 × soft / outline × Tag / Message，见 `test/e2e/preset-contrast.e2e.ts`。 */
 const presetContrastTones = ['neutral', 'primary', 'success', 'warning', 'danger'] as const
+
+/**
+ * 预设对比度矩阵的 Calendar / RTE 边界项：RTE 内核体积大、控制台噪声高，只在
+ * `?rte=1` 时挂载（`preset-contrast.e2e.ts` 专用），避免污染共享夹具的其余用例。
+ */
+const presetContrastDate = new Date(2026, 0, 15)
+const presetContrastRte = ref('# 标题')
+const includeRte = ref(false)
+onMounted(() => {
+    includeRte.value = new URLSearchParams(location.search).get('rte') === '1'
+})
 
 /**
  * 内联 ColorPicker 用例（见 `test/e2e/overlay-stacking.e2e.ts` 第二个用例）：`inline` 形态是
@@ -1687,8 +1699,9 @@ const ConfirmDriver = defineComponent({
         </section>
         <!--
           预设对比度矩阵（见 `test/e2e/preset-contrast.e2e.ts`）：5 语气 × soft / outline × Tag / Message，
-          另加输入 / 复选框 / 开关 / 滑块的控件边界（WCAG 1.4.11 3:1）与 5 语气实底按钮
-          （`-solid` 配对，默认 / hover / active 三态）。与其它受检面同属「追加在模板末尾」的约定。
+          另加输入 / 复选框 / 开关 / 滑块 / Calendar 导航 / RTE 容器的控件边界（WCAG 1.4.11 3:1）
+          与 5 语气实底按钮（`-solid` 配对，默认 / hover / active 三态）。RTE 仅在 `?rte=1` 挂载。
+          与其它受检面同属「追加在模板末尾」的约定。
         -->
         <section id="preset-contrast" class="fixture__case">
             <CaomeiButton
@@ -1741,6 +1754,15 @@ const ConfirmDriver = defineComponent({
             </div>
             <div data-nontext="slider">
                 <CaomeiSlider :model-value="40" />
+            </div>
+            <div data-nontext="calendar">
+                <CaomeiCalendar :model-value="presetContrastDate" />
+            </div>
+            <div v-if="includeRte" data-nontext="rte">
+                <CaomeiRichTextEditor
+                    v-model="presetContrastRte"
+                    placeholder="富文本"
+                />
             </div>
             <p
                 class="fixture-muted"

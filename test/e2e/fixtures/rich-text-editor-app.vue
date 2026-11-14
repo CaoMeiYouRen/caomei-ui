@@ -8,6 +8,8 @@ import { CaomeiRichTextEditor } from '@/index'
  * 独立入口（`/rich-text-editor.html`）而非并入共享夹具：编辑器内核体积与运行期开销大，
  * 且其 console 噪声会与既有常驻用例的「无 console error」断言耦合；隔离后共享夹具的
  * DOM 顺序假设（如 ButtonGroup 紧邻 Dialog 触发器）也不受影响。
+ * 例外：预设对比度矩阵通过共享夹具的 `?rte=1` 门控挂载 RTE（仅该 spec 加载内核），
+ * 见 `test/e2e/preset-contrast.e2e.ts`。
  *
  * `#rich-text-editor-narrow` 的宿主刻意用 `display: grid`：组件根曾只设 `width: 100%`，
  * 作为 grid 项时 `min-width: auto` 会被内核 nowrap 工具栏的 min-content 撑开，

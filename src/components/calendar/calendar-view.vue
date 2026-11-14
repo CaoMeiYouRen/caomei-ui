@@ -158,7 +158,9 @@ const parts = computed(() => (props.range
     width: var(--caomei-control-height-sm);
     height: var(--caomei-control-height-sm);
     padding: 0;
-    border: 1px solid var(--caomei-color-border);
+
+    /* 可交互边界走 3:1 控件边界 token（`--caomei-color-border` 为装饰分隔线，不满足 1.4.11） */
+    border: 1px solid var(--caomei-color-control-border);
     border-radius: var(--caomei-radius-sm);
     background: transparent;
     color: var(--caomei-color-text-muted);

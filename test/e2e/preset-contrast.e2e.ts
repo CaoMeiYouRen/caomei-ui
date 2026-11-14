@@ -9,7 +9,7 @@ import { measureContrast } from './helpers/contrast'
  * 受检面 = 6 预设（minimal / caomei / momei / sakura / forest / ink）× 明暗 × 2 种背景
  * （页面底 `bg` 与抬升面 `bg-elevated`）：
  * 1. **tone 文本**：5 语气 × soft / outline × Tag / Message + 一条 `text-muted` 样本 = 21 条，阈值 ≥ 4.5:1；
- * 2. **控件边界**：Input / Checkbox / Switch / Slider = 4 条，WCAG 1.4.11 图形阈值 ≥ 3:1；
+ * 2. **控件边界**：Input / Checkbox / Switch / Slider / Calendar 导航 / RTE 容器 = 6 条，WCAG 1.4.11 图形阈值 ≥ 3:1；
  * 3. **`-solid` 配对**：5 语气的实底按钮 × 默认 / hover / active = 5 条 × 3 态，阈值 ≥ 4.5:1
  *    （`caomei` `primary-solid` 为在册品牌例外，见 `SOLID_EXCEPTIONS`）；
  * 4. **正向对照**：12 档的 `--caomei-color-primary` 必须互不相同，证明预设 / 明暗确实生效；
@@ -36,12 +36,18 @@ const EXPECTED_TEXT_KEYS = [
     'muted/text',
 ]
 
+/** 期望的非文本键集合；下界防受检面被静默收窄（删条目不能靠长度自洽拦住）。 */
+const EXPECTED_NON_TEXT_KEYS = ['input', 'checkbox', 'switch', 'slider', 'calendar-nav', 'rte-border']
+const MIN_NON_TEXT_CELLS = EXPECTED_NON_TEXT_KEYS.length
+
 /** 控件边界受检单元。 */
 const NON_TEXT_CELLS = [
     { key: 'input', selector: `${SECTION} [data-nontext="input"] .caomei-field`, mode: 'border' },
     { key: 'checkbox', selector: `${SECTION} [data-nontext="checkbox"] .caomei-checkbox__control`, mode: 'border' },
     { key: 'switch', selector: `${SECTION} [data-nontext="switch"] .caomei-switch`, mode: 'background' },
     { key: 'slider', selector: `${SECTION} [data-nontext="slider"] .caomei-slider__track`, mode: 'background' },
+    { key: 'calendar-nav', selector: `${SECTION} [data-nontext="calendar"] .caomei-calendar__nav`, mode: 'border' },
+    { key: 'rte-border', selector: `${SECTION} [data-nontext="rte"] .caomei-rich-text-editor__editor`, mode: 'border' },
 ] as const
 
 /** `-solid` 配对受检单元（5 语气的实底按钮）。 */
@@ -255,7 +261,9 @@ async function solidSnapshots(page: Page): Promise<Map<string, string>> {
 
 test.describe('预设对比度矩阵', () => {
     test('6 预设 × 明暗 × 2 背景：tone 文本 ≥ 4.5:1 且控件边界 ≥ 3:1', async ({ page }) => {
-        await page.goto('/')
+        await page.goto('/?rte=1')
+        // RTE 内核为异步加载；边界测点只在就绪后存在（其余边界项即时）
+        await expect(page.locator(`${SECTION} [data-nontext="rte"] .caomei-rich-text-editor__editor`)).toBeVisible({ timeout: 60_000 })
 
         const primaries = new Set<string>()
 
@@ -278,7 +286,8 @@ test.describe('预设对比度矩阵', () => {
                     ).toBeGreaterThanOrEqual(MIN_RATIO + MIN_MARGIN)
 
                     const nonText = await measureNonText(page, NON_TEXT_CELLS)
-                    expect(nonText.length, `${label}：控件边界受检面不得被静默收窄`).toBe(NON_TEXT_CELLS.length)
+                    expect(nonText.length, `${label}：控件边界受检面不得被静默收窄`).toBeGreaterThanOrEqual(MIN_NON_TEXT_CELLS)
+                    expect(nonText.map((cell) => cell.key).sort(), `${label}：控件边界受检键集合被替换`).toEqual([...EXPECTED_NON_TEXT_KEYS].sort())
                     const nonTextFailures = nonText
                         .filter((cell) => cell.ratio < MIN_NON_TEXT + MIN_NON_TEXT_MARGIN)
                         .map((cell) => `${cell.key}:${cell.ratio.toFixed(3)}`)

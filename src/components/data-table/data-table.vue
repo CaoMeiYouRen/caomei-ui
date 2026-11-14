@@ -28,6 +28,7 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     totalRecords: undefined,
     lazy: false,
     page: undefined,
+    autoResetPageIndex: undefined,
 })
 
 const emit = defineEmits<{
@@ -342,6 +343,12 @@ const table = useTable({
     enableRowSelection: Boolean(props.selectionMode),
     enableMultiRowSelection: props.selectionMode === 'multiple',
     manualPagination: computed(() => props.lazy),
+    /*
+      未提供时显式镜像上游默认（`!manualPagination`）：Boolean prop 的缺省会被 Vue 转成 `false`
+      （故在 withDefaults 中声明 `undefined`），而 vue-table 的选项合并会丢弃 `undefined`，
+      动态摘除 prop 时依赖 `??` 在每次同步中给出确定布尔值，避免残留上一次的 `false`。
+    */
+    autoResetPageIndex: computed(() => props.autoResetPageIndex ?? !props.lazy),
     state,
     onSortingChange,
     onRowSelectionChange,

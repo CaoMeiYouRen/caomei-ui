@@ -290,6 +290,137 @@ describe('CaomeiDataTable 分页与冻结列', () => {
         expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
     })
 
+    it('数据刷新默认重置到第一页（autoResetPageIndex 未提供）', async () => {
+        const wrapper = mount(DataTable, {
+            props: { data: [...manyData], columns: baseColumns, paginator: true, rows: 2 },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 2)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+
+        await wrapper.setProps({ data: [...manyData, { name: 'F', age: 6 }] })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('A')
+        expect(wrapper.emitted('update:page')?.at(-1)?.[0]).toBe(1)
+    })
+
+    it('autoResetPageIndex=false 时数据刷新保留当前页', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                autoResetPageIndex: false,
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 2)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+
+        await wrapper.setProps({ data: [...manyData, { name: 'F', age: 6 }] })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+        // 关闭自动重置后不得再抛出页码变更
+        expect(wrapper.emitted('update:page')).toHaveLength(1)
+        expect(wrapper.emitted('update:page')?.[0]?.[0]).toBe(2)
+    })
+
+    it('受控 page 下自动重置只抛事件，页码由父级回写决定', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                page: 2,
+            },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+
+        await wrapper.setProps({ data: [...manyData, { name: 'F', age: 6 }] })
+        await nextTick()
+
+        // 父级未回写 page 前，渲染仍由受控值决定
+        expect(wrapper.emitted('update:page')?.at(-1)?.[0]).toBe(1)
+        expect(wrapper.emitted('page')?.at(-1)?.[0]).toMatchObject({ page: 1, first: 0 })
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+    })
+
+    it('运行期摘除 autoResetPageIndex 后恢复默认重置', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                autoResetPageIndex: false,
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 2)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('C')
+
+        await wrapper.setProps({ autoResetPageIndex: undefined })
+        await wrapper.setProps({ data: [...manyData, { name: 'F', age: 6 }] })
+        await nextTick()
+
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('A')
+        expect(wrapper.emitted('update:page')?.at(-1)?.[0]).toBe(1)
+    })
+
+    it('lazy 下数据引用替换默认不重置页码', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...baseData],
+                columns: baseColumns,
+                paginator: true,
+                lazy: true,
+                rows: 2,
+                totalRecords: 10,
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 3)
+        await nextTick()
+        expect(wrapper.emitted('update:page')?.[0]?.[0]).toBe(3)
+
+        await wrapper.setProps({ data: [...baseData, { name: 'C', age: 30 }] })
+        await nextTick()
+
+        expect(wrapper.emitted('update:page')).toHaveLength(1)
+        expect(wrapper.emitted('update:page')?.[0]?.[0]).toBe(3)
+    })
+
+    it('autoResetPageIndex=false 时数据缩水不钳位页码（由父级回收）', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: [...manyData],
+                columns: baseColumns,
+                paginator: true,
+                rows: 2,
+                autoResetPageIndex: false,
+            },
+        })
+
+        wrapper.findComponent(CaomeiPaginator).vm.$emit('update:page', 3)
+        await nextTick()
+        expect(wrapper.findAll('.caomei-data-table__row')[0].text()).toContain('E')
+
+        // 数据缩水到 3 行：第 3 页已越界，组件不钳位、不抛事件（文档口径：父级回收）
+        await wrapper.setProps({ data: manyData.slice(0, 3) })
+        await nextTick()
+
+        expect(wrapper.emitted('update:page')).toHaveLength(1)
+        expect(wrapper.findAll('.caomei-data-table__row')).toHaveLength(0)
+    })
+
     it('rowsPerPageOptions 透传给分页器', () => {
         const wrapper = mount(DataTable, {
             props: {

@@ -308,6 +308,15 @@ export interface DataTableProps<T> {
      */
     page?: number
     /**
+     * 数据引用替换或排序变化等改变页码的状态时，是否自动回到第一页。
+     * 未提供时沿用上游默认：客户端分页自动重置，`lazy`（服务端分页）不重置，保持既有行为
+     * @en Whether to reset to the first page when page-altering state changes (replacing the `data`
+     * reference, sorting, ...). When omitted, the upstream default applies: automatic reset for
+     * client-side pagination and no reset under `lazy` (server-side pagination), preserving
+     * existing behavior
+     */
+    autoResetPageIndex?: boolean
+    /**
      * 行分组模式；`subheader` 在每个分组前渲染分组标题行（需同时提供 `groupRowsBy`）
      * @en Row group mode; `subheader` renders a group header row before each group
      * (requires `groupRowsBy`)

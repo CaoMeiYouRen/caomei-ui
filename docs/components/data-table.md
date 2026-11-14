@@ -177,6 +177,13 @@
 
 `paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。提供 `rowsPerPageOptions` 后在分页器渲染每页条数选择器，切换时抛出 `update:rows`（配合 `v-model:rows` 使用），并按保留首行偏移的语义重新推导页码（受控分页下同时抛出 `update:page`，裁剪与否由父级决定）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。`lazy` 下行选择**按页收敛**：受控 `selection` 只映射当前页行，`update:selection` 也只含当前页行；未受控时 `data` **引用被替换**（翻页或同页刷新）会清空内部选择，清空不额外抛出 `update:selection`，原地修改同一数组不会触发（请替换引用）。需要跨页保留时由父级聚合受控 `selection`。
 
+**页码自动重置与父级配合**
+
+- **默认行为**：客户端分页下，**替换 `data` 引用**（刷新 / 删除 / 过滤后重新取数）或排序变化会**回到第一页**（上游 `autoResetPageIndex` 的默认）；原地修改同一数组不触发。`lazy`（服务端分页）默认**不重置**。需要保留当前页时传 `:auto-reset-page-index="false"`（仅建议用于客户端分页）。
+- **受控分页**：自动重置会**同时抛出 `update:page` 与 `page`（第 1 页）**，是否采纳由父级决定——刷新期间两者都需忽略（或由父级暂缓处理），数据落定后再写回 `page`。
+- **越界页回收**：受控分页下组件不做页码钳位，数据缩水使当前页越界时由父级把 `page` 回收为有效页（如 `Math.min(page, Math.max(1, Math.ceil(total / rows)))`）。**非受控分页**仅在 `rows` / `totalRecords` 变化时按既有逻辑钳位并抛出一次 `update:page`；默认（自动重置开启）替换 `data` 引用会回到第 1 页，关闭自动重置后 `data` 缩水不会以钳位方式自愈，需要自愈时请改用受控 `page`。
+- **每页条数**：建议用 `v-model:rows` 持久化（如 localStorage）；**非受控分页**下 `totalRecords` 变化只钳位页码，不会回退用户已选的每页条数。
+
 > 分页容器默认右对齐（`flex-end`），与 PrimeVue 分页器默认居中不同；需要居中等其它对齐时覆盖 `--caomei-data-table-pagination-justify`（见「样式定制」），无需选择器级覆盖。
 
 <demo

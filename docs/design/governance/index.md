@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-14-phase33-m4-1-transition-copy-guard.md](./2026-11-14-phase33-m4-1-transition-copy-guard.md)：**Phase 33 M4-1 文档站 transition 副本守卫**。新增 `check-demo-transition-copies`，比较组件基础层与 `motion.css` 副本的 transition 属性名集合（含副本 `!important` 与逐属性一致性）；组件新增未登记过渡、副本漂移、孤儿副本与受检面收窄均失败，已接入 `governance:check`。同名单测与 CLI 负向验证均通过。**Review Gate**：见本记录 §5。
 - [2026-11-14-phase33-m3-3-paginator-report-slot.md](./2026-11-14-phase33-m3-3-paginator-report-slot.md)：**Phase 33 M3-3 Paginator `#report` 插槽**。新增报表插槽（作用域 `page` / `pages` / `total`，渲染在页码列表前），`pages` 与 Reka `pageCount` 同口径（`total = 0` 时为 1）；无插槽零额外 DOM。单测覆盖作用域 / 空数据 / 无插槽 / SSR；中英文档、迁移表、设计规范与示例同批回扫。**Review Gate**：见本记录 §6。
 - [2026-11-14-phase33-m3-2-select-option-warning.md](./2026-11-14-phase33-m3-2-select-option-warning.md)：**Phase 33 M3-2 Select 选项 `null` / `undefined` 开发期告警**。扁平与分组两条归一化路径在选项值解析为 `null` / `undefined` 时调用 `warnDev`；解析结果、过滤与渲染不变，生产构建静默。单测覆盖开发告警与生产静默两态，中英文档补开发期提示。**Review Gate**：见本记录 §5。
 - [2026-11-14-phase33-m3-1-colorpicker-radiogroup.md](./2026-11-14-phase33-m3-1-colorpicker-radiogroup.md)：**Phase 33 M3-1 ColorPicker 色板 `radiogroup` 导航增强**。色板改为 `radiogroup` + `role=radio` + `aria-checked` + roving tabindex；方向键循环移动并选中、Home / End 跳首尾，Tab 只进入一次；选中态样式改挂 `aria-checked`，并新增真实 Chromium E2E（Tab 单停靠点、键盘导航、选中态 `outline` 计算样式）；组件单测全绿，中英文档 / 设计规范 / 组件设计 / 总览页同批回扫。**Review Gate**：见本记录 §6。

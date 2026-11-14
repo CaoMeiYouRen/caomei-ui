@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 34**（Tooltip 提示体系、协作测试 T3 与质量门禁）。**3 条主线 / 13 条原子条目**（构成对账 8 + 3 + 2 = 13）；范围与验收口径的唯一载体见 [Phase 34 登记批次](../design/governance/2026-11-14-phase34-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
+**当前进行中阶段：Phase 34**（Tooltip 提示体系、协作测试 T3、质量门禁、DataTable 数据面与长尾组件）。**5 条主线 / 20 条原子条目**（构成对账 8 + 3 + 2 + 2 + 5 = 20）；范围与验收口径的唯一载体见 [Phase 34 登记批次](../design/governance/2026-11-14-phase34-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## Phase 34 原子条目
 
@@ -23,6 +23,13 @@
 | M2-3 | 协作测试 T3 | C6 嵌套 Dialog / Drawer→Dialog（依赖 M2-1 结论） | 待执行 |
 | M3-1 | 质量门禁与 a11y | 打开态 axe（T4）：页面矩阵 +1、规则白名单、最小适用节点下界 | 待执行 |
 | M3-2 | 质量门禁与 a11y | `release.yml` 周回归机检（N2）：发布前置查询 run 结论，fail-closed | 待执行 |
+| M4-1 | DataTable 数据面 | `scrollable` / `scrollHeight`：固定表头 + 自适应高度容器 | 待执行 |
+| M4-2 | DataTable 数据面 | 全选作用域契约 `selectAllScope`（默认 `page`，保持现状） | 待执行 |
+| M5-1 | 长尾组件 | BackTop 实现、导出与自动导入（含行为单测） | 待执行 |
+| M5-2 | 长尾组件 | TimePicker 实现、导出与自动导入（含行为单测） | 待执行 |
+| M5-3 | 长尾组件 | 两组件 10 语 locale 键与台账 / 键集合守卫 | 待执行 |
+| M5-4 | 长尾组件 | BackTop 中英文档、示例、目录 / 画廊登记、E2E 与基线 | 待执行 |
+| M5-5 | 长尾组件 | TimePicker 中英文档、示例、E2E 与基线 | 待执行 |
 
 ## 未完成项汇总
 

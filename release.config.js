@@ -20,7 +20,7 @@ export default {
                 // 里程碑 / 升级注意：输出会追加在 release-notes-generator 的提交分组之后。
                 generateNotesCmd: 'node scripts/release/release-notes.mjs --version=${nextRelease.version}',
                 // 必须在 npm prepare（bump package.json）之后、git（提交 assets）之前执行。
-                prepareCmd: 'node scripts/release/sync-version-statements.mjs --version=${nextRelease.version}',
+                prepareCmd: 'node scripts/release/sync-version-statements.mjs --version=${nextRelease.version} && node scripts/release/sync-license-titles.mjs',
             },
         ],
         [
@@ -32,6 +32,7 @@ export default {
                     'README.md',
                     'README.en-US.md',
                     'docs/plan/roadmap.md',
+                    'THIRD-PARTY-LICENSES',
                 ],
             },
         ],

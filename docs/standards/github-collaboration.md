@@ -50,6 +50,7 @@
 - **dependabot 自动合并路径**（配置文件 `.github/mergify.yml`）：
   - 覆盖范围只有常规版本升级（非安全更新）：`dependabot.yml` 的 `allow.update-types` 只放行 patch / minor，常规 major 不产生 PR，由人工发起与合并。
   - 放行条件含 `base = master`、`author = dependabot[bot]`、`label = dependencies`、非 draft、`Quality` / `Test & Build` / `Visual` 全绿，并排除 `release.config.js` 与 `.github/workflows/release.yml`。`Visual` 承担 `pnpm test:visual`：Playwright / Chromium 升级会改变栅格化结果，视觉回归必须在合并前可见。
+  - **许可证台账不阻塞版本升级**：`check-licenses` 只按包名匹配条目并逐字核对许可证全文；条目标题版本落后于安装版本时仅告警通过。标题版本由发布链 `prepare` 阶段的 `sync-license-titles.mjs` 同步并随发布提交回写（`@semantic-release/git` assets 含 `THIRD-PARTY-LICENSES`），只有许可证文本变化才需人工更新全文。
   - **条件集合须与 Test 工作流的 job 集合双向一致**：新增 / 改名 job 未同步条件、或条件引用不存在的 job，`pnpm check:dependabot-policy` 即失败（测试类改动同样走该守卫）。
   - 该路径不要求 Review Gate。逐条条件文本以 `.github/mergify.yml` 为准，本节只保留策略意图与例外；收紧或放宽策略须同批修改本节、配置文件与 `check-dependabot-policy` 的常量（`ALLOWED_UPDATE_TYPES` / `MERGIFY_FILE_EXCLUSIONS`）或 job 对账逻辑，一致性由 `pnpm check:dependabot-policy` 守卫。
   - 安全更新若以 major 形式合入后出现不兼容，由巡检开 revert，不因此放宽或回退配置。

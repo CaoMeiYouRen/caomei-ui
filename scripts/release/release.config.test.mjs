@@ -28,11 +28,12 @@ describe('release.config', () => {
         const options = pluginOptions(exec)
         expect(options.prepareCmd).toContain('scripts/release/sync-version-statements.mjs')
         expect(options.prepareCmd).toContain('${nextRelease.version}')
+        expect(options.prepareCmd).toContain('scripts/release/sync-license-titles.mjs')
         expect(options.generateNotesCmd).toContain('scripts/release/release-notes.mjs')
         expect(options.generateNotesCmd).toContain('${nextRelease.version}')
     })
 
-    it('git assets 覆盖 CHANGELOG / package.json / README 中英 / roadmap', () => {
+    it('git assets 覆盖 CHANGELOG / package.json / README 中英 / roadmap / 许可证声明', () => {
         const git = plugins.find((plugin) => pluginName(plugin) === '@semantic-release/git')
         expect(new Set(pluginOptions(git).assets)).toEqual(new Set([
             'CHANGELOG.md',
@@ -40,6 +41,7 @@ describe('release.config', () => {
             'README.md',
             'README.en-US.md',
             'docs/plan/roadmap.md',
+            'THIRD-PARTY-LICENSES',
         ]))
     })
 

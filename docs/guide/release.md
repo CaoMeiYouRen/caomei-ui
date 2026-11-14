@@ -59,9 +59,9 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 3. **版本基线（`bump`）**：只改 `package.json` 的版本行（保持格式与末尾换行）→ 提交 `chore(release): <v>` → 打 **annotated** tag `v<v>`（与 semantic-release 默认 tag 格式 `v${version}` 对齐，作为后续自动发布的基线）。
    **tag 落点**：tag 指向版本提交，`CHANGELOG` 与 `sync` 提交都在其后——**tag 视图不含 CHANGELOG 段、README 版本句落后一版均属正常形态**（两者都是仓库内产物，作者是后续提交）；**已发布 tag 不重写**（见 §8「回滚与弃用」）。因此**已发布 tag 的 README 快照不是版本句校验的有效信号**（README 的作者提交在 tag 之后），权威校验以解包 tarball 的 README 为准（`verify` 已自动断言）。
 4. **发布说明（`changelog`）**：`pnpm changelog`（`scripts/release/generate-changelog.mjs`）生成 / 重写 `CHANGELOG.md` → 单独提交。（`--version=` / `--date=` 仅对**直接运行** `pnpm changelog` 生效：`--version=` 用于尚未 bump `package.json` 时，`--date=` 固定发布日期；脚本路径恒传 `--version=<v>`。）**如有公开 API 弃用项，人工补 `Deprecations` 段**（生成器当前不自动分组）。**major 版另须人工补里程碑段**（里程碑 / 升级注意 / 已知限制，文案见当次发布治理记录）：生成器只按提交分组，`v1.0.0-rc.1..v1.0.0` 这类区间会只剩零星修复；插入必须在 `changelog` 之后、`announce` 之前——`announce` 直接抽取该段落作为 GitHub Release note，插早了会被 `changelog` 重写覆盖。补完另起一次 `docs(changelog): 补充 <v> 里程碑段` 提交，并用 `announce --dry-run` 复核 `note <N> 行`。**major 版须分步执行**（`bump → changelog → 插入并单独提交 → sync → publish → verify → announce`）：插入后不得重跑 `changelog` 步骤或整链 `run`，否则里程碑块会被整篇重写覆盖。
-5. **文档同步（`sync`）**：**必须在 `publish` 之前**——`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`），且**须独立成行、不得与发布日期或「下一目标版本」同行**（`version-sentence-mixed`；发布期 `sync-version-statements` 以同一谓词 fail-closed）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 `publish` / `announce`）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句 → **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements to <v>`（不命中发布元数据豁免，提交前须已有新鲜 Review Gate 工件）。
-6. **发布（`publish`）**：**发布前 fail-closed 断言** `package.json` 版本与全部「当前版本」声明句均已到达目标版本（`scripts/release/manual-release.mjs` 的 `assertPublishVersionStatements`；分步执行绕过 `STEPS` 顺序时由该断言兜底），未就绪即中止并提示先跑 `bump` / `sync`。`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
-7. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。并断言**解包 tarball 内 README（中 / 英）的「当前版本」句 = 目标版本**（产物级最终防线）。API 差分的唯一执行点是第 2 步 `api-diff`，`verify` 不重复执行。
+5. **文档同步（`sync`）**：**必须在 `publish` 之前**——`npm publish` 打包当前工作区，README 随包发布；`sync` 在后会让 tarball 内的「当前版本」句永远落后一版（`1.0.0-rc.1` 实测：README 仍写 `0.7.0`）。**当前版本句禁止声明 npm dist-tag**（`dist-tag-in-statement`），且**须独立成行、不得与发布日期或「下一目标版本」同行**（`version-sentence-mixed`；发布期 `sync-version-statements` 以同一谓词 fail-closed）；若版本句已是目标版本但受检文件仍有未提交改动，`sync` 会 fail-closed，要求先提交再继续（防半提交状态进入 `publish` / `announce`）。更新仓库根 README（中 2 处 / 英 1 处）与 `docs/plan/roadmap.md` 的「当前版本」句，并同步 `THIRD-PARTY-LICENSES` 条目标题版本（`sync-license-titles.mjs`；仅版本号，许可证全文变化仍须人工更新）→ **守卫前置**（先跑 `pnpm docs:check:version`，失败即不落提交）→ 单独提交 `docs(release): sync version statements and license titles to <v>`（不命中发布元数据豁免，提交前须已有新鲜 Review Gate 工件）。
+6. **发布（`publish`）**：**发布前 fail-closed 断言** `package.json` 版本、全部「当前版本」声明句与 `THIRD-PARTY-LICENSES` 条目标题均已到达目标状态（`scripts/release/manual-release.mjs` 的 `assertPublishVersionStatements`；分步执行绕过 `STEPS` 顺序时由该断言兜底），未就绪即中止并提示先跑 `bump` / `sync`。`npm publish --tag=<dist-tag>`（rc → `next`，正式版 → `latest`；未显式传 `--tag` 时按版本推断）；启用 npm 2FA 时传 `--otp=<code>`（未传时由 npm 在终端交互提示）。`prepublishOnly` 自动复跑许可校验（见 §7）。**预发布禁止发 `latest`**：`--version` 含 `-` 后缀且 `--tag=latest` 时脚本在预检前终止。
+7. **后校验（`verify`）**：从 registry 读取 `dist-tags`，断言 `dist-tags.<目标 tag>` = 目标版本（rc 断言 `next`、正式版断言 `latest`），并额外断言**预发布版本不出现在 `latest`**；tarball **sha1 与 `dist.shasum` 比对**；解包 `package.json` 版本；`exports` 键集合（人工比对 13 键）。并断言**解包 tarball 内 README（中 / 英）的「当前版本」句 = 目标版本**与**许可证条目标题 = 安装版本**（产物级最终防线）。API 差分的唯一执行点是第 2 步 `api-diff`，`verify` 不重复执行。
 8. **GitHub Release（`announce`）**：先校验本地 / 远程 `v<v>` tag 一致；**本地有 tag、远程没有时中止并提示先 `git push origin v<v>` 再重试**（不自动推送）。通过后从 `CHANGELOG.md` 抽取该版本段落作 note → `gh release create v<v> --title <v> --verify-tag`；预发布版本追加 `--prerelease`，目标 dist-tag 非 `latest` 时追加 `--latest=false`（staged release 不抢 Latest）。
 
 > **落痕（人工，脚本未覆盖）**：发布结论与关键实测值（registry 版本 / tarball shasum / 解包与冒烟结果 / GitHub Release）应落到可提交位置（发布执行治理记录或提交信息）。
@@ -77,7 +77,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 | `chore(release): <v>` | 仅 `package.json` 的版本行 | ✅ |
 | `docs(changelog): <v>` | 仅 `CHANGELOG.md` | ✅ |
 | `docs(changelog): 补充 <v> 里程碑段` | 仅 `CHANGELOG.md`（major 版人工里程碑段，见 §3.3 第 4 步） | ✅ |
-| `docs(release): sync version statements to <v>` | README（中英）+ `docs/plan/roadmap.md` 的版本句（在 `publish` **之前**提交，版本句才随 tarball 发布） | ❌ **不豁免** |
+| `docs(release): sync version statements and license titles to <v>` | README（中英）+ `docs/plan/roadmap.md` 的版本句 + `THIRD-PARTY-LICENSES` 条目标题（在 `publish` **之前**提交，才随 tarball 发布） | ❌ **不豁免** |
 
 > 豁免要求范围**等于全量暂存集**且每项状态为 `M`、版本清单 diff 增删行**全部**为 `"version": "…"` 形态；与任何其它文件同批即失去豁免。故执行 `sync` 提交前**须已有新鲜 Review Gate 工件**。
 
@@ -108,7 +108,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - **发布前门禁**：`pnpm check:security-alerts`（`SECURITY_ALERTS_TOKEN` 缺失或 critical / high 未处置即中止）→ `pnpm verify` → `pnpm test:coverage` + `pnpm check:coverage` → `pnpm release`。
 - **npm 凭据**：Trusted Publishing（OIDC）。workflow 声明 `id-token: write`，npm 自动生成 provenance，**不再需要 `NPM_TOKEN`**；仓库 / npm 侧只需绑定 Trusted Publisher（workflow filename 必须精确匹配 `release.yml`；Node ≥ 22.14 / npm ≥ 11.5.1，当前 `lts/*` 满足）。
 - **GitHub 凭据**：`GITHUB_TOKEN`（`contents: write`）。`persist-credentials: false` 下 semantic-release 会把 `GITHUB_TOKEN` 注入推送 URL，用于 `@semantic-release/git` 回推 `CHANGELOG.md` / `package.json` / README / roadmap 与创建 GitHub Release；不再使用 `RELEASE_TOKEN` 或手写 `extraheader`。若 `master` 受分支保护，需为 `GITHUB_TOKEN` 对应身份配置 bypass。
-- **版本句与里程碑同步（M6-2，保留）**：`@semantic-release/exec` 的 `prepareCmd` 在 `@semantic-release/npm` bump `package.json` 之后、`@semantic-release/git` 提交之前，同步 README（中英）与 `docs/plan/roadmap.md` 的「当前版本」句；`generateNotesCmd` 读取 `docs/release-notes/<version>.md`（按版本读取，文件缺失时为空）并追加到提交分组之后。锚点缺失或 `docs:check:version` 失败时 prepare 直接中止，不提交、不发布。
+- **版本句与里程碑同步（M6-2，保留）**：`@semantic-release/exec` 的 `prepareCmd` 在 `@semantic-release/npm` bump `package.json` 之后、`@semantic-release/git` 提交之前，同步 README（中英）与 `docs/plan/roadmap.md` 的「当前版本」句，并把 `THIRD-PARTY-LICENSES` 的条目标题版本同步到安装版本（失败即中止）；`generateNotesCmd` 读取 `docs/release-notes/<version>.md`（按版本读取，文件缺失时为空）并追加到提交分组之后。锚点缺失或 `docs:check:version` 失败时 prepare 直接中止，不提交、不发布。
 - **事件链与下游复验（M6-4，保留）**：发布成功后由独立 job（`actions: write` + `GITHUB_TOKEN`；`workflow_dispatch` 属防递归规则的显式豁免）执行 `gh workflow run downstream-compat.yml -f caomei-ui-version=<v>`，run URL 写入 job summary；`GITHUB_TOKEN` 创建的 tag / release 不触发 `v*` workflow。
 - **不再保留的步骤（2026-11-06 按用户指令简化）**：`dry_run` 输入与 dry-run job、发布前 `Recheck next version`、`Capture previous published version`、`verify-publish` 后校验、`environment: release` 审批、`NPM_TOKEN` / `RELEASE_TOKEN` 回退。`scripts/release/verify-publish.mjs` 仍保留供本地手动流使用。
 - **`next` 通道结论（2026-11-04，保留）**：仓库无 `next` 分支，CI **只发 `latest`**；预发布仍走本地 `pnpm release:manual --tag=next`，不新建 `next` 分支。
@@ -127,8 +127,8 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 ## 7. 第三方许可合规
 
 - 运行时依赖（`reka-ui` / `@tanstack/vue-table` / `@lucide/vue` / `@internationalized/date` / `@vavt/cm-extension`，后者为富文本扩展语言包）、peer 依赖 `vue` 与可选 peer（`md-editor-v3`，富文本内核）的许可证统一声明在仓库根 `THIRD-PARTY-LICENSES`，并随 npm 包分发（已加入 `package.json` 的 `files`）。
-- 新增或升级运行时依赖后，运行 `pnpm check:licenses` 校验声明覆盖与版本一致；该检查已纳入 `pnpm verify`（`governance:check`）。
-- 同步更新声明：新增依赖时补充 `## <name>@<version>` 条目，升级版本时同步条目标题与许可证全文（可从 `node_modules/<pkg>/LICENSE` 复制）。
+- 新增或升级运行时依赖后，运行 `pnpm check:licenses` 校验声明覆盖与许可证全文；条目**按包名匹配**，标题版本落后于安装版本时仅告警通过（dependabot 升级因此可自动合并），该检查已纳入 `pnpm verify`（`governance:check`）。
+- 同步更新声明：新增依赖时补充 `## <name>@<version>` 条目与许可证全文（可从 `node_modules/<pkg>/LICENSE` 复制）；**仅版本号变化时不用手改**——发布链 `prepareCmd` 会用 `scripts/release/sync-license-titles.mjs` 同步标题并随发布提交回写，本地可执行 `pnpm licenses:sync`；只有许可证全文变化才需人工更新。
 - `prepublishOnly` 会在发布前自动执行同一校验，声明缺失或不一致将中止发布。
 
 ## 8. 回滚与弃用

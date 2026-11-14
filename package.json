@@ -142,6 +142,7 @@
     "commit": "cz",
     "prepare": "husky",
     "prepublishOnly": "node scripts/governance/check-licenses.mjs",
+    "licenses:sync": "node scripts/release/sync-license-titles.mjs",
     "changelog": "node scripts/release/generate-changelog.mjs",
     "release": "semantic-release",
     "release:manual": "node scripts/release/manual-release.mjs",

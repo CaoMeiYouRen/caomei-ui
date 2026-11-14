@@ -41,8 +41,10 @@ import { createHash } from 'node:crypto'
 import { isDirectExecution } from '../shared/cli.mjs'
 import { LOCAL_ENV_FILE, loadLocalEnv } from '../shared/env.mjs'
 import { CURRENT_VERSION_STATEMENTS, planVersionStatementSync, replaceVersionInStatement, statementFiles } from '../shared/version-statements.mjs'
+import { collectRequiredPackages, DECLARATION_FILE, findDeclarationSection, normalizeText } from '../governance/check-licenses.mjs'
 import { DEFAULT_EXEMPTIONS_PATH, assertSecurityGate } from './check-security-alerts.mjs'
 import { stepApiDiff } from './api-diff-step.mjs'
+import { syncLicenseTitles } from './sync-license-titles.mjs'
 
 export const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 export const PACKAGE_NAME = 'caomei-ui'
@@ -598,7 +600,35 @@ export function assertVersionStatements(contentByFile, version, statements = CUR
 }
 
 /**
- * 发布前置断言：`package.json` 版本 + 全部「当前版本」声明句都必须是目标版本。
+ * 断言许可证条目标题版本与安装版本一致。
+ *
+ * @param {string} ledgerText `THIRD-PARTY-LICENSES` 全文
+ * @param {Array<{ name: string, installed: boolean, version?: string }>} packages 运行时依赖清单
+ * @returns {string[]} 问题清单（空数组表示通过）
+ */
+export function assertLedgerTitles(ledgerText, packages = []) {
+    const problems = []
+    const normalized = normalizeText(ledgerText)
+    for (const item of packages) {
+        // 未安装时无法确定安装版本；该情形由 `check-licenses` 在 verify 阶段硬失败，
+        // 这里跳过以免把「依赖没装」误报成「标题不一致」。
+        if (!item.installed) {
+            continue
+        }
+        const entry = findDeclarationSection(normalized, item.name)
+        if (entry === undefined) {
+            problems.push(`${item.name}：声明缺少条目`)
+        } else if (entry.duplicates > 1) {
+            problems.push(`${item.name}：声明存在重复条目`)
+        } else if (entry.version !== item.version) {
+            problems.push(`${item.name}：条目标题 ${entry.version}，期望 ${item.version}`)
+        }
+    }
+    return problems
+}
+
+/**
+ * 发布前置断言：`package.json` 版本、全部「当前版本」声明句与许可证条目标题都必须是目标状态。
  *
  * 不预过滤缺文件——改名 / 删除声明句载体同样必须 fail-closed（否则守卫视同通过）。
  *
@@ -620,6 +650,25 @@ export function assertPublishVersionStatements(root, version) {
         }
     }
     problems.push(...assertVersionStatements(contentByFile, version))
+    // 许可证条目标题在 publish 前核对：check-licenses 对标题滞后只告警（自动合并路径），
+    // 跳过 sync 直接 publish 时由这里 fail-closed，避免把陈旧标题打进 tarball。
+    let ledger
+    try {
+        ledger = readFileSync(resolve(root, DECLARATION_FILE), 'utf8')
+    } catch {
+        problems.push(`${DECLARATION_FILE}：文件缺失或不可读`)
+    }
+    if (ledger !== undefined) {
+        let packages
+        try {
+            packages = collectRequiredPackages(root)
+        } catch (error) {
+            problems.push(`依赖清单不可读：${error.message}`)
+        }
+        if (packages !== undefined) {
+            problems.push(...assertLedgerTitles(ledger, packages))
+        }
+    }
     return problems
 }
 
@@ -715,6 +764,16 @@ function stepVerify(ctx) {
         if (readmeProblems.length > 0) {
             throw new Error(`tarball 内 README 版本句不一致：\n${readmeProblems.join('\n')}`)
         }
+        // 产物级断言：tarball 内许可证条目标题须与安装版本一致。
+        // check-licenses 对标题滞后只告警（自动合并路径），跳过 sync 直接 publish 时由这里兜底。
+        const packagedLedgerPath = join(unpackDir, 'package', DECLARATION_FILE)
+        if (!existsSync(packagedLedgerPath)) {
+            throw new Error(`tarball 内缺少 ${DECLARATION_FILE}`)
+        }
+        const ledgerProblems = assertLedgerTitles(readFileSync(packagedLedgerPath, 'utf8'), collectRequiredPackages(root))
+        if (ledgerProblems.length > 0) {
+            throw new Error(`tarball 内许可证条目标题与安装版本不一致（先跑 sync / pnpm licenses:sync）：\n${ledgerProblems.join('\n')}`)
+        }
         process.stdout.write(`[verify] OK：dist-tag ${tag} = ${version}、shasum ${actual.slice(0, 12)}…、exports ${pkg.exports.length} 键\n`)
     } finally {
         rmSync(tmp, { recursive: true, force: true })
@@ -744,14 +803,31 @@ async function stepSync(ctx) {
             process.stdout.write(`[sync] 已更新 ${item.file}\n`)
         }
     }
+    // 许可证台账标题同步：dependabot 升级允许标题落后，但发布产物必须带当前版本标题。
+    let licenseChanged = false
+    if (existsSync(resolve(root, DECLARATION_FILE))) {
+        if (dryRun) {
+            process.stdout.write(`[sync] dry-run：同步 ${DECLARATION_FILE} 条目标题版本\n`)
+        } else {
+            const licenseSync = syncLicenseTitles(root)
+            licenseChanged = licenseSync.changed
+            for (const update of licenseSync.updates) {
+                process.stdout.write(`[sync] ${DECLARATION_FILE}：${update.name} ${update.from} → ${update.to}\n`)
+            }
+        }
+    }
+    if (licenseChanged) {
+        changedFiles.push(DECLARATION_FILE)
+    }
     if (dryRun) {
         process.stdout.write('[sync] dry-run：pnpm docs:check:version（守卫前置）\n')
-        process.stdout.write(`[sync] dry-run：git add ${changedFiles.join(' ')} + git commit（docs(release): sync version statements to ${version}）\n`)
+        process.stdout.write(`[sync] dry-run：git add ${changedFiles.join(' ')} + git commit（docs(release): sync version statements and license titles to ${version}）\n`)
         return
     }
     // 守卫前置：版本句未同步到位则不落提交（避免提交坏状态）
     run('pnpm', ['docs:check:version'], { cwd: root })
-    const statementPaths = entries.map((entry) => entry.file)
+    const statementPaths = [...entries.map((entry) => entry.file), DECLARATION_FILE]
+        .filter((file) => existsSync(resolve(root, file)))
     // 上次 sync 已写入文件但守卫 / 提交失败时，重跑会看到 changed=false；此时若仍有未提交改动，
     // 必须 fail-closed，避免带着半提交状态继续 announce。
     let dirtyFiles = []
@@ -768,7 +844,7 @@ async function stepSync(ctx) {
     const decision = decideSyncCommit({ changedFiles, dirtyFiles })
     if (decision.action === 'commit') {
         run('git', ['add', ...decision.files], { cwd: root })
-        run('git', ['commit', '-m', `docs(release): sync version statements to ${version}`], { cwd: root })
+        run('git', ['commit', '-m', `docs(release): sync version statements and license titles to ${version}`], { cwd: root })
     } else if (decision.action === 'error') {
         throw new Error(`版本句已是 ${version}，但以下文件仍有未提交改动：\n${decision.files.join('\n')}\n请先提交后再执行 sync / announce`)
     } else {

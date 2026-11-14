@@ -7,6 +7,7 @@ import { afterAll, describe, expect, it, vi } from 'vitest'
 import { CURRENT_VERSION_STATEMENTS, statementFiles } from '../shared/version-statements.mjs'
 import { ensureDistTags, resolveApiDiffBaseline, stepApiDiff } from './api-diff-step.mjs'
 import {
+    assertLedgerTitles,
     assertPublishVersionStatements,
     assertVersionStatements,
     buildAnnounceArgs,
@@ -99,6 +100,7 @@ describe('manual-release publish 前置断言', () => {
         'README.md': '当前版本：`1.0.0`\n当前最新版本为 `1.0.0`',
         'README.en-US.md': 'Current version is `1.0.0`',
         'docs/plan/roadmap.md': '当前状态：当前版本 `1.0.0`；其余',
+        'THIRD-PARTY-LICENSES': '无运行时依赖的占位声明\n',
     }
 
     it('版本一致时通过', () => {
@@ -116,6 +118,23 @@ describe('manual-release publish 前置断言', () => {
         rmSync(join(root, 'README.en-US.md'))
         const problems = assertPublishVersionStatements(root, '1.0.0')
         expect(problems.some((item) => item.includes('文件缺失'))).toBe(true)
+    })
+
+    it('缺少许可证台账时 fail-closed', () => {
+        const root = writeRoot('1.0.0', { ...synced })
+        rmSync(join(root, 'THIRD-PARTY-LICENSES'))
+        expect(assertPublishVersionStatements(root, '1.0.0')).toContain('THIRD-PARTY-LICENSES：文件缺失或不可读')
+    })
+
+    it('许可证条目标题滞后时 fail-closed', () => {
+        const root = writeRoot('1.0.0', {
+            ...synced,
+            'package.json': JSON.stringify({ name: 'caomei-ui', version: '1.0.0', dependencies: { foo: '1.0.0' } }),
+            'THIRD-PARTY-LICENSES': '## foo@0.9.0\n\nLicense: MIT\n',
+        })
+        mkdirSync(join(root, 'node_modules', 'foo'), { recursive: true })
+        writeFileSync(join(root, 'node_modules', 'foo', 'package.json'), JSON.stringify({ name: 'foo', version: '1.0.0', license: 'MIT' }))
+        expect(assertPublishVersionStatements(root, '1.0.0')).toContain('foo：条目标题 0.9.0，期望 1.0.0')
     })
 
     it('package.json 版本与目标不一致时 fail-closed', () => {
@@ -881,5 +900,31 @@ describe('manual-release 发布后校验工具', () => {
             version: '0.7.0',
             exports: ['.', './theme.css'],
         })
+    })
+})
+
+describe('manual-release 许可证标题断言', () => {
+    const packages = [
+        { name: 'foo', installed: true, version: '1.2.0' },
+        { name: 'bar', installed: true, version: '2.0.0' },
+        { name: 'skip', installed: false },
+    ]
+
+    it('标题一致时通过（未安装项跳过）', () => {
+        const ledger = '## foo@1.2.0\n\nLicense: MIT\n\n## bar@2.0.0\n\nLicense: ISC\n'
+        expect(assertLedgerTitles(ledger, packages)).toEqual([])
+    })
+
+    it('标题滞后时失败', () => {
+        const ledger = '## foo@1.0.0\n\nLicense: MIT\n\n## bar@2.0.0\n\nLicense: ISC\n'
+        expect(assertLedgerTitles(ledger, packages)).toEqual(['foo：条目标题 1.0.0，期望 1.2.0'])
+    })
+
+    it('缺少条目与重复条目均失败', () => {
+        const ledger = '## foo@1.2.0\n\nLicense: MIT\n\n## foo@1.2.0\n\nLicense: MIT\n'
+        expect(assertLedgerTitles(ledger, packages)).toEqual([
+            'foo：声明存在重复条目',
+            'bar：声明缺少条目',
+        ])
     })
 })

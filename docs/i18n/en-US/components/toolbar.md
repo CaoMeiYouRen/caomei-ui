@@ -57,8 +57,8 @@ The `#start` / `#center` / `#end` slots split the toolbar into left / center / r
 | Component | Key props | Description |
 |------|----------|------|
 | `CaomeiToolbar` | `orientation` (`horizontal` / `vertical`), `dir`, `loop`, `label`, `id`; slots `#start` / `#center` / `#end` plus the default slot | Toolbar container, `role="toolbar"`; switches to the three-zone layout when a zone slot is used |
-| `CaomeiToolbarButton` | `disabled`, `label` | Action button, renders as a native `<button>`; the default slot is the content |
-| `CaomeiToolbarLink` | `label` (`href` and so on are forwarded as attributes) | Link, renders as an anchor; the default slot is the content |
+| `CaomeiToolbarButton` | `disabled`, `label`, `tooltip` (on by default; content priority: string / `{ content }` > native `title` > `label` / forwarded `aria-label`) | Action button, renders as a native `<button>`; the default slot is the content; no tooltip is mounted when all three are absent; enabling it takes over the native `title` |
+| `CaomeiToolbarLink` | `label`, `tooltip` (on by default, same content priority); `href` and so on are forwarded as attributes | Link, renders as an anchor; the default slot is the content |
 | `CaomeiToolbarSeparator` | — | Separator between functional groups; orientation is automatic |
 | `CaomeiToolbarToggleGroup` | `type` (`single` / `multiple`), `disabled`, `name`, `required`, `label` | Toggle group container; `v-model` binds the selected value; orientation follows the toolbar |
 | `CaomeiToolbarToggleItem` | `value` (required), `disabled`, `label` | Toggle item; `value` must correspond to the group model |

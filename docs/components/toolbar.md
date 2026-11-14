@@ -57,8 +57,8 @@
 | 组件 | 关键属性 | 说明 |
 |------|----------|------|
 | `CaomeiToolbar` | `orientation`（`horizontal` / `vertical`）、`dir`、`loop`、`label`、`id`；插槽 `#start` / `#center` / `#end` 与默认插槽 | 工具条容器，`role="toolbar"`；使用分区插槽时切换为三分区布局 |
-| `CaomeiToolbarButton` | `disabled`、`label` | 操作按钮，渲染为原生 `<button>`，默认插槽为内容 |
-| `CaomeiToolbarLink` | `label`（`href` 等经属性透传） | 链接，渲染为锚点，默认插槽为内容 |
+| `CaomeiToolbarButton` | `disabled`、`label`、`tooltip`（默认开启；内容优先级：字符串 / `{ content }` > 原生 `title` > `label` / 透传 `aria-label`） | 操作按钮，渲染为原生 `<button>`，默认插槽为内容；三者都缺时不挂载提示；开启后接管原生 `title` |
+| `CaomeiToolbarLink` | `label`、`tooltip`（默认开启，内容优先级同上）；`href` 等经属性透传 | 链接，渲染为锚点，默认插槽为内容 |
 | `CaomeiToolbarSeparator` | — | 功能组之间的分隔线，方向自动 |
 | `CaomeiToolbarToggleGroup` | `type`（`single` / `multiple`）、`disabled`、`name`、`required`、`label` | 开关分组容器，`v-model` 绑定选中值；方向随工具条 |
 | `CaomeiToolbarToggleItem` | `value`（必填）、`disabled`、`label` | 开关条目，`value` 需与组模型对应 |

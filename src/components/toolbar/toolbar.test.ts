@@ -1,5 +1,5 @@
 import { DOMWrapper, mount } from '@vue/test-utils'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import { expectSettled } from '../../../test/helpers/settle'
 import {
@@ -316,5 +316,93 @@ describe('CaomeiToolbarToggleGroup', () => {
         expect(wrapper.get('.caomei-toolbar').classes()).toContain('caomei-toolbar--vertical')
         expect(wrapper.get('.caomei-toolbar__start').text()).toBe('上')
         expect(wrapper.get('.caomei-toolbar__end').text()).toBe('下')
+    })
+})
+
+describe('CaomeiToolbar 内建提示', () => {
+    afterEach(() => {
+        document.body.innerHTML = ''
+    })
+
+    function mountItems(items: unknown[]) {
+        return mount(CaomeiToolbar, {
+            attachTo: document.body,
+            slots: { default: () => items },
+        })
+    }
+
+    async function openTooltip(element: Element): Promise<string | null> {
+        element.dispatchEvent(new FocusEvent('focus'))
+        await nextTick()
+        await nextTick()
+        return document.querySelector('[role="tooltip"]')?.textContent?.trim() ?? null
+    }
+
+    it('默认开启：图标按钮聚焦显示提示，内容取可访问名且可访问名不变', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, { label: '加粗' }, { default: () => 'B' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(button.attributes('aria-label')).toBe('加粗')
+        expect(await openTooltip(button.element)).toBe('加粗')
+
+        wrapper.unmount()
+    })
+
+    it('无 label 也无 aria-label 时不挂载提示接线', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, null, { default: () => '自动' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(await openTooltip(button.element)).toBeNull()
+        expect(button.attributes('data-state')).toBeUndefined()
+
+        wrapper.unmount()
+    })
+
+    it('仅透传 aria-label 时提示内容取其值', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, { 'aria-label': '斜体' }, { default: () => 'I' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(button.attributes('aria-label')).toBe('斜体')
+        expect(await openTooltip(button.element)).toBe('斜体')
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传 false 关闭提示', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, { label: '加粗', tooltip: false }, { default: () => 'B' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(await openTooltip(button.element)).toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传字符串覆盖内容', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, { label: '加粗', tooltip: '把选中文本加粗' }, { default: () => 'B' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(await openTooltip(button.element)).toBe('把选中文本加粗')
+
+        wrapper.unmount()
+    })
+
+    it('接管原生 title：内容取 title 且不再落到 DOM', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarButton, { label: '加粗', title: '原生提示' }, { default: () => 'B' })])
+        const button = wrapper.get('.caomei-toolbar__button')
+
+        expect(button.attributes('title')).toBeUndefined()
+        expect(await openTooltip(button.element)).toBe('原生提示')
+
+        wrapper.unmount()
+    })
+
+    it('链接同样默认开启并支持 label', async () => {
+        const wrapper = mountItems([h(CaomeiToolbarLink, { href: '/help', label: '帮助' }, { default: () => '?' })])
+        const link = wrapper.get('.caomei-toolbar__link')
+
+        expect(link.attributes('aria-label')).toBe('帮助')
+        expect(await openTooltip(link.element)).toBe('帮助')
+
+        wrapper.unmount()
     })
 })

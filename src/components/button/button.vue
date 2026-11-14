@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, defineComponent, ref, useSlots, watchEffect, type VNodeChild } from 'vue'
+import { computed, ref, useSlots, watchEffect } from 'vue'
 import { CaomeiBadge } from '../badge'
+import { Passthrough } from '../_shared/passthrough'
 import { CaomeiTooltip, CaomeiTooltipContent, CaomeiTooltipTrigger } from '../tooltip'
 import { useOverflowTooltip } from '../../composables/use-overflow-tooltip'
 import { warnDev } from '../../_shared/dev-warn'
@@ -160,19 +161,10 @@ const rootClass = computed(() => [
     },
 ])
 
-/**
- * 无提示时的透传层：不渲染 DOM，保证按钮仍是组件根元素。
- *
- * 以「启用与否」而非「当前是否活跃」选择包装层：活跃度会随溢出检测翻转，
- * 切换包装组件会重建按钮 DOM、丢掉焦点，故活跃度只用 `disabled` 传给提示根组件。
- */
-const Passthrough = defineComponent({
-    name: 'CaomeiButtonPassthrough',
-    inheritAttrs: false,
-    setup(_, context): () => VNodeChild {
-        return () => context.slots.default?.()
-    },
-})
+/*
+  以「启用与否」而非「当前是否活跃」选择包装层：活跃度会随溢出检测翻转，切换包装组件会重建
+  按钮 DOM、丢掉焦点，故活跃度只用 `disabled` 传给提示根组件。
+*/
 
 const RootWrapper = computed(() => (tooltipEnabled.value ? CaomeiTooltip : Passthrough))
 const TriggerWrapper = computed(() => (tooltipEnabled.value ? CaomeiTooltipTrigger : Passthrough))

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, defineComponent, ref, watch, type VNodeChild } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useOverflowTooltip } from '../../composables/use-overflow-tooltip'
+import { Passthrough } from '../_shared/passthrough'
 import CaomeiTooltip from './tooltip.vue'
 import CaomeiTooltipContent from './tooltip-content.vue'
 import CaomeiTooltipTrigger from './tooltip-trigger.vue'
@@ -48,15 +49,6 @@ watch(active, (value) => {
     if (!value) {
         open.value = false
     }
-})
-
-/** 无提示时的透传层：不渲染 DOM，保证根始终是承载文本的单一元素 */
-const Passthrough = defineComponent({
-    name: 'CaomeiTooltipTextPassthrough',
-    inheritAttrs: false,
-    setup(_, { slots }): () => VNodeChild {
-        return () => slots.default?.()
-    },
 })
 
 const RootWrapper = computed(() => (wired.value ? CaomeiTooltip : Passthrough))

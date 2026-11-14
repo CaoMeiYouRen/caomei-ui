@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, defineComponent, inject, type VNodeChild } from 'vue'
+import { computed, inject } from 'vue'
 import { TooltipRoot } from 'reka-ui'
+import { Passthrough } from '../_shared/passthrough'
 import CaomeiTooltipProvider from './tooltip-provider.vue'
 import { CAOMEI_TOOLTIP_PROVIDER_KEY } from './context'
 import type { TooltipProps } from './types'
@@ -27,19 +28,10 @@ withDefaults(defineProps<TooltipProps>(), {
 
 const open = defineModel<boolean>('open', { default: false })
 
-/**
- * 无 Provider 时的透传层：不渲染 DOM，只把插槽原样交出。
- *
- * 用于「上层已有 `CaomeiTooltipProvider`」的分支——直接渲染 `TooltipRoot`，不再叠一层 Provider，
- * 以免默认配置覆盖使用方在根部设置的延迟与禁用策略。
- */
-const Passthrough = defineComponent({
-    name: 'CaomeiTooltipPassthrough',
-    inheritAttrs: false,
-    setup(_, { slots }): () => VNodeChild {
-        return () => slots.default?.()
-    },
-})
+/*
+  上层已有 `CaomeiTooltipProvider` 时走透传层：直接渲染 `TooltipRoot`，不再叠一层 Provider，
+  以免默认配置覆盖使用方在根部设置的延迟与禁用策略。
+*/
 
 /**
  * Provider 缺失策略 = **内建兜底**。

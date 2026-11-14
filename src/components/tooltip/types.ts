@@ -38,6 +38,14 @@ export interface TooltipConfig {
  */
 export type TooltipProp = boolean | string | TooltipConfig
 
+/**
+ * icon-only 触发器的 `tooltip` prop 取值。
+ *
+ * 没有可溢出文本的触发器恒为「有内容即显示」，故不含 `mode`——传入 `{ content }` 只覆盖文案。
+ * @en Value of the `tooltip` prop for an icon-only trigger. A trigger without overflowing text always shows once it has content, so there is no `mode` here: `{ content }` only overrides the text.
+ */
+export type IconTooltipProp = boolean | string | Pick<TooltipConfig, 'content'>
+
 export interface TooltipTextProps {
     /**
      * 提示内容；缺省时取元素的可见文本。

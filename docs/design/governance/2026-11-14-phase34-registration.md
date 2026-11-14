@@ -9,12 +9,13 @@
 
 - **编号**：取授权启动时已有最大编号（Phase 33）+ 1 = **Phase 34**。
 - **阶段名**：Tooltip 提示体系、协作测试 T3、质量门禁、DataTable 数据面与长尾组件。
-- **构成（原登记 3 条主线 / 13 条原子条目；2026-11-14 用户追加 A + B 后为 5 条主线 / 20 条原子条目）**：Tooltip 提示体系 **8** + 协作测试 T3 **3** + 质量门禁与 a11y **2** + DataTable 数据面 **2** + 长尾组件 **5**；**构成对账 8 + 3 + 2 + 2 + 5 = 20**。
+- **构成（原登记 3 条主线 / 13 条原子条目；2026-11-14 追加 A + B 后为 5 / 20；2026-11-15 执行期拆分 M1-2 后为 5 条主线 / 22 条原子条目）**：Tooltip 提示体系 **10** + 协作测试 T3 **3** + 质量门禁与 a11y **2** + DataTable 数据面 **2** + 长尾组件 **5**；**构成对账 10 + 3 + 2 + 2 + 5 = 22**。
 - **提名期标签映射**：评估期 A（Tooltip）→ M1、B（协作测试 T3）→ M2、C（质量门禁与 a11y）→ M3；2026-11-14 追加裁定 **A（DataTable 数据面）→ M4**、**B（长尾组件）→ M5**（本次追加的 A / B 指「增补主线包」，与评估期 A / B 同名但不同物，编号以本条为准）。
 - **与裁定组合的差异（粒度拆分，不扩范围）**：D0 ① 的评估口径为「A 5 + B 3 + C 2 = 10，另 D 发布收口 1」；本阶段按用户 D3 ② **不登记发布收口**，并按[规划规范 §5](../../standards/planning.md) 粒度约束把 A 的批次细拆——按批次框架枚举 **U1 1 + U2 2 + U3 3 + U4 2 = 8**（U2 拆「P0 其余 / P0 关闭按钮」，U3 拆「icon-only 两批 / overflow 面」，U4 拆「站点与迁移 / 组件页说明」）。**交付面与评估口径一致**，仅条目切分更细。追加的 M4 / M5 见 §2 与 §5 第 15 条。
 - **候选池变化**：`backlog.md` §1 由 **27 → 24**（首次登记移出 3 行：§1.1 Tooltip 增强 1 行、§1.6 协作测试 T3 / T4 各 1 行；§1.1 3 → 2、§1.6 12 → 10）；**2026-11-14 追加裁定后再移出 4 行**（§1.1 DataTable `scrollable` / 全表全选 2 行、§1.2 BackTop / TimePicker 2 行），**24 → 20**（§1.1 2 → 0、§1.2 5 → 3）。**N1（嵌套遮罩层级评估）/ N2（`release.yml` 周回归机检）为本轮新候选、未入池即登记**（同 Phase 33 的 N1 处置）。
 - **触发条件覆盖记录**：DataTable 两项原为「条件候选」（触发条件 = 出现原生容器无法覆盖的用例 / 真实下游需求），BackTop 与 TimePicker 原为「触发条件 = 下游迁移排期出现」；四项均由 **2026-11-14 用户追加裁定**覆盖后纳入，原判定与理由保留在 [Backlog](../../plan/backlog.md) 的历史版本与第十八轮评估 §2。
 - **执行期追加（2026-11-14，登记同日）**：用户指令「调整一下，再增加 1~2 个主线」并选定 **A DataTable 数据面 + B 长尾组件** → 追加 **2 条主线 / 7 条原子条目**（M4 2 + M5 5）。该追加**覆盖**第十八轮评估的两项建议——评估 §2 将 DataTable `scrollable` / 全表全选与长尾组件标为「维持（条件触发 / 无真实用例）」，评估 §3 亦列为「不建议」；覆盖依据为用户本次显式裁定，原判定与理由保留在评估记录（点时快照）。追加后构成见上条，非目标与风险见 §3 / §5；**发布口径不变**（仍不发布）。
+- **执行期拆分（2026-11-15，M1-2 → M1-2 / M1-9 / M1-10）**：M1-2 按登记覆盖 **3 个组件**，实测交付面 **19 文件** = M1-2 **10**（`toolbar-button.vue` / `toolbar-link.vue` / `toolbar/types.ts` / `toolbar.test.ts` / `tooltip/icon-tooltip.vue` / `tooltip/resolve-icon-tooltip.ts` / `tooltip/types.ts` / `_shared/passthrough.ts` / `toolbar.md` / 英文 `toolbar.md`） + M1-9 **3** + M1-10 **3** + M1-1 重复实现回收 **3**（`button.vue` / `tooltip.vue` / `tooltip-text.vue`），超过[规划规范 §5](../../standards/planning.md) 的 10 文件阈值。按该条「拆并同批更新三处计数」拆为 **M1-2 Toolbar / M1-9 Paginator / M1-10 SplitButton**（各自 ≤10 文件；沿用[规划规范 §4](../../standards/planning.md)「原 M3-2 拆为 M3-2 + M3-5」的尾号追加惯例，不重编既有条目），**交付面与验收口径不变**（仍为「三组件真实渲染均显示；可访问名不变；无原生 `title` 残留；单测 + 中英文档 API 表」）。生成物 `test/capture/baseline.json` 按 §5 生成物条款不计入。拆分后构成见上条；`todo.md` / `roadmap.md` / 本记录 §2 / §4 与治理索引同批更新；交付明细、基线漂移与遗留见[批次记录](./2026-11-15-phase34-m1-2-icon-tooltips.md)。
 - **发布**：本阶段**不发布**（D3 ②：不执行 `pnpm release`、不触发 `Release`，`latest` 维持 `1.3.0`）。
 
 ## 2. 逐条范围与验收口径
@@ -22,7 +23,9 @@
 | 条目 | 主线 | 范围 | 验收口径 |
 |:---|:---|:---|:---|
 | **M1-1** | Tooltip 提示体系 | `useOverflowTooltip`（判据 `scrollWidth > clientWidth + 1`；`ResizeObserver` + `document.fonts.ready` + slot 变化重测；SSR / 水合前不显示）+ `CaomeiTooltipText` 包装（**名称定稿**，关闭分析记录 §9 的待定项）+ `tooltip` prop 契约（`boolean \| string \| { content?: string; mode?: 'auto' \| 'always' }`，`true` 取 `aria-label` / 可见文本）+ **Provider 缺失策略**（内建兜底 Provider 或列为迁移前置，先出 1 段设计结论再实现）+ **Button**（icon-only / overflow + 截断 CSS）。文件面 ≈ 8（hook 1 / 包装 1 / Button 1 / types 1 / 截断 CSS 1 / 单测 1 / 中英对照 2） | 真实 Chromium：溢出显示 / 未溢出不挂载且无 `aria-describedby` / icon-only 显示 / 接入后无原生 `title` 双提示 / 可访问名不变；`iconOnly` 无 `label` 开发期告警；`disabled` 仍可触发（外层包裹或 `as-child`）；SSR 不显示；截断属可见变更 → 视觉基线同批重冻结且 `capture:styles` 0 差异；中英文档 + API 表 |
-| **M1-2** | Tooltip 提示体系 | P0 其余：Toolbar / Paginator / SplitButton 的图标触发器接入同一 `tooltip` 契约（icon-only） | 三组件真实渲染均显示；可访问名不变；无原生 `title` 残留；单测 + 中英文档 API 表 |
+| **M1-2** | Tooltip 提示体系 | P0 其余（Toolbar）：`CaomeiToolbarButton` / `CaomeiToolbarLink` 接入 `tooltip` 契约（默认开启；内容优先级 = 字符串 / `{ content }` > 原生 `title` > `label` / 透传 `aria-label`，都没有时不挂载）+ 内部 `CaomeiIconTooltip` 与内容解析工具；顺带关闭 M1-1 F5（`Passthrough` 抽到 `_shared/` 并回收三处重复实现）。文件面 = 10（2 组件 + types + 单测 + 内部共享组件 + 解析工具 + 公共类型 + 共享透传层 + 中英组件页） | 真实 Chromium：图标按钮 / 链接悬停或聚焦均显示；可访问名不变；无原生 `title` 残留；未显式给内容且无可访问名时不挂载；`tooltip: false` 可关闭；单测 + 中英文档（成员 props 表同批） |
+| **M1-9** | Tooltip 提示体系 | P0 其余（Paginator）：首页 / 上一页 / 下一页 / 末页四个图标按钮接入 `tooltip: boolean`（默认开启；内容固定取各按钮可访问名，**不支持字符串 / 对象覆盖**）。文件面 ≈ 3（组件 + types + 单测） | 真实 Chromium：四个按钮**在启用态**显示且内容随自定义文案变化（第 1 页的首页 / 上一页为原生 `disabled`，聚焦路径不成立，属已接受边界）；可访问名不变；`tooltip: false` 全部关闭；单测 + API 表 |
+| **M1-10** | Tooltip 提示体系 | P0 其余（SplitButton）：下拉（图标）按钮接入 `tooltip` 契约（默认开启；内容取 `menuLabel`，字符串 / `{ content }` 可覆盖），主按钮不挂载。文件面 ≈ 3（组件 + types + 单测） | 真实 Chromium：下拉按钮显示且内容随 `menuLabel` / `tooltip` 变化；主按钮不显示；可访问名不变；无原生 `title` 残留；单测 + API 表 |
 | **M1-3** | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 关闭按钮接入（icon-only，共享实现单点改） | 显示且不被 content 遮挡（与既有 `overlay-stacking` 结论一致）；Esc / 遮罩关闭行为不变；单测 + 中英文档 |
 | **M1-4** | Tooltip 提示体系 | P1 icon-only 第一批（**6 个组件**，不新增公开 prop，复用 composable）：Select / MultiSelect / AutoComplete / TagsInput 清除按钮、InputNumber 步进、Password 显隐。文件面 ≈ 7（6 源文件 + 单测） | 6 个触发面逐项显示；开 / 关无几何位移；`disabled` 不触发；可访问名不变；单测 |
 | **M1-5** | Tooltip 提示体系 | P1 icon-only 第二批（**7 个组件**）：Calendar 上 / 下月、FileUpload 操作按钮、ColorPicker 触发器与面板内图标按钮、DatePicker 触发器、Image 预览 / 关闭、Alert 关闭、Message 关闭。文件面 ≈ 8（7 源文件 + 单测） | 逐项显示；几何无位移；ColorPicker 面板内按钮不遮挡色板命中；单测；`capture:styles` 0 差异 |
@@ -57,8 +60,8 @@
 
 | 载体 | 动作 |
 |:---|:---|
-| `docs/plan/todo.md` | 声明「当前进行中阶段：Phase 34」+ `## Phase 34 原子条目`（**20 行表格**；原登记 13 行，2026-11-14 追加 7 行） |
-| `docs/plan/roadmap.md` | §1 当前态句改为 Phase 34；阶段表新增 Phase 34 行（**5 / 20；对账 8 + 3 + 2 + 2 + 5 = 20**；原登记 3 / 13、8 + 3 + 2 = 13） |
+| `docs/plan/todo.md` | 声明「当前进行中阶段：Phase 34」+ `## Phase 34 原子条目`（**22 行表格**；原登记 13 行，2026-11-14 追加 7 行，2026-11-15 拆分 M1-2 为 3 行） |
+| `docs/plan/roadmap.md` | §1 当前态句改为 Phase 34；阶段表新增 Phase 34 行（**5 / 22；对账 10 + 3 + 2 + 2 + 5 = 22**；原登记 3 / 13、8 + 3 + 2 = 13；2026-11-15 拆分 M1-2 后 20 → 22） |
 | `docs/plan/backlog.md` | 移出 **7 行**（首次 3 行：§1.1 Tooltip、§1.6 T3 / T4；追加 4 行：§1.1 DataTable 两项、§1.2 BackTop / TimePicker），候选池 **27 → 24 → 20**；§1.1 3 → 0、§1.2 5 → 3、§1.6 12 → 10；N1 / N2 未入池即登记 |
 | `docs/design/governance/index.md` | 新增本记录 |
 | `.session`（git-ignored） | `current_phase` / `active_plan` / `next_steps` 与 `runtime_state.plan_state` 同批同步 |
@@ -71,7 +74,7 @@
 4. **溢出检测时机**：字体加载、容器 resize、slot 文本变化、`v-if` 挂载都要重测；SSR 一律不显示（服务端无布局）。
 5. **`disabled` 元素不触发 pointer 事件**：Reka / Radix 已知边界，触发器可能需外层包裹或 `as-child`；不得用 `pointer-events: none` 绕过（会破坏点击拦截语义）。
 6. **a11y 边界**：tooltip 不替代 `aria-label` / 可见文本；icon-only 场景 tooltip 只作视觉补充，避免与 `aria-label` 重复朗读；移动端无 hover，只在键盘 focus 出现。
-7. **组件面较大**：P1 触发面按**组件个体**计 **17** 个（Select / MultiSelect / AutoComplete / TagsInput 各 1、InputNumber、Password、Calendar、FileUpload、ColorPicker、DatePicker、Image、Alert、Message，加 DataTable / Tag / Breadcrumb / Menu 的 overflow 面）——注意与调研记录按**组件行**计的口径不同；按 M1-4（6 个）/ M1-5（7 个）/ M1-6（4 个）三批交付、各自独立提交。**文件面预算**：M1-1 ≈ 8 / M1-4 ≈ 7 / M1-5 ≈ 8 / M1-6 ≈ 6 / M1-7 ≈ 8 / M1-8 ≈ 8，其余单条 ≤ 6；文档与示例分置 M1-7（站点 / 迁移）与 M1-8（组件页），避免任一单条越过 10 文件阈值；执行期若实测超阈值，按[规划规范 §5](../../standards/planning.md) 再拆并同批更新三处计数。
+7. **组件面较大**：P1 触发面按**组件个体**计 **17** 个（Select / MultiSelect / AutoComplete / TagsInput 各 1、InputNumber、Password、Calendar、FileUpload、ColorPicker、DatePicker、Image、Alert、Message，加 DataTable / Tag / Breadcrumb / Menu 的 overflow 面）——注意与调研记录按**组件行**计的口径不同；按 M1-4（6 个）/ M1-5（7 个）/ M1-6（4 个）三批交付、各自独立提交。**文件面预算**：M1-1 ≈ 8 / M1-2 = 10 / M1-9 = 3 / M1-10 = 3 / M1-4 ≈ 7 / M1-5 ≈ 8 / M1-6 ≈ 6 / M1-7 ≈ 8 / M1-8 ≈ 8，其余单条 ≤ 10；文档与示例分置 M1-7（站点 / 迁移）与 M1-8（组件页），避免任一单条越过 10 文件阈值；执行期若实测超阈值，按[规划规范 §5](../../standards/planning.md) 再拆并同批更新三处计数。
 8. **嵌套层级评估不得顺手改 token**：`--caomei-z-overlay` / `--caomei-z-modal` 受 `check:overlay-z-index` 与视觉基线双重约束，M2-1 只出结论。
 9. **C6 断言口径**：现状无 per-instance 递增，断言不得假定层级递增；若按现状断言，须以负向对照证明用例有判别力。
 10. **T4 的空检查风险**：页面就绪选择器 + 「规则 × 最小适用节点数」下界 + 打开态交互断言三者缺一，规则不适用会被误判为通过。

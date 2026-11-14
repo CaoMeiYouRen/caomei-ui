@@ -1,3 +1,5 @@
+import type { IconTooltipProp } from '../tooltip/types'
+
 /**
  * 工具条方向
  * @en Toolbar orientation
@@ -49,6 +51,15 @@ export interface ToolbarButtonProps {
      * @en Accessible name when there is no visible text, maps to aria-label
      */
     label?: string
+    /**
+     * 内建提示；缺省开启，图标触发器没有可溢出文本，故有内容即显示（无 `mode`）。
+     *
+     * 内容优先级：字符串 / `{ content }` > 透传原生 `title` > `label` / 透传 `aria-label`；
+     * 三者都没有时不挂载提示。开启后不再向 DOM 透传原生 `title`。
+     * @default true
+     * @en Built-in tooltip; on by default. An icon trigger has no overflowing text, so it shows whenever it has content (no `mode`). Content priority: string / `{ content }` > forwarded native `title` > `label` / forwarded `aria-label`; nothing is mounted when all are absent. Once enabled the native `title` is no longer forwarded.
+     */
+    tooltip?: IconTooltipProp
 }
 
 export interface ToolbarLinkProps {
@@ -57,6 +68,15 @@ export interface ToolbarLinkProps {
      * @en Accessible name when there is no visible text, maps to aria-label
      */
     label?: string
+    /**
+     * 内建提示；缺省开启，图标触发器没有可溢出文本，故有内容即显示（无 `mode`）。
+     *
+     * 内容优先级：字符串 / `{ content }` > 透传原生 `title` > `label` / 透传 `aria-label`；
+     * 三者都没有时不挂载提示。开启后不再向 DOM 透传原生 `title`。
+     * @default true
+     * @en Built-in tooltip; on by default. An icon trigger has no overflowing text, so it shows whenever it has content (no `mode`). Content priority: string / `{ content }` > forwarded native `title` > `label` / forwarded `aria-label`; nothing is mounted when all are absent. Once enabled the native `title` is no longer forwarded.
+     */
+    tooltip?: IconTooltipProp
 }
 
 /**

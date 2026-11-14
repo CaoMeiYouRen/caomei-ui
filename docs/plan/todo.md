@@ -4,29 +4,10 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 33（依赖与工具链升级、下游适配、组件增强与质量守卫、发布 1.3.0）。** 2026-11-13 用户就[第十七轮范围评估](../design/governance/2026-11-13-next-stage-scope-evaluation-17.md) §4 裁定 D0 ① / D1 ① / D2 ① / D3 ① / D4 ① 后登记：**6 条主线 / 14 条原子条目**（原登记 11；2026-11-14 执行期追加「Select 长列表滚动」1 条与「协作测试 P0」2 条后为 14；依赖与工具链 4 / 下游适配 1 / 组件增强与可访问性 4 / 质量守卫与对比度 2 / 发布收口 1 / 协作测试 2；构成对账 4 + 1 + 4 + 2 + 1 + 2 = 14）；**本阶段收口发布 `1.3.0`**。范围与验收口径的唯一载体见 [Phase 33 登记批次记录](../design/governance/2026-11-13-phase33-registration.md) §1 / §2。**2026-11-14 交付 14/14 并发布 `1.3.0`**，阶段待归档。
-
-## Phase 33 原子条目
-
-| 条目 | 说明 | 主线 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | `eslint` 10 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-1-eslint-10.md)） |
-| M1-2 | `vitest` 5（+ coverage 5）升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-2-vitest-5.md)） |
-| M1-3 | `stylelint` 18 + `stylelint-config-cmyr` 1.1 同批升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-3-stylelint-18.md)） |
-| M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-4-fontkit-3.md)） |
-| M2-1 | DataTable `autoResetPageIndex` 透传与文档口径 | 下游适配 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m2-1-datatable-auto-reset-page-index.md)） |
-| M3-1 | ColorPicker 色板 `radiogroup` 导航增强 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-1-colorpicker-radiogroup.md)） |
-| M3-2 | Select 选项 `null` / `undefined` 开发期告警 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-2-select-option-warning.md)） |
-| M3-3 | Paginator `#report` 插槽 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m3-3-paginator-report-slot.md)） |
-| M3-4 | Select 长列表面板滚动可达性 | 组件增强与可访问性 | 已完成（见[记录](../design/governance/2026-11-14-select-long-list-scroll.md)） |
-| M4-1 | 文档站 transition 副本守卫 | 质量守卫与对比度 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m4-1-transition-copy-guard.md)） |
-| M4-2 | Calendar / RTE 交互边界对比度 | 质量守卫与对比度 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m4-2-calendar-rte-contrast.md)） |
-| M5-1 | `1.3.0` 发布（release note 需含 M3-1 色板 `radiogroup` / `aria-checked` 与 M3-4 视口上限两项行为变化） | 发布收口 | 已完成（见[发布记录](../design/governance/2026-11-14-phase33-m5-1-1.3.0-release.md)） |
-| M6-1 | 协作主链路（C1 ~ C5） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
-| M6-2 | 残留与滚动锁栈（C2 / C3 多层） | 协作测试 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m6-overlay-collaboration.md)） |
+**当前无进行中阶段。** 下一阶段启动需用户明确授权（规划纪律见[规划规范 §3 / §4](../standards/planning.md)）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## 未完成项汇总
 
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。条件触发候选、已发布版本、长期任务与归档遗留均以各自单一载体为准，本节不再复写。
 
-- **等待外部反馈**：momei 侧迁移由对应仓库执行、本仓等待反馈；三仓 `caomei-ui` 锁定版本读数（2026-11-12，仓库 HEAD）：dependfix **`1.0.0`** / caomei-auth **`1.2.0`** / momei **`1.0.0`**。`v1.2.0` 已通过（run 42441345211）；扩容后首跑（`caomei-auth` / `momei` 纳入矩阵）run `43211984429` 三仓 success，被测版本 `1.2.0`。升级护航的版本快照与 momei 页面级反馈缺口见[升级护航交付记录](../design/governance/2026-11-04-phase27-m3-2-1.0-upgrade-escort.md) §2 / §5；面向消费方的升级注意与对外 7 条见[升级到 1.0](../guide/upgrade-to-1.0.md)。
+- **等待外部反馈**：momei 侧迁移由对应仓库执行、本仓等待反馈；三仓 `caomei-ui` 锁定版本读数（2026-11-12，仓库 HEAD）：dependfix **`1.0.0`** / caomei-auth **`1.2.0`** / momei **`1.0.0`**。`v1.2.0` 已通过（run 42441345211）；扩容后首跑（`caomei-auth` / `momei` 纳入矩阵）run `43211984429` 三仓 success，被测版本 `1.2.0`；`1.3.0` 发布后 run `43590922508`（2026-11-14）三仓 success，被测版本 `1.3.0`。升级护航的版本快照与 momei 页面级反馈缺口见[升级护航交付记录](../design/governance/2026-11-04-phase27-m3-2-1.0-upgrade-escort.md) §2 / §5；面向消费方的升级注意与对外 7 条见[升级到 1.0](../guide/upgrade-to-1.0.md)。

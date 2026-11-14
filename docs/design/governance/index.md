@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-14-phase33-archive.md](./2026-11-14-phase33-archive.md)：**Phase 33 归档批次**。6 条主线 / 14 条原子条目全部交付并发布 `1.3.0`；提交对账、质量门、wisdom 蒸馏、载体回扫与第 37 轮门槛复核见正文；主窗口未越 warn 阈值，本轮无迁出。**Review Gate**：见本记录 §7。
 - [2026-11-14-phase33-m5-1-1.3.0-release.md](./2026-11-14-phase33-m5-1-1.3.0-release.md)：**Phase 33 M5-1 / 1.3.0 发布与运行时验收**。`latest = 1.3.0`、`v1.3.0` tag 与 GitHub Release 到位，tarball / `exports` / README 版本句 / 里程碑段校验通过；发布过程一次主动取消（Mergify 合并移动 HEAD）与一次 `prepareCmd` 失败（roadmap 版本句与日期同句）见记录 §6。**Review Gate**：见本记录 §8。
 - [2026-11-14-phase33-m5-1-release-readiness.md](./2026-11-14-phase33-m5-1-release-readiness.md)：**1.3.0 发布前检查**。目标版本推断 minor `1.3.0`（无破坏性提交，registry 未占用）；`verify`、覆盖率、a11y、E2E、视觉基线、`capture:styles`、API 差分（无 breaking）与安全告警门禁全部通过；发布说明已落盘。本轮并处置三项发布前缺口（DataTable 测试文件拆分以过 `max-lines-per-function`、4 张日历基线刷新、6 张字体基线随 Playwright/Chromium 漂移重冻结）。仅余用户授权推送与触发 `Release` workflow。**Review Gate**：见本记录 §6。
 - [2026-11-14-phase33-m4-2-calendar-rte-contrast.md](./2026-11-14-phase33-m4-2-calendar-rte-contrast.md)：**Phase 33 M4-2 Calendar / RTE 交互边界对比度**。上 / 下月导航按钮与编辑器容器描边改用 `--caomei-color-control-border`；RTE 因内核根元素 `data-theme` 命中本库暗色 token，改为包装层桥接后应用。`preset-contrast` 矩阵新增两项边界，6 预设 × 明暗 × 2 背景在 3:1（+0.05 裕度）阈值下三视口全绿，RTE 与编辑器夹具仅在 `?rte=1` 挂载。**Review Gate**：见本记录 §5。

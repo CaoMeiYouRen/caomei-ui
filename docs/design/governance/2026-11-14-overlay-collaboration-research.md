@@ -82,7 +82,7 @@
 
 ### 4.1 调研中发现、待判定的缺陷（不在本轮修复）
 
-- **嵌套遮罩的层级**：Dialog / Drawer / ConfirmDialog 的 overlay 固定 `--caomei-z-overlay`（1000）、content 固定 `--caomei-z-modal`（1001），**没有 per-instance 递增**。嵌套第二层时，其遮罩（1000）低于第一层内容（1001），无法压暗父层内容；第二层内容（1001）与父层内容同档，靠 portal 的 DOM 顺序取胜。是否需要「层级栈 + per-instance 递增」需单独立项评估（影响 z-index token 语义与既有视觉基线）。
+- **嵌套遮罩的层级**：Dialog / Drawer / ConfirmDialog 的 overlay 固定 `--caomei-z-overlay`（1000）、content 固定 `--caomei-z-modal`（1001），**没有 per-instance 递增**。嵌套第二层时，其遮罩（1000）低于第一层内容（1001），无法压暗父层内容；第二层内容（1001）与父层内容同档，靠 portal 的 DOM 顺序取胜。是否需要「层级栈 + per-instance 递增」需单独立项评估（影响 z-index token 语义与既有视觉基线）。**2026-11-15 裁定（[M2-1 评估](./2026-11-15-phase34-m2-1-nested-overlay-layering.md)）：维持固定档位，转为带触发条件的候选；M2-3 按现状断言、不得假定 z-index 递增。**
 - **`pointer-events` 锁的残留**：Reka 2.11 已用 owner 集合 + 共享栈降低风险，但仍是 `body.pointer-events` 模型；C2 是它的常驻守卫。若失败，应查 owner 释放 / 卸载时序，而不是简单改回 overflow。
 
 ### 不建议

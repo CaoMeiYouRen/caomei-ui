@@ -19,9 +19,11 @@
 ## 摘要口径
 
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
+- **摘要不对缺陷数 / 正确性作绝对断言**：「唯一」「均正确」「无风险」等结论式措辞必须能在正文逐项取证，否则改为列举已取证的事实。
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列编号集合（连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-15-phase34-m2-1-nested-overlay-layering.md](./2026-11-15-phase34-m2-1-nested-overlay-layering.md)：**Phase 34 M2-1：嵌套遮罩层级评估**。结论**维持固定档位**（overlay 1000 / content 1001），不实现 per-instance 层级栈；真实 Chromium 实测到两类异常：① 子层遮罩不压暗父层内容；② 父层已打开的浮层面板高于子模态内容且保持可见（但不可点，点击该区域会先关闭子模态再落到暴露的选项）；关闭顺序 / 焦点隔离 / 滚动锁与父内容命中拦截正常，相等档位靠 portal 的 DOM 顺序取胜。含 A 现状与 B1 / B2 候选对比、若实现 B2 的影响面清单与条目草案、3 条触发条件。**零代码 / 零 token 改动**。**Review Gate**：见本记录 §7。
 - [2026-11-15-phase34-m1-3-dialog-drawer-tooltip.md](./2026-11-15-phase34-m1-3-dialog-drawer-tooltip.md)：**Phase 34 M1-3：Dialog / Drawer 关闭按钮接入内建提示**。两组件复用内部 `CaomeiIconTooltip`，内容取 `closeLabel`、默认开启且**不新增公开 prop**（整体关闭走根部 Provider 的 `disabled`）；为「打开即自动聚焦关闭按钮」的场景开启 `ignoreNonKeyboardFocus`，避免每次打开都弹提示。含面板 `z-index 1060 > 1001` 与命中测试证据、视觉装置指针复位、测试挂载实例统一卸载（修复跨用例 portal 悬空补丁）与遗留 F1 / F2 / F4 / F6（承接 M1-1）、F7 ~ F9（承接 M1-2）、F10 ~ F12（本批新增，其中 F12 已由摘要规则收敛；明细见记录遗留节）。**Review Gate**：见本记录 §4。
 - [2026-11-15-phase34-m1-2-icon-tooltips.md](./2026-11-15-phase34-m1-2-icon-tooltips.md)：**Phase 34 M1-2 / M1-9 / M1-10：P0 图标触发器接入**。Toolbar 按钮 / 链接、Paginator 四个翻页按钮、SplitButton 下拉按钮接入内建提示（默认开启、`false` 可关闭；内容优先级 = 显式内容 > 原生 `title` > 可访问名），新增内部 `CaomeiIconTooltip` 与 `IconTooltipProp`（图标触发器无 `mode`）；顺带关闭 M1-1 的 F5（`Passthrough` 抽取）并评估 F3（暂不处理）。含默认开启依据、禁用态边界、读屏重复朗读取舍、`capture:styles` 重冻结说明与遗留 6 条（F1 / F2 / F6 承接 M1-1，F7 ~ F9 本批新增）。**Review Gate**：见本记录 §4。
 - [2026-11-15-phase34-m1-1-tooltip-base.md](./2026-11-15-phase34-m1-1-tooltip-base.md)：**Phase 34 M1-1 基础契约与 Button 内建提示**。Provider 缺失策略定为 **内建兜底**（缺 Provider 时以默认配置包裹，代价是不共享跨触发器免延迟）；`tooltip` 默认触发模式按「是否存在可溢出文本」与「是否显式给内容」分流；`CaomeiTooltipText` 以 `:where()` 归零特异性的可测量盒承载溢出检测，截断配方仍由使用方决定。含真实 Chromium 双态证据、已知取舍（icon-only 重复朗读、零特异性双向风险）与 5 条 follow-up（真实布局持久守卫、覆盖段说明、告警去重、迁移措辞、包装层抽取）。**Review Gate**：见本记录 §5。

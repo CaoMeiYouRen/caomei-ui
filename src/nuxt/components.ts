@@ -106,6 +106,7 @@ export const caomeiComponents = [
     'CaomeiTooltipArrow',
     'CaomeiTooltipContent',
     'CaomeiTooltipProvider',
+    'CaomeiTooltipText',
     'CaomeiTooltipTrigger',
 ] as const
 

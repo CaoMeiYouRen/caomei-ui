@@ -1,10 +1,12 @@
 # Tooltip
 
-A tooltip shows a short hint on pointer hover or keyboard focus. It wraps Reka UI Tooltip and is composed of a `CaomeiTooltipProvider` placed once at the app root plus `CaomeiTooltip` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent` / `CaomeiTooltipArrow`.
+A tooltip shows a short hint on pointer hover or keyboard focus. It wraps Reka UI Tooltip; place a `CaomeiTooltipProvider` once at the app root (recommended) and compose it with `CaomeiTooltip` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent` / `CaomeiTooltipArrow` (the component falls back to a built-in provider when none is present — see below).
 
 ## Basic usage
 
-`CaomeiTooltipProvider` must be placed once at the app root (a one-off provider like `CaomeiToastProvider` / `CaomeiConfirmDialog`) — Reka's `TooltipRoot` throws when no provider is present, and the provider also carries the shared "skip delay between triggers" state.
+Placing `CaomeiTooltipProvider` once at the app root is recommended (a one-off provider like `CaomeiToastProvider` / `CaomeiConfirmDialog`); it carries the shared "skip delay between triggers" state (`skipDelayDuration`) along with the global `delayDuration` / `disabled` settings.
+
+**A missing provider no longer throws**: `CaomeiTooltip` falls back to built-in defaults (700ms delay), so a single tooltip still works; the cost is that such tooltips do not share the cross-trigger skip delay. The library's built-in tooltips (such as Button's `tooltip`) take the same fallback path, so existing apps do not have to change their root first.
 
 `CaomeiTooltipTrigger` renders a **chrome-free** clickable container with the accessibility wiring in place; use `as-child` to reuse an existing button / link / icon element.
 
@@ -69,6 +71,21 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-tooltip-trigger-padding` | `0` | Trigger padding (reset by default) |
 | `--caomei-tooltip-trigger-radius` | `--caomei-radius-sm` | Trigger corner radius |
 
+## Overflow tooltips
+
+`CaomeiTooltipText` wraps "an element plus an overflow tooltip" into one box: the tooltip appears only when the content does not fit, and stays completely silent otherwise (no `aria-describedby` on the element). It only provides the wiring and a measurable box — **truncation is up to the consumer**: declare `white-space: nowrap` plus a fixed width / `max-width` and `overflow: hidden` + `text-overflow: ellipsis` yourself.
+
+```vue
+<CaomeiTooltipText class="cell" :content="fullText">{{ fullText }}</CaomeiTooltipText>
+```
+
+- `mode` (default `auto`): `auto` shows the tooltip only when overflowing; `always` shows it unconditionally;
+- `content` defaults to the element's visible text;
+- `disabled` turns the tooltip off without affecting the element's rendering or truncation;
+- add `tabindex="0"` when keyboard users must reach it too (inherited `class` / `style` / `aria-*` land on the root element).
+
+Button's built-in `tooltip` is the component-level wrapping of the same capability; see [Button](./button.md#text-overflow-and-tooltips).
+
 ## Migration from PrimeVue
 
 PrimeVue's `v-tooltip` directive / `<Tooltip>` is likewise a read-only hint shown on hover / focus; the differences are mostly in how it is wired up:
@@ -83,7 +100,7 @@ PrimeVue's `v-tooltip` directive / `<Tooltip>` is likewise a read-only hint show
 | `escape` (Escape closes) | Default behaviour, no toggle exposed |
 | Directive mounting (any element plus an attribute) | Requires an explicit `CaomeiTooltipTrigger` wrapper (`as-child` reuses the original element) |
 
-**Known intentional differences**: ① `CaomeiTooltipProvider` must be placed explicitly (Reka's `TooltipRoot` throws without it), which is also what enables the cross-trigger skip delay (`skipDelayDuration`); ② the hint is announced as a **description** only — `role="tooltip"` sits on a visually hidden element inside the panel (its `id` is what the trigger's `aria-describedby` points to) and never becomes part of the trigger's accessible name; ③ it is split from `CaomeiPopover` by semantics (read-only hint vs interactive content), on tiers `--caomei-z-tooltip` (1060) and `--caomei-z-dropdown` (1050) respectively.
+**Known intentional differences**: ① placing `CaomeiTooltipProvider` explicitly is recommended, since that is what enables the cross-trigger skip delay (`skipDelayDuration`); without it `CaomeiTooltip` falls back to a built-in provider (each tooltip keeps its own defaults) — usable, but that state is not shared; ② the hint is announced as a **description** only — `role="tooltip"` sits on a visually hidden element inside the panel (its `id` is what the trigger's `aria-describedby` points to) and never becomes part of the trigger's accessible name; ③ it is split from `CaomeiPopover` by semantics (read-only hint vs interactive content), on tiers `--caomei-z-tooltip` (1060) and `--caomei-z-dropdown` (1050) respectively.
 
 ### Differences from Element Plus `el-tooltip`
 

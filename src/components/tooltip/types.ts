@@ -5,6 +5,62 @@
 export type TooltipSide = 'top' | 'right' | 'bottom' | 'left'
 
 /**
+ * 提示的触发模式。
+ *
+ * - `auto`：仅在内容装不下（文本被截断）时显示；
+ * - `always`：始终显示。
+ * @en How the tooltip is triggered. `auto` shows it only when the content does not fit (text truncated); `always` shows it unconditionally.
+ */
+export type TooltipMode = 'auto' | 'always'
+
+/**
+ * 组件内建提示的配置形态。
+ *
+ * `true` 取组件的可访问名或可见文本，字符串直接作为内容，对象可分别指定内容与触发模式。
+ * @en Configuration shape of a component's built-in tooltip. `true` derives the text from the accessible name or visible text, a string is used as the content, and the object form sets content and trigger mode separately.
+ */
+export interface TooltipConfig {
+    /**
+     * 提示内容；缺省时取组件的可见文本或可访问名
+     * @en Tooltip content; defaults to the component's visible text or accessible name
+     */
+    content?: string
+    /**
+     * 触发模式；缺省时纯文本组件为 `auto`、纯图标组件为 `always`
+     * @en Trigger mode; defaults to `auto` for text components and `always` for icon-only ones
+     */
+    mode?: TooltipMode
+}
+
+/**
+ * 组件 `tooltip` prop 的取值
+ * @en Value of a component's `tooltip` prop
+ */
+export type TooltipProp = boolean | string | TooltipConfig
+
+export interface TooltipTextProps {
+    /**
+     * 提示内容；缺省时取元素的可见文本。
+     *
+     * 只影响提示面板——元素内仍渲染默认插槽的内容。
+     * @en Tooltip content; defaults to the element's visible text. It only affects the panel — the element still renders the default slot.
+     */
+    content?: string
+    /**
+     * 触发模式：`auto` 仅在文本被截断时显示，`always` 始终显示
+     * @default 'auto'
+     * @en Trigger mode: `auto` shows the tooltip only when the text is truncated, `always` shows it unconditionally
+     */
+    mode?: TooltipMode
+    /**
+     * 是否停用提示（元素与截断行为不变）
+     * @default false
+     * @en Whether to disable the tooltip (the element and its truncation are unaffected)
+     */
+    disabled?: boolean
+}
+
+/**
  * 面板与触发器的对齐方式
  * @en Alignment of the panel with the trigger
  */

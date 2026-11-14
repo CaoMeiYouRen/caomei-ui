@@ -91,11 +91,30 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 >
 > Because the badge extends past the button's bounds, an ancestor must not clip it (`overflow: hidden` / `clip` and the like), or the badge will be cut off.
 
+## Text overflow and tooltips
+
+`tooltip` wires a built-in tooltip into the button (based on `CaomeiTooltip`; it never shows alongside the native `title`):
+
+- `tooltip` (`true`): always shown for `iconOnly` or when there is no visible text, with the `label` (the `aria-label`) as content; for text buttons it shows only when the text is truncated by the container, using the visible text as content;
+- `tooltip="..."` or `{ content, mode }`: an explicit content is always shown by default — use `mode: 'auto'` to fall back to "only when truncated" (on `iconOnly` there is no overflowing text, so `auto` never shows and logs a development-time warning);
+- once set, the native `title` is no longer forwarded to the DOM; its value backs the tooltip content, while `content` takes precedence;
+- disabled buttons can still show the tooltip on hover.
+
+Truncation prerequisite: the text element is single-line (`nowrap` + `overflow: hidden` + `text-overflow: ellipsis`), so the text only truncates — and triggers the tooltip — when the button is width-constrained (`block`, a parent width, or a custom `max-width`).
+
+<demo
+    vue="../examples/button/tooltip.vue"
+    ssg="true"
+/>
+
+> Known trade-off: the `iconOnly` + `tooltip` content defaults to the `aria-label` and the panel is exposed to screen readers as a **description**, so the same text may be announced twice. Use `tooltip="{ content: '...' }"` to provide distinct supplementary text. See [Tooltip](./tooltip.md) for the provider fallback and its skip-delay trade-off.
+
 ## Accessibility
 
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).
-- When `iconOnly` is enabled, `label` is required and is used as `aria-label` (takes precedence over forwarded `aria-label`).
+- When `iconOnly` is enabled, `label` is required and is used as `aria-label` (takes precedence over forwarded `aria-label`); that requirement is the API contract — at runtime a forwarded `aria-label` still backs it up, and the development-time warning is emitted only for `iconOnly` with `tooltip` enabled when there is **no accessible name at all**.
 - The loading state is marked with `aria-busy` and still uses native `disabled` to block interaction.
+- The built-in tooltip never supplies the accessible name: the name of an `iconOnly` button comes from `label` (with a forwarded `aria-label` as fallback), while the tooltip text is exposed as a description (`aria-describedby`).
 
 ## Migration from PrimeVue
 
@@ -109,6 +128,7 @@ A non-empty `badge` string renders a badge at the button's top-right corner (the
 | `icon` / `iconPos` (`left` / `right`) | `#icon` slot (pass an `@lucide/vue` component) / `iconPosition` (`start` / `end`); PrimeVue also has `top` / `bottom`, **not supported here** |
 | `iconOnly` (icon-only button) | `iconOnly` (square, centered icon, requires `label` for accessible name) |
 | `:badge` / `badgeSeverity` | `badge` (a non-empty string renders outside the top-right corner without affecting layout) / `badgeTone` (`secondary` → `neutral` and so on; `info` / `contrast` are lossy) |
+| `v-tooltip` directive (PrimeVue) / native `title` | `tooltip` (`true` / string / `{ content, mode }`); without `tooltip`, the native `title` is still forwarded as before |
 | `fluid` (span the parent width) | `block` (span the parent width) |
 | `loading` | `loading` (disables the button automatically and shows the built-in indicator) |
 

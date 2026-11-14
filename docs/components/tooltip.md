@@ -1,10 +1,12 @@
 # Tooltip 工具提示
 
-工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；由应用根部放置一次的 `CaomeiTooltipProvider` 与 `CaomeiTooltip` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent` / `CaomeiTooltipArrow` 组合使用。
+工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；建议在应用根部放置一次 `CaomeiTooltipProvider`，再与 `CaomeiTooltip` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent` / `CaomeiTooltipArrow` 组合使用（未放置时组件内建兜底，见下）。
 
 ## 基础用法
 
-`CaomeiTooltipProvider` 需在应用根部放置一次（与 `CaomeiToastProvider` / `CaomeiConfirmDialog` 同类的一次性 Provider）——Reka 的 `TooltipRoot` 在缺少 Provider 时会抛错，Provider 同时承载「跨触发器免延迟」的共享状态。
+`CaomeiTooltipProvider` 建议在应用根部放置一次（与 `CaomeiToastProvider` / `CaomeiConfirmDialog` 同类的一次性 Provider），它承载「跨触发器免延迟」的共享状态（`skipDelayDuration`）与全局的 `delayDuration` / `disabled` 等配置。
+
+**未放置 Provider 时不会抛错**：`CaomeiTooltip` 会以内建默认配置（延迟 700ms）兜底，单个提示仍可正常打开；代价是这类提示之间不共享「跨触发器免延迟」。组件库的内建提示（如 Button 的 `tooltip`）同样走这条兜底路径——存量应用升级后无需先改应用根部。
 
 `CaomeiTooltipTrigger` 缺省渲染为**无外观**的可点击容器并接好无障碍接线；包裹既有按钮 / 链接 / 图标时用 `as-child` 复用该元素。
 
@@ -69,6 +71,21 @@ Provider 另有**独有**项 `skipDelayDuration`（缺省 `300`）：从一个�
 | `--caomei-tooltip-trigger-padding` | `0` | 触发器内边距（缺省已复位） |
 | `--caomei-tooltip-trigger-radius` | `--caomei-radius-sm` | 触发器圆角 |
 
+## 文本溢出提示
+
+`CaomeiTooltipText` 把「元素 + 溢出提示」封装成一个盒子：内容装不下时显示提示，装得下时完全静默（元素上不会出现 `aria-describedby`）。它只负责接线与可测量的盒子，**是否截断由使用方决定**——须自行声明 `white-space: nowrap` + 定宽 / `max-width` + `overflow: hidden` + `text-overflow: ellipsis`。
+
+```vue
+<CaomeiTooltipText class="cell" :content="fullText">{{ fullText }}</CaomeiTooltipText>
+```
+
+- `mode`（默认 `auto`）：`auto` 仅在溢出时显示；`always` 始终显示；
+- `content` 缺省时取元素的可见文本；
+- `disabled` 关闭提示，元素的渲染与截断不受影响；
+- 需要键盘用户也能查看时，给元素补 `tabindex="0"`（继承的 `class` / `style` / `aria-*` 等属性会落到根元素）。
+
+`CaomeiButton` 的 `tooltip` 内建提示是同一能力的组件级封装，见 [Button](./button.md#文本溢出与提示)。
+
 ## 从 PrimeVue 迁移
 
 PrimeVue 的 `v-tooltip` 指令 / `<Tooltip>` 与本组件同为「悬停 / 聚焦即显」的只读提示，差异集中在接入形态：
@@ -83,7 +100,7 @@ PrimeVue 的 `v-tooltip` 指令 / `<Tooltip>` 与本组件同为「悬停 / 聚�
 | `escape`（Esc 关闭） | 默认行为，未暴露开关 |
 | 指令式挂载（任意元素加属性即可） | 需显式包一层 `CaomeiTooltipTrigger`（`as-child` 复用原元素） |
 
-**已知差异（有意）**：① 需显式放置 `CaomeiTooltipProvider`（Reka 的 `TooltipRoot` 缺 Provider 时抛错），并据此获得「跨触发器免延迟」（`skipDelayDuration`）；② 提示只作为**描述**朗读——`role="tooltip"` 落在面板内视觉隐藏元素上（其 `id` 即触发器 `aria-describedby` 的指向），不进入触发器的可访问名；③ 与 `CaomeiPopover` 按语义分工（只读短提示 vs 可交互内容），层级分别为 `--caomei-z-tooltip`（1060）与 `--caomei-z-dropdown`（1050）。
+**已知差异（有意）**：① 建议显式放置 `CaomeiTooltipProvider` 以获得「跨触发器免延迟」（`skipDelayDuration`）；未放置时由 `CaomeiTooltip` 内建兜底（每个提示各自持有默认配置），行为可用但不共享该状态；② 提示只作为**描述**朗读——`role="tooltip"` 落在面板内视觉隐藏元素上（其 `id` 即触发器 `aria-describedby` 的指向），不进入触发器的可访问名；③ 与 `CaomeiPopover` 按语义分工（只读短提示 vs 可交互内容），层级分别为 `--caomei-z-tooltip`（1060）与 `--caomei-z-dropdown`（1050）。
 
 ### 与 Element Plus `el-tooltip` 的差异
 

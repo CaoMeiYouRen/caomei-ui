@@ -1,8 +1,35 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { mount } from '@vue/test-utils'
-import { describe, expect, it } from 'vitest'
+import { renderToString } from 'vue/server-renderer'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createSSRApp, defineComponent, h, nextTick } from 'vue'
+import { resetResizeObserverStub, ResizeObserverStub, setElementMetrics, triggerMeasurement } from '../../../test/helpers/resize-observer'
+import { CaomeiTooltipProvider } from '../tooltip'
 import { CaomeiButton } from './index'
+
+/** 提示面板的可访问描述元素（可见文本与隐藏描述同处一个面板，取隐藏描述避免重复一份） */
+function getDescriptionText(): string | null {
+    return document.querySelector('[role="tooltip"]')?.textContent?.trim() ?? null
+}
+
+function getPanel(): HTMLElement | null {
+    return document.querySelector('.caomei-tooltip__content') as HTMLElement | null
+}
+
+async function openByFocus(element: HTMLElement): Promise<void> {
+    element.dispatchEvent(new FocusEvent('focus'))
+    await nextTick()
+    await nextTick()
+}
+
+/** 指针进入走 Provider 的延迟（默认 700ms），故需轮询等待面板出现 */
+async function openByPointer(element: HTMLElement): Promise<void> {
+    element.dispatchEvent(new MouseEvent('pointermove', { bubbles: true }))
+    await vi.waitFor(() => {
+        expect(getDescriptionText()).not.toBeNull()
+    })
+}
 
 describe('CaomeiButton', () => {
     it('渲染原生 button 并应用默认变体、尺寸与插槽内容', () => {
@@ -332,5 +359,203 @@ describe('CaomeiButton', () => {
 
         // 减动效分支仍在（关闭过渡，但保留状态差异）
         expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.caomei-button \{[\s\S]*?transition: none;/u)
+    })
+})
+
+describe('CaomeiButton 内建提示', () => {
+    beforeEach(() => {
+        resetResizeObserverStub()
+        vi.stubGlobal('ResizeObserver', ResizeObserverStub)
+    })
+
+    afterEach(() => {
+        document.body.innerHTML = ''
+        vi.unstubAllGlobals()
+        vi.restoreAllMocks()
+    })
+
+    it('未设置 tooltip 时不接入提示，原生 title 照常透传', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            attrs: { title: '原生提示' },
+            slots: { default: '按钮' },
+        })
+        await nextTick()
+
+        const button = wrapper.get('button')
+        expect(button.attributes('title')).toBe('原生提示')
+        expect(button.attributes('data-state')).toBeUndefined()
+        expect(getPanel()).toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 传字符串时作为提示内容，且不再透传原生 title', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { tooltip: '保存当前修改' },
+            attrs: { title: '系统提示' },
+            slots: { default: '保存' },
+        })
+        await nextTick()
+
+        const button = wrapper.get('button')
+        expect(button.attributes('title')).toBeUndefined()
+
+        await openByFocus(button.element)
+        expect(getDescriptionText()).toBe('保存当前修改')
+
+        wrapper.unmount()
+    })
+
+    it('auto 模式仅在文本溢出时显示，内容取可见文本', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { tooltip: true },
+            slots: { default: '一段因为按钮限宽而被截断的长文案' },
+        })
+        await nextTick()
+
+        const button = wrapper.get('button').element
+        await openByFocus(button)
+        expect(getPanel()).toBeNull()
+
+        setElementMetrics(wrapper.get('.caomei-button__content').element, 360, 120)
+        triggerMeasurement()
+        await nextTick()
+
+        await openByFocus(button)
+        expect(getDescriptionText()).toBe('一段因为按钮限宽而被截断的长文案')
+
+        wrapper.unmount()
+    })
+
+    it('iconOnly 默认始终显示，内容取可访问名', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { iconOnly: true, label: '设置', tooltip: true },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+        await nextTick()
+
+        await openByFocus(wrapper.get('button').element)
+        expect(getDescriptionText()).toBe('设置')
+
+        wrapper.unmount()
+    })
+
+    it('对象形态可指定内容与触发模式', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { tooltip: { content: '自定义说明', mode: 'always' } },
+            slots: { default: '保存' },
+        })
+        await nextTick()
+
+        await openByFocus(wrapper.get('button').element)
+        expect(getDescriptionText()).toBe('自定义说明')
+
+        wrapper.unmount()
+    })
+
+    it('tooltip 为 true 时用透传的原生 title 兜底内容', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { iconOnly: true, label: '设置', tooltip: true },
+            attrs: { title: '打开设置' },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+        await nextTick()
+
+        const button = wrapper.get('button')
+        expect(button.attributes('title')).toBeUndefined()
+
+        await openByFocus(button.element)
+        expect(getDescriptionText()).toBe('打开设置')
+
+        wrapper.unmount()
+    })
+
+    it('禁用态仍可触发提示', async () => {
+        // 延迟归零：指针进入默认要等 Provider 的 700ms，靠真实计时等待会让用例在慢机上变脆
+        const wrapper = mount(defineComponent({
+            render: () => h(CaomeiTooltipProvider, { delayDuration: 0 }, {
+                default: () => h(CaomeiButton, { disabled: true, tooltip: '提交前请先填写' }, { default: () => '提交' }),
+            }),
+        }), { attachTo: document.body })
+        await nextTick()
+
+        const button = wrapper.get('button')
+        expect(button.attributes('disabled')).toBeDefined()
+
+        await openByPointer(button.element)
+        expect(getDescriptionText()).toBe('提交前请先填写')
+
+        wrapper.unmount()
+    })
+
+    it('Provider 级 disabled 仍可停用内建提示', async () => {
+        const wrapper = mount(defineComponent({
+            render: () => h(CaomeiTooltipProvider, { disabled: true, delayDuration: 0 }, {
+                default: () => h(CaomeiButton, { tooltip: '不应打开' }, { default: () => '提交' }),
+            }),
+        }), { attachTo: document.body })
+        await nextTick()
+
+        await openByFocus(wrapper.get('button').element)
+        expect(getPanel()).toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('无默认插槽时以可访问名作为提示内容并始终显示', async () => {
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { label: '保存', tooltip: true },
+        })
+        await nextTick()
+
+        await openByFocus(wrapper.get('button').element)
+        expect(getDescriptionText()).toBe('保存')
+
+        wrapper.unmount()
+    })
+
+    it('iconOnly 缺 label 且启用提示时输出开发期告警', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { iconOnly: true, tooltip: true },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+        await nextTick()
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('iconOnly'))
+
+        wrapper.unmount()
+    })
+
+    it('iconOnly 与 auto 组合时输出开发期告警', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiButton, {
+            attachTo: document.body,
+            props: { iconOnly: true, label: '设置', tooltip: { content: '设置', mode: 'auto' } },
+            slots: { icon: '<svg data-test="icon" />' },
+        })
+        await nextTick()
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('auto'))
+
+        wrapper.unmount()
+    })
+
+    it('服务端渲染不输出提示面板与描述关联', async () => {
+        const html = await renderToString(createSSRApp({
+            render: () => h(CaomeiButton, { tooltip: '服务端提示' }, { default: () => '保存' }),
+        }))
+
+        expect(html).toContain('保存')
+        expect(html).not.toContain('caomei-tooltip__content')
+        expect(html).not.toContain('aria-describedby')
     })
 })

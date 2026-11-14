@@ -314,16 +314,28 @@ describe('CaomeiTooltipProvider', () => {
         wrapper.unmount()
     })
 
-    it('缺 Provider 时抛错并点名 Provider（Provider 为必需项）', () => {
-        expect(() => mount(CaomeiTooltip, {
+    /*
+     * Provider 缺失策略 = 内建兜底：组件库内建提示由组件自身渲染，未放置 Provider 的存量应用
+     * 不得因升级而崩溃。兜底后提示仍可正常打开，代价只是这类提示之间不共享跨提示的免延迟。
+     */
+    it('缺 Provider 时以内建 Provider 兜底并正常打开', async () => {
+        const wrapper = mount(CaomeiTooltip, {
             attachTo: document.body,
+            props: { open: true },
             slots: {
                 default: () => [
                     h(CaomeiTooltipTrigger, { 'aria-label': '查看提示' }, { default: () => '提示' }),
                     h(CaomeiTooltipContent, null, { default: () => '提示内容' }),
                 ],
             },
-        })).toThrow(/TooltipProvider/)
+        })
+        await nextTick()
+
+        expect(getContent()).not.toBeNull()
+        expect(getDescription()?.textContent).toBe('提示内容')
+        expect(getTrigger()?.getAttribute('aria-describedby')).toBe(getDescription()?.id)
+
+        wrapper.unmount()
     })
 
     /*

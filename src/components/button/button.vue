@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, defineComponent, ref, useSlots, watchEffect, type VNodeChild } from 'vue'
 import { CaomeiBadge } from '../badge'
+import { CaomeiTooltip, CaomeiTooltipContent, CaomeiTooltipTrigger } from '../tooltip'
+import { useOverflowTooltip } from '../../composables/use-overflow-tooltip'
+import { warnDev } from '../../_shared/dev-warn'
 import { useLabelAttrs } from '../_shared/use-label-attrs'
+import type { TooltipConfig } from '../tooltip/types'
 import type { ButtonProps } from './types'
 
 defineOptions({ name: 'CaomeiButton', inheritAttrs: false })
@@ -17,6 +21,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     iconPosition: 'start',
     type: 'button',
     badgeTone: 'neutral',
+    tooltip: false,
 })
 
 const emit = defineEmits<{
@@ -31,6 +36,100 @@ defineSlots<{
 const isInactive = computed(() => props.disabled || props.loading)
 
 const forwardedAttrs = useLabelAttrs(() => props.label)
+const slots = useSlots()
+
+/** 是否存在可见文本：无默认插槽（只有图标 / 角标）时按纯图标语义处理 */
+const hasVisibleText = computed(() => Boolean(slots.default))
+
+/** 文本按钮的可见文本承接元素；`iconOnly` 时不渲染，故只作为溢出检测的目标 */
+const contentRef = ref<HTMLElement | null>(null)
+const visibleText = ref('')
+
+/**
+ * 提示配置：显式关闭（`false` / 未传）时为 `null`。
+ *
+ * 默认触发模式：纯图标 / 无可见文本、或显式提供了提示内容时「始终显示」（前者没有可溢出的文本，
+ * 后者是作者明确要展示的补充说明）；只有「有可见文本 + `tooltip: true`」才退化为
+ * 「仅在被截断时显示」，由 `useOverflowTooltip` 判定。
+ */
+const tooltipConfig = computed<TooltipConfig | null>(() => {
+    const value = props.tooltip
+    if (!value) {
+        return null
+    }
+    const content = typeof value === 'string' ? value : (value === true ? undefined : value.content)
+    const mode = typeof value === 'object' ? value.mode : undefined
+    return {
+        content,
+        // 没有可溢出文本的形态（纯图标 / 无默认插槽）以及显式给了内容的形态都始终展示
+        mode: mode ?? (props.iconOnly || !hasVisibleText.value || content ? 'always' : 'auto'),
+    }
+})
+
+const { overflowing } = useOverflowTooltip(contentRef, {
+    // `always` 与纯图标形态不需要溢出判定（后者没有文本承接元素）
+    disabled: () => !tooltipConfig.value || props.iconOnly || tooltipConfig.value.mode === 'always',
+    onMeasure: () => {
+        visibleText.value = (contentRef.value?.textContent ?? '').replace(/\s+/gu, ' ').trim()
+    },
+})
+
+const tooltipEnabled = computed(() => tooltipConfig.value !== null)
+
+/** 已提供给按钮的可访问名：显式 `label` 优先于透传的 `aria-label` */
+const accessibleName = computed(() => {
+    if (props.label) {
+        return props.label
+    }
+    const forwarded = forwardedAttrs.value['aria-label']
+    return typeof forwarded === 'string' && forwarded ? forwarded : undefined
+})
+
+/**
+ * 提示内容优先级：显式 `content` > 透传原生 `title`（接管后不再落到 DOM）> 可访问名（纯图标）>
+ * 可见文本（文本按钮）。
+ */
+const tooltipText = computed(() => {
+    const config = tooltipConfig.value
+    if (!config) {
+        return ''
+    }
+    if (config.content) {
+        return config.content
+    }
+    const nativeTitle = forwardedAttrs.value.title
+    if (typeof nativeTitle === 'string' && nativeTitle) {
+        return nativeTitle
+    }
+    if (props.iconOnly) {
+        return accessibleName.value ?? ''
+    }
+    // 无默认插槽但提供了可访问名时，仍按契约取 `aria-label` 作为内容
+    return visibleText.value || accessibleName.value || ''
+})
+
+/** 是否真的启用提示：`always` 直接启用，`auto` 仅在文本溢出时启用 */
+const tooltipActive = computed(() => {
+    const config = tooltipConfig.value
+    if (!config || !tooltipText.value) {
+        return false
+    }
+    return config.mode === 'always' || overflowing.value
+})
+
+// 没有可访问名的纯图标按钮既无法被读屏识别，也没有内容可提示——开发期点名提示。
+watchEffect(() => {
+    if (tooltipEnabled.value && props.iconOnly && !accessibleName.value) {
+        warnDev('[CaomeiButton] iconOnly 缺少 label：按钮没有可访问名，内建提示也没有内容可显示。')
+    }
+})
+
+// 纯图标没有可溢出的文本：`auto` 在这里等价于「永不显示」，静默会让人误以为接入失败。
+watchEffect(() => {
+    if (tooltipConfig.value?.mode === 'auto' && props.iconOnly) {
+        warnDev('[CaomeiButton] iconOnly 下 tooltip 的 auto 模式没有可溢出文本，提示不会显示；请改用 always 或传内容。')
+    }
+})
 
 /** 加载态由组件表达 `aria-busy`；非加载态保留消费者透传值。 */
 const rootAttrs = computed<Record<string, unknown>>(() => {
@@ -41,6 +140,10 @@ const rootAttrs = computed<Record<string, unknown>>(() => {
     // iconOnly 时强制使用 label 作为 aria-label（优先级高于透传）
     if (props.iconOnly && props.label) {
         base['aria-label'] = props.label
+    }
+    // 启用内建提示后接管原生 title（其值已作为提示内容兜底），避免系统提示与内建提示双显
+    if (tooltipEnabled.value) {
+        delete base.title
     }
     return base
 })
@@ -57,53 +160,88 @@ const rootClass = computed(() => [
     },
 ])
 
+/**
+ * 无提示时的透传层：不渲染 DOM，保证按钮仍是组件根元素。
+ *
+ * 以「启用与否」而非「当前是否活跃」选择包装层：活跃度会随溢出检测翻转，
+ * 切换包装组件会重建按钮 DOM、丢掉焦点，故活跃度只用 `disabled` 传给提示根组件。
+ */
+const Passthrough = defineComponent({
+    name: 'CaomeiButtonPassthrough',
+    inheritAttrs: false,
+    setup(_, context): () => VNodeChild {
+        return () => context.slots.default?.()
+    },
+})
+
+const RootWrapper = computed(() => (tooltipEnabled.value ? CaomeiTooltip : Passthrough))
+const TriggerWrapper = computed(() => (tooltipEnabled.value ? CaomeiTooltipTrigger : Passthrough))
+
 function onClick(event: MouseEvent): void {
     emit('click', event)
 }
 </script>
 
 <template>
-    <button
-        v-bind="rootAttrs"
-        class="caomei-button"
-        :class="rootClass"
-        :type="type"
-        :disabled="isInactive"
-        @click="onClick"
+    <component
+        :is="RootWrapper"
+        :disabled="tooltipActive ? undefined : true"
     >
-        <span
-            v-if="loading"
-            class="caomei-button__spinner"
-            aria-hidden="true"
-        />
-        <span
-            v-else-if="iconOnly && $slots.icon"
-            class="caomei-button__icon"
+        <component
+            :is="TriggerWrapper"
+            as-child
+            unstyled
         >
-            <slot name="icon" />
-        </span>
-        <span
-            v-else-if="!loading && !iconOnly && $slots.icon && iconPosition === 'start'"
-            class="caomei-button__icon"
-        >
-            <slot name="icon" />
-        </span>
-        <span v-if="!iconOnly && $slots.default" class="caomei-button__content">
-            <slot />
-        </span>
-        <span
-            v-if="!loading && !iconOnly && $slots.icon && iconPosition === 'end'"
-            class="caomei-button__icon"
-        >
-            <slot name="icon" />
-        </span>
-        <CaomeiBadge
-            v-if="badge"
-            class="caomei-button__badge"
-            :value="badge"
-            :tone="badgeTone"
-        />
-    </button>
+            <button
+                v-bind="rootAttrs"
+                class="caomei-button"
+                :class="rootClass"
+                :type="type"
+                :disabled="isInactive"
+                @click="onClick"
+            >
+                <span
+                    v-if="loading"
+                    class="caomei-button__spinner"
+                    aria-hidden="true"
+                />
+                <span
+                    v-else-if="iconOnly && $slots.icon"
+                    class="caomei-button__icon"
+                >
+                    <slot name="icon" />
+                </span>
+                <span
+                    v-else-if="!loading && !iconOnly && $slots.icon && iconPosition === 'start'"
+                    class="caomei-button__icon"
+                >
+                    <slot name="icon" />
+                </span>
+                <span
+                    v-if="!iconOnly && $slots.default"
+                    ref="contentRef"
+                    class="caomei-button__content"
+                >
+                    <slot />
+                </span>
+                <span
+                    v-if="!loading && !iconOnly && $slots.icon && iconPosition === 'end'"
+                    class="caomei-button__icon"
+                >
+                    <slot name="icon" />
+                </span>
+                <CaomeiBadge
+                    v-if="badge"
+                    class="caomei-button__badge"
+                    :value="badge"
+                    :tone="badgeTone"
+                />
+            </button>
+        </component>
+        <CaomeiTooltipContent v-if="tooltipEnabled" :aria-label="tooltipText">
+            {{ tooltipText }}
+        </CaomeiTooltipContent>
+    </component>
 </template>
 
 <style scoped>
@@ -298,10 +436,24 @@ function onClick(event: MouseEvent): void {
 }
 
 .caomei-button__icon,
-.caomei-button__spinner,
-.caomei-button__content {
+.caomei-button__spinner {
     display: inline-flex;
     align-items: center;
+}
+
+/*
+  文本承接层：作为 flex 子项必须声明 `min-width: 0`，否则内容宽度会撑破容器、`overflow` 永不生效。
+  单行截断（`nowrap` + `overflow: hidden` + `text-overflow: ellipsis`）让「按钮被限宽时文字被截断」
+  成为 `tooltip` 的 `auto` 触发前提；未限宽时按钮仍按内容撑开，几何与改造前一致。
+  上限定为 100% 而非固定值：截断宽度始终跟随按钮自身的可用宽度。
+*/
+.caomei-button__content {
+    display: block;
+    min-width: 0;
+    max-width: var(--caomei-button-content-max-width, 100%);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .caomei-button__icon,

@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-15-phase34-m1-1-tooltip-base.md](./2026-11-15-phase34-m1-1-tooltip-base.md)：**Phase 34 M1-1 基础契约与 Button 内建提示**。Provider 缺失策略定为 **内建兜底**（缺 Provider 时以默认配置包裹，代价是不共享跨触发器免延迟）；`tooltip` 默认触发模式按「是否存在可溢出文本」与「是否显式给内容」分流；`CaomeiTooltipText` 以 `:where()` 归零特异性的可测量盒承载溢出检测，截断配方仍由使用方决定。含真实 Chromium 双态证据、已知取舍（icon-only 重复朗读、零特异性双向风险）与 5 条 follow-up（真实布局持久守卫、覆盖段说明、告警去重、迁移措辞、包装层抽取）。**Review Gate**：见本记录 §5。
 - [2026-11-14-phase34-registration.md](./2026-11-14-phase34-registration.md)：**Phase 34 登记批次**。用户裁定 D0 ① / D1 ① / D2 ① / D3 ② / D4 ① 后登记；原登记 **3 条主线 / 13 条原子条目**，同日用户追加 DataTable 数据面与长尾组件后为 **5 条主线 / 20 条原子条目**（Tooltip 8 / 协作测试 3 / 质量门禁 2 / DataTable 2 / 长尾组件 5），按粒度约束对 A 主线细拆、交付面不变；候选池 27 → 24 → 20（移出 Tooltip、协作测试 T3 / T4、DataTable 两项、BackTop / TimePicker；N1 / N2 未入池即登记）；**本阶段不发布**。范围与验收口径的唯一载体见本记录 §1 / §2。**Review Gate**：见本记录 §6。
 - [2026-11-14-next-stage-scope-evaluation-18.md](./2026-11-14-next-stage-scope-evaluation-18.md)：**下一阶段范围评估（第十八轮）**。Phase 33 归档、`1.3.0` 发布后无进行中阶段；候选池 **27 条**逐条落点（覆盖声明见 §2），另提 2 条新候选（嵌套遮罩层级评估、`release.yml` 周回归机检）。推荐组合 **A Tooltip 提示体系（5）+ B 协作测试 T3（3）+ C 质量门禁与 a11y（2）+ D 发布收口（1）**；D0 ~ D4 待用户裁定，**未分配编号、未登记阶段**。**Review Gate**：见本记录 §6。
 - [2026-11-14-phase33-archive.md](./2026-11-14-phase33-archive.md)：**Phase 33 归档批次**。6 条主线 / 14 条原子条目全部交付并发布 `1.3.0`；提交对账、质量门、wisdom 蒸馏、载体回扫与第 37 轮门槛复核见正文；主窗口未越 warn 阈值，本轮无迁出。**Review Gate**：见本记录 §7。

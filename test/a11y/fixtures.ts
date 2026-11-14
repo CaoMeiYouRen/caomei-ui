@@ -96,6 +96,7 @@ import {
     CaomeiTooltipArrow,
     CaomeiTooltipContent,
     CaomeiTooltipProvider,
+    CaomeiTooltipText,
     CaomeiTooltipTrigger,
     useConfirm,
     useToast,
@@ -311,7 +312,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
-    /* 工具提示：根组件在缺 `CaomeiTooltipProvider` 时会抛错（Reka 契约），故夹具统一自带 Provider。 */
+    /* 工具提示：夹具自带 Provider，覆盖「Provider 存在时沿用上层配置」的主路径（缺失时由根组件内建兜底）。 */
     { name: 'CaomeiTooltip', root: CaomeiTooltip, definition: { components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent }, template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent>扫描范围为所选仓库的全部开放依赖告警。</CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>' } },
     /*
      * 展开态审计单元：受控 `open` 在 happy-dom 下不可稳定驱动，改以公开属性 `force-mount`
@@ -326,6 +327,16 @@ export const A11Y_FIXTURES: A11yFixture[] = [
             template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent force-mount><span>扫描范围</span><CaomeiTooltipArrow /></CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>',
         },
         requiredSelectors: ['.caomei-tooltip__content', '[role="tooltip"]'],
+    },
+    /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
+    {
+        name: 'CaomeiTooltipText',
+        root: CaomeiTooltipText,
+        definition: {
+            components: { CaomeiTooltipText },
+            template: '<CaomeiTooltipText mode="always" content="完整文本">被截断的文本</CaomeiTooltipText>',
+        },
+        requiredSelectors: ['.caomei-tooltip-text'],
     },
 ]
 
@@ -385,4 +396,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 61
+export const A11Y_FIXTURE_BUDGET = 62

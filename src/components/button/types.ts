@@ -1,4 +1,5 @@
 import type { ComponentSize, ComponentTone, ComponentVariant } from '../../types'
+import type { TooltipProp } from '../tooltip/types'
 
 export type ButtonIconPosition = 'start' | 'end'
 
@@ -66,6 +67,16 @@ export interface ButtonProps {
      * @en Accessible name when there is no visible text (maps aria-label)
      */
     label?: string
+    /**
+     * 内建提示。
+     *
+     * `true` 取 `label` / 可见文本，字符串直接作为提示内容，对象可分别指定 `content` 与 `mode`。
+     * 默认触发模式：`iconOnly` 或显式提供内容时「始终显示」，只有「文本按钮 + `true`」才是
+     * 「仅在文字被截断时显示」。
+     * 设置后不再向 DOM 透传原生 `title`（其值作为提示内容的兜底），避免系统提示与内建提示双显。
+     * @en Built-in tooltip. `true` derives the text from `label` / visible text, a string is the content, and the object form sets `content` and `mode` separately. `iconOnly` defaults to "always" (text from the accessible name) and text buttons default to "only when the text is truncated". Once set, the native `title` is no longer forwarded to the DOM (its value backs the tooltip content) so the system tooltip does not show alongside.
+     */
+    tooltip?: TooltipProp
     /**
      * 原生 button 的 type
      * @en Native button type

@@ -91,11 +91,30 @@
 >
 > 因角标超出按钮边界，承载它的祖先元素不要设置会裁切的 `overflow`（`hidden` / `clip` 等），否则角标会被切掉。
 
+## 文本溢出与提示
+
+`tooltip` 为按钮接入内建提示（基于 `CaomeiTooltip`，与原生 `title` 不会同时出现）：
+
+- `tooltip`（`true`）：`iconOnly` 或无可见文本时始终显示，内容取 `label`（即 `aria-label`）；文本按钮只在文字被容器截断时显示，内容取可见文本；
+- `tooltip="..."` 或 `{ content, mode }`：显式提供内容时默认始终显示，可用 `mode: 'auto'` 改回「仅在截断时显示」（`iconOnly` 下 `auto` 没有可溢出文本，提示不会显示，开发期会告警）；
+- 设置后按钮不再向 DOM 透传原生 `title`；`title` 的值会作为提示内容的兜底，`content` 优先级更高；
+- 禁用按钮仍可悬停查看提示。
+
+截断前提：文本承接层已是单行（`nowrap` + `overflow: hidden` + `text-overflow: ellipsis`），按钮被限宽（`block`、父容器宽度或自定义 `max-width`）时文字才会被截断并触发提示。
+
+<demo
+    vue="../examples/button/tooltip.vue"
+    ssg="true"
+/>
+
+> 已知取舍：`iconOnly` + `tooltip` 的提示内容默认取 `aria-label`，面板以**描述**形式暴露给读屏，因此读屏可能把同一段文字朗读两次。需要补充说明时用 `tooltip="{ content: '...' }"` 提供不同文案。Provider 缺失时的兜底与免延迟取舍见 [Tooltip](./tooltip.md)。
+
 ## 无障碍
 
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。
-- `iconOnly` 开启时强制使用 `label` 作为 `aria-label`（优先级高于透传），且 `label` 为必填。
+- `iconOnly` 开启时强制使用 `label` 作为 `aria-label`（优先级高于透传），且 `label` 为必填；该必填是 API 契约，缺 `label` 时运行时仍有透传 `aria-label` 的兜底；只有在 `iconOnly` 且 `tooltip` 启用、并且**没有任何可访问名**时才输出开发期告警。
 - 加载态通过 `aria-busy` 标注，并沿用原生 `disabled` 阻止交互。
+- 内建提示不承担可访问名：`iconOnly` 的可访问名来自 `label`（缺省时透传的 `aria-label` 兜底），提示文本以描述形式（`aria-describedby`）暴露给读屏。
 
 ## 从 PrimeVue 迁移
 
@@ -109,6 +128,7 @@
 | `icon` / `iconPos`（`left` / `right`） | `#icon` 插槽（传 `@lucide/vue` 组件）/ `iconPosition`（`start` / `end`）；PrimeVue 另有 `top` / `bottom`，**本库未支持** |
 | `iconOnly`（纯图标按钮） | `iconOnly`（方形、图标居中、需 `label` 提供可访问名） |
 | `:badge` / `badgeSeverity` | `badge`（非空字符串渲染于右上角外扩、不参与布局）/ `badgeTone`（`secondary` → `neutral` 等；`info` / `contrast` 为有损近似） |
+| `v-tooltip` 指令（PrimeVue）/ 原生 `title` | `tooltip`（`true` / 字符串 / `{ content, mode }`）；未设置 `tooltip` 时原生 `title` 仍照常透传 |
 | `fluid`（撑满父容器宽度） | `block`（撑满父容器宽度） |
 | `loading` | `loading`（加载时自动禁用并显示内建指示） |
 

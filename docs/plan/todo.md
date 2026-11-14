@@ -11,7 +11,7 @@
 | 条目 | 说明 | 主线 | 验收状态 |
 |:---|:---|:---|:---|
 | M1-1 | `eslint` 10 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-1-eslint-10.md)） |
-| M1-2 | `vitest` 5（+ coverage 5）升级 | 依赖与工具链 | 待执行 |
+| M1-2 | `vitest` 5（+ coverage 5）升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-2-vitest-5.md)） |
 | M1-3 | `stylelint` 18 + `stylelint-config-cmyr` 1.1 同批升级 | 依赖与工具链 | 待执行 |
 | M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 待执行 |
 | M2-1 | DataTable `autoResetPageIndex` 透传与文档口径 | 下游适配 | 待执行 |

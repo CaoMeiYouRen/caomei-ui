@@ -40,7 +40,7 @@ With `showHeader="false"` the whole header (title area and close button) is not 
 
 ## Behavior options
 
-`closable` controls the close button; `closeOnOverlay` / `closeOnEsc` control whether clicking the overlay or pressing Esc closes the dialog; with `modal="false"` there is no overlay, the background stays interactive and the page scroll is not locked (in this case `closeOnOverlay` means clicking outside the dialog).
+`closable` controls the close button. The close button has no visible text, so its built-in tooltip is on by default with `closeLabel` as content (the tooltip never affects the `aria-label` or the close behaviour; to turn tooltips off globally, place `CaomeiTooltipProvider` at the app root and set `disabled`, see [Tooltip](./tooltip.md)). `closeOnOverlay` / `closeOnEsc` control whether clicking the overlay or pressing Esc closes the dialog (while a tooltip is open, the first Esc closes the tooltip and the second closes the dialog, matching the layering of panels inside the dialog); with `modal="false"` there is no overlay, the background stays interactive and the page scroll is not locked (in this case `closeOnOverlay` means clicking outside the dialog).
 
 <demo
     vue="../examples/dialog/behaviors.vue"

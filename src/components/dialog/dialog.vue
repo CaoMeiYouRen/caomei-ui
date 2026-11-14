@@ -12,6 +12,7 @@ import {
 import { computed, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import {
     buildDialogBreakpointCss,
     createDialogBreakpointId,
@@ -121,13 +122,18 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
                             {{ description }}
                         </DialogDescription>
                     </div>
-                    <DialogClose
+                    <CaomeiIconTooltip
                         v-if="closable"
-                        class="caomei-dialog__close"
-                        :aria-label="closeLabel"
+                        :content="closeLabel"
+                        ignore-non-keyboard-focus
                     >
-                        <CaomeiIcon :icon="icons.dismiss" />
-                    </DialogClose>
+                        <DialogClose
+                            class="caomei-dialog__close"
+                            :aria-label="closeLabel"
+                        >
+                            <CaomeiIcon :icon="icons.dismiss" />
+                        </DialogClose>
+                    </CaomeiIconTooltip>
                 </div>
                 <DialogTitle
                     v-else

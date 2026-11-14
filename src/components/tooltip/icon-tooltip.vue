@@ -14,8 +14,8 @@ import CaomeiTooltipTrigger from './tooltip-trigger.vue'
  * 未从包根导出；组件库内的图标触发器（Toolbar / Paginator 等）共用，避免每处重复一套
  * 「包装层切换 + 内容面板 + Provider 兜底」的接线。
  *
- * 只接受 `content` / `disabled` 两个 prop：`inheritAttrs: false` 会丢弃其余属性，调用方不要
- * 指望在这里传 `class` / `style`（要定制外观请落在子元素上）。
+ * 只接受 `content` / `disabled` / `ignoreNonKeyboardFocus` 三个 prop：`inheritAttrs: false` 会丢弃
+ * 其余属性，调用方不要指望在这里传 `class` / `style`（要定制外观请落在子元素上）。
  */
 defineOptions({ name: 'CaomeiIconTooltip', inheritAttrs: false })
 
@@ -30,9 +30,18 @@ const props = withDefaults(defineProps<{
      * @en Whether to disable the tooltip (the child still renders normally)
      */
     disabled?: boolean
+    /**
+     * 是否只在键盘触发（`:focus-visible`）时打开。
+     *
+     * 用于「会被程序化聚焦」的触发器（如 Dialog 打开时自动聚焦关闭按钮）：不开启时，
+     * 打开对话框就会立刻弹出「关闭」提示。缺省不传，由 Provider 兜底。
+     * @en Whether to open only for keyboard-initiated focus (`:focus-visible`). Used for triggers that receive programmatic focus (such as a dialog's close button on open): without it, opening the dialog immediately pops a "Close" tooltip. Omitted by default, falling back to the provider.
+     */
+    ignoreNonKeyboardFocus?: boolean
 }>(), {
     content: '',
     disabled: false,
+    ignoreNonKeyboardFocus: undefined,
 })
 
 const active = computed(() => !props.disabled && Boolean(props.content))
@@ -45,6 +54,7 @@ const TriggerWrapper = computed(() => (active.value ? CaomeiTooltipTrigger : Pas
     <component
         :is="RootWrapper"
         :disabled="active ? undefined : true"
+        :ignore-non-keyboard-focus="ignoreNonKeyboardFocus"
     >
         <component
             :is="TriggerWrapper"

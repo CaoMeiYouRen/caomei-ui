@@ -40,7 +40,7 @@
 
 ## 行为选项
 
-`closable` 控制关闭按钮；`closeOnOverlay` / `closeOnEsc` 控制点击遮罩与 Esc 是否关闭；`modal="false"` 时无遮罩、背景可交互且不锁定滚动（此时 `closeOnOverlay` 语义为点击对话框外部）。
+`closable` 控制关闭按钮；关闭按钮没有可见文本，内建提示默认开启，内容取 `closeLabel`（提示不影响 `aria-label` 与关闭行为；如需整体关闭提示，先在应用根部放置 `CaomeiTooltipProvider` 并设 `disabled`，见 [Tooltip](./tooltip.md)）；`closeOnOverlay` / `closeOnEsc` 控制点击遮罩与 Esc 是否关闭（提示打开时先按 Esc 关闭提示，再按 Esc 关闭对话框，与面板内浮层的分层语义一致）；`modal="false"` 时无遮罩、背景可交互且不锁定滚动（此时 `closeOnOverlay` 语义为点击对话框外部）。
 
 <demo
     vue="../examples/dialog/behaviors.vue"

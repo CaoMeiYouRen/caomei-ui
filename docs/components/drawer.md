@@ -35,9 +35,9 @@
 
 ## 行为选项
 
-- `closable`：是否显示关闭按钮，默认 `true`。
+- `closable`：是否显示关闭按钮，默认 `true`；关闭按钮内建提示默认开启（内容取 `closeLabel`，不影响 `aria-label` 与关闭行为；整体关闭提示需先在根部放置 `CaomeiTooltipProvider` 并设 `disabled`）。
 - `closeOnOverlay`：点击遮罩是否关闭，默认 `true`。
-- `closeOnEsc`：按下 Esc 是否关闭，默认 `true`。
+- `closeOnEsc`：按下 Esc 是否关闭，默认 `true`；提示打开时先按 Esc 关闭提示，再按 Esc 关闭抽屉。
 - `modal`：是否为模态，默认 `true`；模态会锁定页面滚动并阻止背景交互，`modal="false"` 时不渲染遮罩且页面可滚动。
 
 <demo
@@ -49,7 +49,7 @@
 
 - `title` 作为 `aria-labelledby` 指向的可访问名；未提供时回退内建 locale 文案（仅用于读屏器，不显示可见标题，与 PrimeVue 一致）。
 - `description` 建立 `aria-describedby` 关联。
-- 关闭按钮使用内建多语言标签，可通过 `closeLabel` 覆盖。
+- 关闭按钮使用内建多语言标签，可通过 `closeLabel` 覆盖；该文案同时作为关闭按钮的内建提示内容。
 - 模态抽屉由 primitives 负责焦点陷阱与滚动锁。
 
 ## 从 PrimeVue 迁移

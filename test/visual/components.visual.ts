@@ -173,6 +173,10 @@ async function prepareFormAxis(page: Page, setup: string, theme: string): Promis
     if (setup === 'dialog') {
         await page.click('#dialog-open')
         await page.waitForSelector('.caomei-dialog__content')
+        // 点击后指针可能恰好停在关闭按钮上：内建提示会在 700ms 后弹出并污染浮层截图。
+        // 先把指针移到遮罩空白处，等提示收起再截图，保证该面只表达「对话框打开态」。
+        await page.mouse.move(1, 1)
+        await page.waitForFunction(() => !document.querySelector('.caomei-tooltip__content'))
     }
     if (setup === 'range-picker') {
         await page.click('#panel-date-picker-range .caomei-date-picker')

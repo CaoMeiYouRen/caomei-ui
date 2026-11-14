@@ -35,9 +35,9 @@ The `#header` slot replaces the content of the title area while the close button
 
 ## Behavior options
 
-- `closable`: whether to show the close button, defaults to `true`.
+- `closable`: whether to show the close button, defaults to `true`; its built-in tooltip is on by default (content from `closeLabel`, never affecting the `aria-label` or the close behaviour; disable all tooltips by placing `CaomeiTooltipProvider` at the root and setting `disabled`).
 - `closeOnOverlay`: whether clicking the overlay closes the drawer, defaults to `true`.
-- `closeOnEsc`: whether pressing Esc closes the drawer, defaults to `true`.
+- `closeOnEsc`: whether pressing Esc closes the drawer, defaults to `true`; while a tooltip is open, the first Esc closes the tooltip and the second closes the drawer.
 - `modal`: whether the drawer is modal, defaults to `true`; modal locks page scroll and blocks background interaction, while `modal="false"` renders no overlay and keeps the page scrollable.
 
 <demo
@@ -49,7 +49,7 @@ The `#header` slot replaces the content of the title area while the close button
 
 - `title` is the accessible name referenced by `aria-labelledby`; when omitted it falls back to the built-in locale text (screen-reader only, without a visible title, matching PrimeVue).
 - `description` establishes the `aria-describedby` association.
-- The close button uses the built-in localized label, overridable via `closeLabel`.
+- The close button uses the built-in localized label, overridable via `closeLabel`; that text is also the close button's tooltip content.
 - Modal drawers get focus trapping and scroll locking from the primitives.
 
 ## Migration from PrimeVue

@@ -14,7 +14,7 @@
 | M1-2 | Tooltip 提示体系 | P0 其余（Toolbar）：`CaomeiToolbarButton` / `CaomeiToolbarLink` 接入 `tooltip` 契约（含内部 `CaomeiIconTooltip`）；顺带关闭 M1-1 F5（`Passthrough` 抽取） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
 | M1-9 | Tooltip 提示体系 | P0 其余（Paginator）：四个图标翻页按钮接入 `tooltip: boolean` | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
 | M1-10 | Tooltip 提示体系 | P0 其余（SplitButton）：下拉图标按钮接入 `tooltip` 契约 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-2-icon-tooltips.md)） |
-| M1-3 | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 接入 | 待执行 |
+| M1-3 | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 接入 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-3-dialog-drawer-tooltip.md)） |
 | M1-4 | Tooltip 提示体系 | P1 icon-only 第一批：Select 族清除、InputNumber 步进、Password 显隐 | 待执行 |
 | M1-5 | Tooltip 提示体系 | P1 icon-only 第二批：Calendar / FileUpload / ColorPicker / DatePicker / Image / Alert·Message | 待执行 |
 | M1-6 | Tooltip 提示体系 | P1 overflow 面 + 截断前提：DataTable / Tag / Breadcrumb / Menu（源码与测试，文档见 M1-8） | 待执行 |

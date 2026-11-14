@@ -13,7 +13,7 @@
 | M1-1 | `eslint` 10 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-1-eslint-10.md)） |
 | M1-2 | `vitest` 5（+ coverage 5）升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-2-vitest-5.md)） |
 | M1-3 | `stylelint` 18 + `stylelint-config-cmyr` 1.1 同批升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-3-stylelint-18.md)） |
-| M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 待执行 |
+| M1-4 | `fontkit` 3 升级 | 依赖与工具链 | 已完成（见[记录](../design/governance/2026-11-14-phase33-m1-4-fontkit-3.md)） |
 | M2-1 | DataTable `autoResetPageIndex` 透传与文档口径 | 下游适配 | 待执行 |
 | M3-1 | ColorPicker 色板 `radiogroup` 导航增强 | 组件增强与可访问性 | 待执行 |
 | M3-2 | Select 选项 `null` / `undefined` 开发期告警 | 组件增强与可访问性 | 待执行 |

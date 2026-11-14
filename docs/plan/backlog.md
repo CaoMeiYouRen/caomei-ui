@@ -20,7 +20,6 @@
 |------|------|------|--------|
 | DataTable 滚动高度（`scrollable` / `scrollHeight`） | dependfix 迁移反馈 | **条件候选**：下游 `env-events.vue` 1 处用 `scrollable` + `scroll-height`；本仓可用容器 + CSS 承接（不构成阻塞）。触发条件：出现原生容器无法覆盖的用例（如固定表头 + 自适应高度） | 低 |
 | DataTable 全表 / 服务端全选契约（`selectAll` / `selectAllScope`） | 全选作用域收口的 follow-up ④（Phase 26 登记时拆分） | 仅在出现真实下游需求时评估；当前不新增 prop，受控全表选择由父级写 `selection` 承接 | 低 |
-| Tooltip 溢出 / 纯图标提示增强（方案 C） | [Tooltip 增强分析](../design/governance/2026-11-14-tooltip-enhancement-analysis.md) §5 / §6（2026-11-14 用户裁定：采用方案 C，进入 Backlog） | 共享 `useOverflowTooltip` + `CaomeiTooltip`：P0 高频组件内建 `tooltip` prop（Button / Toolbar / Paginator / Dialog·Drawer 关闭 / SplitButton），其余用包装组件；仅在文本溢出（`scrollWidth > clientWidth + 1`）或 icon-only 时显示。接入组件须剥离原生 `title`，否则双提示。**建议**批次 U1（Button + 截断 CSS / 视觉基线）→ U2（P0 其余）→ U3（P1 表单与数据展示，建议拆两条）→ U4（文档站 Provider / 示例 / 迁移说明），批次与前置细节以分析记录 §6 / §9 为准。**前置**：Button / Tag / DataTable / Breadcrumb / Menu 当前无截断 CSS，须先补前提样式 | 中 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -64,8 +63,6 @@
 | `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 低 |
 | `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
-| 协作测试 T3：嵌套与焦点（C6 ~ C9） | 来源：[遮罩协作调研](../design/governance/2026-11-14-overlay-collaboration-research.md) §4 / §6（2026-11-14 用户裁定：仅 P0 进当前阶段）。嵌套 Dialog / Drawer → Dialog 的命中测试与 Esc 分层、Toast 在 Dialog 之上、焦点陷阱 + portal 浮层、CDP 触摸滚动；C6 依赖「嵌套遮罩层级」评估结论 | 中 |
-| 协作测试 T4：打开态 axe（C10） | 来源同上。Dialog + Select 打开态的 `aria-hidden-focus` / `aria-dialog-name` / `aria-modal` 抽检；docs axe 矩阵需加打开态交互、规则白名单与最小适用节点下界 | 低 |
 
 ### 1.7 服务层候选（composables）
 

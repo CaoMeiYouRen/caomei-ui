@@ -54,7 +54,7 @@
 
 | 编号 | 候选 | 来源 | 说明 |
 |:---|:---|:---|:---|
-| **N1** | 嵌套遮罩层级评估 | [遮罩协作调研](./2026-11-14-overlay-collaboration-research.md) §4.1（缺陷面）；2026-11-14 裁定「单独立项评估」的载体 = [治理索引](./index.md) 该调研摘要 + [Backlog §1.6](../../plan/backlog.md) T3 行（「C6 依赖该评估结论」） | **当前无 Backlog 载体行**（仅有 T3 行内的依赖注记）——属悬空指针，须登记。评估面 = 固定档位（overlay 1000 / content 1001）vs per-instance 层级栈；影响 z-index token 语义、既有视觉基线与 a11y。只评估，不含实现 |
+| **N1** | 嵌套遮罩层级评估 | [遮罩协作调研](./2026-11-14-overlay-collaboration-research.md) §4.1（缺陷面）；2026-11-14 裁定「单独立项评估」的载体 = [治理索引](./index.md) 该调研摘要（评估时点另见 Backlog 的协作测试条目，已随登记移出） | **评估时点无 Backlog 载体行**（仅协作测试条目内的依赖注记）——属悬空指针，须登记。评估面 = 固定档位（overlay 1000 / content 1001）vs per-instance 层级栈；影响 z-index token 语义、既有视觉基线与 a11y。只评估，不含实现 |
 | **N2** | `release.yml` 周回归结论机检接入 | [1.3.0 就绪度记录](./2026-11-14-phase33-m5-1-release-readiness.md) §7「待定」+ [Phase 33 归档](./2026-11-14-phase33-archive.md) §8 第 3 条 | 当前「发布前当周周回归须为绿」靠人工执行，`verify` 链不含 `test:visual`。候选 = 发布工作流触发前查询最近一次 `regression-weekly` run 结论，非 success 即中止（需 `actions: read`）。**会改变 `release.yml` 既有语义，须用户裁定** |
 
 ## 2. 候选逐条落点

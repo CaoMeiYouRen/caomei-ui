@@ -21,6 +21,7 @@
 - **摘要不复述门禁读数**：索引摘要只写**结论 + 记录链接**，不抄 `verify` 总例数 / `docs:check` 分段计数 / `N 记录 / M 指针` 等命令输出计数（口径与三类例外见 [AI 协作规范 §9](../../standards/ai-collaboration.md)）。存量摘要按「写录时点快照」保留、不回改。
 
 ## 当前条目
+- [2026-11-14-phase34-registration.md](./2026-11-14-phase34-registration.md)：**Phase 34 登记批次**。用户裁定 D0 ① / D1 ① / D2 ① / D3 ② / D4 ① 后登记：**3 条主线 / 13 条原子条目**（Tooltip 8 / 协作测试 3 / 质量门禁 2），按粒度约束对评估期 A 主线细拆、交付面不变；候选池 27 → 24（移出 Tooltip 与协作测试 T3 / T4，N1 / N2 未入池即登记）；**本阶段不发布**。范围与验收口径的唯一载体见本记录 §1 / §2。**Review Gate**：见本记录 §6。
 - [2026-11-14-next-stage-scope-evaluation-18.md](./2026-11-14-next-stage-scope-evaluation-18.md)：**下一阶段范围评估（第十八轮）**。Phase 33 归档、`1.3.0` 发布后无进行中阶段；候选池 **27 条**逐条落点（覆盖声明见 §2），另提 2 条新候选（嵌套遮罩层级评估、`release.yml` 周回归机检）。推荐组合 **A Tooltip 提示体系（5）+ B 协作测试 T3（3）+ C 质量门禁与 a11y（2）+ D 发布收口（1）**；D0 ~ D4 待用户裁定，**未分配编号、未登记阶段**。**Review Gate**：见本记录 §6。
 - [2026-11-14-phase33-archive.md](./2026-11-14-phase33-archive.md)：**Phase 33 归档批次**。6 条主线 / 14 条原子条目全部交付并发布 `1.3.0`；提交对账、质量门、wisdom 蒸馏、载体回扫与第 37 轮门槛复核见正文；主窗口未越 warn 阈值，本轮无迁出。**Review Gate**：见本记录 §7。
 - [2026-11-14-phase33-m5-1-1.3.0-release.md](./2026-11-14-phase33-m5-1-1.3.0-release.md)：**Phase 33 M5-1 / 1.3.0 发布与运行时验收**。`latest = 1.3.0`、`v1.3.0` tag 与 GitHub Release 到位，tarball / `exports` / README 版本句 / 里程碑段校验通过；发布过程一次主动取消（Mergify 合并移动 HEAD）与一次 `prepareCmd` 失败（roadmap 版本句与日期同句）见记录 §6。**Review Gate**：见本记录 §8。

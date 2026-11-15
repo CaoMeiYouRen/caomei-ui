@@ -85,6 +85,7 @@ import {
     CaomeiTag,
     CaomeiTagsInput,
     CaomeiTextarea,
+    CaomeiTimePicker,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -312,6 +313,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiTag', root: CaomeiTag, definition: { components: { CaomeiTag }, template: '<CaomeiTag>标签</CaomeiTag>' } },
     { name: 'CaomeiTagsInput', root: CaomeiTagsInput, definition: { components: { CaomeiTagsInput }, template: '<CaomeiTagsInput label="标签" :model-value="tags" />', setup: () => ({ tags: ['React'] }) } },
     { name: 'CaomeiTextarea', root: CaomeiTextarea, definition: { components: { CaomeiTextarea }, template: '<CaomeiTextarea label="备注" placeholder="备注" />' } },
+    { name: 'CaomeiTimePicker', root: CaomeiTimePicker, definition: { components: { CaomeiTimePicker }, template: '<CaomeiTimePicker label="时间" :model-value="time" />', setup: () => ({ time: new Date(2026, 0, 1, 9, 30, 0) }) } },
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
@@ -399,4 +401,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 63
+export const A11Y_FIXTURE_BUDGET = 64

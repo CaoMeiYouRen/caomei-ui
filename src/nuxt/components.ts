@@ -95,6 +95,7 @@ export const caomeiComponents = [
     'CaomeiTag',
     'CaomeiTagsInput',
     'CaomeiTextarea',
+    'CaomeiTimePicker',
     'CaomeiToastProvider',
     'CaomeiToggleButton',
     'CaomeiToolbar',

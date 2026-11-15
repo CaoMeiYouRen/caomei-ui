@@ -69,6 +69,7 @@ import {
     CaomeiTabContent,
     CaomeiTag,
     CaomeiTextarea,
+    CaomeiTimePicker,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -269,6 +270,9 @@ const collabClickCount = ref(0)
 
 /** 色板键盘 / 选中态样式用例（见 `test/e2e/color-picker-swatches.e2e.ts`）。 */
 const swatchPickerValue = ref('#e63946')
+
+/** TimePicker 用例（供后续时间选择 E2E 使用）：受控值同时回显，便于断言 v-model。 */
+const timePickerValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
 
 /*
@@ -2411,7 +2415,7 @@ const ConfirmDriver = defineComponent({
             />
         </section>
         <!--
-          BackTop（供 M5-4 的 `test/e2e/back-top.e2e.ts` 使用）：元素目标 + 独立滚动容器，
+          BackTop（供后续 E2E 使用）：元素目标 + 独立滚动容器，
           用于验证默认定位、层级与回顶行为。
         -->
         <section id="back-top" class="fixture__case">
@@ -2426,6 +2430,24 @@ const ConfirmDriver = defineComponent({
                 target="#back-top-scroller"
                 :threshold="50"
             />
+        </section>
+        <!--
+          TimePicker（供后续时间选择 E2E 使用）：键盘编辑、12 / 24 小时制与 v-model 回显。
+        -->
+        <section id="time-picker" class="fixture__case">
+            <CaomeiTimePicker
+                id="time-picker-default"
+                v-model="timePickerValue"
+                label="时间"
+                show-seconds
+            />
+            <CaomeiTimePicker
+                id="time-picker-12"
+                :model-value="timePickerValue"
+                label="时间（12 小时制）"
+                hour-format="12"
+            />
+            <span id="time-picker-value">{{ timePickerValue?.toTimeString() }}</span>
         </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">

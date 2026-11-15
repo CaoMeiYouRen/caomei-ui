@@ -28,7 +28,7 @@
 | M4-1 | DataTable 数据面 | `scrollable` / `scrollHeight`：固定表头 + 自适应高度容器 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m4-1-data-table-scroll.md)） |
 | M4-2 | DataTable 数据面 | 全选作用域契约 `selectAllScope`（默认 `page`，保持现状） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m4-2-select-all-scope.md)） |
 | M5-1 | 长尾组件 | BackTop 实现、导出与自动导入（含行为单测） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-1-back-top.md)） |
-| M5-2 | 长尾组件 | TimePicker 实现、导出与自动导入（含行为单测） | 待执行 |
+| M5-2 | 长尾组件 | TimePicker 实现、导出与自动导入（含行为单测） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-2-time-picker.md)） |
 | M5-3 | 长尾组件 | 两组件 10 语 locale 键与台账 / 键集合守卫 | 待执行 |
 | M5-4 | 长尾组件 | BackTop 中英文档、示例、目录 / 画廊登记、E2E 与基线 | 待执行 |
 | M5-5 | 长尾组件 | TimePicker 中英文档、示例、E2E 与基线 | 待执行 |

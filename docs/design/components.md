@@ -87,7 +87,7 @@
 | Form / FormItem | 自建（组合层） | 无 | — | 表单布局与提交编排；`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-*` / `invalid`，不含 rules 引擎（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
-| Tooltip | 封装（+ 一次性 Provider） | Tooltip | 稳定 | 悬停 / 聚焦即显的只读提示；不构成焦点陷阱，描述经隐藏 `role="tooltip"` 元素接线（**已实现**） |
+| Tooltip | 封装（+ 一次性 Provider） | Tooltip | 稳定 | 悬停 / 聚焦即显的只读提示；不构成焦点陷阱，描述经隐藏 `role="tooltip"` 元素接线；库内图标触发器与长文本面内建提示（Button 需 `tooltip` 开启，其余默认开启）（**已实现**） |
 | Menu | 自建（disclosure 导航 + Reka `Collapsible`） | Collapsible（子菜单展开） | 稳定 | 导航菜单（含 `SubMenu` / `MenuItem` 子件）：方向键序列、子菜单就地展开、`aria-current` 标记当前项（**已实现**） |
 | Breadcrumb | 自建（容器 + 有序列表 + `aria-current`） | 无 | — | 层级导航（含 `BreadcrumbItem` 子件）：分隔符经 prop 定制、末级标记当前页（**已实现**） |
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |

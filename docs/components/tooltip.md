@@ -17,6 +17,47 @@
     ssg="true"
 />
 
+## 组件内建提示
+
+除自建 `CaomeiTooltip` 组合外，库内「无可见文本、或文本会被截断」的触发面自带内建提示。本阶段接线时**没有为每个触发面各开一个新 prop**：Button / Toolbar / Paginator / SplitButton 沿用各自既有的 `tooltip` prop 开关，其余触发面（含长文本面）默认开启、经根部 Provider 统一关闭。提示内容默认取该触发面既有的可访问名（显式内容与原生 `title` 优先），因此提示文本与读屏名称同源、不会漂移。
+
+> 唯一的默认例外是 `CaomeiButton`：它的 `tooltip` 默认关闭（文本按钮上贸然加提示会打扰既有页面），图标按钮需显式传 `tooltip` 才启用。
+
+<demo
+    vue="../examples/tooltip/built-in.vue"
+    ssg="true"
+/>
+
+| 触发面 | 默认 | 内容来源 | 关闭方式 |
+| --- | :-: | --- | --- |
+| Button（图标 / 文本截断） | 关闭 | 显式 `tooltip` 文案 > 原生 `title` > 可访问名 / 可见文本 | 不传 `tooltip`，或传 `:tooltip="false"` |
+| Toolbar 图标按钮 / 链接 | 开启 | 显式内容 > 原生 `title` > `label` / `aria-label` | `:tooltip="false"` |
+| Paginator 首页 / 上一页 / 下一页 / 末页 | 开启 | 各按钮可访问名（不支持覆盖） | `:tooltip="false"` |
+| SplitButton 下拉按钮 | 开启 | `menuLabel`（字符串 / `{ content }` 可覆盖） | `:tooltip="false"` |
+| Dialog / Drawer 关闭按钮 | 开启 | 关闭文案（`closeLabel`） | 根部 `CaomeiTooltipProvider :disabled` |
+| Select 族清除、InputNumber 步进、Password 显隐 | 开启 | 既有可访问名 | 根部 Provider `:disabled` |
+| Calendar 上 / 下月、DatePicker / ColorPicker、Image、FileUpload、Message（含 Alert） | 开启 | 既有可访问名 | 根部 Provider `:disabled` |
+| Tag / Breadcrumb / Menu / DataTable 长文本 | 开启 | 可见文本（仅截断时显示） | 根部 Provider `:disabled` |
+
+- **只在被截断时显示**：Tag / Breadcrumb / Menu / DataTable 的文本面按 `scrollWidth > clientWidth + 1` 判定，装得下时完全静默（元素上不会出现 `aria-describedby`）。
+- **程序化聚焦不弹**：Dialog / Drawer 关闭按钮与日期 / 颜色选择器的日历导航在打开时会被自动聚焦，这两类触发面按「仅键盘 `:focus-visible`」处理，避免一打开就弹提示。
+- **键盘边界**：长文本面（Tag / Breadcrumb / Menu / DataTable）的触发器是文本盒本身、不可聚焦，提示只覆盖指针路径；读屏不受影响（截断只是视觉裁切，文本仍在 DOM 中）。
+- **数据表格的列宽**：只有 `columns[].width` 为绝对长度（`px` / `rem` / `em` / `ch` 等，小写）时单元格才单行省略；百分比会以内容盒为基准二次取百分比，`auto` / `min-content` 一类关键字与视口单位（`vh` / `vw` / `vmin` / `vmax`）都不参与截断，未设列宽时保持既有换行。可排序表头的上限未扣排序图标宽度（约 18px），声明列宽的可排序列会略宽于声明值。
+
+### 从原生 `title` 迁移
+
+接入内建提示的**按钮类**组件在提示启用时不再把原生 `title` 透传到 DOM（其值改为提示内容兜底），避免系统提示与内建提示双显。当前接管 `title` 的只有 `CaomeiButton`（`tooltip` 开启时）与 `CaomeiToolbarButton` / `CaomeiToolbarLink`（默认开启）；Paginator / SplitButton 下拉 / Dialog / Drawer 关闭按钮的内容固定取可访问名，不读取也不吞掉 `title`，长文本面（Tag / Breadcrumb / Menu / DataTable）也不处理 `title`。
+
+| 下游现状 | 迁移做法 |
+| --- | --- |
+| 想保留浏览器系统提示 | 按组件关闭内建提示：`Button` 不传 `tooltip` / 传 `:tooltip="false"`，`Toolbar` 传 `:tooltip="false"`；`title` 照旧透传 |
+| 想改用内建提示（Toolbar） | 无需改动：Toolbar 默认开启，原 `title` 文案会作为提示内容，DOM 上的 `title` 被移除 |
+| 想改用内建提示（Button） | 需要显式开启：传 `tooltip`（沿用 `title` 文案）或 `tooltip="新文案"`；不传仍是浏览器系统提示 |
+| 已有 `title`、又想换成别的提示文案 | 直接给 `tooltip="新文案"`：提示内容以它为准，`title` 仍会被移除 |
+| 想全局关闭内建提示 | 根部 `CaomeiTooltipProvider` 传 `:disabled="true"`（一次性关闭全部内建提示，含长文本面）。注意：**全局关闭不会恢复已被接管的 `title`**——这些组件既无内建提示也没有系统提示；要保留系统提示请按组件关闭 |
+
+> 原生 `title` 的系统提示延迟由浏览器决定（通常 1 秒以上）、样式不可定制、移动端基本不出现；内建提示统一走库内 token 与延迟配置。
+
 ## 弹出方向与箭头
 
 `CaomeiTooltipContent` 支持 `side`（`top` / `right` / `bottom` / `left`，默认 `top`）、`align`（`start` / `center` / `end`）与 `side-offset` / `align-offset`，并默认启用碰撞检测自动翻转（可用 `avoid-collisions="false"` 关闭）；`CaomeiTooltipArrow` 渲染指向触发器的箭头。

@@ -17,6 +17,47 @@ Placing `CaomeiTooltipProvider` once at the app root is recommended (a one-off p
     ssg="true"
 />
 
+## Built-in tooltips
+
+Beyond composing `CaomeiTooltip` yourself, every built-in trigger that has **no visible text, or text that can be truncated** carries a built-in tooltip. This phase added **no dedicated prop per trigger**: Button / Toolbar / Paginator / SplitButton reuse their existing `tooltip` prop, while the remaining triggers (long-text surfaces included) are on by default and are turned off through the root provider. Content defaults to the trigger's existing accessible name (explicit content and a native `title` win), so the hint text and the screen-reader name never drift apart.
+
+> The one exception to the default is `CaomeiButton`: its `tooltip` is off by default (adding hints to ordinary text buttons would disturb existing pages), so icon buttons must opt in explicitly.
+
+<demo
+    vue="../examples/tooltip/built-in.vue"
+    ssg="true"
+/>
+
+| Trigger | Default | Content | How to turn it off |
+| --- | :-: | --- | --- |
+| Button (icon-only / truncated text) | off | explicit `tooltip` text > native `title` > accessible name / visible text | omit `tooltip`, or pass `:tooltip="false"` |
+| Toolbar icon button / link | on | explicit content > native `title` > `label` / `aria-label` | `:tooltip="false"` |
+| Paginator first / previous / next / last | on | each button's accessible name (no override) | `:tooltip="false"` |
+| SplitButton dropdown button | on | `menuLabel` (a string / `{ content }` overrides it) | `:tooltip="false"` |
+| Dialog / Drawer close button | on | the close label (`closeLabel`) | root `CaomeiTooltipProvider :disabled` |
+| Select family clear, InputNumber steppers, Password toggle | on | the existing accessible names | root provider `:disabled` |
+| Calendar prev / next, DatePicker / ColorPicker, Image, FileUpload, Message (including Alert) | on | the existing accessible names | root provider `:disabled` |
+| Tag / Breadcrumb / Menu / DataTable long text | on | the visible text (only while truncated) | root provider `:disabled` |
+
+- **Only while truncated**: the Tag / Breadcrumb / Menu / DataTable text surfaces measure `scrollWidth > clientWidth + 1` and stay completely silent while the text fits (no `aria-describedby` on the element).
+- **Programmatic focus does not pop**: the Dialog / Drawer close button and the date / color picker navigation receive focus when the panel opens, so those triggers open only for keyboard `:focus-visible`.
+- **Keyboard boundary**: the long-text triggers (Tag / Breadcrumb / Menu / DataTable) are the text boxes themselves and are not focusable, so their tooltips are pointer-only; screen readers are unaffected because truncation is purely visual and the text stays in the DOM.
+- **Data table column width**: cells truncate only when `columns[].width` uses an absolute length (`px` / `rem` / `em` / `ch`, ……, lowercase); a percentage would be re-based against the cell content box, so it does not drive truncation, and neither do keywords such as `auto` / `min-content` or viewport units (`vh` / `vw` / `vmin` / `vmax`); columns without a width keep the existing wrapping behaviour. A sortable header's cap does not subtract the sort icon (about 18px), so a sortable column with a declared width ends up slightly wider than declared.
+
+### Migrating from the native `title`
+
+**Button-like** components with a built-in tooltip enabled no longer forward a native `title` to the DOM (its value becomes fallback tooltip content), so the browser tooltip and the built-in one never show twice. Today only `CaomeiButton` (with `tooltip` enabled) and `CaomeiToolbarButton` / `CaomeiToolbarLink` (on by default) take over `title`; the Paginator / SplitButton dropdown / Dialog / Drawer close button use fixed accessible names and neither read nor consume `title`, and the long-text surfaces (Tag / Breadcrumb / Menu / DataTable) do not handle `title` either.
+
+| Your current setup | What to do |
+| --- | --- |
+| Keep the browser's native tooltip | Turn the built-in one off per component: omit `tooltip` / pass `:tooltip="false"` on `Button`, pass `:tooltip="false"` on `Toolbar`; `title` is forwarded as before |
+| Switch to the built-in tooltip (Toolbar) | Nothing to change: Toolbar is on by default, the old `title` text becomes the tooltip content and `title` is removed from the DOM |
+| Switch to the built-in tooltip (Button) | Opt in explicitly: pass `tooltip` (reusing the `title` text) or `tooltip="new text"`; without it you keep the browser tooltip |
+| Keep `title` but show different hint text | Pass `tooltip="new text"`: it wins as the content and `title` is still removed |
+| Disable built-in tooltips globally | Pass `:disabled="true"` to the root `CaomeiTooltipProvider` (covers every built-in tooltip, long-text surfaces included). Note that a **global disable does not restore a `title` that was already taken over** — those components end up with neither hint; turn it off per component to keep the browser tooltip |
+
+> The native `title` tooltip timing is browser-defined (usually over a second), cannot be styled, and barely appears on touch devices; the built-in tooltips share the library's tokens and delay settings.
+
 ## Placement and arrow
 
 `CaomeiTooltipContent` supports `side` (`top` / `right` / `bottom` / `left`, default `top`), `align` (`start` / `center` / `end`) and `side-offset` / `align-offset`, with collision-aware auto flipping on by default (disable with `avoid-collisions="false"`); `CaomeiTooltipArrow` renders an arrow pointing at the trigger.

@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import { CaomeiConfigProvider } from '../../../src/components/config-provider'
 import { CaomeiConfirmDialog } from '../../../src/components/confirm-dialog'
 import { CaomeiToastProvider } from '../../../src/components/toast'
+import { CaomeiTooltipProvider } from '../../../src/components/tooltip'
 import type { CaomeiLocale } from '../../../src/locale'
 import ThemePresetSwitcher from './components/theme-preset-switcher.vue'
 
@@ -17,14 +18,16 @@ const locale = computed<CaomeiLocale>(() => (lang.value === 'en-US' ? 'en-US' : 
 
 <template>
     <CaomeiConfigProvider :locale="locale">
-        <CaomeiToastProvider>
-            <CaomeiConfirmDialog>
-                <Layout>
-                    <template #nav-bar-content-after>
-                        <ThemePresetSwitcher />
-                    </template>
-                </Layout>
-            </CaomeiConfirmDialog>
-        </CaomeiToastProvider>
+        <CaomeiTooltipProvider>
+            <CaomeiToastProvider>
+                <CaomeiConfirmDialog>
+                    <Layout>
+                        <template #nav-bar-content-after>
+                            <ThemePresetSwitcher />
+                        </template>
+                    </Layout>
+                </CaomeiConfirmDialog>
+            </CaomeiToastProvider>
+        </CaomeiTooltipProvider>
     </CaomeiConfigProvider>
 </template>

@@ -42,7 +42,7 @@
 - **只在被截断时显示**：Tag / Breadcrumb / Menu / DataTable 的文本面按 `scrollWidth > clientWidth + 1` 判定，装得下时完全静默（元素上不会出现 `aria-describedby`）。
 - **程序化聚焦不弹**：Dialog / Drawer 关闭按钮与日期 / 颜色选择器的日历导航在打开时会被自动聚焦，这两类触发面按「仅键盘 `:focus-visible`」处理，避免一打开就弹提示。
 - **键盘边界**：长文本面（Tag / Breadcrumb / Menu / DataTable）的触发器是文本盒本身、不可聚焦，提示只覆盖指针路径；读屏不受影响（截断只是视觉裁切，文本仍在 DOM 中）。
-- **数据表格的列宽**：只有 `columns[].width` 为绝对长度（`px` / `rem` / `em` / `ch` 等，小写）时单元格才单行省略；百分比会以内容盒为基准二次取百分比，`auto` / `min-content` 一类关键字与视口单位（`vh` / `vw` / `vmin` / `vmax`）都不参与截断，未设列宽时保持既有换行。可排序表头的上限未扣排序图标宽度（约 18px），声明列宽的可排序列会略宽于声明值。
+- **数据表格的列宽**：只有 `columns[].width` 为绝对长度（`px` / `rem` / `em` / `ch` 等，小写）时单元格才单行省略；百分比会以内容盒为基准二次取百分比，`auto` / `min-content` 一类关键字与视口单位（`vh` / `vw` / `vmin` / `vmax`）都不参与截断，未设列宽时保持既有换行。可排序表头的上限未扣排序指示器的预留宽，声明列宽的可排序列会略宽于声明值（明细见 [DataTable](./data-table.md#长文本截断与提示)）。
 
 ### 从原生 `title` 迁移
 
@@ -117,8 +117,29 @@ Provider 另有**独有**项 `skipDelayDuration`（缺省 `300`）：从一个�
 `CaomeiTooltipText` 把「元素 + 溢出提示」封装成一个盒子：内容装不下时显示提示，装得下时完全静默（元素上不会出现 `aria-describedby`）。它只负责接线与可测量的盒子，**是否截断由使用方决定**——须自行声明 `white-space: nowrap` + 定宽 / `max-width` + `overflow: hidden` + `text-overflow: ellipsis`。
 
 ```vue
-<CaomeiTooltipText class="cell" :content="fullText">{{ fullText }}</CaomeiTooltipText>
+<template>
+    <div class="cell">
+        <CaomeiTooltipText mode="auto">
+            {{ fullText }}
+        </CaomeiTooltipText>
+    </div>
+</template>
+
+<style scoped>
+.cell {
+    max-width: 12rem;
+}
+
+/* 提示包装经多层组件渲染，使用方的 scope id 到不了内层 span，截断样式要用 :deep() */
+.cell :deep(.caomei-tooltip-text) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>
 ```
+
+> **覆盖 `display` 时须保留可测量盒**：溢出判据读的是 `scrollWidth` / `clientWidth`，而这两个读数对 `display: inline` 的非替换元素恒为 0。把默认的 `inline-block` 改成 `inline` / `contents` 会让检测永久失效（真实浏览器里提示永不出现，happy-dom 单测因读数被桩替换也发现不了）。组件内的默认形态用 `:where()` 归零特异性，`display` / `box-sizing` / `max-width` / `min-width` 都是可覆盖的常规声明——覆盖时请保留一个可测量的盒子（`block` / `inline-block` / flex 或 grid 子项）。
 
 - `mode`（默认 `auto`）：`auto` 仅在溢出时显示；`always` 始终显示；
 - `content` 缺省时取元素的可见文本；

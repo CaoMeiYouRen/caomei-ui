@@ -42,7 +42,7 @@ Beyond composing `CaomeiTooltip` yourself, every built-in trigger that has **no 
 - **Only while truncated**: the Tag / Breadcrumb / Menu / DataTable text surfaces measure `scrollWidth > clientWidth + 1` and stay completely silent while the text fits (no `aria-describedby` on the element).
 - **Programmatic focus does not pop**: the Dialog / Drawer close button and the date / color picker navigation receive focus when the panel opens, so those triggers open only for keyboard `:focus-visible`.
 - **Keyboard boundary**: the long-text triggers (Tag / Breadcrumb / Menu / DataTable) are the text boxes themselves and are not focusable, so their tooltips are pointer-only; screen readers are unaffected because truncation is purely visual and the text stays in the DOM.
-- **Data table column width**: cells truncate only when `columns[].width` uses an absolute length (`px` / `rem` / `em` / `ch`, ……, lowercase); a percentage would be re-based against the cell content box, so it does not drive truncation, and neither do keywords such as `auto` / `min-content` or viewport units (`vh` / `vw` / `vmin` / `vmax`); columns without a width keep the existing wrapping behaviour. A sortable header's cap does not subtract the sort icon (about 18px), so a sortable column with a declared width ends up slightly wider than declared.
+- **Data table column width**: cells truncate only when `columns[].width` uses an absolute length (`px` / `rem` / `em` / `ch`, ……, lowercase); a percentage would be re-based against the cell content box, so it does not drive truncation, and neither do keywords such as `auto` / `min-content` or viewport units (`vh` / `vw` / `vmin` / `vmax`); columns without a width keep the existing wrapping behaviour. A sortable header's cap does not subtract the space reserved for the sort indicator, so a sortable column with a declared width ends up slightly wider than declared (details in [DataTable](./data-table.md#truncation-and-tooltip)).
 
 ### Migrating from the native `title`
 
@@ -117,8 +117,29 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 `CaomeiTooltipText` wraps "an element plus an overflow tooltip" into one box: the tooltip appears only when the content does not fit, and stays completely silent otherwise (no `aria-describedby` on the element). It only provides the wiring and a measurable box — **truncation is up to the consumer**: declare `white-space: nowrap` plus a fixed width / `max-width` and `overflow: hidden` + `text-overflow: ellipsis` yourself.
 
 ```vue
-<CaomeiTooltipText class="cell" :content="fullText">{{ fullText }}</CaomeiTooltipText>
+<template>
+    <div class="cell">
+        <CaomeiTooltipText mode="auto">
+            {{ fullText }}
+        </CaomeiTooltipText>
+    </div>
+</template>
+
+<style scoped>
+.cell {
+    max-width: 12rem;
+}
+
+/* The tooltip wrapper renders through several components, so the consumer's scope id never reaches the inner span — use :deep() for the truncation styles. */
+.cell :deep(.caomei-tooltip-text) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+</style>
 ```
+
+> **Keep a measurable box when you override `display`**: the overflow check reads `scrollWidth` / `clientWidth`, and both are always 0 for non-replaced `display: inline` elements. Switching the default `inline-block` to `inline` / `contents` silently disables detection (the tooltip never appears in a real browser, and the happy-dom unit tests cannot see it because the readings are stubbed). The component's default box is declared through `:where()`, so `display` / `box-sizing` / `max-width` / `min-width` are ordinary overridable declarations — just keep a measurable box (`block` / `inline-block`, or a flex / grid item) when you override them.
 
 - `mode` (default `auto`): `auto` shows the tooltip only when overflowing; `always` shows it unconditionally;
 - `content` defaults to the element's visible text;

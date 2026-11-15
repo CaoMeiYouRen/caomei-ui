@@ -84,6 +84,8 @@ import {
     CaomeiSubMenu,
     useConfirm,
 } from '@/index'
+import CollabNestedDriver from './collab-nested-driver.vue'
+import CollabToastDriver from './collab-toast-driver.vue'
 import ToastContrastDriver from './toast-contrast-driver.vue'
 
 /*
@@ -2283,6 +2285,21 @@ const ConfirmDriver = defineComponent({
             >
                 <p>叠加抽屉内容</p>
             </CaomeiDrawer>
+        </section>
+        <!--
+          Toast × Dialog 层叠协作（见 test/e2e/overlay-collaboration.e2e.ts 的 C7）：
+          provider 必须包住驱动组件，驱动内部的提示触发键位于对话框内（模态下页面其余部分不可点）。
+        -->
+        <section id="collab-toast" class="fixture__case">
+            <CaomeiToastProvider>
+                <CollabToastDriver />
+            </CaomeiToastProvider>
+        </section>
+        <!-- 嵌套遮罩协作（见 test/e2e/overlay-collaboration.e2e.ts 的 C6）：Dialog → 二次确认、Drawer → Dialog -->
+        <section id="collab-nested" class="fixture__case">
+            <CaomeiConfirmDialog>
+                <CollabNestedDriver />
+            </CaomeiConfirmDialog>
         </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { CaomeiTooltipText } from '../tooltip'
 import type { MenuItemProps } from './types'
 
 defineOptions({ name: 'CaomeiMenuItem' })
@@ -37,7 +38,12 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
             :aria-disabled="ariaDisabled"
             :aria-current="ariaCurrent"
         >
-            <slot />
+            <CaomeiTooltipText
+                class="caomei-menu__item-text"
+                mode="auto"
+            >
+                <slot />
+            </CaomeiTooltipText>
         </a>
         <button
             v-else
@@ -48,7 +54,12 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
             :aria-disabled="ariaDisabled"
             :aria-current="ariaCurrent"
         >
-            <slot />
+            <CaomeiTooltipText
+                class="caomei-menu__item-text"
+                mode="auto"
+            >
+                <slot />
+            </CaomeiTooltipText>
         </button>
     </li>
 </template>

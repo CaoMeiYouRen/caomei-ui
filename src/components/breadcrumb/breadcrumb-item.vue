@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, inject } from 'vue'
+import { CaomeiTooltipText } from '../tooltip'
 import { caomeiBreadcrumbContextKey } from './context'
 import type { BreadcrumbItemProps } from './types'
 
@@ -32,14 +33,24 @@ const separator = computed(() => context?.separator.value ?? '/')
             :href="href"
             :aria-current="current ? 'page' : undefined"
         >
-            <slot />
+            <CaomeiTooltipText
+                class="caomei-breadcrumb__label"
+                mode="auto"
+            >
+                <slot />
+            </CaomeiTooltipText>
         </a>
         <span
             v-else
             class="caomei-breadcrumb__text"
             :aria-current="current ? 'page' : undefined"
         >
-            <slot />
+            <CaomeiTooltipText
+                class="caomei-breadcrumb__label"
+                mode="auto"
+            >
+                <slot />
+            </CaomeiTooltipText>
         </span>
     </li>
 </template>
@@ -72,6 +83,41 @@ const separator = computed(() => context?.separator.value ?? '/')
     border-radius: var(--caomei-radius-sm);
     color: inherit;
     text-decoration: none;
+}
+
+/*
+  截断前提：项宽超过容器时单行省略（`flex-wrap` 下每行仍会把超宽项压到容器宽度）。
+  `min-width: 0` 允许链接 / 文本作为 flex 子项收缩，`overflow: hidden` 把内层最小内容宽归零，
+  否则 `min-content` 恒等于整段文本、省略号永不出现。上限可经
+  `--caomei-breadcrumb-label-max-width` 收紧到固定值。
+*/
+.caomei-breadcrumb__item {
+    max-width: 100%;
+}
+
+.caomei-breadcrumb__link,
+.caomei-breadcrumb__text {
+    min-width: 0;
+}
+
+/*
+  提示包装经多层组件渲染，父级 scope id 到不了内层 span，故用 `:deep()` 落到实际元素。
+  `position: relative` + `z-index: 1` 让文本盒绘制在链接的不可见命中区（`.caomei-hit-target::after`）
+  之上：否则悬停链接中部时事件落在该伪元素上，提示触发器收不到 `pointermove`，长链接中段会「悬停无反应」。
+  点击仍会冒泡到链接，命中区语义不受影响。
+*/
+.caomei-breadcrumb__item :deep(.caomei-breadcrumb__label) {
+    position: relative;
+    z-index: var(--caomei-z-raise);
+
+    /* 块级而非行内块：`overflow: hidden` 的行内块基线取盒子底边，会把行盒抬高约 3px，
+       链接视觉盒从 18px 变 21px（P2 命中区「宿主短边 < 18px」断言因此失败）。
+       块级盒高度与行高一致，链接保持原高度。 */
+    display: block;
+    max-width: var(--caomei-breadcrumb-label-max-width, 100%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 :where([data-motion='expressive']) .caomei-breadcrumb__link {

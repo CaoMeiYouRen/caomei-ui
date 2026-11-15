@@ -2,6 +2,7 @@
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui'
 import { computed, ref } from 'vue'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { CaomeiTooltipText } from '../tooltip'
 import type { SubMenuProps } from './types'
 
 defineOptions({ name: 'CaomeiSubMenu' })
@@ -67,9 +68,14 @@ function setOpen(value: boolean): void {
             data-caomei-menu-target
             data-caomei-submenu-trigger
         >
-            <slot name="label">
-                {{ label }}
-            </slot>
+            <CaomeiTooltipText
+                class="caomei-menu__item-text"
+                mode="auto"
+            >
+                <slot name="label">
+                    {{ label }}
+                </slot>
+            </CaomeiTooltipText>
             <CaomeiIcon
                 class="caomei-menu__submenu-indicator"
                 :icon="icons.chevronRight"

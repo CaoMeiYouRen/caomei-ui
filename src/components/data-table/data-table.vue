@@ -1,11 +1,12 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
-import { computed, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
+import { computed, h, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { useInternalIcons } from '../../icons'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
+import { CaomeiTooltipText } from '../tooltip'
 import { dataTableFeatures } from './table-features'
 import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent, DataTableSortMeta } from './types'
 
@@ -137,7 +138,12 @@ function getByPath(row: T, path: string): unknown {
 const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
     props.columns.map((column) => ({
         id: column.key,
-        header: column.header ?? column.key,
+        // 表头文本统一走提示包装：仅当列宽是绝对长度时才单行省略（见 `truncateWidth`）
+        header: (): VNodeChild => h(CaomeiTooltipText, {
+            class: textClass(column.key),
+            style: textStyle(column.key),
+            mode: 'auto',
+        }, () => column.header ?? column.key),
         enableSorting: Boolean(column.sortable),
         sortFn: column.sortable ? (column.sortFn ?? 'alphanumeric') : undefined,
         accessorFn: (row: T): unknown => {
@@ -157,7 +163,15 @@ const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
             const value = info.getValue()
             // 默认插槽按 JS 默认字符串化输出（对象 → [object Object]），此为既有对外行为
             // eslint-disable-next-line @typescript-eslint/no-base-to-string
-            return value === null || value === undefined ? '' : String(value)
+            const text = value === null || value === undefined ? '' : String(value)
+            // 默认文本包一层提示接线：列宽受限时单行省略，被截断时悬停显示全文
+            return text
+                ? h(CaomeiTooltipText, {
+                        class: textClass(column.key),
+                        style: textStyle(column.key),
+                        mode: 'auto',
+                    }, () => text)
+                : ''
         },
     })),
 )
@@ -624,6 +638,40 @@ function pinnedStyle(key: string): CSSProperties | undefined {
     return { right: `${offset}px` }
 }
 
+/**
+ * 只有绝对长度的列宽才驱动截断。
+ *
+ * 百分比在单元格内容盒里会**二次取基准**（`width: '20%'` 的列，`max-width: 20%` 相对内容盒只有 20%×20%），
+ * 短文本也会被截成省略号并弹出提示；`auto` / `min-content` 一类关键字在 `max-width` 上无意义。
+ * 故只接受绝对长度，其余形态退回「不截断、按内容换行」的既有行为。
+ */
+const ABSOLUTE_LENGTH = /^\d+(?:\.\d+)?(?:px|rem|em|ch|ex|cm|mm|in|pt|pc)$/
+
+function truncateWidth(key: string): string | undefined {
+    const width = columnMap.value.get(key)?.width?.trim()
+    return width && ABSOLUTE_LENGTH.test(width) ? width : undefined
+}
+
+/** 文本盒的类名：带列宽上限的列才加截断配方，避免把默认单元格静默改成单行 */
+function textClass(key: string): string {
+    return truncateWidth(key)
+        ? 'caomei-data-table__text caomei-data-table__text--truncate'
+        : 'caomei-data-table__text'
+}
+
+/**
+ * 列宽上限：减掉单元格的左右内边距，否则 `table-layout: auto` 的列会被撑到「声明宽度 + 内边距」。
+ * `table-layout: auto` 的列最小宽度取单元格内容的最小内容宽，文本盒带上限后该列才会真正收窄。
+ */
+function textStyle(key: string): CSSProperties | undefined {
+    const width = truncateWidth(key)
+    if (!width) {
+        return undefined
+    }
+    // `max(1ch, …)` 兜底：列宽小于左右内边距之和时 `calc` 结果为负，否则会被钳到 `max-width: 0`，文本整体不可见
+    return { maxWidth: `max(1ch, calc(${width} - 2 * var(--caomei-data-table-cell-padding-inline, var(--caomei-space-3))))` }
+}
+
 function columnStyle(key: string): CSSProperties | undefined {
     const def = columnMap.value.get(key)
     const pinned = pinnedStyle(key)
@@ -885,7 +933,14 @@ function setPageSize(rows: number): void {
                                     :name="`header-${header.column.id}`"
                                     :column="columnDef(header.column.id)"
                                 />
-                                <span v-else>{{ headerTitle(header.column.id) }}</span>
+                                <CaomeiTooltipText
+                                    v-else
+                                    :class="textClass(header.column.id)"
+                                    :style="textStyle(header.column.id)"
+                                    mode="auto"
+                                >
+                                    {{ headerTitle(header.column.id) }}
+                                </CaomeiTooltipText>
                                 <component
                                     :is="icons.chevronUp"
                                     v-if="sortState(header.column.id) !== 'desc'"
@@ -1121,6 +1176,20 @@ function setPageSize(rows: number): void {
     background: var(--caomei-data-table-head-bg, var(--caomei-color-bg-elevated));
     color: var(--caomei-color-text);
     font-weight: 600;
+    white-space: nowrap;
+}
+
+/*
+  截断前提（表头 / 单元格默认文本）：**只有带绝对长度列宽的列**才加此配方（`textClass`），
+  上限由 `textStyle` 逐列下发。`overflow: hidden` 把文本的最小内容宽归零——否则
+  `table-layout: auto` 会按整段文本分配列宽，表格只会横向撑开、省略号与提示永不出现。
+  未设列宽的列保持既有换行行为；自定义 `cell` / `#cell-*` / `#header-*` 插槽不包裹。
+
+  提示包装经多层组件渲染，父级 scope id 到不了内层 span，故用 `:deep()` 落到实际元素。
+*/
+:deep(.caomei-data-table__text--truncate) {
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

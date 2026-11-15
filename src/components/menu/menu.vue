@@ -218,6 +218,26 @@ function handleKeydown(event: KeyboardEvent): void {
     transition: background-color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard), color var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
+/*
+  截断前提：项宽固定为菜单宽度（`width: 100%`），标签文本作为 flex 子项可被压缩。
+  `min-width: 0` 允许收缩，`overflow: hidden` 把内层最小内容宽归零——否则 `min-content`
+  恒等于整段文本，省略号永不出现、溢出检测也不会成立。
+  上限可经 `--caomei-menu-item-label-max-width` 从 `100%` 收紧。
+*/
+.caomei-menu .caomei-menu__item-text {
+    min-width: 0;
+    max-width: var(--caomei-menu-item-label-max-width, 100%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/*
+  已知可见变更：插槽内容被整体包进上面的文本盒，项级 `gap` 不再作用于「图标 + 文本」之间
+  （间距退回模板空白）；多节点内容在截断时按盒裁切。项页须写明「截断针对整段插槽文本」，
+  需要图标与文本各自成项时评估新增 `icon` 出口（见批次记录遗留）。
+*/
+
 .caomei-menu .caomei-menu__item:hover:not([aria-disabled='true'], [aria-current]) {
     background: var(--caomei-menu-item-hover-bg, var(--caomei-color-bg-elevated));
 

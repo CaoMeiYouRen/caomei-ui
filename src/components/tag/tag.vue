@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { CaomeiTooltipText } from '../tooltip'
 import type { TagProps } from './types'
 
 defineOptions({ name: 'CaomeiTag' })
@@ -74,7 +75,12 @@ function onToggle(): void {
             <slot name="icon" />
         </span>
         <span class="caomei-tag__content">
-            <slot />
+            <CaomeiTooltipText
+                class="caomei-tag__label"
+                mode="auto"
+            >
+                <slot />
+            </CaomeiTooltipText>
         </span>
         <button
             v-if="closable"
@@ -93,6 +99,7 @@ function onToggle(): void {
 .caomei-tag {
     box-sizing: border-box;
     display: inline-flex;
+    max-width: 100%;
     align-items: center;
     gap: var(--caomei-space-1);
     height: var(--caomei-tag-height, var(--caomei-control-height-md));
@@ -184,6 +191,24 @@ function onToggle(): void {
 .caomei-tag__close {
     display: inline-flex;
     align-items: center;
+}
+
+/*
+  截断前提：标签可被父容器压缩，内容超宽时单行省略。
+  `overflow: hidden` 同时把内层的 `min-content` 归零——否则 `inline-flex` 的最小内容宽
+  会等于整段文本，标签仍会按内容撑开、省略号永不出现（溢出检测亦无从成立）。
+  宽度上限可经 `--caomei-tag-label-max-width` 收紧到固定值。
+*/
+.caomei-tag__content {
+    min-width: 0;
+}
+
+/* 提示包装经多层组件渲染，父级 scope id 到不了内层 span，故用 `:deep()` 落到实际元素 */
+.caomei-tag__content :deep(.caomei-tag__label) {
+    max-width: var(--caomei-tag-label-max-width, 100%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .caomei-tag__close {

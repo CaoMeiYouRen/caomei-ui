@@ -2,23 +2,28 @@ import { describe, expect, it } from 'vitest'
 import {
     DEFAULT_PORT,
     DEFAULT_RULES,
+    OPEN_STATE_RULES,
     PAGES,
     evaluateOutcome,
     formatReport,
+    openSurface,
+    pageRules,
     parseOptions,
     resolveReportPath,
     selectPages,
     splitList,
+    validatePages,
     waitForServer,
 } from './check-docs-axe.mjs'
 
 const minimalPage = PAGES.find((page) => page.key === 'select-zh')
 
 describe('check-docs-axe 参数解析', () => {
-    it('缺省取全矩阵与两条 WCAG 规则', () => {
+    it('缺省取全矩阵且不收窄规则面', () => {
         const options = parseOptions(['node', 'check-docs-axe.mjs'])
         expect(options.pages).toEqual(PAGES)
-        expect(options.rules).toEqual(DEFAULT_RULES)
+        // null = 未显式收窄：各页跑「默认 ∪ 页面登记」的全集（收窄会把打开态规则一并剪掉）
+        expect(options.rules).toBeNull()
         expect(options.port).toBe(DEFAULT_PORT)
         expect(options.baseUrl).toBeNull()
         expect(options.report).toBeNull()
@@ -27,6 +32,7 @@ describe('check-docs-axe 参数解析', () => {
     it('--pages 支持 key 与站点路径，且保持矩阵顺序', () => {
         expect(selectPages(['showcase-zh', '/components/select'])).toEqual([
             PAGES.find((page) => page.key === 'select-zh'),
+            PAGES.find((page) => page.key === 'select-open-zh'),
             PAGES.find((page) => page.key === 'showcase-zh'),
         ])
     })
@@ -168,10 +174,165 @@ describe('check-docs-axe 报告', () => {
                 },
             ],
         })
-        expect(report).toContain('规则面：button-name')
+        expect(report).toContain('规则面（本轮）：button-name')
+        // 未收窄时表头须覆盖各页实际规则面（默认 ∪ 打开态），否则控制台会低估受检面
+        expect(formatReport({ rules: null, entries: [] })).toContain('aria-allowed-attr')
         expect(report).toContain(`${minimalPage.path} → OK`)
         expect(report).toContain('/components/showcase → FAIL（1）')
         expect(report).toContain('规则节点：button-name：通过 0 / 违规 1 / 待复核 0')
         expect(report).toContain('button-name（critical）：button.select')
+    })
+})
+
+describe('check-docs-axe 打开态', () => {
+    const dialogPage = PAGES.find((page) => page.key === 'dialog-open')
+    const selectOpenPage = PAGES.find((page) => page.key === 'select-open-zh')
+
+    it('页面规则面 = 默认 ∪ 页面登记，`--rules` 收窄时取交集', () => {
+        expect(pageRules(dialogPage)).toEqual([...DEFAULT_RULES, ...OPEN_STATE_RULES])
+        expect(pageRules(dialogPage, ['aria-dialog-name'])).toEqual(['aria-dialog-name'])
+        expect(pageRules(PAGES.find((page) => page.key === 'data-table'))).toEqual(DEFAULT_RULES)
+    })
+
+    it('打开态页面登记了 interact，闭合页面没有', () => {
+        expect(dialogPage.interact?.open).toBe('.caomei-dialog__content')
+        expect(selectOpenPage.interact?.open).toBe('.caomei-select__content')
+        expect(PAGES.find((page) => page.key === 'select-zh').interact).toBeUndefined()
+    })
+
+    it('Select 打开态有意排除 aria-hidden-focus（既有缺口登记为 F18，不静默放宽）', () => {
+        expect(selectOpenPage.rules).not.toContain('aria-hidden-focus')
+        expect(dialogPage.rules).toContain('aria-hidden-focus')
+    })
+
+    it('矩阵自检拒绝缺 open 的 interact', () => {
+        expect(() => validatePages([{ key: 'x', path: '/x', ready: '.x', minSubjects: 1, interact: { trigger: '.x' } }]))
+            .toThrow(/必须同时给出 trigger 与 open/)
+    })
+
+    it('矩阵自检拒绝「登记规则但没有 interact」的页面', () => {
+        expect(() => validatePages([{ key: 'x', path: '/x', ready: '.x', minSubjects: 1, rules: ['aria-dialog-name'] }]))
+            .toThrow(/没有 interact/)
+    })
+
+    it('矩阵自检拒绝重复 key，但允许同一路径的闭合态与打开态并存', () => {
+        expect(() => validatePages([dialogPage, { ...dialogPage }])).toThrow(/key 重复/)
+        expect(() => validatePages([PAGES[1], PAGES.find((page) => page.key === 'select-open-zh')])).not.toThrow()
+        expect(validatePages()).toBeUndefined()
+    })
+
+    it('打开态建立成功时静默返回', async () => {
+        const clicked = []
+        await openSurface({
+            locator: (selector) => ({ first: () => ({ click: async () => clicked.push(selector) }) }),
+            waitForSelector: async () => undefined,
+            waitForTimeout: async () => undefined,
+        }, dialogPage)
+        expect(clicked).toEqual([dialogPage.interact.trigger])
+    })
+
+    it('打开态未出现时 fail-closed 并点名页面与选择器', async () => {
+        await expect(openSurface({
+            locator: () => ({ first: () => ({ click: async () => undefined }) }),
+            waitForSelector: async () => {
+                throw new Error('timeout')
+            },
+            waitForTimeout: async () => undefined,
+        }, dialogPage)).rejects.toThrow(/打开态未建立.*caomei-dialog__content/)
+    })
+
+    it('打开态规则的适用节点低于下界即失败', () => {
+        const outcome = evaluateOutcome([
+            {
+                page: dialogPage,
+                subjects: dialogPage.minSubjects,
+                violations: [],
+                passes: { 'button-name': 3, 'aria-allowed-attr': 1, 'aria-dialog-name': 0 },
+            },
+        ])
+        expect(outcome.ok).toBe(false)
+        expect(outcome.failures[0]).toContain('aria-dialog-name')
+    })
+
+    it('`--rules` 未覆盖打开态规则时跳过其下界（未跑不判定）', () => {
+        const outcome = evaluateOutcome(
+            [{ page: dialogPage, subjects: dialogPage.minSubjects, violations: [], passes: { 'button-name': 3 } }],
+            ['button-name'],
+        )
+        expect(outcome.ok).toBe(true)
+    })
+
+    it('打开态建立时校验「可见」与超时上限（不只等元素挂载）', async () => {
+        const calls = []
+        await openSurface({
+            locator: () => ({ first: () => ({ click: async () => undefined }) }),
+            waitForSelector: async (selector, options) => calls.push({ selector, options }),
+            waitForTimeout: async () => undefined,
+        }, dialogPage)
+        expect(calls).toHaveLength(1)
+        expect(calls[0].selector).toBe(dialogPage.interact.open)
+        expect(calls[0].options).toMatchObject({ state: 'visible' })
+        expect(calls[0].options.timeout).toBeGreaterThan(0)
+    })
+
+    it('点击失败也归入「打开态未建立」口径并保留原始错误', async () => {
+        await expect(openSurface({
+            locator: () => ({ first: () => ({ click: async () => {
+                throw new Error('not attached')
+            } }) }),
+            waitForSelector: async () => undefined,
+            waitForTimeout: async () => undefined,
+        }, dialogPage)).rejects.toThrow(/打开态未建立：点击 .*not attached/)
+    })
+
+    it('矩阵为空即 fail-closed（防零页零违规通过）', () => {
+        expect(() => validatePages([])).toThrow(/页面矩阵为空/)
+    })
+
+    it('path / ready 缺失或 minSubjects 非正整数即 fail-closed', () => {
+        expect(() => validatePages([{ key: 'x', path: '', ready: '.x', minSubjects: 1 }]))
+            .toThrow(/缺少 path/)
+        expect(() => validatePages([{ key: 'x', path: '/x', ready: '', minSubjects: 1 }]))
+            .toThrow(/缺少 ready/)
+        expect(() => validatePages([{ key: 'x', path: '/x', ready: '.x', minSubjects: 0 }]))
+            .toThrow(/minSubjects 必须为正整数/)
+    })
+
+    it('rules 含未登记规则 id 即 fail-closed（axe 对未知 id 静默忽略）', () => {
+        expect(() => validatePages([
+            { key: 'x', path: '/x', ready: '.x', minSubjects: 1, rules: ['aria-dialog-nam'], interact: { trigger: '.t', open: '.o' } },
+        ])).toThrow(/含未登记规则/)
+    })
+
+    it('minApplies 的值必须是正整数', () => {
+        expect(() => validatePages([
+            { key: 'x', path: '/x', ready: '.x', minSubjects: 1, minApplies: { 'button-name': 0 } },
+        ])).toThrow(/必须为正整数/)
+    })
+
+    it('minApplies 登记了本页不跑的规则即 fail-closed', () => {
+        expect(() => validatePages([
+            { key: 'x', path: '/x', ready: '.x', minSubjects: 1, minApplies: { 'aria-dialog-name': 1 } },
+        ])).toThrow(/minApplies 登记了本页不跑的规则：aria-dialog-name/)
+    })
+
+    it('页级规则面被 `--rules` 收成空集即 fail-closed', () => {
+        expect(() => pageRules(PAGES.find((page) => page.key === 'data-table'), ['aria-dialog-name']))
+            .toThrow(/规则面为空/)
+    })
+
+    it('报告标出打开态与待复核计入适用节点', () => {
+        const report = formatReport({
+            rules: null,
+            entries: [{
+                page: dialogPage,
+                subjects: dialogPage.minSubjects,
+                violations: [],
+                passes: { 'button-name': 3, 'aria-dialog-name': 1 },
+                incomplete: { 'aria-hidden-focus': 1 },
+            }],
+        })
+        expect(report).toContain('打开态已建立（打开对话框）')
+        expect(report).toContain('aria-hidden-focus：通过 0 / 违规 0 / 待复核 1')
     })
 })

@@ -30,6 +30,8 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     lazy: false,
     page: undefined,
     autoResetPageIndex: undefined,
+    scrollable: false,
+    scrollHeight: undefined,
 })
 
 const emit = defineEmits<{
@@ -589,7 +591,63 @@ const rootClass = computed(() => ({
     'caomei-data-table--hoverable': props.hoverable,
     'caomei-data-table--striped': props.striped,
     'caomei-data-table--loading': props.loading,
+    'caomei-data-table--scrollable': props.scrollable,
 }))
+
+/** 长度表达式：`calc()` / `min()` / `max()` / `clamp()` / `var()` 交给浏览器解析。 */
+const CSS_LENGTH_FUNCTION_PATTERN = /^(?:calc|min|max|clamp|var)\(/u
+/** 单个长度值：可选符号 + 数字 + 可选单位。 */
+const CSS_LENGTH_VALUE_PATTERN = /^([+-]?(?:\d*\.?\d+))([a-z%]*)$/u
+/** 可用于 `max-height` 的长度单位（含视口动态单位与容器查询单位）。 */
+const CSS_LENGTH_UNITS = new Set([
+    '', 'px', 'rem', 'em', 'vh', 'vw', 'vmin', 'vmax', '%', 'ch', 'ex', 'cm', 'mm', 'in', 'pt', 'pc',
+    'dvh', 'dvw', 'dvmin', 'dvmax', 'svh', 'svw', 'svmin', 'svmax', 'lvh', 'lvw', 'lvmin', 'lvmax',
+    'lh', 'rlh', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax',
+])
+
+/**
+ * 滚动容器的限高：数字按 `px` 归一化（`scrollHeight` 取 `number` 时不能直接进样式），
+ * 字符串按 CSS 长度解析。
+ *
+ * 数字与字符串走同一套回落：空值 / 非正数 / 非有限值不生成限高（`max-height: 0` 会把表体压没），
+ * 无法解析为 CSS 长度的字符串同样不生成并在开发期告警，避免「写了但浏览器丢弃」的静默失败。
+ * 负值与零按同一分支静默忽略——`-1rem` 语法合法，只是不能用于 `max-height`，不该报「无效长度」。
+ */
+const scrollStyle = computed<CSSProperties | undefined>(() => {
+    if (!props.scrollable) {
+        return undefined
+    }
+    const value = props.scrollHeight
+    if (value === undefined || value === '') {
+        return undefined
+    }
+    if (typeof value === 'number') {
+        return Number.isFinite(value) && value > 0 ? { maxHeight: `${value}px` } : undefined
+    }
+    const normalized = value.trim()
+    if (!normalized) {
+        return undefined
+    }
+    if (CSS_LENGTH_FUNCTION_PATTERN.test(normalized)) {
+        return { maxHeight: normalized }
+    }
+    const matched = CSS_LENGTH_VALUE_PATTERN.exec(normalized)
+    if (!matched) {
+        warnDev(`[CaomeiDataTable] scrollHeight 不是有效的 CSS 长度：${normalized}（将被忽略）`)
+        return undefined
+    }
+    const numeric = Number(matched[1])
+    if (!Number.isFinite(numeric) || numeric <= 0) {
+        return undefined
+    }
+    const unit = matched[2]
+    if (!CSS_LENGTH_UNITS.has(unit)) {
+        warnDev(`[CaomeiDataTable] scrollHeight 的单位 ${unit} 不受支持：${normalized}（将被忽略）`)
+        return undefined
+    }
+    // 无单位数字按 `px` 归一化：`max-height: 240` 是无效声明，会让限高静默失效
+    return { maxHeight: unit === '' ? `${numeric}px` : normalized }
+})
 
 function alignClass(key: string): string {
     return `caomei-data-table__cell--${columnMap.value.get(key)?.align ?? 'left'}`
@@ -881,6 +939,7 @@ function setPageSize(rows: number): void {
         class="caomei-data-table"
         :class="rootClass"
         tabindex="0"
+        :style="scrollStyle"
         :role="caption ? 'group' : undefined"
         :aria-label="caption || undefined"
         :aria-busy="loading || undefined"
@@ -1354,6 +1413,36 @@ function setPageSize(rows: number): void {
     display: flex;
     justify-content: var(--caomei-data-table-pagination-justify, flex-end);
     padding-top: var(--caomei-space-3);
+}
+
+/*
+  固定表头：仅在 `scrollable` 时把根容器变成纵向滚动区，`th` 吸顶、分页器吸底。
+  非滚动态不加任何匹配选择器 ⇒ 既有计算样式与视觉基线不变。
+*/
+.caomei-data-table--scrollable {
+    overflow-y: auto;
+}
+
+.caomei-data-table--scrollable .caomei-data-table__th {
+    position: sticky;
+    top: 0;
+    z-index: var(--caomei-z-pinned-header);
+}
+
+/*
+  冻结表头在滚动模式下同时双轴吸边，必须画在普通吸顶表头之上（同层时按树序绘制，
+  靠前的冻结列会被其后的普通表头盖住），同时也必须在冻结数据格之上。
+*/
+.caomei-data-table--scrollable .caomei-data-table__th.caomei-data-table__cell--pinned-start,
+.caomei-data-table--scrollable .caomei-data-table__th.caomei-data-table__cell--pinned-end {
+    z-index: calc(var(--caomei-z-pinned-header) + 1);
+}
+
+.caomei-data-table--scrollable .caomei-data-table__pagination {
+    position: sticky;
+    bottom: 0;
+    z-index: var(--caomei-z-pinned-header);
+    background: var(--caomei-data-table-pagination-sticky-bg, var(--caomei-color-bg));
 }
 
 /* 冻结列：横向滚动时吸边；表头层级高于数据单元格 */

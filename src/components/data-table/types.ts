@@ -374,4 +374,24 @@ export interface DataTableProps<T> {
      * @en Accessible name of the collapse-row button; defaults to the current locale's "Collapse row"
      */
     collapseRowLabel?: string
+    /**
+     * 固定表头与表体滚动：开启后表格容器按 `scrollHeight` 限高，表体在容器内滚动，
+     * 表头吸顶、分页器吸底。缺省关闭，渲染与滚动行为保持不变
+     * @en Fixed header with a scrollable body: when enabled the table container is capped at
+     * `scrollHeight`, the body scrolls inside it, the header sticks to the top and the paginator
+     * sticks to the bottom. Off by default, leaving rendering and scrolling unchanged
+     */
+    scrollable?: boolean
+    /**
+     * 滚动容器的高度上限，仅在 `scrollable` 时生效；数字按 `px` 归一化（如 `360` → `360px`），
+     * 字符串作为 CSS 长度（如 `'60vh'` / `'24rem'` / `80dvh` / `'var(--table-height)'`）。缺省时不限高，容器按内容自然高度渲染。
+     * 字符串须为有效 CSS 长度；空值 / `0` / 负数 / 无法解析的值不生成限高（后者开发期告警）。
+     * 限高应不小于「表头 + 一行」的高度
+     * @en Maximum height of the scroll container, only effective with `scrollable`; numbers are
+     * normalized to `px` (`360` → `360px`) and strings are used as-is as CSS lengths
+     * (`'60vh'` / `'24rem'`). Without it the container is not capped and follows the content height.
+     * Strings must be valid CSS lengths; empty / zero / negative values and unparsable strings produce
+     * no cap. Keep the cap at least as tall as the header plus one row
+     */
+    scrollHeight?: number | string
 }

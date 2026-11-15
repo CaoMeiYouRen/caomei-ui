@@ -191,6 +191,22 @@ There is no `size` prop; density is adjusted through tokens, and the selection c
     ssg="true"
 />
 
+## Fixed header and scrolling
+
+With `scrollable`, the table's root container is capped at `scrollHeight` and becomes a vertical scroll area: the header sticks to the top, the paginator sticks to the bottom, and the body scrolls inside the container. A numeric `scrollHeight` is normalized to `px` (`240` → `240px`); a string is used as-is as a CSS length (`'60vh'` / `'18rem'`). Without it the container is not capped and follows the content height.
+
+- Without `scrollable`, rendering and scrolling are unchanged (the root only scrolls when the table overflows horizontally).
+- The header and paginator use `position: sticky`; the table structure is unchanged and no header is duplicated. `prefers-reduced-motion` is irrelevant here (no animation).
+- Frozen columns, row expansion, `selectionMode`, sorting and `paginator` have browser regression coverage (including a hit test proving the frozen header stays on top after horizontal scrolling); row grouping only affects body rows and leaves the header and scroll container unchanged, so it has no combined regression of its own.
+- The root container keeps `tabindex="0"`, so keyboard users can focus it and scroll vertically (see "Accessibility").
+- Keep the cap at least as tall as the header plus one row: a smaller cap lets the header fill the scroll port and rows only appear after scrolling (`overflow: auto` neither squashes content nor grows the container).
+- A string must be a valid CSS length (number plus unit, or a `calc()` / `min()` / `max()` / `clamp()` expression); a bare numeric string is treated as `px`, while empty values, `0`, negative numbers, `Infinity` and unparsable strings produce no cap (the last one warns in development).
+
+<demo
+    vue="../examples/data-table/scrollable.vue"
+    ssg="true"
+/>
+
 ## Frozen columns
 
 `frozen` accepts `'left'` / `'right'` to stick a column to the edge while scrolling horizontally. Offsets accumulate from the declared px `width` of frozen columns (non-px or missing widths fall back to 150px), so set an explicit px `width`; one frozen column per side is recommended. When frozen columns exist the table gets a `min-width` equal to the sum of px widths so it can scroll; multiple columns on the same side accumulate from the far end.
@@ -275,6 +291,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-selection-column-width` | `1%` | Selection column width (header and data rows) |
 | `--caomei-data-table-selection-cell-padding-inline` | `--caomei-space-2` | Selection cell inline padding |
 | `--caomei-data-table-pagination-justify` | `flex-end` | Pagination container main-axis alignment (PrimeVue centers it by default; set to `center` to match) |
+| `--caomei-data-table-pagination-sticky-bg` | `--caomei-color-bg` | Background of the sticky paginator under `scrollable` (keeps scrolling rows from showing through) |
 
 ## Migration from PrimeVue
 
@@ -287,6 +304,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'` (one field expresses both frozen state and docking side) |
 | `<Column selection-mode="multiple" />` | Table-level `selectionMode="multiple"`; the selection column is always rendered first and **its width and styles are not configurable** (built-in `1%` width plus padding) |
 | Header select-all scope (client-side pagination) | **Current page** (selections on other pages are kept; whole-table selection is written by the parent into `selection`); PrimeVue's header select-all under client-side pagination covers the whole table |
+| `scrollable` + `scrollHeight` | Same names (`scrollable` boolean; `scrollHeight` a number normalized to `px` or a CSS length string); only affects the height cap and sticky positioning, never duplicates the header |
 | `rows-per-page-options` | The same-named `rowsPerPageOptions`; switching emits `update:rows` and derives the page by preserving the first-row offset |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"` (same field shape, plus `pageCount`) |
 | `rowGroupMode="subheader"` + `groupRowsBy` | The same-named `rowGroupMode` + `groupRowsBy`; splits on contiguous equal values and renders the group column as a blank placeholder in data rows (the value is not repeated) |

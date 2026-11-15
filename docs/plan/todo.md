@@ -25,7 +25,7 @@
 | M2-3 | 协作测试 T3 | C6 嵌套 Dialog / Drawer→Dialog（依赖 M2-1 结论） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m2-2-m2-3-overlay-collaboration.md)） |
 | M3-1 | 质量门禁与 a11y | 打开态 axe（T4）：页面矩阵 +1、规则白名单、最小适用节点下界 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m3-1-open-state-axe.md)） |
 | M3-2 | 质量门禁与 a11y | `release.yml` 周回归机检（N2）：发布前置查询 run 结论，fail-closed | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m3-2-weekly-regression-gate.md)） |
-| M4-1 | DataTable 数据面 | `scrollable` / `scrollHeight`：固定表头 + 自适应高度容器 | 待执行 |
+| M4-1 | DataTable 数据面 | `scrollable` / `scrollHeight`：固定表头 + 自适应高度容器 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m4-1-data-table-scroll.md)） |
 | M4-2 | DataTable 数据面 | 全选作用域契约 `selectAllScope`（默认 `page`，保持现状） | 待执行 |
 | M5-1 | 长尾组件 | BackTop 实现、导出与自动导入（含行为单测） | 待执行 |
 | M5-2 | 长尾组件 | TimePicker 实现、导出与自动导入（含行为单测） | 待执行 |

@@ -359,6 +359,33 @@ const keyboardScrollData = Array.from({ length: 3 }, (_, rowIndex) =>
 )
 
 /**
+ * DataTable 固定表头与滚动夹具（见 `test/e2e/data-table-scroll.e2e.ts`）：行数足够多，
+ * 240px 限高下必然纵向溢出；一张用数字 `scrollHeight`、一张用 CSS 长度字符串。
+ */
+const dataTableScrollColumns = [
+    { key: 'name', header: '姓名', width: '160px' },
+    { key: 'city', header: '城市', width: '160px' },
+    { key: 'score', header: '分数', align: 'right' as const },
+]
+const dataTableScrollData = Array.from({ length: 40 }, (_, index) => ({
+    name: `用户 ${index + 1}`,
+    city: index % 2 === 0 ? '杭州' : '上海',
+    score: (index * 7) % 100,
+    extra: index % 3 === 0 ? '加急' : '普通',
+}))
+/**
+ * 冻结首列：验证吸顶表头与冻列表头同时存在时的层叠顺序（冻结表头必须画在上面）。
+ * 列宽之和 48 + 400 + 400 + 400 + 320 = 1568px，超过最宽常驻视口的容器宽，横向必然溢出。
+ */
+const dataTableScrollFrozenColumns = [
+    { key: 'expand', expander: true, width: '48px' },
+    { key: 'name', header: '姓名', width: '400px', frozen: 'left' as const, sortable: true },
+    { key: 'city', header: '城市', width: '400px' },
+    { key: 'score', header: '分数', width: '400px', align: 'right' as const },
+    { key: 'extra', header: '备注', width: '320px' },
+]
+
+/**
  * 数据展示动效夹具（见 `test/e2e/data-display-motion.e2e.ts`）：同时提供可排序列、`expander`
  * 列与 `#expansion` 插槽，使行悬浮 / 选中 / 排序 / 展开四类状态面都能在夹具页内触发。
  */
@@ -2300,6 +2327,47 @@ const ConfirmDriver = defineComponent({
             <CaomeiConfirmDialog>
                 <CollabNestedDriver />
             </CaomeiConfirmDialog>
+        </section>
+        <!--
+          DataTable 固定表头与滚动（见 `test/e2e/data-table-scroll.e2e.ts`）：
+          数字 `scrollHeight` 与 CSS 长度字符串两态，断言限高、表头吸顶、表体可滚动。
+        -->
+        <section id="data-table-scroll" class="fixture__case">
+            <CaomeiDataTable
+                id="data-table-scroll-number"
+                :data="dataTableScrollData"
+                :columns="dataTableScrollColumns"
+                caption="限高（数字）"
+                scrollable
+                :scroll-height="240"
+            />
+            <CaomeiDataTable
+                id="data-table-scroll-string"
+                :data="dataTableScrollData"
+                :columns="dataTableScrollColumns"
+                caption="限高（字符串）"
+                scrollable
+                scroll-height="18rem"
+                paginator
+                :rows="10"
+            />
+            <CaomeiDataTable
+                id="data-table-scroll-frozen"
+                :data="dataTableScrollData"
+                :columns="dataTableScrollFrozenColumns"
+                row-key="name"
+                caption="限高 + 冻结列"
+                scrollable
+                :scroll-height="240"
+                selection-mode="multiple"
+                sort-mode="multiple"
+            >
+                <template #expansion="{data}">
+                    <div class="fixture__state">
+                        {{ data.name }} 的展开区
+                    </div>
+                </template>
+            </CaomeiDataTable>
         </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">

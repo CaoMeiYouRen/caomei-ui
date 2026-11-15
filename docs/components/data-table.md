@@ -191,6 +191,22 @@
     ssg="true"
 />
 
+## 固定表头与滚动
+
+设置 `scrollable` 后，表格根容器按 `scrollHeight` 限高并成为纵向滚动区：表头吸顶、分页器吸底，表体在容器内滚动。`scrollHeight` 取 `number` 时按 `px` 归一化（`240` → `240px`），取 `string` 时原样作为 CSS 长度（如 `'60vh'` / `'18rem'`）；缺省不限高，容器按内容自然高度渲染。
+
+- 未设置 `scrollable` 时渲染与滚动行为完全不变（根容器仍只在横向溢出时滚动）。
+- 表头与分页器用 `position: sticky` 实现，不改变表格结构、不复制表头；`prefers-reduced-motion` 与该模式无关（无动画）。
+- 冻结列、行展开、`selectionMode`、排序与 `paginator` 已做浏览器回归（含「冻结表头在横向滚动后仍是最上层」的命中测试）；行分组只影响表体行结构、不改变表头与滚动容器，未单独做组合回归。
+- 根容器仍常驻 `tabindex="0"`，键盘用户可聚焦后纵向滚动（见「无障碍」）。
+- 限高值应不小于「表头 + 一行」的高度：更小的限高会让表头独占滚动端口、数据行需滚动才能进入（`overflow: auto` 不会把内容压扁，也不会自动抬高容器）。
+- 字符串需是有效 CSS 长度（数字 + 单位，或 `calc()` / `min()` / `max()` / `clamp()`）；纯数字字符串按 `px` 处理，空值、`0`、负数、`Infinity` 与无法解析的字符串都不生成限高（后者在开发期告警）。
+
+<demo
+    vue="../examples/data-table/scrollable.vue"
+    ssg="true"
+/>
+
 ## 冻结列
 
 `frozen` 支持 `'left'` / `'right'`，使列在横向滚动时吸边。吸边偏移按冻结列声明的 px `width` 累计（非 px 或未声明按 150px 估算），请为冻结列显式设置 px `width`，并建议每侧不超过一列。存在冻结列时表格会按 px 宽度之和设置 `min-width` 以保证可横向滚动；同侧多列时按末端累计偏移。
@@ -275,6 +291,7 @@
 | `--caomei-data-table-selection-column-width` | `1%` | 选择列宽度（表头与数据行） |
 | `--caomei-data-table-selection-cell-padding-inline` | `--caomei-space-2` | 选择列行内内边距 |
 | `--caomei-data-table-pagination-justify` | `flex-end` | 分页容器主轴对齐（PrimeVue 默认居中，可设为 `center`） |
+| `--caomei-data-table-pagination-sticky-bg` | `--caomei-color-bg` | `scrollable` 下吸底分页器的背景色（避免滚动行从下方透出） |
 
 ## 从 PrimeVue 迁移
 
@@ -287,6 +304,7 @@
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'`（单个字段同时表达是否冻结与停靠方向） |
 | `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，宽度与内边距可用 `--caomei-data-table-selection-column-width` / `-selection-cell-padding-inline` 配置 |
 | 表头全选作用域（客户端分页） | **当前页**（跨页选择保留；整表选择由父级写 `selection`）；PrimeVue 的客户端分页表头全选作用于整表 |
+| `scrollable` + `scrollHeight` | 同名（`scrollable` 布尔、`scrollHeight` 数字按 `px` 归一化或 CSS 长度字符串）；只影响限高与吸顶，不复制表头 |
 | `rows-per-page-options` | 同名 `rowsPerPageOptions`，切换抛出 `update:rows` 并按偏移保持语义重新推导页码 |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"`（字段口径一致，另带 `pageCount`） |
 | `rowGroupMode="subheader"` + `groupRowsBy` | 同名 `rowGroupMode` + `groupRowsBy`；按连续同值切分，分组列在数据行渲染为空白占位（不重复取值） |

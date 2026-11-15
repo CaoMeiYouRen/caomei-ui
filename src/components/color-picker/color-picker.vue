@@ -11,6 +11,7 @@ import { useLocale } from '../../composables/use-locale'
 import { toHex6 } from '../_shared/color'
 import { resolveLabelName } from '../_shared/use-label-attrs'
 import { CaomeiPopoverTrigger } from '../popover'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import CaomeiColorPickerPanel from './color-picker-panel.vue'
 import type { ColorPickerProps } from './types'
 
@@ -85,10 +86,12 @@ function onUpdate(value: string): void {
                     :aria-invalid="invalid || undefined"
                     :disabled="disabled"
                 >
-                    <span
-                        class="caomei-color-picker__swatch"
-                        :style="{backgroundColor: hex}"
-                    />
+                    <CaomeiIconTooltip :content="triggerLabel" :disabled="disabled">
+                        <span
+                            class="caomei-color-picker__swatch"
+                            :style="{backgroundColor: hex}"
+                        />
+                    </CaomeiIconTooltip>
                 </button>
             </CaomeiPopoverTrigger>
             <PopoverPortal>

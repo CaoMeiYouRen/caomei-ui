@@ -12,6 +12,7 @@ import {
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import type { ImageProps, ImageStatus } from './types'
 
 defineOptions({ name: 'CaomeiImage', inheritAttrs: false })
@@ -167,11 +168,13 @@ function handleError(event: Event): void {
                     class="caomei-image__preview-trigger"
                     :aria-label="previewLabel"
                 >
-                    <span class="caomei-image__preview-icon">
-                        <slot name="indicatoricon">
-                            <CaomeiIcon :icon="previewIcon ?? icons.eye" />
-                        </slot>
-                    </span>
+                    <CaomeiIconTooltip :content="previewLabel">
+                        <span class="caomei-image__preview-icon">
+                            <slot name="indicatoricon">
+                                <CaomeiIcon :icon="previewIcon ?? icons.eye" />
+                            </slot>
+                        </span>
+                    </CaomeiIconTooltip>
                 </button>
             </DialogTrigger>
             <DialogPortal>
@@ -186,12 +189,14 @@ function handleError(event: Event): void {
                     <DialogDescription class="caomei-image__preview-description">
                         {{ alt }}
                     </DialogDescription>
-                    <DialogClose
-                        class="caomei-image__preview-close"
-                        :aria-label="closeLabel"
-                    >
-                        <CaomeiIcon :icon="icons.dismiss" />
-                    </DialogClose>
+                    <CaomeiIconTooltip :content="closeLabel" ignore-non-keyboard-focus>
+                        <DialogClose
+                            class="caomei-image__preview-close"
+                            :aria-label="closeLabel"
+                        >
+                            <CaomeiIcon :icon="icons.dismiss" />
+                        </DialogClose>
+                    </CaomeiIconTooltip>
                     <img
                         class="caomei-image__preview-img"
                         :src="src"

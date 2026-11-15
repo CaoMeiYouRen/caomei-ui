@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import type {
     FileUploadProps,
@@ -331,15 +332,20 @@ defineExpose({ upload, clear })
                     >
                         <span class="caomei-file-upload__name">{{ file.name }}</span>
                         <span class="caomei-file-upload__size">{{ formatSize(file.size) }}</span>
-                        <button
-                            type="button"
-                            class="caomei-file-upload__remove"
+                        <CaomeiIconTooltip
+                            :content="`移除 ${file.name}`"
                             :disabled="disabled"
-                            :aria-label="`移除 ${file.name}`"
-                            @click="remove(index)"
                         >
-                            <CaomeiIcon :icon="icons.dismiss" />
-                        </button>
+                            <button
+                                type="button"
+                                class="caomei-file-upload__remove"
+                                :disabled="disabled"
+                                :aria-label="`移除 ${file.name}`"
+                                @click="remove(index)"
+                            >
+                                <CaomeiIcon :icon="icons.dismiss" />
+                            </button>
+                        </CaomeiIconTooltip>
                     </slot>
                 </li>
             </ul>

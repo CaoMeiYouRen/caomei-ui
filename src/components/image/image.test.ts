@@ -297,10 +297,21 @@ describe('CaomeiImage preview', () => {
         expect(wrapper.emitted('hide')).toEqual([[]])
     })
 
-    it('按下 Escape 关闭遮罩', async () => {
+    it('按下 Escape 关闭遮罩（提示打开时先关提示）', async () => {
         const wrapper = mountImage({ preview: true })
 
         await openPreview(wrapper)
+        /*
+         * 遮罩内的关闭按钮带内建提示。happy-dom 没有 `:focus-visible` 启发式，程序化聚焦即判定为键盘聚焦，
+         * 提示会在打开遮罩时一并展开；此时第一次 Esc 只关提示（真实浏览器同此分层：提示层先于遮罩关闭），
+         * 第二次才关遮罩。真实浏览器里程序化聚焦不弹提示（`ignoreNonKeyboardFocus`），一次即关。
+         */
+        expect(document.querySelector('.caomei-tooltip__content[data-state*="open"]')).not.toBeNull()
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+        await settle()
+        expect(document.querySelector('.caomei-tooltip__content[data-state*="open"]')).toBeNull()
+        expect(getPreviewDialog()).not.toBeNull()
+
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
         await settle()
 

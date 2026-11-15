@@ -14,6 +14,7 @@ import {
 } from 'reka-ui'
 import { computed } from 'vue'
 import { toHex6 } from '../_shared/color'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 
 defineOptions({ name: 'CaomeiColorPickerPanel' })
 
@@ -229,20 +230,25 @@ function onUpdate(value: unknown): void {
             role="radiogroup"
             :aria-label="swatchesLabel"
         >
-            <button
+            <CaomeiIconTooltip
                 v-for="(swatch, index) in normalizedSwatches"
                 :key="swatch"
-                type="button"
-                role="radio"
-                class="caomei-color-picker__swatch"
-                :style="{backgroundColor: swatch}"
-                :aria-label="swatch"
-                :aria-checked="index === selectedSwatchIndex ? 'true' : 'false'"
-                :tabindex="swatchTabIndex(index)"
+                :content="swatch"
                 :disabled="disabled"
-                @click="onUpdate(swatch)"
-                @keydown="onSwatchKeydown($event, index)"
-            />
+            >
+                <button
+                    type="button"
+                    role="radio"
+                    class="caomei-color-picker__swatch"
+                    :style="{backgroundColor: swatch}"
+                    :aria-label="swatch"
+                    :aria-checked="index === selectedSwatchIndex ? 'true' : 'false'"
+                    :tabindex="swatchTabIndex(index)"
+                    :disabled="disabled"
+                    @click="onUpdate(swatch)"
+                    @keydown="onSwatchKeydown($event, index)"
+                />
+            </CaomeiIconTooltip>
         </div>
     </div>
 </template>

@@ -6,7 +6,13 @@ import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiColorPicker } from './index'
 
+/** 用例统一登记挂载实例：不卸载会把 portal 容器与提示接线留给后续用例（body 清空后补丁会落到空容器） */
+const mounted: VueWrapper[] = []
+
 afterEach(() => {
+    while (mounted.length > 0) {
+        mounted.pop()?.unmount()
+    }
     vi.useRealTimers()
     document.body.innerHTML = ''
 })
@@ -20,11 +26,13 @@ function mountPicker(
     props: Record<string, unknown> = {},
     options: Record<string, unknown> = {},
 ): VueWrapper {
-    return mount(CaomeiColorPicker, {
+    const wrapper = mount(CaomeiColorPicker, {
         props,
         attachTo: document.body,
         ...options,
-    })
+    }) as VueWrapper
+    mounted.push(wrapper)
+    return wrapper
 }
 
 function trigger(wrapper: VueWrapper) {

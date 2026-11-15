@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import type { MessageProps } from './types'
 
 defineOptions({ name: 'CaomeiMessage' })
@@ -82,15 +83,19 @@ const rootClass = computed(() => [
         <div v-if="$slots.actions" class="caomei-message__actions">
             <slot name="actions" />
         </div>
-        <button
+        <CaomeiIconTooltip
             v-if="closable"
-            type="button"
-            class="caomei-hit-target caomei-message__close"
-            :aria-label="closeLabel"
-            @click="emit('close')"
+            :content="closeLabel"
         >
-            <CaomeiIcon :icon="icons.dismiss" />
-        </button>
+            <button
+                type="button"
+                class="caomei-hit-target caomei-message__close"
+                :aria-label="closeLabel"
+                @click="emit('close')"
+            >
+                <CaomeiIcon :icon="icons.dismiss" />
+            </button>
+        </CaomeiIconTooltip>
     </div>
 </template>
 

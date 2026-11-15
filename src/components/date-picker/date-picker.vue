@@ -4,6 +4,7 @@ import { computed, useAttrs, watchEffect } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { defaultLocale } from '../../locale'
 import { formatDate, formatTime } from '../_shared/date-format'
 import { resolveLabelName } from '../_shared/use-label-attrs'
@@ -222,11 +223,16 @@ watchEffect(() => {
                     v-if="rangeHint"
                     class="caomei-date-picker__range-hint"
                 >{{ rangeHint }}</span>
-                <CaomeiIcon
+                <CaomeiIconTooltip
                     v-if="showIcon"
-                    :icon="icons.calendar"
-                    class="caomei-date-picker__icon"
-                />
+                    :content="triggerLabel"
+                    :disabled="disabled"
+                >
+                    <CaomeiIcon
+                        :icon="icons.calendar"
+                        class="caomei-date-picker__icon"
+                    />
+                </CaomeiIconTooltip>
             </button>
         </CaomeiPopoverTrigger>
         <PopoverPortal>

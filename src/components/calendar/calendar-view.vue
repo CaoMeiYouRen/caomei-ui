@@ -24,6 +24,7 @@ import {
 import { computed } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import type { CalendarViewProps } from './types'
 
 // 呈现层：仅消费祖先 CalendarRoot / RangeCalendarRoot 提供的日历上下文。
@@ -68,24 +69,28 @@ const parts = computed(() => (props.range
 
 <template>
     <div class="caomei-calendar__header">
-        <component
-            :is="parts.prev"
-            class="caomei-calendar__nav"
-            :aria-label="prevLabel"
-        >
-            <CaomeiIcon :icon="icons.chevronLeft" />
-        </component>
+        <CaomeiIconTooltip :content="prevLabel" ignore-non-keyboard-focus>
+            <component
+                :is="parts.prev"
+                class="caomei-calendar__nav"
+                :aria-label="prevLabel"
+            >
+                <CaomeiIcon :icon="icons.chevronLeft" />
+            </component>
+        </CaomeiIconTooltip>
         <component
             :is="parts.heading"
             class="caomei-calendar__heading"
         />
-        <component
-            :is="parts.next"
-            class="caomei-calendar__nav"
-            :aria-label="nextLabel"
-        >
-            <CaomeiIcon :icon="icons.chevronRight" />
-        </component>
+        <CaomeiIconTooltip :content="nextLabel" ignore-non-keyboard-focus>
+            <component
+                :is="parts.next"
+                class="caomei-calendar__nav"
+                :aria-label="nextLabel"
+            >
+                <CaomeiIcon :icon="icons.chevronRight" />
+            </component>
+        </CaomeiIconTooltip>
     </div>
     <component
         :is="parts.grid"

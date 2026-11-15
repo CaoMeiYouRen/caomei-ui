@@ -15,7 +15,7 @@ import { findMissingGlyphs, openTestFonts } from './font-coverage'
  * 用于自证比对具判别力（不留常驻）。
  */
 
-/** 受检面登记（9 个核心静态组件默认态 + 字体路径扩面 3 段 + Paginator）。 */
+/** 受检面登记（10 个核心静态组件默认态 + 字体路径扩面 3 段 + Paginator）。 */
 const SAMPLE_SECTIONS = [
     { id: 'ds-button-default', name: 'button' },
     { id: 'ds-tag-default', name: 'tag' },
@@ -30,6 +30,7 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-font-latin', name: 'font-latin-button' },
     { id: 'ds-font-latin-input', name: 'font-latin-input' },
     { id: 'ds-font-mixed', name: 'font-mixed-button' },
+    { id: 'ds-back-top-button', name: 'back-top' },
 ] as const
 
 /**
@@ -39,7 +40,7 @@ const SAMPLE_SECTIONS = [
 const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 13
+const MIN_SECTIONS = 14
 
 /**
  * 会渲染 `value` 文本的 input 类型。`hidden` / `checkbox` / `radio` / `range` / `color` /
@@ -65,7 +66,7 @@ const THEMES = ['light', 'dark'] as const
 const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 
 /**
- * 常驻负向对照的注入样式（六类目标各一条规则，缺一则对应面**不会**报差异）：
+ * 常驻负向对照的注入样式（七类目标各一条规则，缺一则对应面**不会**报差异）：
  * - `.fixture__state`：组件面与视口 / 预设轴面（`#app` 内）；
  * - `#calendar-inline`：日期轴面（该段为 `fixture__case`，不含 `.fixture__state`）；
  * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）；
@@ -80,6 +81,7 @@ const NEGATIVE_CONTROL_CSS = [
     '#hit-target { padding: 24px !important; }',
     '#form { padding: 24px !important; }',
     '.caomei-date-picker__content { padding: 0 !important; }',
+    '#ds-back-top-button { padding: 24px !important; }',
 ].join('\n')
 
 /**

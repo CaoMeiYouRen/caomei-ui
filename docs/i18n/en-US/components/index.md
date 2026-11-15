@@ -9,6 +9,7 @@ caomei-ui provides desktop- and mobile-friendly components built on [Reka UI](ht
 Component pages are translated incrementally and listed in the same order as the Chinese sidebar. Pages available in English so far:
 
 - [Avatar](/en-US/components/avatar)
+- [BackTop](/en-US/components/back-top)
 - [Badge](/en-US/components/badge)
 - [Button](/en-US/components/button)
 - [ButtonGroup](/en-US/components/button-group)

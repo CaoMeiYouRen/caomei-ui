@@ -1,5 +1,14 @@
 [
     {
+        "name": "BackTop",
+        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "example": "back-top/basic.vue",
+        "description": {
+            "zh": "滚动超过阈值后出现在右下角，点击回到页面或指定容器的顶部。",
+            "en": "Appears in the bottom-right corner after scrolling past a threshold and returns the page or a chosen container to the top."
+        }
+    },
+    {
         "name": "Button",
         "group": { "zh": "基础与布局", "en": "Basics & Layout" },
         "example": "button/basic.vue",

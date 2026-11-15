@@ -2449,6 +2449,14 @@ const ConfirmDriver = defineComponent({
             />
             <span id="time-picker-value">{{ timePickerValue?.toTimeString() }}</span>
         </section>
+        <!-- BackTop 视觉基线面（见 test/visual/components.visual.ts）：阈值 -1 让按钮常显，元素级截图 -->
+        <section class="fixture__case">
+            <CaomeiBackTop
+                id="ds-back-top-button"
+                label="回到顶部"
+                :threshold="-1"
+            />
+        </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">
             <CaomeiColorPicker

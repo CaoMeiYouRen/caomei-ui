@@ -72,6 +72,7 @@
 | 组件 | 实现方式 | Reka UI 对应 | Reka 成熟度 | 说明 |
 |------|----------|--------------|:-:|------|
 | Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低（**已实现**） |
+| BackTop | 自建 | 无 | — | 常驻回顶按钮：window / 选择器 / 元素目标、阈值显隐、reduced-motion 兜底（**已实现**） |
 | Divider | 自建（布局 + variants） | 无（Reka `Separator` 仅单元素语义，无内容插槽与两段线结构） | — | 水平 / 垂直、带内容与线型（**已实现**） |
 | RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件（**已实现**） |
 | ProgressBar | 封装 | Progress | 稳定 | 确定进度，与 ProgressSpinner 同源（**已实现**） |

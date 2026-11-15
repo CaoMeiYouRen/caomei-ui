@@ -301,6 +301,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             text: 'Basics & Layout',
                             items: [
                                 { text: 'Avatar', link: '/en-US/components/avatar' },
+                                { text: 'BackTop', link: '/en-US/components/back-top' },
                                 { text: 'Badge', link: '/en-US/components/badge' },
                                 { text: 'Button', link: '/en-US/components/button' },
                                 { text: 'ButtonGroup', link: '/en-US/components/button-group' },
@@ -504,6 +505,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     text: '基础与布局',
                     items: [
                         { text: 'Avatar 头像', link: '/components/avatar' },
+                        { text: 'BackTop 回到顶部', link: '/components/back-top' },
                         { text: 'Badge 徽标', link: '/components/badge' },
                         { text: 'Button 按钮', link: '/components/button' },
                         { text: 'ButtonGroup 按钮组', link: '/components/button-group' },

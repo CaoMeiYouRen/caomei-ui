@@ -17,7 +17,7 @@
 | M1-3 | Tooltip 提示体系 | P0 关闭按钮：Dialog / Drawer 接入 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-3-dialog-drawer-tooltip.md)） |
 | M1-4 | Tooltip 提示体系 | P1 icon-only 第一批：Select 族清除、InputNumber 步进、Password 显隐 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-4-p1-icon-tooltips.md)） |
 | M1-5 | Tooltip 提示体系 | P1 icon-only 第二批：Calendar / FileUpload / ColorPicker / DatePicker / Image / Alert·Message | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-5-p1-icon-tooltips-second.md)） |
-| M1-6 | Tooltip 提示体系 | P1 overflow 面 + 截断前提：DataTable / Tag / Breadcrumb / Menu（源码与测试，文档见 M1-8） | 待执行 |
+| M1-6 | Tooltip 提示体系 | P1 overflow 面 + 截断前提：DataTable / Tag / Breadcrumb / Menu（源码与测试，文档见 M1-8） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m1-6-overflow-surfaces.md)） |
 | M1-7 | Tooltip 提示体系 | 文档站 Provider 放置、中英示例、迁移说明与能力清单标注 | 待执行 |
 | M1-8 | Tooltip 提示体系 | 组件页说明：DataTable / Tag / Breadcrumb / Menu 长文本截断与 tooltip（中英） | 待执行 |
 | M2-1 | 协作测试 T3 | 嵌套遮罩层级评估（只评估，零代码 / 零 token 改动） | 已完成（[评估记录](../design/governance/2026-11-15-phase34-m2-1-nested-overlay-layering.md)） |

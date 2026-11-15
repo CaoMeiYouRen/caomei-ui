@@ -95,7 +95,7 @@ function notifySaved(): void {
 | 表格排序模型 | `sort-mode` / `multi-sort-meta` / `default-sort-order` | `sortMode` / `multiSortMeta` / `sortDescFirst` | 多列为受控模型（`v-model:multiSortMeta`）；`default-sort-order` 改**表格级** `sortDescFirst`（本库不提供列级）；**不要为复刻逐列 `default-sort-order` 全局开启 `sortDescFirst`**——实测会令非业务列的点击循环偏离 PrimeVue；默认方向用 `multiSortMeta` 初值承载；见 §7 与 [DataTable](../components/data-table.md) |
 | 表格分组与行展开 | `row-group-mode` / `group-rows-by` / `expandable-row-groups` / `expanded-rows` / `Column expander` | 同名 camelCase + `v-model:expandedRowGroups` / `v-model:expandedRows` + `#groupheader` / `#expansion` | 分组按**连续同值**切分、可折叠分组缺省全部收起；展开列写作 `{ key, expander: true }`；分组字段列会在数据行保留空白占位（PrimeVue 省略），需要列数一致时按 `groupRowsBy` 过滤 `columns`；见 §7 与 [DataTable](../components/data-table.md) |
 | 命令式浮层 | `ref.toggle(event)` / `show(event)` / `hide()`（以事件坐标为锚点） | 声明式触发器 | 把原触发按钮本身作为 `CaomeiPopoverTrigger` / `CaomeiDropdownMenuTrigger`（锚点即该按钮）；`as-child` 复用自定义按钮时加 `unstyled`，`hide()` 改受控 `v-model:open`（Popover 也可用 `<CaomeiPopoverClose>`）；见 [Popover](../components/popover.md) 与 [DropdownMenu](../components/dropdown-menu.md) |
-| Tooltip 接入 | `v-tooltip` 指令（含 `v-tooltip:left` 等方向修饰符）/ `<Tooltip>` | `<CaomeiTooltipProvider>`（应用根部一次）+ `<CaomeiTooltip>` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent`；方向改用 `side` + `align` | `showDelay` → `delayDuration`（Provider 级或单条）；**未提供独立隐藏延迟**；无指令式挂载，须显式包一层触发器（`as-child` 复用原元素）；见 §7 与 [Tooltip](../components/tooltip.md) |
+| Tooltip 接入 | `v-tooltip` 指令（含 `v-tooltip:left` 等方向修饰符）/ `<Tooltip>` | `<CaomeiTooltipProvider>`（建议应用根部一次；未放置时内建兜底，代价是不共享跨触发器免延迟）+ `<CaomeiTooltip>` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent`；方向改用 `side` + `align` | `showDelay` → `delayDuration`（Provider 级或单条）；**未提供独立隐藏延迟**；无指令式挂载，须显式包一层触发器（`as-child` 复用原元素）；见 §7 与 [Tooltip](../components/tooltip.md) |
 | 表格受控状态回写 | `v-model:*` 只读日志 / 不回写 | 必须监听并回写 `multiSortMeta` / `expandedRowGroups` / `expandedRows` / `selection` / `page` | 不回写时内建排序、分组折叠、行展开、选择与翻页按钮**无效果**；受控数组请替换引用而非原地增删；见 [DataTable](../components/data-table.md)「范围与约定」 |
 | 表格行状态与分页基准 | `expandedRows` 可为 `Record<key, boolean>`（另有行对象数组形态）；`first` 为 0 基偏移；`rows` / `totalRecords` | `expandedRows` 为 `string[]` 行 key；`selection` 载荷为 `T \| T[] \| null`；`page` 为 1 基；`itemsPerPage` / `total` | `lazy` + 选择 / 展开必须显式 `rowKey`；`selection` 用 `Array.isArray` 窄化后回写；`page = floor(first / rows) + 1`；分页报表用 Paginator 的 `#report` 插槽（作用域 `page` / `pages` / `total`，见 [Paginator](../components/paginator.md)「报表插槽」），更复杂模板仍由父级自渲染 |
 | 表头全选作用域 | 客户端分页表头全选 = 过滤后整表 | `multiple` 表头全选**只作用当前页**；跨页选择由父级 `selection` 聚合 | 需要「全选全部筛选结果」时自建选择栏；`lazy` 下同样只作用当前页；见 §7 与 [DataTable](../components/data-table.md) |
@@ -141,7 +141,7 @@ function notifySaved(): void {
 - [ ] CSS 选择器按产物类名 / `aria-sort` 编写，浮层 `hide` 事件已桥接；
 - [ ] 引入过桥接层（token / 函数 / 组件）时，每个桥接文件都有移除条件；调用点已归零的已删除，未清退项已登记 Backlog；
 - [ ] 桥接组件在 `as-child` 场景已 `inheritAttrs: false` 并把 `$attrs` 绑到内层触发器；放在 `components/` 子目录的桥接组件按目录前缀命名或显式 import；
-- [ ] Tooltip 的 `CaomeiTooltipProvider` 已在应用根部放置，触发器为显式组合；
+- [ ] Tooltip 的触发器为显式组合；建议在应用根部放置 `CaomeiTooltipProvider`（未放置亦可运行，代价是不共享跨触发器免延迟）；
 - [ ] `Message` / `Alert` 的 live region 与 soft 档外观差异已确认；
 - [ ] 字符串图标名已全部替换为 `@lucide/vue` 组件；
 - [ ] `severity` / `small` / `large` / `fluid` 等 PrimeVue 专有命名已清除（含模板、类型与样式覆盖）；

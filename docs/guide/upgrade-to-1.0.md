@@ -52,7 +52,7 @@
 - [ ] 检索 `DataTable` 的 `selectAll` / `lazy` / `rowKey` 用法，确认全选语义与跨页选择符合预期；
 - [ ] 检索 `--caomei-color-border` 与语义色文本覆盖，切到 `control-border` / `*-text`；
 - [ ] 非 `zh-CN` / `en-US` 的语言改用 `caomei-ui/locale/<code>` + `registerLocale()`；
-- [ ] 使用 Tooltip 时在应用根部放置 `CaomeiTooltipProvider`；
+- [ ] 建议在应用根部放置 `CaomeiTooltipProvider`（未放置时内建兜底仍可用，代价是不共享「跨触发器免延迟」）；
 - [ ] 在业务仓库复跑 `typecheck` 与 `build`；
 - [ ] 重跑视觉回归 / 计算样式断言；颜色差异按新角色归因，不直接放宽阈值；
 - [ ] 在升级记录中写明版本、业务仓库 revision、验证结果与未覆盖项。

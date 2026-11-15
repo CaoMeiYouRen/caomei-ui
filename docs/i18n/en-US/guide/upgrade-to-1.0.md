@@ -52,7 +52,7 @@ These map one-to-one to the six "Known limitations" items plus the last "Upgrade
 - [ ] Search `DataTable` usages of `selectAll` / `lazy` / `rowKey`, and confirm select-all semantics and cross-page selection;
 - [ ] Search overrides of `--caomei-color-border` and semantic text colours, and move to `control-border` / `*-text`;
 - [ ] For locales other than `zh-CN` / `en-US`, import `caomei-ui/locale/<code>` and call `registerLocale()`;
-- [ ] When using Tooltip, place `CaomeiTooltipProvider` at the app root;
+- [ ] Recommended: place `CaomeiTooltipProvider` at the app root (a built-in fallback still works without it, at the cost of the cross-trigger skip delay);
 - [ ] Re-run `typecheck` and `build` in your project;
 - [ ] Re-run visual regression / computed-style assertions; attribute colour differences to the new roles instead of loosening thresholds;
 - [ ] Record the version, your project revision, verification results and uncovered items in your upgrade log.

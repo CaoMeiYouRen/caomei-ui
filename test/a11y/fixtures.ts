@@ -6,6 +6,7 @@ import {
     CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiAvatar,
+    CaomeiBackTop,
     CaomeiBadge,
     CaomeiBreadcrumb,
     CaomeiBreadcrumbItem,
@@ -185,6 +186,8 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiAccordion', root: CaomeiAccordion, definition: { components: { CaomeiAccordion, CaomeiAccordionItem }, template: '<CaomeiAccordion><CaomeiAccordionItem title="一">内容</CaomeiAccordionItem></CaomeiAccordion>' } },
     { name: 'CaomeiAutoComplete', root: CaomeiAutoComplete, definition: { components: { CaomeiAutoComplete }, template: '<CaomeiAutoComplete label="搜索" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiAvatar', root: CaomeiAvatar, definition: { components: { CaomeiAvatar }, template: '<CaomeiAvatar label="甲" />' } },
+    // 阈值取 -1 让按钮在静态审计中可见（默认滚动前隐藏，见 BackTop 的 `v-show` 契约）
+    { name: 'CaomeiBackTop', root: CaomeiBackTop, definition: { components: { CaomeiBackTop }, template: '<CaomeiBackTop label="回到顶部" :threshold="-1" />' } },
     { name: 'CaomeiBadge', root: CaomeiBadge, definition: { components: { CaomeiBadge }, template: '<CaomeiBadge :value="5" />' } },
     { name: 'CaomeiBreadcrumb', root: CaomeiBreadcrumb, definition: { components: { CaomeiBreadcrumb, CaomeiBreadcrumbItem }, template: '<CaomeiBreadcrumb label="面包屑"><CaomeiBreadcrumbItem href="/">首页</CaomeiBreadcrumbItem><CaomeiBreadcrumbItem current>当前页</CaomeiBreadcrumbItem></CaomeiBreadcrumb>' } },
     { name: 'CaomeiButton', root: CaomeiButton, definition: { components: { CaomeiButton }, template: '<CaomeiButton>确定</CaomeiButton>' } },
@@ -396,4 +399,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 62
+export const A11Y_FIXTURE_BUDGET = 63

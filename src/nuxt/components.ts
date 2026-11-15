@@ -15,6 +15,7 @@ export const caomeiComponents = [
     'CaomeiAlert',
     'CaomeiAutoComplete',
     'CaomeiAvatar',
+    'CaomeiBackTop',
     'CaomeiBadge',
     'CaomeiBreadcrumb',
     'CaomeiBreadcrumbItem',

@@ -11,6 +11,7 @@ import {
     CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiAvatar,
+    CaomeiBackTop,
     CaomeiBadge,
     CaomeiButton,
     CaomeiButtonGroup,
@@ -2409,6 +2410,23 @@ const ConfirmDriver = defineComponent({
                 :rows="2"
             />
         </section>
+        <!--
+          BackTop（供 M5-4 的 `test/e2e/back-top.e2e.ts` 使用）：元素目标 + 独立滚动容器，
+          用于验证默认定位、层级与回顶行为。
+        -->
+        <section id="back-top" class="fixture__case">
+            <div id="back-top-scroller" class="fixture__state">
+                <div id="back-top-content" class="fixture__state">
+                    可滚动内容
+                </div>
+            </div>
+            <CaomeiBackTop
+                id="back-top-button"
+                label="回到顶部"
+                target="#back-top-scroller"
+                :threshold="50"
+            />
+        </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">
             <CaomeiColorPicker
@@ -2632,6 +2650,17 @@ const ConfirmDriver = defineComponent({
 #disabled-size .fixture__state > *,
 #badge-layout .fixture__state > * {
     min-width: 0;
+}
+
+/* BackTop 用例：固定高度的滚动容器，内部内容足够高以产生滚动 */
+#back-top-scroller {
+    max-height: 8rem;
+    overflow: auto;
+    border: 1px solid var(--caomei-color-border);
+}
+
+#back-top-content {
+    height: 24rem;
 }
 
 /*

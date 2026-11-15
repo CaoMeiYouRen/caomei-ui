@@ -140,6 +140,16 @@ const deDE: CaomeiLocaleMessages = {
         viewport: 'Benachrichtigungen ({hotkey})',
         close: 'Schließen',
     },
+    backTop: {
+        label: 'Nach oben',
+    },
+    timePicker: {
+        hour: 'Stunde',
+        minute: 'Minute',
+        second: 'Sekunde',
+        am: 'AM',
+        pm: 'PM',
+    },
 }
 
 export default deDE

@@ -45,11 +45,12 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 28 个命名空间，对应 29 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
+`CaomeiLocaleMessages` 按组件域划分为 30 个命名空间，对应 31 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
 | `autoComplete` | `empty` `open` | AutoComplete |
+| `backTop` | `label` | BackTop |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
 | `chart` | `loading` `loadFailed` | Chart |
 | `checkbox` | `selectAll` | CheckboxGroup |
@@ -76,6 +77,7 @@ import {
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
 | `tagsInput` | `clear` | TagsInput |
+| `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |
 | `toast` | `label` `viewport` `close` | Toast |
 
 ## 快速使用

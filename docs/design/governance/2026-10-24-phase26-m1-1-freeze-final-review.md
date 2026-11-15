@@ -151,6 +151,8 @@ comm -23 tokens-consumed-undocumented.txt tokens-defined.txt | wc -l
 
 > **2026-11-07 增量（DatePicker 范围选择）**：`datePicker` 命名空间新增 `range` / `rangeStart` / `rangeEnd` 三键（10 语同步），属向后兼容增量；每语文案键由 **80** 更新为 **83**（命名空间数与语言数不变，预注册集合不变）。复算同上方命令，期望读数 28 / 83。
 
+> **2026-11-15 增量（BackTop / TimePicker）**：新增 `backTop`（`label` 1 键）与 `timePicker`（`hour` / `minute` / `second` / `am` / `pm` 5 键）两个命名空间，10 语同步；每语由 **28 / 83** 更新为 **30 / 89**（语言数与预注册集合不变）。复算同上方命令，期望读数 30 / 89。
+
 ### 2.6 `InputNumber` 的 `step` 语义（按 `reka-ui` 2.10.4 冻结）
 
 `reka-ui` 版本固定为 **2.10.4**（`package.json` 的 `dependencies`）。当前语义：

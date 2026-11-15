@@ -140,6 +140,16 @@ const koKR: CaomeiLocaleMessages = {
         viewport: '알림 ({hotkey})',
         close: '닫기',
     },
+    backTop: {
+        label: '맨 위로',
+    },
+    timePicker: {
+        hour: '시',
+        minute: '분',
+        second: '초',
+        am: '오전',
+        pm: '오후',
+    },
 }
 
 export default koKR

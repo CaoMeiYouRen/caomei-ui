@@ -45,11 +45,12 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 28 namespaces by component area, covering 29 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
+`CaomeiLocaleMessages` is split into 30 namespaces by component area, covering 31 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
 | `autoComplete` | `empty` `open` | AutoComplete |
+| `backTop` | `label` | BackTop |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
 | `chart` | `loading` `loadFailed` | Chart |
 | `checkbox` | `selectAll` | CheckboxGroup |
@@ -76,6 +77,7 @@ import {
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
 | `tagsInput` | `clear` | TagsInput |
+| `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |
 | `toast` | `label` `viewport` `close` | Toast |
 
 ## Quick start

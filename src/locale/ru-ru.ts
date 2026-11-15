@@ -140,6 +140,16 @@ const ruRU: CaomeiLocaleMessages = {
         viewport: 'Уведомления ({hotkey})',
         close: 'Закрыть',
     },
+    backTop: {
+        label: 'Наверх',
+    },
+    timePicker: {
+        hour: 'Час',
+        minute: 'Минута',
+        second: 'Секунда',
+        am: 'AM',
+        pm: 'PM',
+    },
 }
 
 export default ruRU

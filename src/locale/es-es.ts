@@ -140,6 +140,16 @@ const esES: CaomeiLocaleMessages = {
         viewport: 'Notificaciones ({hotkey})',
         close: 'Cerrar',
     },
+    backTop: {
+        label: 'Volver arriba',
+    },
+    timePicker: {
+        hour: 'Hora',
+        minute: 'Minuto',
+        second: 'Segundo',
+        am: 'a. m.',
+        pm: 'p. m.',
+    },
 }
 
 export default esES

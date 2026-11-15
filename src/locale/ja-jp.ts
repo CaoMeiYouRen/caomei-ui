@@ -140,6 +140,16 @@ const jaJP: CaomeiLocaleMessages = {
         viewport: '通知 ({hotkey})',
         close: '閉じる',
     },
+    backTop: {
+        label: 'トップへ戻る',
+    },
+    timePicker: {
+        hour: '時',
+        minute: '分',
+        second: '秒',
+        am: '午前',
+        pm: '午後',
+    },
 }
 
 export default jaJP

@@ -140,6 +140,16 @@ const frFR: CaomeiLocaleMessages = {
         viewport: 'Notifications ({hotkey})',
         close: 'Fermer',
     },
+    backTop: {
+        label: 'Retour en haut',
+    },
+    timePicker: {
+        hour: 'Heure',
+        minute: 'Minute',
+        second: 'Seconde',
+        am: 'AM',
+        pm: 'PM',
+    },
 }
 
 export default frFR

@@ -140,6 +140,16 @@ const zhTW: CaomeiLocaleMessages = {
         viewport: '通知 ({hotkey})',
         close: '關閉',
     },
+    backTop: {
+        label: '回到頂部',
+    },
+    timePicker: {
+        hour: '時',
+        minute: '分',
+        second: '秒',
+        am: '上午',
+        pm: '下午',
+    },
 }
 
 export default zhTW

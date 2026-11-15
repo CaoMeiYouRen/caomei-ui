@@ -140,6 +140,16 @@ const ptBR: CaomeiLocaleMessages = {
         viewport: 'Notificações ({hotkey})',
         close: 'Fechar',
     },
+    backTop: {
+        label: 'Voltar ao topo',
+    },
+    timePicker: {
+        hour: 'Hora',
+        minute: 'Minuto',
+        second: 'Segundo',
+        am: 'AM',
+        pm: 'PM',
+    },
 }
 
 export default ptBR

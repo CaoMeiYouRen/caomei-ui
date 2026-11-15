@@ -140,6 +140,16 @@ const zhCN: CaomeiLocaleMessages = {
         viewport: '通知 ({hotkey})',
         close: '关闭',
     },
+    backTop: {
+        label: '回到顶部',
+    },
+    timePicker: {
+        hour: '时',
+        minute: '分',
+        second: '秒',
+        am: '上午',
+        pm: '下午',
+    },
 }
 
 export default zhCN

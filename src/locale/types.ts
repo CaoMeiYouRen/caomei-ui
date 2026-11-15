@@ -7,6 +7,16 @@ export type CaomeiLocaleMessageOverrides = {
 }
 
 export interface CaomeiLocaleMessages {
+    backTop: {
+        label: string
+    }
+    timePicker: {
+        hour: string
+        minute: string
+        second: string
+        am: string
+        pm: string
+    }
     autoComplete: {
         empty: string
         open: string

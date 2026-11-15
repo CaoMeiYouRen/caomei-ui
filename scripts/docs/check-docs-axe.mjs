@@ -10,8 +10,8 @@
  * 按**页面矩阵 + WCAG 规则面**审计 → 有违规即 exit 1。
  *
  * 受检面（默认矩阵，见 `docs/design/documentation-site.md` §17）：`/components/data-table`、
- * `/components/select` 中英、`/components/showcase` 中英；两条 WCAG 规则（`button-name` /
- * `scrollable-region-focusable`）对全部登记页统一执行，不做按页裁剪。不纳入
+ * `/components/select` 中英、`/components/showcase` 中英、`/components/tooltip` 中英；两条 WCAG
+ * 规则（`button-name` / `scrollable-region-focusable`）对全部登记页统一执行，不做按页裁剪。不纳入
  * best-practice / experimental 规则（如 `focus-order-semantics`）：可聚焦的滚动容器必然命中
  * 「Element does not have a widget role」，把它纳入会让合规模式本身无法通过。
  *
@@ -24,7 +24,7 @@
  * 已知边界（有意）：
  * - 只审计**构建产物**（`docs/.vitepress/dist` 必须已存在；脚本不代跑 `docs:build`）；
  * - 只跑 Chromium（与画廊 / 视觉基线同内核）；Firefox / WebKit 的渲染差异不在面内；
- * - 只覆盖登记的 5 页与 2 条规则，不宣称「整站 a11y 合规」；
+ * - 只覆盖登记的 7 页与 2 条规则，不宣称「整站 a11y 合规」；
  * - 单页只审计一次（默认视口 1440×1000）；窄屏 / 暗色主题的差异由专项用例承担。
  *
  * 用法：
@@ -68,6 +68,8 @@ export const PAGES = [
     { key: 'select-en', path: '/en-US/components/select', ready: '.caomei-select', minSubjects: 17, minApplies: { 'button-name': 17 } },
     { key: 'showcase-zh', path: '/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },
     { key: 'showcase-en', path: '/en-US/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },
+    { key: 'tooltip-zh', path: '/components/tooltip', ready: '.caomei-toolbar', minSubjects: 1, minApplies: { 'button-name': 28 } },
+    { key: 'tooltip-en', path: '/en-US/components/tooltip', ready: '.caomei-toolbar', minSubjects: 1, minApplies: { 'button-name': 28 } },
 ]
 
 /** 默认预览端口：避开画廊（4173）与主 E2E 夹具（4501）。 */

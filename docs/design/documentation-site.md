@@ -212,7 +212,7 @@ docs/
 ## 17. 文档站 a11y 抽检（axe）
 
 - **为什么不在组件级装置里**：`test/a11y` 跑在 happy-dom 中，滚动 / 布局类规则（`scrollable-region-focusable`）与文档示例的可访问名（`button-name`）只有在**真实渲染**下才可判定；此前这类检查是人工 V 阶段的一次性抽检，没有可复现的退出码。
-- **脚本**：`scripts/docs/check-docs-axe.mjs` —— `vitepress preview` 起**构建产物** → Chromium 注入 axe-core → 按页面矩阵审计 → 有违规即 exit 1。默认矩阵 5 页：`/components/data-table`（滚动容器）、`/components/select` 中英、`/components/showcase` 中英（示例可访问名）。
+- **脚本**：`scripts/docs/check-docs-axe.mjs` —— `vitepress preview` 起**构建产物** → Chromium 注入 axe-core → 按页面矩阵审计 → 有违规即 exit 1。默认矩阵 7 页：`/components/data-table`（滚动容器）、`/components/select` 中英、`/components/showcase` 中英（示例可访问名）、`/components/tooltip` 中英（内建提示示例的可访问名与工具条 / 分页器等图标按钮）。
 - **规则面**：只取 WCAG 规则（`button-name` / `scrollable-region-focusable`）。**不纳入** best-practice / experimental（如 `focus-order-semantics`）——可聚焦的滚动容器必然命中「Element does not have a widget role」，纳入会让合规模式本身无法通过。
 - **抗静默收窄（两层）**：① 每页设「就绪选择器 + 最小命中数」下界（示例被删 / 页面渲染失败直接失败）；② 每页登记「规则 × 最小适用节点数」（适用 = 通过 + 违规 + 待复核），规则不适用也会失败，避免「什么都没检查」被当成零违规。空页面清单、空规则清单、页面加载超时、端口被占用、预览服务器提前退出均 fail-closed；`--rules` 收窄时只判定本轮实际审计的规则。
 - **失败语义**：违规、受检面收窄、规则未生效与基础设施失败一律 exit 1；`--report` 落 JSON 时附 `head` / `distIndexMtime` / 各规则三计与 `outcome`，便于 G0 对账产物与源码版本。

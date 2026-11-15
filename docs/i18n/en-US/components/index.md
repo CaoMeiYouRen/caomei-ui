@@ -34,6 +34,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Switch](/en-US/components/switch)
 - [TagsInput](/en-US/components/tags-input)
 - [Textarea](/en-US/components/textarea)
+- [TimePicker](/en-US/components/time-picker)
 - [AutoComplete](/en-US/components/auto-complete)
 - [Calendar](/en-US/components/calendar)
 - [ColorPicker](/en-US/components/color-picker)

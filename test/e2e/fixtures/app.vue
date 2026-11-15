@@ -273,6 +273,11 @@ const swatchPickerValue = ref('#e63946')
 
 /** TimePicker 用例（供后续时间选择 E2E 使用）：受控值同时回显，便于断言 v-model。 */
 const timePickerValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
+
+/** 视觉基线用的固定时间（确定性、不含实时日期）。 */
+const visualTimeValue = new Date(2026, 0, 1, 9, 30, 45)
+/** 12 小时制字段的独立受控值，便于断言日序切换后的回写。 */
+const timePicker12Value = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
 
 /*
@@ -2443,11 +2448,12 @@ const ConfirmDriver = defineComponent({
             />
             <CaomeiTimePicker
                 id="time-picker-12"
-                :model-value="timePickerValue"
+                v-model="timePicker12Value"
                 label="时间（12 小时制）"
                 hour-format="12"
             />
             <span id="time-picker-value">{{ timePickerValue?.toTimeString() }}</span>
+            <span id="time-picker-12-value">{{ timePicker12Value?.toTimeString() }}</span>
         </section>
         <!-- BackTop 视觉基线面（见 test/visual/components.visual.ts）：阈值 -1 让按钮常显，元素级截图 -->
         <section class="fixture__case">
@@ -2455,6 +2461,14 @@ const ConfirmDriver = defineComponent({
                 id="ds-back-top-button"
                 label="回到顶部"
                 :threshold="-1"
+            />
+        </section>
+        <!-- TimePicker 视觉基线面（见 test/visual/components.visual.ts）：固定时间，元素级截图 -->
+        <section id="ds-time-picker" class="fixture__case">
+            <CaomeiTimePicker
+                label="时间"
+                show-seconds
+                :model-value="visualTimeValue"
             />
         </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
@@ -2683,6 +2697,14 @@ const ConfirmDriver = defineComponent({
 }
 
 /* BackTop 用例：固定高度的滚动容器，内部内容足够高以产生滚动 */
+#ds-time-picker {
+    width: fit-content;
+}
+
+#ds-time-picker .caomei-time-picker {
+    width: fit-content;
+}
+
 #back-top-scroller {
     max-height: 8rem;
     overflow: auto;

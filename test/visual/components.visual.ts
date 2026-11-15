@@ -8,8 +8,8 @@ import { findMissingGlyphs, openTestFonts } from './font-coverage'
  * 事实源 = 本文件的**受检面登记表**（`SAMPLE_SECTIONS`）——新增 / 移除组件须同批更新基线与登记表；
  * 下界守卫（`MIN_SECTIONS`）保证登记表被静默收窄时失败。
  *
- * 抽样原则：取**静态、确定性**的默认态（不含日期 / 时间 / 随机内容），避免时间漂移造成假阳性；
- * 日期类组件（Calendar / DatePicker）不在首批（见记录 §「未纳入面」）。
+ * 抽样原则：取**确定性**的默认态（固定日期 / 时间 / 不随实时时间漂移），避免假阳性；
+ * 日期类组件（Calendar / DatePicker）不在首批（见记录 §「未纳入面」），时间字段面用固定值。
  *
  * 负向对照：`VISUAL_NEGATIVE_CONTROL=1 pnpm test:visual` 注入结构性覆盖，应使全部用例报差异，
  * 用于自证比对具判别力（不留常驻）。
@@ -31,6 +31,7 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-font-latin-input', name: 'font-latin-input' },
     { id: 'ds-font-mixed', name: 'font-mixed-button' },
     { id: 'ds-back-top-button', name: 'back-top' },
+    { id: 'ds-time-picker', name: 'time-picker' },
 ] as const
 
 /**
@@ -40,7 +41,7 @@ const SAMPLE_SECTIONS = [
 const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 14
+const MIN_SECTIONS = 15
 
 /**
  * 会渲染 `value` 文本的 input 类型。`hidden` / `checkbox` / `radio` / `range` / `color` /
@@ -66,7 +67,7 @@ const THEMES = ['light', 'dark'] as const
 const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
 
 /**
- * 常驻负向对照的注入样式（七类目标各一条规则，缺一则对应面**不会**报差异）：
+ * 常驻负向对照的注入样式（逐目标一条规则，缺一则对应面**不会**报差异）：
  * - `.fixture__state`：组件面与视口 / 预设轴面（`#app` 内）；
  * - `#calendar-inline`：日期轴面（该段为 `fixture__case`，不含 `.fixture__state`）；
  * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）；
@@ -82,6 +83,7 @@ const NEGATIVE_CONTROL_CSS = [
     '#form { padding: 24px !important; }',
     '.caomei-date-picker__content { padding: 0 !important; }',
     '#ds-back-top-button { padding: 24px !important; }',
+    '#ds-time-picker { padding: 24px !important; }',
 ].join('\n')
 
 /**

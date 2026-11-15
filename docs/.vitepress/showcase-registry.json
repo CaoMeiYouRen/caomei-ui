@@ -1,7 +1,10 @@
 [
     {
         "name": "BackTop",
-        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "group": {
+            "zh": "基础与布局",
+            "en": "Basics & Layout"
+        },
         "example": "back-top/basic.vue",
         "description": {
             "zh": "滚动超过阈值后出现在右下角，点击回到页面或指定容器的顶部。",
@@ -10,7 +13,10 @@
     },
     {
         "name": "Button",
-        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "group": {
+            "zh": "基础与布局",
+            "en": "Basics & Layout"
+        },
         "example": "button/basic.vue",
         "description": {
             "zh": "触发一个操作，支持变体、语义色调、尺寸与加载态。",
@@ -19,7 +25,10 @@
     },
     {
         "name": "Card",
-        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "group": {
+            "zh": "基础与布局",
+            "en": "Basics & Layout"
+        },
         "example": "card/basic.vue",
         "description": {
             "zh": "分组承载相关内容的纯布局容器，自带边框 / 阴影 / 填充三种外观。",
@@ -28,7 +37,10 @@
     },
     {
         "name": "Row",
-        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "group": {
+            "zh": "基础与布局",
+            "en": "Basics & Layout"
+        },
         "example": "row/basic.vue",
         "description": {
             "zh": "基于 CSS Grid 的 24 栏栅格行，配合 Col 完成列间距、偏移、排序与响应式排版。",
@@ -37,7 +49,10 @@
     },
     {
         "name": "Tag",
-        "group": { "zh": "基础与布局", "en": "Basics & Layout" },
+        "group": {
+            "zh": "基础与布局",
+            "en": "Basics & Layout"
+        },
         "example": "tag/basic.vue",
         "description": {
             "zh": "对内容进行分类或标记，支持语义色调、多种变体与可关闭交互。",
@@ -46,7 +61,10 @@
     },
     {
         "name": "Form",
-        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
         "example": "form/basic.vue",
         "description": {
             "zh": "表单组合层：负责布局与提交编排，FormItem 提供标签、提示与错误的可访问性关联。",
@@ -55,7 +73,10 @@
     },
     {
         "name": "Input",
-        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
         "example": "input/basic.vue",
         "description": {
             "zh": "接收用户的单行文本输入。",
@@ -64,7 +85,10 @@
     },
     {
         "name": "Switch",
-        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
         "example": "switch/basic.vue",
         "description": {
             "zh": "切换单个选项的开启 / 关闭状态。",
@@ -73,7 +97,10 @@
     },
     {
         "name": "TagsInput",
-        "group": { "zh": "表单输入", "en": "Form Inputs" },
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
         "example": "tags-input/basic.vue",
         "description": {
             "zh": "录入多个自由文本标签，支持回车 / 分隔符提交、粘贴拆分与数量 / 去重约束。",
@@ -81,8 +108,23 @@
         }
     },
     {
+        "name": "TimePicker",
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
+        "example": "time-picker/basic.vue",
+        "description": {
+            "zh": "录入一天内的时间：时分（可含秒）、12 / 24 小时制、步进与时间区间约束。",
+            "en": "Records a time of day with hours and minutes (optionally seconds), 12 / 24-hour cycles, stepping and time bounds."
+        }
+    },
+    {
         "name": "DatePicker",
-        "group": { "zh": "选择器", "en": "Selectors" },
+        "group": {
+            "zh": "选择器",
+            "en": "Selectors"
+        },
         "example": "date-picker/basic.vue",
         "description": {
             "zh": "由触发按钮与日历面板组合，选中后按 dateFormat 展示日期。",
@@ -91,7 +133,10 @@
     },
     {
         "name": "Select",
-        "group": { "zh": "选择器", "en": "Selectors" },
+        "group": {
+            "zh": "选择器",
+            "en": "Selectors"
+        },
         "example": "select/basic.vue",
         "description": {
             "zh": "从一组选项中选择单个值。",
@@ -100,7 +145,10 @@
     },
     {
         "name": "Dialog",
-        "group": { "zh": "反馈与浮层", "en": "Feedback & Overlays" },
+        "group": {
+            "zh": "反馈与浮层",
+            "en": "Feedback & Overlays"
+        },
         "example": "dialog/basic.vue",
         "description": {
             "zh": "在当前页面之上承载需要用户聚焦处理的内容。",
@@ -109,7 +157,10 @@
     },
     {
         "name": "Message",
-        "group": { "zh": "反馈与浮层", "en": "Feedback & Overlays" },
+        "group": {
+            "zh": "反馈与浮层",
+            "en": "Feedback & Overlays"
+        },
         "example": "message/basic.vue",
         "description": {
             "zh": "在当前页面内展示一条与上下文相关的反馈信息。",
@@ -118,7 +169,10 @@
     },
     {
         "name": "DataTable",
-        "group": { "zh": "数据展示", "en": "Data Display" },
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
         "example": "data-table/basic.vue",
         "description": {
             "zh": "展示结构化数据，基于无头表格能力自建渲染，默认提供极简表样式与空态。",
@@ -127,7 +181,10 @@
     },
     {
         "name": "ProgressBar",
-        "group": { "zh": "数据展示", "en": "Data Display" },
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
         "example": "progress-bar/basic.vue",
         "description": {
             "zh": "展示确定的进度值或不确定的等待状态。",
@@ -136,7 +193,10 @@
     },
     {
         "name": "Tabs",
-        "group": { "zh": "导航与操作", "en": "Navigation & Actions" },
+        "group": {
+            "zh": "导航与操作",
+            "en": "Navigation & Actions"
+        },
         "example": "tabs/basic.vue",
         "description": {
             "zh": "在一组同级内容间切换，同一时刻只展示一个面板。",
@@ -145,7 +205,10 @@
     },
     {
         "name": "RichTextEditor",
-        "group": { "zh": "高级组件", "en": "Advanced" },
+        "group": {
+            "zh": "高级组件",
+            "en": "Advanced"
+        },
         "example": "rich-text-editor/basic.vue",
         "description": {
             "zh": "Markdown 富文本编辑器轻量封装：暗色与语言跟随宿主状态自动联动。",

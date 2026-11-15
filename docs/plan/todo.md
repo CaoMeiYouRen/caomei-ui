@@ -30,7 +30,7 @@
 | M5-1 | 长尾组件 | BackTop 实现、导出与自动导入（含行为单测） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-1-back-top.md)） |
 | M5-2 | 长尾组件 | TimePicker 实现、导出与自动导入（含行为单测） | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-2-time-picker.md)） |
 | M5-3 | 长尾组件 | 两组件 10 语 locale 键与台账 / 键集合守卫 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-3-locale-keys.md)） |
-| M5-4 | 长尾组件 | BackTop 中英文档、示例、目录 / 画廊登记、E2E 与基线 | 待执行 |
+| M5-4 | 长尾组件 | BackTop 中英文档、示例、目录 / 画廊登记、E2E 与基线 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m5-4-back-top-docs.md)） |
 | M5-5 | 长尾组件 | TimePicker 中英文档、示例、E2E 与基线 | 待执行 |
 
 ## 未完成项汇总

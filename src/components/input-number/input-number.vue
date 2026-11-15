@@ -8,6 +8,7 @@ import {
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { useFocusControl } from '../_shared/use-focus-control'
 import { labelAttrs } from '../_shared/use-label-attrs'
@@ -50,6 +51,21 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const locale = useLocale()
 const increaseLabel = computed(() => props.increaseLabel ?? locale.value.inputNumber.increase)
 const decreaseLabel = computed(() => props.decreaseLabel ?? locale.value.inputNumber.decrease)
+
+/**
+ * 步进按钮的提示停用条件：组件停用 / 只读、或当前值已到边界。
+ *
+ * 与 Reka 的停用判定同源（`disabled || readonly || 边界`）；边界按 `value <= min` / `value >= max`
+ * 近似——`step` 吸附导致「下一步无位移」的取值（如 `min=0.5, value=1, step=2, precision=0`）
+ * Reka 也会停用按钮，但本判定不会命中，此时提示挂在不可用按钮上（主流浏览器不派发指针事件，不可见）。
+ * 仅用于提示——按钮自身的 `disabled` 仍由 primitive 承担，避免两套语义分叉。
+ */
+const decreaseBlocked = computed(() => props.disabled
+    || props.readonly
+    || (props.min !== undefined && model.value !== null && model.value <= props.min))
+const increaseBlocked = computed(() => props.disabled
+    || props.readonly
+    || (props.max !== undefined && model.value !== null && model.value >= props.max))
 
 /** 小数位参数上限：`precision` / `minFractionDigits` / `maxFractionDigits` 共用同一取值域 */
 const DECIMAL_DIGITS_BOUND = 20
@@ -221,16 +237,21 @@ defineExpose({ focus, blur, inputRef })
         :data-filled="model !== null && model !== undefined ? 'true' : undefined"
         @update:model-value="onModelUpdate"
     >
-        <NumberFieldDecrement
+        <CaomeiIconTooltip
             v-if="controls"
-            class="caomei-input-number__button"
-            :aria-label="decreaseLabel"
-            @pointerdown="markStepStart"
-            @pointerup="flushStepChange"
-            @pointercancel="flushStepChange"
+            :content="decreaseLabel"
+            :disabled="decreaseBlocked"
         >
-            <CaomeiIcon :icon="icons.minus" />
-        </NumberFieldDecrement>
+            <NumberFieldDecrement
+                class="caomei-input-number__button"
+                :aria-label="decreaseLabel"
+                @pointerdown="markStepStart"
+                @pointerup="flushStepChange"
+                @pointercancel="flushStepChange"
+            >
+                <CaomeiIcon :icon="icons.minus" />
+            </NumberFieldDecrement>
+        </CaomeiIconTooltip>
         <NumberFieldInput
             :ref="setInputRef"
             v-bind="{...inputAttrs, ...labelAttrs(label)}"
@@ -241,16 +262,21 @@ defineExpose({ focus, blur, inputRef })
             @blur="onBlur"
             @keydown.enter="onEnter"
         />
-        <NumberFieldIncrement
+        <CaomeiIconTooltip
             v-if="controls"
-            class="caomei-input-number__button"
-            :aria-label="increaseLabel"
-            @pointerdown="markStepStart"
-            @pointerup="flushStepChange"
-            @pointercancel="flushStepChange"
+            :content="increaseLabel"
+            :disabled="increaseBlocked"
         >
-            <CaomeiIcon :icon="icons.plus" />
-        </NumberFieldIncrement>
+            <NumberFieldIncrement
+                class="caomei-input-number__button"
+                :aria-label="increaseLabel"
+                @pointerdown="markStepStart"
+                @pointerup="flushStepChange"
+                @pointercancel="flushStepChange"
+            >
+                <CaomeiIcon :icon="icons.plus" />
+            </NumberFieldIncrement>
+        </CaomeiIconTooltip>
     </NumberFieldRoot>
 </template>
 

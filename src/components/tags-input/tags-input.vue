@@ -10,6 +10,7 @@ import {
 import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { TagsInputProps } from './types'
@@ -147,14 +148,18 @@ function restoreInputFocus(): void {
             :disabled="disabled"
             :aria-invalid="invalid || undefined"
         />
-        <TagsInputClear
+        <CaomeiIconTooltip
             v-if="clearable"
-            class="caomei-hit-target caomei-tags-input__clear"
-            :aria-label="clearLabel"
-            @click="restoreInputFocus"
+            :content="clearLabel"
         >
-            <CaomeiIcon :icon="icons.dismiss" />
-        </TagsInputClear>
+            <TagsInputClear
+                class="caomei-hit-target caomei-tags-input__clear"
+                :aria-label="clearLabel"
+                @click="restoreInputFocus"
+            >
+                <CaomeiIcon :icon="icons.dismiss" />
+            </TagsInputClear>
+        </CaomeiIconTooltip>
     </TagsInputRoot>
 </template>
 

@@ -14,6 +14,7 @@ import {
 import { computed, nextTick, ref, useId } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import {
@@ -197,15 +198,19 @@ function onAnchorClick(event: MouseEvent): void {
                 :aria-invalid="invalid || undefined"
                 :disabled="disabled"
             />
-            <button
+            <CaomeiIconTooltip
                 v-if="clearable"
-                type="button"
-                class="caomei-hit-target caomei-multi-select__clear"
-                :aria-label="clearLabel"
-                @click.stop="clearValue"
+                :content="clearLabel"
             >
-                <CaomeiIcon :icon="icons.dismiss" />
-            </button>
+                <button
+                    type="button"
+                    class="caomei-hit-target caomei-multi-select__clear"
+                    :aria-label="clearLabel"
+                    @click.stop="clearValue"
+                >
+                    <CaomeiIcon :icon="icons.dismiss" />
+                </button>
+            </CaomeiIconTooltip>
             <ComboboxTrigger
                 class="caomei-multi-select__icon"
                 :disabled="disabled"

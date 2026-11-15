@@ -4,6 +4,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { CaomeiInput } from '../input'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useFocusControl } from '../_shared/use-focus-control'
 import type { PasswordProps } from './types'
 
@@ -156,16 +157,21 @@ defineExpose({ focus, blur })
             @enter="emit('enter', $event)"
         >
             <template #suffix>
-                <button
-                    type="button"
-                    class="caomei-password__toggle"
-                    :aria-label="toggleLabel"
-                    :aria-pressed="revealed"
+                <CaomeiIconTooltip
+                    :content="toggleLabel"
                     :disabled="disabled"
-                    @click="toggle"
                 >
-                    <CaomeiIcon :icon="revealed ? icons.eyeOff : icons.eye" />
-                </button>
+                    <button
+                        type="button"
+                        class="caomei-password__toggle"
+                        :aria-label="toggleLabel"
+                        :aria-pressed="revealed"
+                        :disabled="disabled"
+                        @click="toggle"
+                    >
+                        <CaomeiIcon :icon="revealed ? icons.eyeOff : icons.eye" />
+                    </button>
+                </CaomeiIconTooltip>
             </template>
         </CaomeiInput>
         <div

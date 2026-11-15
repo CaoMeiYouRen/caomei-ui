@@ -16,6 +16,7 @@ import {
 import { computed, nextTick, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { narrowOptionValue, resolveOptionDisabled, resolveOptionField, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
@@ -229,15 +230,19 @@ function clearValue(): void {
                     <CaomeiIcon :icon="icons.chevronDown" />
                 </SelectIcon>
             </SelectTrigger>
-            <button
+            <CaomeiIconTooltip
                 v-if="clearable"
-                type="button"
-                class="caomei-hit-target caomei-select__clear"
-                :aria-label="clearLabel"
-                @click="clearValue"
+                :content="clearLabel"
             >
-                <CaomeiIcon :icon="icons.dismiss" />
-            </button>
+                <button
+                    type="button"
+                    class="caomei-hit-target caomei-select__clear"
+                    :aria-label="clearLabel"
+                    @click="clearValue"
+                >
+                    <CaomeiIcon :icon="icons.dismiss" />
+                </button>
+            </CaomeiIconTooltip>
         </div>
         <SelectPortal>
             <SelectContent

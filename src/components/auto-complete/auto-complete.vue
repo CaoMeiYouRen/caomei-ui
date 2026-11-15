@@ -15,6 +15,7 @@ import {
 import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
@@ -342,15 +343,19 @@ watch(normalizedOptions, () => {
             >
                 <CaomeiIcon :icon="icons.loading" />
             </span>
-            <button
+            <CaomeiIconTooltip
                 v-else-if="showClear"
-                type="button"
-                class="caomei-auto-complete__clear caomei-hit-target"
-                :aria-label="clearLabel"
-                @click.stop="onClear"
+                :content="clearLabel"
             >
-                <CaomeiIcon :icon="icons.dismiss" />
-            </button>
+                <button
+                    type="button"
+                    class="caomei-auto-complete__clear caomei-hit-target"
+                    :aria-label="clearLabel"
+                    @click.stop="onClear"
+                >
+                    <CaomeiIcon :icon="icons.dismiss" />
+                </button>
+            </CaomeiIconTooltip>
             <ComboboxTrigger
                 v-if="dropdown"
                 class="caomei-auto-complete__trigger"

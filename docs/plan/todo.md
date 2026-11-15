@@ -23,7 +23,7 @@
 | M2-1 | 协作测试 T3 | 嵌套遮罩层级评估（只评估，零代码 / 零 token 改动） | 已完成（[评估记录](../design/governance/2026-11-15-phase34-m2-1-nested-overlay-layering.md)） |
 | M2-2 | 协作测试 T3 | C7 Toast 层叠 / C8 焦点陷阱 + portal / C9 CDP 触摸滚动 | 待执行 |
 | M2-3 | 协作测试 T3 | C6 嵌套 Dialog / Drawer→Dialog（依赖 M2-1 结论） | 待执行 |
-| M3-1 | 质量门禁与 a11y | 打开态 axe（T4）：页面矩阵 +1、规则白名单、最小适用节点下界 | 待执行 |
+| M3-1 | 质量门禁与 a11y | 打开态 axe（T4）：页面矩阵 +1、规则白名单、最小适用节点下界 | 已完成（[批次记录](../design/governance/2026-11-15-phase34-m3-1-open-state-axe.md)） |
 | M3-2 | 质量门禁与 a11y | `release.yml` 周回归机检（N2）：发布前置查询 run 结论，fail-closed | 待执行 |
 | M4-1 | DataTable 数据面 | `scrollable` / `scrollHeight`：固定表头 + 自适应高度容器 | 待执行 |
 | M4-2 | DataTable 数据面 | 全选作用域契约 `selectAllScope`（默认 `page`，保持现状） | 待执行 |

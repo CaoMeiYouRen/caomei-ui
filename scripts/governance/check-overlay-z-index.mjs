@@ -20,7 +20,8 @@
  * 6. 静态变体不得继承浮层档位（T6）：浮层档位规则的选择器若是纯类选择器，而同一组件模板中
  *    存在该类的 `--<修饰符>` 变体（如 `ColorPicker` 的 `--inline`），则报错——`z-index` 对
  *    flex item 同样生效，静态形态被抬到模态之上即视觉缺陷（`ColorPicker` 的原始形态）；
- * 7. 抗静默收窄（T7）：受检文件 / 规则 / 浮层声明条目数不得低于下界；预留档位（`sticky`）须在册
+ * 7. 抗静默收窄（T7）：受检文件 / 规则 / 浮层声明条目数不得低于下界；预留档位表当前为空，
+ *    已有消费点的档位必须移出该表，反例由单测注入 `reservedTiers` 验证
  *    （有消费点时自动移出预留面）；
  * 8. E2E 面板清单联动（T10）：`src` 中声明锚定浮层档位的组件集合，必须与 E2E 受检清单
  *    （`test/e2e/fixtures/overlay-panels.json`）逐一对应——新增 portal 浮层组件而未补 E2E
@@ -66,7 +67,7 @@ export const HOOK_NAME_EXCEPTIONS = new Map([
 ])
 
 /** 无消费点的预留档位（有消费点时必须移出本表，否则 T7 判「预留档位已有消费点」）。 */
-export const RESERVED_TIERS = new Set(['sticky'])
+export const RESERVED_TIERS = new Set()
 
 /**
  * 声明浮层档位但**不是锚定浮层面板**的组件（不参与 E2E 面板清单联动，T10）。
@@ -373,7 +374,7 @@ export function extractTemplateText(file, text) {
 /**
  * T7：受检面与预留档位。
  *
- * @param {{ files: number, rules: number, floatingDeclarations: number, consumedTiers: Set<string> }} counts
+ * @param {{ files: number, rules: number, floatingDeclarations: number, consumedTiers: Set<string>, reservedTiers?: Set<string> }} counts
  * @returns {string[]} 问题列表
  */
 export function findScopeIssues(counts) {
@@ -387,7 +388,8 @@ export function findScopeIssues(counts) {
     if (counts.floatingDeclarations < MIN_FLOATING_DECLARATIONS) {
         issues.push(`[scan-scope-narrowed] 浮层档位声明 ${counts.floatingDeclarations} < 下界 ${MIN_FLOATING_DECLARATIONS}`)
     }
-    for (const tier of RESERVED_TIERS) {
+    // 预留档位可由调用方注入（单测用它验证反例；运行时用模块常量，当前为空集）
+    for (const tier of counts.reservedTiers ?? RESERVED_TIERS) {
         if (counts.consumedTiers.has(tier)) {
             issues.push(`[reserved-tier-consumed] --caomei-z-${tier} 已登记为预留档位但出现消费点，请同步 RESERVED_TIERS 与设计规范 §2.5`)
         }

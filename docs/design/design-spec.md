@@ -78,7 +78,10 @@
 | 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限；`MultiSelect` / `AutoComplete` / `DatePicker` 未声明默认值，按回退链取 `--caomei-select-max-width`（见[主题与样式设计 §4.1](./theming.md)） |
 | 命中区 | `--caomei-hit-target-min` | 24 px | P0 清除 / 关闭 icon 按钮的不可见命中区下限（`.caomei-hit-target`，WCAG 2.5.8；见[响应式设计 §5](./responsive.md)） |
 
-消费统计（`src/` 内引用次数）：radius sm 22 / md 20 / lg 3 / full 1；control-height sm 11 / md 14 / lg 9；font-size sm 18 / md 39 / lg 15；space-1 ~ 4 分别 41 / 46 / 24 / 23。
+消费统计（快照 2026-11-15，工作区口径）：`--caomei-radius-full` 9 处、`--caomei-space-4` 53 处、`--caomei-z-sticky` 1 处。复算命令（对工作区生效，含未跟踪文件）：
+`rg -o --no-filename 'var\(--caomei-radius-full\)' src | wc -l`，其余 token 替换名称即可；增量与 `b046f8e`（HEAD）相比为 radius full +1、space-4 +2、z-sticky +1。
+
+常驻浮出控件（如 BackTop）默认取 `--caomei-z-sticky`，并提供 `--caomei-<comp>-z-index` 覆盖钩子；新增常驻控件时沿用该命名，不单独引入档位。
 
 > 断点约定为 sm 640px / md 768px / lg 1024px；`@media` 不支持 CSS 自定义属性，故断点以文档约定 + 组件内媒体查询字面量维护，未定义 `--caomei-breakpoint-*` 变量。断点语义与窄屏行为矩阵见[响应式设计](./responsive.md)。
 
@@ -99,7 +102,7 @@
 | `--caomei-z-raise` | `1` | 局部层叠：同容器内焦点成员 / 浮动标签的相对抬升（ButtonGroup / InputGroup / FloatLabel） |
 | `--caomei-z-pinned` | `2` | 局部层叠：DataTable 冻结列数据单元格 |
 | `--caomei-z-pinned-header` | `3` | 局部层叠：DataTable 冻结列表头（高于数据单元格） |
-| `--caomei-z-sticky` | `10` | 浮层层级词表预留（暂无消费点） |
+| `--caomei-z-sticky` | `10` | 浮层层级词表：BackTop 等常驻浮出控件（低于 overlay / modal / 面板 / 提示） |
 | `--caomei-z-overlay` | `1000` | 遮罩层（Dialog / ConfirmDialog / Drawer） |
 | `--caomei-z-modal` | `1001` | 模态内容（Dialog / ConfirmDialog / Drawer） |
 | `--caomei-z-dropdown` | `1050` | 锚定浮层面板（DropdownMenu / Popover / DatePicker / Select / MultiSelect / AutoComplete / ColorPicker 的 portal 面板） |

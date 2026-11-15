@@ -59,8 +59,8 @@ describe('check-overlay-z-index 仓库不变量', () => {
             '.caomei-confirm-dialog__content',
             '.caomei-drawer__content',
         ]))
-        expect(RESERVED_TIERS.has('sticky')).toBe(true)
-        // `tooltip` 档自 Tooltip 组件落地后已有消费点，必须移出预留面（T7 反向校验）
+        // `sticky` 与 `tooltip` 档均已落地消费点，必须移出预留面（T7 反向校验）
+        expect(RESERVED_TIERS.has('sticky')).toBe(false)
         expect(RESERVED_TIERS.has('tooltip')).toBe(false)
         expect(HOOK_NAME_EXCEPTIONS.get('src/components/image/image.vue')).toBe('--caomei-image-preview-z-index')
     })
@@ -280,7 +280,13 @@ describe('check-overlay-z-index 受检面守卫（T7）', () => {
     })
 
     it('反例：预留档位出现消费点', () => {
-        const issues = findScopeIssues({ files: 99, rules: 999, floatingDeclarations: 9, consumedTiers: new Set(['sticky']) })
+        const issues = findScopeIssues({
+            files: 99,
+            rules: 999,
+            floatingDeclarations: 9,
+            consumedTiers: new Set(['sticky']),
+            reservedTiers: new Set(['sticky']),
+        })
         expect(issues[0]).toContain('[reserved-tier-consumed]')
     })
 

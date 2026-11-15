@@ -21,7 +21,7 @@ Common `DataTableColumn` fields:
 | `header` | `string` | Header text; falls back to `key` |
 | `accessor` | `string \| (row) => unknown` | Value field name (dot-path nesting supported) or function |
 | `cell` | `(context) => VNodeChild` | Custom cell content; `context` contains `row` / `value` / `index`; overridden by a same-named column slot when present |
-| `width` | `string` | Column width, e.g. `120px` / `20%` |
+| `width` | `string` | Column width, e.g. `120px` / `20%`; percentages do not drive truncation or tooltips — see "Truncation and tooltip" |
 | `align` | `'left' \| 'center' \| 'right'` | Horizontal alignment, defaults to `left` |
 | `sortable` | `boolean` | Whether the column is sortable (header renders a sort button) |
 | `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | Sort function, defaults to `alphanumeric` |
@@ -232,6 +232,19 @@ When `data` is empty an empty state is rendered, with default text from the curr
 - `multiSortMeta` / `selection` / `expandedRows` / `expandedRowGroups` are likewise shallowly reactive: replace the array reference when writing back from a controlled binding (in-place mutation will not trigger a re-render).
 - `key` and `accessor` use string field names and do not perform field-level type checking; use an `accessor` function when you need type-safe access.
 - Currently column definitions and column slots, sorting (including multi-column sorting), row grouping, row expansion, row selection, pagination, frozen columns and loading state are all supported.
+
+## Truncation and tooltip
+
+Header and default cell text is truncated to a single line with an ellipsis when the column is not wide enough, and hovering shows the full text; while it fits, everything stays silent. **Only absolute column widths truncate:**
+
+- `columns[].width` using `px` / `rem` / `em` / `ch` / `ex` / `cm` / `mm` / `in` / `pt` / `pc` (lowercase) takes effect, with the text capped at "column width − horizontal cell padding" (falling back to `1ch` when the width is smaller than the padding, so it never collapses to zero);
+- percentages do not truncate (they would be re-based against the cell content box, clipping even short text), and neither do keywords such as `auto` / `min-content` or viewport units (`vh` / `vw` / `vmin` / `vmax`);
+- columns without a width keep the existing wrapping behaviour;
+- a sortable header's cap does not subtract the space reserved for the sort indicator (a 14px icon plus the gap; multi-column sorting adds a `1ch` index too), so a sortable column with a declared width ends up slightly wider than declared.
+
+The tooltip is pointer-only: the trigger is the text box itself and is not focusable, so focusing a sort button never opens it.
+
+Custom `cell` functions and `#cell-*` / `#header-*` slots are **not wrapped**; wrap the content in `CaomeiTooltipText` (`mode="auto"`) and add the single-line ellipsis styles yourself when you need the same behaviour.
 
 ## Accessibility
 

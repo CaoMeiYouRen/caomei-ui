@@ -21,7 +21,7 @@
 | `header` | `string` | 表头文本，缺省显示 `key` |
 | `accessor` | `string \| (row) => unknown` | 取值字段名（支持 `a.b` 点号嵌套）或函数 |
 | `cell` | `(context) => VNodeChild` | 自定义单元格内容，`context` 含 `row` / `value` / `index`；同名列插槽存在时被其覆盖 |
-| `width` | `string` | 列宽，如 `120px` / `20%` |
+| `width` | `string` | 列宽，如 `120px` / `20%`；百分比不驱动截断与提示，见「长文本截断与提示」 |
 | `align` | `'left' \| 'center' \| 'right'` | 水平对齐，默认 `left` |
 | `sortable` | `boolean` | 该列是否可排序（表头渲染为排序按钮） |
 | `sortFn` | `'alphanumeric' \| 'text' \| 'basic'` | 排序函数，默认 `alphanumeric` |
@@ -232,6 +232,19 @@
 - `multiSortMeta` / `selection` / `expandedRows` / `expandedRowGroups` 同为浅响应：受控回写时请替换数组引用（原地增删不会触发重新渲染）。
 - `key` 与 `accessor` 使用字符串字段名，不做字段级类型校验；需要类型安全取值时用 `accessor` 函数。
 - 当前已支持列定义与列插槽、排序（含多列排序）、行分组、行展开、行选择、分页、冻结列与加载态。
+
+## 长文本截断与提示
+
+表头与默认单元格文本在列宽不足时单行省略，悬停显示全文；装得下时完全静默。**只有列宽为绝对长度时才截断**：
+
+- `columns[].width` 取 `px` / `rem` / `em` / `ch` / `ex` / `cm` / `mm` / `in` / `pt` / `pc`（小写）时生效，文本上限按「列宽 − 单元格横向内边距」计算（列宽小于左右内边距之和时按 `1ch` 兜底，不会塌成 0 宽）；
+- 百分比不参与截断（会以单元格内容盒为基准二次取百分比，短文本也会被误截断），`auto` / `min-content` 一类关键字与视口单位（`vh` / `vw` / `vmin` / `vmax`）同理；
+- 未设列宽的列保持既有换行行为；
+- 可排序表头的上限未扣排序指示器的预留宽（图标 14px + 间距；多列排序另含序号 `1ch`），声明了列宽的可排序列会略宽于声明值。
+
+提示只覆盖指针悬停：触发器是文本盒本身、不可聚焦，聚焦排序按钮不会弹出提示。
+
+自定义 `cell` 函数与 `#cell-*` / `#header-*` 插槽的渲染结果**不包裹**提示；需要时把内容包进 `CaomeiTooltipText`（`mode="auto"`），并自行给出单行省略样式。
 
 ## 无障碍
 

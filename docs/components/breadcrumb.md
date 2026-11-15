@@ -20,6 +20,12 @@
     ssg="true"
 />
 
+## 长文本截断与提示
+
+项文本在容器内放不下时单行省略，悬停显示全文；装得下时完全静默。上限可经 `--caomei-breadcrumb-label-max-width` 收紧到固定值。
+
+链接项带不可见的命中区（`--caomei-hit-target-min`，默认 24px），文本盒绘制在其之上——悬停链接中段同样会给出提示，命中区的点击语义不受影响。提示只覆盖指针悬停：文本盒不可聚焦，聚焦链接不会弹出。
+
 ## 无障碍
 
 - 容器为 `nav`（`label` 映射 `aria-label`）+ `ol`。
@@ -38,6 +44,7 @@
 | `--caomei-breadcrumb-separator-color` | `--caomei-color-border` | 分隔符颜色 |
 | `--caomei-breadcrumb-link-hover-color` | `--caomei-color-primary` | 链接悬停色 |
 | `--caomei-breadcrumb-current-color` | `--caomei-color-text` | 当前页文字色 |
+| `--caomei-breadcrumb-label-max-width` | `100%` | 项文本宽度上限（超出时省略并显示提示） |
 
 ## 从 PrimeVue 迁移
 

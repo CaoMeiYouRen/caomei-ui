@@ -40,6 +40,13 @@ With `closable`, a close button is shown; clicking it emits `close` for the pare
     ssg="true"
 />
 
+## Truncation and tooltip
+
+When the label does not fit inside its container it is truncated to a single line with an ellipsis, and hovering shows the full text; while it fits, everything stays silent (no `aria-describedby` on the element). Truncation kicks in when the parent constrains the tag's width — the component already declares `max-width: 100%`, and `--caomei-tag-label-max-width` (default `100%`) tightens the cap to a fixed value.
+
+- The tooltip content is the visible label text; the trigger is the text box itself and is not focusable, so it is pointer-only (screen readers are unaffected — truncation is purely visual).
+- Turn it off globally: pass `:disabled="true"` to the root `CaomeiTooltipProvider`.
+
 ## Accessibility
 
 - The close button uses the built-in localized label, overridable via `closeLabel`.

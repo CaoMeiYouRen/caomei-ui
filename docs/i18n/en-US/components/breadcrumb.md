@@ -20,6 +20,12 @@ A breadcrumb shows where the current page sits in a hierarchy. Compose it with `
     ssg="true"
 />
 
+## Truncation and tooltip
+
+When an item's text does not fit inside the container it is truncated to a single line with an ellipsis, and hovering shows the full text; while it fits, everything stays silent. Tighten the cap to a fixed value with `--caomei-breadcrumb-label-max-width`.
+
+Link items carry an invisible hit area (`--caomei-hit-target-min`, 24px by default) and the text box paints above it — hovering the middle of a long link still shows the tooltip, and the hit area keeps its click semantics. The tooltip is pointer-only: the text box is not focusable, so focusing the link never opens it.
+
 ## Accessibility
 
 - The container is a `nav` (`label` maps to `aria-label`) plus an `ol`.
@@ -38,6 +44,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-breadcrumb-separator-color` | `--caomei-color-border` | Separator colour |
 | `--caomei-breadcrumb-link-hover-color` | `--caomei-color-primary` | Link hover colour |
 | `--caomei-breadcrumb-current-color` | `--caomei-color-text` | Current page text colour |
+| `--caomei-breadcrumb-label-max-width` | `100%` | Width cap for the item text (ellipsis plus tooltip beyond it) |
 
 ## Migration from PrimeVue
 

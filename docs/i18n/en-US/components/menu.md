@@ -32,6 +32,12 @@ A navigation menu organises page-level navigation (sidebars and top bars) using 
 
 A collapsed submenu panel is **unmounted** by Presence, so its items leave both the keyboard sequence and the accessibility tree. **Collapsing (`ArrowLeft` / `Escape`) requires focus to be inside the panel**: while focus sits on an expanded trigger neither key acts (so stray keystrokes are not swallowed).
 
+## Truncation and tooltip
+
+When a plain item or a submenu trigger's label does not fit, it is truncated to a single line with an ellipsis and hovering shows the full text; while it fits, everything stays silent. Tighten the cap to a fixed value with `--caomei-menu-item-label-max-width`.
+
+**Known constraint**: the item slot is wrapped in a single text box, so `--caomei-menu-item-gap` no longer applies between an icon and the text (spacing falls back to template whitespace), and multi-node content (such as a trailing count badge) is clipped by that box when truncated. The submenu indicator is a decorative icon (`aria-hidden`) and carries no tooltip; the expansion semantics live on the trigger's `aria-expanded`. The tooltip is pointer-only: the text box is not focusable, so focusing a menu item never opens it.
+
 ## Accessibility
 
 - The container is a `nav` (`label` maps to `aria-label`) plus `ul[role="list"]`: `list-style: none` removes list semantics in Safari, hence the explicit `role="list"`.
@@ -57,13 +63,14 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 |------|------|------|
 | `--caomei-menu-gap` | `2px` | Gap between items / between panel and trigger |
 | `--caomei-menu-indent` | `--caomei-space-4` | Submenu panel indent |
-| `--caomei-menu-item-gap` | `--caomei-space-2` | Gap between icon and text inside an item |
+| `--caomei-menu-item-gap` | `--caomei-space-2` | Gap between the label and the indicator in a submenu trigger; once the item slot becomes a single text box it **no longer applies between an icon and the text** (see "Truncation and tooltip") |
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | Item padding |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | Item corner radius |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | Hover background |
 | `--caomei-menu-item-hover-color` | `inherit` | Hover text colour; the current item keeps `current-color` on hover |
 | `--caomei-menu-item-current-bg` | `--caomei-color-bg-elevated` | Current item background |
 | `--caomei-menu-item-current-color` | `--caomei-color-primary-text` | Current item text colour |
+| `--caomei-menu-item-label-max-width` | `100%` | Width cap for the item label text |
 
 ## Migration from PrimeVue
 

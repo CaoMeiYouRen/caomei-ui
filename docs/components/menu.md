@@ -32,6 +32,12 @@
 
 收起状态的子菜单面板由 Presence **卸载**，其子项不进入键盘序列与可访问树。**收起（`ArrowLeft` / `Escape`）以焦点位于面板内为前提**：焦点停在已展开的触发器上时二者不动作（避免误吞按键）。
 
+## 长文本截断与提示
+
+普通项与子菜单触发器的标签放不下时单行省略，悬停显示全文；装得下时完全静默。上限可经 `--caomei-menu-item-label-max-width` 收紧到固定值。
+
+**已知约束**：项插槽内容被整体包进一个文本盒——`--caomei-menu-item-gap` 不再作用于「图标 + 文本」之间（间距退回模板空白），多节点内容（如末尾计数徽标）在截断时按盒裁切。子菜单指示器是装饰性图标（`aria-hidden`），不挂提示，展开语义由触发器的 `aria-expanded` 表达。提示只覆盖指针悬停：文本盒不可聚焦，聚焦菜单项不会弹出。
+
 ## 无障碍
 
 - 容器为 `nav`（`label` 映射 `aria-label`）+ `ul[role="list"]`：`list-style: none` 会移除 Safari 的列表语义，故显式声明 `role="list"`。
@@ -57,13 +63,14 @@
 |------|------|------|
 | `--caomei-menu-gap` | `2px` | 项之间 / 面板与触发器的间距 |
 | `--caomei-menu-indent` | `--caomei-space-4` | 子菜单面板的缩进 |
-| `--caomei-menu-item-gap` | `--caomei-space-2` | 项内图标与文本间距 |
+| `--caomei-menu-item-gap` | `--caomei-space-2` | 子菜单触发器中标签与指示器的间距；项插槽整段成一个文本盒后，**不再作用于图标与文本之间**（见「长文本截断与提示」） |
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | 项内边距 |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | 项圆角 |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | 悬停背景 |
 | `--caomei-menu-item-hover-color` | `inherit` | 悬停文字色；当前项悬停保持 `current-color` |
 | `--caomei-menu-item-current-bg` | `--caomei-color-bg-elevated` | 当前项背景 |
 | `--caomei-menu-item-current-color` | `--caomei-color-primary-text` | 当前项文字色 |
+| `--caomei-menu-item-label-max-width` | `100%` | 项标签文本的宽度上限 |
 
 ## 从 PrimeVue 迁移
 

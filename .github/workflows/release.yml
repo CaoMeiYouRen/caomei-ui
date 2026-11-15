@@ -8,7 +8,8 @@ name: Release
 # - npm：Trusted Publishing（OIDC，`id-token: write`），**不需要 NPM_TOKEN**。
 # - GitHub：`GITHUB_TOKEN`；`persist-credentials: false` 下由 semantic-release
 #   自动把 token 注入推送 URL，供 `@semantic-release/git` 回推与创建 Release。
-# - 发布前保留安全告警门禁 + `pnpm verify` + 覆盖率门禁。
+# - 发布前保留**周回归门禁**（最近一次 `Weekly Regression` 必须为绿）+ 安全告警门禁 +
+#   `pnpm verify` + 覆盖率门禁。
 # - 下游兼容检查由独立 job 在发布成功后显式 dispatch（dispatch 前轮询 npm 传播，
 #   避免下游装不到刚发布的版本）：`GITHUB_TOKEN` 创建的 tag / release 不触发 `v*`
 #   workflow，必须用 `workflow_dispatch`。
@@ -35,6 +36,7 @@ jobs:
       contents: write # release commit / tag / GitHub Release
       issues: write
       pull-requests: write
+      actions: read # 周回归门禁查询 regression-weekly 的最近一次运行结论
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -59,6 +61,14 @@ jobs:
           cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
       - run: pnpm i --frozen-lockfile
+      - name: Weekly regression gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # 发布指南 §1：发布当周最近一次 Weekly Regression 必须为绿；非 success 或查询失败一律中止
+          # （exit 1 = 结论非绿 / 无运行，exit 2 = 配置或 API 错误）。
+          pnpm check:weekly-regression
       - name: Security alert gate
         env:
           SECURITY_ALERTS_TOKEN: ${{ secrets.SECURITY_ALERTS_TOKEN }}

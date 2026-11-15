@@ -146,7 +146,18 @@
 
 ## 行选择
 
-`selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框，**只作用于当前页**：客户端分页下切换页面不会清除其它页已选行，表头状态（全选 / 半选）也只反映当前页；`lazy` 下同样只作用当前页；未启用分页时等同于全选整表。需要一次选中整表时，由父级在受控 `selection` 中写入目标行（组件不提供额外的全表 / 服务端全选 prop）。`lazy` 下请显式提供 `rowKey`（缺省按页内索引，翻页后无法稳定标识行）。运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 需在挂载时确定。非受控时同样抛出 `update:selection`（供观察）。该全选作用域为**有意差异**（与 PrimeVue 的整表全选不同），已由下游迁移评估确认，契约不变。
+`selectionMode` 为 `multiple` / `single` 时首列渲染选择框；用 `v-model:selection` 双向绑定（`multiple` 为数组，`single` 为单行或 `null`）。`multiple` 模式表头提供全选框，作用域由 `selectAllScope` 决定：
+
+- **`page`（默认）**：只作用于**当前页**。客户端分页下切换页面不会清除其它页已选行，表头状态（全选 / 半选）也只反映当前页；未启用分页时等同于全选整表。默认值与既有行为逐项一致。
+- **`all`**：作用于当前 `data` 的**全部行**（客户端分页下即整表）。表头状态按整表计算，点击一次选中全部数据行，再点一次全部取消。
+- **`lazy`（服务端分页）**：不推断未加载页。默认 `page` 保持既有行为（受控下同样只抛出当前页）；仅 `selectAllScope="all"` 时仍只切当前页，但受控 `selection` 下点击抛出「当前页 + 其它页保留项」的合并结果，**不会清空未加载页已选中的行**（同 key 的过期对象会被当前页对象去重）。
+- 受控 `selection` 优先：提供 `selection` 时表头状态由受控值计算，点击只抛出 `update:selection`，是否采纳由父级决定。
+
+`lazy` 下请显式提供 `rowKey`（缺省按页内索引，翻页后无法稳定标识行）。运行时传入或移除 `selection` 会在受控与自持之间切换，`selectionMode` 与 `selectAllScope` 需在挂载时确定（运行期切换只影响后续交互，不重算既有选择）。非受控时同样抛出 `update:selection`（供观察）。
+
+> `selectAllScope="all"` 时默认可访问名仍是「全选当前页」，与实际动作不符：请通过 `selectAllLabel` 覆盖为「全选全部行」一类文案（开发期会给出提醒）。
+
+> 与 PrimeVue 的有意差异：PrimeVue 客户端分页的表头全选作用于过滤后的整表。本库默认保持「当前页」，需要整表语义时显式传 `selectAllScope="all"`。
 
 <demo
     vue="../examples/data-table/selection.vue"
@@ -175,7 +186,7 @@
 
 ## 分页
 
-`paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。提供 `rowsPerPageOptions` 后在分页器渲染每页条数选择器，切换时抛出 `update:rows`（配合 `v-model:rows` 使用），并按保留首行偏移的语义重新推导页码（受控分页下同时抛出 `update:page`，裁剪与否由父级决定）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。`lazy` 下行选择**按页收敛**：受控 `selection` 只映射当前页行，`update:selection` 也只含当前页行；未受控时 `data` **引用被替换**（翻页或同页刷新）会清空内部选择，清空不额外抛出 `update:selection`，原地修改同一数组不会触发（请替换引用）。需要跨页保留时由父级聚合受控 `selection`。
+`paginator` 显示分页器，`rows` 设置每页条数；用 `v-model:page` 绑定当前页码（受控）。提供 `rowsPerPageOptions` 后在分页器渲染每页条数选择器，切换时抛出 `update:rows`（配合 `v-model:rows` 使用），并按保留首行偏移的语义重新推导页码（受控分页下同时抛出 `update:page`，裁剪与否由父级决定）。未启用 `paginator` 时不切片，整表渲染全部行。`lazy` 为真时按服务端分页处理：不再对传入的 `data` 切片（`data` 应为本页数据），总页数由 `totalRecords` 决定（缺省回退 `data.length`，服务端分页建议始终传入），页码变化抛出 `page`（`{ page, rows, first, pageCount }`）。`lazy` 需在挂载时确定。`lazy` 下行选择**按页收敛**：受控 `selection` 只映射当前页行，`update:selection` 也只含当前页行（`selectAllScope="all"` 时为例外，见「行选择」）；未受控时 `data` **引用被替换**（翻页或同页刷新）会清空内部选择，清空不额外抛出 `update:selection`，原地修改同一数组不会触发（请替换引用）。需要跨页保留时由父级聚合受控 `selection`。
 
 **页码自动重置与父级配合**
 
@@ -303,7 +314,8 @@
 | 表级 `<template #header>` / `#footer` | 无表级 header / footer 插槽；标题改用 `caption`，操作区放在表格容器外 |
 | `frozen` + `align-frozen="left" \| "right"` | `frozen: 'left' \| 'right'`（单个字段同时表达是否冻结与停靠方向） |
 | `<Column selection-mode="multiple" />` | 表格级 `selectionMode="multiple"`；选择列固定渲染在首列，宽度与内边距可用 `--caomei-data-table-selection-column-width` / `-selection-cell-padding-inline` 配置 |
-| 表头全选作用域（客户端分页） | **当前页**（跨页选择保留；整表选择由父级写 `selection`）；PrimeVue 的客户端分页表头全选作用于整表 |
+| 表头全选作用域（客户端分页） | 默认 `page` = **当前页**（跨页选择保留）；`selectAllScope="all"` = 当前 `data` 全部行；PrimeVue 的客户端分页表头全选作用于整表 |
+| 全选作用域 prop | `selectAllScope`（`'page' \| 'all'`，默认 `'page'`）；`lazy` 下不推断未加载页 |
 | `scrollable` + `scrollHeight` | 同名（`scrollable` 布尔、`scrollHeight` 数字按 `px` 归一化或 CSS 长度字符串）；只影响限高与吸顶，不复制表头 |
 | `rows-per-page-options` | 同名 `rowsPerPageOptions`，切换抛出 `update:rows` 并按偏移保持语义重新推导页码 |
 | `@page="({ page, rows, first }) => …"` | `@page="({ page, rows, first, pageCount }) => …"`（字段口径一致，另带 `pageCount`） |

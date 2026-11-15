@@ -98,7 +98,7 @@ function notifySaved(): void {
 | Tooltip 接入 | `v-tooltip` 指令（含 `v-tooltip:left` 等方向修饰符）/ `<Tooltip>` | `<CaomeiTooltipProvider>`（建议应用根部一次；未放置时内建兜底，代价是不共享跨触发器免延迟）+ `<CaomeiTooltip>` / `CaomeiTooltipTrigger` / `CaomeiTooltipContent`；方向改用 `side` + `align` | `showDelay` → `delayDuration`（Provider 级或单条）；**未提供独立隐藏延迟**；无指令式挂载，须显式包一层触发器（`as-child` 复用原元素）；见 §7 与 [Tooltip](../components/tooltip.md) |
 | 表格受控状态回写 | `v-model:*` 只读日志 / 不回写 | 必须监听并回写 `multiSortMeta` / `expandedRowGroups` / `expandedRows` / `selection` / `page` | 不回写时内建排序、分组折叠、行展开、选择与翻页按钮**无效果**；受控数组请替换引用而非原地增删；见 [DataTable](../components/data-table.md)「范围与约定」 |
 | 表格行状态与分页基准 | `expandedRows` 可为 `Record<key, boolean>`（另有行对象数组形态）；`first` 为 0 基偏移；`rows` / `totalRecords` | `expandedRows` 为 `string[]` 行 key；`selection` 载荷为 `T \| T[] \| null`；`page` 为 1 基；`itemsPerPage` / `total` | `lazy` + 选择 / 展开必须显式 `rowKey`；`selection` 用 `Array.isArray` 窄化后回写；`page = floor(first / rows) + 1`；分页报表用 Paginator 的 `#report` 插槽（作用域 `page` / `pages` / `total`，见 [Paginator](../components/paginator.md)「报表插槽」），更复杂模板仍由父级自渲染 |
-| 表头全选作用域 | 客户端分页表头全选 = 过滤后整表 | `multiple` 表头全选**只作用当前页**；跨页选择由父级 `selection` 聚合 | 需要「全选全部筛选结果」时自建选择栏；`lazy` 下同样只作用当前页；见 §7 与 [DataTable](../components/data-table.md) |
+| 表头全选作用域 | 客户端分页表头全选 = 过滤后整表 | `selectAllScope`（默认 `page` = 当前页；`all` = 当前 `data` 全部行） | 默认保持当前页，需要整表语义时显式传 `all`；`lazy` 下不推断未加载页；见 §7 与 [DataTable](../components/data-table.md) |
 | 表格密度与表级结构 | `size="small"`；表级 `#header` / `#footer` | 无 `size` prop；密度用 `--caomei-data-table-cell-padding-block` / `-cell-padding-inline` 覆盖；无表级 header / footer 插槽 | 标题改用 `caption`，操作区放在表格容器外；不要指望 `size` 静默生效；见 §7 与 [DataTable](../components/data-table.md)「密度与选择列」 |
 | 表格选择列宽度 | 选择列宽度固定（如 52px） | `--caomei-data-table-selection-column-width` / `-selection-cell-padding-inline` | 写在表格容器或祖先上即可，无需覆盖单元格选择器；见 [DataTable](../components/data-table.md)「密度与选择列」 |
 | 选择器宽度与包裹层 | `fluid`；在组件上写宽度 | 默认带 `20rem` 上限；`--caomei-select-max-width: none` 写在**字段外层或祖先**；`class` / `style` 落在触发器 | 全局覆盖被库 `:root` 压过时用 `:root:root`；需要定宽时在包裹容器上设，不写触发器；见 [Select](../components/select.md) |
@@ -133,7 +133,7 @@ function notifySaved(): void {
 - [ ] 受控字段（`v-model:*`）与事件名按下表口径改完，且类型检查通过；
 - [ ] 表格的 `multiSortMeta` / `expandedRowGroups` / `expandedRows` / `selection` / `page` 均已在 `@update:*` 回写，并在真实页面点击内建排序、分组折叠、行展开、选择与翻页验证；
 - [ ] `lazy` 表格已显式提供 `rowKey`；`expandedRows` 使用 `string[]`，`selection` 载荷已窄化；分页 `first` 已换算为 1 基 `page`；
-- [ ] 表头全选「只作用当前页」的业务影响已确认；需要跨页全选时由父级 `selection` / 选择栏承载；
+- [ ] 表头全选作用域已确认：默认 `page` 只作用当前页；需要整表语义时显式 `selectAllScope="all"`（`lazy` 下仍只切当前页、不清空未加载项）；
 - [ ] `size="small"` 等表格密度写法已移除，改用 CSS 内边距覆盖；表级 `#header` / `#footer` 内容已移到表格容器外；
 - [ ] 选择器宽度上限与包裹层已核对（`--caomei-select-max-width` / `:root:root` / 字段外层）；
 - [ ] `DatePicker` 迁到 `selectionMode="range"` 时 `v-model` 已改为 `[Date, Date] | null`，且未同时开启 `showTime`；

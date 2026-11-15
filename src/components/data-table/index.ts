@@ -12,6 +12,7 @@ export type {
     DataTableRowGroupEvent,
     DataTableRowGroupMode,
     DataTableRowGroupSlotProps,
+    DataTableSelectAllScope,
     DataTableSelectionMode,
     DataTableSortEvent,
     DataTableSortFn,

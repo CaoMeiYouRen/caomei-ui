@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     lazy: false,
     page: undefined,
     autoResetPageIndex: undefined,
+    selectAllScope: 'page',
     scrollable: false,
     scrollHeight: undefined,
 })
@@ -117,6 +118,12 @@ function resolveRowKey(row: T, index: number): string {
  * `expandedRows` 无法区分页，故在开发期要求显式提供稳定 `rowKey`。
  * `lazy` 需在挂载时确定，这里只判定一次。
  */
+if (props.selectAllScope === 'all' && props.lazy) {
+    warnDev('[CaomeiDataTable] selectAllScope="all" 在 lazy 下不会推断未加载页：表头全选仍只切换当前页，其它页已选行在受控模式下保留。')
+}
+if (props.selectAllScope === 'all' && props.selectAllLabel === undefined) {
+    warnDev('[CaomeiDataTable] selectAllScope="all" 已开启但未提供 selectAllLabel：默认可访问名仍是「全选当前页」，请按实际作用域覆盖。')
+}
 if (
     props.lazy
     && props.rowKey === undefined
@@ -823,22 +830,84 @@ function columnDef(key: string): DataTableColumn<T> {
 const bodyColspan = computed(() => Math.max(props.columns.length + (props.selectionMode ? 1 : 0), 1))
 
 /*
- * 表头全选只作用于**当前页**：`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`
+ * 表头全选默认只作用于**当前页**：`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`
  * 与 `toggleAllPageRowsSelected` 都以分页后的行模型为准，客户端分页下不会跨页批量改写。
- * 无分页时页行模型即全量行，行为与全选整表一致。
+ * 无分页时页行模型即全量行，行为与全选整表一致。`selectAllScope="all"` 改用全量行模型。
  */
 const allPageRowsSelected = computed(() => table.getIsAllPageRowsSelected())
 const somePageRowsSelected = computed(() => table.getIsSomePageRowsSelected())
+const allTableRowsSelected = computed(() => table.getIsAllRowsSelected())
+const someTableRowsSelected = computed(() => table.getIsSomeRowsSelected())
+
+/** `all` 只在客户端分页下表示「整表」；`lazy` 的 `data` 只有当前页，不能据此推断整表。 */
+const usesAllScope = computed(() => props.selectAllScope === 'all' && !props.lazy)
+
+const headerAllSelected = computed(() =>
+    usesAllScope.value ? allTableRowsSelected.value : allPageRowsSelected.value,
+)
+const headerSomeSelected = computed(() =>
+    usesAllScope.value ? someTableRowsSelected.value : somePageRowsSelected.value,
+)
 
 function headerCheckboxModel(): boolean | 'indeterminate' {
-    if (allPageRowsSelected.value) {
+    if (headerAllSelected.value) {
         return true
     }
-    return somePageRowsSelected.value ? 'indeterminate' : false
+    return headerSomeSelected.value ? 'indeterminate' : false
+}
+
+/** 取行的稳定标识；未提供 `rowKey` 或取值失败时返回 `null`（无法按 key 去重）。 */
+function rowIdentity(row: T): string | null {
+    if (props.rowKey === undefined) {
+        return null
+    }
+    try {
+        return resolveRowKey(row, props.data.indexOf(row))
+    } catch {
+        return null
+    }
+}
+
+/** 当前页之外、仍被受控 `selection` 持有的行（按对象身份比较，再按 `rowKey` 去掉与当前页重复的过期对象）。 */
+function rowsOutsideCurrentPage(): T[] {
+    // 页面键集合与 `rowIdentity` 同口径：无法取 key 的行不参与按 key 去重（仅靠对象身份）
+    const pageKeys = new Set<string>()
+    props.data.forEach((row, index) => {
+        try {
+            pageKeys.add(resolveRowKey(row, index))
+        } catch {
+            // 自定义 `rowKey` 对个别行抛错时不得中断全选
+        }
+    })
+    return selectionRows().filter((row) => {
+        if (props.data.some((item) => toRaw(item) === toRaw(row))) {
+            return false
+        }
+        const key = rowIdentity(row)
+        return key === null || !pageKeys.has(key)
+    })
 }
 
 function toggleAllPageRows(): void {
-    table.toggleAllPageRowsSelected(!allPageRowsSelected.value)
+    const target = !headerAllSelected.value
+    // 默认 `page` 保持既有行为（即使 `lazy` + 受控也不改动载荷）；只有显式 `all` 才做跨页合并
+    if (props.lazy && props.selectAllScope === 'all') {
+        // 服务端模式不推断全量：只切当前页；受控时保留其它页已选行（不清空未加载项）
+        if (isSelectionControlled.value) {
+            const next = target
+                ? [...rowsOutsideCurrentPage(), ...props.data]
+                : rowsOutsideCurrentPage()
+            emit('update:selection', next)
+            return
+        }
+        table.toggleAllPageRowsSelected(target)
+        return
+    }
+    if (props.selectAllScope === 'all') {
+        table.toggleAllRowsSelected(target)
+        return
+    }
+    table.toggleAllPageRowsSelected(target)
 }
 
 function toggleRow(row: { toggleSelected: () => void }): void {

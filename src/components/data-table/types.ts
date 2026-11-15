@@ -11,6 +11,15 @@ export type DataTableSortFn = 'alphanumeric' | 'text' | 'basic'
 /** 行选择模式 */
 export type DataTableSelectionMode = 'single' | 'multiple'
 
+/**
+ * 表头全选作用域：`page` 只作用于当前页（默认，保持既有行为）；`all` 作用于当前 `data` 的全部行。
+ * `lazy` 下 `data` 只含当前页，故 `all` 仍只切当前页，但不会清空其它页已选中的行
+ * @en Header select-all scope: `page` selects the current page only (default, preserving existing
+ * behavior); `all` selects every row in the current `data`. Under `lazy` the `data` holds only the
+ * current page, so `all` still toggles that page but keeps selections from other pages intact
+ */
+export type DataTableSelectAllScope = 'page' | 'all'
+
 /** 行分组模式；`subheader` 在每个分组前渲染分组标题行（对齐 PrimeVue 命名） */
 export type DataTableRowGroupMode = 'subheader'
 
@@ -276,6 +285,14 @@ export interface DataTableProps<T> {
      * @en Controlled selection: an array for `multiple`, a single row or `null` for `single`; providing it enables controlled selection
      */
     selection?: T[] | T | null
+    /**
+     * 表头全选作用域：`page` 只切当前页（默认）；`all` 切当前 `data` 的全部行。
+     * `lazy` 下不推断未加载页，只切当前页并在受控模式下保留其它页的已选行
+     * @en Header select-all scope: `page` toggles the current page only (default); `all` toggles
+     * every row in the current `data`. Under `lazy` unloaded pages are never inferred: only the
+     * current page is toggled and, in controlled mode, selections from other pages are preserved
+     */
+    selectAllScope?: DataTableSelectAllScope
     /**
      * 是否显示分页器
      * @en Whether to show the paginator

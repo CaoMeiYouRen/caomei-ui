@@ -386,6 +386,18 @@ const dataTableScrollFrozenColumns = [
 ]
 
 /**
+ * DataTable 全选作用域夹具（见 `test/e2e/data-table-select-all-scope.e2e.ts`）：
+ * 5 行、每页 2 行，足以区分「当前页」与「全部行」两种作用域。
+ */
+const dataTableSelectColumns = [
+    { key: 'name', header: '姓名', width: '160px' },
+]
+const dataTableSelectData = Array.from({ length: 5 }, (_, index) => ({
+    id: index + 1,
+    name: `成员 ${index + 1}`,
+}))
+
+/**
  * 数据展示动效夹具（见 `test/e2e/data-display-motion.e2e.ts`）：同时提供可排序列、`expander`
  * 列与 `#expansion` 插槽，使行悬浮 / 选中 / 排序 / 展开四类状态面都能在夹具页内触发。
  */
@@ -2368,6 +2380,34 @@ const ConfirmDriver = defineComponent({
                     </div>
                 </template>
             </CaomeiDataTable>
+        </section>
+        <!--
+          DataTable 全选作用域（见 `test/e2e/data-table-select-all-scope.e2e.ts`）：
+          同一份数据两张表——默认 `page` 与 `selectAllScope="all"`，验证跨页选中差异。
+        -->
+        <section id="data-table-select-all" class="fixture__case">
+            <CaomeiDataTable
+                id="data-table-select-page"
+                :data="dataTableSelectData"
+                :columns="dataTableSelectColumns"
+                row-key="id"
+                caption="全选当前页"
+                selection-mode="multiple"
+                paginator
+                :rows="2"
+            />
+            <CaomeiDataTable
+                id="data-table-select-all-table"
+                :data="dataTableSelectData"
+                :columns="dataTableSelectColumns"
+                row-key="id"
+                caption="全选全部行"
+                selection-mode="multiple"
+                select-all-scope="all"
+                select-all-label="全选全部行"
+                paginator
+                :rows="2"
+            />
         </section>
         <!-- 色板 radiogroup：真实浏览器键盘导航与选中态计算样式（见 test/e2e/color-picker-swatches.e2e.ts） -->
         <section id="color-picker-swatches" class="fixture__case">

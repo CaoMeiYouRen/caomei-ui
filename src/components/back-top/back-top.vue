@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { BackTopEmits, BackTopProps, BackTopSlotProps } from './types'
 
@@ -13,6 +14,10 @@ const props = withDefaults(defineProps<BackTopProps>(), {
 const emit = defineEmits<BackTopEmits>()
 
 const icons = useInternalIcons()
+const messages = useLocale()
+
+/** 可访问名：显式 `label` 优先，否则取当前语言的内置文案。 */
+const accessibleLabel = computed(() => props.label ?? messages.value.backTop.label)
 
 /** 已解析的滚动目标；挂载后才存在（SSR 期间不触碰 `document` / `window`）。 */
 const scrollTarget = ref<HTMLElement | Window | null>(null)
@@ -103,7 +108,7 @@ defineSlots<{
         v-show="visible"
         type="button"
         class="caomei-back-top"
-        :aria-label="props.label"
+        :aria-label="accessibleLabel"
         @click="scrollToTop"
     >
         <slot :visible="visible">

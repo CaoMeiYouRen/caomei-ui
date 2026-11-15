@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, useId, useSlots } from 'vue'
 import { useLocale } from '../../composables/use-locale'
-import { defaultLocale } from '../../locale'
 import type { TimePickerEmits, TimePickerProps, TimePickerStep } from './types'
 
 defineOptions({ name: 'CaomeiTimePicker' })
@@ -17,7 +16,6 @@ const props = withDefaults(defineProps<TimePickerProps>(), {
     maxValue: undefined,
     disabled: false,
     readonly: false,
-    locale: defaultLocale,
     id: undefined,
 })
 
@@ -29,9 +27,9 @@ const fieldId = useId()
 const resolvedId = computed(() => props.id ?? fieldId)
 const accessibleName = computed(() => props.ariaLabel ?? props.label)
 
-const hourLabel = computed(() => messages.value.datePicker.hour)
-const minuteLabel = computed(() => messages.value.datePicker.minute)
-const secondLabel = computed(() => messages.value.datePicker.second)
+const hourLabel = computed(() => messages.value.timePicker.hour)
+const minuteLabel = computed(() => messages.value.timePicker.minute)
+const secondLabel = computed(() => messages.value.timePicker.second)
 
 const is12Hour = computed(() => props.hourFormat === '12')
 
@@ -53,18 +51,8 @@ const displayHour = computed(() => {
 
 const isPm = computed(() => hour.value >= 12)
 
-/** 日序文案由 Intl 提供，跟随 `locale`（上午 / 下午、AM / PM 等）。 */
-function dayPeriodLabel(pm: boolean): string {
-    const reference = new Date(2026, 0, 1, pm ? 21 : 9)
-    const parts = new Intl.DateTimeFormat(props.locale, {
-        hour: 'numeric',
-        hour12: true,
-    }).formatToParts(reference)
-    return parts.find((part) => part.type === 'dayPeriod')?.value ?? (pm ? 'PM' : 'AM')
-}
-
-const amLabel = computed(() => dayPeriodLabel(false))
-const pmLabel = computed(() => dayPeriodLabel(true))
+const amLabel = computed(() => messages.value.timePicker.am)
+const pmLabel = computed(() => messages.value.timePicker.pm)
 
 /** 空值展示：`--` 而不是 0，避免把「未填」误读为午夜。 */
 const hourDisplay = computed(() => (isEmpty.value ? '' : String(displayHour.value)))

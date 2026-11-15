@@ -3,11 +3,10 @@ export type BackTopTarget = string | HTMLElement
 
 export interface BackTopProps {
     /**
-     * 按钮的可访问名（必填）：组件不自带可见文案，名称由使用方按当前语言提供
-     * @en Accessible name of the button (required); the component ships no visible text, so the
-     * name comes from the consumer in the current language
+     * 按钮的可访问名；缺省取当前语言的「回到顶部」
+     * @en Accessible name of the button; defaults to the current locale's "Back to top"
      */
-    label: string
+    label?: string
     /**
      * 滚动目标：缺省为 `window`；字符串按 CSS 选择器解析为元素。无匹配或选择器非法时回退
      * `window`；目标元素须在组件挂载时已存在（条件渲染后出现的元素不会被再次解析）

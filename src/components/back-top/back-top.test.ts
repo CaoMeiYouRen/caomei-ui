@@ -196,6 +196,12 @@ describe('CaomeiBackTop 显隐与回顶', () => {
         wrapper.unmount()
     })
 
+    it('未提供 label 时取当前语言的内置文案', () => {
+        const wrapper = mount(BackTop, { props: { target: makeScroller() } })
+        expect(rootButton(wrapper).attributes('aria-label')).toBe('回到顶部')
+        wrapper.unmount()
+    })
+
     it('可访问名取 label，且默认内容为内建图标', () => {
         const wrapper = mount(BackTop, { props: { label: '回到顶部', target: makeScroller() } })
         expect(rootButton(wrapper).attributes('aria-label')).toBe('回到顶部')

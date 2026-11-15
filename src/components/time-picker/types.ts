@@ -53,11 +53,6 @@ export interface TimePickerProps {
     disabled?: boolean
     /** 是否只读 */
     readonly?: boolean
-    /**
-     * 时间格式语言（BCP 47）；默认取组件库默认语言
-     * @en Locale used for time formatting (BCP 47); defaults to the library locale
-     */
-    locale?: string
     /** 根元素 id（可选） */
     id?: string
 }

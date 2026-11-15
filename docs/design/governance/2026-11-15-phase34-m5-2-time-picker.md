@@ -7,7 +7,7 @@
 
 | 面 | 文件 |
 |:---|:---|
-| 组件 | `src/components/time-picker/time-picker.vue`：三个数字输入 + 12 小时制日序选择；公开 prop 为 `modelValue` / `label` / `ariaLabel` / `hourFormat` / `showSeconds` / `step` / `minValue` / `maxValue` / `disabled` / `readonly` / `locale` / `id`（完整签名以 `types.ts` 为准） |
+| 组件 | `src/components/time-picker/time-picker.vue`：三个数字输入 + 12 小时制日序选择；公开 prop 为 `modelValue` / `label` / `ariaLabel` / `hourFormat` / `showSeconds` / `step` / `minValue` / `maxValue` / `disabled` / `readonly` / `id`（完整签名以 `types.ts` 为准；`locale` prop 已在 M5-3 移除，日序改取 `timePicker` 内置键） |
 | 类型 | `src/components/time-picker/types.ts`：`TimePickerProps` / `TimePickerStep` / `TimePickerEmits` |
 | 导出 | `src/components/time-picker/index.ts` |
 | 单测 | `src/components/time-picker/time-picker.test.ts`：11 例，逐点清单——渲染标签 / 组名 / 时分输入、`showSeconds` 秒输入、12 小时制显示与日序选项、日序切换改小时、编辑分钟保留日期、`step` 步进（分 5 / 时 2）、`minValue` / `maxValue` 夹取、`disabled` / `readonly`（含只读下方向键不改值）、`minValue > maxValue` 不夹取、空值与非法日期、`ariaLabel` 覆盖 |
@@ -23,7 +23,7 @@
 
 1. **`v-model` 用 `Date \| null`**：与 `DatePicker` 的模型口径一致（时间部分即值，日期部分仅作载体）；回写时保留当前值的日期，无值时取今天，避免每次编辑都跳到某个固定日期。
 2. **不直接暴露 Reka `TimeField` 的 12 小时制**：首版按「封装 Reka」实现后实测两组缺陷——段 `TimeFieldInput` 需自行渲染文本（空插槽导致可见区域只剩冒号）；12 小时制下 `aria-valuenow` 仍是 24 小时内部值、无日序段，且 Reka 的 dayPeriod 判定只识别英文（与 `date-picker/time-input.vue` 已记录的结论一致）。按「与 DatePicker 时间输入行为对齐」的验收优先级，改为自建三段数字输入 + 本地化日序选择；`TimePicker` 与 `DatePicker` 仍各自持有实现，不做预抽取。**重评估触发**：两处的时间段夹取 / 日序换算出现第二次分叉修复时再抽取共享层。
-3. **`hourFormat` 只接受 `'12' \| '24'`**：与 `DatePicker` 同名同取值；12 小时制下小时输入范围 1–12，日序文案由 `Intl` 按 `locale` 产出（上午 / 下午），切换日序只改小时。
+3. **`hourFormat` 只接受 `'12' \| '24'`**：与 `DatePicker` 同名同取值；12 小时制下小时输入范围 1–12，日序文案取内置 `timePicker.am` / `pm`（M5-3 起不再依赖 `Intl` 与 `locale` prop），切换日序只改小时。
 4. **`showSeconds` 控制精度**：命名与 `DatePicker` 对齐；关闭时强制秒归零，避免旧值残留不可编辑的秒数。
 5. **`step` 为 `{ hour?, minute?, second? }`**：数字输入的 `step` 属性与上下键增量共用同一口径，默认每段 1；不另造 `minuteStep`。
 6. **`minValue` / `maxValue` 用 `Date` 入参、只比较时间部分**：命名与 `DatePicker` 对齐；编辑结果夹到区间内，`minValue > maxValue`（跨日）视为无解、不夹取（保留编辑值，不做跨日推断）。

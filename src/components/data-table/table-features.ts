@@ -1,6 +1,7 @@
 import {
     columnOrderingFeature,
     columnPinningFeature,
+    columnSizingFeature,
     columnVisibilityFeature,
     createPaginatedRowModel,
     createSortedRowModel,
@@ -16,7 +17,7 @@ import {
 /**
  * DataTable 使用的无头表格特性集。
  *
- * 已启用：核心行列模型 + 排序（含受控 / 非受控）+ 行选择 + 分页 + 列冻结 + 列可见性与列顺序。
+ * 已启用：核心行列模型 + 排序（含受控 / 非受控）+ 行选择 + 分页 + 列冻结 + 列可见性与列顺序 + 列宽。
  */
 export const dataTableFeatures = tableFeatures({
     rowSortingFeature,
@@ -25,6 +26,7 @@ export const dataTableFeatures = tableFeatures({
     columnPinningFeature,
     columnVisibilityFeature,
     columnOrderingFeature,
+    columnSizingFeature,
     sortedRowModel: createSortedRowModel(),
     paginatedRowModel: createPaginatedRowModel(),
     sortFns: {

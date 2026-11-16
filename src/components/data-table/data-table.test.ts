@@ -639,4 +639,30 @@ describe('CaomeiDataTable 列插槽', () => {
         expect(messages.some((message) => message.includes('重复'))).toBe(true)
         warn.mockRestore()
     })
+
+    it('columnSizing 受控覆盖列定义宽度，非法值回退', async () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名', width: '120px' },
+            { key: 'age', header: '年龄', width: '60px' },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnSizing: { name: 240, age: 0 } } })
+
+        const headers = wrapper.findAll('.caomei-data-table__th')
+        expect(headers[0].attributes('style')).toContain('width: 240px')
+        // 0 非正数：回退到列定义的 60px
+        expect(headers[1].attributes('style')).toContain('width: 60px')
+
+        await wrapper.setProps({ columnSizing: undefined })
+        expect(wrapper.findAll('.caomei-data-table__th')[0].attributes('style')).toContain('width: 120px')
+    })
+
+    it('columnSizing 未知列 key 开发期告警且不改变渲染', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const columns: DataTableColumn<Row>[] = [{ key: 'name', header: '姓名' }]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnSizing: { missing: 200 } } })
+
+        expect(wrapper.get('.caomei-data-table__th').text()).toBe('姓名')
+        expect(warn.mock.calls.map((call) => String(call[0])).some((message) => message.includes('columnSizing'))).toBe(true)
+        warn.mockRestore()
+    })
 })

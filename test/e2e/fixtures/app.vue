@@ -402,6 +402,17 @@ const cellTooltipPlainColumns = cellTooltipPerfColumns.map((column) => ({
 }))
 const cellTooltipPerfMode = ref<'idle' | 'default' | 'plain' | 'off'>('idle')
 
+/** 受控列宽：预设切换驱动 columnSizing */
+const sizingColumns = [
+    { key: 'name', header: '姓名', width: '120px' },
+    { key: 'note', header: '备注' },
+]
+const sizingData = Array.from({ length: 3 }, (_, index) => ({
+    name: `成员 ${index + 1}`,
+    note: `第 ${index + 1} 行的备注内容用于验证列宽与截断上限同步`,
+}))
+const sizingValue = ref<Record<string, number>>({ name: 200, note: 260 })
+
 /**
  * 冻结首列：验证吸顶表头与冻列表头同时存在时的层叠顺序（冻结表头必须画在上面）。
  * 列宽之和 48 + 400 + 400 + 400 + 320 = 1568px，超过最宽常驻视口的容器宽，横向必然溢出。
@@ -2554,6 +2565,25 @@ const ConfirmDriver = defineComponent({
                     caption="默认列关闭逐格提示"
                 />
             </div>
+        </section>
+        <!--
+          DataTable 受控列宽（见 `test/e2e/data-table-column-sizing.e2e.ts`）：
+          预设切换只改 `columnSizing`，断言列宽与文本截断上限同步。
+        -->
+        <section id="data-table-column-sizing" class="fixture__case">
+            <CaomeiButton id="sizing-default" @click="sizingValue = {name: 200, note: 260}">
+                默认列宽
+            </CaomeiButton>
+            <CaomeiButton id="sizing-compact" @click="sizingValue = {name: 120, note: 180}">
+                紧凑列宽
+            </CaomeiButton>
+            <CaomeiDataTable
+                id="data-table-column-sizing-table"
+                :data="sizingData"
+                :columns="sizingColumns"
+                :column-sizing="sizingValue"
+                caption="受控列宽"
+            />
         </section>
     </main>
 </template>

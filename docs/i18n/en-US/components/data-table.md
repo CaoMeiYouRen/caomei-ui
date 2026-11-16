@@ -230,6 +230,23 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
 - **Frozen columns**: `frozen` columns stay within their pinned group and keep the column-definition order inside it; `columnOrder` only applies to the middle (unpinned) area and cannot move columns out of a pinned group.
 - **Expander column**: a column with `expander: true` cannot be hidden (the controlled entry is ignored), which keeps the header consistent with its row buttons.
 
+## Column sizing and persistence
+
+`columnSizing` (controlled, in `px`) overrides a column definition's `width`: positive values apply, while missing or non-positive values fall back to `width`. The component ships **no drag handle** — column-width interaction (dragging, presets, user preferences) belongs to the consumer, who writes the new pixel widths back into this object; persistence (localStorage and the like) is the consumer's job too.
+
+```
+<CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
+```
+
+- Controlled widths win over the definition `width` and also feed frozen-column offsets, the minimum-width calculation and the truncation cap.
+- Only positive pixel values are accepted; invalid values fall back silently (no warning, no rendering change).
+- Without `columnSizing` the behaviour is unchanged (`table-layout: auto`, widths follow the content).
+
+<demo
+    vue="../examples/data-table/column-sizing.vue"
+    ssg="true"
+/>
+
 ## Fixed header and scrolling
 
 With `scrollable`, the table's root container is capped at `scrollHeight` and becomes a vertical scroll area: the header sticks to the top, the paginator sticks to the bottom, and the body scrolls inside the container. A numeric `scrollHeight` is normalized to `px` (`240` → `240px`); a string is used as-is as a CSS length (`'60vh'` / `'18rem'`). Without it the container is not capped and follows the content height.

@@ -230,6 +230,23 @@
 - **冻结列**：`frozen` 列按其冻结侧分组，组内顺序固定为列定义顺序；`columnOrder` 只作用于中间（未冻结）区，不能把冻结列移出所属组。
 - **展开列**：`expander: true` 的列不可隐藏（受控值里的对应项会被忽略），避免表头消失而按钮仍在。
 
+## 列宽调整与持久化
+
+`columnSizing`（受控，单位 `px`）覆盖列定义里的 `width`：正数生效，缺省或非正数回退到 `width`。组件**不提供拖拽手柄**——列宽交互（拖拽、预设、用户偏好）由使用方实现，结束时把新的像素宽回写本对象即可；持久化（如 localStorage）同样由使用方负责。
+
+```
+<CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
+```
+
+- 受控列宽优先于列定义的 `width`，也参与冻结列的吸边偏移、`min-width` 计算与文本截断上限；
+- 只接受正数像素值，非法值静默回退（不告警、不改变渲染）；
+- 未传 `columnSizing` 时行为与之前完全一致（`table-layout: auto`，列宽由内容决定）。
+
+<demo
+    vue="../examples/data-table/column-sizing.vue"
+    ssg="true"
+/>
+
 ## 固定表头与滚动
 
 设置 `scrollable` 后，表格根容器按 `scrollHeight` 限高并成为纵向滚动区：表头吸顶、分页器吸底，表体在容器内滚动。`scrollHeight` 取 `number` 时按 `px` 归一化（`240` → `240px`），取 `string` 时原样作为 CSS 长度（如 `'60vh'` / `'18rem'`）；缺省不限高，容器按内容自然高度渲染。

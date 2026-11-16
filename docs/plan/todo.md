@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 36**（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理）。**3 条主线 / 10 条原子条目**（构成对账 5 + 3 + 2 = 10；原登记 8 条为 2026-11-17 时点值，同日追加 2 条，见[登记记录](../design/governance/2026-11-17-phase36-registration.md) §6.1）；范围与验收口径的唯一载体见 [Phase 36 登记批次](../design/governance/2026-11-17-phase36-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
+**当前进行中阶段：Phase 36**（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理、选择器空值诊断）。**4 条主线 / 12 条原子条目**（构成对账 5 + 3 + 2 + 2 = 12；原登记 8 条为 2026-11-17 时点值，同日追加 2 条后为 10 条，再经插队追加 2 条后为 12 条，见[登记记录](../design/governance/2026-11-17-phase36-registration.md) §6.1 / §6.2）；范围与验收口径的唯一载体见 [Phase 36 登记批次](../design/governance/2026-11-17-phase36-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## Phase 36 原子条目
 
@@ -20,6 +20,8 @@
 | M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 待执行 |
 | M3-1 | 质量治理 | Rating 文档站 a11y 抽检 | 待执行 |
 | M3-2 | 质量治理 | 依赖告警复核 | 待执行 |
+| M4-1 | 选择器空值诊断 | 空串选项值不再透传（Select / MultiSelect / AutoComplete） | 待执行 |
+| M4-2 | 选择器空值诊断 | 空串契约声明（中英组件页 + 设计规范 §7） | 待执行 |
 
 ## 未完成项汇总
 

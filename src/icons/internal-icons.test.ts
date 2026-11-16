@@ -28,13 +28,14 @@ const EXPECTED_KEYS = [
     'minus',
     'plus',
     'radio',
+    'star',
     'success',
     'upload',
     'warning',
 ] as const
 
 describe('内置图标映射表', () => {
-    it('22 个语义键齐全', () => {
+    it('语义键齐全（新增键须同批登记）', () => {
         expect(Object.keys(internalIcons).sort()).toEqual([...EXPECTED_KEYS].sort())
     })
 

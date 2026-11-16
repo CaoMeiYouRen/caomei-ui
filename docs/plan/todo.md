@@ -18,7 +18,7 @@
 | M2-1 | DataTable 进阶 | 列可见性与列顺序（受控） | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m2-1-column-visibility-order.md)） |
 | M2-2 | DataTable 进阶 | 列宽调整与持久化契约 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m2-2-column-sizing.md)） |
 | M3-1 | 长尾组件 | Rating 实现与导出（单测、a11y 受检面） | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m3-1-rating.md)） |
-| M3-2 | 长尾组件 | Rating 10 语 locale 与台账 | 待执行 |
+| M3-2 | 长尾组件 | Rating 10 语 locale 与台账 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m3-2-rating-locale.md)） |
 | M3-3 | 长尾组件 | Rating 文档、示例、E2E 与视觉基线 | 待执行 |
 
 ## 未完成项汇总

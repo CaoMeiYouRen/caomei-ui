@@ -129,6 +129,46 @@ describe('CaomeiRating', () => {
         wrapper.unmount()
     })
 
+    it('未传 label 时取语言兜底文案，只读取只读文案', async () => {
+        const wrapper = mount(CaomeiRating, { props: { modelValue: 3 }, attachTo: document.body })
+        await nextTick()
+        expect(wrapper.get('[role="radiogroup"]').attributes('aria-label')).toBe('评分')
+        wrapper.unmount()
+
+        const readonly = mount(CaomeiRating, { props: { modelValue: 3, readonly: true }, attachTo: document.body })
+        await nextTick()
+        expect(readonly.get('[role="radiogroup"]').attributes('aria-label')).toBe('只读评分')
+        readonly.unmount()
+    })
+
+    it('运行期切到只读后名称更新，显式 label 始终优先', async () => {
+        const wrapper = mount(CaomeiRating, { props: { modelValue: 3, label: '服务评分' }, attachTo: document.body })
+        await nextTick()
+        expect(wrapper.get('[role="radiogroup"]').attributes('aria-label')).toBe('服务评分')
+
+        await wrapper.setProps({ readonly: true })
+        expect(wrapper.get('[role="radiogroup"]').attributes('aria-label')).toBe('服务评分')
+
+        await wrapper.setProps({ readonly: false })
+        expect(wrapper.get('[role="radiogroup"]').attributes('aria-label')).toBe('服务评分')
+
+        const unnamed = mount(CaomeiRating, { props: { modelValue: 3 }, attachTo: document.body })
+        await nextTick()
+        expect(unnamed.get('[role="radiogroup"]').attributes('aria-label')).toBe('评分')
+        await unnamed.setProps({ readonly: true })
+        expect(unnamed.get('[role="radiogroup"]').attributes('aria-label')).toBe('只读评分')
+        unnamed.unmount()
+
+        wrapper.unmount()
+    })
+
+    it('label 传空串时回退语言兜底文案', async () => {
+        const wrapper = mount(CaomeiRating, { props: { modelValue: 3, label: '' }, attachTo: document.body })
+        await nextTick()
+        expect(wrapper.get('[role="radiogroup"]').attributes('aria-label')).toBe('评分')
+        wrapper.unmount()
+    })
+
     it('SSR 输出评分区域与步骤语义', async () => {
         const app = createSSRApp({ render: () => h(CaomeiRating, { modelValue: 3, label: '评分' }) })
         const html = await renderToString(app)

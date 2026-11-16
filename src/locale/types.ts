@@ -17,6 +17,11 @@ export interface CaomeiLocaleMessages {
         am: string
         pm: string
     }
+    rating: {
+        label: string
+        readonlyLabel: string
+        valueLabel: string
+    }
     autoComplete: {
         empty: string
         open: string

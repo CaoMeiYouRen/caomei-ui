@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const jaJP: CaomeiLocaleMessages = {
+    rating: {
+        label: '評価',
+        readonlyLabel: '読み取り専用の評価',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: '一致する候補がありません',
         open: '候補を表示',

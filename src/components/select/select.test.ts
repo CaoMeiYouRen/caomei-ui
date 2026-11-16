@@ -157,6 +157,72 @@ describe('CaomeiSelect', () => {
         wrapper.unmount()
     })
 
+    it('展开时给面板外的兄弟节点补 inert，面板自身不受影响', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+
+        const content = document.querySelector('.caomei-select__content')
+        const host = wrapper.element as HTMLElement
+        expect(content).not.toBeNull()
+        // 面板外的宿主节点同时具备 aria-hidden（Reka）与 inert（本组件补齐）
+        expect(host.hasAttribute('aria-hidden')).toBe(true)
+        expect(host.hasAttribute('inert')).toBe(true)
+        expect(content?.closest('[inert]')).toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('关闭后回退 inert，不残留隔离', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options },
+            attachTo: document.body,
+        })
+
+        const host = wrapper.element as HTMLElement
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+        expect(host.hasAttribute('inert')).toBe(true)
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Escape' })
+        await nextTick()
+        await nextTick()
+
+        expect(host.hasAttribute('inert')).toBe(false)
+
+        wrapper.unmount()
+    })
+
+    it('不接管外部已置位的 inert', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options },
+            attachTo: document.body,
+        })
+        const host = wrapper.element as HTMLElement
+        // 模拟外层模态已隔离：本组件既不加也不在关闭时撤销该属性
+        host.setAttribute('inert', '')
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Escape' })
+        await nextTick()
+        await nextTick()
+
+        expect(host.hasAttribute('inert')).toBe(true)
+        host.removeAttribute('inert')
+
+        wrapper.unmount()
+    })
+
     it('v-model 与 SelectRoot 双向绑定', async () => {
         const wrapper = mount(CaomeiSelect, { props: { options } })
 

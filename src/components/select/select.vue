@@ -13,11 +13,12 @@ import {
     SelectValue,
     SelectViewport,
 } from 'reka-ui'
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { warnDev } from '../../_shared/dev-warn'
+import { suppressOutside } from '../../_shared/open-state-inert'
 import { narrowOptionValue, resolveOptionDisabled, resolveOptionField, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { SelectOptionGroup, SelectProps } from './types'
@@ -193,11 +194,51 @@ function clearValue(): void {
         }
     })
 }
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+
+/** 面板打开态：只用于兄弟隔离，不作为公开绑定 */
+const open = ref(false)
+
+let restoreInert: (() => void) | undefined
+
+function releaseInert(): void {
+    restoreInert?.()
+    restoreInert = undefined
+}
+
+/**
+ * 打开态兄弟隔离：Reka 只用 `aria-hidden` 隐藏面板外的兄弟节点，背景里的可聚焦元素
+ * 仍留在 Tab 序列里（axe `aria-hidden-focus`）。面板落位后补 `inert`，关闭时先于焦点
+ * 归还触发器回退，避免触发器因 `inert` 接收不到焦点。
+ */
+watch(
+    open,
+    (isOpen) => {
+        releaseInert()
+        if (!isOpen) {
+            return
+        }
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            const element = contentRef.value?.$el
+            if (element instanceof HTMLElement && element.isConnected) {
+                restoreInert = suppressOutside(element)
+            }
+        })
+    },
+    { flush: 'post' },
+)
+
+onBeforeUnmount(releaseInert)
 </script>
 
 <template>
     <SelectRoot
         v-model="model"
+        v-model:open="open"
         :disabled="disabled"
         :name="name"
     >
@@ -246,6 +287,7 @@ function clearValue(): void {
         </div>
         <SelectPortal>
             <SelectContent
+                ref="contentRef"
                 class="caomei-select__content"
                 position="popper"
                 :side-offset="4"

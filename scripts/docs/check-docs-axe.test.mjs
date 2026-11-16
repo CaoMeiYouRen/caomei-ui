@@ -200,8 +200,8 @@ describe('check-docs-axe 打开态', () => {
         expect(PAGES.find((page) => page.key === 'select-zh').interact).toBeUndefined()
     })
 
-    it('Select 打开态有意排除 aria-hidden-focus（既有缺口登记为 F18，不静默放宽）', () => {
-        expect(selectOpenPage.rules).not.toContain('aria-hidden-focus')
+    it('Select 打开态登记 aria-hidden-focus（面板外补 inert，规则不再被排除）', () => {
+        expect(selectOpenPage.rules).toContain('aria-hidden-focus')
         expect(dialogPage.rules).toContain('aria-hidden-focus')
     })
 

@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-16-phase35-m1-1-select-open-inert.md](./2026-11-16-phase35-m1-1-select-open-inert.md)：**Phase 35 M1-1：Select 展开态兄弟隔离（F18 关闭）**。新增内部工具 `suppressOutside`（保留浮层子树、焦点哨兵与 live region / `script` 子树，其余兄弟节点补 `inert`，只撤销自身写入），Select 在面板落位后接线、关闭时先于焦点归还回退；`select-open-zh` 的 axe 规则面加回 `aria-hidden-focus` 并翻转同名单测，§17 口径同批改写。验证含三视口 E2E、负向对照与全矩阵 axe；跳过项与观察项（其它浮层组件未扩面）见记录。**Review Gate**：见本记录 §4。
 - [2026-11-15-phase35-registration.md](./2026-11-15-phase35-registration.md)：**Phase 35 登记批次**。用户决策 D1 质量收口 + DataTable 进阶 / D2 五项质量债全取 / D3 不发布 / D4 长尾 Rating；3 条主线 / 10 条原子条目（质量与无障碍 5 / DataTable 进阶 2 / 长尾 3），范围与验收口径唯一载体；虚拟滚动、i18n 二期 / RTL、Form 规则引擎等列非目标。**Review Gate**：见本记录 §6。
 - [2026-11-15-next-stage-scope-evaluation-19.md](./2026-11-15-next-stage-scope-evaluation-19.md)：**第十九轮范围评估**。盘点 HEAD `bf67d19` / `latest=1.3.0` / open PR·issue 0；逐条评估 F18 / F1 / F14 / F16 / F17、DataTable 列能力与 Rating，记录四项用户决策；虚拟滚动与 i18n/RTL 维持条件触发。
 - [2026-11-15-phase34-archive.md](./2026-11-15-phase34-archive.md)：**Phase 34 归档批次**。Phase 34 的 5 条主线 / 22 条原子条目全部交付（本阶段不发布，`latest` 维持 `1.3.0`），归档块入主窗口；Phase 27 机械迁入 `archive/phase-27.md`（主窗口 397 行，未越 400 阈值）；`todo.md` 清空为「当前无进行中阶段」，`roadmap.md` 与 `recurring.md`（第 38 轮门槛复核）同批更新；未登记下一阶段。遗留 F1 / F7 ~ F9 / F10·F11 / F14 / F16·F17 / F18 承接前批。**Review Gate**：见本记录 §4。

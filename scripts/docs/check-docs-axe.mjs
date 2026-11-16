@@ -89,10 +89,9 @@ export const PAGES = [
         ready: '.caomei-select',
         minSubjects: 17,
         minApplies: { 'aria-allowed-attr': 1 },
-        // 只跑 `aria-allowed-attr`：有意不登记 `aria-hidden-focus`——Select 展开时 Reka 只给兄弟节点加
-        // `aria-hidden`（未加 `inert`），规则会命中 `#app`（其内仍有可聚焦元素）。这是既有缺口而非误报，
-        // 登记为 F18 由组件无障碍批次处理；F18 关闭的判据见批次记录 §5（恢复该规则并翻转同名单测）。
-        rules: ['aria-allowed-attr'],
+        // Select 展开时 Reka 只给兄弟节点加 `aria-hidden`，组件层同时补 `inert`（背景不再可聚焦），
+        // 故 `aria-hidden-focus` 可登记为通过：浮层没补隔离时该页会重新红。
+        rules: ['aria-allowed-attr', 'aria-hidden-focus'],
         interact: { label: '展开第一个 Select', trigger: '.caomei-select', open: '.caomei-select__content' },
     },
     { key: 'showcase-zh', path: '/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },

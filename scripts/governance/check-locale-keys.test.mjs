@@ -171,16 +171,16 @@ describe('check-locale-keys 仓库不变量', () => {
         expect(result.details.baseline).toEqual({
             file: 'src/locale/zh-cn.ts',
             id: 'zh-CN',
-            namespaces: 30,
-            keys: 89,
+            namespaces: 31,
+            keys: 92,
         })
 
         const ids = result.details.locales.map((locale) => locale.id)
         expect(ids).toEqual(['zh-CN', 'en-US', 'zh-TW', 'ja-JP', 'ko-KR', 'es-ES', 'fr-FR', 'de-DE', 'ru-RU', 'pt-BR'])
         for (const locale of result.details.locales) {
             expect({ namespaces: locale.namespaces, keys: locale.keys }).toEqual({
-                namespaces: 30,
-                keys: 89,
+                namespaces: 31,
+                keys: 92,
             })
         }
     })

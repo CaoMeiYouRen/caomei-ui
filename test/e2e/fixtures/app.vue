@@ -78,6 +78,7 @@ import {
     CaomeiTooltip,
     CaomeiTooltipContent,
     CaomeiTooltipProvider,
+    CaomeiTooltipText,
     CaomeiTooltipTrigger,
     CaomeiBreadcrumb,
     CaomeiBreadcrumbItem,
@@ -2479,6 +2480,20 @@ const ConfirmDriver = defineComponent({
                 :swatches="swatchPickerOptions"
             />
         </section>
+        <section id="tooltip-truncation" class="fixture__case">
+            <CaomeiTooltipProvider :delay-duration="0">
+                <div id="truncation-overflow" class="fixture__truncate-box">
+                    <CaomeiTooltipText class="fixture__truncate-text">
+                        超长文本用于验证截断配方下的悬停提示是否生效
+                    </CaomeiTooltipText>
+                </div>
+                <div id="truncation-fit" class="fixture__truncate-box">
+                    <CaomeiTooltipText class="fixture__truncate-text">
+                        短文本
+                    </CaomeiTooltipText>
+                </div>
+            </CaomeiTooltipProvider>
+        </section>
     </main>
 </template>
 
@@ -2743,5 +2758,24 @@ const ConfirmDriver = defineComponent({
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
+}
+</style>
+
+<style>
+/*
+  截断配方布局守卫：定宽容器 + 单行截断，使长文本必然 overflow、短文本必然不 overflow。
+  配方本身是消费方责任（组件只提供可测量盒），此处按文档示例复刻。
+
+  放在**非 scoped** 块：提示盒子的根元素位于组件链内部，接收不到夹具的 scoped 属性，
+  scoped 规则无法命中（与 `documentation-site.md` 里对消费方配方的写法一致）。
+*/
+.fixture__truncate-box {
+    width: min(8rem, 100%);
+}
+
+.fixture__truncate-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 </style>

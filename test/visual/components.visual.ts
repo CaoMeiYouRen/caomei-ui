@@ -32,6 +32,7 @@ const SAMPLE_SECTIONS = [
     { id: 'ds-font-mixed', name: 'font-mixed-button' },
     { id: 'ds-back-top-button', name: 'back-top' },
     { id: 'ds-time-picker', name: 'time-picker' },
+    { id: 'ds-rating', name: 'rating' },
 ] as const
 
 /**
@@ -41,7 +42,7 @@ const SAMPLE_SECTIONS = [
 const FONT_PATH_SECTIONS = ['ds-font-latin', 'ds-font-latin-input', 'ds-font-mixed'] as const
 
 /** 受检面下界守卫：登记表被静默收窄即失败。 */
-const MIN_SECTIONS = 15
+const MIN_SECTIONS = 16
 
 /**
  * 会渲染 `value` 文本的 input 类型。`hidden` / `checkbox` / `radio` / `range` / `color` /
@@ -84,6 +85,7 @@ const NEGATIVE_CONTROL_CSS = [
     '.caomei-date-picker__content { padding: 0 !important; }',
     '#ds-back-top-button { padding: 24px !important; }',
     '#ds-time-picker { padding: 24px !important; }',
+    '#ds-rating { padding: 24px !important; }',
 ].join('\n')
 
 /**

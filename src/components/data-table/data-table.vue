@@ -33,6 +33,7 @@ const props = withDefaults(defineProps<DataTableProps<T>>(), {
     selectAllScope: 'page',
     scrollable: false,
     scrollHeight: undefined,
+    cellTooltips: true,
 })
 
 const emit = defineEmits<{
@@ -173,14 +174,20 @@ const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
             // 默认插槽按 JS 默认字符串化输出（对象 → [object Object]），此为既有对外行为
             // eslint-disable-next-line @typescript-eslint/no-base-to-string
             const text = value === null || value === undefined ? '' : String(value)
-            // 默认文本包一层提示接线：列宽受限时单行省略，被截断时悬停显示全文
-            return text
-                ? h(CaomeiTooltipText, {
-                        class: textClass(column.key),
-                        style: textStyle(column.key),
-                        mode: 'auto',
-                    }, () => text)
-                : ''
+            if (!text) {
+                return ''
+            }
+            // 默认文本包一层提示接线：列宽受限时单行省略，被截断时悬停显示全文；
+            // 大批量表可显式关闭，避免每格一个提示实例的挂载开销
+            if (!props.cellTooltips) {
+                // 只去掉提示接线，截断配方（绝对列宽下的单行省略）与列宽上限保持不变
+                return h('span', { class: [textClass(column.key), 'caomei-data-table__cell-box'], style: textStyle(column.key) }, text)
+            }
+            return h(CaomeiTooltipText, {
+                class: textClass(column.key),
+                style: textStyle(column.key),
+                mode: 'auto',
+            }, () => text)
         },
     })),
 )
@@ -1567,5 +1574,19 @@ function setPageSize(rows: number): void {
     to {
         opacity: 1;
     }
+}
+</style>
+
+<style>
+/*
+  关闭逐格提示时的可测量盒：与 `CaomeiTooltipText` 的默认盒一致（`inline-block` + 可被父容器压缩）。
+  截断配方（`overflow: hidden` / `text-overflow` / `max-width`）在 `inline` 元素上不生效，
+  不补这一层会让「关闭提示」连带丢掉单行省略与列宽上限。
+*/
+.caomei-data-table__cell-box {
+    box-sizing: border-box;
+    display: inline-block;
+    max-width: 100%;
+    min-width: 0;
 }
 </style>

@@ -384,6 +384,24 @@ const dataTableScrollData = Array.from({ length: 40 }, (_, index) => ({
     score: (index * 7) % 100,
     extra: index % 3 === 0 ? '加急' : '普通',
 }))
+/** 逐格提示接线开销实测：同一份 60 × 8 数据，默认单元格（逐格提示）与自定义 cell（无提示）成对 */
+const cellTooltipPerfColumns = [
+    { key: 'c1', header: '列 1', width: '80px' },
+    ...Array.from({ length: 7 }, (_, index) => ({ key: `c${index + 2}`, header: `列 ${index + 2}` })),
+]
+const cellTooltipPerfData = Array.from({ length: 60 }, (_, rowIndex) =>
+    Object.fromEntries(cellTooltipPerfColumns.map((column, columnIndex) => [
+        column.key,
+        columnIndex === 0 ? `第${rowIndex + 1}行第1列的超长内容示例用于截断` : `R${rowIndex + 1}C${columnIndex + 1}`,
+    ])),
+)
+/** 无提示对照：列全部走 `cell` 渲染函数，绕过默认单元格的提示包装 */
+const cellTooltipPlainColumns = cellTooltipPerfColumns.map((column) => ({
+    ...column,
+    cell: ({ value }: { value: unknown }) => (typeof value === 'string' ? value : ''),
+}))
+const cellTooltipPerfMode = ref<'idle' | 'default' | 'plain' | 'off'>('idle')
+
 /**
  * 冻结首列：验证吸顶表头与冻列表头同时存在时的层叠顺序（冻结表头必须画在上面）。
  * 列宽之和 48 + 400 + 400 + 400 + 320 = 1568px，超过最宽常驻视口的容器宽，横向必然溢出。
@@ -2493,6 +2511,49 @@ const ConfirmDriver = defineComponent({
                     </CaomeiTooltipText>
                 </div>
             </CaomeiTooltipProvider>
+        </section>
+        <!--
+          DataTable 逐格提示接线开销实测与开关（见 `test/e2e/data-table-cell-tooltip.e2e.ts`）：
+          同一份 60 × 8 数据三态挂载——默认单元格带逐格提示、`cell` 渲染不带提示、默认列关闭 `cellTooltips`。
+        -->
+        <section id="cell-tooltip-perf" class="fixture__case">
+            <CaomeiButton id="cell-tooltip-perf-mount-default" @click="cellTooltipPerfMode = 'default'">
+                挂载默认单元格表
+            </CaomeiButton>
+            <CaomeiButton id="cell-tooltip-perf-mount-plain" @click="cellTooltipPerfMode = 'plain'">
+                挂载无提示表
+            </CaomeiButton>
+            <CaomeiButton id="cell-tooltip-perf-mount-off" @click="cellTooltipPerfMode = 'off'">
+                挂载关闭提示表
+            </CaomeiButton>
+            <CaomeiButton id="cell-tooltip-perf-clear" @click="cellTooltipPerfMode = 'idle'">
+                卸载
+            </CaomeiButton>
+            <div v-if="cellTooltipPerfMode === 'default'">
+                <CaomeiDataTable
+                    id="cell-tooltip-perf-table"
+                    :data="cellTooltipPerfData"
+                    :columns="cellTooltipPerfColumns"
+                    caption="默认单元格（逐格提示）"
+                />
+            </div>
+            <div v-else-if="cellTooltipPerfMode === 'plain'">
+                <CaomeiDataTable
+                    id="cell-tooltip-perf-table"
+                    :data="cellTooltipPerfData"
+                    :columns="cellTooltipPlainColumns"
+                    caption="自定义单元格（无提示）"
+                />
+            </div>
+            <div v-else-if="cellTooltipPerfMode === 'off'">
+                <CaomeiDataTable
+                    id="cell-tooltip-perf-table"
+                    :data="cellTooltipPerfData"
+                    :columns="cellTooltipPerfColumns"
+                    :cell-tooltips="false"
+                    caption="默认列关闭逐格提示"
+                />
+            </div>
         </section>
     </main>
 </template>

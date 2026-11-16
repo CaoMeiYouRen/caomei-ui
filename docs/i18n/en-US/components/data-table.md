@@ -202,6 +202,12 @@ There is no `size` prop; density is adjusted through tokens, and the selection c
     ssg="true"
 />
 
+## Cell tooltips and large tables
+
+Default cells (those without a `cell` renderer) carry a per-cell tooltip: the full text shows on hover when truncated. Each cell maps to one tooltip instance, so large tables pay extra mount cost (local reference: 60 rows × 8 columns costs roughly 0.5–0.6 s more than `cell` renderers and adds 480 tooltip instances).
+
+For bulk rendering, pass `:cell-tooltips="false"` to turn per-cell tooltips off: cells keep the single-line ellipsis and width cap but lose the tooltip wiring, while `cell` renderers and header tooltips are unaffected. It is on by default (output unchanged); when tooltips are still wanted at scale, prefer `cell` renderers for key columns and switch the rest off.
+
 ## Fixed header and scrolling
 
 With `scrollable`, the table's root container is capped at `scrollHeight` and becomes a vertical scroll area: the header sticks to the top, the paginator sticks to the bottom, and the body scrolls inside the container. A numeric `scrollHeight` is normalized to `px` (`240` → `240px`); a string is used as-is as a CSS length (`'60vh'` / `'18rem'`). Without it the container is not capped and follows the content height.

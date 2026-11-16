@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-16-phase35-m2-1-column-visibility-order.md](./2026-11-16-phase35-m2-1-column-visibility-order.md)：**Phase 35 M2-1：DataTable 列可见性与列顺序（受控）**。启用 tanstack 的可见性 / 顺序特性，新增 `columnVisibility` / `columnOrder` 两个受控读取（缺省中性值，摘除即回默认）；未知列 key 与重复 key 开发期告警且不改渲染。中英组件页补同节名说明与示例，单测覆盖受控 / 摘除 / 告警。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m1-5-menu-icon-slot.md](./2026-11-16-phase35-m1-5-menu-icon-slot.md)：**Phase 35 M1-5：Menu 项的前置图标出口（F16）**。取 `#icon` 插槽（与 Button / Toolbar 一致、不引入图标抽象）：普通项与子菜单触发器各自新增图标盒（`aria-hidden`、不参与截断），`--caomei-menu-item-gap` 恢复作用于「图标 + 文本」；未使用时 DOM 不变。中英组件页改写槽约束与 `--caomei-menu-item-gap` 口径并补迁移行；单测与截断面用例覆盖「图标 + 长文本」。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m1-4-cell-tooltip-optout.md](./2026-11-16-phase35-m1-4-cell-tooltip-optout.md)：**Phase 35 M1-4：DataTable 逐格提示开销实测与退出开关（F17）**。真实 Chromium 冷挂载实测 60 × 8 格：默认单元格约 0.6–0.7 s、+480 提示实例，`cell` 渲染约 0.04–0.06 s；取「显式退出开关」而非默认阈值（阈值会静默改变内容可达性）——新增 `cellTooltips`（默认开启，关闭后单元格纯文本，`cell` 渲染与表头提示不变），中英组件页同节名说明与三例单测。**Review Gate**：见本记录 §5。
 - [2026-11-16-phase35-m1-3-record-count-guard.md](./2026-11-16-phase35-m1-3-record-count-guard.md)：**Phase 35 M1-3：治理记录计数一致性机检（F14）**。`check-governance-counts` 新增第二族「记录内计数自洽」：行内 `a − b = c` / `a + b + c = d` 必须成立（排除编号、表格、围栏代码），以及新记录 `## 1. …（N 文件）` 与表内仓库相对路径去重数对账（cutover 2026-11-16，存量不回改）；错误码分离。决策、负向语料与边界见记录 §2 / §3。**Review Gate**：见本记录 §4。

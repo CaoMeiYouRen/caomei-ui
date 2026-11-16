@@ -567,4 +567,76 @@ describe('CaomeiDataTable 列插槽', () => {
         expect(wrapper.find('.custom-cell').exists()).toBe(true)
         expect(wrapper.get('.custom-cell').text()).toBe('自定义')
     })
+
+    it('columnVisibility 受控隐藏列，摘除后恢复', async () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名' },
+            { key: 'age', header: '年龄' },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnVisibility: { age: false } } })
+
+        const headers = () => wrapper.findAll('.caomei-data-table__th').map((th) => th.text())
+        expect(headers()).toEqual(['姓名'])
+
+        await wrapper.setProps({ columnVisibility: undefined })
+        expect(headers()).toEqual(['姓名', '年龄'])
+    })
+
+    it('隐藏列在表体与空态 colspan 中同步消失', async () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名' },
+            { key: 'age', header: '年龄' },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnVisibility: { age: false } } })
+
+        expect(wrapper.findAll('.caomei-data-table__th')).toHaveLength(1)
+        // 两行数据 × 一列可见
+        expect(wrapper.findAll('tbody .caomei-data-table__td')).toHaveLength(2)
+        expect(wrapper.text()).not.toContain('36')
+
+        await wrapper.setProps({ data: [] })
+        expect(wrapper.get('.caomei-data-table__empty').attributes('colspan')).toBe('1')
+    })
+
+    it('展开列不可隐藏（含冻结场景）', () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'expand', expander: true, frozen: 'left' },
+            { key: 'name', header: '姓名' },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnVisibility: { expand: false } } })
+
+        expect(wrapper.findAll('.caomei-data-table__th')).toHaveLength(2)
+        expect(wrapper.find('.caomei-data-table__row-expander').exists()).toBe(true)
+        // 冻结列仍在，则其表头同样带冻结类（未被隐藏判定漏算）
+        expect(wrapper.findAll('.caomei-data-table__th.caomei-data-table__cell--pinned-start')).toHaveLength(1)
+    })
+
+    it('columnOrder 受控排序，未列出的列排在末尾', () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名' },
+            { key: 'age', header: '年龄' },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, columnOrder: ['age'] } })
+
+        const headers = wrapper.findAll('.caomei-data-table__th').map((th) => th.text())
+        expect(headers).toEqual(['年龄', '姓名'])
+    })
+
+    it('未知列 key 开发期告警且不改变渲染', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名' },
+            { key: 'age', header: '年龄' },
+        ]
+        const wrapper = mount(DataTable, {
+            props: { data: baseData, columns, columnVisibility: { missing: false }, columnOrder: ['missing', 'name', 'name'] },
+        })
+
+        expect(wrapper.findAll('.caomei-data-table__th').map((th) => th.text())).toEqual(['姓名', '年龄'])
+        const messages = warn.mock.calls.map((call) => String(call[0]))
+        expect(messages.some((message) => message.includes('columnVisibility') && message.includes('missing'))).toBe(true)
+        expect(messages.some((message) => message.includes('columnOrder') && message.includes('missing'))).toBe(true)
+        expect(messages.some((message) => message.includes('重复'))).toBe(true)
+        warn.mockRestore()
+    })
 })

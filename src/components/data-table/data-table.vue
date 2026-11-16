@@ -95,10 +95,35 @@ const collapseRowLabel = computed(() => props.collapseRowLabel ?? locale.value.t
 
 const columnMap = computed(() => new Map(props.columns.map((column) => [column.key, column])))
 
-/** 由列定义的 `frozen` 推导冻结列状态（v9 以逻辑位 `start` / `end` 表示）。 */
+/** 生效的列可见性：剔除不可隐藏的展开列（避免「可见但被冻结偏移漏算」的不一致） */
+const effectiveVisibility = computed<Record<string, boolean>>(() => {
+    const value = props.columnVisibility ?? {}
+    const expanderKeys = props.columns.filter((column) => column.expander).map((column) => column.key)
+    if (expanderKeys.length === 0) {
+        return value
+    }
+    const next = { ...value }
+    for (const key of expanderKeys) {
+        delete next[key]
+    }
+    return next
+})
+
+/** 隐藏列的 key 集合（生效可见性里显式 `false` 的列） */
+const hiddenColumnKeys = computed(() => new Set(
+    Object.entries(effectiveVisibility.value)
+        .filter(([, visible]) => !visible)
+        .map(([key]) => key),
+))
+
+/** 由列定义的 `frozen` 推导冻结列状态（v9 以逻辑位 `start` / `end` 表示）；冻结偏移只累计可见列 */
 const columnPinningState = computed<ColumnPinningState>(() => ({
-    start: props.columns.filter((column) => column.frozen === 'left').map((column) => column.key),
-    end: props.columns.filter((column) => column.frozen === 'right').map((column) => column.key),
+    start: props.columns
+        .filter((column) => column.frozen === 'left' && !hiddenColumnKeys.value.has(column.key))
+        .map((column) => column.key),
+    end: props.columns
+        .filter((column) => column.frozen === 'right' && !hiddenColumnKeys.value.has(column.key))
+        .map((column) => column.key),
 }))
 
 function resolveRowKey(row: T, index: number): string {
@@ -155,6 +180,8 @@ const tableColumns = computed<ColumnDef<typeof dataTableFeatures, T>[]>(() =>
             mode: 'auto',
         }, () => column.header ?? column.key),
         enableSorting: Boolean(column.sortable),
+        // 展开列承载行展开按钮：隐藏它会让表头与控制按钮不一致，显式禁止
+        enableHiding: !column.expander,
         sortFn: column.sortable ? (column.sortFn ?? 'alphanumeric') : undefined,
         accessorFn: (row: T): unknown => {
             if (typeof column.accessor === 'function') {
@@ -313,11 +340,53 @@ const currentPagination = computed(() =>
     isPageControlled.value ? paginationState.value : internalPagination.value,
 )
 
+/*
+ * 列可见性与列顺序：均为受控读取（本组件不提供列开关 UI）。缺省值是 tanstack 的中性值——
+ * `{}` 表示全部可见、`[]` 表示保持列定义顺序，因此摘除 prop 即回到默认渲染。
+ */
+const columnVisibilityState = computed(() => effectiveVisibility.value)
+const columnOrderState = computed(() => props.columnOrder ?? [])
+
+const columnKeys = computed(() => new Set(tableColumns.value.map((column) => column.id)))
+
+/** 开发期告警去重：列定义异步到达 / 原地变更时同一条提示只输出一次 */
+const warnedMessages = new Set<string>()
+
+function warnOnce(message: string): void {
+    if (warnedMessages.has(message)) {
+        return
+    }
+    warnedMessages.add(message)
+    warnDev(message)
+}
+
+watch([(): Record<string, boolean> | undefined => props.columnVisibility, columnKeys], ([value]): void => {
+    for (const key of Object.keys(value ?? {})) {
+        if (!columnKeys.value.has(key)) {
+            warnOnce(`[CaomeiDataTable] columnVisibility 中的列 key「${key}」不存在，已忽略。`)
+        }
+    }
+}, { immediate: true, deep: true })
+
+watch([(): string[] | undefined => props.columnOrder, columnKeys], ([value]): void => {
+    const seen = new Set<string>()
+    for (const key of value ?? []) {
+        if (!columnKeys.value.has(key)) {
+            warnOnce(`[CaomeiDataTable] columnOrder 中的列 key「${key}」不存在，已忽略。`)
+        } else if (seen.has(key)) {
+            warnOnce(`[CaomeiDataTable] columnOrder 中的列 key「${key}」重复，仅首次生效。`)
+        }
+        seen.add(key)
+    }
+}, { immediate: true, deep: true })
+
 const state = computed(() => ({
     sorting: currentSorting.value,
     rowSelection: currentSelection.value,
     pagination: currentPagination.value,
     columnPinning: columnPinningState.value,
+    columnVisibility: columnVisibilityState.value,
+    columnOrder: columnOrderState.value,
 }))
 
 function onSortingChange(updater: Updater<SortingState>): void {
@@ -834,7 +903,10 @@ function columnDef(key: string): DataTableColumn<T> {
     return columnMap.value.get(key) ?? { key }
 }
 
-const bodyColspan = computed(() => Math.max(props.columns.length + (props.selectionMode ? 1 : 0), 1))
+const bodyColspan = computed(() => Math.max(
+    table.getVisibleLeafColumns().length + (props.selectionMode ? 1 : 0),
+    1,
+))
 
 /*
  * 表头全选默认只作用于**当前页**：`getIsAllPageRowsSelected` / `getIsSomePageRowsSelected`
@@ -1189,7 +1261,7 @@ function setPageSize(rows: number): void {
                                     </div>
                                 </td>
                                 <td
-                                    v-for="cell in entry.row.getAllCells()"
+                                    v-for="cell in entry.row.getVisibleCells()"
                                     :key="cell.id"
                                     class="caomei-data-table__td"
                                     :class="[alignClass(cell.column.id), columnMap.get(cell.column.id)?.bodyClass, pinnedClass(cell.column.id)]"

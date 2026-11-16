@@ -193,6 +193,58 @@ describe('CaomeiMenuItem', () => {
     })
 })
 
+describe('CaomeiMenuItem #icon 插槽', () => {
+    it('图标单独成盒并整体 aria-hidden', () => {
+        const wrapper = mount(CaomeiMenu, {
+            slots: {
+                default: () => h(CaomeiMenuItem, null, {
+                    icon: () => h('svg', { class: 'test-icon' }),
+                    default: () => '首页',
+                }),
+            },
+        })
+
+        const icon = wrapper.get('.caomei-menu__item-icon')
+        expect(icon.attributes('aria-hidden')).toBe('true')
+        expect(icon.find('.test-icon').exists()).toBe(true)
+        // 文本仍在自己的截断盒里
+        expect(wrapper.get('.caomei-menu__item-text').text()).toBe('首页')
+
+        wrapper.unmount()
+    })
+
+    it('未提供 #icon 时不渲染图标盒（DOM 与之前一致）', () => {
+        const wrapper = mount(CaomeiMenu, {
+            slots: { default: () => h(CaomeiMenuItem, null, { default: () => '首页' }) },
+        })
+
+        expect(wrapper.find('.caomei-menu__item-icon').exists()).toBe(false)
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiSubMenu #icon 插槽', () => {
+    it('触发器图标单独成盒，标签与指示器不受影响', () => {
+        const wrapper = mount(CaomeiMenu, {
+            slots: {
+                default: () => h(CaomeiSubMenu, { label: '设置' }, {
+                    icon: () => h('svg', { class: 'sub-icon' }),
+                    default: () => h(CaomeiMenuItem, null, { default: () => '账户' }),
+                }),
+            },
+        })
+
+        const trigger = wrapper.get('.caomei-menu__submenu-trigger')
+        expect(trigger.get('.caomei-menu__item-icon').attributes('aria-hidden')).toBe('true')
+        expect(trigger.find('.sub-icon').exists()).toBe(true)
+        expect(trigger.get('.caomei-menu__item-text').text()).toBe('设置')
+        expect(trigger.find('.caomei-menu__submenu-indicator').exists()).toBe(true)
+
+        wrapper.unmount()
+    })
+})
+
 describe('CaomeiSubMenu', () => {
     it('默认收起：触发器 aria-expanded=false，收起项不在键盘序列内', () => {
         const wrapper = mountVerticalMenu()

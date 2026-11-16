@@ -36,13 +36,25 @@ A collapsed submenu panel is **unmounted** by Presence, so its items leave both 
 
 When a plain item or a submenu trigger's label does not fit, it is truncated to a single line with an ellipsis and hovering shows the full text; while it fits, everything stays silent. Tighten the cap to a fixed value with `--caomei-menu-item-label-max-width`.
 
-**Known constraint**: the item slot is wrapped in a single text box, so `--caomei-menu-item-gap` no longer applies between an icon and the text (spacing falls back to template whitespace), and multi-node content (such as a trailing count badge) is clipped by that box when truncated. The submenu indicator is a decorative icon (`aria-hidden`) and carries no tooltip; the expansion semantics live on the trigger's `aria-expanded`. The tooltip is pointer-only: the text box is not focusable, so focusing a menu item never opens it.
+**Use the `#icon` slot for leading icons** (both plain items and submenu triggers): the icon gets its own box and is wrapped in `aria-hidden`, and `--caomei-menu-item-gap` sets the spacing between it and the text; the icon box is never truncated, while the text still truncates to one line under `--caomei-menu-item-label-max-width`. The default slot, by contrast, is wrapped in a single text box: without `#icon`, multi-node content (an icon plus text, a trailing count badge) is clipped by that box and `gap` does not apply between its inner nodes.
+
+The submenu indicator is a decorative icon (`aria-hidden`) and carries no tooltip; the expansion semantics live on the trigger's `aria-expanded`. The tooltip is pointer-only: the text box is not focusable, so focusing a menu item never opens it.
+
+```vue
+<CaomeiMenuItem href="/home">
+    <template #icon>
+        <CaomeiIcon :icon="Home" />
+    </template>
+    Home
+</CaomeiMenuItem>
+```
 
 ## Accessibility
 
 - The container is a `nav` (`label` maps to `aria-label`) plus `ul[role="list"]`: `list-style: none` removes list semantics in Safari, hence the explicit `role="list"`.
 - Items are native links or buttons; the current item emits `aria-current="page"` via `current` (`step` / `location` / `date` / `time` are also accepted).
 - Submenu triggers emit `aria-expanded` and `aria-controls` (pointing at the panel container).
+- The `#icon` slot is wrapped in `aria-hidden`: icons are decorative, so do not put state-bearing icons or focusable elements there; express semantics in the item text instead. An empty slot still renders the icon box and its gap (the check is slot presence only).
 - Disabled items emit `aria-disabled="true"` (links also drop `href` and their tab stop) and are excluded from the arrow-key sequence.
 - The component ships **no built-in text**: nothing is rendered when `label` is omitted; provide one per navigation region when a page has several.
 
@@ -63,7 +75,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 |------|------|------|
 | `--caomei-menu-gap` | `2px` | Gap between items / between panel and trigger |
 | `--caomei-menu-indent` | `--caomei-space-4` | Submenu panel indent |
-| `--caomei-menu-item-gap` | `--caomei-space-2` | Gap between the label and the indicator in a submenu trigger; once the item slot becomes a single text box it **no longer applies between an icon and the text** (see "Truncation and tooltip") |
+| `--caomei-menu-item-gap` | `--caomei-space-2` | Gap between the `#icon` icon and the text, and between the label and the indicator in a submenu trigger; inner nodes of the default slot are not affected (see "Truncation and tooltip") |
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | Item padding |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | Item corner radius |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | Hover background |
@@ -77,7 +89,7 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | PrimeVue | This component |
 | --- | --- |
 | `<Menu :model>` / `<Menubar :model>` (items render as a popup or a command bar) | Declarative `<CaomeiMenu>` + `<CaomeiMenuItem>` / `<CaomeiSubMenu>` (navigation semantics, expands in place) |
-| `MenuItem`'s `label` / `icon` / `url` / `target` | Item content goes in the default slot (icons via `@lucide/vue`); links use the native `href` attribute |
+| `MenuItem`'s `label` / `icon` / `url` / `target` | Text goes in the default slot and icons in the `#icon` slot (icons via `@lucide/vue`); links use the native `href` attribute. Putting an icon and text together in the default slot clips them in the same text box |
 | `MenuItem`'s `items` (nesting) | Wrap children in `<CaomeiSubMenu>` |
 | `MenuItem`'s `command` | A button item (no `href`) listens to the native `click` |
 | `PanelMenu` / `TieredMenu` | Nested `<CaomeiSubMenu>` (one per level) |

@@ -36,13 +36,25 @@
 
 普通项与子菜单触发器的标签放不下时单行省略，悬停显示全文；装得下时完全静默。上限可经 `--caomei-menu-item-label-max-width` 收紧到固定值。
 
-**已知约束**：项插槽内容被整体包进一个文本盒——`--caomei-menu-item-gap` 不再作用于「图标 + 文本」之间（间距退回模板空白），多节点内容（如末尾计数徽标）在截断时按盒裁切。子菜单指示器是装饰性图标（`aria-hidden`），不挂提示，展开语义由触发器的 `aria-expanded` 表达。提示只覆盖指针悬停：文本盒不可聚焦，聚焦菜单项不会弹出。
+**前置图标用 `#icon` 插槽**（普通项与子菜单触发器都支持）：图标单独成盒、整体 `aria-hidden`，与文本之间由 `--caomei-menu-item-gap` 控制间距；图标盒不参与截断，文本仍按 `--caomei-menu-item-label-max-width` 单行省略。默认插槽的内容则整体包进一个文本盒——未使用 `#icon` 时多节点内容（如图标 + 文本、末尾计数徽标）会被同一盒裁切，且 `gap` 不作用于其内部节点。
+
+子菜单指示器是装饰性图标（`aria-hidden`），不挂提示，展开语义由触发器的 `aria-expanded` 表达。提示只覆盖指针悬停：文本盒不可聚焦，聚焦菜单项不会弹出。
+
+```vue
+<CaomeiMenuItem href="/home">
+    <template #icon>
+        <CaomeiIcon :icon="Home" />
+    </template>
+    首页
+</CaomeiMenuItem>
+```
 
 ## 无障碍
 
 - 容器为 `nav`（`label` 映射 `aria-label`）+ `ul[role="list"]`：`list-style: none` 会移除 Safari 的列表语义，故显式声明 `role="list"`。
 - 项为原生链接或按钮；当前项经 `current` 输出 `aria-current="page"`（也支持 `step` / `location` / `date` / `time`）。
 - 子菜单触发器输出 `aria-expanded` 与 `aria-controls`（指向面板容器）。
+- `#icon` 插槽整体 `aria-hidden`：图标按装饰处理，不要在其中放状态语义图标或可聚焦元素；需要语义时把信息写进项文本。传入空插槽仍会保留图标盒与间距（`v-if` 只看插槽是否存在）。
 - 禁用项输出 `aria-disabled="true"`（链接同时去掉 `href` 与 Tab 停靠点），且不进入方向键序列。
 - 组件**不内建文案**：未传 `label` 时不渲染 `aria-label`；同一页面存在多个导航区时应逐区提供。
 
@@ -63,7 +75,7 @@
 |------|------|------|
 | `--caomei-menu-gap` | `2px` | 项之间 / 面板与触发器的间距 |
 | `--caomei-menu-indent` | `--caomei-space-4` | 子菜单面板的缩进 |
-| `--caomei-menu-item-gap` | `--caomei-space-2` | 子菜单触发器中标签与指示器的间距；项插槽整段成一个文本盒后，**不再作用于图标与文本之间**（见「长文本截断与提示」） |
+| `--caomei-menu-item-gap` | `--caomei-space-2` | 普通项 / 子菜单触发器中「`#icon` 图标 + 文本」以及标签与指示器的间距；默认插槽内部的节点不受其控制（见「长文本截断与提示」） |
 | `--caomei-menu-item-padding` | `--caomei-space-2 --caomei-space-3` | 项内边距 |
 | `--caomei-menu-item-radius` | `--caomei-radius-md` | 项圆角 |
 | `--caomei-menu-item-hover-bg` | `--caomei-color-bg-elevated` | 悬停背景 |
@@ -77,7 +89,7 @@
 | PrimeVue | 本组件 |
 | --- | --- |
 | `<Menu :model>` / `<Menubar :model>`（菜单项内建为浮层或横排命令） | `<CaomeiMenu>` + `<CaomeiMenuItem>` / `<CaomeiSubMenu>` 声明式组合（导航语义、就地展开） |
-| `MenuItem` 的 `label` / `icon` / `url` / `target` | 项内容走默认插槽（图标用 `@lucide/vue` 组件）；链接用 `href`（原生属性） |
+| `MenuItem` 的 `label` / `icon` / `url` / `target` | 文本走默认插槽、图标走 `#icon` 插槽（图标用 `@lucide/vue` 组件）；链接用 `href`（原生属性）。把图标与文本一起塞进默认插槽会被同一文本盒裁切 |
 | `MenuItem` 的 `items`（嵌套） | `<CaomeiSubMenu>` 包裹子项 |
 | `MenuItem` 的 `command` | 项若为按钮（不传 `href`）则监听原生 `click` |
 | `PanelMenu` / `TieredMenu` | `<CaomeiSubMenu>` 多层嵌套（每层一个 `SubMenu`） |

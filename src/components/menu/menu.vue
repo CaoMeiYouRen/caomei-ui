@@ -233,9 +233,20 @@ function handleKeydown(event: KeyboardEvent): void {
 }
 
 /*
-  已知可见变更：插槽内容被整体包进上面的文本盒，项级 `gap` 不再作用于「图标 + 文本」之间
-  （间距退回模板空白）；多节点内容在截断时按盒裁切。项页须写明「截断针对整段插槽文本」，
-  需要图标与文本各自成项时评估新增 `icon` 出口（见批次记录遗留）。
+  前置图标：`#icon` 插槽单独成盒，项级 `gap` 因此作用于「图标 + 文本」之间；文本仍在
+  自己的截断盒里（`--caomei-menu-item-label-max-width` 可收紧）。图标盒不参与截断，
+  故图标 + 文本组合下文本宽度 = 可用宽 − 图标宽 − gap。
+*/
+.caomei-menu .caomei-menu__item-icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+/*
+  默认插槽的内容仍整体包进文本盒：未使用 `#icon` 时多节点内容（如图标 + 文本）会被同一盒裁切，
+  且 `gap` 不生效（间距退回模板空白）——图标请走 `#icon`（见组件页「长文本截断与提示」）。
 */
 
 .caomei-menu .caomei-menu__item:hover:not([aria-disabled='true'], [aria-current]) {

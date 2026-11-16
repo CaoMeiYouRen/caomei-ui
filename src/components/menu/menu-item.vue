@@ -13,6 +13,11 @@ const props = withDefaults(defineProps<MenuItemProps>(), {
 
 defineSlots<{
     default?: () => unknown
+    /**
+     * 前置图标：与文本各自成盒，由项级 `gap` 控制间距；装饰性内容，整体 `aria-hidden`
+     * @en Leading icon: a separate box from the text, spaced by the item-level `gap`; decorative, wrapped with `aria-hidden`
+     */
+    icon?: () => unknown
 }>()
 
 /** `true` 归一为 `page`；`false` 不渲染属性。 */
@@ -38,6 +43,13 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
             :aria-disabled="ariaDisabled"
             :aria-current="ariaCurrent"
         >
+            <span
+                v-if="$slots.icon"
+                class="caomei-menu__item-icon"
+                aria-hidden="true"
+            >
+                <slot name="icon" />
+            </span>
             <CaomeiTooltipText
                 class="caomei-menu__item-text"
                 mode="auto"
@@ -54,6 +66,13 @@ const ariaDisabled = computed(() => (props.disabled ? 'true' : undefined))
             :aria-disabled="ariaDisabled"
             :aria-current="ariaCurrent"
         >
+            <span
+                v-if="$slots.icon"
+                class="caomei-menu__item-icon"
+                aria-hidden="true"
+            >
+                <slot name="icon" />
+            </span>
             <CaomeiTooltipText
                 class="caomei-menu__item-text"
                 mode="auto"

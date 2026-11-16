@@ -60,6 +60,21 @@ function plainMenuTree(): ReturnType<typeof h> {
     return h(CaomeiMenu, {}, { default: () => [h(CaomeiMenuItem, {}, { default: () => LONG })] })
 }
 
+function iconMenuTree(): ReturnType<typeof h> {
+    return h(CaomeiMenu, {}, {
+        default: () => [
+            h(CaomeiMenuItem, {}, {
+                icon: () => h('svg', { class: 'icon-fixture' }),
+                default: () => LONG,
+            }),
+            h(CaomeiSubMenu, { label: LONG }, {
+                icon: () => h('svg', { class: 'icon-fixture' }),
+                default: () => [h(CaomeiMenuItem, {}, { default: () => '子项' })],
+            }),
+        ],
+    })
+}
+
 function subMenuTree(): ReturnType<typeof h> {
     return h(CaomeiMenu, {}, {
         default: () => [
@@ -178,6 +193,31 @@ describe('长文本溢出提示：Menu', () => {
         markOverflowing(text, false)
         await nextTick()
         expect(text.hasAttribute('aria-describedby')).toBe(false)
+        expect(panelText()).toBeNull()
+
+        markOverflowing(text, true)
+        await nextTick()
+        await openByPointer(text)
+        expect(panelText()).toBe(LONG)
+    })
+
+    it('带前置图标时文本仍在自己的截断盒里，溢出示全文', async () => {
+        mountIn(iconMenuTree)
+        await nextTick()
+
+        const icons = document.querySelectorAll('.caomei-menu__item-icon')
+        expect(icons).toHaveLength(2)
+        for (const icon of icons) {
+            expect(icon.getAttribute('aria-hidden')).toBe('true')
+        }
+
+        const text = document.querySelector('.caomei-menu__item-text') as HTMLElement
+        // 图标盒与文本盒是兄弟：图标不在截断盒内，截断只作用于文本
+        expect(text.querySelector('.icon-fixture')).toBeNull()
+        expect(icons[0].contains(text)).toBe(false)
+
+        markOverflowing(text, false)
+        await nextTick()
         expect(panelText()).toBeNull()
 
         markOverflowing(text, true)

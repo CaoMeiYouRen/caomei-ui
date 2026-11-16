@@ -33,6 +33,11 @@ const isOpen = computed(() => props.open ?? internalOpen.value)
 defineSlots<{
     default?: () => unknown
     label?: () => unknown
+    /**
+     * 触发器前置图标：与标签各自成盒，由项级 `gap` 控制间距；装饰性内容，整体 `aria-hidden`
+     * @en Leading icon of the trigger: a separate box from the label, spaced by the item-level `gap`; decorative, wrapped with `aria-hidden`
+     */
+    icon?: () => unknown
 }>()
 
 const triggerClass = computed(() => [
@@ -68,6 +73,13 @@ function setOpen(value: boolean): void {
             data-caomei-menu-target
             data-caomei-submenu-trigger
         >
+            <span
+                v-if="$slots.icon"
+                class="caomei-menu__item-icon"
+                aria-hidden="true"
+            >
+                <slot name="icon" />
+            </span>
             <CaomeiTooltipText
                 class="caomei-menu__item-text"
                 mode="auto"

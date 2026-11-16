@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 36**（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理）。**3 条主线 / 8 条原子条目**（构成对账 4 + 2 + 2 = 8）；范围与验收口径的唯一载体见 [Phase 36 登记批次](../design/governance/2026-11-17-phase36-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
+**当前进行中阶段：Phase 36**（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理）。**3 条主线 / 10 条原子条目**（构成对账 5 + 3 + 2 = 10；原登记 8 条为 2026-11-17 时点值，同日追加 2 条，见[登记记录](../design/governance/2026-11-17-phase36-registration.md) §6.1）；范围与验收口径的唯一载体见 [Phase 36 登记批次](../design/governance/2026-11-17-phase36-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## Phase 36 原子条目
 
@@ -14,8 +14,10 @@
 | M1-2 | 无障碍扩面 | MultiSelect / AutoComplete 打开态补 `inert` | 待执行 |
 | M1-3 | 无障碍扩面 | DatePicker / ColorPicker 打开态补 `inert` | 待执行 |
 | M1-4 | 无障碍扩面 | 全库浮层回归与边界记录 | 待执行 |
+| M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 待执行 |
 | M2-1 | DataTable 交互 | 列宽拖拽手柄 | 待执行 |
 | M2-2 | DataTable 交互 | 虚拟滚动可行性评估（只评估） | 待执行 |
+| M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 待执行 |
 | M3-1 | 质量治理 | Rating 文档站 a11y 抽检 | 待执行 |
 | M3-2 | 质量治理 | 依赖告警复核 | 待执行 |
 

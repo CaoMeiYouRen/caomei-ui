@@ -48,6 +48,7 @@ import {
     CaomeiPopoverTrigger,
     CaomeiRadioButton,
     CaomeiRadioGroup,
+    CaomeiRating,
     CaomeiRow,
     CaomeiSelect,
     CaomeiRichTextEditor,
@@ -412,6 +413,10 @@ const sizingData = Array.from({ length: 3 }, (_, index) => ({
     note: `第 ${index + 1} 行的备注内容用于验证列宽与截断上限同步`,
 }))
 const sizingValue = ref<Record<string, number>>({ name: 200, note: 260 })
+
+/** 评分组件夹具：可交互 / 只读 / 半星 / 视觉静态态 */
+const ratingValue = ref(0)
+const ratingHalf = ref(0)
 
 /**
  * 冻结首列：验证吸顶表头与冻列表头同时存在时的层叠顺序（冻结表头必须画在上面）。
@@ -2584,6 +2589,35 @@ const ConfirmDriver = defineComponent({
                 :column-sizing="sizingValue"
                 caption="受控列宽"
             />
+        </section>
+        <!--
+          Rating（见 `test/e2e/rating.e2e.ts` 与视觉基线）：可交互 / 只读 / 半星 / 静态态。
+        -->
+        <section id="rating-interactive" class="fixture__case">
+            <CaomeiRating v-model="ratingValue" label="满意度" />
+            <p id="rating-value" class="fixture__state">
+                {{ ratingValue }}
+            </p>
+        </section>
+        <section id="rating-readonly" class="fixture__case">
+            <CaomeiRating
+                :model-value="3"
+                label="只读评分"
+                readonly
+            />
+        </section>
+        <section id="rating-half" class="fixture__case">
+            <CaomeiRating
+                v-model="ratingHalf"
+                label="半星评分"
+                :step="0.5"
+            />
+            <p id="rating-half-value" class="fixture__state">
+                {{ ratingHalf }}
+            </p>
+        </section>
+        <section id="ds-rating" class="fixture__case">
+            <CaomeiRating :model-value="3" label="评分" />
         </section>
     </main>
 </template>

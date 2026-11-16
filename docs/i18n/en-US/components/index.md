@@ -30,6 +30,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [InputNumber](/en-US/components/input-number)
 - [Password](/en-US/components/password)
 - [RadioGroup](/en-US/components/radio-group)
+- [Rating](/en-US/components/rating)
 - [Slider](/en-US/components/slider)
 - [Switch](/en-US/components/switch)
 - [TagsInput](/en-US/components/tags-input)

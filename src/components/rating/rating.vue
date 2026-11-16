@@ -108,7 +108,6 @@ function stepLabel(step: number): string {
         :hoverable="!inactive"
         :aria-label="accessibleName"
         :aria-readonly="readonly ? 'true' : undefined"
-        :data-readonly="readonly ? '' : undefined"
         :class="rootClass"
         @mouseleave="resetHover"
     >
@@ -143,7 +142,11 @@ function stepLabel(step: number): string {
     </RatingRoot>
 </template>
 
-<style scoped>
+<style>
+/*
+  非 scoped：`RatingItem` / `RatingItemIndicator` 的根元素由 Reka 的多层 primitive 渲染，
+  scoped 属性不会落到这些节点上（实测 button 无 `data-v-*`），改用命名空间选择器。
+*/
 .caomei-rating {
     display: inline-flex;
     gap: var(--caomei-rating-gap, var(--caomei-space-1));

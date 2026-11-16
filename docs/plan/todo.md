@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 35**（质量与无障碍收口、DataTable 进阶、长尾 Rating）。**3 条主线 / 10 条原子条目**（构成对账 5 + 2 + 3 = 10）；范围与验收口径的唯一载体见 [Phase 35 登记批次](../design/governance/2026-11-15-phase35-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
+**当前进行中阶段：Phase 35**（质量与无障碍收口、DataTable 进阶、长尾 Rating）——**3 条主线 / 10 条原子条目**（构成对账 5 + 2 + 3 = 10）已全部交付（2026-11-16），等待阶段归档评估；范围与验收口径的唯一载体见 [Phase 35 登记批次](../design/governance/2026-11-15-phase35-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## Phase 35 原子条目
 

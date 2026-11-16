@@ -25,6 +25,18 @@
  *   按「**写录时点快照**」跳过 —— 历史记录可保留当时取值，但**必须显式标注**；未标注即按现行引用对待。
  * - 受检面下界 `MIN_CITED_CONSTANTS`：**可比对的「不同常量名」数**低于下界判 `scope-narrowed`（防「解析被削弱 ⇒ 通过」）。
  *
+ * **第二族：记录内计数自洽（2026-11-16）**：治理记录曾多次出现「总数与逐点清单不符」
+ * （验证表的 N 个触发点 / N 个面）与「读数 − 扣除集 ≠ 表内求和」。散文里的裸数字无法稳定解析，
+ * 故只收两类**明确形态**：
+ * - **算式恒等式**：行内 `a − b = c` 与 `a + b + c = d` 必须成立（编号形态、表格行、围栏代码块与
+ *   行内代码不在面内）；受检面 = `docs/design/governance/**` 与 `docs/plan/**`。错误码 `record-arithmetic-mismatch`。
+ * - **文件面模板**：`## 1. …（N 文件）` 声明的 N 必须等于该节表格内**仓库相对路径**（`src/` `test/` `scripts/`
+ *   `docs/` `packages/`）的去重数（`../` 链接与 brace 展开不计入；单元格内路径后的「：说明」不截断路径）。
+ *   仅对 `FILE_FACE_CUTOVER`（2026-11-16）及以后创建的记录生效——存量记录按写录时点保留、不回改。
+ *   错误码 `record-file-face-mismatch`。
+ * - **§3 用例数归因**：新记录的「新增 N 例」「N passed」类读数必须与命令同行（反引号包裹），
+ *   否则判 `record-count-unattributed`——数字可复算，而不是散文里的孤立结果。
+ *
  * 已知边界（有意）：
  * - 只认**字符串化的常量引述**（`NAME = N`）；散文里的裸数字（如「约三成」）不在面内；
  * - 不区分 `MIN_*` 与其它命名：凡文档以 `常量名 = 数字` 形式引述且代码侧存在同名常量者均在面内；
@@ -131,7 +143,171 @@ export const ISSUE_CODES = {
     mismatch: 'const-value-mismatch',
     scopeNarrowed: 'scope-narrowed',
     indexResidue: 'index-reading-residue',
+    arithmeticMismatch: 'record-arithmetic-mismatch',
+    fileFaceMismatch: 'record-file-face-mismatch',
+    countUnattributed: 'record-count-unattributed',
     ioError: 'io-error',
+}
+
+/** 记录内算术恒等式的受检目录（治理记录 + 规划载体）。 */
+export const ARITHMETIC_DOC_DIRS = ['docs/design/governance', 'docs/plan']
+
+/** 文件面模板校验的生效日期：此日期及以后创建的记录按模板校验（存量记录不回改）。 */
+export const FILE_FACE_CUTOVER = '2026-11-16'
+
+/** 围栏代码块边界：算例可合法出现在代码里，逐行跳过但保留原始行号。 */
+const FENCE_LINE_RE = /^\s*```//** 行内代码：引述算例（含负向语料）时应剔除，避免把示例当成记录自身的算式。 */
+const INLINE_CODE_RE = /`[^`\n]*`/g
+
+/** 强调标记：算术链里夹粗体（如 `2 + 1 + **7**`）会截断匹配，扫描前先去掉。 */
+const EMPHASIS_RE = /[*_]{1,3}/g
+
+/** 不等式叙述（`≠` / `!=`）不作为等式判定，整行跳过。 */
+const INEQUALITY_RE = /≠|!=/
+
+/** 算式：`a ± b … = c`（加减可混排，逐项从左到右求值；结果允许负数）。 */
+const EQUATION_RE = /(?<![\w-])(\d+(?:\s*[+\-−]\s*\d+)+)\s*[=＝]\s*(-?\d+)/g
+
+/** 千分位：`1,000` → `1000`（避免被切成 `000`）。 */
+const THOUSANDS_RE = /(?<=\d),(?=\d{3}\b)/g
+
+/** 文件面表格里的仓库相对路径（只认目录前缀，排除 `../` 链接与 brace 展开）。 */
+const REPO_PATH_RE = /(?:^|[\s`|（(])((?:src|test|scripts|docs|packages)\/[\w./-]+)/g
+
+/** §3 用例数读数：`N passed` 与 `新增 N 例`。 */
+const COUNT_READING_RE = /(?:新增\s*\d+\s*例|\b\d+\s*passed\b)/
+
+/**
+ * 逐项求值加减链（`32 − 4 + 1` → 29）。
+ *
+ * @param {string} chain 形如 `12 + 3 − 4` 的算式左值
+ * @returns {number} 从左到右的计算结果
+ */
+export function evaluateChain(chain) {
+    const tokens = chain.split(/\s*([+\-−])\s*/).map((token) => token.trim()).filter(Boolean)
+    let value = Number(tokens[0])
+    for (let index = 1; index < tokens.length; index += 2) {
+        const operator = tokens[index]
+        const operand = Number(tokens[index + 1])
+        value = operator === '+' ? value + operand : value - operand
+    }
+    return value
+}
+
+/**
+ * 找出记录里算错的加减恒等式。
+ *
+ * 受检面固定为「明确的算式」：行内 `a − b = c` / `a + b = c` / 混合链；编号形态、表格行、
+ * 不等式叙述、围栏代码块与行内代码均不在面内。
+ *
+ * @param {string} text 记录正文
+ * @returns {string[]} 问题描述（空数组 = 通过）
+ */
+export function findArithmeticIssues(text) {
+    const issues = []
+    const lines = text.split('\n')
+    let inFence = false
+    for (const [index, rawLine] of lines.entries()) {
+        if (FENCE_LINE_RE.test(rawLine)) {
+            inFence = !inFence
+            continue
+        }
+        if (inFence || rawLine.trim().startsWith('|') || INEQUALITY_RE.test(rawLine)) {
+            continue
+        }
+        const line = rawLine.replace(INLINE_CODE_RE, '``').replace(EMPHASIS_RE, '').replace(THOUSANDS_RE, '')
+        for (const match of line.matchAll(EQUATION_RE)) {
+            const [raw, chain, result] = match
+            const value = evaluateChain(chain)
+            if (value !== Number(result)) {
+                issues.push(`第 ${index + 1} 行算式不成立：${raw.trim()}（实际 ${value}）`)
+            }
+        }
+    }
+    return issues
+}
+
+/**
+ * 文件面模板：`## 1. 交付面（N 文件）` 里声明的 N 必须等于表格内仓库相对路径的去重数。
+ *
+ * @param {string} text 记录正文
+ * @returns {{ declared: number, counted: number, paths: string[] } | null} 未声明文件数时返回 null
+ */
+export function inspectFileFace(text) {
+    const heading = text.match(/^##\s*1\.[^\n]*?[（(]\s*(\d+)\s*(?:个)?文件\s*[）)]/m)
+    if (!heading) {
+        return null
+    }
+    const rest = text.slice(text.indexOf(heading[0]) + heading[0].length)
+    const nextHeading = rest.search(/^##\s/m)
+    const section = nextHeading === -1 ? rest : rest.slice(0, nextHeading)
+    const paths = new Set()
+    for (const line of section.split('\n')) {
+        if (!line.trim().startsWith('|')) {
+            continue
+        }
+        for (const match of line.matchAll(REPO_PATH_RE)) {
+            const path = match[1]
+            if (path.includes('{') || path.includes('..')) {
+                continue
+            }
+            paths.add(path)
+        }
+    }
+    return { declared: Number(heading[1]), counted: paths.size, paths: [...paths].sort() }
+}
+
+/**
+ * 扫描治理记录与规划载体：算术恒等式一律成立；新记录的文件面声明与表内路径数一致。
+ *
+ * @param {string} root 仓库根
+ * @returns {Array<{ code: string, detail: string }>}
+ */
+export function checkRecordCounts(root) {
+    const issues = []
+    for (const dir of ARITHMETIC_DOC_DIRS) {
+        if (!existsSync(join(root, dir))) {
+            continue
+        }
+        for (const file of listFiles(root, dir, ['.md'])) {
+            let text
+            try {
+                text = readFileSync(join(root, file), 'utf8')
+            } catch {
+                continue
+            }
+            for (const detail of findArithmeticIssues(text)) {
+                issues.push({ code: ISSUE_CODES.arithmeticMismatch, detail: `${file}：${detail}` })
+            }
+            if (dir !== 'docs/design/governance') {
+                continue
+            }
+            const created = file.match(/(\d{4}-\d{2}-\d{2})-/)?.[1]
+            if (!created || created < FILE_FACE_CUTOVER) {
+                continue
+            }
+            for (const [index, line] of text.split('\n').entries()) {
+                if (!COUNT_READING_RE.test(line)) {
+                    continue
+                }
+                if (line.includes('`')) {
+                    continue
+                }
+                issues.push({
+                    code: ISSUE_CODES.countUnattributed,
+                    detail: `${file}：第 ${index + 1} 行的用例数读数没有与命令同行（请把命令与读数写在同一行）`,
+                })
+            }
+            const face = inspectFileFace(text)
+            if (face && face.declared !== face.counted) {
+                issues.push({
+                    code: ISSUE_CODES.fileFaceMismatch,
+                    detail: `${file}：§1 声明 ${face.declared} 文件，表内仓库相对路径去重 ${face.counted} 个${face.paths.length > 0 ? `（${face.paths.join(' / ')}）` : ''}`,
+                })
+            }
+        }
+    }
+    return issues
 }
 
 /**
@@ -278,6 +454,7 @@ export function checkGovernanceCounts(root, { enforceScope = true, minCited = MI
     }
 
     issues.push(...checkIndexReadingResidue(root))
+    issues.push(...checkRecordCounts(root))
 
     if (enforceScope && distinctNames.size < minCited) {
         issues.push({

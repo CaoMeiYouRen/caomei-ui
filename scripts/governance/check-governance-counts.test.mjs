@@ -8,7 +8,11 @@ import {
     checkGovernanceCounts,
     checkIndexReadingResidue,
     collectCodeConstants,
+    evaluateChain,
+    findArithmeticIssues,
+    checkRecordCounts,
     hasSnapshotMarker,
+    inspectFileFace,
     ISSUE_CODES,
     MIN_CITED_CONSTANTS,
 } from './check-governance-counts.mjs'
@@ -187,5 +191,113 @@ describe('CLI', () => {
 
     it('目标目录不存在 exit 2', () => {
         expect(runCli(['--root', join(tmpdir(), 'no-such-dir-xyz')]).status).toBe(2)
+    })
+})
+
+describe('findArithmeticIssues（记录内算式）', () => {
+    it('成立的减法 / 加法恒等式不报问题', () => {
+        expect(findArithmeticIssues('实测 10 − 3 = 7（表内求和）\n贡献 5 + 2 + 3 = 10')).toEqual([])
+    })
+
+    it('加减混排按从左到右求值', () => {
+        expect(evaluateChain('32 − 4 + 1')).toBe(29)
+        expect(findArithmeticIssues('复算 32 − 4 + 1 = 29')).toEqual([])
+        expect(findArithmeticIssues('复算 32 − 4 + 1 = 30')).toHaveLength(1)
+    })
+
+    it('行内代码里的算例（含负向语料）不参与判定', () => {
+        expect(findArithmeticIssues('反例：`10 − 4 = 7` 会被判红')).toEqual([])
+    })
+
+    it('减法不成立时报行号与原文', () => {
+        const issues = findArithmeticIssues('第一行\n实测 10 − 4 = 7')
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toContain('第 2 行')
+        expect(issues[0]).toContain('10 − 4 = 7')
+    })
+
+    it('加法链不成立时报出实际求和', () => {
+        const issues = findArithmeticIssues('贡献 5 + 2 + 4 = 10')
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toContain('11')
+    })
+
+    it('条目编号形态不被当作减法', () => {
+        expect(findArithmeticIssues('X1-2 = 10；X3-1 4 / X3-2 5')).toEqual([])
+    })
+
+    it('围栏代码块与表格行不在受检面', () => {
+        const text = ['```', '10 - 4 = 7', '```', '| 10 - 4 = 7 | x |'].join('\n')
+        expect(findArithmeticIssues(text)).toEqual([])
+    })
+
+    it('围栏之后的报错行号与原文一致', () => {
+        const text = ['```', '10 - 4 = 7', '```', '中间行', '实测 10 − 4 = 7'].join('\n')
+        const issues = findArithmeticIssues(text)
+        expect(issues).toHaveLength(1)
+        expect(issues[0]).toContain('第 5 行')
+    })
+
+    it('千分位与负结果按数值判定', () => {
+        expect(findArithmeticIssues('总量 1,000 − 200 = 800')).toEqual([])
+        expect(findArithmeticIssues('差值 1 − 2 = -1')).toEqual([])
+    })
+})
+
+describe('inspectFileFace（§1 文件面模板）', () => {
+    const table = (paths) => ['| 面 | 文件 |', '|:---|:---|', ...paths.map((p) => `| 面 | \`${p}\` |`)].join('\n')
+
+    it('未声明文件数时返回 null', () => {
+        expect(inspectFileFace(`## 1. 交付面\n${table(['src/a.ts'])}`)).toBeNull()
+    })
+
+    it('声明数等于表内仓库相对路径去重数时一致', () => {
+        const face = inspectFileFace(`## 1. 交付面（2 文件）\n${table(['src/a.ts', 'src/b.ts', 'src/a.ts'])}`)
+        expect(face).toEqual({ declared: 2, counted: 2, paths: ['src/a.ts', 'src/b.ts'] })
+    })
+
+    it('表内路径数与声明不符时给出两读数', () => {
+        const face = inspectFileFace(`## 1. 交付面（3 文件）\n${table(['src/a.ts', 'docs/b.md'])}`)
+        expect(face?.declared).toBe(3)
+        expect(face?.counted).toBe(2)
+    })
+
+    it('非仓库相对路径（链接、brace 展开）不计入', () => {
+        const section = ['## 1. 交付面（1 文件）', '| 面 | 文件 |', '|:---|:---|', '| a | [链接](../x.md) |', '| b | `src/{a,b}.ts` |', '| c | `src/ok.ts` |'].join('\n')
+        expect(inspectFileFace(section)?.counted).toBe(1)
+    })
+})
+
+describe('checkRecordCounts（记录级机检）', () => {
+    const faceRecord = (declared, paths) => [
+        `## 1. 交付面（${declared} 文件）`,
+        '',
+        '| 面 | 文件 |',
+        '|:---|:---|',
+        ...paths.map((path) => `| 面 | \`${path}\` |`),
+        '',
+    ].join('\n')
+
+    it('新记录的文件面声明与表内路径数不符时判 record-file-face-mismatch', () => {
+        const root = createFixture({ docs: { 'design/governance/2026-11-16-x.md': faceRecord(3, ['src/a.ts']) } })
+        const issues = checkRecordCounts(root)
+        expect(issues.map((issue) => issue.code)).toContain(ISSUE_CODES.fileFaceMismatch)
+    })
+
+    it('cutover 之前的记录不走文件面模板（存量不回改）', () => {
+        const root = createFixture({ docs: { 'design/governance/2026-11-15-x.md': faceRecord(3, ['src/a.ts']) } })
+        expect(checkRecordCounts(root)).toEqual([])
+    })
+
+    it('记录内算式不成立时判 record-arithmetic-mismatch', () => {
+        const root = createFixture({ docs: { 'plan/todo.md': '实测 10 − 4 = 7' } })
+        const issues = checkRecordCounts(root)
+        expect(issues.map((issue) => issue.code)).toContain(ISSUE_CODES.arithmeticMismatch)
+    })
+
+    it('用例数读数缺同行命令时判 record-count-unattributed', () => {
+        const root = createFixture({ docs: { 'design/governance/2026-11-16-x.md': '单测 10 passed\n命令 `npx vitest run` → 10 passed' } })
+        const issues = checkRecordCounts(root)
+        expect(issues.filter((issue) => issue.code === ISSUE_CODES.countUnattributed)).toHaveLength(1)
     })
 })

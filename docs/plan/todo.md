@@ -4,22 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 35**（质量与无障碍收口、DataTable 进阶、长尾 Rating）——**3 条主线 / 10 条原子条目**（构成对账 5 + 2 + 3 = 10）已全部交付（2026-11-16），等待阶段归档评估；范围与验收口径的唯一载体见 [Phase 35 登记批次](../design/governance/2026-11-15-phase35-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
-
-## Phase 35 原子条目
-
-| 编号 | 主线 | 条目 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | 质量与无障碍 | F18：Select 展开时兄弟节点补 `inert` | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-1-select-open-inert.md)） |
-| M1-2 | 质量与无障碍 | F1：可测量盒的布局级持久守卫 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-2-tooltip-truncation-guard.md)） |
-| M1-3 | 质量与无障碍 | F14：治理计数一致性机检 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-3-record-count-guard.md)） |
-| M1-4 | 质量与无障碍 | F17：DataTable 逐格提示接线性能实测与退出开关 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-4-cell-tooltip-optout.md)） |
-| M1-5 | 质量与无障碍 | F16：Menu 项槽包裹约束（`icon` prop / `#icon` 槽） | 已交付（2026-11-16，`#icon` 插槽，[交付记录](../design/governance/2026-11-16-phase35-m1-5-menu-icon-slot.md)） |
-| M2-1 | DataTable 进阶 | 列可见性与列顺序（受控） | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m2-1-column-visibility-order.md)） |
-| M2-2 | DataTable 进阶 | 列宽调整与持久化契约 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m2-2-column-sizing.md)） |
-| M3-1 | 长尾组件 | Rating 实现与导出（单测、a11y 受检面） | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m3-1-rating.md)） |
-| M3-2 | 长尾组件 | Rating 10 语 locale 与台账 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m3-2-rating-locale.md)） |
-| M3-3 | 长尾组件 | Rating 文档、示例、E2E 与视觉基线 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m3-3-rating-docs-e2e.md)） |
+**当前无进行中阶段**。下一阶段需经需求评估与用户明确授权后再登记；候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## 未完成项汇总
 

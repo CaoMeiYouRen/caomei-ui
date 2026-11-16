@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-16-phase35-archive.md](./2026-11-16-phase35-archive.md)：**Phase 35 归档批次**。10 条原子条目（3 条主线）全部交付并归档，本阶段不发布、`latest` 维持 `1.3.0`；Phase 28 ~ Phase 30 机械迁入深度归档（主窗口 Phase 31 ~ Phase 35 / 311 行），`todo.md` 回到「无进行中阶段」，`roadmap` §1 / §5 与第 39 轮门槛复核同批更新。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m3-3-rating-docs-e2e.md](./2026-11-16-phase35-m3-3-rating-docs-e2e.md)：**Phase 35 M3-3：Rating 文档、示例、E2E 与视觉基线**。中英组件页与示例、侧栏 / 总览 / §5 / §11 登记；三视口 E2E（点击 / 键盘 / 只读 / 半星坐标）；视觉抽样集纳入 `ds-rating` 并生成亮暗基线。分三批提交（文档 9 / E2E 2 / 视觉 3）。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m3-2-rating-locale.md](./2026-11-16-phase35-m3-2-rating-locale.md)：**Phase 35 M3-2：Rating 10 语 locale 与台账**。新增 `rating` 命名空间（`label` / `readonlyLabel` / `valueLabel`），10 语同批；组件可访问名取 `label` → 只读 / 可交互语言兜底，step 名按 `{value}` 模板插值；中英台账补行与计数。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m3-1-rating.md](./2026-11-16-phase35-m3-1-rating.md)：**Phase 35 M3-1：Rating 实现与导出**。封装 Reka `RatingRoot` / `RatingItem` / `RatingItemIndicator`：`max` / `step`（1 或 0.5）/ `readonly` / `disabled` / `size` / `label` / `clearable`，半星按 primitive 的步进变量裁切；只读落到 `disabled` 并标注 `aria-readonly`。新增 `star` 语义图标、包入口与 Nuxt 自动导入、a11y 夹具（预算同步），单测覆盖渲染 / 点击 / 半星 / 只读 / 禁用 / 键盘 / SSR。**Review Gate**：见本记录 §4。

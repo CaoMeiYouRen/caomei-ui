@@ -34,12 +34,12 @@
 | 治理守卫 | `check:governance-records` / `check:planning-numbers` / `check:stage-counts`（无进行中阶段分支跳过）/ `check:archive-rg-counts` / `check:governance-counts` / `check:design` / `docs:check` → `exit 0` |
 | 长期任务 | `node scripts/governance/distill-wisdom.mjs --check` → 16 条活跃（< 20，不蒸馏）；`capture:styles` 399 项 0 差异 |
 | `pnpm verify` | `exit 0` |
-| 迁移自证 | 以 `git show HEAD:docs/plan/todo-archive.md` 为基线做**正向**机械改写后逐行对比：phase-28 / 29 / 30 均零差异（38 / 50 / 41 行） |
+| 迁移自证 | 以归档前基线 `8e5dc0d` 的 `docs/plan/todo-archive.md`（`git show 8e5dc0d:docs/plan/todo-archive.md`）为基线做**正向**机械改写后逐行对比：phase-28 / 29 / 30 均零差异（38 / 50 / 41 行） |
 
 ## 4. Review Gate
 
 - **R1（`standard`，约 10 分钟）**：**Reject**（1 blocker / 4 warning / 1 suggest）——① `phase-30.md` 中「链接深度 `../` → `../../` 18 处」被机械改写污染为 `../`，使「正文不改写」失实；② 记录 §1 的 `git status` 计数与「留痕另计」表述矛盾；③ 行数构成式的加数不可复算；④ 新块置顶与既有升序不一致；⑤ §4 占位。
-- **R1 处置**：恢复 `phase-30.md` 该句的 `../../`，并以 `git show` 基线做正向 diff 重证（三块零差异）；§1 改为「git status 10 = 8 + 2 留痕」；行数构成改为净额表述（397 − 86 = 311）；Phase 35 块移到 Phase 34 之后保持升序；本节补齐。
+- **R1 处置**：恢复 `phase-30.md` 该句的 `../../`，并以 `8e5dc0d` 基线做正向 diff 重证（三块零差异）；§1 改为「git status 10 = 8 + 2 留痕」；行数构成改为净额表述（397 − 86 = 311）；Phase 35 块移到 Phase 34 之后保持升序；本节补齐。
 
 ## 5. 遗留
 

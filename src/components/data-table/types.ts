@@ -411,4 +411,15 @@ export interface DataTableProps<T> {
      * no cap. Keep the cap at least as tall as the header plus one row
      */
     scrollHeight?: number | string
+    /**
+     * 逐格提示：默认单元格（未使用 `cell` 渲染函数）在文本被截断时悬停显示全文。
+     * 大批量表（每格一个提示实例）会显著增加挂载开销，可显式关闭；关闭后单元格不再挂提示接线，
+     * 截断配方与列宽上限保持不变，`cell` 自定义渲染与表头提示也不受影响。缺省开启，渲染结果不变
+     * @en Per-cell tooltips: default cells (those without a `cell` renderer) show the full text on
+     * hover when truncated. Large tables pay one tooltip instance per cell, so this can be turned off
+     * explicitly; when off, cells keep their truncation recipe and width cap but lose the tooltip
+     * wiring, while `cell` renderers and header tooltips are unaffected. On by default, leaving the
+     * rendered output unchanged
+     */
+    cellTooltips?: boolean
 }

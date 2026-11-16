@@ -533,4 +533,38 @@ describe('CaomeiDataTable 列插槽', () => {
         expect(wrapper.find('.cell-slot').exists()).toBe(false)
         expect(wrapper.get('.caomei-data-table__td').text()).toBe('Ada')
     })
+
+    it('默认单元格包一层逐格提示接线', () => {
+        const wrapper = mount(DataTable, { props: { data: baseData, columns: baseColumns } })
+
+        const cell = wrapper.get('.caomei-data-table__td')
+        expect(cell.find('.caomei-tooltip-text').exists()).toBe(true)
+        expect(cell.text()).toBe('Ada')
+    })
+
+    it('cellTooltips=false 时单元格不再挂提示接线，截断配方保留', () => {
+        const columns: DataTableColumn<Row>[] = [{ key: 'name', header: '姓名', width: '80px' }]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, cellTooltips: false } })
+
+        const cell = wrapper.get('.caomei-data-table__td')
+        expect(cell.find('.caomei-tooltip-text').exists()).toBe(false)
+        expect(cell.text()).toBe('Ada')
+        // 绝对列宽下的单行省略仍由列宽口径决定；可测量盒类保证截断配方在非 inline 元素上生效
+        expect(cell.get('span').classes()).toEqual(expect.arrayContaining([
+            'caomei-data-table__text--truncate',
+            'caomei-data-table__cell-box',
+        ]))
+        // 表头提示不受开关影响
+        expect(wrapper.get('.caomei-data-table__th').find('.caomei-tooltip-text').exists()).toBe(true)
+    })
+
+    it('cellTooltips=false 不影响 cell 自定义渲染', () => {
+        const columns: DataTableColumn<Row>[] = [
+            { key: 'name', header: '姓名', cell: () => h('span', { class: 'custom-cell' }, '自定义') },
+        ]
+        const wrapper = mount(DataTable, { props: { data: baseData, columns, cellTooltips: false } })
+
+        expect(wrapper.find('.custom-cell').exists()).toBe(true)
+        expect(wrapper.get('.custom-cell').text()).toBe('自定义')
+    })
 })

@@ -13,7 +13,7 @@
 | M1-1 | 质量与无障碍 | F18：Select 展开时兄弟节点补 `inert` | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-1-select-open-inert.md)） |
 | M1-2 | 质量与无障碍 | F1：可测量盒的布局级持久守卫 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-2-tooltip-truncation-guard.md)） |
 | M1-3 | 质量与无障碍 | F14：治理计数一致性机检 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-3-record-count-guard.md)） |
-| M1-4 | 质量与无障碍 | F17：DataTable 逐格提示接线性能实测与退出开关 | 待执行 |
+| M1-4 | 质量与无障碍 | F17：DataTable 逐格提示接线性能实测与退出开关 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-4-cell-tooltip-optout.md)） |
 | M1-5 | 质量与无障碍 | F16：Menu 项槽包裹约束（`icon` prop / `#icon` 槽） | 待执行 |
 | M2-1 | DataTable 进阶 | 列可见性与列顺序（受控） | 待执行 |
 | M2-2 | DataTable 进阶 | 列宽调整与持久化契约 | 待执行 |

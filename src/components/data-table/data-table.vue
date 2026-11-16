@@ -109,6 +109,17 @@ const effectiveVisibility = computed<Record<string, boolean>>(() => {
     return next
 })
 
+/** 受控列宽（px）：正数有限值才生效，其余回退到列定义 */
+const sizingOverrides = computed(() => {
+    const result = new Map<string, number>()
+    for (const [key, value] of Object.entries(props.columnSizing ?? {})) {
+        if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+            result.set(key, value)
+        }
+    }
+    return result
+})
+
 /** 隐藏列的 key 集合（生效可见性里显式 `false` 的列） */
 const hiddenColumnKeys = computed(() => new Set(
     Object.entries(effectiveVisibility.value)
@@ -346,6 +357,7 @@ const currentPagination = computed(() =>
  */
 const columnVisibilityState = computed(() => effectiveVisibility.value)
 const columnOrderState = computed(() => props.columnOrder ?? [])
+const columnSizingState = computed<Record<string, number>>(() => Object.fromEntries(sizingOverrides.value))
 
 const columnKeys = computed(() => new Set(tableColumns.value.map((column) => column.id)))
 
@@ -364,6 +376,14 @@ watch([(): Record<string, boolean> | undefined => props.columnVisibility, column
     for (const key of Object.keys(value ?? {})) {
         if (!columnKeys.value.has(key)) {
             warnOnce(`[CaomeiDataTable] columnVisibility 中的列 key「${key}」不存在，已忽略。`)
+        }
+    }
+}, { immediate: true, deep: true })
+
+watch([(): Record<string, number> | undefined => props.columnSizing, columnKeys], ([value]): void => {
+    for (const key of Object.keys(value ?? {})) {
+        if (!columnKeys.value.has(key)) {
+            warnOnce(`[CaomeiDataTable] columnSizing 中的列 key「${key}」不存在，已忽略。`)
         }
     }
 }, { immediate: true, deep: true })
@@ -387,6 +407,7 @@ const state = computed(() => ({
     columnPinning: columnPinningState.value,
     columnVisibility: columnVisibilityState.value,
     columnOrder: columnOrderState.value,
+    columnSizing: columnSizingState.value,
 }))
 
 function onSortingChange(updater: Updater<SortingState>): void {
@@ -749,7 +770,17 @@ function pinnedClass(key: string): string | undefined {
 /** 未声明 px 宽度的冻结列按此估算吸边偏移。 */
 const DEFAULT_PINNED_WIDTH = 150
 
+/** 解析后的列宽文本：受控 `columnSizing` 优先，其次列定义 `width` */
+function resolvedColumnWidth(key: string): string | undefined {
+    const sized = sizingOverrides.value.get(key)
+    return sized === undefined ? columnMap.value.get(key)?.width : `${sized}px`
+}
+
 function columnWidth(key: string): number {
+    const sized = sizingOverrides.value.get(key)
+    if (sized !== undefined) {
+        return sized
+    }
     const width = columnMap.value.get(key)?.width
     if (!width?.endsWith('px')) {
         return DEFAULT_PINNED_WIDTH
@@ -789,7 +820,7 @@ function pinnedStyle(key: string): CSSProperties | undefined {
 const ABSOLUTE_LENGTH = /^\d+(?:\.\d+)?(?:px|rem|em|ch|ex|cm|mm|in|pt|pc)$/
 
 function truncateWidth(key: string): string | undefined {
-    const width = columnMap.value.get(key)?.width?.trim()
+    const width = resolvedColumnWidth(key)?.trim()
     return width && ABSOLUTE_LENGTH.test(width) ? width : undefined
 }
 
@@ -819,7 +850,7 @@ function columnStyle(key: string): CSSProperties | undefined {
     if (!def && !pinned) {
         return undefined
     }
-    return { ...def?.headerStyle, width: def?.width, ...pinned }
+    return { ...def?.headerStyle, width: resolvedColumnWidth(key), ...pinned }
 }
 
 function cellStyle(key: string): CSSProperties | undefined {
@@ -1007,6 +1038,11 @@ const tableMinWidth = computed(() => {
     }
     let total = 0
     for (const column of props.columns) {
+        const sized = sizingOverrides.value.get(column.key)
+        if (sized !== undefined) {
+            total += sized
+            continue
+        }
         if (!column.width?.endsWith('px')) {
             continue
         }

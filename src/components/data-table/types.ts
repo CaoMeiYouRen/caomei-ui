@@ -436,4 +436,13 @@ export interface DataTableProps<T> {
      * their relative order. Duplicate or unknown keys warn in development
      */
     columnOrder?: string[]
+    /**
+     * 列宽（受控，单位 `px`）：键为列 `key`，取值为正数像素宽；缺省或非法值回退到列定义的 `width`。
+     * 与列定义 `width` 冲突时**本项优先**；不改变任何交互（组件不提供拖拽手柄，拖拽由使用方实现并回写本对象）
+     * @en Column widths (controlled, in `px`): keys are column `key`s and values are positive pixel
+     * widths; missing or invalid values fall back to the column definition's `width`. It wins over the
+     * definition `width` on conflict and adds no interaction (no drag handle is shipped; implement
+     * dragging yourself and write this object back)
+     */
+    columnSizing?: Record<string, number>
 }

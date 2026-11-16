@@ -19,6 +19,7 @@ import {
     LoaderCircle,
     Minus,
     Plus,
+    Star,
     TriangleAlert,
     X,
 } from '@lucide/vue'
@@ -54,6 +55,7 @@ export const internalIcons = Object.freeze({
     loading: LoaderCircle,
     minus: Minus,
     plus: Plus,
+    star: Star,
     warning: TriangleAlert,
     dismiss: X,
 })

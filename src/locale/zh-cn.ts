@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhCN: CaomeiLocaleMessages = {
+    rating: {
+        label: '评分',
+        readonlyLabel: '只读评分',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: '无匹配建议',
         open: '展开建议',

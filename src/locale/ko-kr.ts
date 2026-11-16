@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const koKR: CaomeiLocaleMessages = {
+    rating: {
+        label: '평점',
+        readonlyLabel: '읽기 전용 평점',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: '일치하는 제안이 없습니다',
         open: '제안 표시',

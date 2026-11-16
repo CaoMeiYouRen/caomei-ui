@@ -45,7 +45,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 30 namespaces by component area, covering 31 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
+`CaomeiLocaleMessages` is split into 31 namespaces by component area, covering 32 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -69,6 +69,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
+| `rating` | `label` `readonlyLabel` `valueLabel` | Rating |
 | `richTextEditor` | `loading` `loadFailed` | RichTextEditor |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |

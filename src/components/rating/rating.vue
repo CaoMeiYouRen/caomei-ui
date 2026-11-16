@@ -2,6 +2,7 @@
 import { RatingItem, RatingItemIndicator, RatingRoot } from 'reka-ui'
 import { computed, ref, watch } from 'vue'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { useLocale } from '../../composables/use-locale'
 import type { RatingProps } from './types'
 
 defineOptions({ name: 'CaomeiRating' })
@@ -19,6 +20,7 @@ const props = withDefaults(defineProps<RatingProps>(), {
 const model = defineModel<number>({ default: 0 })
 
 const icons = useInternalIcons()
+const locale = useLocale()
 
 /** 交互停用：`readonly` 与 `disabled` 都落到 primitive 的 `disabled`（不可聚焦、不可改值） */
 const inactive = computed(() => props.disabled || props.readonly)
@@ -87,9 +89,12 @@ watch(inactive, (value) => {
     }
 })
 
-/** 每个 step 的可访问名：只给数值，文案交给使用方 / 语言层，避免硬编码 */
+/** 评分区域的可访问名：显式 `label` 优先，其次按只读 / 可交互取语言兜底文案 */
+const accessibleName = computed(() => props.label || (props.readonly ? locale.value.rating.readonlyLabel : locale.value.rating.label))
+
+/** 每个 step 的可访问名按语言模板插值，避免硬编码文案 */
 function stepLabel(step: number): string {
-    return String(step)
+    return locale.value.rating.valueLabel.replaceAll('{value}', String(step))
 }
 </script>
 
@@ -101,7 +106,7 @@ function stepLabel(step: number): string {
         :disabled="inactive"
         :clearable="clearable"
         :hoverable="!inactive"
-        :aria-label="label"
+        :aria-label="accessibleName"
         :aria-readonly="readonly ? 'true' : undefined"
         :data-readonly="readonly ? '' : undefined"
         :class="rootClass"

@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-16-phase35-m3-2-rating-locale.md](./2026-11-16-phase35-m3-2-rating-locale.md)：**Phase 35 M3-2：Rating 10 语 locale 与台账**。新增 `rating` 命名空间（`label` / `readonlyLabel` / `valueLabel`），10 语同批；组件可访问名取 `label` → 只读 / 可交互语言兜底，step 名按 `{value}` 模板插值；中英台账补行与计数。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m3-1-rating.md](./2026-11-16-phase35-m3-1-rating.md)：**Phase 35 M3-1：Rating 实现与导出**。封装 Reka `RatingRoot` / `RatingItem` / `RatingItemIndicator`：`max` / `step`（1 或 0.5）/ `readonly` / `disabled` / `size` / `label` / `clearable`，半星按 primitive 的步进变量裁切；只读落到 `disabled` 并标注 `aria-readonly`。新增 `star` 语义图标、包入口与 Nuxt 自动导入、a11y 夹具（预算同步），单测覆盖渲染 / 点击 / 半星 / 只读 / 禁用 / 键盘 / SSR。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m2-2-column-sizing.md](./2026-11-16-phase35-m2-2-column-sizing.md)：**Phase 35 M2-2：DataTable 列宽调整与持久化契约**。启用列宽特性并新增受控 `columnSizing`（px）：优先于列定义 `width`，冻结偏移与限宽同源，非法值静默回退，未传时零行为变更；拖拽手柄与持久化归使用方（决策见记录 §2）。中英组件页补同节名说明与双语文档站示例，单测覆盖生效 / 回退 / 摘除 / 告警。**Review Gate**：见本记录 §4。
 - [2026-11-16-phase35-m2-1-column-visibility-order.md](./2026-11-16-phase35-m2-1-column-visibility-order.md)：**Phase 35 M2-1：DataTable 列可见性与列顺序（受控）**。启用 tanstack 的可见性 / 顺序特性，新增 `columnVisibility` / `columnOrder` 两个受控读取（缺省中性值，摘除即回默认）；未知列 key 与重复 key 开发期告警且不改渲染。中英组件页补同节名说明与示例，单测覆盖受控 / 摘除 / 告警。**Review Gate**：见本记录 §4。

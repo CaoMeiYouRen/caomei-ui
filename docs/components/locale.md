@@ -45,7 +45,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 30 个命名空间，对应 31 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
+`CaomeiLocaleMessages` 按组件域划分为 31 个命名空间，对应 32 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -69,6 +69,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
+| `rating` | `label` `readonlyLabel` `valueLabel` | Rating |
 | `richTextEditor` | `loading` `loadFailed` | RichTextEditor |
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |

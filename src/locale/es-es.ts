@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const esES: CaomeiLocaleMessages = {
+    rating: {
+        label: 'Valoración',
+        readonlyLabel: 'Valoración de solo lectura',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: 'No hay sugerencias coincidentes',
         open: 'Mostrar sugerencias',

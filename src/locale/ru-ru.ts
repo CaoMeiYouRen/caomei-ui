@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const ruRU: CaomeiLocaleMessages = {
+    rating: {
+        label: 'Оценка',
+        readonlyLabel: 'Оценка только для чтения',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: 'Нет подходящих предложений',
         open: 'Показать предложения',

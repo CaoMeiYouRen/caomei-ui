@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const deDE: CaomeiLocaleMessages = {
+    rating: {
+        label: 'Bewertung',
+        readonlyLabel: 'Bewertung (schreibgeschützt)',
+        valueLabel: '{value}',
+    },
     autoComplete: {
         empty: 'Keine passenden Vorschläge',
         open: 'Vorschläge anzeigen',

@@ -15,7 +15,7 @@
 | M1-3 | 质量与无障碍 | F14：治理计数一致性机检 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-3-record-count-guard.md)） |
 | M1-4 | 质量与无障碍 | F17：DataTable 逐格提示接线性能实测与退出开关 | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m1-4-cell-tooltip-optout.md)） |
 | M1-5 | 质量与无障碍 | F16：Menu 项槽包裹约束（`icon` prop / `#icon` 槽） | 已交付（2026-11-16，`#icon` 插槽，[交付记录](../design/governance/2026-11-16-phase35-m1-5-menu-icon-slot.md)） |
-| M2-1 | DataTable 进阶 | 列可见性与列顺序（受控） | 待执行 |
+| M2-1 | DataTable 进阶 | 列可见性与列顺序（受控） | 已交付（2026-11-16，[交付记录](../design/governance/2026-11-16-phase35-m2-1-column-visibility-order.md)） |
 | M2-2 | DataTable 进阶 | 列宽调整与持久化契约 | 待执行 |
 | M3-1 | 长尾组件 | Rating 实现与导出（单测、a11y 受检面） | 待执行 |
 | M3-2 | 长尾组件 | Rating 10 语 locale 与台账 | 待执行 |

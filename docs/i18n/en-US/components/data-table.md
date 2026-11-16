@@ -208,6 +208,28 @@ Default cells (those without a `cell` renderer) carry a per-cell tooltip: the fu
 
 For bulk rendering, pass `:cell-tooltips="false"` to turn per-cell tooltips off: cells keep the single-line ellipsis and width cap but lose the tooltip wiring, while `cell` renderers and header tooltips are unaffected. It is on by default (output unchanged); when tooltips are still wanted at scale, prefer `cell` renderers for key columns and switch the rest off.
 
+## Column visibility and order
+
+Both are **controlled** reads (the component ships no column-switch UI; render your own controls and write the arrays back):
+
+- `columnVisibility`: keys are column `key`s; `false` hides a column and `true` shows it explicitly. Unlisted columns stay visible, and everything is visible by default.
+- `columnOrder`: keys in display order; unlisted columns move to the end keeping their relative order. Column-definition order applies by default.
+
+```vue
+<CaomeiDataTable
+    :data="rows"
+    :columns="columns"
+    :column-visibility="{ score: false }"
+    :column-order="['name', 'city']"
+/>
+```
+
+Invalid identifiers never change the output: unknown column keys and duplicates warn in development (`columnVisibility` ignores unknown keys; a duplicate in `columnOrder` only takes effect once), and production stays silent. Removing the prop restores the default rendering.
+
+- **Hidden columns stay in sync**: the header, body, empty-state `colspan` and frozen offsets all count visible columns only; hidden cells are not rendered and their `#cell-*` slots are skipped.
+- **Frozen columns**: `frozen` columns stay within their pinned group and keep the column-definition order inside it; `columnOrder` only applies to the middle (unpinned) area and cannot move columns out of a pinned group.
+- **Expander column**: a column with `expander: true` cannot be hidden (the controlled entry is ignored), which keeps the header consistent with its row buttons.
+
 ## Fixed header and scrolling
 
 With `scrollable`, the table's root container is capped at `scrollHeight` and becomes a vertical scroll area: the header sticks to the top, the paginator sticks to the bottom, and the body scrolls inside the container. A numeric `scrollHeight` is normalized to `px` (`240` → `240px`); a string is used as-is as a CSS length (`'60vh'` / `'18rem'`). Without it the container is not capped and follows the content height.

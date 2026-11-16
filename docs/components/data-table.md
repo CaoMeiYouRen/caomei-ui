@@ -208,6 +208,28 @@
 
 批量渲染时可用 `:cell-tooltips="false"` 关闭逐格提示：单元格不再挂提示接线，绝对列宽下的单行省略与列宽上限保持不变，`cell` 自定义渲染与表头提示也不受影响。默认开启（渲染结果与之前一致）；需要保留提示又担心规模时，优先给关键列写 `cell`，其余列关闭开关。
 
+## 列可见性与列顺序
+
+两列能力都是**受控**读取（组件不提供列开关 UI，由使用方渲染开关并回写数组）：
+
+- `columnVisibility`：键为列 `key`，`false` 隐藏、`true` 显式显示；未列出的列保持可见。缺省时全部可见。
+- `columnOrder`：按 `key` 排列；未列出的列排在末尾并保持原有相对顺序。缺省时沿用列定义顺序。
+
+```vue
+<CaomeiDataTable
+    :data="rows"
+    :columns="columns"
+    :column-visibility="{ score: false }"
+    :column-order="['name', 'city']"
+/>
+```
+
+未知识别符不会改变渲染：未知列 key 与重复 key 在开发期告警（`columnVisibility` 忽略未知项、`columnOrder` 重复 key 仅首次生效），生产构建静默。摘除 prop 即回到默认渲染。
+
+- **隐藏列同步**：表头、表体、空态 `colspan` 与冻结偏移都按可见列计算，隐藏列不渲染单元格，也不参与 `#cell-*` 插槽。
+- **冻结列**：`frozen` 列按其冻结侧分组，组内顺序固定为列定义顺序；`columnOrder` 只作用于中间（未冻结）区，不能把冻结列移出所属组。
+- **展开列**：`expander: true` 的列不可隐藏（受控值里的对应项会被忽略），避免表头消失而按钮仍在。
+
 ## 固定表头与滚动
 
 设置 `scrollable` 后，表格根容器按 `scrollHeight` 限高并成为纵向滚动区：表头吸顶、分页器吸底，表体在容器内滚动。`scrollHeight` 取 `number` 时按 `px` 归一化（`240` → `240px`），取 `string` 时原样作为 CSS 长度（如 `'60vh'` / `'18rem'`）；缺省不限高，容器按内容自然高度渲染。

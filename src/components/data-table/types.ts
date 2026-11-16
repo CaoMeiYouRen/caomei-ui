@@ -422,4 +422,18 @@ export interface DataTableProps<T> {
      * rendered output unchanged
      */
     cellTooltips?: boolean
+    /**
+     * 列可见性（受控）：键为列 `key`，值 `false` 隐藏该列、`true` 显式显示；未列出的列按可见处理。
+     * 缺省时全部可见。未知列 key 在开发期告警、不改变渲染（生产静默）
+     * @en Column visibility (controlled): keys are column `key`s, `false` hides a column and `true`
+     * shows it explicitly; unlisted columns stay visible. All columns are visible by default. Unknown
+     * keys warn in development and never change the output (silent in production)
+     */
+    columnVisibility?: Record<string, boolean>
+    /**
+     * 列顺序（受控）：按 `key` 排列，未列出的列排在末尾并保持原有相对顺序。重复或未知 key 在开发期告警
+     * @en Column order (controlled): keys in display order; unlisted columns move to the end keeping
+     * their relative order. Duplicate or unknown keys warn in development
+     */
+    columnOrder?: string[]
 }

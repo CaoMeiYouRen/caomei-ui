@@ -14,7 +14,7 @@
 | M1-2 | 无障碍扩面 | MultiSelect / AutoComplete 打开态补 `inert` | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-2-combobox-open-inert.md)） |
 | M1-3 | 无障碍扩面 | DatePicker / ColorPicker 打开态补 `inert` | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-3-date-color-picker-inert.md)） |
 | M1-4 | 无障碍扩面 | 全库浮层回归与边界记录 | 待执行 |
-| M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 待执行 |
+| M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-17-phase36-m1-5-dropdown-popover-inert.md)） |
 | M2-1 | DataTable 交互 | 列宽拖拽手柄 | 待执行 |
 | M2-2 | DataTable 交互 | 虚拟滚动可行性评估（只评估） | 已交付（2026-11-17，[评估记录](../design/governance/2026-11-17-phase36-m2-2-virtual-scroll-evaluation.md)） |
 | M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m2-3-column-sizing-persist-example.md)） |

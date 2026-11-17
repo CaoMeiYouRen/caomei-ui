@@ -1,8 +1,16 @@
 <script setup lang="ts">
 import { PopoverContent, PopoverPortal } from 'reka-ui'
+import { inject, ref } from 'vue'
+import { triggerElementKey } from '../_shared/trigger-element'
+import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import type { PopoverContentProps } from './types'
 
 defineOptions({ name: 'CaomeiPopoverContent', inheritAttrs: false })
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const triggerRef = inject(triggerElementKey, null)
+
+const { release, sync } = useOpenStateIsolation(contentRef, () => [triggerRef?.value])
 
 withDefaults(defineProps<PopoverContentProps>(), {
     side: 'bottom',
@@ -18,6 +26,7 @@ withDefaults(defineProps<PopoverContentProps>(), {
 <template>
     <PopoverPortal>
         <PopoverContent
+            ref="contentRef"
             v-bind="$attrs"
             :side="side"
             :side-offset="sideOffset"
@@ -27,6 +36,8 @@ withDefaults(defineProps<PopoverContentProps>(), {
             :avoid-collisions="avoidCollisions"
             :disable-outside-pointer-events="disableOutsidePointerEvents"
             class="caomei-popover__content"
+            @open-auto-focus="sync"
+            @close-auto-focus="release"
         >
             <slot />
         </PopoverContent>

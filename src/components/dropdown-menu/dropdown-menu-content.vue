@@ -6,13 +6,20 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
 } from 'reka-ui'
-import { computed } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { CaomeiIcon } from '../../icons'
 import CaomeiDropdownMenuItem from './dropdown-menu-item.vue'
 import CaomeiDropdownMenuSeparator from './dropdown-menu-separator.vue'
+import { triggerElementKey } from '../_shared/trigger-element'
+import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import type { DropdownMenuContentProps, DropdownMenuModelItem } from './types'
 
 defineOptions({ name: 'CaomeiDropdownMenuContent', inheritAttrs: false })
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const triggerRef = inject(triggerElementKey, null)
+
+const { release, sync } = useOpenStateIsolation(contentRef, () => [triggerRef?.value])
 
 const props = withDefaults(defineProps<DropdownMenuContentProps>(), {
     side: 'bottom',
@@ -41,6 +48,7 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
 <template>
     <DropdownMenuPortal>
         <DropdownMenuContent
+            ref="contentRef"
             v-bind="$attrs"
             :side="side"
             :side-offset="sideOffset"
@@ -49,6 +57,8 @@ function onModelSelect(item: DropdownMenuModelItem, event: Event): void {
             :loop="loop"
             :force-mount="forceMount"
             class="caomei-dropdown-menu__content"
+            @open-auto-focus="sync"
+            @close-auto-focus="release"
         >
             <template
                 v-for="(item, index) in items"

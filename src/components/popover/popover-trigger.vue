@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { PopoverTrigger } from 'reka-ui'
+import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { triggerElementKey } from '../_shared/trigger-element'
 import type { PopoverTriggerProps } from './types'
 
 defineOptions({ name: 'CaomeiPopoverTrigger', inheritAttrs: false })
@@ -8,10 +10,27 @@ const props = withDefaults(defineProps<PopoverTriggerProps>(), {
     disabled: false,
     unstyled: false,
 })
+
+const rootRef = ref<{ $el?: unknown } | null>(null)
+const triggerEl = inject(triggerElementKey, null)
+
+onMounted(() => {
+    const element = rootRef.value?.$el
+    if (triggerEl && element instanceof HTMLElement) {
+        triggerEl.value = element
+    }
+})
+
+onBeforeUnmount(() => {
+    if (triggerEl) {
+        triggerEl.value = null
+    }
+})
 </script>
 
 <template>
     <PopoverTrigger
+        ref="rootRef"
         v-bind="$attrs"
         :disabled="props.disabled || undefined"
         :class="props.unstyled ? undefined : 'caomei-popover__trigger'"

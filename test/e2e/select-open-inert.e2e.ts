@@ -256,3 +256,32 @@ test('模态内 ColorPicker 展开时隔离背景且不与模态冲突', async (
     await page.keyboard.press('Escape')
     await expect(colorPanel).toBeHidden()
 })
+
+test('模态内 Popover 展开时隔离背景且焦点不入背景', async ({ page }) => {
+    await page.goto('/')
+
+    await page.locator('#overlay-in-dialog button', { hasText: '打开浮层对话框' }).click()
+    await expect(page.locator('.caomei-dialog__content')).toBeVisible()
+
+    await page.locator('#overlay-popover .caomei-popover__trigger').click()
+    const panel = page.locator('.caomei-popover__content')
+    await expect(panel).toBeVisible()
+
+    const state = await page.evaluate(() => ({
+        panelIsolated: document.querySelector('.caomei-popover__content')?.closest('[inert]') !== null,
+        // 判别力：同模态内的其它字段必须被 Popover 隔离面覆盖；
+        // 只断言「模态外背景被隔离」会被 Dialog 自带的隔离兜住，接线缺失也能通过
+        siblingFieldIsolated: document.querySelector('#overlay-select')?.closest('[inert]') !== null,
+    }))
+    expect(state.panelIsolated, '浮层面板不得被隔离').toBe(false)
+    expect(state.siblingFieldIsolated, '模态内其它字段被 Popover 隔离').toBe(true)
+
+    for (let index = 0; index < 2; index++) {
+        await page.keyboard.press('Tab')
+        const inBackground = await page.evaluate(() => {
+            const active = document.activeElement
+            return active !== null && active !== document.body && active.closest('[inert]') !== null
+        })
+        expect(inBackground, `第 ${index + 1} 次 Tab 落进了被隔离的背景`).toBe(false)
+    }
+})

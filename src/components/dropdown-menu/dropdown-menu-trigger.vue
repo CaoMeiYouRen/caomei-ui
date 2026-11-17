@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DropdownMenuTrigger, injectDropdownMenuRootContext } from 'reka-ui'
-import { useId } from 'vue'
+import { inject, onBeforeUnmount, onMounted, ref, useId } from 'vue'
+import { triggerElementKey } from '../_shared/trigger-element'
 import { registerPanelIdref, usePanelIdrefState, type PanelIdrefContext } from '../_shared/panel-idref'
 import type { DropdownMenuTriggerProps } from './types'
 
@@ -9,6 +10,22 @@ defineOptions({ name: 'CaomeiDropdownMenuTrigger', inheritAttrs: false })
 const props = withDefaults(defineProps<DropdownMenuTriggerProps>(), {
     disabled: false,
     unstyled: false,
+})
+
+const rootRef = ref<{ $el?: unknown } | null>(null)
+const triggerEl = inject(triggerElementKey, null)
+
+onMounted(() => {
+    const element = rootRef.value?.$el
+    if (triggerEl && element instanceof HTMLElement) {
+        triggerEl.value = element
+    }
+})
+
+onBeforeUnmount(() => {
+    if (triggerEl) {
+        triggerEl.value = null
+    }
 })
 
 /**
@@ -25,6 +42,7 @@ registerPanelIdref(injectDropdownMenuRootContext() as unknown as PanelIdrefConte
 
 <template>
     <DropdownMenuTrigger
+        ref="rootRef"
         v-bind="$attrs"
         :disabled="props.disabled || undefined"
         :class="props.unstyled ? undefined : 'caomei-dropdown-menu__trigger'"

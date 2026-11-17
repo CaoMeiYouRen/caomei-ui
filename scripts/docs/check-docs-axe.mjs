@@ -9,10 +9,11 @@
  * 门禁无法采信。本脚本把抽检收成可执行证据：`vitepress preview` 起构建产物 → 注入 axe-core →
  * 按**页面矩阵 + WCAG 规则面**审计 → 有违规即 exit 1。
  *
- * 受检面（默认矩阵 19 条目 / 18 路径，见 `docs/design/documentation-site.md` §17）：
+ * 受检面（默认矩阵 23 条目 / 22 路径，见 `docs/design/documentation-site.md` §17）：
  * `/components/data-table`、`/components/select` 中英（含打开态）、`/components/multi-select` 中英（打开态）、
  * `/components/auto-complete` 中英（打开态）、`/components/rating` 中英、`/components/date-picker` 中英（打开态）、
- * `/components/color-picker` 中英（打开态）、`/components/showcase` 中英、
+ * `/components/color-picker` 中英（打开态）、`/components/popover` 中英（打开态）、
+ * `/components/dropdown-menu` 中英（打开态）、`/components/showcase` 中英、
  * `/components/tooltip` 中英、`/components/dialog`（打开态）；默认两条 WCAG 规则（`button-name` / `scrollable-region-focusable`）
  * 对全部登记页执行，登记了 `rules` 的页面**追加**打开态规则（`aria-hidden-focus` /
  * `aria-dialog-name` / `aria-allowed-attr`；axe-core 无 `aria-modal` 规则，其合法性归
@@ -172,6 +173,42 @@ export const PAGES = [
         minApplies: { 'aria-hidden-focus': 30 },
         rules: ['aria-hidden-focus'],
         interact: { label: 'Open the first ColorPicker', trigger: '.caomei-color-picker__trigger', open: '.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)' },
+    },
+    {
+        key: 'popover-open-zh',
+        path: '/components/popover',
+        ready: '.caomei-popover__trigger',
+        minSubjects: 6,
+        minApplies: { 'aria-hidden-focus': 1 },
+        rules: ['aria-hidden-focus'],
+        interact: { label: '展开第一个 Popover', trigger: '.caomei-popover__trigger', open: '.caomei-popover__content' },
+    },
+    {
+        key: 'popover-open-en',
+        path: '/en-US/components/popover',
+        ready: '.caomei-popover__trigger',
+        minSubjects: 6,
+        minApplies: { 'aria-hidden-focus': 1 },
+        rules: ['aria-hidden-focus'],
+        interact: { label: 'Open the first Popover', trigger: '.caomei-popover__trigger', open: '.caomei-popover__content' },
+    },
+    {
+        key: 'dropdown-menu-open-zh',
+        path: '/components/dropdown-menu',
+        ready: '.caomei-dropdown-menu__trigger',
+        minSubjects: 4,
+        minApplies: { 'aria-hidden-focus': 1 },
+        rules: ['aria-hidden-focus'],
+        interact: { label: '展开第一个 DropdownMenu', trigger: '.caomei-dropdown-menu__trigger', open: '.caomei-dropdown-menu__content' },
+    },
+    {
+        key: 'dropdown-menu-open-en',
+        path: '/en-US/components/dropdown-menu',
+        ready: '.caomei-dropdown-menu__trigger',
+        minSubjects: 4,
+        minApplies: { 'aria-hidden-focus': 1 },
+        rules: ['aria-hidden-focus'],
+        interact: { label: 'Open the first DropdownMenu', trigger: '.caomei-dropdown-menu__trigger', open: '.caomei-dropdown-menu__content' },
     },
     { key: 'showcase-zh', path: '/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },
     { key: 'showcase-en', path: '/en-US/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },

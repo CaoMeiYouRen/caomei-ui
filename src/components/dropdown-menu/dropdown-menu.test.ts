@@ -157,6 +157,27 @@ function pressEscape() {
     content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
 }
 
+describe('CaomeiDropdownMenu 打开态隔离', () => {
+    it('展开后隔离背景，关闭后回退', async () => {
+        const background = document.createElement('div')
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mountMenu()
+        await wrapper.get('button').trigger('click')
+        await flush()
+        await flush()
+
+        expect(background.hasAttribute('inert')).toBe(true)
+        expect(background.getAttribute('aria-hidden')).toBe('true')
+
+        await wrapper.get('button').trigger('keydown', { key: 'Escape' })
+        await flush()
+        await flush()
+        expect(background.hasAttribute('inert')).toBe(false)
+    })
+})
+
 describe('CaomeiDropdownMenu', () => {
     it('触发器初始为闭合且具备菜单 ARIA', () => {
         const wrapper = mountMenu()

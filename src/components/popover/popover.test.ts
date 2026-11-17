@@ -91,6 +91,29 @@ afterEach(() => {
     document.body.innerHTML = ''
 })
 
+describe('CaomeiPopover 打开态隔离', () => {
+    it('展开后隔离背景，关闭后回退', async () => {
+        const background = document.createElement('div')
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mountPopover()
+        await wrapper.get('button').trigger('click')
+        await nextTick()
+        await nextTick()
+
+        expect(background.hasAttribute('inert')).toBe(true)
+        expect(background.getAttribute('aria-hidden')).toBe('true')
+
+        await wrapper.get('button').trigger('keydown', { key: 'Escape' })
+        await nextTick()
+        await nextTick()
+        expect(background.hasAttribute('inert')).toBe(false)
+
+        wrapper.unmount()
+    })
+})
+
 describe('CaomeiPopover', () => {
     it('默认关闭时仅渲染触发器并输出折叠语义', () => {
         const wrapper = mountPopover()

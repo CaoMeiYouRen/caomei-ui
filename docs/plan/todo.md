@@ -16,7 +16,7 @@
 | M1-4 | 无障碍扩面 | 全库浮层回归与边界记录 | 待执行 |
 | M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 待执行 |
 | M2-1 | DataTable 交互 | 列宽拖拽手柄 | 待执行 |
-| M2-2 | DataTable 交互 | 虚拟滚动可行性评估（只评估） | 待执行 |
+| M2-2 | DataTable 交互 | 虚拟滚动可行性评估（只评估） | 已交付（2026-11-17，[评估记录](../design/governance/2026-11-17-phase36-m2-2-virtual-scroll-evaluation.md)） |
 | M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 待执行 |
 | M3-1 | 质量治理 | Rating 文档站 a11y 抽检 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m3-1-rating-docs-axe.md)） |
 | M3-2 | 质量治理 | 依赖告警复核 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m3-2-dependency-alert-review.md)） |

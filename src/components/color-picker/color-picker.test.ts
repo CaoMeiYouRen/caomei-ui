@@ -39,6 +39,35 @@ function trigger(wrapper: VueWrapper) {
     return wrapper.get('.caomei-color-picker__trigger')
 }
 
+describe('CaomeiColorPicker 打开态隔离', () => {
+    it('popper 形态展开后隔离背景，卸载时回退', async () => {
+        const background = document.createElement('div')
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mount(CaomeiColorPicker, { attachTo: document.body })
+        await openPanel(wrapper)
+
+        expect(background.hasAttribute('inert')).toBe(true)
+        expect(background.getAttribute('aria-hidden')).toBe('true')
+
+        wrapper.unmount()
+        expect(background.hasAttribute('inert')).toBe(false)
+    })
+
+    it('inline 形态是页面内静态面板，不做背景隔离', async () => {
+        const background = document.createElement('div')
+        document.body.append(background)
+
+        const wrapper = mount(CaomeiColorPicker, { props: { inline: true }, attachTo: document.body })
+        await nextTick()
+
+        expect(background.hasAttribute('inert')).toBe(false)
+
+        wrapper.unmount()
+    })
+})
+
 function swatchColor(wrapper: VueWrapper): string {
     return wrapper.get('.caomei-color-picker__swatch').attributes('style') ?? ''
 }

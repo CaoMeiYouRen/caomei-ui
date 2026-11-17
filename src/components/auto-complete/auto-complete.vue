@@ -280,6 +280,22 @@ function onAnchorClick(event: MouseEvent): void {
 
 onMounted(() => {
     document.addEventListener('pointerdown', onDocumentPointerDown, true)
+    // 受控用法下挂载即展开：watch 不会触发，这里补一次隔离
+    if (open.value) {
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            const content = contentRef.value?.$el
+            if (content instanceof HTMLElement && content.isConnected) {
+                restoreContentInert = suppressOutside(content)
+            }
+            const field = anchorRef.value?.$el
+            if (field instanceof HTMLElement && field.isConnected) {
+                restoreFieldInert = suppressOutside(field)
+            }
+        })
+    }
 })
 
 onBeforeUnmount(() => {
@@ -402,6 +418,8 @@ watch(
             if (!open.value) {
                 return
             }
+            // 先撤销上一轮写入，避免同 tick 反复开合时遗留隔离层
+            releaseInert()
             const content = contentRef.value?.$el
             if (content instanceof HTMLElement && content.isConnected) {
                 restoreContentInert = suppressOutside(content)

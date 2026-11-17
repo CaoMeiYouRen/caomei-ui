@@ -36,6 +36,13 @@ const SURFACES = [
         typable: true,
     },
     {
+        name: 'DatePicker',
+        root: '#panel-date-picker .caomei-date-picker',
+        content: '.caomei-date-picker__content',
+        fieldIsolated: false,
+        typable: false,
+    },
+    {
         name: 'AutoComplete',
         root: '#panel-auto-complete .caomei-auto-complete',
         content: '.caomei-auto-complete__content',
@@ -193,3 +200,59 @@ for (const surface of SURFACES) {
         expect(residual.backgroundIsolated, '关闭后背景不得残留隔离').toBe(false)
     })
 }
+
+test('模态内 DatePicker 展开时隔离背景且不与模态冲突', async ({ page }) => {
+    await page.goto('/')
+
+    await page.locator('#overlay-in-dialog button', { hasText: '打开浮层对话框' }).click()
+    const dialog = page.locator('.caomei-dialog__content')
+    await expect(dialog).toBeVisible()
+
+    const dateTrigger = page.locator('#overlay-date-picker .caomei-date-picker')
+    await dateTrigger.click()
+    const datePanel = page.locator('.caomei-date-picker__content')
+    await expect(datePanel).toBeVisible()
+
+    const dateState = await page.evaluate(() => {
+        const dialogEl = document.querySelector('.caomei-dialog__content')
+        const panel = document.querySelector('.caomei-date-picker__content')
+        const trigger = document.querySelector('#overlay-date-picker .caomei-date-picker')
+        return {
+            dialogIsolated: dialogEl?.closest('[inert]') !== null,
+            panelIsolated: panel?.closest('[inert]') !== null,
+            triggerIsolated: trigger?.closest('[inert]') !== null,
+            backgroundIsolated: document.querySelector('#overlay-in-dialog')?.closest('[inert]') !== null,
+        }
+    })
+    expect(dateState.dialogIsolated, '模态内容不得被隔离').toBe(false)
+    expect(dateState.panelIsolated, '日期面板不得被隔离').toBe(false)
+    expect(dateState.triggerIsolated, '触发器不得被隔离').toBe(false)
+    expect(dateState.backgroundIsolated, '模态外的背景仍被隔离').toBe(true)
+
+    await page.keyboard.press('Escape')
+    await expect(datePanel).toBeHidden()
+    await expect(dialog).toBeVisible()
+})
+
+test('模态内 ColorPicker 展开时隔离背景且不与模态冲突', async ({ page }) => {
+    await page.goto('/')
+
+    await page.locator('#overlay-in-dialog button', { hasText: '打开浮层对话框' }).click()
+    const dialog = page.locator('.caomei-dialog__content')
+    await expect(dialog).toBeVisible()
+
+    const colorTrigger = page.locator('#overlay-color-picker .caomei-color-picker__trigger')
+    await colorTrigger.click()
+    const colorPanel = page.locator('.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)').first()
+    await expect(colorPanel).toBeVisible()
+
+    const colorState = await page.evaluate(() => ({
+        dialogIsolated: document.querySelector('.caomei-dialog__content')?.closest('[inert]') !== null,
+        panelIsolated: document.querySelector('.caomei-color-picker__panel:not(.caomei-color-picker__panel--inline)')?.closest('[inert]') !== null,
+    }))
+    expect(colorState.dialogIsolated, '模态内容不得被隔离').toBe(false)
+    expect(colorState.panelIsolated, '颜色面板不得被隔离').toBe(false)
+
+    await page.keyboard.press('Escape')
+    await expect(colorPanel).toBeHidden()
+})

@@ -20,6 +20,25 @@ afterEach(() => {
     document.body.innerHTML = ''
 })
 
+describe('CaomeiDatePicker 打开态隔离', () => {
+    it('展开后给背景兄弟节点补 inert 与 aria-hidden，卸载时回退', async () => {
+        const background = document.createElement('div')
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mountPicker()
+        await wrapper.get('.caomei-date-picker').trigger('click')
+        await nextTick()
+
+        expect(background.hasAttribute('inert')).toBe(true)
+        expect(background.getAttribute('aria-hidden')).toBe('true')
+
+        wrapper.unmount()
+        expect(background.hasAttribute('inert')).toBe(false)
+        expect(background.hasAttribute('aria-hidden')).toBe(false)
+    })
+})
+
 describe('CaomeiDatePicker', () => {
     it('未选择时显示占位文本并渲染日历图标', () => {
         const wrapper = mountPicker({ placeholder: '请选择日期' })

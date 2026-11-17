@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
-import { computed, useAttrs, watchEffect } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch, watchEffect } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
+import { suppressOutside } from '../../_shared/open-state-inert'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
@@ -41,6 +42,116 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
 
 const model = defineModel<DatePickerModelValue>({ default: null })
 const open = defineModel<boolean>('open', { default: false })
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const triggerEl = ref<HTMLElement | null>(null)
+
+let restoreContentInert: (() => void) | undefined
+let restoreFieldInert: (() => void) | undefined
+/** 键盘关闭（Escape）时置位：非模态浮层不保证自动归还焦点，关闭后由本组件补 */
+let restoreFocusOnClose = false
+
+function releaseInert(): void {
+    restoreContentInert?.()
+    restoreContentInert = undefined
+    restoreFieldInert?.()
+    restoreFieldInert = undefined
+}
+
+/** 非模态浮层：背景被隔离后点击会落在 `inert` 子树里，先解除隔离再让这次点击落到目标上 */
+function onDocumentPointerDown(event: PointerEvent): void {
+    if (!open.value) {
+        return
+    }
+    const target = event.target
+    if (!(target instanceof Node)) {
+        return
+    }
+    const content = contentRef.value?.$el
+    if (content instanceof HTMLElement && content.contains(target)) {
+        return
+    }
+    if (triggerEl.value?.contains(target)) {
+        return
+    }
+    releaseInert()
+}
+
+/** Escape 关闭标记：仅面板展开时置位，避免关闭态按键残留导致后续鼠标关闭抢焦点 */
+function markEscapeClose(): void {
+    if (open.value) {
+        restoreFocusOnClose = true
+    }
+}
+
+// 关闭：同步回退隔离，必须先于焦点归还（否则触发器仍在 `inert` 子树、焦点掉到 body）
+watch(
+    open,
+    (isOpen) => {
+        if (isOpen) {
+            return
+        }
+        releaseInert()
+        if (!restoreFocusOnClose) {
+            return
+        }
+        restoreFocusOnClose = false
+        void nextTick(() => {
+            triggerEl.value?.focus()
+        })
+    },
+    { flush: 'sync' },
+)
+
+// 打开：面板落位后隔离背景（保留面板与触发器两根，触发器保持可聚焦）
+watch(
+    open,
+    (isOpen) => {
+        if (!isOpen) {
+            return
+        }
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            // 先撤销上一轮写入，避免同 tick 反复开合时遗留隔离层
+            releaseInert()
+            const content = contentRef.value?.$el
+            if (content instanceof HTMLElement && content.isConnected) {
+                restoreContentInert = suppressOutside(content)
+            }
+            if (triggerEl.value?.isConnected) {
+                restoreFieldInert = suppressOutside(triggerEl.value)
+            }
+        })
+    },
+    { flush: 'post' },
+)
+
+onMounted(() => {
+    document.addEventListener('pointerdown', onDocumentPointerDown, true)
+    // 受控用法下挂载即展开：watch 不会触发，这里补一次隔离
+    if (open.value) {
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            const content = contentRef.value?.$el
+            if (content instanceof HTMLElement && content.isConnected) {
+                restoreContentInert = suppressOutside(content)
+            }
+            const field = triggerEl.value
+            if (field instanceof HTMLElement && field.isConnected) {
+                restoreFieldInert = suppressOutside(field)
+            }
+        })
+    }
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('pointerdown', onDocumentPointerDown, true)
+    releaseInert()
+})
 
 const isRange = computed(() => props.selectionMode === 'range')
 
@@ -207,6 +318,7 @@ watchEffect(() => {
             :disabled="disabled"
         >
             <button
+                ref="triggerEl"
                 v-bind="$attrs"
                 type="button"
                 class="caomei-date-picker"
@@ -237,10 +349,12 @@ watchEffect(() => {
         </CaomeiPopoverTrigger>
         <PopoverPortal>
             <PopoverContent
+                ref="contentRef"
                 class="caomei-date-picker__content"
                 align="start"
                 :side-offset="6"
                 :aria-label="panelLabel"
+                @escape-key-down="markEscapeClose"
             >
                 <CalendarPanel
                     v-if="!isRange"

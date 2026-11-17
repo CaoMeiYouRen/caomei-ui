@@ -11,7 +11,7 @@
 | 编号 | 主线 | 条目 | 验收状态 |
 |:---|:---|:---|:---|
 | M1-1 | 无障碍扩面 | 隔离工具的多浮层边界收口 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-1-multi-overlay-isolation.md)） |
-| M1-2 | 无障碍扩面 | MultiSelect / AutoComplete 打开态补 `inert` | 待执行 |
+| M1-2 | 无障碍扩面 | MultiSelect / AutoComplete 打开态补 `inert` | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-2-combobox-open-inert.md)） |
 | M1-3 | 无障碍扩面 | DatePicker / ColorPicker 打开态补 `inert` | 待执行 |
 | M1-4 | 无障碍扩面 | 全库浮层回归与边界记录 | 待执行 |
 | M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 待执行 |

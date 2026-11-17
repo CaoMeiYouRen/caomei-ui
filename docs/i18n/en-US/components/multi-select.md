@@ -21,6 +21,8 @@ Two-way bind an array of values (strings or numbers) with `v-model`; selected va
 />
 
 > Field resolution: the string form of `optionLabel` / `optionValue` supports `a.b` dot-paths. When `optionValue` does not resolve to a string or number (`null`, a boolean, a missing field), that option is **not rendered**; when `optionLabel` resolves to no text, the option's text is empty.
+>
+> An option value must not be an empty string (same contract as the single select): the multi-select model is an array, so `''` can only be an array element, never the "nothing selected" state; an option whose `value` is empty is treated as out-of-contract — it is **not rendered**, and a development-time `console.warn` reports it (with the option index; silent when `NODE_ENV === 'production'`). For "All" / "Any", use a non-empty sentinel value (such as `'all'`).
 
 ## Clear
 

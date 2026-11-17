@@ -13,7 +13,7 @@
     ssg="true"
 />
 
-列表项可以是字符串（`label` 与 `value` 相同），也可以是 `{ label, value, disabled? }` 对象。`value` 必须为非空字符串且在单个组件内唯一。
+列表项可以是字符串（`label` 与 `value` 相同），也可以是 `{ label, value, disabled? }` 对象。`value` 必须为非空字符串且在单个组件内唯一；`value` 为空串的建议项按契约外值处理——不渲染，并在开发期通过 `console.warn` 提示（`NODE_ENV === 'production'` 时静默）。需要「全部 / 不限」时请改用非空哨兵值。
 
 ## 异步建议
 

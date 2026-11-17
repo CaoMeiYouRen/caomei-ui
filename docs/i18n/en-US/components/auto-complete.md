@@ -13,7 +13,7 @@ AutoComplete is an input that combines asynchronous suggestions with free input:
     ssg="true"
 />
 
-Options can be strings (where `label` equals `value`) or `{ label, value, disabled? }` objects. `value` must be a non-empty string, unique within a single component.
+Options can be strings (where `label` equals `value`) or `{ label, value, disabled? }` objects. `value` must be a non-empty string, unique within a single component; a suggestion whose `value` is empty is treated as out-of-contract — it is not rendered, and a development-time `console.warn` reports it (silent when `NODE_ENV === 'production'`). Use a non-empty sentinel value for "All" / "Any".
 
 ## Async suggestions
 

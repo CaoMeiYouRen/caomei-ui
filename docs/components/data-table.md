@@ -232,7 +232,7 @@
 
 ## 列宽调整与持久化
 
-`columnSizing`（受控，单位 `px`）覆盖列定义里的 `width`：正数生效，缺省或非正数回退到 `width`。组件**不提供拖拽手柄**——列宽交互（拖拽、预设、用户偏好）由使用方实现，结束时把新的像素宽回写本对象即可；持久化（如 localStorage）同样由使用方负责。
+`columnSizing`（受控，单位 `px`）覆盖列定义里的 `width`：正数生效，缺省或非正数回退到 `width`。列宽交互有两种用法：开启 `resizableColumns` 用组件内建的拖拽手柄 / 方向键 / 双击复位，或由使用方自建交互并回写本对象；持久化（如 localStorage）始终由使用方负责。
 
 ```
 <CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
@@ -246,6 +246,14 @@
     vue="../examples/data-table/column-sizing.vue"
     ssg="true"
 />
+
+<demo
+    vue="../examples/data-table/column-resizable.vue"
+    ssg="true"
+/>
+
+`resizableColumns` 在表头渲染拖拽手柄（默认关闭）：指针拖拽按像素回写 `columnSizing`，手柄可聚焦、方向键 ±8px、`Enter` / 空格或双击复位到列定义 `width`。受控用法经 `update:columnSizing` 回写（`v-model:column-sizing`）；未传 `columnSizing` 时写组件内部状态。冻结列的手柄随表头一起吸边；行展开列与选择列不渲染手柄。
+
 
 <demo
     vue="../examples/data-table/column-sizing-persist.vue"

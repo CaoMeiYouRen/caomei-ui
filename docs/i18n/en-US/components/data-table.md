@@ -232,7 +232,7 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
 
 ## Column sizing and persistence
 
-`columnSizing` (controlled, in `px`) overrides a column definition's `width`: positive values apply, while missing or non-positive values fall back to `width`. The component ships **no drag handle** — column-width interaction (dragging, presets, user preferences) belongs to the consumer, who writes the new pixel widths back into this object; persistence (localStorage and the like) is the consumer's job too.
+`columnSizing` (controlled, in `px`) overrides a column definition's `width`: positive values apply, while missing or non-positive values fall back to `width`. Column-width interaction has two options: enable `resizableColumns` for the built-in handle, arrow keys and double-click reset, or build your own interaction and write this object back; persistence (localStorage and the like) is always the consumer's job.
 
 ```
 <CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
@@ -246,6 +246,14 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
     vue="../examples/data-table/column-sizing.vue"
     ssg="true"
 />
+
+<demo
+    vue="../examples/data-table/column-resizable.vue"
+    ssg="true"
+/>
+
+`resizableColumns` renders a drag handle in the header (off by default): pointer drag writes pixel widths back to `columnSizing`, the handle is focusable, arrow keys step ±8px, and `Enter` / Space or double-click resets to the column definition `width`. Controlled usage writes back via `update:columnSizing` (`v-model:column-sizing`); without `columnSizing` the component keeps internal state. Handles on frozen columns stick with the header; expander and selection columns render no handle.
+
 
 <demo
     vue="../examples/data-table/column-sizing-persist.vue"

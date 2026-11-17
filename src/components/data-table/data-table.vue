@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends object">
 import { FlexRender, useTable, type ColumnDef, type ColumnPinningState, type PaginationState, type Row, type RowSelectionState, type SortingState, type Updater } from '@tanstack/vue-table'
-import { computed, h, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
+import { computed, h, onBeforeUnmount, ref, toRaw, useId, useSlots, watch, type CSSProperties, type VNodeChild } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { useInternalIcons } from '../../icons'
 import { useLocale } from '../../composables/use-locale'
@@ -15,6 +15,7 @@ defineOptions({ name: 'CaomeiDataTable' })
 const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DataTableProps<T>>(), {
+    resizableColumns: false,
     rowKey: undefined,
     caption: '',
     hoverable: true,
@@ -46,6 +47,7 @@ const emit = defineEmits<{
     rowgroupExpand: [event: DataTableRowGroupEvent]
     rowgroupCollapse: [event: DataTableRowGroupEvent]
     'update:expandedRows': [expandedRows: string[]]
+    'update:columnSizing': [columnSizing: Record<string, number>]
     rowExpand: [event: DataTableRowExpandEvent<T>]
     rowCollapse: [event: DataTableRowExpandEvent<T>]
     'update:multiSortMeta': [multiSortMeta: DataTableSortMeta[]]
@@ -109,16 +111,96 @@ const effectiveVisibility = computed<Record<string, boolean>>(() => {
     return next
 })
 
+/** 未受控时的内部列宽（`resizableColumns` 的拖拽结果），受控用法忽略 */
+const internalSizing = ref<Record<string, number>>({})
+
+/** 生效列宽来源：受控优先，否则内部状态 */
+const effectiveSizing = computed(() => props.columnSizing ?? internalSizing.value)
+
 /** 受控列宽（px）：正数有限值才生效，其余回退到列定义 */
 const sizingOverrides = computed(() => {
     const result = new Map<string, number>()
-    for (const [key, value] of Object.entries(props.columnSizing ?? {})) {
+    for (const [key, value] of Object.entries(effectiveSizing.value)) {
         if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
             result.set(key, value)
         }
     }
     return result
 })
+
+/** 列宽拖拽 / 键盘调整的步进（px） */
+const RESIZE_STEP = 8
+
+/** 当前列宽：与渲染同源（受控 / 内部值 → 列定义 `px` → 估算），避免 tanstack 默认 `size` 失真 */
+function currentColumnWidth(key: string): number {
+    return columnWidth(key)
+}
+
+/** 回写列宽：受控用法 emit `update:columnSizing`，未受控写内部状态 */
+function writeColumnWidth(next: Record<string, number>): void {
+    if (props.columnSizing !== undefined) {
+        emit('update:columnSizing', next)
+        return
+    }
+    internalSizing.value = next
+}
+
+function setColumnWidth(key: string, width: number): void {
+    writeColumnWidth({ ...effectiveSizing.value, [key]: Math.max(48, Math.round(width)) })
+}
+
+/** 双击复位：从生效列宽中移除该列，回退到列定义 `width` */
+function resetColumnWidth(key: string): void {
+    if (!(key in effectiveSizing.value)) {
+        return
+    }
+    const next = { ...effectiveSizing.value }
+    delete next[key]
+    writeColumnWidth(next)
+}
+
+let resizeState: { key: string, startX: number, startWidth: number } | null = null
+
+function onResizeMove(event: PointerEvent): void {
+    if (!resizeState) {
+        return
+    }
+    setColumnWidth(resizeState.key, resizeState.startWidth + (event.clientX - resizeState.startX))
+}
+
+function stopResize(): void {
+    resizeState = null
+    window.removeEventListener('pointermove', onResizeMove)
+    window.removeEventListener('pointerup', stopResize)
+    window.removeEventListener('pointercancel', stopResize)
+}
+
+function startResize(event: PointerEvent, key: string): void {
+    if (!props.resizableColumns || event.button !== 0) {
+        return
+    }
+    event.preventDefault()
+    event.stopPropagation()
+    resizeState = { key, startX: event.clientX, startWidth: currentColumnWidth(key) }
+    window.addEventListener('pointermove', onResizeMove)
+    window.addEventListener('pointerup', stopResize)
+    window.addEventListener('pointercancel', stopResize)
+}
+
+onBeforeUnmount(stopResize)
+
+function onResizeKeydown(event: KeyboardEvent, key: string): void {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault()
+        const delta = event.key === 'ArrowLeft' ? -RESIZE_STEP : RESIZE_STEP
+        setColumnWidth(key, currentColumnWidth(key) + delta)
+        return
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        resetColumnWidth(key)
+    }
+}
 
 /** 隐藏列的 key 集合（生效可见性里显式 `false` 的列） */
 const hiddenColumnKeys = computed(() => new Set(
@@ -1215,6 +1297,21 @@ function setPageSize(rows: number): void {
                                 :header="header"
                             />
                         </template>
+
+                        <span
+                            v-if="resizableColumns && !isExpanderColumn(header.column.id)"
+                            class="caomei-data-table__resizer caomei-hit-target"
+                            role="separator"
+                            aria-orientation="vertical"
+                            :aria-label="`调整「${headerTitle(header.column.id)}」列宽`"
+                            aria-valuemin="48"
+                            aria-valuemax="2000"
+                            :aria-valuenow="currentColumnWidth(header.column.id)"
+                            tabindex="0"
+                            @pointerdown="startResize($event, header.column.id)"
+                            @keydown="onResizeKeydown($event, header.column.id)"
+                            @dblclick="resetColumnWidth(header.column.id)"
+                        />
                     </th>
                 </tr>
             </thead>
@@ -1420,6 +1517,7 @@ function setPageSize(rows: number): void {
     color: var(--caomei-color-text);
     font-weight: 600;
     white-space: nowrap;
+    position: relative;
 }
 
 /*
@@ -1696,5 +1794,34 @@ function setPageSize(rows: number): void {
     display: inline-block;
     max-width: 100%;
     min-width: 0;
+}
+</style>
+
+<style scoped>
+.caomei-data-table__resizer {
+    position: absolute;
+    top: 0;
+    right: -4px;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+    touch-action: none;
+    background: transparent;
+}
+
+.caomei-data-table__resizer::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    right: 3px;
+    width: 2px;
+    height: 60%;
+    border-radius: 1px;
+    background: var(--caomei-border-color, var(--caomei-color-border));
+}
+
+.caomei-data-table__resizer:hover::after,
+.caomei-data-table__resizer:focus-visible::after {
+    background: var(--caomei-color-primary);
 }
 </style>

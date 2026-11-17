@@ -438,11 +438,18 @@ export interface DataTableProps<T> {
     columnOrder?: string[]
     /**
      * 列宽（受控，单位 `px`）：键为列 `key`，取值为正数像素宽；缺省或非法值回退到列定义的 `width`。
-     * 与列定义 `width` 冲突时**本项优先**；不改变任何交互（组件不提供拖拽手柄，拖拽由使用方实现并回写本对象）
+     * 与列定义 `width` 冲突时**本项优先**；`resizableColumns` 开启时由组件内建的拖拽手柄 / 方向键 / 双击复位回写（受控用法经 `update:columnSizing`）
      * @en Column widths (controlled, in `px`): keys are column `key`s and values are positive pixel
      * widths; missing or invalid values fall back to the column definition's `width`. It wins over the
-     * definition `width` on conflict and adds no interaction (no drag handle is shipped; implement
-     * dragging yourself and write this object back)
+     * definition `width` on conflict. It adds no interaction by itself; with `resizableColumns` the built-in
+     * handle, arrow keys and double-click reset write it back via `update:columnSizing`, otherwise implement
+     * dragging yourself and write this object back
      */
     columnSizing?: Record<string, number>
+    /**
+     * 是否在表头提供列宽拖拽手柄（默认 false）：指针拖拽回写像素宽，方向键 ±8px，双击复位到列定义宽度
+     * @en Whether the header shows a column resize handle (default false): pointer drag writes pixel widths,
+     * arrow keys step ±8px and double-click resets to the column definition width
+     */
+    resizableColumns?: boolean
 }

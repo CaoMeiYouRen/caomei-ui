@@ -666,3 +666,58 @@ describe('CaomeiDataTable 列插槽', () => {
         warn.mockRestore()
     })
 })
+
+describe('CaomeiDataTable 列宽拖拽手柄', () => {
+    it('默认不渲染手柄', () => {
+        const wrapper = mount(DataTable, { props: { data: baseData, columns: baseColumns } })
+        expect(wrapper.find('.caomei-data-table__resizer').exists()).toBe(false)
+    })
+
+    it('开启后渲染可聚焦手柄，方向键按步进回写受控列宽', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                columnSizing: { name: 160 },
+                resizableColumns: true,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        const handle = wrapper.find('.caomei-data-table__resizer')
+        expect(handle.exists()).toBe(true)
+        expect(handle.attributes('role')).toBe('separator')
+        expect(handle.attributes('aria-valuenow')).toBe('160')
+
+        await handle.trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{ name: 168 }])
+    })
+
+    it('行展开列不渲染手柄（选择列同样不渲染）', () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                expandedRows: [],
+                resizableColumns: true,
+            },
+        })
+        // 展开列由组件自动插入，表头始终留空、不承载手柄；数据列各一个
+        expect(wrapper.findAll('.caomei-data-table__resizer')).toHaveLength(baseColumns.length)
+    })
+
+    it('双击复位从列宽中移除该列', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                columnSizing: { name: 160, age: 90 },
+                resizableColumns: true,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        await wrapper.find('.caomei-data-table__resizer').trigger('dblclick')
+        expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{ age: 90 }])
+    })
+})

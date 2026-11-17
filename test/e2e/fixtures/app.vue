@@ -344,6 +344,14 @@ const sortWidthColumns = [
     { key: 'score', header: '评分', sortable: true, align: 'right' as const },
 ]
 
+const resizeColumns = [
+    { key: 'dept', header: '部门', width: '120px' },
+    { key: 'name', header: '姓名', width: '140px' },
+    { key: 'score', header: '评分', width: '100px' },
+]
+
+const resizeColumnSizing = ref<Record<string, number>>({ dept: 160, name: 140, score: 100 })
+
 const sortWidthData: SortWidthRow[] = [
     { dept: '研发', name: '张三', score: 88 },
     { dept: '研发', name: '李四', score: 92 },
@@ -1197,6 +1205,22 @@ const ConfirmDriver = defineComponent({
           三列均可排序、内容短于表头可用宽（列宽由内容决定），断言「未排序 / 升序 / 降序」三态的
           各列宽度逐值一致——缺占位时排序列会因图标 + 序号出现而变宽、其余列被压缩。
         -->
+        <!--
+          DataTable 列宽拖拽用例（见 `test/e2e/data-table-resize.e2e.ts`）：
+          `resizable-columns` 开启后表头渲染手柄；选择列 / 展开列不渲染，冻结列手柄随表头吸边。
+        -->
+        <section id="panel-data-table-resize" class="fixture__case">
+            <CaomeiDataTable
+                v-model:column-sizing="resizeColumnSizing"
+                :data="sortWidthData"
+                :columns="resizeColumns"
+                row-key="name"
+                selection-mode="multiple"
+                resizable-columns
+                caption="列宽拖拽"
+            />
+        </section>
+
         <section id="data-table-sort-width" class="fixture__case">
             <CaomeiDataTable
                 :data="sortWidthData"

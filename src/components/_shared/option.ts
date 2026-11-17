@@ -1,3 +1,5 @@
+import { warnDev } from '../../_shared/dev-warn'
+
 /**
  * 选项字段访问器：字段名（支持 `a.b` 点号路径），或从选项对象取值的函数。
  * @en Option field accessor: a field name (with `a.b` dot-path support), or a function reading the value
@@ -64,6 +66,32 @@ export function resolveOptionValue<T extends object>(
  */
 export function narrowOptionValue(raw: unknown): OptionValue | undefined {
     return typeof raw === 'string' || typeof raw === 'number' ? raw : undefined
+}
+
+/**
+ * 判断选项值是否为空字符串（契约外值）：模型侧的 `''` 表示「未选中」，因此选项侧不能用 `''` 承载真实值，
+ * 且 Reka UI 的 Select / Combobox 选项禁止空串（面板渲染即抛断言）。
+ * @en Whether an option value is the empty string (an out-of-contract value): `''` on the model side means
+ * "nothing selected", so it cannot carry a real option value, and Reka UI's Select / Combobox items reject
+ * empty strings (rendering the panel throws).
+ */
+export function isEmptyOptionValue(value: OptionValue | undefined): value is '' {
+    return value === ''
+}
+
+/**
+ * 开发期提示：选项值为空字符串时该选项会被丢弃。
+ * 只做提示，不改变解析结果与生产输出（`warnDev` 在生产构建中静默）。
+ * @en Dev-time notice: an option whose value is the empty string is discarded. This only warns; it does not
+ * change the resolved result or production output (`warnDev` is silent in production builds).
+ */
+export function warnEmptyOptionValue(componentName: string, index: number, groupLabel?: string): void {
+    const position = groupLabel === undefined
+        ? `第 ${index + 1} 个选项`
+        : `分组「${groupLabel}」的第 ${index + 1} 个选项`
+    warnDev(
+        `[${componentName}] ${position}的 value 为空字符串，该选项不会渲染；如需「全部 / 不限」，请改用非空哨兵值。`,
+    )
 }
 
 /**

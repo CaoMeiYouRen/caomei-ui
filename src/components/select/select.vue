@@ -19,7 +19,7 @@ import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { warnDev } from '../../_shared/dev-warn'
 import { suppressOutside } from '../../_shared/open-state-inert'
-import { narrowOptionValue, resolveOptionDisabled, resolveOptionField, type OptionValue } from '../_shared/option'
+import { isEmptyOptionValue, narrowOptionValue, resolveOptionDisabled, resolveOptionField, warnEmptyOptionValue, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type { SelectOptionGroup, SelectProps } from './types'
 
@@ -100,6 +100,10 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
             warnUnresolvedOption(rawValue, index)
             continue
         }
+        if (isEmptyOptionValue(value)) {
+            warnEmptyOptionValue('CaomeiSelect', index)
+            continue
+        }
         result.push({
             raw: option,
             value,
@@ -123,6 +127,10 @@ const normalizedGroups = computed(() => {
             const value = narrowOptionValue(rawValue)
             if (value === undefined) {
                 warnUnresolvedOption(rawValue, index)
+                continue
+            }
+            if (isEmptyOptionValue(value)) {
+                warnEmptyOptionValue('CaomeiSelect', index, option.label)
                 continue
             }
             groupOptions.push({

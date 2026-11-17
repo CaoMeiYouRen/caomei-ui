@@ -17,6 +17,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
+import { isEmptyOptionValue, warnEmptyOptionValue } from '../_shared/option'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import type {
@@ -62,11 +63,18 @@ const highlightedValue = ref<string | undefined>()
 let selectingFromList = false
 let debounceTimer: ReturnType<typeof setTimeout> | undefined
 
-const normalizedOptions = computed<AutoCompleteOption[]>(() =>
-    props.options.map((option) =>
-        typeof option === 'string' ? { label: option, value: option } : option,
-    ),
-)
+const normalizedOptions = computed<AutoCompleteOption[]>(() => {
+    const result: AutoCompleteOption[] = []
+    for (const [index, option] of props.options.entries()) {
+        const normalized = typeof option === 'string' ? { label: option, value: option } : option
+        if (isEmptyOptionValue(normalized.value)) {
+            warnEmptyOptionValue('CaomeiAutoComplete', index)
+            continue
+        }
+        result.push(normalized)
+    }
+    return result
+})
 
 const optionMap = computed(() => new Map(normalizedOptions.value.map((option) => [option.value, option])))
 

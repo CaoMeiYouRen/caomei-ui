@@ -20,7 +20,7 @@
 | M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 待执行 |
 | M3-1 | 质量治理 | Rating 文档站 a11y 抽检 | 待执行 |
 | M3-2 | 质量治理 | 依赖告警复核 | 待执行 |
-| M4-1 | 选择器空值诊断 | 空串选项值不再透传（Select / MultiSelect / AutoComplete） | 待执行 |
+| M4-1 | 选择器空值诊断 | 空串选项值不再透传（Select / MultiSelect / AutoComplete） | 已交付（2026-11-17，RG R1 `standard` Pass → R2 `quick` Pass） |
 | M4-2 | 选择器空值诊断 | 空串契约声明（中英组件页 + 设计规范 §7） | 待执行 |
 
 ## 未完成项汇总

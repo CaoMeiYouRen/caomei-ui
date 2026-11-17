@@ -481,6 +481,58 @@ describe('CaomeiSelect 对象选项映射', () => {
         wrapper.unmount()
     })
 
+    it('value 为空字符串时丢弃该选项、开发期告警，且面板可正常打开', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiSelect, {
+            props: {
+                options: [{ label: '全部', value: '' }, ...options],
+                modelValue: '',
+                placeholder: '请选择',
+            },
+            attachTo: document.body,
+        })
+
+        // 模型侧 '' 仍表示「未选中」：显示占位文本、不输出 data-filled
+        const trigger = wrapper.get('.caomei-select')
+        expect(trigger.text()).toContain('请选择')
+        expect(trigger.attributes('data-filled')).toBeUndefined()
+
+        // 面板打开不再触发 Reka 的空串断言，空串选项不渲染
+        await trigger.trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(3)
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('[CaomeiSelect] 第 1 个选项的 value 为空字符串'),
+        ])
+        expect(String(warn.mock.calls[0][0])).toContain('非空哨兵')
+
+        wrapper.unmount()
+    })
+
+    it('分组内的空串值按组内序号与组标签告警', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiSelect, {
+            props: {
+                options: [{
+                    label: '筛选',
+                    options: [{ label: '全部', value: '' }, { label: '苹果', value: 'apple' }],
+                }],
+            },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(1)
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('[CaomeiSelect] 分组「筛选」的第 1 个选项的 value 为空字符串'),
+        ])
+
+        wrapper.unmount()
+    })
+
     it('生产环境下同一输入不告警，解析结果不变', async () => {
         vi.stubEnv('NODE_ENV', 'production')
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)

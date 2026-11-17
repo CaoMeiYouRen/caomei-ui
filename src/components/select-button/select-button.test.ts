@@ -7,6 +7,10 @@ import { CaomeiSelectButton, type SelectButtonOption } from './index'
 
 enableAutoUnmount(afterEach)
 
+afterEach(() => {
+    vi.restoreAllMocks()
+})
+
 const options = [
     { label: '左对齐', value: 'left' },
     { label: '居中', value: 'center' },
@@ -50,6 +54,21 @@ describe('CaomeiSelectButton', () => {
         expect(items[0].text()).toBe('左对齐')
         expect(items[0].attributes('aria-pressed')).toBe('false')
         expect(items[0].attributes('data-state')).toBe('off')
+    })
+
+    it('空字符串作为真实选项值：不过滤、可选中并回写空串', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mountSelectButton({
+            options: [{ label: '全部', value: '' }, ...options],
+            'onUpdate:modelValue': vi.fn(),
+        })
+
+        // ToggleGroup 允许 '' 作为真实值，与 Select 家族的空串过滤口径刻意不同
+        expect(getItems(wrapper)).toHaveLength(4)
+        expect(warn).not.toHaveBeenCalled()
+
+        await getItems(wrapper)[0].trigger('click')
+        expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([''])
     })
 
     it('非受控单选：点击选中，点击其他项切换', async () => {

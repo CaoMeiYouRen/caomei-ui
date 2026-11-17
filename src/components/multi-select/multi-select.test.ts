@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { computed, defineComponent, h, nextTick, type Component, type DefineComponent } from 'vue'
 import { caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
@@ -7,6 +7,7 @@ import type { MultiSelectProps } from './types'
 import { CaomeiMultiSelect } from './index'
 
 afterEach(() => {
+    vi.restoreAllMocks()
     document.body.innerHTML = ''
     document.body.style.overflow = ''
     document.body.style.pointerEvents = ''
@@ -187,6 +188,25 @@ describe('CaomeiMultiSelect', () => {
         expect(rendered).toHaveLength(3)
         expect(rendered[0].textContent).toContain('苹果')
         expect(rendered[2].hasAttribute('data-disabled')).toBe(true)
+
+        wrapper.unmount()
+    })
+
+    it('value 为空字符串时丢弃该选项、开发期告警，且面板可正常打开', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options: [{ label: '全部', value: '' }, ...options] },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered).toHaveLength(3)
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('[CaomeiMultiSelect] 第 1 个选项的 value 为空字符串'),
+        ])
+        expect(String(warn.mock.calls[0][0])).toContain('非空哨兵')
 
         wrapper.unmount()
     })

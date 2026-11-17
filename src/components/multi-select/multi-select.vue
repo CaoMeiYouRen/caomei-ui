@@ -18,9 +18,11 @@ import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import {
+    isEmptyOptionValue,
     resolveOptionDisabled,
     resolveOptionField,
     resolveOptionValue,
+    warnEmptyOptionValue,
     type OptionValue,
 } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
@@ -87,9 +89,13 @@ interface NormalizedOption {
 /** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
 const normalizedOptions = computed<NormalizedOption[]>(() => {
     const result: NormalizedOption[] = []
-    for (const option of props.options) {
+    for (const [index, option] of props.options.entries()) {
         const value = resolveOptionValue(option, props.optionValue, 'value')
         if (value === undefined) {
+            continue
+        }
+        if (isEmptyOptionValue(value)) {
+            warnEmptyOptionValue('CaomeiMultiSelect', index)
             continue
         }
         result.push({

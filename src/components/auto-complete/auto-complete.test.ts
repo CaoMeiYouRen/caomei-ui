@@ -10,6 +10,7 @@ enableAutoUnmount(afterEach)
 
 afterEach(() => {
     vi.useRealTimers()
+    vi.restoreAllMocks()
 })
 
 const options = [
@@ -63,6 +64,24 @@ describe('CaomeiAutoComplete', () => {
         expect(rendered).toHaveLength(2)
         expect(rendered[0].textContent).toContain('苹果')
         expect(rendered[0].getAttribute('role')).toBe('option')
+    })
+
+    it('value 为空字符串时丢弃该建议项、开发期告警，且面板可正常打开', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: { options: ['', { label: '苹果', value: 'apple' }], dropdown: true },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+
+        const rendered = optionElements(wrapper)
+        expect(rendered).toHaveLength(1)
+        expect(rendered[0].textContent).toContain('苹果')
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('[CaomeiAutoComplete] 第 1 个选项的 value 为空字符串'),
+        ])
+        expect(String(warn.mock.calls[0][0])).toContain('非空哨兵')
     })
 
     it('单选输入自由文本后回车提交为 modelValue 并触发 select', async () => {

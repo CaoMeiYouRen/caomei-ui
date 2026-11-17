@@ -11,9 +11,10 @@ import {
     ComboboxTrigger,
     ComboboxViewport,
 } from 'reka-ui'
-import { computed, nextTick, ref, useId } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { suppressOutside } from '../../_shared/open-state-inert'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -160,11 +161,148 @@ function onAnchorClick(event: MouseEvent): void {
     }
     ;(event.currentTarget as HTMLElement | null)?.querySelector('input')?.focus()
 }
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const anchorRef = ref<{ $el?: unknown } | null>(null)
+
+/** 面板打开态：只用于兄弟隔离，不作为公开绑定 */
+const open = ref(false)
+
+let restoreContentInert: (() => void) | undefined
+let restoreFieldInert: (() => void) | undefined
+
+/** 键盘关闭（Escape）时置位：Reka Combobox 非模态、不自动归还焦点，关闭后由本组件补 */
+let restoreFocusOnClose = false
+
+function releaseInert(): void {
+    restoreContentInert?.()
+    restoreContentInert = undefined
+    restoreFieldInert?.()
+    restoreFieldInert = undefined
+}
+
+/** 非模态浮层：背景被隔离后点击会落在 `inert` 子树里，先解除隔离再让这次点击落到目标控件上 */
+function onDocumentPointerDown(event: PointerEvent): void {
+    if (!open.value) {
+        return
+    }
+    const target = event.target
+    if (!(target instanceof Node)) {
+        return
+    }
+    const content = contentRef.value?.$el
+    if (content instanceof HTMLElement && content.contains(target)) {
+        return
+    }
+    const field = anchorRef.value?.$el
+    if (field instanceof HTMLElement && field.contains(target)) {
+        return
+    }
+    releaseInert()
+}
+
+/** 可聚焦候选：展开态按 Tab 时把焦点交给字段之后（Shift 时为之前）的下一个控件 */
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+/**
+ * 展开态按 Tab：先收起面板并解除隔离，再把焦点交给字段之后（Shift 时为之前）的下一个控件。
+ * 不拦截时浏览器会在 `inert` 仍生效的瞬间算好下一个可聚焦元素，焦点因此落到 `body`
+ * （APG Combobox 要求 Tab 关闭弹层并把焦点移到下一个元素）。
+ */
+function onFieldKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Tab' || !open.value) {
+        return
+    }
+    event.preventDefault()
+    const backward = event.shiftKey
+    open.value = false
+    void nextTick(() => {
+        const field = anchorRef.value?.$el
+        if (!(field instanceof HTMLElement)) {
+            return
+        }
+        const candidates = [...document.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
+            .filter((element) => element.tabIndex >= 0 && !field.contains(element))
+        const target = backward
+            ? [...candidates].reverse().find((element) => field.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_PRECEDING)
+            : candidates.find((element) => field.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
+        target?.focus()
+    })
+}
+
+/** Escape 关闭标记：仅面板展开时置位，避免关闭态按键残留导致后续鼠标关闭抢焦点 */
+function markEscapeClose(): void {
+    if (open.value) {
+        restoreFocusOnClose = true
+    }
+}
+
+/**
+ * 打开态兄弟隔离：Reka 只用 `aria-hidden` 隐藏面板外的兄弟节点，背景里的可聚焦元素
+ * 仍留在 Tab 序列里（axe `aria-hidden-focus`）。面板落位后补 `inert`，关闭时先于焦点
+ * 归还输入框回退，避免背景因 `inert` 接收不到焦点。
+ */
+// 关闭：同步回退隔离，必须先于 Reka 的焦点归还（否则触发器仍在 `inert` 子树、焦点掉到 body）
+watch(
+    open,
+    (isOpen) => {
+        if (isOpen) {
+            return
+        }
+        releaseInert()
+        if (!restoreFocusOnClose) {
+            return
+        }
+        restoreFocusOnClose = false
+        void nextTick(() => {
+            const element = inputRef.value?.$el
+            if (element instanceof HTMLElement) {
+                element.focus()
+            }
+        })
+    },
+    { flush: 'sync' },
+)
+
+// 打开：面板落位后补隔离（post 刷新保证 `contentRef` 已挂载）
+watch(
+    open,
+    (isOpen) => {
+        if (!isOpen) {
+            return
+        }
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            const content = contentRef.value?.$el
+            if (content instanceof HTMLElement && content.isConnected) {
+                restoreContentInert = suppressOutside(content)
+            }
+            // 字段自身（含输入框）是 Combobox 的交互面，必须留在隔离面之外
+            const field = anchorRef.value?.$el
+            if (field instanceof HTMLElement && field.isConnected) {
+                restoreFieldInert = suppressOutside(field)
+            }
+        })
+    },
+    { flush: 'post' },
+)
+
+onMounted(() => {
+    document.addEventListener('pointerdown', onDocumentPointerDown, true)
+})
+
+onBeforeUnmount(() => {
+    document.removeEventListener('pointerdown', onDocumentPointerDown, true)
+    releaseInert()
+})
 </script>
 
 <template>
     <ComboboxRoot
         v-model="model"
+        v-model:open="open"
         multiple
         :disabled="disabled"
         :name="name"
@@ -173,11 +311,14 @@ function onAnchorClick(event: MouseEvent): void {
     >
         <ComboboxPanelIdrefBridge :state="panelIdref" />
         <ComboboxAnchor
+            ref="anchorRef"
             v-bind="rootAttrs"
             class="caomei-multi-select"
             :class="rootClass"
             :data-filled="model.length > 0 ? 'true' : undefined"
             @click="onAnchorClick"
+            @keydown="onFieldKeydown"
+            @keydown.escape="markEscapeClose"
         >
             <span
                 v-for="option in selectedOptions"
@@ -228,10 +369,12 @@ function onAnchorClick(event: MouseEvent): void {
         </ComboboxAnchor>
         <ComboboxPortal>
             <ComboboxContent
+                ref="contentRef"
                 class="caomei-multi-select__content"
                 position="popper"
                 :side-offset="4"
                 :body-lock="bodyLock"
+                @escape-key-down="markEscapeClose"
             >
                 <ComboboxViewport class="caomei-multi-select__viewport">
                     <ComboboxEmpty class="caomei-multi-select__empty">

@@ -66,6 +66,23 @@ describe('CaomeiAutoComplete', () => {
         expect(rendered[0].getAttribute('role')).toBe('option')
     })
 
+    it('展开后给背景兄弟节点补 inert，卸载时回退', async () => {
+        const background = document.createElement('div')
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: { options, dropdown: true },
+            attachTo: document.body,
+        })
+        await open(wrapper)
+
+        expect(background.hasAttribute('inert')).toBe(true)
+
+        wrapper.unmount()
+        expect(background.hasAttribute('inert')).toBe(false)
+    })
+
     it('value 为空字符串时丢弃该建议项、开发期告警，且面板可正常打开', async () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
         const wrapper = mount(CaomeiAutoComplete, {

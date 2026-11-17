@@ -18,9 +18,15 @@
  * 文档边界：活动层与写入记录都按 `body` 分组，不同文档（iframe / 独立 `document`）的
  * 隔离面互不影响；重算只操作当前 `body` 的写入记录。
  *
+ * 属性配对：隔离节点同时写 `inert` 与 `aria-hidden="true"`。`inert` 已移除可访问性与可聚焦性，
+ * `aria-hidden` 在此与 Reka Select 的背景隐藏同口径，使 Select / Combobox 两类浮层的隔离面
+ * 一致（Reka Combobox 自身不隐藏背景），也让 `aria-hidden-focus` 规则对「属性在但不生效」
+ * 的退化保持可判。
+ *
  * 只接管本模块写入的属性：重算时刻已带 `inert` 且不在本模块记录里的节点（外部模态 /
  * 其它浮层）始终跳过；撤销时也只移除本模块写入的节点。外部在打开期间移除 `inert` 时，
- * 下一次重算会补写（记录与属性对齐，隔离不会静默失效）。
+ * 下一次重算会补写（记录与属性对齐，隔离不会静默失效）；外部已有的 `aria-hidden` 不接管、
+ * 不撤销。
  *
  * 落在 `src/_shared/`：本工具不绑定具体组件，供组件层复用；无 SSR 依赖（只在客户端调用）。
  */
@@ -40,22 +46,28 @@ interface ActiveLayer {
 /** 活动层登记表（按打开顺序；关闭时按层对象移除） */
 const activeLayers: ActiveLayer[] = []
 
-/** 本模块写入过 `inert` 的节点，按 `body` 分组；撤销只动这些 */
-const appliedByBody = new Map<HTMLElement, Set<Element>>()
+/** 某个 `body` 上的写入记录：`inert` 与 `aria-hidden` 分别记账，撤销只动本模块写入的属性 */
+interface AppliedRecord {
+    inert: Set<Element>
+    ariaHidden: Set<Element>
+}
+
+/** 本模块的写入记录，按 `body` 分组 */
+const appliedByBody = new Map<HTMLElement, AppliedRecord>()
 
 /** 取（必要时创建）某个 `body` 的写入记录 */
-function appliedOf(body: HTMLElement): Set<Element> {
-    let applied = appliedByBody.get(body)
-    if (!applied) {
-        applied = new Set<Element>()
-        appliedByBody.set(body, applied)
+function appliedOf(body: HTMLElement): AppliedRecord {
+    let record = appliedByBody.get(body)
+    if (!record) {
+        record = { inert: new Set<Element>(), ariaHidden: new Set<Element>() }
+        appliedByBody.set(body, record)
     }
-    return applied
+    return record
 }
 
 /** 按当前活动层重算某个 `body` 的隔离面：先撤销不再需要的写入，再补齐新需要的节点 */
 function applyLayers(body: HTMLElement): void {
-    const applied = appliedOf(body)
+    const record = appliedOf(body)
 
     // 整棵子树保留：本 body 内各层浮层本体、焦点哨兵、live region 与 script
     const exempt = new Set<Element>()
@@ -89,7 +101,7 @@ function applyLayers(body: HTMLElement): void {
                 continue
             }
             // 已带 `inert` 且不是本模块写入：外部已隔离该子树，按其自身生命周期回退
-            if (child.hasAttribute('inert') && !applied.has(child)) {
+            if (child.hasAttribute('inert') && !record.inert.has(child)) {
                 continue
             }
             next.add(child)
@@ -97,10 +109,16 @@ function applyLayers(body: HTMLElement): void {
     }
     walk(body)
 
-    for (const element of [...applied]) {
+    for (const element of [...record.inert]) {
         if (!next.has(element)) {
             element.removeAttribute('inert')
-            applied.delete(element)
+            record.inert.delete(element)
+        }
+    }
+    for (const element of [...record.ariaHidden]) {
+        if (!next.has(element)) {
+            element.removeAttribute('aria-hidden')
+            record.ariaHidden.delete(element)
         }
     }
     for (const element of next) {
@@ -108,18 +126,26 @@ function applyLayers(body: HTMLElement): void {
         if (!element.hasAttribute('inert')) {
             element.setAttribute('inert', '')
         }
-        applied.add(element)
+        record.inert.add(element)
+        // 外部已写 `aria-hidden` 的节点不接管，撤销时也不移除
+        if (!element.hasAttribute('aria-hidden')) {
+            element.setAttribute('aria-hidden', 'true')
+            record.ariaHidden.add(element)
+        }
     }
 }
 
 /** 撤销本模块在某个 `body` 上的全部写入 */
 function releaseBody(body: HTMLElement): void {
-    const applied = appliedByBody.get(body)
-    if (!applied) {
+    const record = appliedByBody.get(body)
+    if (!record) {
         return
     }
-    for (const element of applied) {
+    for (const element of record.inert) {
         element.removeAttribute('inert')
+    }
+    for (const element of record.ariaHidden) {
+        element.removeAttribute('aria-hidden')
     }
     appliedByBody.delete(body)
 }

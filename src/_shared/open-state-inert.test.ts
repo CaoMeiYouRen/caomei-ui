@@ -35,12 +35,14 @@ describe('suppressOutside', () => {
         const restore = suppressOutside(floating)
 
         expect(outside.hasAttribute('inert')).toBe(true)
+        expect(outside.getAttribute('aria-hidden')).toBe('true')
         expect(context.hasAttribute('inert')).toBe(false)
         expect(floating.hasAttribute('inert')).toBe(false)
         expect(floating.querySelector('button')?.closest('[inert]')).toBeNull()
 
         restore()
         expect(outside.hasAttribute('inert')).toBe(false)
+        expect(outside.hasAttribute('aria-hidden')).toBe(false)
     })
 
     it('撤销只移除自身写入的 inert，保留外部已置位的节点', () => {
@@ -50,6 +52,8 @@ describe('suppressOutside', () => {
 
         const restore = suppressOutside(floating)
         expect(outside.hasAttribute('inert')).toBe(true)
+        // 外部已隔离的节点不接管，也不补 `aria-hidden`
+        expect(outside.hasAttribute('aria-hidden')).toBe(false)
 
         restore()
         // 外部写入的 inert 不归本函数管理，撤销后仍在
@@ -157,6 +161,19 @@ describe('suppressOutside', () => {
         expect(external.hasAttribute('inert')).toBe(true)
     })
 
+    it('外部已有的 aria-hidden 不接管，撤销后保留', () => {
+        const { outside, floating } = buildTree()
+        outside.setAttribute('aria-hidden', 'true')
+
+        const restore = suppressOutside(floating)
+        expect(outside.hasAttribute('inert')).toBe(true)
+        expect(outside.getAttribute('aria-hidden')).toBe('true')
+
+        restore()
+        expect(outside.hasAttribute('inert')).toBe(false)
+        expect(outside.getAttribute('aria-hidden')).toBe('true')
+    })
+
     it('多层浮层：先关者不提前解除，全部关闭后统一恢复', () => {
         document.body.innerHTML = ''
         const outside = document.createElement('div')
@@ -181,6 +198,7 @@ describe('suppressOutside', () => {
         // A 关闭而 B 仍展开：背景必须保持隔离，A 的宿主链转为背景
         expect(outside.hasAttribute('inert')).toBe(true)
         expect(contextA.hasAttribute('inert')).toBe(true)
+        expect(contextA.getAttribute('aria-hidden')).toBe('true')
         expect(contextB.hasAttribute('inert')).toBe(false)
 
         releaseB()

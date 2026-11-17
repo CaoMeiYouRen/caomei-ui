@@ -211,6 +211,21 @@ describe('CaomeiMultiSelect', () => {
         wrapper.unmount()
     })
 
+    it('展开后给背景兄弟节点补 inert，卸载时回退', async () => {
+        const background = document.createElement('div')
+        background.id = 'background'
+        background.append(document.createElement('button'))
+        document.body.append(background)
+
+        const wrapper = mount(CaomeiMultiSelect, { props: { options }, attachTo: document.body })
+        await open(wrapper)
+
+        expect(background.hasAttribute('inert')).toBe(true)
+
+        wrapper.unmount()
+        expect(background.hasAttribute('inert')).toBe(false)
+    })
+
     it('点击选项抛出 update:modelValue 追加选中值', async () => {
         const wrapper = mount(CaomeiMultiSelect, {
             props: { options, modelValue: [] },

@@ -12,9 +12,10 @@ import {
     ComboboxViewport,
     type AcceptableValue,
 } from 'reka-ui'
-import { computed, onBeforeUnmount, ref, useId, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { suppressOutside } from '../../_shared/open-state-inert'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { isEmptyOptionValue, warnEmptyOptionValue } from '../_shared/option'
@@ -277,11 +278,143 @@ function onAnchorClick(event: MouseEvent): void {
     ;(event.currentTarget as HTMLElement | null)?.querySelector('input')?.focus()
 }
 
+onMounted(() => {
+    document.addEventListener('pointerdown', onDocumentPointerDown, true)
+})
+
 onBeforeUnmount(() => {
     if (debounceTimer !== undefined) {
         clearTimeout(debounceTimer)
     }
+    document.removeEventListener('pointerdown', onDocumentPointerDown, true)
+    releaseInert()
 })
+
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const anchorRef = ref<{ $el?: unknown } | null>(null)
+
+let restoreContentInert: (() => void) | undefined
+let restoreFieldInert: (() => void) | undefined
+
+/** 键盘关闭（Escape）时置位：Reka Combobox 非模态、不自动归还焦点，关闭后由本组件补 */
+let restoreFocusOnClose = false
+
+const inputRef = ref<{ $el?: unknown } | null>(null)
+
+function releaseInert(): void {
+    restoreContentInert?.()
+    restoreContentInert = undefined
+    restoreFieldInert?.()
+    restoreFieldInert = undefined
+}
+
+/** 非模态浮层：背景被隔离后点击会落在 `inert` 子树里，先解除隔离再让这次点击落到目标控件上 */
+function onDocumentPointerDown(event: PointerEvent): void {
+    if (!open.value) {
+        return
+    }
+    const target = event.target
+    if (!(target instanceof Node)) {
+        return
+    }
+    const content = contentRef.value?.$el
+    if (content instanceof HTMLElement && content.contains(target)) {
+        return
+    }
+    const field = anchorRef.value?.$el
+    if (field instanceof HTMLElement && field.contains(target)) {
+        return
+    }
+    releaseInert()
+}
+
+/** 可聚焦候选：展开态按 Tab 时把焦点交给字段之后（Shift 时为之前）的下一个控件 */
+const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+/**
+ * 展开态按 Tab：先收起面板并解除隔离，再把焦点交给字段之后（Shift 时为之前）的下一个控件。
+ * 不拦截时浏览器会在 `inert` 仍生效的瞬间算好下一个可聚焦元素，焦点因此落到 `body`
+ * （APG Combobox 要求 Tab 关闭弹层并把焦点移到下一个元素）。
+ */
+function onFieldKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Tab' || !open.value) {
+        return
+    }
+    event.preventDefault()
+    const backward = event.shiftKey
+    open.value = false
+    void nextTick(() => {
+        const field = anchorRef.value?.$el
+        if (!(field instanceof HTMLElement)) {
+            return
+        }
+        const candidates = [...document.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
+            .filter((element) => element.tabIndex >= 0 && !field.contains(element))
+        const target = backward
+            ? [...candidates].reverse().find((element) => field.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_PRECEDING)
+            : candidates.find((element) => field.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
+        target?.focus()
+    })
+}
+
+/** Escape 关闭标记：仅面板展开时置位，避免关闭态按键残留导致后续鼠标关闭抢焦点 */
+function markEscapeClose(): void {
+    if (open.value) {
+        restoreFocusOnClose = true
+    }
+}
+
+/**
+ * 打开态兄弟隔离：Reka 只用 `aria-hidden` 隐藏面板外的兄弟节点，背景里的可聚焦元素
+ * 仍留在 Tab 序列里（axe `aria-hidden-focus`）。面板落位后补 `inert`，关闭时先于焦点
+ * 归还输入框回退，避免背景因 `inert` 接收不到焦点。
+ */
+// 关闭：同步回退隔离，必须先于 Reka 的焦点归还（否则输入框仍在 `inert` 子树、焦点掉到 body）
+watch(
+    open,
+    (isOpen) => {
+        if (isOpen) {
+            return
+        }
+        releaseInert()
+        if (!restoreFocusOnClose) {
+            return
+        }
+        restoreFocusOnClose = false
+        void nextTick(() => {
+            const element = inputRef.value?.$el
+            if (element instanceof HTMLElement) {
+                element.focus()
+            }
+        })
+    },
+    { flush: 'sync' },
+)
+
+// 打开：面板落位后补隔离（post 刷新保证 `contentRef` 已挂载）
+watch(
+    open,
+    (isOpen) => {
+        if (!isOpen) {
+            return
+        }
+        void nextTick(() => {
+            if (!open.value) {
+                return
+            }
+            const content = contentRef.value?.$el
+            if (content instanceof HTMLElement && content.isConnected) {
+                restoreContentInert = suppressOutside(content)
+            }
+            // 字段自身（含输入框）是 Combobox 的交互面，必须留在隔离面之外
+            const field = anchorRef.value?.$el
+            if (field instanceof HTMLElement && field.isConnected) {
+                restoreFieldInert = suppressOutside(field)
+            }
+        })
+    },
+    { flush: 'post' },
+)
 
 // 选项变化后，若当前高亮值已不存在则清空，避免回车误选已移除的建议
 watch(normalizedOptions, () => {
@@ -306,12 +439,15 @@ watch(normalizedOptions, () => {
     >
         <ComboboxPanelIdrefBridge :state="panelIdref" />
         <ComboboxAnchor
+            ref="anchorRef"
             v-bind="rootAttrs"
             class="caomei-auto-complete"
             :class="rootClass"
             :data-filled="hasValue ? 'true' : undefined"
             :data-has-placeholder="placeholder ? 'true' : undefined"
             @click="onAnchorClick"
+            @keydown="onFieldKeydown"
+            @keydown.escape="markEscapeClose"
         >
             <span
                 v-for="value in tagValues"
@@ -332,6 +468,7 @@ watch(normalizedOptions, () => {
             <ComboboxInput
                 v-bind="{...controlAttrs, ...labelAttrs(label), ...panelControlsBinds(panelIdref, controlAttrs)}"
                 :id="id"
+                ref="inputRef"
                 v-model="inputValue"
                 class="caomei-auto-complete__input"
                 :placeholder="inputPlaceholder"
@@ -376,10 +513,12 @@ watch(normalizedOptions, () => {
         </ComboboxAnchor>
         <ComboboxPortal>
             <ComboboxContent
+                ref="contentRef"
                 class="caomei-auto-complete__content"
                 position="popper"
                 :side-offset="4"
                 :body-lock="bodyLock"
+                @escape-key-down="markEscapeClose"
             >
                 <ComboboxViewport class="caomei-auto-complete__viewport">
                     <ComboboxEmpty class="caomei-auto-complete__empty">

@@ -247,6 +247,14 @@
     ssg="true"
 />
 
+<demo
+    vue="../examples/data-table/column-sizing-persist.vue"
+    ssg="true"
+/>
+
+持久化示例（`column-sizing-persist.vue`）：`localStorage` 读取在挂载后执行，写入只在点「保存」时发生，「恢复默认」会清除存储键；解析失败、越界（`60`–`480px`）、类型不符或缺字段一律回退默认值。存储键、默认值与越界策略都是使用方职责，库内不做存储。
+
+
 ## 固定表头与滚动
 
 设置 `scrollable` 后，表格根容器按 `scrollHeight` 限高并成为纵向滚动区：表头吸顶、分页器吸底，表体在容器内滚动。`scrollHeight` 取 `number` 时按 `px` 归一化（`240` → `240px`），取 `string` 时原样作为 CSS 长度（如 `'60vh'` / `'18rem'`）；缺省不限高，容器按内容自然高度渲染。

@@ -247,6 +247,14 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
     ssg="true"
 />
 
+<demo
+    vue="../examples/data-table/column-sizing-persist.vue"
+    ssg="true"
+/>
+
+Persistence example (`column-sizing-persist.vue`): the `localStorage` read happens after mount and writes only when "Save" is pressed, while "Reset" clears the stored key; parse failures, out-of-range values (`60`–`480px`), wrong types and missing fields all fall back to the defaults. The storage key, defaults and range policy are the consumer's responsibility — the library stores nothing.
+
+
 ## Fixed header and scrolling
 
 With `scrollable`, the table's root container is capped at `scrollHeight` and becomes a vertical scroll area: the header sticks to the top, the paginator sticks to the bottom, and the body scrolls inside the container. A numeric `scrollHeight` is normalized to `px` (`240` → `240px`); a string is used as-is as a CSS length (`'60vh'` / `'18rem'`). Without it the container is not capped and follows the content height.

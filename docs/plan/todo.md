@@ -4,24 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 36**（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理、选择器空值诊断）。**4 条主线 / 12 条原子条目**（构成对账 5 + 3 + 2 + 2 = 12；原登记 8 条为 2026-11-17 时点值，同日追加 2 条后为 10 条，再经插队追加 2 条后为 12 条，见[登记记录](../design/governance/2026-11-17-phase36-registration.md) §6.1 / §6.2）；范围与验收口径的唯一载体见 [Phase 36 登记批次](../design/governance/2026-11-17-phase36-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
-
-## Phase 36 原子条目
-
-| 编号 | 主线 | 条目 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | 无障碍扩面 | 隔离工具的多浮层边界收口 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-1-multi-overlay-isolation.md)） |
-| M1-2 | 无障碍扩面 | MultiSelect / AutoComplete 打开态补 `inert` | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-2-combobox-open-inert.md)） |
-| M1-3 | 无障碍扩面 | DatePicker / ColorPicker 打开态补 `inert` | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m1-3-date-color-picker-inert.md)） |
-| M1-4 | 无障碍扩面 | 全库浮层回归与边界记录 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase36-m1-4-overlay-regression.md)） |
-| M1-5 | 无障碍扩面 | DropdownMenu / Popover 打开态补 `inert` | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-17-phase36-m1-5-dropdown-popover-inert.md)） |
-| M2-1 | DataTable 交互 | 列宽拖拽手柄 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase36-m2-1-column-resize-handle.md)） |
-| M2-2 | DataTable 交互 | 虚拟滚动可行性评估（只评估） | 已交付（2026-11-17，[评估记录](../design/governance/2026-11-17-phase36-m2-2-virtual-scroll-evaluation.md)） |
-| M2-3 | DataTable 交互 | 列宽持久化示例与契约说明 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m2-3-column-sizing-persist-example.md)） |
-| M3-1 | 质量治理 | Rating 文档站 a11y 抽检 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m3-1-rating-docs-axe.md)） |
-| M3-2 | 质量治理 | 依赖告警复核 | 已交付（2026-11-17，[交付记录](../design/governance/2026-11-17-phase36-m3-2-dependency-alert-review.md)） |
-| M4-1 | 选择器空值诊断 | 空串选项值不再透传（Select / MultiSelect / AutoComplete） | 已交付（2026-11-17，RG R1 `standard` Pass → R2 `quick` Pass） |
-| M4-2 | 选择器空值诊断 | 空串契约声明（中英组件页 + 设计规范 §7） | 已交付（2026-11-17，RG R1 `quick` Pass → R2 `quick` Pass → R3 `quick` Pass） |
+**当前无进行中阶段**。下一阶段需经需求评估与用户明确授权后再登记；候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## 未完成项汇总
 

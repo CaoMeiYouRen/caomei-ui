@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
     DEFAULT_PORT,
@@ -17,6 +20,18 @@ import {
 } from './check-docs-axe.mjs'
 
 const minimalPage = PAGES.find((page) => page.key === 'select-zh')
+
+const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
+
+describe('check-docs-axe 受检面文档同步', () => {
+    it('§17 声明的条目数与路径数与 PAGES 实算一致', () => {
+        const doc = readFileSync(join(projectRoot, 'docs/design/documentation-site.md'), 'utf8')
+        const match = doc.match(/默认矩阵 (\d+) 条目 \/ (\d+) 个页面路径/)
+        expect(match, '§17 缺少「默认矩阵 N 条目 / M 个页面路径」声明').not.toBeNull()
+        expect(Number(match[1])).toBe(PAGES.length)
+        expect(Number(match[2])).toBe(new Set(PAGES.map((page) => page.path)).size)
+    })
+})
 
 describe('check-docs-axe 参数解析', () => {
     it('缺省取全矩阵且不收窄规则面', () => {

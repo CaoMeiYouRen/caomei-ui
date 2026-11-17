@@ -9,9 +9,10 @@
  * 门禁无法采信。本脚本把抽检收成可执行证据：`vitepress preview` 起构建产物 → 注入 axe-core →
  * 按**页面矩阵 + WCAG 规则面**审计 → 有违规即 exit 1。
  *
- * 受检面（默认矩阵，见 `docs/design/documentation-site.md` §17）：`/components/data-table`、
- * `/components/select` 中英、`/components/showcase` 中英、`/components/tooltip` 中英、
- * `/components/dialog`（打开态）；默认两条 WCAG 规则（`button-name` / `scrollable-region-focusable`）
+ * 受检面（默认矩阵 15 条目 / 14 路径，见 `docs/design/documentation-site.md` §17）：
+ * `/components/data-table`、`/components/select` 中英（含打开态）、`/components/multi-select` 中英（打开态）、
+ * `/components/auto-complete` 中英（打开态）、`/components/rating` 中英、`/components/showcase` 中英、
+ * `/components/tooltip` 中英、`/components/dialog`（打开态）；默认两条 WCAG 规则（`button-name` / `scrollable-region-focusable`）
  * 对全部登记页执行，登记了 `rules` 的页面**追加**打开态规则（`aria-hidden-focus` /
  * `aria-dialog-name` / `aria-allowed-attr`；axe-core 无 `aria-modal` 规则，其合法性归
  * `aria-allowed-attr`），不做全局裁剪。不纳入 best-practice / experimental 规则
@@ -132,6 +133,9 @@ export const PAGES = [
         rules: ['aria-hidden-focus'],
         interact: { label: 'Open the first AutoComplete', trigger: '.caomei-auto-complete', open: '.caomei-auto-complete__content' },
     },
+    // Rating：按钮即评分格，`button-name` 下界取 2026-11-17 实测值（只增不减）
+    { key: 'rating-zh', path: '/components/rating', ready: '.caomei-rating', minSubjects: 2, minApplies: { 'button-name': 18, 'scrollable-region-focusable': 1 } },
+    { key: 'rating-en', path: '/en-US/components/rating', ready: '.caomei-rating', minSubjects: 2, minApplies: { 'button-name': 18, 'scrollable-region-focusable': 1 } },
     { key: 'showcase-zh', path: '/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },
     { key: 'showcase-en', path: '/en-US/components/showcase', ready: '.caomei-showcase__card', minSubjects: 15, minApplies: { 'button-name': 15 } },
     { key: 'tooltip-zh', path: '/components/tooltip', ready: '.caomei-toolbar', minSubjects: 1, minApplies: { 'button-name': 28 } },

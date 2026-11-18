@@ -1035,34 +1035,6 @@ const ConfirmDriver = defineComponent({
         </section>
 
         <!--
-          页面级浮层隔离用例（见 `test/e2e/overlay-panel-isolation.e2e.ts`）：DropdownMenu 与 Popover
-          打开后都应把背景补 `inert` 与 `aria-hidden`；`disable-outside-pointer-events` 的 Popover 用于
-          「锁定背景」判定（两类浮层的模态性与 Tab 行为口径见交付记录 §3）。背景断言面取 `#wrap-toolbar`。
-        -->
-        <section id="panel-dropdown-menu-isolation" class="fixture__case">
-            <CaomeiDropdownMenu>
-                <CaomeiDropdownMenuTrigger>更多操作</CaomeiDropdownMenuTrigger>
-                <CaomeiDropdownMenuContent :model="overlayMenuItems" />
-            </CaomeiDropdownMenu>
-        </section>
-
-        <section id="panel-popover-isolation" class="fixture__case">
-            <CaomeiPopover>
-                <CaomeiPopoverTrigger>页面提示</CaomeiPopoverTrigger>
-                <CaomeiPopoverContent>页面级浮层，Tab 不应进入背景。</CaomeiPopoverContent>
-            </CaomeiPopover>
-        </section>
-
-        <section id="panel-popover-pointer-isolation" class="fixture__case">
-            <CaomeiPopover>
-                <CaomeiPopoverTrigger>锁定背景</CaomeiPopoverTrigger>
-                <CaomeiPopoverContent :disable-outside-pointer-events="true">
-                    锁定背景的页面级浮层。
-                </CaomeiPopoverContent>
-            </CaomeiPopover>
-        </section>
-
-        <!--
           导航骨架用例（见 `test/e2e/menu-navigation.e2e.ts`）：纵向菜单 = 两个顶层项 + 一个含两项的
           子菜单，用于回归方向键导航与子菜单开合；`current` 项用于回归 `aria-current`。
         -->
@@ -1270,26 +1242,6 @@ const ConfirmDriver = defineComponent({
                 resizable-columns
                 caption="列宽拖拽"
             />
-        </section>
-
-        <!--
-          DataTable 冻结列手柄吸边与可配置步进 / 结束事件用例（见 `test/e2e/data-table-resize.e2e.ts`）：
-          首列冻结并声明 px 宽度，容器收窄到 20rem 迫使横向溢出；步进 20 / 最小列宽 120 覆盖可配置面，
-          `#data-table-resize-log` 承载 `columnResizeEnd` 的 `key:width` 观测值。
-        -->
-        <section id="panel-data-table-resize-frozen" class="fixture__case">
-            <CaomeiDataTable
-                v-model:column-sizing="resizeFrozenSizing"
-                :data="resizeFrozenData"
-                :columns="resizeFrozenColumns"
-                row-key="name"
-                resizable-columns
-                :column-resize-step="20"
-                :column-resize-min-width="120"
-                caption="冻结列宽拖拽"
-                @column-resize-end="onResizeEnd"
-            />
-            <output id="data-table-resize-log">{{ resizeLog }}</output>
         </section>
 
         <section id="data-table-sort-width" class="fixture__case">
@@ -2713,6 +2665,53 @@ const ConfirmDriver = defineComponent({
         </section>
         <section id="ds-rating" class="fixture__case">
             <CaomeiRating :model-value="3" label="评分" />
+        </section>
+        <!--
+          DataTable 冻结列手柄吸边与可配置步进 / 结束事件用例（见 `test/e2e/data-table-resize.e2e.ts`）：
+          首列冻结并声明 px 宽度，容器收窄到 20rem 迫使横向溢出；步进 20 / 最小列宽 120 覆盖可配置面，
+          `#data-table-resize-log` 承载 `columnResizeEnd` 的 `key:width` 观测值。
+        -->
+        <section id="panel-data-table-resize-frozen" class="fixture__case">
+            <CaomeiDataTable
+                v-model:column-sizing="resizeFrozenSizing"
+                :data="resizeFrozenData"
+                :columns="resizeFrozenColumns"
+                row-key="name"
+                resizable-columns
+                :column-resize-step="20"
+                :column-resize-min-width="120"
+                caption="冻结列宽拖拽"
+                @column-resize-end="onResizeEnd"
+            />
+            <output id="data-table-resize-log">{{ resizeLog }}</output>
+        </section>
+
+        <!--
+          页面级浮层隔离用例（见 `test/e2e/overlay-panel-isolation.e2e.ts`）：DropdownMenu 与 Popover
+          打开后都应把背景补 `inert` 与 `aria-hidden`；`disable-outside-pointer-events` 的 Popover 用于
+          「锁定背景」判定（两类浮层的模态性与 Tab 行为口径见交付记录 §3）。背景断言面取 `#wrap-toolbar`。
+        -->
+        <section id="panel-dropdown-menu-isolation" class="fixture__case">
+            <CaomeiDropdownMenu>
+                <CaomeiDropdownMenuTrigger>更多操作</CaomeiDropdownMenuTrigger>
+                <CaomeiDropdownMenuContent :model="overlayMenuItems" />
+            </CaomeiDropdownMenu>
+        </section>
+
+        <section id="panel-popover-isolation" class="fixture__case">
+            <CaomeiPopover>
+                <CaomeiPopoverTrigger>页面提示</CaomeiPopoverTrigger>
+                <CaomeiPopoverContent>页面级浮层，Tab 不应进入背景。</CaomeiPopoverContent>
+            </CaomeiPopover>
+        </section>
+
+        <section id="panel-popover-pointer-isolation" class="fixture__case">
+            <CaomeiPopover>
+                <CaomeiPopoverTrigger>锁定背景</CaomeiPopoverTrigger>
+                <CaomeiPopoverContent :disable-outside-pointer-events="true">
+                    锁定背景的页面级浮层。
+                </CaomeiPopoverContent>
+            </CaomeiPopover>
         </section>
     </main>
 </template>

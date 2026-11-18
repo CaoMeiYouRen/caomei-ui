@@ -40,6 +40,7 @@
 | 触发器等保留根 | `useOpenStateIsolation` 把面板与触发器都作为保留根，两者都不被隔离 |
 | 既有行为 | 未开启该配置时行为不变：外部点击照旧关闭（单测负向对照 + E2E 对照用例双证） |
 | 受检面登记 | 三个新锚点是简单容器，横向溢出由 `responsive.e2e.ts` 的**页面级**断言覆盖，故未登记到该文件的逐 section 清单；`overlay-panels.json` 的受检面是模态内锚定浮层，与页面级锚点无关，`check:overlay-z-index` 通过 |
+| 夹具位置 | 本批新增的四个 section（含 M1-1 的冻结列面）追加在 `<main>` 末尾，不改既有受检面的偏移。CI 实测：插在中间时截图用例 28/44 失败（本地同态复现、差异像素数与 CI 逐项一致），追加末尾后 48/48 恢复，无需重冻结。规则见[测试规范 §2.1](../../standards/testing.md#_2-1-样式与组件类改动的回归验证) |
 
 ## 4. 验证
 
@@ -48,6 +49,7 @@
 - `pnpm lint:check` / `pnpm typecheck` / `pnpm lint:md:check` / `pnpm governance:check` / `pnpm check:planning-numbers` 全绿。
 - `pnpm docs:build` 全绿（新记录与中英组件页进入构建的 dead-link 校验面）。
 - 修复前后对照：修复前锁定用例在「点击背景后仍可见」处失败，修复后通过；对照用例证明同一坐标的点击路径有效。
+- 视觉面 CI 修复（本记录 §3「夹具位置」）：master 的 `Test` run `44300720119` 中 `Visual` job 失败，本地按同一夹具顺序复现出与 CI 逐项一致的差异像素数；将新增 section 追加到 `<main>` 末尾后本地 `pnpm test:visual` 48/48 通过，无需重冻结基线。
 
 ## 5. 残余
 

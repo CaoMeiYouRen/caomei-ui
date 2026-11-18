@@ -232,7 +232,7 @@
 
 ## 列宽调整与持久化
 
-`columnSizing`（受控，单位 `px`）覆盖列定义里的 `width`：正数生效，缺省或非正数回退到 `width`。列宽交互有两种用法：开启 `resizableColumns` 用组件内建的拖拽手柄 / 方向键 / 双击复位，或由使用方自建交互并回写本对象；持久化（如 localStorage）始终由使用方负责。
+`columnSizing`（受控，单位 `px`）覆盖列定义里的 `width`：正数生效，缺省或非正数回退到 `width`。列宽交互有两种用法：开启 `resizableColumns` 用组件内建的拖拽手柄 / 方向键 / 双击或 `Enter` / 空格复位，或由使用方自建交互并回写本对象；持久化（如 localStorage）始终由使用方负责。
 
 ```
 <CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
@@ -252,7 +252,9 @@
     ssg="true"
 />
 
-`resizableColumns` 在表头渲染拖拽手柄（默认关闭）：指针拖拽按像素回写 `columnSizing`，手柄可聚焦、方向键 ±8px、`Enter` / 空格或双击复位到列定义 `width`。受控用法经 `update:columnSizing` 回写（`v-model:column-sizing`）；未传 `columnSizing` 时写组件内部状态。冻结列的手柄随表头一起吸边；行展开列与选择列不渲染手柄。
+`resizableColumns` 在表头渲染拖拽手柄（默认关闭）：指针拖拽按像素回写 `columnSizing`，手柄可聚焦、方向键按 `columnResizeStep` 调整（默认 `8`）、`Enter` / 空格或双击复位到列定义 `width`。最小列宽由 `columnResizeMinWidth` 控制（默认 `48`，非正数或非有限值按默认值处理）；两个配置项仅在 `resizableColumns` 开启时生效。受控用法经 `update:columnSizing` 回写（`v-model:column-sizing`）；未传 `columnSizing` 时写组件内部状态。冻结列的手柄随表头一起吸边；行展开列与选择列不渲染手柄。
+
+`columnResizeEnd` 在调整结束时触发，载荷为 `{ key, width }`：键盘调整与指针拖拽结束都在**宽度确有变化**时触发；复位（双击或 `Enter` / 空格）在存在列宽覆盖值、且回退后宽度确有变化时触发。复位时的 `width` 是该列回退后的像素宽度（列定义未声明 `px` 宽度时取 `150` 估算值）；需要持久化时以列定义宽度为准，不要把复位值直接写回 `columnSizing`，否则会把自适应列固定为像素宽。
 
 
 <demo

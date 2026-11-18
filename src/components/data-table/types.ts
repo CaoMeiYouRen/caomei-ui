@@ -62,6 +62,26 @@ export interface DataTableSortEvent {
     multiSortMeta?: DataTableSortMeta[]
 }
 
+/**
+ * 列宽调整结束事件载荷：键盘调整与指针拖拽结束在宽度确有变化时触发；复位在存在列宽覆盖值、
+ * 且回退后宽度确有变化时触发（无净变化的按键 / 拖拽、没有覆盖值或回退宽度未变的复位都不触发）。
+ * `width` 为调整后的生效列宽（`px`）；复位时为该列回退后的像素宽度（列定义未声明 `px` 宽度时取估算值 `150`），
+ * 需要持久化时以列定义宽度为准，不要把复位值直接写回 `columnSizing`（会把自适应列固定为像素宽）
+ * @en Column resize end payload: keyboard adjustments and pointer-drag ends fire when the width
+ * actually changed; a reset fires when a width override exists and the fallback width differs
+ * (no-op key presses / drags, and resets with no override or no net width change, do not fire).
+ * `width` is the effective width after the change; on reset it is the column's fallback pixel width
+ * (`150` estimate when the definition declares no `px` width). When persisting, use the column
+ * definition width rather than writing the reset value back to `columnSizing`, which would pin an
+ * auto-width column to a fixed pixel width
+ */
+export interface DataTableColumnResizeEvent {
+    /** 调整的列 key */
+    key: string
+    /** 调整后的列宽（`px`） */
+    width: number
+}
+
 /** 分组展开 / 收起事件载荷（对齐 PrimeVue 的 `rowgroup-expand` / `rowgroup-collapse`） */
 export interface DataTableRowGroupEvent {
     /** 触发事件的原生事件 */
@@ -438,18 +458,31 @@ export interface DataTableProps<T> {
     columnOrder?: string[]
     /**
      * 列宽（受控，单位 `px`）：键为列 `key`，取值为正数像素宽；缺省或非法值回退到列定义的 `width`。
-     * 与列定义 `width` 冲突时**本项优先**；`resizableColumns` 开启时由组件内建的拖拽手柄 / 方向键 / 双击复位回写（受控用法经 `update:columnSizing`）
+     * 与列定义 `width` 冲突时**本项优先**；`resizableColumns` 开启时由组件内建的拖拽手柄 / 方向键 / 双击或 `Enter` / 空格复位回写（受控用法经 `update:columnSizing`）
      * @en Column widths (controlled, in `px`): keys are column `key`s and values are positive pixel
      * widths; missing or invalid values fall back to the column definition's `width`. It wins over the
      * definition `width` on conflict. It adds no interaction by itself; with `resizableColumns` the built-in
-     * handle, arrow keys and double-click reset write it back via `update:columnSizing`, otherwise implement
-     * dragging yourself and write this object back
+     * handle, arrow keys and double-click or `Enter` / Space reset write it back via `update:columnSizing`,
+     * otherwise implement dragging yourself and write this object back
      */
     columnSizing?: Record<string, number>
     /**
-     * 是否在表头提供列宽拖拽手柄（默认 false）：指针拖拽回写像素宽，方向键 ±8px，双击复位到列定义宽度
+     * 是否在表头提供列宽拖拽手柄（默认 false）：指针拖拽回写像素宽，方向键按 `columnResizeStep` 调整，双击或 `Enter` / 空格复位到列定义宽度
      * @en Whether the header shows a column resize handle (default false): pointer drag writes pixel widths,
-     * arrow keys step ±8px and double-click resets to the column definition width
+     * arrow keys step by `columnResizeStep` and double-click or `Enter` / Space resets to the column
+     * definition width
      */
     resizableColumns?: boolean
+    /**
+     * 列宽调整的最小列宽（`px`），默认 `48`；非正数或非有限值按默认值处理。仅在 `resizableColumns` 时生效
+     * @en Minimum column width for resizing (px), default `48`; non-positive or non-finite values fall
+     * back to the default. Only effective with `resizableColumns`
+     */
+    columnResizeMinWidth?: number
+    /**
+     * 键盘方向键的列宽调整步进（`px`），默认 `8`；非正数或非有限值按默认值处理。仅在 `resizableColumns` 时生效
+     * @en Column-resize step for arrow keys (px), default `8`; non-positive or non-finite values fall
+     * back to the default. Only effective with `resizableColumns`
+     */
+    columnResizeStep?: number
 }

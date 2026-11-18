@@ -352,6 +352,29 @@ const resizeColumns = [
 
 const resizeColumnSizing = ref<Record<string, number>>({ dept: 160, name: 140, score: 100 })
 
+/** 冻结列手柄吸边用例：首列 `frozen` + px 宽度之和撑出横向滚动 */
+const resizeFrozenColumns = [
+    { key: 'dept', header: '部门', width: '140px', frozen: 'left' as const },
+    { key: 'name', header: '姓名', width: '140px' },
+    { key: 'score', header: '评分', width: '120px' },
+    { key: 'note', header: '备注', width: '180px' },
+]
+
+const resizeFrozenSizing = ref<Record<string, number>>({})
+
+const resizeLog = ref('')
+
+function onResizeEnd(event: { key: string, width: number }): void {
+    resizeLog.value = `${event.key}:${event.width}`
+}
+
+const resizeFrozenData = [
+    { dept: '研发', name: '张三', score: 88, note: '长期有效' },
+    { dept: '研发', name: '李四', score: 92, note: '按季度复核' },
+    { dept: '设计', name: '王五', score: 75, note: '待确认' },
+    { dept: '设计', name: '赵六', score: 81, note: '已归档' },
+]
+
 const sortWidthData: SortWidthRow[] = [
     { dept: '研发', name: '张三', score: 88 },
     { dept: '研发', name: '李四', score: 92 },
@@ -1219,6 +1242,26 @@ const ConfirmDriver = defineComponent({
                 resizable-columns
                 caption="列宽拖拽"
             />
+        </section>
+
+        <!--
+          DataTable 冻结列手柄吸边与可配置步进 / 结束事件用例（见 `test/e2e/data-table-resize.e2e.ts`）：
+          首列冻结并声明 px 宽度，容器收窄到 20rem 迫使横向溢出；步进 20 / 最小列宽 120 覆盖可配置面，
+          `#data-table-resize-log` 承载 `columnResizeEnd` 的 `key:width` 观测值。
+        -->
+        <section id="panel-data-table-resize-frozen" class="fixture__case">
+            <CaomeiDataTable
+                v-model:column-sizing="resizeFrozenSizing"
+                :data="resizeFrozenData"
+                :columns="resizeFrozenColumns"
+                row-key="name"
+                resizable-columns
+                :column-resize-step="20"
+                :column-resize-min-width="120"
+                caption="冻结列宽拖拽"
+                @column-resize-end="onResizeEnd"
+            />
+            <output id="data-table-resize-log">{{ resizeLog }}</output>
         </section>
 
         <section id="data-table-sort-width" class="fixture__case">
@@ -2885,6 +2928,20 @@ const ConfirmDriver = defineComponent({
 */
 #data-table-keyboard-scroll :deep(.caomei-data-table__table) {
     min-width: 720px;
+}
+
+/*
+  冻结列手柄吸边用例：容器收窄到 20rem，配合声明 px 宽度的冻结列（宽度之和 580px）迫使根容器横向溢出；
+  `min()` 保证极窄档下不等于可用宽之外的溢出源（同 `.fixture__case` 的约定）。
+*/
+#panel-data-table-resize-frozen {
+    width: min(20rem, 100%);
+}
+
+#data-table-resize-log {
+    display: block;
+    margin-top: var(--caomei-space-2);
+    font-family: var(--caomei-font-mono, monospace);
 }
 
 /* 预设对比度矩阵的次要文字样本：颜色由 token 决定，不在这里写死 */

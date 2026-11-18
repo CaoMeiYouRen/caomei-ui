@@ -4,6 +4,7 @@ export type {
     DataTableCellContext,
     DataTableCellSlotProps,
     DataTableColumn,
+    DataTableColumnResizeEvent,
     DataTableExpansionSlotProps,
     DataTableHeaderSlotProps,
     DataTablePageEvent,

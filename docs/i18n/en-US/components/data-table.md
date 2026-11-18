@@ -232,7 +232,7 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
 
 ## Column sizing and persistence
 
-`columnSizing` (controlled, in `px`) overrides a column definition's `width`: positive values apply, while missing or non-positive values fall back to `width`. Column-width interaction has two options: enable `resizableColumns` for the built-in handle, arrow keys and double-click reset, or build your own interaction and write this object back; persistence (localStorage and the like) is always the consumer's job.
+`columnSizing` (controlled, in `px`) overrides a column definition's `width`: positive values apply, while missing or non-positive values fall back to `width`. Column-width interaction has two options: enable `resizableColumns` for the built-in handle, arrow keys and double-click or `Enter` / `Space` reset, or build your own interaction and write this object back; persistence (localStorage and the like) is always the consumer's job.
 
 ```
 <CaomeiDataTable :data="rows" :columns="columns" :column-sizing="sizing" />
@@ -252,7 +252,9 @@ Invalid identifiers never change the output: unknown column keys and duplicates 
     ssg="true"
 />
 
-`resizableColumns` renders a drag handle in the header (off by default): pointer drag writes pixel widths back to `columnSizing`, the handle is focusable, arrow keys step ±8px, and `Enter` / Space or double-click resets to the column definition `width`. Controlled usage writes back via `update:columnSizing` (`v-model:column-sizing`); without `columnSizing` the component keeps internal state. Handles on frozen columns stick with the header; expander and selection columns render no handle.
+`resizableColumns` renders a drag handle in the header (off by default): pointer drag writes pixel widths back to `columnSizing`, the handle is focusable, arrow keys step by `columnResizeStep` (default `8`), and `Enter` / Space or double-click resets to the column definition `width`. `columnResizeMinWidth` sets the minimum width (default `48`; non-positive or non-finite values fall back to the default); both settings apply only while `resizableColumns` is on. Controlled usage writes back via `update:columnSizing` (`v-model:column-sizing`); without `columnSizing` the component keeps internal state. Handles on frozen columns stick with the header; expander and selection columns render no handle.
+
+`columnResizeEnd` fires when an adjustment ends, with a `{ key, width }` payload: keyboard adjustments and pointer-drag ends fire when the width actually changed; a reset (double-click or `Enter` / Space) fires when a width override exists and the fallback width actually differs. On reset, `width` is the column's fallback pixel width (`150` estimate when the definition declares no `px` width); when persisting, use the column definition width rather than writing the reset value back to `columnSizing`, which would pin an auto-width column to a fixed pixel width.
 
 
 <demo

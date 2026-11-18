@@ -720,4 +720,118 @@ describe('CaomeiDataTable 列宽拖拽手柄', () => {
         await wrapper.find('.caomei-data-table__resizer').trigger('dblclick')
         expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{ age: 90 }])
     })
+
+    it('columnResizeStep / columnResizeMinWidth 可配置并夹取最小宽度', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                columnSizing: { name: 100 },
+                resizableColumns: true,
+                columnResizeStep: 20,
+                columnResizeMinWidth: 110,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        const handle = wrapper.find('.caomei-data-table__resizer')
+        expect(handle.attributes('aria-valuemin')).toBe('110')
+        // 声明宽度 100 低于最小列宽：ARIA 当前值按最小列宽夹取，保持 valuemin ≤ valuenow 的合法区间
+        expect(handle.attributes('aria-valuenow')).toBe('110')
+
+        await handle.trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{ name: 120 }])
+
+        // 100 → 按 20 递减会落到 80，被最小列宽 110 夹取
+        await handle.trigger('keydown', { key: 'ArrowLeft' })
+        expect(wrapper.emitted('update:columnSizing')?.[1]).toEqual([{ name: 110 }])
+    })
+
+    it('未受控时已在下限的递减不触发结束事件', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                resizableColumns: true,
+                columnResizeMinWidth: 150,
+            },
+        })
+
+        const handle = wrapper.find('.caomei-data-table__resizer')
+        // 无像素宽度的列按 150 估算，起点即等于最小列宽
+        await handle.trigger('keydown', { key: 'ArrowLeft' })
+        expect(wrapper.emitted('columnResizeEnd')).toBeUndefined()
+
+        await handle.trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.emitted('columnResizeEnd')?.[0]).toEqual([{ key: 'name', width: 158 }])
+    })
+
+    it('非法的最小列宽 / 步进回退默认值 48 / 8', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                columnSizing: { name: 160 },
+                resizableColumns: true,
+                columnResizeStep: 0,
+                columnResizeMinWidth: -10,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        const handle = wrapper.find('.caomei-data-table__resizer')
+        expect(handle.attributes('aria-valuemin')).toBe('48')
+
+        await handle.trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{ name: 168 }])
+    })
+
+    it('columnResizeEnd 在键盘调整、复位与拖拽结束时触发', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                columnSizing: { name: 160 },
+                resizableColumns: true,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        const handle = wrapper.find('.caomei-data-table__resizer')
+
+        await handle.trigger('keydown', { key: 'ArrowRight' })
+        expect(wrapper.emitted('columnResizeEnd')?.[0]).toEqual([{ key: 'name', width: 168 }])
+
+        // 单击手柄（无位移）不触发结束事件
+        await handle.trigger('pointerdown', { button: 0, clientX: 100 })
+        window.dispatchEvent(new MouseEvent('pointerup', { clientX: 100 }))
+        expect(wrapper.emitted('columnResizeEnd')).toHaveLength(1)
+
+        // 指针拖拽：+40px 后松开
+        await handle.trigger('pointerdown', { button: 0, clientX: 100 })
+        window.dispatchEvent(new MouseEvent('pointermove', { clientX: 140 }))
+        window.dispatchEvent(new MouseEvent('pointerup', { clientX: 140 }))
+        expect(wrapper.emitted('columnResizeEnd')?.[1]).toEqual([{ key: 'name', width: 200 }])
+
+        // 双击复位：列定义未声明像素宽度，回退到估算值 150
+        await handle.trigger('dblclick')
+        expect(wrapper.emitted('columnResizeEnd')?.[2]).toEqual([{ key: 'name', width: 150 }])
+    })
+
+    it('复位后宽度未变化时不触发结束事件', async () => {
+        const wrapper = mount(DataTable, {
+            props: {
+                data: baseData,
+                columns: baseColumns,
+                // 覆盖值与列定义估算宽度一致（150），复位不改变宽度
+                columnSizing: { name: 150 },
+                resizableColumns: true,
+                'onUpdate:columnSizing': vi.fn(),
+            },
+        })
+
+        await wrapper.find('.caomei-data-table__resizer').trigger('dblclick')
+        expect(wrapper.emitted('update:columnSizing')?.[0]).toEqual([{}])
+        expect(wrapper.emitted('columnResizeEnd')).toBeUndefined()
+    })
 })

@@ -8,7 +8,7 @@ import { CaomeiCheckbox } from '../checkbox'
 import { CaomeiPaginator } from '../paginator'
 import { CaomeiTooltipText } from '../tooltip'
 import { dataTableFeatures } from './table-features'
-import type { DataTableCellSlotProps, DataTableColumn, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent, DataTableSortMeta } from './types'
+import type { DataTableCellSlotProps, DataTableColumn, DataTableColumnResizeEvent, DataTableExpansionSlotProps, DataTableHeaderSlotProps, DataTablePageEvent, DataTableProps, DataTableRowExpandEvent, DataTableRowGroupEvent, DataTableRowGroupSlotProps, DataTableSortEvent, DataTableSortMeta } from './types'
 
 defineOptions({ name: 'CaomeiDataTable' })
 
@@ -16,6 +16,8 @@ const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DataTableProps<T>>(), {
     resizableColumns: false,
+    columnResizeMinWidth: 48,
+    columnResizeStep: 8,
     rowKey: undefined,
     caption: '',
     hoverable: true,
@@ -48,6 +50,7 @@ const emit = defineEmits<{
     rowgroupCollapse: [event: DataTableRowGroupEvent]
     'update:expandedRows': [expandedRows: string[]]
     'update:columnSizing': [columnSizing: Record<string, number>]
+    columnResizeEnd: [event: DataTableColumnResizeEvent]
     rowExpand: [event: DataTableRowExpandEvent<T>]
     rowCollapse: [event: DataTableRowExpandEvent<T>]
     'update:multiSortMeta': [multiSortMeta: DataTableSortMeta[]]
@@ -128,8 +131,28 @@ const sizingOverrides = computed(() => {
     return result
 })
 
-/** 列宽拖拽 / 键盘调整的步进（px） */
-const RESIZE_STEP = 8
+/** 列宽拖拽 / 键盘调整的默认步进（px），可由 `columnResizeStep` 覆盖 */
+const DEFAULT_RESIZE_STEP = 8
+
+/** 默认最小列宽（px），可由 `columnResizeMinWidth` 覆盖 */
+const DEFAULT_RESIZE_MIN_WIDTH = 48
+
+/** 生效的最小列宽：非正数 / 非有限值回退默认 */
+const resizeMinWidth = computed(() => {
+    const value = props.columnResizeMinWidth
+    return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : DEFAULT_RESIZE_MIN_WIDTH
+})
+
+/** 生效的调整步进：非正数 / 非有限值回退默认 */
+const resizeStep = computed(() => {
+    const value = props.columnResizeStep
+    return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : DEFAULT_RESIZE_STEP
+})
+
+/** 手柄的 ARIA 当前值：按最小列宽夹取，保证 `valuemin ≤ valuenow` 的合法区间 */
+function resizeHandleValue(key: string): number {
+    return Math.max(resizeMinWidth.value, currentColumnWidth(key))
+}
 
 /** 当前列宽：与渲染同源（受控 / 内部值 → 列定义 `px` → 估算），避免 tanstack 默认 `size` 失真 */
 function currentColumnWidth(key: string): number {
@@ -145,34 +168,62 @@ function writeColumnWidth(next: Record<string, number>): void {
     internalSizing.value = next
 }
 
-function setColumnWidth(key: string, width: number): void {
-    writeColumnWidth({ ...effectiveSizing.value, [key]: Math.max(48, Math.round(width)) })
+/** 应用列宽并返回实际生效值（按最小列宽夹取） */
+function setColumnWidth(key: string, width: number): number {
+    const applied = Math.max(resizeMinWidth.value, Math.round(width))
+    writeColumnWidth({ ...effectiveSizing.value, [key]: applied })
+    return applied
 }
 
-/** 双击复位：从生效列宽中移除该列，回退到列定义 `width` */
+/** 调整列宽并在宽度确有变化时抛出结束事件（无净变化的按键 / 拖拽不产生事件） */
+function resizeColumn(key: string, width: number): number {
+    const previous = currentColumnWidth(key)
+    const applied = setColumnWidth(key, width)
+    if (applied !== previous) {
+        emit('columnResizeEnd', { key, width: applied })
+    }
+    return applied
+}
+
+/** 复位：去掉该列覆盖值并回退到列定义 `width`；存在覆盖值且宽度确有变化时抛出结束事件 */
 function resetColumnWidth(key: string): void {
     if (!(key in effectiveSizing.value)) {
         return
     }
+    const previous = currentColumnWidth(key)
     const next = { ...effectiveSizing.value }
     delete next[key]
     writeColumnWidth(next)
+    const width = definitionColumnWidth(key)
+    if (width !== previous) {
+        emit('columnResizeEnd', { key, width })
+    }
 }
 
-let resizeState: { key: string, startX: number, startWidth: number } | null = null
+let resizeState: { key: string, startX: number, startWidth: number, width: number } | null = null
 
 function onResizeMove(event: PointerEvent): void {
     if (!resizeState) {
         return
     }
-    setColumnWidth(resizeState.key, resizeState.startWidth + (event.clientX - resizeState.startX))
+    resizeState.width = setColumnWidth(resizeState.key, resizeState.startWidth + (event.clientX - resizeState.startX))
 }
 
-function stopResize(): void {
+/** 只移除拖拽监听与状态，不带业务副作用（卸载路径复用） */
+function detachResizeListeners(): void {
     resizeState = null
     window.removeEventListener('pointermove', onResizeMove)
     window.removeEventListener('pointerup', stopResize)
     window.removeEventListener('pointercancel', stopResize)
+}
+
+function stopResize(): void {
+    const state = resizeState
+    detachResizeListeners()
+    // 拖拽未改变宽度（例如只是点击手柄）不视为调整结束事件
+    if (state && state.width !== state.startWidth) {
+        emit('columnResizeEnd', { key: state.key, width: state.width })
+    }
 }
 
 function startResize(event: PointerEvent, key: string): void {
@@ -181,19 +232,19 @@ function startResize(event: PointerEvent, key: string): void {
     }
     event.preventDefault()
     event.stopPropagation()
-    resizeState = { key, startX: event.clientX, startWidth: currentColumnWidth(key) }
+    resizeState = { key, startX: event.clientX, startWidth: currentColumnWidth(key), width: currentColumnWidth(key) }
     window.addEventListener('pointermove', onResizeMove)
     window.addEventListener('pointerup', stopResize)
     window.addEventListener('pointercancel', stopResize)
 }
 
-onBeforeUnmount(stopResize)
+onBeforeUnmount(detachResizeListeners)
 
 function onResizeKeydown(event: KeyboardEvent, key: string): void {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault()
-        const delta = event.key === 'ArrowLeft' ? -RESIZE_STEP : RESIZE_STEP
-        setColumnWidth(key, currentColumnWidth(key) + delta)
+        const delta = event.key === 'ArrowLeft' ? -resizeStep.value : resizeStep.value
+        resizeColumn(key, currentColumnWidth(key) + delta)
         return
     }
     if (event.key === 'Enter' || event.key === ' ') {
@@ -858,17 +909,22 @@ function resolvedColumnWidth(key: string): string | undefined {
     return sized === undefined ? columnMap.value.get(key)?.width : `${sized}px`
 }
 
-function columnWidth(key: string): number {
-    const sized = sizingOverrides.value.get(key)
-    if (sized !== undefined) {
-        return sized
-    }
+/** 列定义宽度（`px`）：非 px 或缺失按估算值，供复位与无覆盖时回退 */
+function definitionColumnWidth(key: string): number {
     const width = columnMap.value.get(key)?.width
     if (!width?.endsWith('px')) {
         return DEFAULT_PINNED_WIDTH
     }
     const parsed = Number.parseFloat(width)
     return Number.isFinite(parsed) ? parsed : DEFAULT_PINNED_WIDTH
+}
+
+function columnWidth(key: string): number {
+    const sized = sizingOverrides.value.get(key)
+    if (sized !== undefined) {
+        return sized
+    }
+    return definitionColumnWidth(key)
 }
 
 function pinnedStyle(key: string): CSSProperties | undefined {
@@ -1304,9 +1360,9 @@ function setPageSize(rows: number): void {
                             role="separator"
                             aria-orientation="vertical"
                             :aria-label="`调整「${headerTitle(header.column.id)}」列宽`"
-                            aria-valuemin="48"
+                            :aria-valuemin="resizeMinWidth"
                             aria-valuemax="2000"
-                            :aria-valuenow="currentColumnWidth(header.column.id)"
+                            :aria-valuenow="resizeHandleValue(header.column.id)"
                             tabindex="0"
                             @pointerdown="startResize($event, header.column.id)"
                             @keydown="onResizeKeydown($event, header.column.id)"

@@ -61,6 +61,7 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
+| 国际化支持与翻译状态表 | 用户需求（2026-11-18）：`docs/components/locale.md` 中英双页已有语言清单与子路径表，但无「支持语言 + 翻译状态」总表；README 特性节也未提语言支持。拟议列、数据源（`check:locale-keys` / `check:locale-ledger` / 复核记录）与落地口径见[调研记录 §3.5](../design/governance/2026-11-18-i18n-component-and-mobile-research.md)；README 只补一行回链，不复制表格。**触发条件 = 下一次文档批次** | 中 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |

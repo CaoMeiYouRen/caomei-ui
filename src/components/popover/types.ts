@@ -76,9 +76,15 @@ export interface PopoverContentProps {
      */
     avoidCollisions?: boolean
     /**
-     * 禁用外部指针事件（模态交互）
+     * 锁定背景：面板外的点击 / 聚焦不再关闭浮层，`Escape`、触发器切换与面板内关闭按钮不受影响。
+     * 关闭该配置后恢复既有行为（外部点击 / 聚焦照旧关闭）。打开态的背景隔离不依赖本开关。
+     * 非模态 Popover 上游会忽略该配置，本组件补齐语义
      * @default false
-     * @en Disable outside pointer events (modal interaction)
+     * @en Lock the background: pointer clicks and focus moves outside the panel no longer close it,
+     * while `Escape`, toggling the trigger and the in-panel close button are unaffected. Turning the
+     * flag off restores the existing behavior (outside clicks and focus close it again). Background
+     * isolation while open does not depend on this flag. Upstream ignores the flag on non-modal
+     * popovers; this component fills the semantics in
      */
     disableOutsidePointerEvents?: boolean
 }

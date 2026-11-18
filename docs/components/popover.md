@@ -4,7 +4,7 @@
 
 ## 基础用法
 
-`CaomeiPopover` 通过 `v-model:open` 控制开合（默认非受控）；点击触发器开合，按 Esc 或点击面板外部关闭。
+`CaomeiPopover` 通过 `v-model:open` 控制开合（默认非受控）；点击触发器开合，按 Esc 或点击面板外部关闭（`disableOutsidePointerEvents` 开启时外部点击 / 聚焦不关闭，见「组合件 API」节）。
 
 > `class` / `style` 请落在触发器或内容上；根容器不渲染 DOM，其上的其余属性不会生效。
 
@@ -46,7 +46,7 @@
 
 - 触发器为原生 `<button>`，输出 `aria-haspopup="dialog"`、`aria-expanded` 与 `aria-controls`。
 - 面板为 `role="dialog"`，并通过 `aria-labelledby` 固定关联触发器的可访问名；可用 `aria-label` 覆盖面板名称（`aria-labelledby` 由组件接管，传入不会生效）。
-- 打开后将焦点移入面板：存在可聚焦元素时聚焦首个元素，否则聚焦面板容器（`tabindex="-1"`）；关闭后焦点回到触发器；非模态下按 Esc 或点击外部关闭。
+- 打开后将焦点移入面板：存在可聚焦元素时聚焦首个元素，否则聚焦面板容器（`tabindex="-1"`）；关闭后焦点回到触发器；非模态下按 Esc 或点击外部关闭（`disableOutsidePointerEvents` 开启时外部点击 / 聚焦不关闭）。
 - 面板挂载于 body（Portal），层级高于表单类浮层。
 
 ## 样式定制
@@ -89,6 +89,8 @@
 | `CaomeiPopoverContent` | `side`、`sideOffset`、`align`、`alignOffset`、`avoidCollisions`、`forceMount`、`disableOutsidePointerEvents` | 浮层面板，经 Portal 挂载 |
 | `CaomeiPopoverArrow` | `width`、`height` | 指向触发器的箭头 |
 | `CaomeiPopoverClose` | `label` | 点击关闭的按钮 |
+
+`disableOutsidePointerEvents` 开启后，面板外的点击 / 聚焦不再关闭浮层，`Escape` 与触发器切换仍可关闭；关闭该配置后恢复既有口径（外部点击 / 聚焦照旧关闭）。打开态背景隔离（`inert` + `aria-hidden`，Tab 不进入背景）与本节开关无关，见「无障碍」节。
 
 ## 从 PrimeVue 迁移
 

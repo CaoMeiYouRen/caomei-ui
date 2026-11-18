@@ -1035,6 +1035,34 @@ const ConfirmDriver = defineComponent({
         </section>
 
         <!--
+          页面级浮层隔离用例（见 `test/e2e/overlay-panel-isolation.e2e.ts`）：DropdownMenu 与 Popover
+          打开后都应把背景补 `inert` 与 `aria-hidden`；`disable-outside-pointer-events` 的 Popover 用于
+          「锁定背景」判定（两类浮层的模态性与 Tab 行为口径见交付记录 §3）。背景断言面取 `#wrap-toolbar`。
+        -->
+        <section id="panel-dropdown-menu-isolation" class="fixture__case">
+            <CaomeiDropdownMenu>
+                <CaomeiDropdownMenuTrigger>更多操作</CaomeiDropdownMenuTrigger>
+                <CaomeiDropdownMenuContent :model="overlayMenuItems" />
+            </CaomeiDropdownMenu>
+        </section>
+
+        <section id="panel-popover-isolation" class="fixture__case">
+            <CaomeiPopover>
+                <CaomeiPopoverTrigger>页面提示</CaomeiPopoverTrigger>
+                <CaomeiPopoverContent>页面级浮层，Tab 不应进入背景。</CaomeiPopoverContent>
+            </CaomeiPopover>
+        </section>
+
+        <section id="panel-popover-pointer-isolation" class="fixture__case">
+            <CaomeiPopover>
+                <CaomeiPopoverTrigger>锁定背景</CaomeiPopoverTrigger>
+                <CaomeiPopoverContent :disable-outside-pointer-events="true">
+                    锁定背景的页面级浮层。
+                </CaomeiPopoverContent>
+            </CaomeiPopover>
+        </section>
+
+        <!--
           导航骨架用例（见 `test/e2e/menu-navigation.e2e.ts`）：纵向菜单 = 两个顶层项 + 一个含两项的
           子菜单，用于回归方向键导航与子菜单开合；`current` 项用于回归 `aria-current`。
         -->

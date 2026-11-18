@@ -114,6 +114,55 @@ describe('CaomeiPopover 打开态隔离', () => {
     })
 })
 
+describe('CaomeiPopover 锁定背景', () => {
+    /** Reka 在 `setTimeout(0)` 之后才注册文档级 `pointerdown` 监听，等一轮宏任务再派发事件 */
+    const flushMacroTask = () => new Promise((resolve) => {
+        setTimeout(resolve, 0)
+    })
+
+    async function openAndDispatchOutside(contentProps: Record<string, unknown>, rootProps: Record<string, unknown> = {}) {
+        const wrapper = mountPopover(rootProps, contentProps)
+
+        ;(getTrigger() as HTMLElement).click()
+        await nextTick()
+        await nextTick()
+        await flushMacroTask()
+        // 前置：派发前后续断言都以「确实已展开」为基线，避免未打开时空转通过
+        expect(getContent(), '派发前面板应已展开').not.toBeNull()
+
+        document.body.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
+        await flushMacroTask()
+        await nextTick()
+        await nextTick()
+        await nextTick()
+        return wrapper
+    }
+
+    it('disableOutsidePointerEvents 时外部点击不关闭面板', async () => {
+        const wrapper = await openAndDispatchOutside({ disableOutsidePointerEvents: true })
+
+        expect(getContent(), '外部点击不得关闭锁定背景的面板').not.toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('未开启时外部点击照旧关闭面板', async () => {
+        const wrapper = await openAndDispatchOutside({})
+
+        expect(getContent(), '默认行为仍是外部点击关闭').toBeNull()
+
+        wrapper.unmount()
+    })
+
+    it('模态 Popover 开启该配置时同样不因外部点击关闭', async () => {
+        const wrapper = await openAndDispatchOutside({ disableOutsidePointerEvents: true }, { modal: true })
+
+        expect(getContent(), '模态分支的锁定语义与文档一致').not.toBeNull()
+
+        wrapper.unmount()
+    })
+})
+
 describe('CaomeiPopover', () => {
     it('默认关闭时仅渲染触发器并输出折叠语义', () => {
         const wrapper = mountPopover()

@@ -4,7 +4,7 @@ A popover holds temporary content tied to a trigger element (explanations, forms
 
 ## Basic usage
 
-`CaomeiPopover` controls open state via `v-model:open` (uncontrolled by default); click the trigger to toggle, and press Esc or click outside the panel to close.
+`CaomeiPopover` controls open state via `v-model:open` (uncontrolled by default); click the trigger to toggle, and press Esc or click outside the panel to close (with `disableOutsidePointerEvents` on, outside clicks and focus do not close it — see the Composite component API section).
 
 > Put `class` / `style` on the trigger or the content; the root container renders no DOM, so other attributes on it have no effect.
 
@@ -46,7 +46,7 @@ A popover holds temporary content tied to a trigger element (explanations, forms
 
 - The trigger is a native `<button>` outputting `aria-haspopup="dialog"`, `aria-expanded` and `aria-controls`.
 - The panel is `role="dialog"`, permanently associated with the trigger's accessible name via `aria-labelledby`; `aria-label` can override the panel name (`aria-labelledby` is managed by the component, so passing it has no effect).
-- Focus moves into the panel on open: the first focusable element is focused when one exists, otherwise the panel container (`tabindex="-1"`); on close focus returns to the trigger; in non-modal mode, Esc or an outside click closes it.
+- Focus moves into the panel on open: the first focusable element is focused when one exists, otherwise the panel container (`tabindex="-1"`); on close focus returns to the trigger; in non-modal mode, Esc or an outside click closes it (with `disableOutsidePointerEvents` on, outside clicks and focus do not close it).
 - The panel is mounted on body (Portal) and stacks above form-type overlays.
 
 ## Style customization
@@ -89,6 +89,8 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `CaomeiPopoverContent` | `side`, `sideOffset`, `align`, `alignOffset`, `avoidCollisions`, `forceMount`, `disableOutsidePointerEvents` | Popover panel, mounted via Portal |
 | `CaomeiPopoverArrow` | `width`, `height` | Arrow pointing at the trigger |
 | `CaomeiPopoverClose` | `label` | Button that closes on click |
+
+With `disableOutsidePointerEvents` on, pointer clicks and focus moves outside the panel no longer close it, while `Escape` and toggling the trigger still close it; turning the flag off restores the existing behavior (outside clicks and focus close it again). Background isolation while open (`inert` + `aria-hidden`, so Tab does not enter the background) does not depend on this flag; see the Accessibility section.
 
 ## Migration from PrimeVue
 

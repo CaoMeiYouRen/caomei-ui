@@ -12,7 +12,7 @@ const triggerRef = inject(triggerElementKey, null)
 
 const { release, sync } = useOpenStateIsolation(contentRef, () => [triggerRef?.value])
 
-withDefaults(defineProps<PopoverContentProps>(), {
+const props = withDefaults(defineProps<PopoverContentProps>(), {
     side: 'bottom',
     sideOffset: 8,
     align: 'center',
@@ -21,6 +21,17 @@ withDefaults(defineProps<PopoverContentProps>(), {
     avoidCollisions: true,
     disableOutsidePointerEvents: false,
 })
+
+/**
+ * 锁定背景：Reka 的非模态 Popover 固定把 `disableOutsidePointerEvents` 置为 `false`
+ * （面板外仍会触发 `pointerdown` / 聚焦并关闭），开启本配置时在此阻止外部关闭，
+ * 使「背景交互不关闭浮层」的语义成立；`Escape` 与触发器切换不受影响。
+ */
+function onOutsideDismiss(event: Event): void {
+    if (props.disableOutsidePointerEvents) {
+        event.preventDefault()
+    }
+}
 </script>
 
 <template>
@@ -38,6 +49,8 @@ withDefaults(defineProps<PopoverContentProps>(), {
             class="caomei-popover__content"
             @open-auto-focus="sync"
             @close-auto-focus="release"
+            @pointer-down-outside="onOutsideDismiss"
+            @focus-outside="onOutsideDismiss"
         >
             <slot />
         </PopoverContent>

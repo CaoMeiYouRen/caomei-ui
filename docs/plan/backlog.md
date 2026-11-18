@@ -35,8 +35,13 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|--------|
-| 语言矩阵 - 长期 | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。**触发条件 = 语言集扩容决策**（如新增二期语言或 RTL 立项） | 低 |
-| RTL（阿拉伯语）支持 | 用户需求 | 风险高，单独立项谨慎评估 | 低 |
+| 语言矩阵 - 二期 LTR | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.2 建议把「下限」表述为 **17 门 LTR**（现有 10 门 + 二期 7 门），`hi` 视下游补到 18。**触发条件 = 用户裁定语言集扩容** | 低 |
+| 语言矩阵 - 长期 | 用户需求 | 二期之后是否继续扩容，按下游语言需求逐项判定，不追头部 43 ~ 72 门。**触发条件 = 出现新的下游语言需求** | 低 |
+| DatePicker / Calendar 默认 locale 跟随 ConfigProvider | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 组件 `locale` prop 默认 `zh-CN`、与注入语言独立；改为缺省消费 `useLocaleCode()`，显式 prop 仍优先。**影响面**：月份 / 星期 / 一周起始日 / 12–24 小时制默认值。**触发条件 = 用户裁定纳入阶段** | 中 |
+| InputNumber 数字本地化 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 向 Reka `NumberFieldRoot` 透传 `locale`；同批收 `Paginator` 的每页条数与页码（现用 `String(value)`）。**触发条件 = 用户裁定纳入阶段** | 中 |
+| 可访问名文案补口 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | `DataTable` 列宽手柄（`调整「…」列宽`）与 `FileUpload` 移除文件（`移除 …`）为硬编码中文；补 `table` / `fileUpload` 键并纳入 10 语与台账。**触发条件 = 用户裁定纳入阶段** | 中 |
+| 复数与插值能力 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 现插值仅单键 `replace`；新增带计数文案在 `ru` / `pl` 上会出错。**触发条件 = 出现第一条带计数的内建文案** | 低 |
+| RTL（阿拉伯语）支持 | 用户需求 | **2026-11-18 用户裁定**：成本大收益低，**不随二期语言批量落地**，须单独立项评估（`dir` 贯通 / 18 个组件文件的物理方向属性 / 图标镜像 / RTL 回归基线）；RTL 语种不计入语言数量下限。**触发条件 = RTL 专项立项或出现 RTL 语种下游需求** | 低 |
 
 ### 1.5 移动端与响应式候选
 
@@ -44,6 +49,12 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
+| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**先评估**（形态 / 与既有选择器的边界 / 成本），通过后再登记阶段。**触发条件 = 用户裁定启动评估** | 中 |
+| ActionSheet 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 底部操作表；现可由 `Drawer position="bottom"` + 列表拼装，缺一等语义（操作项分组 / 取消项 / 焦点回退契约）。**触发条件 = 用户裁定启动评估** | 中 |
+| Cell / CellGroup 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 移动端列表行语义（标题 / 描述 / 右值 / 跳转）；`DataView layout="list"` 是布局而非行语义。**触发条件 = 用户裁定启动评估** | 中 |
+| SafeArea / Sticky 工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `src` 内 0 处 `env(safe-area-inset-*)`；`position: sticky` 仅 DataTable 表头。可先以 token / 工具类 + 文档配方承接，**零组件成本**。**触发条件 = 移动端适配指南批次** | 中 |
+| NavBar / Tabbar 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 路由级移动导航；现无等价件（`Toolbar` / `Tabs` / `Menu` 拼装不出 tabbar 语义）。**触发条件 = 下游出现真实路由级移动导航用例** | 低 |
+| 移动端适配指南补强 | 用户需求（2026-11-18） | 把 bottom sheet / 安全区 / 吸顶 / 固定底部操作条 / 软键盘可见性写成配方与判据（[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 五条下限判据可直接复用）。**触发条件 = 下一次文档批次** | 中 |
 
 ### 1.6 基建与治理候选
 
@@ -83,6 +94,37 @@
 ### 1.10 动效体系候选
 
 > 来源：用户 2026-11-08 需求「增强组件动画效果，新增以动画优先的动效模式；极简仍只保留必要动画；按反馈与浮层 → 导航与操作 → 表单输入 → 基础与布局 → 选择器 → 数据展示推进；截图不足须设计测试与人工复核」。**评估记录已落盘（2026-11-08，零实现），已通过 Review Gate（R3，仅评估记录）**；结论、现状盘点与候选映射见[动效体系与新动效轴评估](../design/governance/2026-11-08-motion-system-evaluation.md) §1 / §2 / §3 / §8；**A1 / A2 / A3 / A8 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2）；**A4 / A5 / A6 已于 2026-11-10 登记 Phase 30**（见[Phase 30 登记批次记录](../design/governance/2026-11-10-phase30-registration.md) §2）；**A7 已于 2026-11-12 登记 Phase 31**（见[Phase 31 登记批次记录](../design/governance/2026-11-12-phase31-registration.md) §2）。**本组暂无在册候选。**
+
+### 1.11 高级组件候选（管理端与效率向）
+
+> 来源：[国际化、组件缺口与移动端调研](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §4（2026-11-18）。用户裁定「组件缺口后续列入计划完善」——本组只登记候选，**不立即启动、不分配阶段编号**。Reka 2.11.0 实测已导出对应 primitive（§4.1），封装成本主要在样式与文档。
+
+| 候选 | 依据 | 优先级 |
+|------|------|:-:|
+| InputOtp（验证码输入） | 记录 **P0**；Reka `PinInputRoot` 现成；Element Plus `input-otp` / PrimeVue `inputotp` / Varlet `otp-input`（Vant / TDesign 无独立件） | 中 |
+| Popconfirm | 记录 **P0**；Element Plus / TDesign `popconfirm`、PrimeVue `confirmpopup`；比 `ConfirmDialog` 轻、不打断上下文 | 中 |
+| Empty | 记录 **P0**；Element Plus / TDesign / Vant `empty`；本库只有 `DataView` 空态与表格空文案 | 中 |
+| Result | 记录 **P0**；Element Plus / Varlet `result`；结果页（成功 / 失败 / 无权限） | 中 |
+| Descriptions | 记录 **P0**；Element Plus / TDesign `descriptions`，PrimeVue 以 `fieldset` 近似；详情页键值布局（响应式列数） | 中 |
+| Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
+| Transfer | 记录 **P1**；Element Plus / TDesign，PrimeVue 为 `picklist`；Vant / Varlet 无；权限分配与批量选择 | 中 |
+| Form 校验能力 | 记录 **P1**；Element Plus / TDesign / Vant / Varlet 以 `form` 目录承载 rules 引擎，PrimeVue 为独立 `@primevue/forms`；本库 `Form` 明确无 rules；可先以 `FormRoot` + `Field*` 接 invalid / 错误文案，不承诺与五库 API 对齐 | 中 |
+| Cascader | 记录 **P1**；Element Plus / PrimeVue `cascadeselect` / TDesign / Vant（Varlet 无） | 低 |
+| Timeline | 记录 **P1**；Element Plus / PrimeVue / TDesign | 低 |
+| MonthPicker / YearPicker | 记录 **P2**；作为 `DatePicker` 的 `selectionMode` 扩展；Reka 现成 | 低 |
+| Statistic | 记录 **P2**；Element Plus / TDesign，Varlet 为 `count-to`（近似） | 低 |
+| Countdown | 记录 **P2**；Element Plus / Vant / Varlet | 低 |
+| Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 低 |
+| Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 低 |
+| Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 低 |
+| Splitter | 记录 **P2**；Element Plus / PrimeVue；Reka `SplitterGroup` 现成 | 低 |
+| Anchor | 记录 **P2**；Element Plus / TDesign；PrimeVue 无独立件（`animateonscroll` 为滚动动画指令） | 低 |
+| QRCode | 记录 **P2**；仅 TDesign 有独立件，按下游需求再定 | 低 |
+| ContextMenu / HoverCard / Menubar / NavigationMenu | 记录 **P2**；Reka 原语现成；PrimeVue 有 `contextmenu` / `menubar`；Varlet 仅有 `hover`，无 ContextMenu / Menubar | 低 |
+
+- **不建议纳入**：App Shell（`container` / `aside` / `header`）与 `Overlay` / `Fab` / `List`（结论见 §3）；业务件（`address-*` / `coupon-*` / `contact-*`）与 `TreeTable` / `Knob` / `OrganizationChart`（见 [组件设计 §6](../design/components.md)）。
+- **Sticky / SafeArea**：工具形态登记在 §1.5，本表不重复；`Sticky` 若最终按组件实现，再从 §1.5 迁入。
+- **文档同步项**：已同批修正 [组件设计 §5](../design/components.md) 的 primitive 清单（补 `FormRoot` / `Field*`、`MonthPicker` / `YearPicker`、`Splitter`、`TreeVirtualizer`、`TagGroup`、`Listbox`），并把候选决策回链本表。
 
 ## 2. 维护约定
 

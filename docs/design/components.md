@@ -86,7 +86,7 @@
 | Drawer | 封装 Dialog 派生（四向定位 + 滑入动画） | Dialog（Reka `Drawer` 为 Vaul 形态、不负责面板定位，未采用） | 稳定 | 四向 `position`（默认 `left`）；见 [设计规范 §7](./design-spec.md)（**已实现**） |
 | DatePicker / Calendar | 封装 | DatePicker / Calendar / DateField / RangeCalendar | Alpha | 日期类整体 Alpha（**已实现**；范围选择零用量未实现，见 [设计规范 §7](./design-spec.md)） |
 | ColorPicker | 封装（组合 ColorArea / ColorSlider / ColorField；色板自建单选组） | Color 系列 | Alpha | 组合 color primitive，色板不用 `ColorSwatchPicker`（见 [设计规范 §7](./design-spec.md)）（**已实现**） |
-| InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
+| InputGroup / FloatLabel | 自建 | 无 | — | Reka 2.10.4 无通用表单字段包装（Field / Form），仅 Label 与各类型 `*Field`（**注**：2.11.0 已提供 `FormRoot` / `Field*`，见 §5 末段）；`InputGroup` 负责成员边框 / 圆角拼接，`FloatLabel` 提供 `over` / `in` 两态（**已实现**） |
 | Form / FormItem | 自建（组合层） | 无 | — | 表单布局与提交编排；`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-*` / `invalid`，不含 rules 引擎（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
@@ -102,7 +102,7 @@
 | Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可作为后续候选按需封装：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Tree（Tree 为 Alpha）。
+Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Tree（Alpha）、Form / Field（校验与字段 ARIA）、MonthPicker / YearPicker、Splitter、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
 
 ## 6. 不自研
 

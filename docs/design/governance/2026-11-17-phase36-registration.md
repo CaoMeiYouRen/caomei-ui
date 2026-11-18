@@ -65,7 +65,7 @@
 | 列宽拖拽 | 冻结列偏移、行展开列宽、选择列命中区 | 与 M2-1 同批做几何与键盘回归；视觉基线重冻结 |
 | 虚拟滚动评估 | 结论可能「不做」 | 评估记录写触发条件，不预设结论 |
 | 空串过滤面 | `CaomeiSelectButton`（ToggleGroup）允许 `''` 作真实值，同口径套用会破坏既有行为 | 过滤只在 Select / MultiSelect / AutoComplete 三处 Reka 绑定层落地（前两者改既有丢弃分支、后者新增边界）；补 `SelectButton` 反例用例锁住差异 |
-| 插队范围 | 诊断修复易被扩张为 opt-in 能力（`hasValue` / `data-filled` / `showClear` 连带变更） | §1 M4 非目标与 [Backlog](../../plan/backlog.md) P1 候选分栏；本阶段只改失败方式 |
+| 插队范围 | 诊断修复易被扩张为 opt-in 能力（`hasValue` / `data-filled` / `showClear` 连带变更） | §1 M4 非目标；opt-in 已登记 [Phase 37 M2](./2026-11-18-phase37-registration.md)（原 Backlog 候选已迁出）；本阶段只改失败方式 |
 | 发布 | 本阶段不发布（D3） | 不触发 Release；`latest` 维持 `1.3.0` |
 
 ## 6. Review Gate

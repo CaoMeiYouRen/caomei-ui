@@ -16,8 +16,7 @@
 
 | 候选 | 来源 | 说明 | 优先级 |
 |------|------|------|:-:|
-| Rating 半星以外的评分形态 / 表单集成 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无表单字段集成与自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）或与 `CaomeiForm` 的字段契约需求 | 低 |
-| Select 家族空串选项值可配置支持（opt-in） | [空串选项值调研](../design/governance/2026-11-17-select-empty-option-value-evaluation.md) §5.2 | 现契约拒绝 `''` 作选项值（M4-1 交付后为开发期告警并丢弃；当前为面板渲染即抛上游断言），下游的「全部 / 不限 / 默认」只能自造哨兵（caomei-auth `__browser__`、momei `__all__` / `__never__`）。候选形态：`allowEmptyValue`（默认 `false`）或 Element Plus 式 `emptyValues`；内部以私有 token 承载 `''`、对外原样回显。**连带须一并裁定** `hasValue` / `data-filled` / `showClear` 在「选中的是空值项」时的行为。**触发条件 = P0 交付后下游仍有该诉求，或用户裁定启动契约变更**。与 §3「`null` 值支持」分列，不并入同一契约 | 中 |
+| Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -60,7 +59,6 @@
 | `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 低 |
 | `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
-| 选择器空值 / 哨兵迁移口径统一 | 来源：[空串选项值调研](../design/governance/2026-11-17-select-empty-option-value-evaluation.md) §5.3。范围：`primevue-migration` 常见陷阱补「PrimeVue 允许 `''`、本库不允许」；统一 `docs/examples` 的「全部」哨兵写法（现为 `'all'`，与模型侧 `''` = 未选中并存）并给出推荐约定，避免下游各自发明。**触发条件 = P1 决策落地，或下一次文档批次** | 低 |
 
 ### 1.7 服务层候选（composables）
 

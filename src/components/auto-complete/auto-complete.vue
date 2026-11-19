@@ -17,7 +17,14 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
-import { isEmptyOptionValue, warnEmptyOptionValue } from '../_shared/option'
+import {
+    EMPTY_OPTION_TOKEN,
+    fromPanelValue,
+    isEmptyOptionValue,
+    isReservedEmptyToken,
+    warnEmptyOptionValue,
+} from '../_shared/option'
+import { warnDev } from '../../_shared/dev-warn'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
@@ -45,11 +52,12 @@ const props = withDefaults(defineProps<AutoCompleteProps>(), {
     clearable: true,
     ignoreFilter: false,
     strict: false,
+    allowEmptyValue: false,
 })
 
 const emit = defineEmits<AutoCompleteEmits>()
 
-const model = defineModel<string | string[]>()
+const model = defineModel<string | string[] | undefined>()
 
 /** 面板 idref：关闭态省略 `aria-controls`、开启态指向面板 id（契约与理由见 `_shared/panel-idref`） */
 const panelIdref = usePanelIdrefState(`caomei-auto-complete-panel-${useId()}`)
@@ -64,43 +72,116 @@ const highlightedValue = ref<string | undefined>()
 let selectingFromList = false
 let debounceTimer: ReturnType<typeof setTimeout> | undefined
 
-const normalizedOptions = computed<AutoCompleteOption[]>(() => {
-    const result: AutoCompleteOption[] = []
+/** 归一化建议项：`panelValue` 为送往 Reka 的面板值，空串项用内部 token 承载 */
+interface NormalizedAutoCompleteOption extends AutoCompleteOption {
+    panelValue: string
+}
+
+const normalizedOptions = computed<NormalizedAutoCompleteOption[]>(() => {
+    const result: NormalizedAutoCompleteOption[] = []
     for (const [index, option] of props.options.entries()) {
         const normalized = typeof option === 'string' ? { label: option, value: option } : option
         if (isEmptyOptionValue(normalized.value)) {
-            warnEmptyOptionValue('CaomeiAutoComplete', index)
+            if (!props.allowEmptyValue) {
+                warnEmptyOptionValue('CaomeiAutoComplete', index)
+                continue
+            }
+        } else if (props.allowEmptyValue && isReservedEmptyToken(normalized.value)) {
+            warnDev(
+                `[CaomeiAutoComplete] 第 ${index + 1} 个建议项的 value 使用了保留字符串，该建议项不会渲染（allowEmptyValue 开启时该值由空值项占用）。`,
+            )
             continue
         }
-        result.push(normalized)
+        result.push({
+            ...normalized,
+            panelValue: props.allowEmptyValue && normalized.value === '' ? EMPTY_OPTION_TOKEN : normalized.value,
+        })
     }
     return result
 })
 
-const optionMap = computed(() => new Map(normalizedOptions.value.map((option) => [option.value, option])))
+/** 选项集中是否存在空值项（开启 allowEmptyValue 时 `''` 才是有值） */
+const emptyOptionExists = computed(() => normalizedOptions.value.some((option) => option.value === ''))
 
-/** 多选模式下规范化后的已选值数组 */
+/** 对外值 → 面板值：开启 allowEmptyValue 时空串换成内部 token */
+function toPanelValue(value: string): string {
+    return props.allowEmptyValue && value === '' ? EMPTY_OPTION_TOKEN : value
+}
+
+const optionMap = computed(() => new Map(normalizedOptions.value.map((option) => [option.panelValue, option])))
+
+/**
+ * 多选模式下规范化后的已选值数组。用类型判断而非真值判断：开启 allowEmptyValue 时
+ * `''` 是真实选中值，真值判断会把它与 `undefined` 一起折叠成空数组。
+ */
 const selectedValues = computed<string[]>(() => {
-    if (Array.isArray(model.value)) {
-        return model.value
+    const value = model.value
+    if (Array.isArray(value)) {
+        return value
     }
-    return model.value ? [model.value] : []
+    if (typeof value === 'string') {
+        return value === '' && !props.allowEmptyValue ? [] : [value]
+    }
+    return []
 })
 
-/** 单选模式下的当前值；多选时取首个值仅用于兼容 Reka 的单值形状 */
-const singleValue = computed<string>(() => {
-    const values = selectedValues.value
-    return values.length > 0 ? values[0] : ''
+/**
+ * 单选模式下的当前值：`undefined` 表示未选择，`''` 表示选中空值项（仅 opt-in 下会同时出现）。
+ * 多选时取首个值仅用于兼容 Reka 的单值形状。
+ */
+const singleValue = computed<string | undefined>(() => {
+    const value = model.value
+    if (Array.isArray(value)) {
+        return value[0]
+    }
+    if (value === undefined) {
+        return props.allowEmptyValue ? undefined : ''
+    }
+    return value
 })
 
-const hasValue = computed(() => (props.multiple ? selectedValues.value.length > 0 : singleValue.value !== ''))
+const hasValue = computed(() => {
+    if (props.multiple) {
+        const values = Array.isArray(model.value) ? model.value : []
+        if (values.length === 0) {
+            return false
+        }
+        if (!props.allowEmptyValue || emptyOptionExists.value) {
+            return true
+        }
+        return values.some((value) => value !== '')
+    }
+    if (!props.allowEmptyValue) {
+        return singleValue.value !== ''
+    }
+    const value = singleValue.value
+    if (value === undefined) {
+        return false
+    }
+    return value === '' ? emptyOptionExists.value : true
+})
 
 /** 仅多选模式渲染已选标签 */
 const tagValues = computed<string[]>(() => (props.multiple ? selectedValues.value : []))
 
-const comboboxValue = computed<string | string[]>(() =>
-    props.multiple ? selectedValues.value : singleValue.value,
-)
+/**
+ * 送往 Reka 的模型：直接从 `model` 派生，`undefined` 保持 `undefined`（未选择），
+ * 空串经 `toPanelValue` 变 token；不经 `selectedValues` / `singleValue` 中转。
+ */
+const comboboxValue = computed<string | string[] | undefined>(() => {
+    const value = model.value
+    if (props.multiple) {
+        const values = Array.isArray(value) ? value : []
+        return values.map((item) => toPanelValue(item))
+    }
+    if (value === undefined) {
+        return props.allowEmptyValue ? undefined : ''
+    }
+    if (Array.isArray(value)) {
+        return value.length > 0 ? toPanelValue(value[0]) : undefined
+    }
+    return toPanelValue(value)
+})
 
 const rootClass = computed(() => [
     `caomei-auto-complete--${props.size}`,
@@ -119,8 +200,11 @@ const inputPlaceholder = computed(() => {
 })
 
 const showClear = computed(
-    () => props.clearable && !props.multiple && singleValue.value !== '' && !props.disabled,
+    () => props.clearable && !props.multiple && hasValue.value && !props.disabled,
 )
+
+/** 开启 allowEmptyValue 时由本组件渲染隐藏输入，避免内部 token 进入表单提交值 */
+const panelName = computed<string | undefined>(() => (props.allowEmptyValue ? undefined : props.name))
 
 const locale = useLocale()
 const emptyLabel = computed(() => props.emptyLabel ?? locale.value.autoComplete.empty)
@@ -144,8 +228,12 @@ const highlightedMatchesQuery = computed(() => {
     return option.label.toLowerCase().includes(query)
 })
 
+/**
+ * 取值的显示文本：内部先映射成面板值再查表；未命中回退原值（自由文本回显）。
+ * 入参处于模型域，不能是 `undefined`（未选择不进入该函数）。
+ */
 function labelFor(value: string): string {
-    return optionMap.value.get(value)?.label ?? value
+    return optionMap.value.get(toPanelValue(value))?.label ?? value
 }
 
 function displayValue(value: unknown): string {
@@ -156,29 +244,32 @@ function displayValue(value: unknown): string {
     // 既有行为：按 JS 默认字符串化（原始类型即其字面量）
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     const key = String(value)
-    return optionMap.value.get(key)?.label ?? key
+    const mapped = typeof value === 'string' ? toPanelValue(key) : key
+    return optionMap.value.get(mapped)?.label ?? key
 }
 
 function onUpdateModel(value: unknown): void {
     if (props.multiple) {
-        model.value = Array.isArray(value) ? value.map((item) => String(item)) : []
+        const list = Array.isArray(value)
+            ? value.map((item) => String(props.allowEmptyValue ? fromPanelValue(item) : item))
+            : []
+        model.value = list
         return
     }
-    if (typeof value === 'string') {
-        model.value = value
+    if (value === undefined || value === null) {
+        // 开启 allowEmptyValue 后未选择写 undefined，`''` 保留给空值项
+        model.value = props.allowEmptyValue ? undefined : ''
         return
     }
-    // 既有对外行为：按 JS 默认字符串化写回模型
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    model.value = value === undefined || value === null ? '' : String(value)
+    // 既有对外行为：按 JS 默认字符串化写回模型；仅在开启 allowEmptyValue 时还原 token
+    model.value = String(props.allowEmptyValue ? fromPanelValue(value) : value)
 }
 
 function onItemSelect(event: CustomEvent<{ value?: AcceptableValue }>): void {
     const value = event.detail.value
     if (value !== undefined && value !== null) {
-        // 既有对外行为：事件载荷按 JS 默认字符串化
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
-        emit('select', String(value))
+        // 既有对外行为：事件载荷按 JS 默认字符串化；开启 allowEmptyValue 时先还原面板值
+        emit('select', String(props.allowEmptyValue ? fromPanelValue(value) : value))
     }
 }
 
@@ -213,10 +304,15 @@ function commitFreeText(): void {
         return
     }
     const text = inputValue.value
+    // 守卫一：空输入不写入任何值（含 opt-in 下不得写入 `''`，否则等于「选中空值项」）
+    if (!text.trim()) {
+        return
+    }
     const current = singleValue.value
-    // 输入框在选中建议后会回显该项的 label，需把 label 也视为「当前值」，
-    // 否则失焦会把回显文本当作自由输入提交，覆盖已选值。
-    if (!text.trim() || text === current || (current !== '' && text === labelFor(current))) {
+    // 守卫二：存在已选值且文本等于该值或其 label 时跳过。
+    // 输入框在选中建议后会回显该项的 label，需把 label 也视为「当前值」；
+    // 未选择（`current === undefined`）不得进入该判断，否则 labelFor 会把空值项 label 当已选值吞掉自由文本。
+    if (current !== undefined && (text === current || text === labelFor(current))) {
         return
     }
     model.value = text
@@ -260,7 +356,8 @@ function onEnter(event: KeyboardEvent): void {
 }
 
 function onClear(): void {
-    model.value = props.multiple ? [] : ''
+    // 开启 allowEmptyValue 后 `''` 是真实选中值，未选择必须写成 undefined
+    model.value = props.multiple ? [] : (props.allowEmptyValue ? undefined : '')
     inputValue.value = ''
     emit('clear')
 }
@@ -399,7 +496,7 @@ watch(normalizedOptions, () => {
         :model-value="comboboxValue"
         :multiple="multiple"
         :disabled="disabled"
-        :name="name"
+        :name="panelName"
         :ignore-filter="ignoreFilter"
         :open-on-click="true"
         :open-on-focus="true"
@@ -407,6 +504,17 @@ watch(normalizedOptions, () => {
         @highlight="onHighlight"
     >
         <ComboboxPanelIdrefBridge :state="panelIdref" />
+        <!-- 开启 allowEmptyValue 时由本组件提交表单值，避免内部 token 外泄 -->
+        <template v-if="allowEmptyValue && name">
+            <input
+                v-for="(value, index) in (multiple ? selectedValues : [model ?? ''])"
+                :key="`hidden-${index}`"
+                type="hidden"
+                :name="name"
+                :value="value"
+                :disabled="disabled || undefined"
+            >
+        </template>
         <ComboboxAnchor
             ref="anchorRef"
             v-bind="rootAttrs"
@@ -495,9 +603,9 @@ watch(normalizedOptions, () => {
                     </ComboboxEmpty>
                     <ComboboxItem
                         v-for="option in normalizedOptions"
-                        :key="option.value"
+                        :key="option.panelValue"
                         class="caomei-auto-complete__item"
-                        :value="option.value"
+                        :value="option.panelValue"
                         :disabled="option.disabled"
                         :text-value="option.label"
                         @select="onItemSelect"

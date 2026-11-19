@@ -834,4 +834,49 @@ describe('CaomeiSelectGroup', () => {
 
         wrapper.unmount()
     })
+
+    it('关闭 allowEmptyValue 时与保留 token 同名的选项按普通值选中', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: { options: [{ label: '保留值', value: '__caomei_empty_value__' }] },
+            attachTo: document.body,
+        })
+
+        await wrapper.get('.caomei-select').trigger('keydown', { key: 'Enter' })
+        await nextTick()
+        await nextTick()
+        const item = document.querySelector<HTMLElement>('.caomei-select__item')
+        item?.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }))
+        await nextTick()
+        await nextTick()
+
+        // 内部 token 只在开启时使用；关闭时同名值是用户真实值，不得被改写成空串
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['__caomei_empty_value__'])
+
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue 且 disabled 时隐藏输入不参与表单提交', () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: {
+                options: [{ label: '全部', value: '' }],
+                allowEmptyValue: true,
+                name: 'status',
+                modelValue: '',
+                disabled: true,
+            },
+            attachTo: document.body,
+        })
+
+        const hidden = document.querySelector<HTMLInputElement>('input[name="status"]')
+        expect(hidden).not.toBeNull()
+        expect(hidden?.disabled).toBe(true)
+
+        const form = document.createElement('form')
+        if (hidden) {
+            form.appendChild(hidden.cloneNode(true))
+        }
+        expect(new FormData(form).has('status')).toBe(false)
+
+        wrapper.unmount()
+    })
 })

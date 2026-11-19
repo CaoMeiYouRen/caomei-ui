@@ -69,14 +69,45 @@ export function narrowOptionValue(raw: unknown): OptionValue | undefined {
 }
 
 /**
- * 判断选项值是否为空字符串（契约外值）：模型侧的 `''` 表示「未选中」，因此选项侧不能用 `''` 承载真实值，
- * 且 Reka UI 的 Select / Combobox 选项禁止空串（面板渲染即抛断言）。
- * @en Whether an option value is the empty string (an out-of-contract value): `''` on the model side means
- * "nothing selected", so it cannot carry a real option value, and Reka UI's Select / Combobox items reject
- * empty strings (rendering the panel throws).
+ * 判断选项值是否为空字符串（契约外值）：模型侧的 `''` 表示「未选中」，因此默认不允许选项侧用 `''`
+ * 承载真实值，且 Reka UI 的 Select / Combobox 选项禁止空串（面板渲染即抛断言）。
+ * 开启 `allowEmptyValue` 后由内部 token 承载，本判断不再触发丢弃。
+ * @en Whether an option value is the empty string (an out-of-contract value by default): `''` on the model
+ * side means "nothing selected", so options cannot carry it as a real value, and Reka UI's Select / Combobox
+ * items reject empty strings (rendering the panel throws). With `allowEmptyValue` the internal token carries
+ * it instead and this check no longer drops the option.
  */
 export function isEmptyOptionValue(value: OptionValue | undefined): value is '' {
     return value === ''
+}
+
+/**
+ * 空值选项的内部承载 token：Reka 的 Select / Combobox 选项拒绝空串 value，开启 `allowEmptyValue`
+ * 时以该字符串代替 `''` 送往面板，模型、插槽与事件载荷仍只见 `''`。
+ *
+ * 仅内部使用（不从包入口导出）。开启该开关时该字符串被视为保留值：值与之相同的非空选项会被
+ * 丢弃并开发期告警，避免与空值项互相顶替。
+ * @en Internal carrier token for the empty-value option: Reka's Select / Combobox items reject empty-string
+ * values, so with `allowEmptyValue` this string replaces `''` on the panel side while the model, slots and
+ * event payloads still see `''`. Internal only; while the flag is on this string is reserved.
+ */
+export const EMPTY_OPTION_TOKEN = '__caomei_empty_value__'
+
+/**
+ * 面板值 → 对外值：token 还原为空串，其余原样返回（仅 `allowEmptyValue` 路径使用）。
+ * @en Panel value → public value: the token maps back to the empty string; everything else passes through.
+ */
+export function fromPanelValue(value: unknown): unknown {
+    return value === EMPTY_OPTION_TOKEN ? '' : value
+}
+
+/**
+ * 判断选项值是否与保留 token 冲突（开启 `allowEmptyValue` 时由调用方丢弃并告警）。
+ * @en Whether an option value collides with the reserved token (callers drop and warn it while
+ * `allowEmptyValue` is on).
+ */
+export function isReservedEmptyToken(value: OptionValue): boolean {
+    return value === EMPTY_OPTION_TOKEN
 }
 
 /**

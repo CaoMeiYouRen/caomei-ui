@@ -13,12 +13,16 @@ import {
 } from 'reka-ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { warnDev } from '../../_shared/dev-warn'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import {
+    EMPTY_OPTION_TOKEN,
+    fromPanelValue,
     isEmptyOptionValue,
+    isReservedEmptyToken,
     resolveOptionDisabled,
     resolveOptionField,
     resolveOptionValue,
@@ -30,6 +34,15 @@ import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import type { MultiSelectProps } from './types'
 
 defineOptions({ name: 'CaomeiMultiSelect', inheritAttrs: false })
+
+/** 开启空值选项后表单值由隐藏输入承载，原生 `required` 校验不再生效，开发期提示改用提交前校验 */
+function warnRequiredWithHiddenInputs(): void {
+    if (props.allowEmptyValue && props.required && props.name) {
+        warnDev(
+            '[CaomeiMultiSelect] 开启 allowEmptyValue 后表单值由隐藏输入提交，原生 required 校验不生效；请在提交前自行校验。',
+        )
+    }
+}
 
 const icons = useInternalIcons()
 
@@ -44,7 +57,10 @@ const props = withDefaults(defineProps<MultiSelectProps<T>>(), {
     required: false,
     bodyLock: false,
     showClear: false,
+    allowEmptyValue: false,
 })
+
+warnRequiredWithHiddenInputs()
 
 defineSlots<{
     /**
@@ -82,12 +98,14 @@ interface NormalizedOption {
     value: OptionValue
     /** 解析后的显示文本；字段缺省时为 undefined */
     label: string | undefined
+    /** 送往 Reka 面板的值：开启 allowEmptyValue 时空串项用内部 token 承载 */
+    panelValue: OptionValue
     disabled: boolean
     /** 是否为当前选中项 */
     selected: boolean
 }
 
-/** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
+/** 归一化选项列表：映射字段并按契约处置空串与保留 token，供触发器与面板共用 */
 const normalizedOptions = computed<NormalizedOption[]>(() => {
     const result: NormalizedOption[] = []
     for (const [index, option] of props.options.entries()) {
@@ -96,12 +114,20 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
             continue
         }
         if (isEmptyOptionValue(value)) {
-            warnEmptyOptionValue('CaomeiMultiSelect', index)
+            if (!props.allowEmptyValue) {
+                warnEmptyOptionValue('CaomeiMultiSelect', index)
+                continue
+            }
+        } else if (props.allowEmptyValue && isReservedEmptyToken(value)) {
+            warnDev(
+                `[CaomeiMultiSelect] 第 ${index + 1} 个选项的 value 使用了保留字符串，该选项不会渲染（allowEmptyValue 开启时该值由空值项占用）。`,
+            )
             continue
         }
         result.push({
             raw: option,
             value,
+            panelValue: props.allowEmptyValue && value === '' ? EMPTY_OPTION_TOKEN : value,
             label: resolveOptionField(option, props.optionLabel, 'label'),
             disabled: resolveOptionDisabled(option),
             selected: model.value.includes(value),
@@ -109,6 +135,42 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
     }
     return result
 })
+
+/** 选项集中是否存在空值项（开启 allowEmptyValue 时数组里的 `''` 才是有值） */
+const emptyOptionExists = computed(() => normalizedOptions.value.some((option) => option.value === ''))
+
+/** 有选中值：默认口径为「数组非空」；开启 allowEmptyValue 时孤儿 `''` 不计为有值 */
+const hasValue = computed(() => {
+    if (model.value.length === 0) {
+        return false
+    }
+    if (!props.allowEmptyValue || emptyOptionExists.value) {
+        return true
+    }
+    return model.value.some((value) => value !== '')
+})
+
+/** 送往 Reka 的模型：开启 allowEmptyValue 时把空串换成内部 token */
+const panelModel = computed<OptionValue[]>(() => {
+    if (!props.allowEmptyValue) {
+        return model.value
+    }
+    return model.value.map((value) => (value === '' ? EMPTY_OPTION_TOKEN : value))
+})
+
+/** Reka 回写模型：token 还原为空串，非数组按空数组处理 */
+function onModelUpdate(value: unknown): void {
+    if (!Array.isArray(value)) {
+        model.value = []
+        return
+    }
+    model.value = (value as unknown[])
+        .map((item) => (props.allowEmptyValue ? fromPanelValue(item) : item))
+        .filter((item): item is OptionValue => typeof item === 'string' || typeof item === 'number')
+}
+
+/** 开启 allowEmptyValue 时由本组件渲染隐藏输入，避免内部 token 进入表单提交值 */
+const panelName = computed<string | undefined>(() => (props.allowEmptyValue ? undefined : props.name))
 
 const selectedOptions = computed<NormalizedOption[]>(() => {
     const seen = new Set<OptionValue>()
@@ -131,7 +193,7 @@ function removeValue(value: OptionValue): void {
 }
 
 /** 有选中项且未禁用时显示清除按钮（与 Select 的 `showClear` 口径一致） */
-const clearable = computed(() => props.showClear && model.value.length > 0 && !props.disabled)
+const clearable = computed(() => props.showClear && hasValue.value && !props.disabled)
 
 const inputRef = ref<{ $el?: unknown } | null>(null)
 
@@ -270,13 +332,14 @@ onBeforeUnmount(() => {
 
 <template>
     <ComboboxRoot
-        v-model="model"
         v-model:open="open"
+        :model-value="panelModel"
         multiple
         :disabled="disabled"
-        :name="name"
+        :name="panelName"
         :required="required"
         :open-on-click="true"
+        @update:model-value="onModelUpdate"
     >
         <ComboboxPanelIdrefBridge :state="panelIdref" />
         <ComboboxAnchor
@@ -284,11 +347,22 @@ onBeforeUnmount(() => {
             v-bind="rootAttrs"
             class="caomei-multi-select"
             :class="rootClass"
-            :data-filled="model.length > 0 ? 'true' : undefined"
+            :data-filled="hasValue ? 'true' : undefined"
             @click="onAnchorClick"
             @keydown="onFieldKeydown"
             @keydown.escape="markEscapeClose"
         >
+            <!-- 开启 allowEmptyValue 时由本组件提交表单值，避免内部 token 外泄 -->
+            <template v-if="allowEmptyValue && name">
+                <input
+                    v-for="(value, index) in model"
+                    :key="`hidden-${index}`"
+                    type="hidden"
+                    :name="name"
+                    :value="value"
+                    :disabled="disabled || undefined"
+                >
+            </template>
             <span
                 v-for="option in selectedOptions"
                 :key="option.value"
@@ -310,7 +384,7 @@ onBeforeUnmount(() => {
                 :id="id"
                 ref="inputRef"
                 class="caomei-multi-select__input"
-                :placeholder="model.length === 0 ? placeholder : undefined"
+                :placeholder="hasValue ? undefined : placeholder"
                 :aria-invalid="invalid || undefined"
                 :disabled="disabled"
             />
@@ -351,9 +425,9 @@ onBeforeUnmount(() => {
                     </ComboboxEmpty>
                     <ComboboxItem
                         v-for="option in normalizedOptions"
-                        :key="option.value"
+                        :key="option.panelValue"
                         class="caomei-multi-select__item"
-                        :value="option.value"
+                        :value="option.panelValue"
                         :disabled="option.disabled"
                         :text-value="option.label"
                     >

@@ -11,8 +11,9 @@ export interface AutoCompleteOption {
      */
     label: string
     /**
-     * 选项值，需在单个 AutoComplete 内唯一且非空字符串
-     * @en Option value; must be unique within a single AutoComplete and must not be an empty string
+     * 选项值，需在单个 AutoComplete 内唯一；默认不能为空字符串（开启 `allowEmptyValue` 后可用 `''`）
+     * @en Option value; must be unique within a single AutoComplete. It must not be an empty string by
+     * default; `''` becomes usable with `allowEmptyValue`
      */
     value: string
     /**
@@ -101,6 +102,14 @@ export interface AutoCompleteProps extends FieldProps, FieldIdentityProps {
      * @en Delay in milliseconds before the `complete` event fires after input pauses
      */
     debounce?: number
+    /**
+     * 是否把空字符串作为真实选项值；默认 false。默认行为下空串选项会被丢弃并开发期告警，
+     * 开启后空串项正常渲染与选中，「未选择」改为 `undefined`（单选）/ `[]`（多选），清除不再写 `''`
+     * @en Whether the empty string is a real option value; defaults to false. By default an empty-string
+     * option is dropped with a dev warning; when enabled it renders and selects normally, "nothing
+     * selected" becomes `undefined` (single) / `[]` (multiple), and clearing no longer writes `''`
+     */
+    allowEmptyValue?: boolean
     /**
      * 是否显示清除按钮（仅单选）；默认 true
      * @en Whether to show the clear button (single-select only); defaults to true

@@ -4,7 +4,7 @@ Rating 用于收集或展示分值：默认 5 颗星、整星步进，可开启�
 
 ## 基础用法
 
-`v-model` 是数字分值（未选择时为 `0`）。`label` 是评分区域的可访问名；不传时取当前语言的内建文案（只读态取只读文案）。
+`v-model` 是数字分值（未选择时为 `0`）。评分区域的可访问名按「显式 `label` > 透传 `aria-label` > 当前语言的内建文案」取值（只读态取只读文案）。
 
 <demo
     vue="../examples/rating/basic.vue"
@@ -25,9 +25,29 @@ Rating 用于收集或展示分值：默认 5 颗星、整星步进，可开启�
 
 ## 无障碍
 
-- 根元素为 `role="radiogroup"`，名称取 `label`，缺省用内建文案（可交互 / 只读各一条）。
+- 根元素为 `role="radiogroup"`，名称按「显式 `label` > 透传 `aria-label` > 内建文案」取值（可交互 / 只读各一条兜底）。
 - 每个可交互步进是 `role="radio"`，可访问名即该步进的数值（如 `3.5`）；单位语义由区域名提供，避免各语言单复数错误。
 - 键盘：`Tab` 进入当前分值或第一项，方向键（← → ↑ ↓）移动并提交，`Space` 选中当前项。
+
+## 表单集成
+
+评分与其它状态型字段共用同一套字段契约：`id` / `name` / `label` / `invalid` 直接传给组件即可，放在 `CaomeiFormItem` 内时由插槽作用域把 `id` 与 `aria-*` 绑定到评分根（`role="radiogroup"`）；`name` 存在时经隐藏控件提交当前分值。
+
+```vue
+<CaomeiFormItem label="服务评分" name="score" hint="用于统计整体满意度" :error="errors.score">
+    <template #default="{ id, name: fieldName, invalid, ...aria }">
+        <CaomeiRating
+            :id="id"
+            v-bind="aria"
+            :name="fieldName"
+            v-model="form.score"
+            :invalid="invalid"
+        />
+    </template>
+</CaomeiFormItem>
+```
+
+未评分时模型为 `0`，可交互态下只要传了 `name` 就会提交 `score=0`（`readonly` / `disabled` 不提交）；组件不提供「空值」态——需要「未评分不提交」时请在提交前自行判断并剔除该字段。
 
 ## 样式定制
 

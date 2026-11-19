@@ -18,7 +18,7 @@
 | M2-3 | 空值 opt-in | 测试与文档 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m2-3-allow-empty-value-tests-docs.md)） |
 | M3-1 | 迁移口径 | 哨兵与 PrimeVue 陷阱统一 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m3-1-sentinel-migration-traps.md)） |
 | M4-1 | Rating 表单集成 | 字段契约接入 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m4-1-rating-field-contract.md)） |
-| M4-2 | Rating 表单集成 | 文档与示例 | 待执行 |
+| M4-2 | Rating 表单集成 | 文档与示例 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m4-2-rating-form-docs.md)） |
 
 ## 未完成项汇总
 

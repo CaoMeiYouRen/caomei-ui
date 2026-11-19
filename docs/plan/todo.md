@@ -15,7 +15,7 @@
 | M1-3 | 质量收口 | 隔离接线下沉 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m1-3-isolation-wiring.md)） |
 | M2-1 | 空值 opt-in | `allowEmptyValue` 契约设计（只设计） | 已交付（2026-11-19，[设计记录](../design/governance/2026-11-19-phase37-m2-1-allow-empty-value-design.md)） |
 | M2-2 | 空值 opt-in | 实现（Select / MultiSelect / AutoComplete） | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m2-2-allow-empty-value-impl.md)） |
-| M2-3 | 空值 opt-in | 测试与文档 | 待执行 |
+| M2-3 | 空值 opt-in | 测试与文档 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m2-3-allow-empty-value-tests-docs.md)） |
 | M3-1 | 迁移口径 | 哨兵与 PrimeVue 陷阱统一 | 待执行 |
 | M4-1 | Rating 表单集成 | 字段契约接入 | 待执行 |
 | M4-2 | Rating 表单集成 | 文档与示例 | 待执行 |

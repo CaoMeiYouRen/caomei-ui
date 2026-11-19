@@ -879,4 +879,25 @@ describe('CaomeiSelectGroup', () => {
 
         wrapper.unmount()
     })
+
+    it('开启 allowEmptyValue 时回显空值项并在清除后写 null', async () => {
+        const wrapper = mount(CaomeiSelect, {
+            props: {
+                options: [{ label: '全部', value: '' }, { label: 'A', value: 'a' }],
+                allowEmptyValue: true,
+                showClear: true,
+                modelValue: '',
+            },
+            attachTo: document.body,
+        })
+
+        expect(wrapper.get('.caomei-select').attributes('data-filled')).toBe('true')
+        expect(wrapper.get('.caomei-select__value').text()).toBe('全部')
+
+        await wrapper.get('.caomei-select__clear').trigger('click')
+        await nextTick()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([null])
+
+        wrapper.unmount()
+    })
 })

@@ -13,7 +13,11 @@ AutoComplete is an input that combines asynchronous suggestions with free input:
     ssg="true"
 />
 
-Options can be strings (where `label` equals `value`) or `{ label, value, disabled? }` objects. `value` must be a non-empty string, unique within a single component; a suggestion whose `value` is empty is treated as out-of-contract — it is not rendered, and a development-time `console.warn` reports it (silent when `NODE_ENV === 'production'`). Use a non-empty sentinel value for "All" / "Any".
+Options can be strings (where `label` equals `value`) or `{ label, value, disabled? }` objects. `value` must be a non-empty string by default and unique within a single component; a suggestion whose `value` is empty is not rendered by default and a development-time `console.warn` reports it (silent when `NODE_ENV === 'production'`). With `allowEmptyValue` the empty option renders and selects normally and the model keeps `''`; "nothing selected" then becomes `undefined` (or `[]` when multiple), clearing writes `undefined`, and a regular suggestion whose value equals the internal reserved string (never exposed) is dropped with a warning.
+>
+> ```vue
+> <CaomeiAutoComplete v-model="filter" :options="filterOptions" allow-empty-value />
+> ```
 
 ## Async suggestions
 

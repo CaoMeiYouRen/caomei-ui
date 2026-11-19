@@ -676,4 +676,91 @@ describe('CaomeiMultiSelect 清除与自定义选项', () => {
 
         wrapper.unmount()
     })
+
+    it('开启 allowEmptyValue 后渲染空值项并可选中', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options: [{ label: '全部', value: '' }, ...options], allowEmptyValue: true },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+        const rendered = document.querySelectorAll('[role="option"]')
+        expect(rendered).toHaveLength(4)
+        rendered[0].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+        await nextTick()
+        await nextTick()
+
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([['']])
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue 时与保留值同名的选项被丢弃并告警', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: {
+                options: [
+                    { label: '保留值', value: '__caomei_empty_value__' },
+                    { label: '全部', value: '' },
+                ],
+                allowEmptyValue: true,
+            },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+        expect(document.querySelectorAll('[role="option"]')).toHaveLength(1)
+        expect(warn.mock.calls.map((call) => String(call[0]))).toEqual([
+            expect.stringContaining('[CaomeiMultiSelect] 第 1 个选项的 value 使用了保留字符串'),
+        ])
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue 时隐藏输入继承 disabled', () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: {
+                options: [{ label: '全部', value: '' }],
+                allowEmptyValue: true,
+                name: 'tags',
+                modelValue: [''],
+                disabled: true,
+            },
+            attachTo: document.body,
+        })
+
+        const hidden = document.querySelector<HTMLInputElement>('input[name="tags"]')
+        expect(hidden?.disabled).toBe(true)
+        // 自持隐藏输入的目的是让表单拿到对外值，内部保留值不得出现
+        expect(hidden?.value).toBe('')
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue 时回显空值项并在清除后写空数组', async () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: {
+                options: [{ label: '全部', value: '' }, ...options],
+                allowEmptyValue: true,
+                showClear: true,
+                modelValue: [''],
+            },
+            attachTo: document.body,
+        })
+
+        expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBe('true')
+        expect(wrapper.get('.caomei-multi-select__tag-label').text()).toBe('全部')
+
+        await wrapper.get('.caomei-multi-select__clear').trigger('click')
+        await nextTick()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[]])
+
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue 但选项中没有空值项时，孤儿空串不计为有值', () => {
+        const wrapper = mount(CaomeiMultiSelect, {
+            props: { options, allowEmptyValue: true, modelValue: [''] },
+        })
+
+        expect(wrapper.get('.caomei-multi-select').attributes('data-filled')).toBeUndefined()
+        wrapper.unmount()
+    })
 })

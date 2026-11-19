@@ -588,4 +588,39 @@ describe('CaomeiAutoComplete', () => {
 
         wrapper.unmount()
     })
+
+    it('开启 allowEmptyValue 后渲染空值项并选中，清除写 undefined', async () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: {
+                options: [{ label: '全部', value: '' }, { label: '苹果', value: 'apple' }],
+                allowEmptyValue: true,
+                clearable: true,
+                dropdown: true,
+            },
+            attachTo: document.body,
+        })
+
+        await open(wrapper)
+        const rendered = [...document.querySelectorAll<HTMLElement>('[role="option"]')]
+        expect(rendered).toHaveLength(2)
+        rendered[0].click()
+        await nextTick()
+        await nextTick()
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([''])
+
+        const filled = mount(CaomeiAutoComplete, {
+            props: {
+                options: [{ label: '全部', value: '' }],
+                allowEmptyValue: true,
+                clearable: true,
+                modelValue: '',
+            },
+        })
+        expect(filled.get('.caomei-auto-complete').attributes('data-filled')).toBe('true')
+        await filled.get('.caomei-auto-complete__clear').trigger('click')
+        expect(filled.emitted('update:modelValue')?.at(-1)).toEqual([undefined])
+
+        wrapper.unmount()
+        filled.unmount()
+    })
 })

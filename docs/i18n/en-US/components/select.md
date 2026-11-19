@@ -24,7 +24,13 @@ Two-way bind the selected value with `v-model` and pass the options via `options
 >
 > Field resolution: the string form of `optionLabel` / `optionValue` supports `a.b` dot-paths. When `optionValue` does not resolve to a string or number (`null`, a boolean, a missing field), that option is **not rendered**; when `optionLabel` resolves to no text, the option's text is empty and the trigger falls back to `placeholder`. Options whose value resolves to `null` / `undefined` emit a development-time `console.warn` (silent when `NODE_ENV === 'production'`; browser builds still log when `globalThis.process` is undefined); resolution and rendering are unchanged.
 >
-> An option value must not be an empty string: `''` on the model side means "nothing selected", so an option whose `value` is empty is treated as out-of-contract — it is **not rendered**, and a development-time `console.warn` reports it (with the option index; silent when `NODE_ENV === 'production'`; browser builds still log when `globalThis.process` is undefined). For "All" / "Any", use a non-empty sentinel value (such as `'all'`).
+> An option value must not be an empty string by default: `''` on the model side means "nothing selected", so an option whose `value` is empty is treated as out-of-contract — it is **not rendered**, and a development-time `console.warn` reports it (with the option index; silent when `NODE_ENV === 'production'`; browser builds still log when `globalThis.process` is undefined). To use `''` as a **real option value** (for example "All" = `''`), enable `allowEmptyValue`: the option renders and selects normally and the model keeps `''`; "nothing selected" is still `null`, and the clear button writes `null`.
+>
+> ```vue
+> <CaomeiSelect v-model="status" :options="statusOptions" allow-empty-value />
+> ```
+>
+> While enabled, an internal string carries the empty value (never exposed, never written to the model or form value); a regular option whose value equals that reserved string is dropped with a warning (silently dropped in production, without a warning). Keep it off when you do not need an empty option.
 
 ## Clear
 

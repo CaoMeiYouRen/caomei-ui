@@ -13,7 +13,11 @@
     ssg="true"
 />
 
-列表项可以是字符串（`label` 与 `value` 相同），也可以是 `{ label, value, disabled? }` 对象。`value` 必须为非空字符串且在单个组件内唯一；`value` 为空串的建议项按契约外值处理——不渲染，并在开发期通过 `console.warn` 提示（`NODE_ENV === 'production'` 时静默）。需要「全部 / 不限」时请改用非空哨兵值。
+列表项可以是字符串（`label` 与 `value` 相同），也可以是 `{ label, value, disabled? }` 对象。`value` 默认需为非空字符串且在单个组件内唯一；空串建议项默认不渲染并在开发期通过 `console.warn` 提示（`NODE_ENV === 'production'` 时静默）。开启 `allowEmptyValue` 后空串项可正常渲染与选中，模型回写 `''`，此时「未选择」为 `undefined`（多选为 `[]`），清除按钮写 `undefined`；内部保留值（不对外暴露）与某个普通建议项的值相同时，该建议项会被丢弃并告警。
+>
+> ```vue
+> <CaomeiAutoComplete v-model="filter" :options="filterOptions" allow-empty-value />
+> ```
 
 ## 异步建议
 

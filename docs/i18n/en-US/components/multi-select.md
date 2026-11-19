@@ -22,7 +22,13 @@ Two-way bind an array of values (strings or numbers) with `v-model`; selected va
 
 > Field resolution: the string form of `optionLabel` / `optionValue` supports `a.b` dot-paths. When `optionValue` does not resolve to a string or number (`null`, a boolean, a missing field), that option is **not rendered**; when `optionLabel` resolves to no text, the option's text is empty.
 >
-> An option value must not be an empty string (same contract as the single select): the multi-select model is an array, so `''` can only be an array element, never the "nothing selected" state; an option whose `value` is empty is treated as out-of-contract — it is **not rendered**, and a development-time `console.warn` reports it (with the option index; silent when `NODE_ENV === 'production'`). For "All" / "Any", use a non-empty sentinel value (such as `'all'`).
+> An option value must not be an empty string by default: an option whose `value` is empty is treated as out-of-contract — it is **not rendered**, and a development-time `console.warn` reports it (with the option index; silent when `NODE_ENV === 'production'`). To treat `''` as a real value, enable `allowEmptyValue`: the empty option can be added and removed and `''` appears in the model; "nothing selected" is still `[]`, and clearing writes `[]`.
+>
+> ```vue
+> <CaomeiMultiSelect v-model="tags" :options="tagOptions" allow-empty-value />
+> ```
+>
+> While enabled, an internal string carries the empty value (never exposed, never written to the model or form value); a regular option whose value equals it is dropped with a warning.
 
 ## Clear
 
@@ -58,7 +64,7 @@ On touch devices, set `data-density="touch"` on an ancestor to enlarge control h
 ## Form and accessibility
 
 - When `name` is provided inside a `<form>`, a form control is generated per selected value, named `name[index]`, so it is collected by the form directly.
-- `required` targets the hidden form controls (requires `name` as well); native validation fails when nothing is selected.
+- `required` targets the hidden form controls (requires `name` as well); native validation fails when nothing is selected. With `allowEmptyValue` the form value comes from this component's hidden inputs, so native `required` validation no longer applies — validate before submitting.
 - `label` maps to the inner input's `aria-label`; `id` also lands on the inner input, making `<label for>` association easy.
 - Note: native attributes such as `maxlength` are forwarded to the **search input**, not the selected-value text, so they only affect the filter input length.
 - The open trigger's accessible name defaults to "Show options", overridable via `openLabel` (overriding Reka's built-in English name).

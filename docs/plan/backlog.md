@@ -70,6 +70,8 @@
 | `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 低 |
 | `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
+| 宽屏视觉基线（1536 / 1920） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：为 DataTable / Dialog / Form 等宽屏敏感组件补 1920 视觉用例（亮暗各一份）；约 +3–5 文件 +4–6 PNG、+1–2 天。**触发条件 = 宽屏布局出现真实回归，或下一次视觉基线批次** | 中 |
+| `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
 
 ### 1.7 服务层候选（composables）
 
@@ -144,3 +146,4 @@
 | App Shell / `Overlay` / `Fab` / `List`（应用外壳与组合件） | 三仓实测（2026-10-13，[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §3.1 / §3.2） | **不纳入**：`v-app` / `v-main` / `v-toolbar` 属**应用层外壳**（本库以组件为单位提供，`Toolbar` 已覆盖工具栏语义）；`v-overlay` 与既有 Dialog / Drawer / Popover 的遮罩机制重复；`v-fab-transition`（悬浮按钮）与 `v-list`（列表）均可用既有容器 + 样式承接（@lucide/vue 提供图标）。触发条件 = 出现既有能力无法覆盖的真实用例时再评估 |
 | 手势交互型移动件（PullRefresh / InfiniteScroll / SwipeCell / 图片捏合预览 / IndexBar / FloatingBubble / Signature） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 C 类；caomei-todo 架构 §11.5 | **不纳入**：与[响应式设计 §1](../design/responsive.md) 的手势非目标一致，且需要独立的交互与测试体系；caomei-todo 明确在应用层用 Pointer Events 实现并保留可见按钮作为兜底与无障碍路径。触发条件 = 用户推翻手势非目标 |
 | NumberKeyboard（自定义数字键盘） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 A 类；caomei-todo 需求全文核对（2026-11-20） | **不纳入**：caomei-todo 一期需求未出现金额输入 / 验证码专用键盘条目，`InputNumber` + 系统键盘可覆盖。触发条件 = 出现必须自定义键盘的金额 / 验证码用例 |
+| 全量 E2E 矩阵宽屏化（1536 / 1920 进入全量档） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4 | **不纳入**：新增两个全量档会使用例实例接近翻倍，周回归时长与 flaky 风险显著上升；定向档已能覆盖宽屏形态。触发条件 = 定向档连续漏检宽屏回归 |

@@ -142,3 +142,5 @@ opt-in 开启时，以下路径必须与 §4.1 的「未选择 = `undefined`」�
 - R2 Reject：同一 blocker 复发（`singleValue` 把 `undefined` 与 `''` 折叠）。
 - R3 Reject：同一落点第 3 次复发（`commitFreeText` 改写时丢失「空输入直接返回」守卫）。
 - **R4：调用方显式追加一轮预算**（理由：单一设计文档、修复点为守卫顺序与措辞，无实现风险；按 AI 协作规范 §3.5 已将复发 finding 转为 §4.4 的三条必查负向单测，属「转单测约束」处置）。
+
+**结论：Pass**（R4，`quick`，2026-11-19，0 blocker）。

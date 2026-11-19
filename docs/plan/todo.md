@@ -4,21 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 37**（质量收口与回归补齐、选择器空值 opt-in、迁移口径、Rating 表单集成）。**4 条主线 / 9 条原子条目**（构成对账 3 + 3 + 1 + 2 = 9）；范围与验收口径的唯一载体见 [Phase 37 登记批次](../design/governance/2026-11-18-phase37-registration.md)。本阶段**不发布**（`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
-
-## Phase 37 原子条目
-
-| 编号 | 主线 | 条目 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | 质量收口 | 列宽拖拽残余补齐 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase37-m1-1-column-resize-residual.md)） |
-| M1-2 | 质量收口 | 浮层隔离残余补齐 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase37-m1-2-overlay-isolation-residual.md)） |
-| M1-3 | 质量收口 | 隔离接线下沉 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m1-3-isolation-wiring.md)） |
-| M2-1 | 空值 opt-in | `allowEmptyValue` 契约设计（只设计） | 已交付（2026-11-19，[设计记录](../design/governance/2026-11-19-phase37-m2-1-allow-empty-value-design.md)） |
-| M2-2 | 空值 opt-in | 实现（Select / MultiSelect / AutoComplete） | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m2-2-allow-empty-value-impl.md)） |
-| M2-3 | 空值 opt-in | 测试与文档 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m2-3-allow-empty-value-tests-docs.md)） |
-| M3-1 | 迁移口径 | 哨兵与 PrimeVue 陷阱统一 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m3-1-sentinel-migration-traps.md)） |
-| M4-1 | Rating 表单集成 | 字段契约接入 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m4-1-rating-field-contract.md)） |
-| M4-2 | Rating 表单集成 | 文档与示例 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m4-2-rating-form-docs.md)） |
+**当前无进行中阶段**。下一阶段需经需求评估与用户明确授权后再登记；候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
 
 ## 未完成项汇总
 

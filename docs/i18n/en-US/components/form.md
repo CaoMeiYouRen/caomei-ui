@@ -53,12 +53,12 @@ The default slot scope of `FormItem` provides `id` / `name` / `aria-labelledby` 
 
 ## Field binding
 
-The 12 fields fall into three inheritance surfaces; no single binding rule fits all of them:
+The 13 fields fall into three inheritance surfaces; no single binding rule fits all of them:
 
 | Inheritance surface | Components | Binding guidance |
 | --- | --- | --- |
 | `FieldProps` + identity | AutoComplete / Input / InputNumber / MultiSelect / Select / TagsInput / Textarea | Bind `id` / `name` / `aria-*` / `invalid` |
-| `FieldStateProps` + identity | Checkbox / CheckboxGroup / RadioGroup / SelectButton | Same as above; group roots are `role=group` / `radiogroup` and use `aria-labelledby` for the accessible name |
+| `FieldStateProps` + identity | Checkbox / CheckboxGroup / RadioGroup / Rating / SelectButton | Same as above; group roots are `role=group` / `radiogroup` and use `aria-labelledby` for the accessible name |
 | Identity only | Switch | Bind `id` / `name` / `aria-*`; **do not bind `invalid`** — Switch has no validation-state channel, so the error text is associated through `aria-describedby` |
 
 Where `id` and `aria-*` land is decided by each field component (for example, InputNumber / TagsInput keep `id` on the field root and `aria-*` on the inner accessible control; that is exactly why the whole object is forwarded to the component). For group controls, `aria-describedby` lands on the group root rather than each item.

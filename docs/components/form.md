@@ -53,12 +53,12 @@
 
 ## 字段绑定
 
-12 个字段按三类继承面逐项绑定，不能假设一套绑定通吃：
+13 个字段按三类继承面逐项绑定，不能假设一套绑定通吃：
 
 | 继承面 | 组件 | 绑定建议 |
 | --- | --- | --- |
 | `FieldProps` + 身份 | AutoComplete / Input / InputNumber / MultiSelect / Select / TagsInput / Textarea | 绑定 `id` / `name` / `aria-*` / `invalid` |
-| `FieldStateProps` + 身份 | Checkbox / CheckboxGroup / RadioGroup / SelectButton | 同上；组型控件的根为 `role=group` / `radiogroup`，可访问名走 `aria-labelledby` |
+| `FieldStateProps` + 身份 | Checkbox / CheckboxGroup / RadioGroup / Rating / SelectButton | 同上；组型控件的根为 `role=group` / `radiogroup`，可访问名走 `aria-labelledby` |
 | 仅 `FieldIdentityProps` | Switch | 绑定 `id` / `name` / `aria-*`；**不要绑定 `invalid`**——Switch 没有校验状态通道，错误文案通过 `aria-describedby` 关联 |
 
 `id` 与 `aria-*` 的最终落点由各字段组件决定（例如 InputNumber / TagsInput 的 `id` 在字段根、`aria-*` 在内层可访问控件；这也正是统一交给组件转发的原因）。组型控件的 `aria-describedby` 作用于组根，不作用于每个子项。

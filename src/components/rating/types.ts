@@ -1,9 +1,11 @@
 import type { RatingRootProps } from 'reka-ui'
+import type { ComponentSize } from '../../types'
+import type { FieldIdentityProps, FieldStateProps } from '../_shared/field'
 
-/** 评分图标尺寸档位 */
-export type RatingSize = 'sm' | 'md' | 'lg'
+/** 评分图标尺寸档位（与字段公共尺寸同源） */
+export type RatingSize = ComponentSize
 
-export interface RatingProps {
+export interface RatingProps extends FieldStateProps, FieldIdentityProps {
     /**
      * 最大分值（渲染的图标个数）
      * @default 5
@@ -23,23 +25,6 @@ export interface RatingProps {
      * `disabled`, though both are non-interactive visually)
      */
     readonly?: boolean
-    /**
-     * 禁用
-     * @default false
-     * @en Disabled
-     */
-    disabled?: boolean
-    /**
-     * 图标尺寸档位
-     * @default 'md'
-     * @en Icon size preset
-     */
-    size?: RatingSize
-    /**
-     * 可访问名（评分区域整体）
-     * @en Accessible name of the whole rating
-     */
-    label?: string
     /**
      * 再次点击当前分值是否清零
      * @default false

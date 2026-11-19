@@ -177,4 +177,64 @@ describe('CaomeiRating', () => {
         expect(html).toContain('aria-label="评分"')
         expect(html).toContain('role="radio"')
     })
+
+    it('字段契约：label / invalid / id 落到评分根', () => {
+        const wrapper = mount(CaomeiRating, {
+            props: { label: '服务评分', invalid: true, id: 'rating-field', modelValue: 2 },
+            attachTo: document.body,
+        })
+
+        const root = document.querySelector('.caomei-rating') as HTMLElement
+        expect(root.getAttribute('role')).toBe('radiogroup')
+        expect(root.getAttribute('aria-label')).toBe('服务评分')
+        expect(root.getAttribute('aria-invalid')).toBe('true')
+        expect(root.getAttribute('id')).toBe('rating-field')
+
+        wrapper.unmount()
+    })
+
+    it('字段契约：name 提交当前分值', () => {
+        const wrapper = mount(
+            () => h('form', { id: 'rating-form' }, [h(CaomeiRating, { name: 'score', modelValue: 3 })]),
+            { attachTo: document.body },
+        )
+
+        const form = document.getElementById('rating-form') as HTMLFormElement | null
+        expect(form).not.toBeNull()
+        expect([...(form ? new FormData(form) : new FormData()).entries()]).toEqual([['score', '3']])
+
+        wrapper.unmount()
+    })
+
+    it('字段契约：透传 aria-label 在无 label 时生效', () => {
+        const wrapper = mount(CaomeiRating, {
+            props: { 'aria-label': '外部名称', modelValue: 1 },
+            attachTo: document.body,
+        })
+
+        const root = document.querySelector('.caomei-rating') as HTMLElement
+        expect(root.getAttribute('aria-label')).toBe('外部名称')
+
+        wrapper.unmount()
+    })
+
+    it('字段契约：prop 的 invalid 优先于透传 aria-invalid', () => {
+        const wrapper = mount(CaomeiRating, {
+            props: { 'aria-invalid': 'false', modelValue: 1 },
+            attachTo: document.body,
+        })
+
+        const root = document.querySelector('.caomei-rating') as HTMLElement
+        expect(root.hasAttribute('aria-invalid')).toBe(false)
+
+        const invalidWrapper = mount(CaomeiRating, {
+            props: { 'aria-invalid': 'false', invalid: true, modelValue: 1 },
+            attachTo: document.body,
+        })
+        const invalidRoot = document.querySelectorAll('.caomei-rating')[1] as HTMLElement
+        expect(invalidRoot.getAttribute('aria-invalid')).toBe('true')
+
+        wrapper.unmount()
+        invalidWrapper.unmount()
+    })
 })

@@ -4,7 +4,7 @@ Rating collects or displays a score: five stars and whole-step increments by def
 
 ## Basic usage
 
-`v-model` is a numeric score (`0` when nothing is selected). `label` is the accessible name of the rating; without it the built-in text of the current locale applies (the read-only locale text in read-only mode).
+`v-model` is a numeric score (`0` when nothing is selected). The accessible name resolves as explicit `label` > forwarded `aria-label` > the built-in text of the current locale (the read-only locale text in read-only mode).
 
 <demo
     vue="../examples/rating/basic.vue"
@@ -25,9 +25,29 @@ Rating collects or displays a score: five stars and whole-step increments by def
 
 ## Accessibility
 
-- The root is `role="radiogroup"`, named by `label` or by the built-in locale text (one for interactive, one for read-only).
+- The root is `role="radiogroup"`; its name resolves as explicit `label` > forwarded `aria-label` > built-in locale text (separate fallbacks for interactive and read-only).
 - Every interactive step is `role="radio"` named after its numeric value (such as `3.5`); the unit lives in the group name, avoiding plural mistakes across languages.
 - Keyboard: `Tab` reaches the current score or the first item, arrow keys (← → ↑ ↓) move and commit, and `Space` selects the focused item.
+
+## Form integration
+
+Rating shares the same field contract as other state-type fields: pass `id` / `name` / `label` / `invalid` directly, and inside `CaomeiFormItem` the slot scope binds `id` and `aria-*` onto the rating root (`role="radiogroup"`); when `name` is present the current score is submitted through a hidden control.
+
+```vue
+<CaomeiFormItem label="Service rating" name="score" hint="Used for satisfaction metrics" :error="errors.score">
+    <template #default="{ id, name: fieldName, invalid, ...aria }">
+        <CaomeiRating
+            :id="id"
+            v-bind="aria"
+            :name="fieldName"
+            v-model="form.score"
+            :invalid="invalid"
+        />
+    </template>
+</CaomeiFormItem>
+```
+
+An unrated field has the model `0`, so while interactive and with `name` present `score=0` is submitted (`readonly` / `disabled` do not submit); the component has no "empty" state — omit the field yourself before submitting when "not rated" must not be sent.
 
 ## Style customisation
 

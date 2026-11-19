@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { RatingItem, RatingItemIndicator, RatingRoot } from 'reka-ui'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useAttrs, watch } from 'vue'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { useLocale } from '../../composables/use-locale'
+import { resolveLabelName, useLabelAttrs } from '../_shared/use-label-attrs'
 import type { RatingProps } from './types'
 
-defineOptions({ name: 'CaomeiRating' })
+defineOptions({ name: 'CaomeiRating', inheritAttrs: false })
 
 const props = withDefaults(defineProps<RatingProps>(), {
     max: 5,
     step: 1,
     readonly: false,
     disabled: false,
+    invalid: false,
     size: 'md',
     label: undefined,
     clearable: false,
@@ -89,8 +91,17 @@ watch(inactive, (value) => {
     }
 })
 
-/** 评分区域的可访问名：显式 `label` 优先，其次按只读 / 可交互取语言兜底文案 */
-const accessibleName = computed(() => props.label || (props.readonly ? locale.value.rating.readonlyLabel : locale.value.rating.label))
+const attrs = useAttrs()
+
+/** 评分区域的可访问名：显式 `label` > 透传 `aria-label` > 按只读 / 可交互取语言兜底文案 */
+const accessibleName = computed(() => resolveLabelName(
+    props.label,
+    attrs['aria-label'],
+    props.readonly ? locale.value.rating.readonlyLabel : locale.value.rating.label,
+))
+
+/** 根即可访问控件：透传 attrs，并让显式可访问名优先于透传的 `aria-label` */
+const rootAttrs = useLabelAttrs(accessibleName)
 
 /** 每个 step 的可访问名按语言模板插值，避免硬编码文案 */
 function stepLabel(step: number): string {
@@ -100,13 +111,16 @@ function stepLabel(step: number): string {
 
 <template>
     <RatingRoot
+        :id="id"
         v-model="model"
         :length="items.length"
         :step="grid"
         :disabled="inactive"
         :clearable="clearable"
         :hoverable="!inactive"
-        :aria-label="accessibleName"
+        :name="name"
+        v-bind="rootAttrs"
+        :aria-invalid="invalid || undefined"
         :aria-readonly="readonly ? 'true' : undefined"
         :class="rootClass"
         @mouseleave="resetHover"

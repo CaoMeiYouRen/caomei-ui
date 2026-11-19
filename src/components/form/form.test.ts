@@ -9,6 +9,7 @@ import { CaomeiInput } from '../input'
 import { CaomeiInputNumber } from '../input-number'
 import { CaomeiMultiSelect } from '../multi-select'
 import { CaomeiRadioGroup } from '../radio-group'
+import { CaomeiRating } from '../rating'
 import { CaomeiSelect } from '../select'
 import { CaomeiSelectButton } from '../select-button'
 import { CaomeiSwitch } from '../switch'
@@ -46,11 +47,12 @@ const FIELD_PROPS_CASES: FieldCase[] = [
     { name: 'Textarea', component: CaomeiTextarea as unknown as Component },
 ]
 
-/** `FieldStateProps` + `FieldIdentityProps`（4 个状态型控件） */
+/** `FieldStateProps` + `FieldIdentityProps`（5 个状态型控件） */
 const FIELD_STATE_CASES: FieldCase[] = [
     { name: 'Checkbox', component: CaomeiCheckbox as unknown as Component },
     { name: 'CheckboxGroup', component: CaomeiCheckboxGroup as unknown as Component, props: { options } },
     { name: 'RadioGroup', component: CaomeiRadioGroup as unknown as Component, props: { options } },
+    { name: 'Rating', component: CaomeiRating as unknown as Component },
     { name: 'SelectButton', component: CaomeiSelectButton as unknown as Component, props: { options, modelValue: 'a' } },
 ]
 
@@ -357,7 +359,7 @@ describe('字段继承面逐项绑定', () => {
         }
     })
 
-    it('FieldStateProps + 身份：4 个状态型控件承接 id / name / aria-* / invalid', async () => {
+    it('FieldStateProps + 身份：5 个状态型控件承接 id / name / aria-* / invalid', async () => {
         for (const field of FIELD_STATE_CASES) {
             const { wrapper, scope } = await mountBoundField(field)
             expectBoundField(wrapper, scope, field)

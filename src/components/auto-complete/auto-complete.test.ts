@@ -528,4 +528,64 @@ describe('CaomeiAutoComplete', () => {
             expect(emptyEl?.textContent?.trim()).toBe('No matching suggestions')
         })
     })
+
+    it('开启 allowEmptyValue：未选择时空输入失焦不写模型', async () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: {
+                options: [{ label: '全部', value: '' }, { label: '苹果', value: 'apple' }],
+                allowEmptyValue: true,
+                dropdown: true,
+            },
+            attachTo: document.body,
+        })
+
+        const input = wrapper.get('input')
+        await input.trigger('focus')
+        await input.setValue('')
+        await input.trigger('blur')
+        await nextTick()
+
+        // 空输入不得写入 `''`（那等于选中空值项）；模型保持未选择
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        expect(wrapper.get('.caomei-auto-complete').attributes('data-filled')).toBeUndefined()
+
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue：未选择时可提交与空值项 label 相同的自由文本', async () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: {
+                options: [{ label: '全部', value: '' }, { label: '苹果', value: 'apple' }],
+                allowEmptyValue: true,
+                dropdown: true,
+            },
+            attachTo: document.body,
+        })
+
+        const input = wrapper.get('input')
+        await input.trigger('focus')
+        await input.setValue('全部')
+        await input.trigger('blur')
+        await nextTick()
+
+        // 未选择时空值项 label 不得被当成已选值吞掉自由文本
+        expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['全部'])
+
+        wrapper.unmount()
+    })
+
+    it('开启 allowEmptyValue：未选择时送往 Reka 的模型为 undefined 而非内部 token', () => {
+        const wrapper = mount(CaomeiAutoComplete, {
+            props: {
+                options: [{ label: '全部', value: '' }, { label: '苹果', value: 'apple' }],
+                allowEmptyValue: true,
+                dropdown: true,
+            },
+        })
+
+        const root = wrapper.findComponent({ name: 'ComboboxRoot' })
+        expect(root.props('modelValue')).toBeUndefined()
+
+        wrapper.unmount()
+    })
 })

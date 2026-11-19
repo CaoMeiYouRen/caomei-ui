@@ -78,4 +78,12 @@ export interface SelectProps<T extends object = SelectOption> extends FieldProps
      * @en Accessible name of the clear button; defaults to the current locale's "Clear" text
      */
     clearLabel?: string
+    /**
+     * 是否把空字符串作为真实选项值；默认 false。默认行为下空串选项会被丢弃并开发期告警，
+     * 开启后空串项正常渲染与选中，且「未选择」为 `null`（与 `''` 区分）
+     * @en Whether the empty string is a real option value; defaults to false. By default an empty-string
+     * option is dropped with a dev warning; when enabled it renders and selects normally, and "nothing
+     * selected" is `null` (distinct from `''`)
+     */
+    allowEmptyValue?: boolean
 }

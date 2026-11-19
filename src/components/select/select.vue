@@ -18,7 +18,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { warnDev } from '../../_shared/dev-warn'
-import { isEmptyOptionValue, narrowOptionValue, resolveOptionDisabled, resolveOptionField, warnEmptyOptionValue, type OptionValue } from '../_shared/option'
+import { EMPTY_OPTION_TOKEN, fromPanelValue, isEmptyOptionValue, isReservedEmptyToken, narrowOptionValue, resolveOptionDisabled, resolveOptionField, warnEmptyOptionValue, type OptionValue } from '../_shared/option'
 import { labelAttrs } from '../_shared/use-label-attrs'
 import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import type { SelectOptionGroup, SelectProps } from './types'
@@ -37,6 +37,7 @@ const props = withDefaults(defineProps<SelectProps<T>>(), {
     invalid: false,
     bodyLock: false,
     showClear: false,
+    allowEmptyValue: false,
 })
 
 defineSlots<{
@@ -66,6 +67,8 @@ interface NormalizedOption {
     value: OptionValue
     /** 解析后的显示文本；字段缺省时为 undefined */
     label: string | undefined
+    /** 送往 Reka 面板的值：开启 allowEmptyValue 时空串项用内部 token 承载 */
+    panelValue: OptionValue
     disabled: boolean
 }
 
@@ -86,7 +89,39 @@ function isOptionGroup(option: T | SelectOptionGroup<T>): option is SelectOption
     return 'options' in option && Array.isArray(option.options)
 }
 
-/** 归一化选项列表：映射字段并剔除解析不到值的项，供触发器与面板共用 */
+/**
+ * 归一化单个选项：解析字段并按契约处置空串与保留 token。
+ * - 默认（`allowEmptyValue === false`）：空串选项告警并丢弃；
+ * - 开启时：空串项保留，面板值换成内部 token；值恰好等于 token 的非空选项丢弃并告警。
+ */
+function normalizeOption(option: T, index: number, groupLabel?: string): NormalizedOption | undefined {
+    const rawValue = resolveOptionField<T, unknown>(option, props.optionValue, 'value')
+    const value = narrowOptionValue(rawValue)
+    if (value === undefined) {
+        warnUnresolvedOption(rawValue, index)
+        return undefined
+    }
+    if (isEmptyOptionValue(value)) {
+        if (!props.allowEmptyValue) {
+            warnEmptyOptionValue('CaomeiSelect', index, groupLabel)
+            return undefined
+        }
+    } else if (props.allowEmptyValue && isReservedEmptyToken(value)) {
+        warnDev(
+            `[CaomeiSelect] 第 ${index + 1} 个选项的 value 使用了保留字符串，该选项不会渲染（allowEmptyValue 开启时该值由空值项占用）。`,
+        )
+        return undefined
+    }
+    return {
+        raw: option,
+        value,
+        panelValue: props.allowEmptyValue && value === '' ? EMPTY_OPTION_TOKEN : value,
+        label: resolveOptionField(option, props.optionLabel, 'label'),
+        disabled: resolveOptionDisabled(option),
+    }
+}
+
+/** 归一化选项列表：映射字段并剔除契约外项，供触发器与面板共用 */
 const normalizedOptions = computed<NormalizedOption[]>(() => {
     const result: NormalizedOption[] = []
     for (const [index, option] of props.options.entries()) {
@@ -94,22 +129,10 @@ const normalizedOptions = computed<NormalizedOption[]>(() => {
         if (isOptionGroup(option)) {
             continue
         }
-        const rawValue = resolveOptionField<T, unknown>(option, props.optionValue, 'value')
-        const value = narrowOptionValue(rawValue)
-        if (value === undefined) {
-            warnUnresolvedOption(rawValue, index)
-            continue
+        const normalized = normalizeOption(option, index)
+        if (normalized) {
+            result.push(normalized)
         }
-        if (isEmptyOptionValue(value)) {
-            warnEmptyOptionValue('CaomeiSelect', index)
-            continue
-        }
-        result.push({
-            raw: option,
-            value,
-            label: resolveOptionField(option, props.optionLabel, 'label'),
-            disabled: resolveOptionDisabled(option),
-        })
     }
     return result
 })
@@ -123,22 +146,10 @@ const normalizedGroups = computed(() => {
         }
         const groupOptions: NormalizedOption[] = []
         for (const [index, item] of option.options.entries()) {
-            const rawValue = resolveOptionField<T, unknown>(item, props.optionValue, 'value')
-            const value = narrowOptionValue(rawValue)
-            if (value === undefined) {
-                warnUnresolvedOption(rawValue, index)
-                continue
+            const normalized = normalizeOption(item, index, option.label)
+            if (normalized) {
+                groupOptions.push(normalized)
             }
-            if (isEmptyOptionValue(value)) {
-                warnEmptyOptionValue('CaomeiSelect', index, option.label)
-                continue
-            }
-            groupOptions.push({
-                raw: item,
-                value,
-                label: resolveOptionField(item, props.optionLabel, 'label'),
-                disabled: resolveOptionDisabled(item),
-            })
         }
         result.push({ label: option.label, options: groupOptions })
     }
@@ -148,10 +159,49 @@ const normalizedGroups = computed(() => {
 /** 是否包含分组 */
 const hasGroups = computed(() => props.options.some(isOptionGroup))
 
-/** 有选中值（用于 data-filled；不依赖选项 label，空 label 也视为有值） */
-const hasValue = computed(
-    () => model.value !== undefined && model.value !== null && model.value !== '',
+/** 选项集中是否存在空值项（开启 allowEmptyValue 时 `''` 才是有值） */
+const emptyOptionExists = computed(
+    () => normalizedOptions.value.some((option) => option.value === '')
+        || normalizedGroups.value.some((group) => group.options.some((option) => option.value === '')),
 )
+
+/** 有选中值（用于 data-filled；不依赖选项 label，空 label 也视为有值） */
+const hasValue = computed(() => {
+    const value = model.value
+    if (value === undefined || value === null) {
+        return false
+    }
+    // 开启 allowEmptyValue 后 `''` 是真实选中值，但仅当选项中确有该值
+    if (value === '') {
+        return props.allowEmptyValue && emptyOptionExists.value
+    }
+    return true
+})
+
+/** 送往 Reka 的模型：开启 allowEmptyValue 时把空串换成内部 token */
+const panelModel = computed<OptionValue | null>(() => {
+    const value = model.value
+    if (value === undefined || value === null) {
+        return null
+    }
+    return props.allowEmptyValue && value === '' ? EMPTY_OPTION_TOKEN : value
+})
+
+/**
+ * Reka 回写模型：token 还原为空串；`null` / `undefined` 统一收敛为 `null`（未选择）。
+ */
+function onModelUpdate(value: unknown): void {
+    if (value === undefined || value === null) {
+        model.value = null
+        return
+    }
+    // 仅在开启 allowEmptyValue 时还原 token；关闭时该字符串是用户的普通值
+    const mapped = props.allowEmptyValue ? fromPanelValue(value) : value
+    model.value = typeof mapped === 'string' || typeof mapped === 'number' ? mapped : null
+}
+
+/** 开启 allowEmptyValue 时由本组件渲染隐藏输入，避免内部 token 进入表单提交值 */
+const panelName = computed<string | undefined>(() => (props.allowEmptyValue ? undefined : props.name))
 
 const clearable = computed(() => props.showClear && hasValue.value && !props.disabled)
 
@@ -219,11 +269,20 @@ useOpenStateIsolation(contentRef, () => [], () => open.value)
 
 <template>
     <SelectRoot
-        v-model="model"
         v-model:open="open"
+        :model-value="panelModel"
         :disabled="disabled"
-        :name="name"
+        :name="panelName"
+        @update:model-value="onModelUpdate"
     >
+        <!-- 开启 allowEmptyValue 时由本组件提交表单值，避免内部 token 外泄 -->
+        <input
+            v-if="allowEmptyValue && name"
+            type="hidden"
+            :name="name"
+            :value="model ?? ''"
+            :disabled="disabled || undefined"
+        >
         <div
             class="caomei-select__field"
             :class="[`caomei-select__field--${size}`, rootClass]"
@@ -246,6 +305,8 @@ useOpenStateIsolation(contentRef, () => [], () => open.value)
                         :selected="hasValue"
                     >
                         <span v-if="selectedLabel">{{ selectedLabel }}</span>
+                        <!-- 选中空值项但缺 label：渲染空文本，不回落到 placeholder -->
+                        <span v-else-if="hasValue && allowEmptyValue" />
                         <span v-else class="caomei-select__placeholder">{{ placeholder }}</span>
                     </slot>
                 </SelectValue>
@@ -280,9 +341,9 @@ useOpenStateIsolation(contentRef, () => [], () => open.value)
                     <template v-if="!hasGroups">
                         <SelectItem
                             v-for="option in normalizedOptions"
-                            :key="option.value"
+                            :key="option.panelValue"
                             class="caomei-select__item"
-                            :value="option.value"
+                            :value="option.panelValue"
                             :disabled="option.disabled"
                         >
                             <SelectItemText class="caomei-select__item-text">
@@ -304,9 +365,9 @@ useOpenStateIsolation(contentRef, () => [], () => open.value)
                         <!-- 顶层扁平选项 -->
                         <SelectItem
                             v-for="option in normalizedOptions"
-                            :key="option.value"
+                            :key="option.panelValue"
                             class="caomei-select__item"
-                            :value="option.value"
+                            :value="option.panelValue"
                             :disabled="option.disabled"
                         >
                             <SelectItemText class="caomei-select__item-text">
@@ -333,9 +394,9 @@ useOpenStateIsolation(contentRef, () => [], () => open.value)
                             </SelectLabel>
                             <SelectItem
                                 v-for="option in group.options"
-                                :key="option.value"
+                                :key="option.panelValue"
                                 class="caomei-select__item"
-                                :value="option.value"
+                                :value="option.panelValue"
                                 :disabled="option.disabled"
                             >
                                 <SelectItemText class="caomei-select__item-text">

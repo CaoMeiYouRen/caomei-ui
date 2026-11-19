@@ -68,6 +68,14 @@ export interface MultiSelectProps<T extends object = MultiSelectOption> extends 
      */
     clearLabel?: string
     /**
+     * 是否把空字符串作为真实选项值；默认 false。默认行为下空串选项会被丢弃并开发期告警，
+     * 开启后空串项正常渲染与增删，数组中的 `''` 且选项存在时计为有值
+     * @en Whether the empty string is a real option value; defaults to false. By default an empty-string
+     * option is dropped with a dev warning; when enabled it renders and can be added/removed, and `''`
+     * counts as a value while such an option exists
+     */
+    allowEmptyValue?: boolean
+    /**
      * 展开触发器可访问名；默认取当前语言的「展开选项」
      * @en Accessible name of the open trigger; defaults to the current locale's "Show options" text
      */

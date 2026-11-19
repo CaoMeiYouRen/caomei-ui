@@ -84,6 +84,7 @@ function notifySaved(): void {
 | 校验态 | `class="p-invalid"` | `:invalid` | 由 class 改为受控 prop |
 | 全宽 | `fluid` | 默认 `width: 100%` | 迁移时删除 `fluid`；**选择器家族另有 `20rem` 宽度上限**，需要真正全宽时把对应上限 token 覆盖为 `none`（见 §7 与[主题与样式 §4.1](../design/theming.md)）。**例外**：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度） |
 | 选项字段 | `option-label` / `option-value` | `optionLabel` / `optionValue` | 语义一致，仅命名风格不同 |
+| 选项空串值 | `value: ''` 可作普通选项值（如「全部」） | 默认把空串当契约外值（不渲染并开发期告警） | 需要空串作真实值时给 `Select` / `MultiSelect` / `AutoComplete` 加 `allowEmptyValue`；三态「未选择」与清除口径见[设计规范 §7](../design/design-spec.md)，本页不复述 |
 | 可搜索单选 | `Select` + `filter` | 改用 `CaomeiAutoComplete` | Reka Select 无 filter primitive（面板内搜索框违反 ARIA 结构），差异见 §7 与 [Backlog](../plan/backlog.md) |
 | 标签录入 | `Chips`（v4 起为 `InputChips` 的旧名） | `CaomeiTagsInput`（**首选**）；`CaomeiAutoComplete` + `multiple`（备选） | `separator` → `delimiter`；`allowDuplicate` **默认相反**（本库默认拒绝重复）；见 §7 与 [TagsInput](../components/tags-input.md) |
 | 事件载荷 | 如 `Switch` 的 `change` 传原生事件 | 传切换后的布尔值 | 事件名相同、载荷不同，回调签名需同步 |

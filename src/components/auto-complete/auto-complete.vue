@@ -15,12 +15,12 @@ import {
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
-import { suppressOutside } from '../../_shared/open-state-inert'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { ComboboxPanelIdrefBridge, panelControlsAttr, panelControlsBinds, usePanelIdrefState } from '../_shared/panel-idref'
 import { isEmptyOptionValue, warnEmptyOptionValue } from '../_shared/option'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
 import { labelAttrs } from '../_shared/use-label-attrs'
+import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import type {
     AutoCompleteEmits,
     AutoCompleteOption,
@@ -278,24 +278,28 @@ function onAnchorClick(event: MouseEvent): void {
     ;(event.currentTarget as HTMLElement | null)?.querySelector('input')?.focus()
 }
 
+const contentRef = ref<{ $el?: unknown } | null>(null)
+const anchorRef = ref<{ $el?: unknown } | null>(null)
+
+/**
+ * 打开态兄弟隔离：Reka 只用 `aria-hidden` 隐藏面板外的兄弟节点，背景里的可聚焦元素
+ * 仍留在 Tab 序列里（axe `aria-hidden-focus`）。面板落位后补 `inert`，关闭时先于焦点
+ * 归还输入框回退，避免背景因 `inert` 接收不到焦点。字段自身（含输入框）是 Combobox
+ * 的交互面，必须留在隔离面之外。
+ */
+const { release } = useOpenStateIsolation(
+    contentRef,
+    () => [anchorRef.value?.$el],
+    () => open.value,
+)
+
+/** 键盘关闭（Escape）时置位：Reka Combobox 非模态、不自动归还焦点，关闭后由本组件补 */
+let restoreFocusOnClose = false
+
+const inputRef = ref<{ $el?: unknown } | null>(null)
+
 onMounted(() => {
     document.addEventListener('pointerdown', onDocumentPointerDown, true)
-    // 受控用法下挂载即展开：watch 不会触发，这里补一次隔离
-    if (open.value) {
-        void nextTick(() => {
-            if (!open.value) {
-                return
-            }
-            const content = contentRef.value?.$el
-            if (content instanceof HTMLElement && content.isConnected) {
-                restoreContentInert = suppressOutside(content)
-            }
-            const field = anchorRef.value?.$el
-            if (field instanceof HTMLElement && field.isConnected) {
-                restoreFieldInert = suppressOutside(field)
-            }
-        })
-    }
 })
 
 onBeforeUnmount(() => {
@@ -303,26 +307,7 @@ onBeforeUnmount(() => {
         clearTimeout(debounceTimer)
     }
     document.removeEventListener('pointerdown', onDocumentPointerDown, true)
-    releaseInert()
 })
-
-const contentRef = ref<{ $el?: unknown } | null>(null)
-const anchorRef = ref<{ $el?: unknown } | null>(null)
-
-let restoreContentInert: (() => void) | undefined
-let restoreFieldInert: (() => void) | undefined
-
-/** 键盘关闭（Escape）时置位：Reka Combobox 非模态、不自动归还焦点，关闭后由本组件补 */
-let restoreFocusOnClose = false
-
-const inputRef = ref<{ $el?: unknown } | null>(null)
-
-function releaseInert(): void {
-    restoreContentInert?.()
-    restoreContentInert = undefined
-    restoreFieldInert?.()
-    restoreFieldInert = undefined
-}
 
 /** 非模态浮层：背景被隔离后点击会落在 `inert` 子树里，先解除隔离再让这次点击落到目标控件上 */
 function onDocumentPointerDown(event: PointerEvent): void {
@@ -341,7 +326,7 @@ function onDocumentPointerDown(event: PointerEvent): void {
     if (field instanceof HTMLElement && field.contains(target)) {
         return
     }
-    releaseInert()
+    release()
 }
 
 /** 可聚焦候选：展开态按 Tab 时把焦点交给字段之后（Shift 时为之前）的下一个控件 */
@@ -381,19 +366,12 @@ function markEscapeClose(): void {
 }
 
 /**
- * 打开态兄弟隔离：Reka 只用 `aria-hidden` 隐藏面板外的兄弟节点，背景里的可聚焦元素
- * 仍留在 Tab 序列里（axe `aria-hidden-focus`）。面板落位后补 `inert`，关闭时先于焦点
- * 归还输入框回退，避免背景因 `inert` 接收不到焦点。
+ * 关闭后补焦点归还：隔离已由 `useOpenStateIsolation` 同步回退（先于此处执行的焦点归还）。
  */
-// 关闭：同步回退隔离，必须先于 Reka 的焦点归还（否则输入框仍在 `inert` 子树、焦点掉到 body）
 watch(
     open,
     (isOpen) => {
-        if (isOpen) {
-            return
-        }
-        releaseInert()
-        if (!restoreFocusOnClose) {
+        if (isOpen || !restoreFocusOnClose) {
             return
         }
         restoreFocusOnClose = false
@@ -405,33 +383,6 @@ watch(
         })
     },
     { flush: 'sync' },
-)
-
-// 打开：面板落位后补隔离（post 刷新保证 `contentRef` 已挂载）
-watch(
-    open,
-    (isOpen) => {
-        if (!isOpen) {
-            return
-        }
-        void nextTick(() => {
-            if (!open.value) {
-                return
-            }
-            // 先撤销上一轮写入，避免同 tick 反复开合时遗留隔离层
-            releaseInert()
-            const content = contentRef.value?.$el
-            if (content instanceof HTMLElement && content.isConnected) {
-                restoreContentInert = suppressOutside(content)
-            }
-            // 字段自身（含输入框）是 Combobox 的交互面，必须留在隔离面之外
-            const field = anchorRef.value?.$el
-            if (field instanceof HTMLElement && field.isConnected) {
-                restoreFieldInert = suppressOutside(field)
-            }
-        })
-    },
-    { flush: 'post' },
 )
 
 // 选项变化后，若当前高亮值已不存在则清空，避免回车误选已移除的建议

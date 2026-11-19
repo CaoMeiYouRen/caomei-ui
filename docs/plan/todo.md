@@ -12,7 +12,7 @@
 |:---|:---|:---|:---|
 | M1-1 | 质量收口 | 列宽拖拽残余补齐 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase37-m1-1-column-resize-residual.md)） |
 | M1-2 | 质量收口 | 浮层隔离残余补齐 | 已交付（2026-11-18，[交付记录](../design/governance/2026-11-18-phase37-m1-2-overlay-isolation-residual.md)） |
-| M1-3 | 质量收口 | 隔离接线下沉 | 待执行 |
+| M1-3 | 质量收口 | 隔离接线下沉 | 已交付（2026-11-19，[交付记录](../design/governance/2026-11-19-phase37-m1-3-isolation-wiring.md)） |
 | M2-1 | 空值 opt-in | `allowEmptyValue` 契约设计（只设计） | 待执行 |
 | M2-2 | 空值 opt-in | 实现（Select / MultiSelect / AutoComplete） | 待执行 |
 | M2-3 | 空值 opt-in | 测试与文档 | 待执行 |

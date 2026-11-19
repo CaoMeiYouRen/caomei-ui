@@ -49,12 +49,17 @@
 |------|------|------|--------|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**先评估**（形态 / 与既有选择器的边界 / 成本），通过后再登记阶段。**触发条件 = 用户裁定启动评估** | 中 |
-| ActionSheet 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 底部操作表；现可由 `Drawer position="bottom"` + 列表拼装，缺一等语义（操作项分组 / 取消项 / 焦点回退契约）。**触发条件 = 用户裁定启动评估** | 中 |
-| Cell / CellGroup 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 移动端列表行语义（标题 / 描述 / 右值 / 跳转）；`DataView layout="list"` 是布局而非行语义。**触发条件 = 用户裁定启动评估** | 中 |
-| SafeArea / Sticky 工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `src` 内 0 处 `env(safe-area-inset-*)`；`position: sticky` 仅 DataTable 表头。可先以 token / 工具类 + 文档配方承接，**零组件成本**。**触发条件 = 移动端适配指南批次** | 中 |
-| NavBar / Tabbar 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | 路由级移动导航；现无等价件（`Toolbar` / `Tabs` / `Menu` 拼装不出 tabbar 语义）。**触发条件 = 下游出现真实路由级移动导航用例** | 低 |
-| 移动端适配指南补强 | 用户需求（2026-11-18） | 把 bottom sheet / 安全区 / 吸顶 / 固定底部操作条 / 软键盘可见性写成配方与判据（[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 五条下限判据可直接复用）。**触发条件 = 下一次文档批次** | 中 |
+| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估 | 中 |
+| ActionSheet 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.4 / §11.5 | 底部操作表；现可由 `Drawer position="bottom"` + 列表拼装，缺一等语义（操作项分组 / 取消项 / 危险项 / 焦点回退契约）。**caomei-todo §11.5 的处置为「先用 Drawer + 菜单；若 2 处以上复用，提上游」——上游提前承担属主动扩界（待用户裁定）**；形态边界见[评估记录](../design/governance/2026-11-20-mobile-experience-evaluation.md) §5 | 中 |
+| Cell / CellGroup 评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 需求 FR-TASK-01 / 02 / 05 | 移动端列表行语义（标题 / 描述 / 右值 / 跳转）；`DataView layout="list"` 是布局而非行语义。**caomei-todo §11.5 的处置为「用 Card / 列表组合；高频再提上游」——上游提前承担属主动扩界（待用户裁定）**；形态边界见[评估记录](../design/governance/2026-11-20-mobile-experience-evaluation.md) §5 | 中 |
+| SafeArea / 动态视口（固定定位件） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.4 | `src` 内 **0 处** `env(safe-area-inset-*)`；6 个固定定位组件（Drawer / Dialog / ConfirmDialog / Toast / BackTop / Image preview）未避让；Drawer `90vh` / Dialog `85vh` / Toast `100vh` / Image `90vh` 未用 `dvh`。可先以 token / 工具类 + 文档配方承接，**零新依赖**；caomei-todo 已把安全区列为移动壳职责。**三条标准达标（待用户决策）** | 中 |
+| Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 低 |
+| Tabbar（presentational） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.4 | 底部主导航（我的一天 / 列表 / 搜索 / 设置）；现无等价件（`Toolbar` / `Tabs` / `Menu` 拼装不出 tabbar 语义）。**caomei-todo §11.5 的处置为「应用层布局；多下游需要时提 backlog」——上游提前承担属主动扩界（待用户裁定）**；形态边界见[评估记录](../design/governance/2026-11-20-mobile-experience-evaluation.md) §5 | 中 |
+| NavBar（路由级页头） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；本仓推断（caomei-todo §11.5 未单列） | `Toolbar` + `Button` 可拼；缺返回 / 标题 / 吸顶语义。caomei-todo 先用应用层布局。触发条件 = 下游出现真实路由级移动导航用例 | 低 |
+| 移动端适配指南补强 | 用户需求（2026-11-18）；caomei-todo 架构 §11.4 | 把 bottom sheet / 安全区 / 吸顶 / 固定底部操作条 / 软键盘可见性 / 44×44 达成路径写成配方与判据（[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 五条下限判据可直接复用）。触发条件 = 下一次文档批次；**本轮建议纳入阶段（待用户决策）** | 中 |
+| 触摸目标 44×44 可选档 | caomei-todo 需求 NFR-09 / 里程碑 M4-A4 | 现下限为 24（WCAG 2.5.8）+ `data-density="touch"` 控件高 44；关键操作 44 可用 `size="lg"` / touch 密度达成，但**相邻目标间距契约只保证 24**，默认放大到 44 会使值片命中区重叠；候选形态见[评估记录](../design/governance/2026-11-20-mobile-experience-evaluation.md) D2。触发条件 = 用户裁定 | 中 |
+| 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 低 |
+| Search 栏组合件 | caomei-todo 需求 FR-TASK-07 + 本仓推断（搜索栏形态） | 搜索输入 + 图标 + 清除 + 取消；`Input` / `InputGroup` / `Button` 可拼。先出配方；组件化需 ≥2 下游或出现原生无法覆盖的用例 | 低 |
 
 ### 1.6 基建与治理候选
 
@@ -104,7 +109,7 @@
 |------|------|:-:|
 | InputOtp（验证码输入） | 记录 **P0**；Reka `PinInputRoot` 现成；Element Plus `input-otp` / PrimeVue `inputotp` / Varlet `otp-input`（Vant / TDesign 无独立件） | 中 |
 | Popconfirm | 记录 **P0**；Element Plus / TDesign `popconfirm`、PrimeVue `confirmpopup`；比 `ConfirmDialog` 轻、不打断上下文 | 中 |
-| Empty | 记录 **P0**；Element Plus / TDesign / Vant `empty`；本库只有 `DataView` 空态与表格空文案 | 中 |
+| Empty | 记录 **P0**；Element Plus / TDesign / Vant `empty`；本库只有 `DataView` 空态与表格空文案。**caomei-todo 的空列表 / 空搜索 / 回收站均需空态（规划值，无代码取证）**（需求 FR-TASK-01 / 07 / 11）；属既有 P0 缺口（待用户决策），与 `DataView` 的关系见[评估记录](../design/governance/2026-11-20-mobile-experience-evaluation.md) §5 | 高 |
 | Result | 记录 **P0**；Element Plus / Varlet `result`；结果页（成功 / 失败 / 无权限） | 中 |
 | Descriptions | 记录 **P0**；Element Plus / TDesign `descriptions`，PrimeVue 以 `fieldset` 近似；详情页键值布局（响应式列数） | 中 |
 | Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
@@ -144,3 +149,5 @@
 | 上游 standards 骨架接入（`cmyr-skills-agents` 提案草案） | 2026-11-02 提案（草案，未正式发起） | **不采纳**：草案未发起正式提案（dependfix 试点未出结论）；项目 `AGENTS.md` §2 / §8.2 已有等价正文，且 `check:standards-redundant:strict` 禁止规范重复表述，搬运上游正文会直接触发本仓门禁。optOut 已提交上游 §7（commit `3ba71e0`）。复查条件：试点结论出来后只考虑「规范来源可追溯」标注，不搬正文。 |
 | Select 选项 `null` 值支持（以独立哨兵区分「未选择」） | momei 迁移反馈 2026-09-25 §1.2 | **不纳入**：`optionValue` 收窄为 `string \| number` 属有意契约（对齐 Reka 可稳定比较子集），非字符串 / 数字选项不渲染已在[设计规范 §7](../design/design-spec.md) 与 Select 组件页声明；支持 `null` 会改变「未选择」语义，须另立契约。开发期告警已于 2026-11-17 纳入 Phase 36 M4-1（插队）；`''` 的 opt-in 形态见 §1.1，与 `null` 支持属不同值域、同样须另立契约，评估见[上游反馈评估](../design/governance/2026-09-25-momei-upstream-feedback-evaluation.md) |
 | App Shell / `Overlay` / `Fab` / `List`（应用外壳与组合件） | 三仓实测（2026-10-13，[范围扩展评估](../design/governance/2026-10-13-phase24-scope-extension-evaluation.md) §3.1 / §3.2） | **不纳入**：`v-app` / `v-main` / `v-toolbar` 属**应用层外壳**（本库以组件为单位提供，`Toolbar` 已覆盖工具栏语义）；`v-overlay` 与既有 Dialog / Drawer / Popover 的遮罩机制重复；`v-fab-transition`（悬浮按钮）与 `v-list`（列表）均可用既有容器 + 样式承接（@lucide/vue 提供图标）。触发条件 = 出现既有能力无法覆盖的真实用例时再评估 |
+| 手势交互型移动件（PullRefresh / InfiniteScroll / SwipeCell / 图片捏合预览 / IndexBar / FloatingBubble / Signature） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 C 类；caomei-todo 架构 §11.5 | **不纳入**：与[响应式设计 §1](../design/responsive.md) 的手势非目标一致，且需要独立的交互与测试体系；caomei-todo 明确在应用层用 Pointer Events 实现并保留可见按钮作为兜底与无障碍路径。触发条件 = 用户推翻手势非目标 |
+| NumberKeyboard（自定义数字键盘） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 A 类；caomei-todo 需求全文核对（2026-11-20） | **不纳入**：caomei-todo 一期需求未出现金额输入 / 验证码专用键盘条目，`InputNumber` + 系统键盘可覆盖。触发条件 = 出现必须自定义键盘的金额 / 验证码用例 |

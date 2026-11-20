@@ -101,6 +101,49 @@ If the app only needs larger controls on narrow screens, skip the axis and overr
 - This override does **not** enlarge the hit areas of Checkbox / RadioButton / Switch / icon buttons; the P0 clear / close buttons are already covered by the library (≥24×24, visuals unchanged), while the remaining targets still need consumer-level `padding` or a wrapper.
 - Why there is no `data-preset="mobile"`: presets are orthogonal to colour scheme and viewport-agnostic; putting sizes into a preset would also enlarge desktop controls and still would not cover breakpoints or hit areas. See the [mobile-first preset evaluation](/design/governance/2026-10-25-mobile-first-preset-evaluation) (Chinese).
 
+## Mobile layout recipes
+
+These recipes apply "safe area + dynamic viewport + touch minimums" to common mobile layouts. Breakpoint semantics and the narrow-screen matrix live in [Responsive design §2](/design/responsive) / [§3](/design/responsive); this section only gives copy-ready consumer patterns.
+
+### Bottom sheet
+
+- Use `CaomeiActionSheet` (a `CaomeiDrawer position="bottom"` under the hood), or build your own with the bottom Drawer.
+- The panel height converges to `min(90dvh, size)` and the body scrolls when content overflows; bottom padding already adds `--caomei-safe-area-bottom`, so do not wrap it in a safe-area utility class.
+- For a custom panel, set `max-height: 90dvh; overflow: auto` and `padding-bottom: calc(var(--caomei-space-4) + var(--caomei-safe-area-bottom))` so content clears the home indicator.
+
+### Sticky header
+
+- Make the header `position: sticky; top: 0` and take its stacking level from `var(--caomei-z-sticky)`; never write a numeric `z-index`.
+- Add `--caomei-safe-area-top` to the top padding; under `viewport-fit=cover` this is the only way to clear the notch.
+- Do not set `overflow: hidden` on the sticky header, or it will clip overlays opened inside it.
+
+### Fixed bottom action bar
+
+- Use `position: fixed; inset-inline: 0; bottom: 0` with `var(--caomei-z-sticky)` and padding `calc(var(--caomei-space-3) + var(--caomei-safe-area-bottom))`.
+- Reserve bottom spacing equal to the bar height (including the safe area) on the page content, or the last block will sit underneath it.
+- Prefer `size="lg"` or a `data-density="touch"` subtree for the primary button in the bar (see the 44px path below).
+
+### Soft keyboard and visibility
+
+- The library does **not** listen to `visualViewport` and has no JavaScript viewport branch; address-bar changes are handled by `dvh` (Drawer / Dialog / Toast / image preview already ship the `dvh` fallback).
+- Use `min-height: 100dvh` instead of `100vh`; when an input is focused the browser scrolls it into view, so do not fight it with a manual `scrollIntoView`.
+- Keep input font size ≥16px (`data-density="touch"` already raises `--caomei-font-size-md` to 16px) to avoid iOS focus zoom.
+
+### Five lower bounds
+
+1. **Hit area ≥24×24** (WCAG 2.5.8): the in-library P0 / P1 / P2 targets already meet it through invisible hit areas, with the visual box unchanged.
+2. **Adjacent target centre distance ≥24**: use `--caomei-space-3` or larger row spacing within one interaction family.
+3. **Primary actions ≥44×44 recommended**: use `size="lg"` or the touch density axis for the top action in a sheet or bottom bar; do not enlarge every control by default.
+4. **Text and input floors**: body text ≥14px, inputs ≥16px; narrow viewports converge by wrapping / truncation, never by shrinking the font.
+5. **Fixed pieces clear the safe area and dynamic viewport**: fixed top / bottom / drawer / toast offsets add the matching safe-area token and use `dvh` for heights.
+
+### Reaching 44px
+
+- **Preferred**: add `data-density="touch"` to touch-dense containers; control heights become 36 / 44 / 52px and fonts grow with colours unchanged.
+- **Per control**: use `size="lg"` for primary buttons; only upgrade first-level actions that must be easy to hit — list rows do not need global enlargement.
+- **At the consumer layer**: enlarge the clickable area with wrapper padding; the hit area may exceed the visual box.
+- **Avoid**: making 44px the default control height — that changes the desktop shape and shifts every visual baseline; also avoid packing adjacent 24px hit areas into row spacing under 24px.
+
 ## Touch targets
 
 Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):

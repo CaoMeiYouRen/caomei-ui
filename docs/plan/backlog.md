@@ -59,6 +59,8 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
+| 规划文档模型 v1 存量分片改名 + 机检 | [issue #71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) + [研判记录](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.6。18 个 `phase-*.md` → `todo-archive-phases-*.md`；实际链接面见研判记录 §2（提案的 54 是去重目标数，不是出现次数，且漏了治理记录与归档块回扫句）。独立机械批次：单个提交内 `git mv` + 链接重指，`git diff -M` 只含 rename 与链接 / 锚点行，剥离链接目标后非空行多重集相等，链接门禁 exit 0；同批接入索引一致性 / 命名机检（覆盖 / 无重复仅约束索引表行；存量豁免清单随改名前移）。**触发条件 = 下一次归档压缩批次或用户单独授权** | 中 |
+| 阶段进度表机检 | [issue #71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) + [研判记录](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.9。`todo.md` 阶段进度表 6 列（行 = 主线）；行数 = 主线数、状态词合法、`提交` 列可定位、归档时 `小条目` 列已闭环数之和 = 条目表 `已交付` 行数；随下一次阶段登记扩展现有 `check-stage-counts` 或新增守卫。**触发条件 = 下一次阶段登记** | 中 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
 | 文档站桌面 / 移动设备预览 | [评估记录](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：组件页需要切换桌面 / 移动展示。关键约束：库内响应式走视口 `@media`，缩窄容器不触发，**必须用 iframe**。**P1 整页设备预览（约 3–4 天）**；**P2 单 Demo 抽屉预览（约 3–4 天，需 Demo 注册表与预览路由）**；内联拖拽切换再 +2–3 天，暂不纳入。**触发条件 = Phase 38 M4-1 移动端适配指南落地，或用户裁定** | 中 |
 | 国际化支持与翻译状态表 | 用户需求（2026-11-18）：`docs/components/locale.md` 中英双页已有语言清单与子路径表，但无「支持语言 + 翻译状态」总表；README 特性节也未提语言支持。拟议列、数据源（`check:locale-keys` / `check:locale-ledger` / 复核记录）与落地口径见[调研记录 §3.5](../design/governance/2026-11-18-i18n-component-and-mobile-research.md)；README 只补一行回链，不复制表格。**触发条件 = 下一次文档批次** | 中 |

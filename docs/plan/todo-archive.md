@@ -2,19 +2,22 @@
 
 本文档归档已完成阶段的原子条目与验收结论。当前阶段完成后，从 [todo.md](./todo.md) 迁入此处。
 
-> **主窗口口径（2026-11-20 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 32，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 33 ~ Phase 38 共 6 块**，目标窗口 5 个；`docs:check:line-count` 读数 374 行，未越 warn 400，按「迁移触发 = 越过阈值」暂不迁出）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）、[phase-21.md](./archive/phase-21.md)（Phase 21）、[phase-22.md](./archive/phase-22.md)（Phase 22）、[phase-23.md](./archive/phase-23.md)（Phase 23）、[phase-24.md](./archive/phase-24.md)（Phase 24）、[phase-25.md](./archive/phase-25.md)（Phase 25）、[phase-26.md](./archive/phase-26.md)（Phase 26）、[phase-27.md](./archive/phase-27.md)（Phase 27）、[phase-28.md](./archive/phase-28.md)（Phase 28）、[phase-29.md](./archive/phase-29.md)（Phase 29）、[phase-30.md](./archive/phase-30.md)（Phase 30）、[phase-31.md](./archive/phase-31.md)（Phase 31）、[phase-32.md](./archive/phase-32.md)（Phase 32）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（`docs:check:line-count` 值）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
+> **主窗口口径（2026-11-20 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 32，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 33 ~ Phase 38 共 6 块**，目标窗口 5 个；`docs:check:line-count` 读数 374 行，未越 warn 400，按「迁移触发 = 越过阈值」暂不迁出）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）、[phase-21.md](./archive/phase-21.md)（Phase 21）、[phase-22.md](./archive/phase-22.md)（Phase 22）、[phase-23.md](./archive/phase-23.md)（Phase 23）、[phase-24.md](./archive/phase-24.md)（Phase 24）、[phase-25.md](./archive/phase-25.md)（Phase 25）、[phase-26.md](./archive/phase-26.md)（Phase 26）、[phase-27.md](./archive/phase-27.md)（Phase 27）、[phase-28.md](./archive/phase-28.md)（Phase 28）、[phase-29.md](./archive/phase-29.md)（Phase 29）、[phase-30.md](./archive/phase-30.md)（Phase 30）、[phase-31.md](./archive/phase-31.md)（Phase 31）、[phase-32.md](./archive/phase-32.md)（Phase 32）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（`docs:check:line-count` 值；同日规则段 +3 行后检查器读数 **377 行**，仍低于 warn 400）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
 
 ## 归档格式
 
-每个阶段归档块应包含：
+**2026-11-20 起新归档块按 6 项必填；既有归档块不追溯**（前向统一，避免重写点时记录与破坏 `check:archive-rg-counts` 的计数基线）：
 
 - 阶段名称与时间；
-- 交付内容与提交记录；
+- 交付内容与提交记录（含主线 / 原子条目清单与状态）；
 - 质量门结果（lint / typecheck / test / build）；
-- 审计结论（Pass / Reject 及修复情况）；
+- Review Gate 结论与轮次（Pass / Reject、轮次、问题计数与修复情况）；
+- 未覆盖边界；
 - 遗留问题与后续候选。
 
 深度归档文件沿用同一格式（只做链接深度 `../` → `../../` 与同目录 `./` → `../` 的机械调整，正文不改写）。
+
+**归档索引**：索引表固定 4 列（本仓为 `阶段 / 时间 / 交付摘要 / 深度归档`），须覆盖 `archive/` 的全部分片、无重复、不承载正文；**覆盖 / 无重复仅约束索引表行**，不约束「迁出时点」段对同一分片的二次引用。本仓维持阶段号正序（与近线主窗口 Phase 33 起的阅读顺序一致，不采用上游模板的倒序，理由见[规划文档模型 v1 研判](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.5）。新分片按 `todo-archive-phases-<起>[-<止>].md` 命名；存量 `phase-*.md` 为遗留命名，改名批次完成前按豁免清单处理（候选见 [Backlog](./backlog.md) §1.6）。
 
 ---
 

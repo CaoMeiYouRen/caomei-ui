@@ -125,10 +125,15 @@ defineSlots<{
   回顶按钮：固定定位在右下角，偏移与尺寸走 CSS 变量，便于消费方整体替换。
   不使用 `z-index` 字面量，取浮层词表的 `sticky` 档（低于任何模态 / 浮层）。
 */
+
+/*
+  右下偏移叠加同侧安全区 token：横屏圆角与底部 home indicator 下按钮仍需可点。
+  token 默认 `env(safe-area-inset-*, 0px)`，桌面为 0px，未声明安全区时逐值等同原偏移。
+*/
 .caomei-back-top {
     position: fixed;
-    right: var(--caomei-back-top-right, var(--caomei-space-4));
-    bottom: var(--caomei-back-top-bottom, var(--caomei-space-4));
+    right: calc(var(--caomei-back-top-right, var(--caomei-space-4)) + var(--caomei-safe-area-right, 0px));
+    bottom: calc(var(--caomei-back-top-bottom, var(--caomei-space-4)) + var(--caomei-safe-area-bottom, 0px));
     z-index: var(--caomei-back-top-z-index, var(--caomei-z-sticky));
     display: inline-flex;
     align-items: center;

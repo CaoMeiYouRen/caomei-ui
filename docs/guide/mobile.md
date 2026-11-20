@@ -57,6 +57,7 @@
 - 工具类**设置**该侧 `padding`：应用后该侧内边距就是 token 值，**宿主原本的内边距不会保留**（桌面 token 为 `0px`，等于把该侧内边距清零）。需要保留原值时用 `calc()` 自行组合，例如 `padding-bottom: calc(var(--caomei-space-3) + var(--caomei-safe-area-bottom))`。
 - 六个工具类都是单类选择器，而基础层先于组件 / 业务样式加载；同特异性下后声明者胜出，宿主里的 `padding` 可能反过来盖掉工具类。需要确定性覆盖时提高选择器特异性，或直接在自己的规则里用 `calc()` 组合 token。
 - 需要额外余量（例如再留 8px）时，在任意祖先覆盖 token 即可，CSS 继承会带到整个子树：`--caomei-safe-area-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px)`。
+- 固定定位件已内置消费，无需再套工具类：Drawer 按开合方向把 token 叠在贴边侧的内边距上（底部抽屉即 `--caomei-space-4` + 底部安全区，左右向抽屉另补上下两端），Toast 把顶部 / 底部停靠偏移叠加同侧 token，BackTop 在右下偏移上叠加，Image preview 按四周安全区收缩可用边界。Drawer 上下向高度、Dialog / ConfirmDialog 的高度上限、Toast 视口上限与图片预览尺寸改用 `dvh`（保留 `vh` 回退），地址栏收起 / 展开时仍按可见视口计算。
 - 演示把 token 覆盖为 `34px` / `16px` 以便观察；桌面与未声明 `viewport-fit=cover` 的环境下 token 为 `0px`，因此**仅引入基础层、不使用工具类时**桌面计算样式零差异。
 
 ## 触摸密度轴与尺寸覆盖

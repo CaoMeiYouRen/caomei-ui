@@ -182,6 +182,13 @@ onUnmounted(() => {
     transform: translate(-50%, -50%);
 }
 
+/* 支持动态视口单位时改用 `dvh` 跟随地址栏收起 / 展开；不支持的环境沿用上面的 `vh` 值 */
+@supports (max-height: 85dvh) {
+    .caomei-confirm-dialog__content {
+        max-height: 85dvh;
+    }
+}
+
 .caomei-confirm-dialog__header {
     display: flex;
     align-items: flex-start;

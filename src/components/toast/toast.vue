@@ -190,6 +190,13 @@ function onAnimationEnd(id: string, event: AnimationEvent): void {
     pointer-events: none;
 }
 
+/* 支持动态视口单位时改用 `dvh` 并扣除上下安全区；不支持的环境沿用上面的 `vh` 值 */
+@supports (height: 100dvh) {
+    .caomei-toast-viewport {
+        max-height: calc(100dvh - 2 * var(--caomei-toast-offset, var(--caomei-space-4)) - var(--caomei-safe-area-top, 0px) - var(--caomei-safe-area-bottom, 0px));
+    }
+}
+
 /*
   消费方/文档站的列表样式（如 `.vp-doc ol`，特异性 0,1,1）常会设置 margin / padding /
   list-style 并压过单类重置；这里用叠加类把重置提升到 0,2,0，保证视口几何不受宿主页影响。
@@ -200,39 +207,43 @@ function onAnimationEnd(id: string, event: AnimationEvent): void {
     list-style: none;
 }
 
+/*
+  停靠偏移在 `--caomei-toast-offset` 之上叠加同侧安全区 token（桌面 token 为 0px，逐值等同原偏移），
+  使提示整体让开刘海 / home indicator；左右偏移不叠加安全区，横向避让由消费方按需覆盖。
+*/
 .caomei-toast-viewport--top-left {
-    top: var(--caomei-toast-offset, var(--caomei-space-4));
+    top: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-top, 0px));
     left: var(--caomei-toast-offset, var(--caomei-space-4));
     flex-direction: column-reverse;
 }
 
 .caomei-toast-viewport--top-center {
-    top: var(--caomei-toast-offset, var(--caomei-space-4));
+    top: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-top, 0px));
     left: 50%;
     flex-direction: column-reverse;
     transform: translateX(-50%);
 }
 
 .caomei-toast-viewport--top-right {
-    top: var(--caomei-toast-offset, var(--caomei-space-4));
+    top: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-top, 0px));
     right: var(--caomei-toast-offset, var(--caomei-space-4));
     flex-direction: column-reverse;
 }
 
 .caomei-toast-viewport--bottom-left {
-    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
+    bottom: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-bottom, 0px));
     left: var(--caomei-toast-offset, var(--caomei-space-4));
 }
 
 .caomei-toast-viewport--bottom-center {
-    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
+    bottom: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-bottom, 0px));
     left: 50%;
     transform: translateX(-50%);
 }
 
 .caomei-toast-viewport--bottom-right {
     right: var(--caomei-toast-offset, var(--caomei-space-4));
-    bottom: var(--caomei-toast-offset, var(--caomei-space-4));
+    bottom: calc(var(--caomei-toast-offset, var(--caomei-space-4)) + var(--caomei-safe-area-bottom, 0px));
 }
 
 .caomei-toast {

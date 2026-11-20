@@ -191,6 +191,13 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     transform: translate(-50%, -50%);
 }
 
+/* 支持动态视口单位时改用 `dvh` 跟随地址栏收起 / 展开；不支持的环境沿用上面的 `vh` 值 */
+@supports (max-height: 85dvh) {
+    .caomei-dialog__content {
+        max-height: 85dvh;
+    }
+}
+
 :where(.caomei-dialog__content--sm) {
     --caomei-dialog-width: 360px;
 }

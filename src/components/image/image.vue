@@ -322,9 +322,18 @@ function handleError(event: Event): void {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 90vw;
-    max-height: 90vh;
+
+    /* 四周让开安全区 */
+    max-width: calc(90vw - var(--caomei-safe-area-left, 0px) - var(--caomei-safe-area-right, 0px));
+    max-height: calc(90vh - var(--caomei-safe-area-top, 0px) - var(--caomei-safe-area-bottom, 0px));
     transform: translate(-50%, -50%);
+}
+
+/* 支持动态视口单位时高度改用 `dvh` 跟随地址栏收起 / 展开；不支持的环境沿用上面的 `vh` 值 */
+@supports (height: 100dvh) {
+    .caomei-image__preview-content {
+        max-height: calc(90dvh - var(--caomei-safe-area-top, 0px) - var(--caomei-safe-area-bottom, 0px));
+    }
 }
 
 .caomei-image__preview-title,
@@ -342,12 +351,22 @@ function handleError(event: Event): void {
 
 .caomei-image__preview-img {
     display: block;
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: calc(90vw - var(--caomei-safe-area-left, 0px) - var(--caomei-safe-area-right, 0px));
+    max-height: calc(90vh - var(--caomei-safe-area-top, 0px) - var(--caomei-safe-area-bottom, 0px));
     border-radius: var(--caomei-radius-md);
     object-fit: contain;
 }
 
+@supports (height: 100dvh) {
+    .caomei-image__preview-img {
+        max-height: calc(90dvh - var(--caomei-safe-area-top, 0px) - var(--caomei-safe-area-bottom, 0px));
+    }
+}
+
+/*
+  关闭按钮跟随预览面板定位：面板两轴已按安全区收缩并居中，按钮相对面板右上角的固定偏移即可，
+  不再叠加安全区 token（否则会在面板内额外内缩一层）。
+*/
 .caomei-image__preview-close {
     position: absolute;
     top: var(--caomei-space-2);

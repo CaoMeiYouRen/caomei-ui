@@ -155,19 +155,30 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     --caomei-drawer-size: 560px;
 }
 
+/*
+  贴边侧的内边距叠加安全区 token：面板本体不越出视口，由内边距把内容让开刘海 / 圆角 / home indicator。
+  安全区 token 默认 `env(safe-area-inset-*, 0px)`，桌面回落 0px，故未声明安全区时逐值等同原 `space-4`。
+  左右向面板满高贴视口，纵向两端同样叠加安全区；上下向高度在 `@supports` 内由 `vh` 切到 `dvh`。
+*/
 .caomei-drawer__content--left,
 .caomei-drawer__content--right {
     top: 0;
     bottom: 0;
     width: min(90vw, var(--caomei-drawer-size, 420px));
+
+    /* 左右向面板满高贴视口，纵向两端同样要让开状态栏与 home indicator */
+    padding-top: calc(var(--caomei-space-4) + var(--caomei-safe-area-top, 0px));
+    padding-bottom: calc(var(--caomei-space-4) + var(--caomei-safe-area-bottom, 0px));
 }
 
 .caomei-drawer__content--right {
     right: 0;
+    padding-right: calc(var(--caomei-space-4) + var(--caomei-safe-area-right, 0px));
 }
 
 .caomei-drawer__content--left {
     left: 0;
+    padding-left: calc(var(--caomei-space-4) + var(--caomei-safe-area-left, 0px));
 }
 
 .caomei-drawer__content--top,
@@ -177,12 +188,22 @@ function onEscapeKeyDown(event: KeyboardEvent): void {
     height: min(90vh, var(--caomei-drawer-size, 420px));
 }
 
+/* 支持动态视口单位时改用 `dvh` 跟随地址栏收起 / 展开；不支持的环境沿用上面的 `vh` 值 */
+@supports (height: 100dvh) {
+    .caomei-drawer__content--top,
+    .caomei-drawer__content--bottom {
+        height: min(90dvh, var(--caomei-drawer-size, 420px));
+    }
+}
+
 .caomei-drawer__content--top {
     top: 0;
+    padding-top: calc(var(--caomei-space-4) + var(--caomei-safe-area-top, 0px));
 }
 
 .caomei-drawer__content--bottom {
     bottom: 0;
+    padding-bottom: calc(var(--caomei-space-4) + var(--caomei-safe-area-bottom, 0px));
 }
 
 .caomei-drawer__header {

@@ -526,6 +526,14 @@ const drawerRightOpen = ref(false)
 const drawerBottomOpen = ref(false)
 
 /**
+ * 安全区接入用例（见 `test/e2e/safe-area-fixed.e2e.ts`）：补齐左 / 上两向抽屉与长内容抽屉，
+ * 用例运行期把四个安全区 token 覆盖为 34px 后逐件断言内边距与停靠偏移。
+ */
+const saDrawerLeftOpen = ref(false)
+const saDrawerTopOpen = ref(false)
+const saDrawerLongOpen = ref(false)
+
+/**
  * 焦点可见扩面用例（见 `test/e2e/focus-visible-expansion.e2e.ts`）：静态可驱动组件的预置状态。
  * 覆盖非字段 / 非按钮组件中「无需交互开合即可渲染出焦点目标」的形态；需交互 / 遥测闭包的形态
  * 不在本批（边界见治理记录）。
@@ -1559,6 +1567,61 @@ const ConfirmDriver = defineComponent({
                 title="底部抽屉"
             >
                 <p>抽屉内容</p>
+            </CaomeiDrawer>
+        </section>
+
+        <!--
+          安全区接入（见 `test/e2e/safe-area-fixed.e2e.ts`）：左 / 上两向抽屉与长内容底部抽屉。
+          长内容抽屉用于验证底部安全区内边距不会让内容无法滚到末段。
+        -->
+        <section id="safe-area-fixed" class="fixture__case">
+            <CaomeiButton
+                id="sa-drawer-open-left"
+                @click="saDrawerLeftOpen = true"
+            >
+                打开左侧抽屉
+            </CaomeiButton>
+            <CaomeiButton
+                id="sa-drawer-open-top"
+                @click="saDrawerTopOpen = true"
+            >
+                打开顶部抽屉
+            </CaomeiButton>
+            <CaomeiButton
+                id="sa-drawer-open-long"
+                @click="saDrawerLongOpen = true"
+            >
+                打开长内容抽屉
+            </CaomeiButton>
+            <CaomeiDrawer
+                v-model:open="saDrawerLeftOpen"
+                position="left"
+                title="左侧抽屉"
+            >
+                <p>抽屉内容</p>
+            </CaomeiDrawer>
+            <CaomeiDrawer
+                v-model:open="saDrawerTopOpen"
+                position="top"
+                title="顶部抽屉"
+            >
+                <p>抽屉内容</p>
+            </CaomeiDrawer>
+            <CaomeiDrawer
+                v-model:open="saDrawerLongOpen"
+                position="bottom"
+                size="lg"
+                title="长内容抽屉"
+            >
+                <p
+                    v-for="index in 40"
+                    :key="index"
+                >
+                    段落 {{ index }}
+                </p>
+                <p id="sa-drawer-long-tail">
+                    末段内容
+                </p>
             </CaomeiDrawer>
         </section>
 

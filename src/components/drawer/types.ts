@@ -9,6 +9,11 @@ export interface DrawerProps {
      */
     title?: string
     /**
+     * 无可见标题时的可访问名；缺省取当前语言的「抽屉」文案
+     * @en Accessible name when there is no visible title; defaults to the current locale's "Drawer" text
+     */
+    label?: string
+    /**
      * 描述文本，用于无障碍
      * @en Description text for accessibility
      */

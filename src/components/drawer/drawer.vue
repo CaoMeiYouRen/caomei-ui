@@ -21,6 +21,7 @@ const icons = useInternalIcons()
 
 const props = withDefaults(defineProps<DrawerProps>(), {
     description: '',
+    label: '',
     position: 'left',
     size: 'md',
     closable: true,
@@ -42,7 +43,7 @@ const locale = useLocale()
 // 空串视为未提供，回退内建文案，避免产生空的可访问名
 const closeLabel = computed(() => props.closeLabel || locale.value.drawer.close)
 // 始终渲染 DialogTitle 以满足 Reka 的可访问名要求；自定义头部时标题转为视觉隐藏
-const accessibleTitle = computed(() => props.title || locale.value.drawer.label)
+const accessibleTitle = computed(() => props.title || props.label || locale.value.drawer.label)
 
 const panelClass = computed(() => [
     `caomei-drawer__content--${props.position}`,

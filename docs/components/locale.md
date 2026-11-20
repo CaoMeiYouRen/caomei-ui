@@ -45,10 +45,11 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 31 个命名空间，对应 32 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
+`CaomeiLocaleMessages` 按组件域划分为 33 个命名空间，对应 35 个消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
+| `actionSheet` | `label` `cancel` | ActionSheet |
 | `autoComplete` | `empty` `open` | AutoComplete |
 | `backTop` | `label` | BackTop |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
@@ -56,7 +57,7 @@ import {
 | `checkbox` | `selectAll` | CheckboxGroup |
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
-| `dataView` | `empty` | DataView |
+| `dataView` | `empty` | DataView / Empty |
 | `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
@@ -77,6 +78,7 @@ import {
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
+| `tabbar` | `label` | Tabbar |
 | `tagsInput` | `clear` | TagsInput |
 | `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |
 | `toast` | `label` `viewport` `close` | Toast |

@@ -45,10 +45,11 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 31 namespaces by component area, covering 32 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
+`CaomeiLocaleMessages` is split into 33 namespaces by component area, covering 35 consuming components (the table below is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
+| `actionSheet` | `label` `cancel` | ActionSheet |
 | `autoComplete` | `empty` `open` | AutoComplete |
 | `backTop` | `label` | BackTop |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
@@ -56,7 +57,7 @@ import {
 | `checkbox` | `selectAll` | CheckboxGroup |
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
-| `dataView` | `empty` | DataView |
+| `dataView` | `empty` | DataView / Empty |
 | `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
@@ -77,6 +78,7 @@ import {
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
+| `tabbar` | `label` | Tabbar |
 | `tagsInput` | `clear` | TagsInput |
 | `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |
 | `toast` | `label` `viewport` `close` | Toast |

@@ -60,9 +60,8 @@
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
 | 规划文档模型 v1 存量分片改名 + 机检 | [issue #71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) + [研判记录](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.6。18 个 `phase-*.md` → `todo-archive-phases-*.md`；实际链接面见研判记录 §2（提案的 54 是去重目标数，不是出现次数，且漏了治理记录与归档块回扫句）。独立机械批次：单个提交内 `git mv` + 链接重指，`git diff -M` 只含 rename 与链接 / 锚点行，剥离链接目标后非空行多重集相等，链接门禁 exit 0；同批接入索引一致性 / 命名机检（覆盖 / 无重复仅约束索引表行；存量豁免清单随改名前移）。**触发条件 = 下一次归档压缩批次或用户单独授权** | 中 |
-| 阶段进度表机检 | [issue #71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) + [研判记录](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.9。`todo.md` 阶段进度表 6 列（行 = 主线）；行数 = 主线数、状态词合法、`提交` 列可定位、归档时 `小条目` 列已闭环数之和 = 条目表 `已交付` 行数；随下一次阶段登记扩展现有 `check-stage-counts` 或新增守卫。**触发条件 = 下一次阶段登记** | 中 |
+| 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 中 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
-| 文档站桌面 / 移动设备预览 | [评估记录](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：组件页需要切换桌面 / 移动展示。关键约束：库内响应式走视口 `@media`，缩窄容器不触发，**必须用 iframe**。**P1 整页设备预览（约 3–4 天）**；**P2 单 Demo 抽屉预览（约 3–4 天，需 Demo 注册表与预览路由）**；内联拖拽切换再 +2–3 天，暂不纳入。**触发条件 = Phase 38 M4-1 移动端适配指南落地，或用户裁定** | 中 |
 | 国际化支持与翻译状态表 | 用户需求（2026-11-18）：`docs/components/locale.md` 中英双页已有语言清单与子路径表，但无「支持语言 + 翻译状态」总表；README 特性节也未提语言支持。拟议列、数据源（`check:locale-keys` / `check:locale-ledger` / 复核记录）与落地口径见[调研记录 §3.5](../design/governance/2026-11-18-i18n-component-and-mobile-research.md)；README 只补一行回链，不复制表格。**触发条件 = 下一次文档批次** | 中 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
@@ -75,7 +74,6 @@
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
 | 宽屏视觉基线（1536 / 1920） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：为 DataTable / Dialog / Form 等宽屏敏感组件补 1920 视觉用例（亮暗各一份）；约 +3–5 文件 +4–6 PNG、+1–2 天。**触发条件 = 宽屏布局出现真实回归，或下一次视觉基线批次** | 中 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
-| E2E 装置既有失败清理 | 2026-11-20 全量回归发现、已在干净 HEAD 复现的既有失败：`back-top.e2e.ts` 夹具遮挡、`overlay-stacking.e2e.ts` 模态内容后代命中自证、`navigation-motion.e2e.ts` SplitButton chevron、`selector-motion.e2e.ts` DatePicker 入场 / reduced-motion 压平、`data-table-scroll.e2e.ts` 行展开区。**触发条件 = 下一次 E2E 稳定性批次或用户裁定**；修复时须逐例给出负向对照，不混入功能条目 | 低 |
 
 ### 1.7 服务层候选（composables）
 
@@ -107,10 +105,6 @@
 
 | 候选 | 依据 | 优先级 |
 |------|------|:-:|
-| InputOtp（验证码输入） | 记录 **P0**；Reka `PinInputRoot` 现成；Element Plus `input-otp` / PrimeVue `inputotp` / Varlet `otp-input`（Vant / TDesign 无独立件） | 中 |
-| Popconfirm | 记录 **P0**；Element Plus / TDesign `popconfirm`、PrimeVue `confirmpopup`；比 `ConfirmDialog` 轻、不打断上下文 | 中 |
-| Result | 记录 **P0**；Element Plus / Varlet `result`；结果页（成功 / 失败 / 无权限） | 中 |
-| Descriptions | 记录 **P0**；Element Plus / TDesign `descriptions`，PrimeVue 以 `fieldset` 近似；详情页键值布局（响应式列数） | 中 |
 | Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
 | Transfer | 记录 **P1**；Element Plus / TDesign，PrimeVue 为 `picklist`；Vant / Varlet 无；权限分配与批量选择 | 中 |
 | Form 校验能力 | 记录 **P1**；Element Plus / TDesign / Vant / Varlet 以 `form` 目录承载 rules 引擎，PrimeVue 为独立 `@primevue/forms`；本库 `Form` 明确无 rules；可先以 `FormRoot` + `Field*` 接 invalid / 错误文案，不承诺与五库 API 对齐 | 中 |

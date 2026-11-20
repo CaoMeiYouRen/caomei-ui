@@ -7,6 +7,8 @@
 > **2026-09-18 更新**：新增 `Dialog.breakpoints`（使用方传入视口上限 → 生成媒体查询），仍**无 JS 视口分支**、无 `matchMedia` 视口监听；见 §2 使用方断点数据与 §3 矩阵 #17。
 >
 > **2026-10-16 更新**：验收视口由 3 档扩为 **3 档全量 + 2 档定向**（`mobile-320` 320×568 / `gap-900` 900×1024，只承载响应式用例）——`gap-900` 命中 §2 所述「769–1023px 无档可用」区间，扩面后据实测登记 **ButtonGroup / SplitButton 的收敛档为 lg（≤1024px）**（矩阵 #7），见 §2 / §3 / §4。
+>
+> **2026-11-20 更新**：定向档扩为 **6 档**（新增 `mobile-360` 360×800 / `mobile-414` 414×896 / `wide-1536` 1536×960 / `desktop-1920` 1920×1080），全部只承载 `responsive.e2e.ts`；矩阵 #19–#21 登记 Cell / CellGroup / Tabbar、ActionSheet 与 Empty 的窄屏行为。
 
 ## 1. 目标与边界
 
@@ -69,6 +71,9 @@
 | 16 | 触摸目标 | Checkbox / RadioButton / Switch / icon 按钮 / Breadcrumb 链接 / DataTable 排序 / Select 清除 / 字段族内联行 | 维持视觉尺寸；**P0 清除 / 关闭 icon 按钮与 P1 表单控件盒（Checkbox / RadioButton / Switch / Slider 滑柄 / ColorPicker 滑柄）的命中区 ≥24×24**（`::after` 不可见扩展，视觉盒不变） | — | — | **P0 已实现（2026-11-03）**：`--caomei-hit-target-min: 24px` + `.caomei-hit-target` 原语，作用于 TagsInput / MultiSelect / AutoComplete / Tag / Message 的清除 / 关闭按钮（含值片删除）与 Password（Input 清除）；多行值片的行距 +2px（4 → 6），使相邻 24px 命中区不重叠。`test/e2e/hit-target.e2e.ts` 以 `elementFromPoint` 实测 24×24 命中 + 24 外不命中 + **相邻目标中心距 ≥24** + 未纳入的 20px 按钮负向对照。**P1 已实现（2026-11-10，Phase 30 M4-1）**：同一原语扩到 17 个表单控件盒目标（Checkbox 2 / RadioButton 6 / Switch 2 / Slider 3 / ColorPicker 滑柄 4），逐族视觉盒上限与逐轴采样见 §4 断言 7。**P2 已实现（2026-11-12，Phase 31 M4-1）**：行高受限目标（Breadcrumb 链接 2 / DataTable 排序 3 / Select 清除 1）复用同一 `::after` 原语；字段族内联行只对**根容器无点击承接**的普通 Input 生效（控件盒填满外壳内容高，16 → 34），TagsInput / MultiSelect / AutoComplete 的锚点已绑定点击聚焦、有效目标即锚点面故不改；值片与值片内 icon 属非交互视觉元素，不计为指针目标 |
 | 17 | 浮层断点宽度 | Dialog（`breakpoints`） | 使用方传入的视口上限 → 面板宽度；命中多个取最窄档 | 同左 | 未传时按 `size` 档位宽度 | 已实现（`dialog.vue` 按实例属性选择器注入媒体查询 + `breakpoints.ts` 解析 / 生成；键须 px、值须安全长度，非法条目忽略；未使用 `!important`、无视图口监听） |
 | 18 | 栅格布局 | Row / Col | 断点 `span` / `offset` / `order` 按视口覆盖（`sm` ≤640 / `md` ≤768 / `lg` ≤1024，窄档覆盖宽档） | 同左（`md` 档仅在传入 `md` 时改变形态） | 默认 24 栏，未传断点时维持桌面取值 | 已实现（`row.vue`：24 栏 CSS Grid + `gap` 承载 gutter；`col.vue`：`grid-column` / `order` 由 CSS 变量驱动，三条 `@media (width <= 640 / 768 / 1024px)` 按宽→窄源序覆盖） |
+| 19 | 移动端列表壳 | Cell / CellGroup / Tabbar | 行高 ≥44（触摸密度 52）；长文案单行截断；标签栏均分且不横向溢出 | 同左 | 同左 | 已实现（`cell.vue` 行高取 `--caomei-control-height-lg`、标题 / 描述 / 值 `text-overflow: ellipsis`；`tabbar-item.vue` 条目 `flex: 1 1 0` + `min-width: 0`、底部叠加安全区） |
+| 20 | 底部操作面板 | ActionSheet | 高度 `min(90dvh, 420px)`；正文纵向滚动、取消项常驻；落在视口内 | 同左 | 同左 | 已实现（以 Drawer `position="bottom"` 组合，`drawer.vue` 的 `height` 与 `@supports (height: 100dvh)` 回退；正文 `overflow: auto`） |
+| 21 | 空态 | Empty | 标题 / 说明 / 操作按 `overflow-wrap` 折行，不裁切、不横向溢出 | 同左 | 同左 | 已实现（`empty.vue` 的 `overflow-wrap: anywhere` 与 `max-width: 100%`；窄屏只收紧留白） |
 
 ## 4. 验收标准
 
@@ -81,8 +86,12 @@
 | desktop | 1280×800（≥1024 位作为形态回归） | Desktop Chrome | 全部 E2E 用例 |
 | mobile-320（定向） | 320×568 | Galaxy S9+ | 只跑 `responsive.e2e.ts` —— sm 档（≤640）**内部点** |
 | gap-900（定向） | 900×1024 | Galaxy Tab S4 | 只跑 `responsive.e2e.ts` —— 769–1023px「无档可用」区间的**内部点** |
+| mobile-360（定向） | 360×800 | Pixel 5 | 只跑 `responsive.e2e.ts` —— 主流 Android 宽度 |
+| mobile-414（定向） | 414×896 | Pixel 5 | 只跑 `responsive.e2e.ts` —— 大屏手机宽度 |
+| wide-1536（定向） | 1536×960 | Desktop Chrome | 只跑 `responsive.e2e.ts` —— 2K 笔记本常见可用区 |
+| desktop-1920（定向） | 1920×1080 | Desktop Chrome | 只跑 `responsive.e2e.ts` —— 桌面全高清宽度 |
 
-**矩阵档的三项口径**：① 设备描述符取对应形态（手机 / 平板 / 桌面）后再覆盖 viewport，UA / 触摸 / DPR 与形态一致；② 两档定向档取**档内内部点**（非仅断点端点），用于拦「按精确宽度或反向方向（`min-width`）误写」的规则；③ 定向档只承载响应式用例（`playwright.config.ts` 的 `only: 'responsive'`），不放大其余 E2E 用例量级。**自驱视口探针**（用例内 `setViewportSize` 到 200px 宽 / 420px 高）只随**全量档**运行——其视口由用例自身设定、不随矩阵档变化，重复承载只会引入 DPR 取整的刀刃差异。
+**矩阵档的三项口径**：① 设备描述符取对应形态（手机 / 平板 / 桌面）后再覆盖 viewport，UA / 触摸 / DPR 与形态一致；② 六档定向档取**档内内部点或典型终端宽度**（非仅断点端点），用于拦「按精确宽度或反向方向（`min-width`）误写」的规则，并覆盖宽屏与主流移动形态；③ 定向档只承载响应式用例（`playwright.config.ts` 的 `only: 'responsive'`），不放大其余 E2E 用例量级。**自驱视口探针**（用例内 `setViewportSize` 到 200px 宽 / 420px 高）只随**全量档**运行——其视口由用例自身设定、不随矩阵档变化，重复承载只会引入 DPR 取整的刀刃差异。
 
 **断言**（对每个进入批次的组件，按其矩阵行的期望行为）：
 
@@ -104,7 +113,7 @@
 
 浮层组件另须通过[测试规范 §5.1](../standards/testing.md) 的页面稳定性测量（遮罩完整、`in-flow` 不位移、CLS 归因）。
 
-**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，**档位与承载面以上表为准（单一事实源）**。**§4 断言 1 的受检面（section 清单）设下界守卫**（`responsive.e2e.ts` 的 `MIN_SECTIONS`）——清单被整体删项或解析失效时用例会失败而非静默变绿。**矩阵扩面（2026-11-03 起）**：`#density-axis` / `#density-outside` / `#hit-target` 进入该清单，密度轴档位与 P0 命中区探针随 390 / 768 / 1280 三档及 320 / 900 定向档各跑一遍；受检面下界由 17 上调为 **20**。
+**承载方式**：布局断言只由 Playwright 多视口用例承担（happy-dom 无布局引擎，组件单测不写几何断言）；文档站 demo（`.demo-row`）与 `playground` 作为人工核对入口。常驻用例位于 `test/e2e/**`（`pnpm test:e2e`，夹具为 `test/e2e/fixtures/` 下的 Vite 应用，被测对象是 `src/` 源码）；配置见仓库根 `playwright.config.ts`，**档位与承载面以上表为准（单一事实源）**。**§4 断言 1 的受检面（section 清单）设下界守卫**（`responsive.e2e.ts` 的 `MIN_SECTIONS`）——清单被整体删项或解析失效时用例会失败而非静默变绿。**矩阵扩面（2026-11-03 起）**：`#density-axis` / `#density-outside` / `#hit-target` 进入该清单，密度轴档位与 P0 命中区探针随 390 / 768 / 1280 三档及六个定向档各跑一遍；2026-11-20 起 `#cell-group` / `#tabbar` / `#action-sheet` / `#empty` 同批进入清单，受检面下界同步上调为 **25**。
 
 **验证记录归档**：批次验证记录与截图落 `test-results/<批次>/`（gitignored 任务态，供人工查看）；**结论与关键实测值必须同步落可提交位置**（本文件该批次行、`docs/plan/todo.md` 交付状态或提交信息），不得只留在 gitignored 目录。断言 4 的**「改动前基线」**（改动前数值表 + 计算样式快照 + 已知边界）落 `docs/design/governance/[YYYY-MM-DD]-<批次>-baseline.md`（可提交），取证脚本与原始 JSON 落 `test-results/<批次>/`（gitignored，供复现）；示例见[批次 3 基线记录](./governance/2026-09-17-m2-batch3-calendar-baseline.md)。自 2026-09-17 起，断言 1 / 2 / 3（含键盘聚焦子句，按分档口径）/ 5 / 6 由常驻 Playwright 用例承载（`test/e2e/**`），批次交付以 `pnpm test:e2e` 为可复现基线；**断言 4 仍需批次自身的基线归档**，常驻用例只覆盖其形态回归部分（如窄屏规则在桌面不生效）。
 

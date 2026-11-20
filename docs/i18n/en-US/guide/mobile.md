@@ -28,6 +28,37 @@ The library is **desktop-first**: the default form is the desktop form, and narr
 - **Stepper direction** — the horizontal form compresses with the container; switch to `orientation="vertical"` when a vertical layout is required.
 - **Long text** — a single very long option can overflow by itself (e.g. long enums at the narrowest viewports), so constrain copy length or container width.
 
+## Safe areas (notch and home indicator)
+
+Full-screen pages need room for the notch, rounded corners and the bottom home indicator. The library exposes four safe-area tokens, defaulting to `env()` and falling back to `0px` on desktop or when the page does not declare `viewport-fit=cover`:
+
+| token | Default | Meaning |
+| --- | --- | --- |
+| `--caomei-safe-area-top` | `env(safe-area-inset-top, 0px)` | Top (notch / status bar) |
+| `--caomei-safe-area-right` | `env(safe-area-inset-right, 0px)` | Right (landscape corner) |
+| `--caomei-safe-area-bottom` | `env(safe-area-inset-bottom, 0px)` | Bottom (home indicator) |
+| `--caomei-safe-area-left` | `env(safe-area-inset-left, 0px)` | Left (landscape corner) |
+
+> `env()` is non-zero only when the page declares `viewport-fit=cover`, e.g. `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`. Without it all four tokens are `0px`, so the default layout stays as-is.
+
+Six utility classes write the tokens into `padding` on the matching side:
+
+| Utility | Properties written |
+| --- | --- |
+| `.caomei-safe-area-top` / `-right` / `-bottom` / `-left` | The single-side `padding` |
+| `.caomei-safe-area-x` | `padding-right` + `padding-left` |
+| `.caomei-safe-area-y` | `padding-top` + `padding-bottom` |
+
+<demo
+    vue="../examples/mobile/safe-area.vue"
+    ssg="true"
+/>
+
+- The utilities **set** that side's `padding`: after applying one, that side is exactly the token value and **the host's original padding is not kept** (on desktop the token is `0px`, which zeroes that side). To keep the original value, compose it with `calc()`, e.g. `padding-bottom: calc(var(--caomei-space-3) + var(--caomei-safe-area-bottom))`.
+- All six utilities are single-class selectors, and the base layer loads before component / app styles; at equal specificity the later declaration wins, so a `padding` on the host can override the utility. For a deterministic override, raise the selector's specificity or compose the tokens with `calc()` in your own rule.
+- For extra breathing room (say 8px), override the token on any ancestor; CSS inheritance carries it through the subtree: `--caomei-safe-area-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px)`.
+- The demo pins the tokens to `34px` / `16px` so the inset is visible; on desktop, or without `viewport-fit=cover`, the tokens are `0px`, so computed styles stay identical **as long as only the base layer is imported and no utility is applied**.
+
 ## Touch density axis and size overrides
 
 Since `1.1.0` there is a **preset- and colour-scheme-independent** touch density axis: add `data-density="touch"` to any ancestor element and controls in that subtree render with touch-sized heights, font sizes and content width caps; without it every value matches the desktop defaults.

@@ -85,6 +85,16 @@
 
     /* 不可见命中区下限（WCAG 2.5.8）：icon 按钮通过 `.caomei-hit-target` 扩到该尺寸 */
     --caomei-hit-target-min: 24px;
+
+    /*
+     * 安全区（刘海 / 圆角 / home indicator）：取 `env()` 并显式回落 0px。
+     * 页面未声明 `viewport-fit=cover` 时 `env()` 为 0，故桌面端引入基础层后与引入前逐值一致（未应用 `.caomei-safe-area-*` 工具类时）。
+     * 需要额外余量时在任意祖先覆盖这四个 token（如 `calc(env(safe-area-inset-bottom, 0px) + 8px)`）。
+     */
+    --caomei-safe-area-top: env(safe-area-inset-top, 0px);
+    --caomei-safe-area-right: env(safe-area-inset-right, 0px);
+    --caomei-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --caomei-safe-area-left: env(safe-area-inset-left, 0px);
     --caomei-input-number-max-width: 12rem;
     --caomei-select-max-width: 20rem;
     --caomei-skeleton-highlight: rgb(255 255 255 / 0.6);

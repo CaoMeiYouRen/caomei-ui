@@ -28,6 +28,37 @@
 - **步骤条方向**：`CaomeiStepper` 横向形态在窄屏随容器压缩，需要纵向时请改 `orientation="vertical"`。
 - **超长文案**：单条超长选项可能自身超宽（例如极窄视口下的长枚举），请在文案长度或容器宽度上约束。
 
+## 安全区（刘海与 home indicator）
+
+全屏页面需要给刘海、圆角与底部 home indicator 留出空间。库内提供四个安全区 token，默认取 `env()`，并在桌面或页面未声明 `viewport-fit=cover` 时回落 `0px`：
+
+| token | 默认值 | 含义 |
+| --- | --- | --- |
+| `--caomei-safe-area-top` | `env(safe-area-inset-top, 0px)` | 顶部（刘海 / 状态栏） |
+| `--caomei-safe-area-right` | `env(safe-area-inset-right, 0px)` | 右侧（横屏圆角） |
+| `--caomei-safe-area-bottom` | `env(safe-area-inset-bottom, 0px)` | 底部（home indicator） |
+| `--caomei-safe-area-left` | `env(safe-area-inset-left, 0px)` | 左侧（横屏圆角） |
+
+> `env()` 只在页面声明 `viewport-fit=cover` 时取到非零值，例如 `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`；未声明时四个 token 均为 `0px`，沿用默认布局即可。
+
+对应的六个工具类把 token 写成同侧 `padding`：
+
+| 工具类 | 写入的属性 |
+| --- | --- |
+| `.caomei-safe-area-top` / `-right` / `-bottom` / `-left` | 对应单侧 `padding` |
+| `.caomei-safe-area-x` | `padding-right` + `padding-left` |
+| `.caomei-safe-area-y` | `padding-top` + `padding-bottom` |
+
+<demo
+    vue="../examples/mobile/safe-area.vue"
+    ssg="true"
+/>
+
+- 工具类**设置**该侧 `padding`：应用后该侧内边距就是 token 值，**宿主原本的内边距不会保留**（桌面 token 为 `0px`，等于把该侧内边距清零）。需要保留原值时用 `calc()` 自行组合，例如 `padding-bottom: calc(var(--caomei-space-3) + var(--caomei-safe-area-bottom))`。
+- 六个工具类都是单类选择器，而基础层先于组件 / 业务样式加载；同特异性下后声明者胜出，宿主里的 `padding` 可能反过来盖掉工具类。需要确定性覆盖时提高选择器特异性，或直接在自己的规则里用 `calc()` 组合 token。
+- 需要额外余量（例如再留 8px）时，在任意祖先覆盖 token 即可，CSS 继承会带到整个子树：`--caomei-safe-area-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px)`。
+- 演示把 token 覆盖为 `34px` / `16px` 以便观察；桌面与未声明 `viewport-fit=cover` 的环境下 token 为 `0px`，因此**仅引入基础层、不使用工具类时**桌面计算样式零差异。
+
 ## 触摸密度轴与尺寸覆盖
 
 `1.1.0` 起提供**独立于预设与明暗**的触摸密度轴：在任意祖先元素上加 `data-density="touch"`，该子树内的控件高度、字号与内容型宽度上限按触摸档渲染；未设置时逐值等同桌面。

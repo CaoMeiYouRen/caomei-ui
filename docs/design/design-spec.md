@@ -77,6 +77,7 @@
 | 圆角 | `--caomei-radius-sm` / `-md` / `-lg` / `-full` | 4 / 8 / 12 / 999 px | 控件 / 容器 / 浮层 / 胶囊 |
 | 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限；`MultiSelect` / `AutoComplete` / `DatePicker` 未声明默认值，按回退链取 `--caomei-select-max-width`（见[主题与样式设计 §4.1](./theming.md)） |
 | 命中区 | `--caomei-hit-target-min` | 24 px | P0 清除 / 关闭 icon 按钮的不可见命中区下限（`.caomei-hit-target`，WCAG 2.5.8；见[响应式设计 §5](./responsive.md)） |
+| 安全区 | `--caomei-safe-area-top` / `-right` / `-bottom` / `-left` | `env(safe-area-inset-*, 0px)` | 刘海 / 圆角 / home indicator 避让；`.caomei-safe-area-*` 工具类把 token 写成同侧 `padding`（见[移动端与响应式](../guide/mobile.md)）。`env()` 仅在页面声明 `viewport-fit=cover` 时非零，桌面回落 `0px` |
 
 消费统计（快照 2026-11-15，工作区口径）：`--caomei-radius-full` 9 处、`--caomei-space-4` 53 处、`--caomei-z-sticky` 1 处。复算命令（对工作区生效，含未跟踪文件）：
 `rg -o --no-filename 'var\(--caomei-radius-full\)' src | wc -l`，其余 token 替换名称即可；增量与 `b046f8e`（HEAD）相比为 radius full +1、space-4 +2、z-sticky +1。

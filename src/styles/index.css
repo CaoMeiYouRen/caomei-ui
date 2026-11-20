@@ -31,6 +31,45 @@
     pointer-events: inherit;
 }
 
+/**
+ * 安全区工具类：把对应方向的 `--caomei-safe-area-*` 写成 `padding`。
+ *
+ * - token 默认取 `env(safe-area-inset-*, 0px)`；**应用工具类**即把该侧 `padding` 赋成 token 值。
+ *   桌面 / 未声明 `viewport-fit=cover` 时 token 为 0，等于把该侧内边距清零——**不会保留宿主原值**。
+ *   仅引入基础层、不使用工具类时不改变任何几何。
+ * - 需要保留宿主原值时用 `calc()` 自行组合，例如
+ *   `padding-bottom: calc(var(--caomei-space-3) + var(--caomei-safe-area-bottom, 0px))`。
+ * - 六个工具类均为单类选择器（0,1,0），而基础层先于组件 / 业务样式加载：同特异性下后声明者胜出，
+ *   宿主自身或组件样式里的 `padding` 可能反过来覆盖工具类。需要确定性覆盖时提高选择器特异性，
+ *   或直接在自己的规则里用 `calc()` 组合 token。
+ * - `-x` / `-y` 分别同时作用于左右 / 上下两侧，不涉及对侧。
+ */
+.caomei-safe-area-top {
+    padding-top: var(--caomei-safe-area-top, 0px);
+}
+
+.caomei-safe-area-right {
+    padding-right: var(--caomei-safe-area-right, 0px);
+}
+
+.caomei-safe-area-bottom {
+    padding-bottom: var(--caomei-safe-area-bottom, 0px);
+}
+
+.caomei-safe-area-left {
+    padding-left: var(--caomei-safe-area-left, 0px);
+}
+
+.caomei-safe-area-x {
+    padding-right: var(--caomei-safe-area-right, 0px);
+    padding-left: var(--caomei-safe-area-left, 0px);
+}
+
+.caomei-safe-area-y {
+    padding-top: var(--caomei-safe-area-top, 0px);
+    padding-bottom: var(--caomei-safe-area-bottom, 0px);
+}
+
 .caomei-root {
     font-family: var(--caomei-font-sans);
     color: var(--caomei-color-text);

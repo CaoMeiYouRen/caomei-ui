@@ -4,23 +4,7 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 38**（移动端体验：基础层、移动壳与操作 / 空态）。**全部 11 条原子条目已交付**（2026-11-20；阶段归档待用户指令）。**4 条主线 / 11 条原子条目**（构成对账 2 + 3 + 3 + 3 = 11；原登记 10 条，2026-11-20 执行期追加 1 条）；范围与验收口径的唯一载体见 [Phase 38 登记批次](../design/governance/2026-11-20-phase38-registration.md)。本阶段**不发布**（D4 ②，`latest` 维持 `1.3.0`）；在册候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。
-
-## Phase 38 原子条目
-
-| 编号 | 主线 | 条目 | 验收状态 |
-|:---|:---|:---|:---|
-| M1-1 | 基础层 | 安全区 token 与工具类 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m1-1-safe-area.md)） |
-| M1-2 | 基础层 | 固定定位件接入与 `dvh` 回退 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m1-2-fixed-overlays.md)） |
-| M2-1 | 移动壳 | Cell / CellGroup 实现与测试 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M2-2 | 移动壳 | Tabbar / TabbarItem 实现与测试 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M2-3 | 移动壳 | M2 的 10 语、台账与文档 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M3-1 | 操作与空态 | ActionSheet 实现与测试 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M3-2 | 操作与空态 | Empty 实现与测试 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M3-3 | 操作与空态 | M3 的 10 语、台账与文档 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M4-1 | 口径与验收 | 移动端适配指南 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M4-2 | 口径与验收 | 44px 政策与回归扩面 | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
-| M4-3 | 口径与验收 | 验收视口扩面（宽屏 + 主流移动） | 已交付（2026-11-20，[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)） |
+**当前无进行中阶段**。上一阶段已完成并归档；新阶段须先完成评估 → Backlog → 用户决策后登记（[规划规范 §2](../standards/planning.md)）。
 
 ## 未完成项汇总
 

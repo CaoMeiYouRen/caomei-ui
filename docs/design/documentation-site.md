@@ -126,6 +126,7 @@ docs/
 
 - `/components/` 侧栏按 **7 个组件分组**组织，组间顺序固定为本节表格自上而下的顺序（不采用「按使用频率」等主观口径；新增分组须先在本节登记，登记位置即最终位置）；组内按**英文组件名字母序**排列。
 - 组内顺序的唯一依据是英文字母序——实现顺序、历史登记顺序、翻译先后均不参与定序；不设「同族微调」例外，如确需例外须先在本节登记为固定规则。
+- **已登记固定例外（同族相邻）**：`TimePicker` 紧随 `DatePicker`（2026-11-21 用户决策：时间 / 日期选择器同族相邻，按用途归入「选择器」并保持相邻）；除此之外仍按英文字母序。该例外同时约束中英侧栏、组件总览与画廊登记表，改动须先改本节。
 - 中英两侧侧栏使用同一分组划分与同一组件顺序：中文条目标题形如 `Button 按钮`，英文为 `Button`；组件概览的列表列序遵循同一顺序，翻译侧同步约定见 §10。
 - 分组划分（含英文分组名）以本表为准，实现落在 `docs/.vitepress/config.ts` 的中英两处 sidebar；新增组件时先定分组、再按字母序落在组内正确位置，本节与实现两处同步。
 - 本节范围限于 7 个组件分组；同侧栏内新增的非组件分组位置按下列固定顺序登记，登记位置即最终位置：
@@ -135,11 +136,11 @@ docs/
 - 组件总览页（`/components/index.md`）的分组顺序与侧栏一致，并在末尾列出「能力说明」三页。
 - **设计区侧栏（`/design/`）范围**（跨区规则，登记于本节以保持「侧栏组成」单一载点）：只挂面向使用者的设计文档（「设计索引」~「文档与演示站」共 7 篇）。`docs/design/governance/` 下的治理记录 / 阶段评估 / 经验归档属**内部文档，不进侧栏**，统一经[治理索引](./governance/index.md)访问（设计索引页亦可进入）；新增设计文档按主题排入上述 7 篇之内，治理记录不回流侧栏（2026-09-30 用户决策）。本条的**归属与排序无机检**——`docs:check:structure` 的侧栏不变式只覆盖 `/components/` 侧栏，改动设计区侧栏须人工核对本节；条目**链接有效性**仍由 `docs:check:config-links` 覆盖。
 
-| 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序） |
+| 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序，已登记例外见上） |
 | --- | --- | --- |
 | 基础与布局 | Basics & Layout | Avatar、BackTop、Badge、Button、ButtonGroup、Card、Cell、CellGroup、Col、Divider、Image、Row、SplitButton、Tag |
-| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea、TimePicker |
-| 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、MultiSelect、Select、SelectButton、ToggleButton |
+| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea |
+| 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、TimePicker、MultiSelect、Select、SelectButton、ToggleButton |
 | 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、Dialog、Drawer、Message、Popover、Toast、Tooltip |
 | 数据展示 | Data Display | DataTable、DataView、Empty、Paginator、ProgressBar、ProgressSpinner、Skeleton |
 | 导航与操作 | Navigation & Actions | Accordion、ActionSheet、Breadcrumb、DropdownMenu、Menu、Stepper、Tabbar、Tabs、Toolbar |
@@ -158,7 +159,7 @@ docs/
 ## 13. 链接与锚点校验
 
 - 站内跨节锚点必须按 VitePress 的 slugify 实算，不能凭标题字面拼：数字开头的标题会补 `_` 前缀（`## 11. 组件分区与排序` → `#_11-组件分区与排序`），全角标点被归一。
-- `pnpm docs:check:structure` 用 VitePress 自带的 `createMarkdownRenderer` **实算**每页标题 slug 并对账站内锚点（`docs/` 内的链接；源不在 `docs/` 或目标越出 `docs/` 者不在受检面）。该守卫同时校验**组件区侧栏分区不变式**：以本节 §11 的登记表为单一事实源对账中英两侧 sidebar 的分组顺序、组内成员与字母序、以及「总览 / 能力说明」的首尾位次。
+- `pnpm docs:check:structure` 用 VitePress 自带的 `createMarkdownRenderer` **实算**每页标题 slug 并对账站内锚点（`docs/` 内的链接；源不在 `docs/` 或目标越出 `docs/` 者不在受检面）。该守卫同时校验**组件区侧栏分区不变式**：以本节 §11 的登记表为单一事实源对账中英两侧 sidebar 的分组顺序、组内成员与登记顺序（默认英文组件名字母序，例外以 §11 为准）、以及「总览 / 能力说明」的首尾位次。
 - 该守卫（`docs:check:structure`）的受检面**不含**：reference-style 链接（`[文字][ref]`）、裸 HTML `<a href>`、以及 nav / sidebar 配置内链接——后者由 `pnpm docs:check:config-links` 单独覆盖（用 VitePress 已解析配置取 nav / sidebar，链接须为站点绝对路径且指向存在的页面、锚点按实算 slug 有效；外部链接跳过）。站点若自定义 `markdown.anchor.slugify`，两条守卫都会以 `slug-source-diverged` 显式失败（避免实算 slug 与站点静默分叉）。
 - `pnpm docs:check:links` 的 `looseNorm` 会剥离 `-` / `_` / 标点，**「链接检查通过」不能证明锚点有效**；跨节引用优先只链页面。
 - `docs:check:links` **已覆盖站点范围外链接**：`docs/` 下的相对链接解析到站点 srcDir（`docs/`）之外即失败（VitePress 会因目标不在 `srcDir` 内报 dead link 使 `docs:build` 失败），错误信息提示改用行内代码。跨出 `docs/` 的引用一律写成 code span。**受检面边界**：reference-style 链接（`[文字][ref]`）与裸 HTML `<a href>` 不在本守卫面内，**doc 类改动仍应把 `pnpm docs:build` 纳入门禁**（守卫提供快速反馈，`docs:build` 是终态校验）。
@@ -201,10 +202,10 @@ docs/
 
 - **定位**：`/components/showcase`（中）与 `/en-US/components/showcase`（英）是组件总览的**策展子集**，只放「代表性组件的真实渲染预览」；它不是组件页的替代品，也不承诺覆盖全部组件——覆盖项数由登记表决定，只设下界、不设上限。
 - **登记表是单一事实源**：`docs/.vitepress/showcase-registry.json` 逐项声明 `name`（英文组件名，须存在于 §11 登记表）、`group`（中英分组名，须与 §11 同名分组一致）、`example`（示例相对路径，中英各自取根）与 `description`（中英各一条）。卡片链接由 `name` 按 `kebab-case` 推导（经 `withBase` 处理，兼容非根 base）；中英示例根分别为 `docs/examples/` 与 `docs/i18n/en-US/examples/`。**中英示例须齐备**——构建期由 `docs:check:showcase` 强制（缺任一侧即失败）；渲染层对缺示例只做兜底（该卡片预览为空、不阻断整页），不构成「可以只写单侧」的许可。
-- **顺序**：登记表按 §11 的**分组顺序**排列，组内按**英文组件名字母序**；页面渲染顺序即登记顺序，不在渲染层另行排序（与 §11 的侧栏定序同口径）。
+- **顺序**：登记表按 §11 的**分组顺序**排列，组内与 §11 的**登记顺序**一致（默认英文组件名字母序，已登记例外以 §11 表为准）；页面渲染顺序即登记顺序，不在渲染层另行排序（与 §11 的侧栏定序同口径）。
 - **入口（2026-09-30 用户决策后）**：组件总览页（中英）正文给出画廊链接；**组件侧栏（中英）在「总览」之后设「组件画廊 / Component Gallery」条目**——指南侧栏的旧「组件画廊 / Component Gallery」条目同批移除，**入口唯一**。
 - **进组件侧栏的形态与不变式扩展**：画廊是组件区的**非组件分组**，落在「总览」之后、7 个组件分组之前。侧栏不变式（`docs:check:structure`）随之由「单头（总览）+ N 组 + 尾（能力说明）」扩展为「**头列表（总览、组件画廊）+ 7 组 + 尾列表（能力说明）**」，头 / 尾列表与位次以 §11 的非组件分组清单为事实源；画廊条目本身不参与组件分组对账（它没有组件成员），故不破坏「组件分组数 = §11 登记表行数」的等式。
-- **对账守卫**：`pnpm docs:check:showcase`（`scripts/docs/check-showcase-registry.mjs`）以登记表 + 本节 §11 为事实源逐项对账——结构合法性、分组归属（`group.zh` 属 §11 登记分组、`group.en` 与之一致、`name` 属该分组组件清单）、中英组件页与中英示例存在性、`example` 形态（两级 `.vue`、目录等于组件名 kebab-case、无 `..`）、登记顺序、中英画廊页的 `<ShowcaseGrid />` 挂载点；另设项数与覆盖分组数下界、空扫描拒绝（防登记表被清空 / 整组丢失被静默通过）。
+- **对账守卫**：`pnpm docs:check:showcase`（`scripts/docs/check-showcase-registry.mjs`）以登记表 + 本节 §11 为事实源逐项对账——结构合法性、分组归属（`group.zh` 属 §11 登记分组、`group.en` 与之一致、`name` 属该分组组件清单）、中英组件页与中英示例存在性、`example` 形态（两级 `.vue`、目录等于组件名 kebab-case、无 `..`）、登记顺序、§11 自身不变式（组内顺序 = 默认字母序 + 机读例外镜像、组内无重名、例外不失效）、中英画廊页的 `<ShowcaseGrid />` 挂载点；另设项数与覆盖分组数下界、空扫描拒绝（防登记表被清空 / 整组丢失被静默通过）。
 - **分组标题不进 outline**：分组标题由渲染组件输出（`<h3>`），而站点右侧 outline 取自 markdown 标题，故画廊页的目录只有页内 H2，7 个分组不可锚点跳转。这是「登记表驱动、不在页面里逐条写标题」的已知取舍；若将来需要分组锚点，须改为在页面 markdown 中显式书写分组标题。
 - **与演示动效层的关系**：画廊预览是 §12「demo 面」的延伸。当前策展集中唯一带入场动效的是经 Portal 挂载的 DatePicker 面板，已由 `motion.css` 的**组件选择器**层恢复；容器内可达的 opt-in 规则（Accordion / Image / Button spinner / AutoComplete spinner）暂未被画廊触发。若后续策展项在预览容器内产生动画，须同步扩展 `motion.css` 的容器作用域（口径见 §12），不留「reduced-motion 下动画被静默压平」的缺口。
 - **预览区键盘可达**：预览区固定 `height: 168px` + `overflow: auto`（卡片对齐的承重声明），故按滚动区处理——常驻 `tabindex="0"`、`role="group"`、名称为「<组件名> 预览 / preview」，键盘可进入并用方向键滚动；焦点环 `outline-offset: -2px` 内缩，避免被卡片的 `overflow: hidden` 与圆角裁掉。**代价**：即使不溢出的预览也会多一个 tab 停靠点（每页固定 15 个），条件化（溢出时才可聚焦）列为后续项。

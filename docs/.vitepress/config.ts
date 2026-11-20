@@ -334,7 +334,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Switch', link: '/en-US/components/switch' },
                                 { text: 'TagsInput', link: '/en-US/components/tags-input' },
                                 { text: 'Textarea', link: '/en-US/components/textarea' },
-                                { text: 'TimePicker', link: '/en-US/components/time-picker' },
                             ],
                         },
                         {
@@ -344,6 +343,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Calendar', link: '/en-US/components/calendar' },
                                 { text: 'ColorPicker', link: '/en-US/components/color-picker' },
                                 { text: 'DatePicker', link: '/en-US/components/date-picker' },
+                                { text: 'TimePicker', link: '/en-US/components/time-picker' },
                                 { text: 'MultiSelect', link: '/en-US/components/multi-select' },
                                 { text: 'Select', link: '/en-US/components/select' },
                                 { text: 'SelectButton', link: '/en-US/components/select-button' },
@@ -502,7 +502,8 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                 },
             ],
             // 组件侧栏定序规则：组间顺序固定为 docs/design/documentation-site.md §11 自上而下的登记顺序，
-            // 组内按英文组件名字母序；中英两侧同分组、同组件、同顺序。
+            // 组内按英文组件名字母序（§11 已登记例外：TimePicker 紧随 DatePicker）；
+            // 中英两侧同分组、同组件、同顺序。
             '/components/': [
                 { text: '总览', link: '/components/' },
                 // 画廊属组件区的非组件分组（「总览」之后、组件分组之前）；入口唯一，故指南侧栏不再重复
@@ -545,7 +546,6 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'TagsInput 标签输入', link: '/components/tags-input' },
                         { text: 'Textarea 多行输入', link: '/components/textarea' },
-                        { text: 'TimePicker 时间选择器', link: '/components/time-picker' },
                     ],
                 },
                 {
@@ -555,6 +555,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Calendar 日历', link: '/components/calendar' },
                         { text: 'ColorPicker 颜色选择器', link: '/components/color-picker' },
                         { text: 'DatePicker 日期选择器', link: '/components/date-picker' },
+                        { text: 'TimePicker 时间选择器', link: '/components/time-picker' },
                         { text: 'MultiSelect 多选选择器', link: '/components/multi-select' },
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'SelectButton 分段选择', link: '/components/select-button' },

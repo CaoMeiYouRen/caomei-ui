@@ -6,10 +6,12 @@ import { afterAll, describe, expect, it } from 'vitest'
 import {
     MIN_SHOWCASE_GROUPS,
     MIN_SHOWCASE_ITEMS,
+    REGISTERED_ORDER_EXCEPTIONS,
     SHOWCASE_REGISTRY,
     checkExampleShape,
     checkRegistryAgainstSite,
     checkRegistryEntryShape,
+    checkSectionOrderInvariant,
     checkShowcaseWiring,
     loadShowcaseRegistry,
     runShowcaseRegistryCheck,
@@ -217,6 +219,19 @@ describe('checkRegistryAgainstSite', () => {
         expect(issueTypes(checkRegistryAgainstSite(itemOrder, FIXTURE_GROUPS, root))).toContain('showcase-item-order')
     })
 
+    it('§11 已登记的组内定序例外（DatePicker → TimePicker）不报顺序问题', () => {
+        const root = createSiteFixture()
+        const selectors = { zh: '选择器', en: 'Selectors', components: ['DatePicker', 'TimePicker'] }
+        const items = [
+            makeItem('DatePicker', selectors),
+            makeItem('TimePicker', selectors),
+        ]
+        expect(issueTypes(checkRegistryAgainstSite(items, [selectors], root))).not.toContain('showcase-item-order')
+
+        const reversed = [items[1], items[0]]
+        expect(issueTypes(checkRegistryAgainstSite(reversed, [selectors], root))).toContain('showcase-item-order')
+    })
+
     it('组件页 / 中英示例缺失与示例形态非法，逐类报出', () => {
         const root = createSiteFixture({ omit: ['Card'] })
         const issues = checkRegistryAgainstSite([makeItem('Card', FIXTURE_GROUPS[0])], FIXTURE_GROUPS, root)
@@ -229,6 +244,26 @@ describe('checkRegistryAgainstSite', () => {
 
         const invalidExample = [{ ...makeItem('Button', FIXTURE_GROUPS[0]), example: 'tag/basic.vue' }]
         expect(issueTypes(checkRegistryAgainstSite(invalidExample, FIXTURE_GROUPS, root))).toEqual(['showcase-example-invalid'])
+    })
+})
+
+describe('checkSectionOrderInvariant', () => {
+    it('默认字母序 + 已登记例外通过；错序 / 重名 / 例外失效逐类报出', () => {
+        expect(checkSectionOrderInvariant(FIXTURE_GROUPS)).toEqual([])
+
+        const misordered = FIXTURE_GROUPS.map((group) =>
+            group.zh === '表单输入' ? { ...group, components: ['Switch', 'Input'] } : group)
+        expect(issueTypes(checkSectionOrderInvariant(misordered))).toContain('section-item-order')
+
+        const duplicated = FIXTURE_GROUPS.map((group) =>
+            group.zh === '表单输入' ? { ...group, components: ['Input', 'Input'] } : group)
+        expect(issueTypes(checkSectionOrderInvariant(duplicated))).toContain('section-duplicate-component')
+
+        const exceptionGroup = { zh: '选择器', en: 'Selectors', components: ['DatePicker', 'TimePicker', 'MultiSelect'] }
+        expect(issueTypes(checkSectionOrderInvariant([exceptionGroup], REGISTERED_ORDER_EXCEPTIONS))).toEqual([])
+
+        const stale = { 选择器: [['DatePicker', 'Select']] }
+        expect(issueTypes(checkSectionOrderInvariant([exceptionGroup], stale))).toContain('section-order-exception-stale')
     })
 })
 

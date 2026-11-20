@@ -17,9 +17,11 @@
  * 2. 分组对账：`group.zh` 必须是 §11 登记分组之一，`group.en` 与该分组英文名一致，且 `name` 属于该分组的组件清单。
  * 3. 页面与示例存在：每项的中英组件页（`docs/components/<name>.md` 与 `docs/i18n/en-US/components/<name>.md`）
  *    与中英示例（`docs/examples/` 与 `docs/i18n/en-US/examples/` 下的登记路径）都必须存在。
- * 4. 顺序：登记顺序须为「§11 分组顺序 + 组内英文组件名字母序」（与 §11 侧栏定序同口径）。
+ * 4. 顺序：登记顺序须与 §11 的分组顺序 + 组内登记顺序一致（§11 组内默认字母序，
+ *    已登记的例外以 §11 表为准；与侧栏定序同口径）。
  * 5. 页面接线：中英画廊页均存在且含 `<ShowcaseGrid />` 挂载点。
  * 6. 抗静默收窄：登记表非空、项数 ≥ 下界、覆盖分组数 ≥ 下界；§11 解析为空时直接失败。
+ * 7. §11 自身不变式：各组组内顺序 = 默认字母序 + 已登记例外，且组内不得重名（防事实源被误改后其余守卫一致放行）。
  *
  * 用法：
  *   node scripts/docs/check-showcase-registry.mjs [仓库根目录]
@@ -45,6 +47,77 @@ export const SHOWCASE_WIDGET_RE = /<ShowcaseGrid[\s/>]/
 /** 受影响面下界（防「登记表被清空 / 整组丢失」被静默通过）。 */
 export const MIN_SHOWCASE_ITEMS = 9
 export const MIN_SHOWCASE_GROUPS = 3
+
+/**
+ * §11 已登记组内定序例外的**机读镜像**（组中文名 → `[前一项, 后一项]`）。
+ *
+ * 侧栏 / 总览 / 画廊都以 §11 表为单一事实源后，§11 自身被误改会让四道门禁「一致地」通过；
+ * 本表用于反向断言「§11 各组 = 默认字母序 + 本例外」。新增 / 移除例外须先改 §11 再同步本表。
+ */
+export const REGISTERED_ORDER_EXCEPTIONS = {
+    选择器: [['DatePicker', 'TimePicker']],
+}
+
+/** 按默认字母序排列，再应用同族相邻例外。 */
+function expectedGroupOrder(components, exceptions = []) {
+    const order = [...components].sort((left, right) => {
+        const a = kebabCase(left)
+        const b = kebabCase(right)
+        if (a === b) {
+            return 0
+        }
+        return a < b ? -1 : 1
+    })
+    for (const [previous, next] of exceptions) {
+        const from = order.indexOf(next)
+        const anchor = order.indexOf(previous)
+        if (from === -1 || anchor === -1) {
+            continue
+        }
+        order.splice(from, 1)
+        order.splice(anchor + 1, 0, next)
+    }
+    return order
+}
+
+/**
+ * §11 自身的组内顺序不变式：默认字母序 + 已登记例外，且组内不得重名。
+ *
+ * @param {Array<{ zh: string, en: string, components: string[] }>} tableGroups §11 分组登记
+ * @param {Record<string, Array<[string, string]>>} [exceptions] 机读例外镜像
+ * @returns {Array<{ type: string, message: string }>} 问题列表
+ */
+export function checkSectionOrderInvariant(tableGroups, exceptions = REGISTERED_ORDER_EXCEPTIONS) {
+    const issues = []
+    for (const [groupName, pairs] of Object.entries(exceptions)) {
+        const group = tableGroups.find((item) => item.zh === groupName)
+        if (!group) {
+            continue
+        }
+        for (const [previous, next] of pairs) {
+            if (!group.components.includes(previous) || !group.components.includes(next)) {
+                issues.push({ type: 'section-order-exception-stale', message: `§11「${groupName}」登记的例外 ${previous} → ${next} 未同时出现在组内：登记失效` })
+            }
+        }
+    }
+    for (const group of tableGroups) {
+        const seen = new Set()
+        for (const name of group.components) {
+            if (seen.has(name)) {
+                issues.push({ type: 'section-duplicate-component', message: `§11「${group.zh}」组内组件 ${name} 重复` })
+            }
+            seen.add(name)
+        }
+        const expected = expectedGroupOrder(group.components, exceptions[group.zh] ?? [])
+        if (expected.join('、') !== group.components.join('、')) {
+            issues.push({
+                type: 'section-item-order',
+                message: `§11「${group.zh}」组内顺序应为默认字母序 + 已登记例外：期望 ${expected.join('、')}，实为 ${group.components.join('、')}`,
+            })
+        }
+    }
+    return issues
+}
 
 function isNonEmptyString(value) {
     return typeof value === 'string' && value.trim().length > 0
@@ -154,9 +227,14 @@ export function checkRegistryAgainstSite(items, tableGroups, root = docsProjectR
         return [{ type: 'showcase-groups-unparsed', message: `未从 ${DESIGN_DOC} §11 解析到分组登记表：拒绝以空扫描通过` }]
     }
     const groupOrder = new Map(tableGroups.map((group, index) => [group.zh, index]))
+    const nameOrder = new Map(tableGroups.map((group) => [
+        group.zh,
+        new Map(group.components.map((name, index) => [name, index])),
+    ]))
     const seen = new Set()
     let previousGroup = -1
     let previousName = ''
+    let previousItemIndex = undefined
 
     items.forEach((item, index) => {
         const location = `登记表第 ${index + 1} 项`
@@ -184,15 +262,25 @@ export function checkRegistryAgainstSite(items, tableGroups, root = docsProjectR
             issues.push({ type: 'showcase-name-not-in-group', message: `${location}（${name}）：组件不在 §11「${expected.zh}」分组的组件清单中（清单见 ${DESIGN_DOC} §11）` })
         }
 
-        // 顺序：分组序号非降 + 组内字母序严格递增（与 §11 侧栏定序同口径）。
-        // 比较用 kebab-case：与英文组件名的字母序在当前组件集下等价（`check-docs-structure` 的侧栏定序亦用 kebab）。
+        // 顺序：分组序号非降 + 组内顺序与 §11 登记一致（§11 默认字母序，并登记同族相邻例外）。
+        // 以 §11 表为单一事实源，避免登记顺序与例外在两处各自维护。
+        const itemIndex = nameOrder.get(expected.zh)?.get(name)
         if (group < previousGroup) {
             issues.push({ type: 'showcase-group-order', message: `${location}（${name}）：分组「${expected.zh}」出现在更靠后的分组之后：登记顺序须为 §11 的分组顺序` })
-        } else if (group === previousGroup && previousName && kebab <= previousName) {
-            issues.push({ type: 'showcase-item-order', message: `${location}（${name}）：组内顺序须按英文组件名字母序，「${kebab}」不得排在「${previousName}」之后` })
+        } else if (
+            group === previousGroup
+            && previousName
+            && itemIndex !== undefined
+            && previousItemIndex !== undefined
+            && itemIndex < previousItemIndex
+        ) {
+            issues.push({ type: 'showcase-item-order', message: `${location}（${name}）：组内顺序须与 ${DESIGN_DOC} §11 的登记顺序一致，「${kebab}」不得排在「${previousName}」之后` })
         }
         previousGroup = group
         previousName = kebab
+        if (itemIndex !== undefined) {
+            previousItemIndex = itemIndex
+        }
 
         const exampleIssue = checkExampleShape(item.example, kebab)
         if (exampleIssue) {
@@ -271,7 +359,11 @@ export async function runShowcaseRegistryCheck(root = docsProjectRoot) {
             tableGroups: 0,
         }
     }
-    const issues = [...checkShowcaseWiring(items, root), ...checkRegistryAgainstSite(items, tableGroups, root)]
+    const issues = [
+        ...checkShowcaseWiring(items, root),
+        ...checkSectionOrderInvariant(tableGroups),
+        ...checkRegistryAgainstSite(items, tableGroups, root),
+    ]
     const groupCount = new Set(items.map((item) => item?.group?.zh).filter(isNonEmptyString)).size
     return { issues, itemCount: items.length, groupCount, tableGroups: tableGroups.length }
 }

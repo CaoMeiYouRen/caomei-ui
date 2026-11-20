@@ -75,7 +75,7 @@
 | 间距 | `--caomei-space-1` ~ `-4` | 4 / 8 / 12 / 16 px | 组件内边距与间隙 |
 | 字号 | `--caomei-font-size-sm` / `-md` / `-lg` | 12 / 14 / 16 px | 控件文本与标题 |
 | 圆角 | `--caomei-radius-sm` / `-md` / `-lg` / `-full` | 4 / 8 / 12 / 999 px | 控件 / 容器 / 浮层 / 胶囊 |
-| 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限；`MultiSelect` / `AutoComplete` / `DatePicker` 未声明默认值，按回退链取 `--caomei-select-max-width`（见[主题与样式设计 §4.1](./theming.md)） |
+| 组件宽度 | `--caomei-input-number-max-width` / `--caomei-select-max-width` | 12rem / 20rem | 数值输入框 / 选择器默认上限；`MultiSelect` / `AutoComplete` / `DatePicker` / `TimePicker` 未声明默认值，按回退链取 `--caomei-select-max-width`（见[主题与样式设计 §4.1](./theming.md)） |
 | 命中区 | `--caomei-hit-target-min` | 24 px | P0 清除 / 关闭 icon 按钮的不可见命中区下限（`.caomei-hit-target`，WCAG 2.5.8；见[响应式设计 §5](./responsive.md)） |
 | 安全区 | `--caomei-safe-area-top` / `-right` / `-bottom` / `-left` | `env(safe-area-inset-*, 0px)` | 刘海 / 圆角 / home indicator 避让；`.caomei-safe-area-*` 工具类把 token 写成同侧 `padding`（见[移动端与响应式](../guide/mobile.md)）。`env()` 仅在页面声明 `viewport-fit=cover` 时非零，桌面回落 `0px` |
 
@@ -315,7 +315,7 @@
 | 受控字段 | `v-model:visible` / `v-model:value` | `v-model:open` / `v-model` |
 | 浮层标题 | `header` | `title` |
 | 校验态 | `class="p-invalid"` | `:invalid` |
-| 全宽 | `fluid` | 默认 `width: 100%`（迁移时删除；例外：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度））。选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker`）另带 `20rem` 宽度上限，需要真正全宽时把对应上限 token 覆盖为 `none`（`DatePicker` 为 `--caomei-date-picker-max-width`；见[主题与样式设计 §4.1](./theming.md)） |
+| 全宽 | `fluid` | 默认 `width: 100%`（迁移时删除；例外：`Button` 改用 `block`（撑满父容器）、`SplitButton` 未实现 `fluid`（按内容宽度））。选择器家族（`Select` / `MultiSelect` / `AutoComplete` / `DatePicker` / `TimePicker`）另带 `20rem` 宽度上限，需要真正全宽时把对应上限 token 覆盖为 `none`（`DatePicker` 为 `--caomei-date-picker-max-width`、`TimePicker` 为 `--caomei-time-picker-max-width`；见[主题与样式设计 §4.1](./theming.md)） |
 | 选项字段映射 | `option-label` / `option-value` | `optionLabel` / `optionValue`（字段名或取值函数；值支持 `string` / `number`） |
 | 可搜索单选 | `Select filter` | 改用 `CaomeiAutoComplete`（Reka Select 无 filter primitive，面板内搜索框违反 `aria-required-children`；自由文本差异见 [Backlog](../plan/backlog.md)） |
 

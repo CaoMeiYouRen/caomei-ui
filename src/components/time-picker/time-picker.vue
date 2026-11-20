@@ -317,11 +317,18 @@ function onSegmentKeydown(event: KeyboardEvent, part: 'hour' | 'minute' | 'secon
     font-weight: 500;
 }
 
+/*
+  宽度上限：与选择器家族（Select / MultiSelect / AutoComplete / DatePicker）同源，默认回退
+  `--caomei-select-max-width`（20rem），避免字段在宽容器中被拉到过长；需要撑满所在列时在同一元素或
+  其祖先上把 `--caomei-time-picker-max-width` 覆盖为 `none`。
+*/
 .caomei-time-picker__field {
     display: inline-flex;
     align-items: center;
     gap: var(--caomei-space-1);
     box-sizing: border-box;
+    width: 100%;
+    max-width: var(--caomei-time-picker-max-width, var(--caomei-select-max-width));
     min-height: var(--caomei-time-picker-height, var(--caomei-control-height-md, 2.25rem));
     padding-inline: var(--caomei-time-picker-padding-inline, var(--caomei-space-2));
     border: 1px solid var(--caomei-time-picker-border, var(--caomei-color-border));

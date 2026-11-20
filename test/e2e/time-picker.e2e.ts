@@ -63,3 +63,24 @@ test('输入分钟并回写受控值', async ({ page }) => {
     await minute.blur()
     await expect(page.locator(VALUE)).toContainText('09:45:00')
 })
+
+test('宽容器内宽度封顶 20rem，可用 token 放开', async ({ page }) => {
+    await page.locator(DEFAULT).scrollIntoViewIfNeeded()
+    const capped = await page.locator(DEFAULT).evaluate((host) => {
+        host.style.width = '800px'
+        const fieldElement = host.querySelector<HTMLElement>('.caomei-time-picker__field')
+        return {
+            fieldWidth: fieldElement?.getBoundingClientRect().width ?? 0,
+            maxWidth: fieldElement ? getComputedStyle(fieldElement).maxWidth : '',
+        }
+    })
+    // 320px = 20rem × 根字号 16px（夹具未覆盖根字号）；若根字号调整，换算值需同步。
+    expect(capped.maxWidth, '默认上限应与选择器家族同源（20rem = 320px）').toBe('320px')
+    expect(capped.fieldWidth).toBeLessThanOrEqual(321)
+
+    const released = await page.locator(DEFAULT).evaluate((host) => {
+        host.style.setProperty('--caomei-time-picker-max-width', 'none')
+        return host.querySelector<HTMLElement>('.caomei-time-picker__field')?.getBoundingClientRect().width ?? 0
+    })
+    expect(released, '覆盖 token 为 none 后应撑满所在列').toBeGreaterThan(700)
+})

@@ -32,9 +32,12 @@ TimePicker records a time of day: minutes by default, optionally seconds, with 1
 
 ## Style customization
 
+The field is `width: 100%` by default with an overridable width cap: `--caomei-time-picker-max-width` falls back to `--caomei-select-max-width` (`20rem`) when unset. To fill its column, set that variable to `none` on the element or an ancestor. Under `data-density="touch"` the fallback cap is released like the other selectors; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
+
 | Variable | Default | Description |
 |------|------|------|
 | `--caomei-time-picker-height` | `--caomei-control-height-md` | Minimum field height |
+| `--caomei-time-picker-max-width` | `--caomei-select-max-width` (`20rem`) | Field width cap; override to `none` to fill the column |
 | `--caomei-time-picker-padding-inline` | `--caomei-space-2` | Field inline padding |
 | `--caomei-time-picker-border` | `--caomei-color-border` | Border color |
 | `--caomei-time-picker-radius` | `--caomei-radius-md` | Corner radius |

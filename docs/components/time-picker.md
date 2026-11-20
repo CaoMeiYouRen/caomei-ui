@@ -32,9 +32,12 @@ TimePicker 用于录入一天内的时间：默认精确到分钟，可开启秒
 
 ## 样式定制
 
+字段默认 `width: 100%`，并带可覆盖的宽度上限：`--caomei-time-picker-max-width` 未覆盖时回退 `--caomei-select-max-width`（默认 `20rem`）。需要撑满所在列时在同一元素或其祖先上把该变量覆盖为 `none`。触摸设备上设置 `data-density="touch"` 时，该回退链的上限会放开（与其它选择器一致），详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
+
 | 变量 | 默认 | 说明 |
 |------|------|------|
 | `--caomei-time-picker-height` | `--caomei-control-height-md` | 字段最小高度 |
+| `--caomei-time-picker-max-width` | `--caomei-select-max-width`（`20rem`） | 字段宽度上限；需要撑满所在列时覆盖为 `none` |
 | `--caomei-time-picker-padding-inline` | `--caomei-space-2` | 字段行内内边距 |
 | `--caomei-time-picker-border` | `--caomei-color-border` | 边框颜色 |
 | `--caomei-time-picker-radius` | `--caomei-radius-md` | 圆角 |

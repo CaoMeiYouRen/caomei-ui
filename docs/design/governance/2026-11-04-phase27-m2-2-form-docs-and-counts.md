@@ -46,7 +46,7 @@
 - `pnpm docs:check` → **exit 0**（含 `check-docs-structure` 56 成员、`check-components-overview`、`check-showcase-registry` 16 项、`check-i18n-parity` 新页配对、`check-example-refs` 407 md / 420 引用 / 399 示例文件）。
 - `pnpm governance:check` → **exit 0**（含 `check-design-catalog` 27 行 / 56 成员、`check-locale-ledger` 28 命名空间、`check:planning-numbers`、`check:governance-counts`）。
 - `pnpm exec playwright test test/e2e/form.e2e.ts` → **9 passed**（3 例 × 3 个全量档）。
-- `pnpm test:e2e` → **463 passed / 4 skipped**（含 `#form` 进入 responsive §4 受检面，`MIN_SECTIONS = 21`）。
+- `pnpm test:e2e` → **463 passed / 4 skipped**（含 `#form` 进入 responsive §4 受检面，写录时点 `MIN_SECTIONS = 21`）。
 - `pnpm test:visual` → **37 passed**（34 张基线，新增 `form-light` / `form-dark`；既有 32 张 0 差异）。
 - `pnpm capture:styles` → **0 差异（374 项）**；冻结前 7 条差异全部为新增键，既有键 0 变化。
 - `pnpm test` → **146 文件 / 2871 passed**；`pnpm test:a11y` → **68 passed**。

@@ -96,6 +96,8 @@ node -e "const ts=require('typescript'),p=ts.createProgram(['src/index.ts'],{mod
 > **2026-11-09 增量（按钮悬浮位移取消）**：`Button` / `Toolbar` 的 `expressive` 悬浮位移按复核意见取消，未保留内部覆盖变量（曾短暂引入 2 个 fallback 钩子后移除）；有效冻结面 **430 不变**，消费面 / 未披露维持 **455 / 139**（已声明 114 / 纯内部 25）。复算命令同 §2.4。
 ### 2.4 token 契约（用户 2026-10-24 裁定）
 
+> **2026-11-20 复算校准（Phase 38 收口）**：对当前工作区重跑 §2.4 复算命令与 §2.3 导出枚举，实测默认声明 **193**、组件页披露钩子 **365**（中英两语集合并集）、有效冻结面 **483**（交集 75）；包根导出名 **385**（`Caomei*` 110 / `use*`·`provide*` 11）。本批新增 Cell / CellGroup / Tabbar / TabbarItem / ActionSheet / Empty 六个组件导出与 `--caomei-{cell,cell-group,tabbar,action-sheet,empty}-*` 覆盖钩子；其余差额为 2026-11-09 后各批次未逐批注记的增量。冻结规则不变：既有名称与语义冻结，新增属向后兼容。
+
 **裁定：取「全量 146 + 已披露覆盖钩子」**，不取「全局 68」。
 
 | 集合 | 数量 | 定义 | 是否冻结 |
@@ -128,11 +130,11 @@ awk '/^## (样式定制|Style customization)/{flag=1;next} /^## /{flag=0} flag' 
 sort -u tokens-documented.txt -o tokens-documented.txt
 wc -l tokens-defined.txt tokens-documented.txt
 
-# 2026-10-24 时点值：371（有效冻结面）；2026-10-28：380；当前值 381
+# 有效冻结面历史：2026-10-24 为 371、2026-10-28 为 380、2026-11-03 为 381；2026-11-20 校准为 483（见上方注记）
 cat tokens-defined.txt tokens-documented.txt | sort -u | wc -l
-comm -12 tokens-defined.txt tokens-documented.txt | wc -l   # 交集（2026-10-24 为 63，当前 65）
+comm -12 tokens-defined.txt tokens-documented.txt | wc -l   # 交集（2026-10-24 为 63、2026-11-03 为 65；2026-11-20 校准为 75）
 
-# 386 / 98 / 83 / 15（消费面与未披露拆分）
+# 2026-10-24 时点：386 / 98 / 83 / 15（消费面与未披露拆分）
 rg -o --no-filename -- "--caomei-[a-z0-9-]+" src | grep -v -- "-$" | sort -u > tokens-consumed.txt
 wc -l tokens-consumed.txt
 comm -23 tokens-consumed.txt tokens-documented.txt > tokens-consumed-undocumented.txt
@@ -147,11 +149,13 @@ comm -23 tokens-consumed-undocumented.txt tokens-defined.txt | wc -l
 - **文案结构**：每语 **28 个命名空间 / 80 条文案**；键集合与占位符以 `zh-CN` 为基准，由 `pnpm check:locale-keys` 校验跨语一致性与分发登记。
 - **注册形态**：`PRE_REGISTERED_LOCALES = ['zh-CN', 'en-US']` 随包根预注册；其余 8 语经 `caomei-ui/locale/<code>` 子路径引入后调用 `registerLocale()`。`caomeiLocales` 的语义是「已注册表」，不是「内建全集」。
 - **冻结语义**：命名空间名称、既有键的名称与语义冻结；**新增**键属向后兼容增量；删除 / 重命名既有键属破坏性变更。预注册集合的改变（扩大或缩小）属破坏性变更。
-- **复算命令**：`ls src/locale/*.ts | grep -v -E "index|types" | wc -l` → 10；命名空间 / 键计数：`node -e "const fs=require('fs'),f=fs.readFileSync('src/locale/zh-cn.ts','utf8');console.log((f.match(/^ {4}[a-zA-Z0-9_]+:/gm)||[]).length,(f.match(/^ {8}[a-zA-Z0-9_]+:/gm)||[]).length)"` → 28 / 80。`check:locale-keys` 负责跨语一致性与分发对应，绝对计数以本记录复算值为准。
+- **复算命令**：`ls src/locale/*.ts | grep -v -E "index|types" | wc -l` → 10；命名空间 / 键计数：`node -e "const fs=require('fs'),f=fs.readFileSync('src/locale/zh-cn.ts','utf8');console.log((f.match(/^ {4}[a-zA-Z0-9_]+:/gm)||[]).length,(f.match(/^ {8}[a-zA-Z0-9_]+:/gm)||[]).length)"` → 2026-10-24 时点 28 / 80；期望读数以最新增量注记为准（2026-11-20 为 33 / 95）。`check:locale-keys` 负责跨语一致性与分发对应，绝对计数以本记录复算值为准。
 
 > **2026-11-07 增量（DatePicker 范围选择）**：`datePicker` 命名空间新增 `range` / `rangeStart` / `rangeEnd` 三键（10 语同步），属向后兼容增量；每语文案键由 **80** 更新为 **83**（命名空间数与语言数不变，预注册集合不变）。复算同上方命令，期望读数 28 / 83。
 
 > **2026-11-15 增量（BackTop / TimePicker）**：新增 `backTop`（`label` 1 键）与 `timePicker`（`hour` / `minute` / `second` / `am` / `pm` 5 键）两个命名空间，10 语同步；每语由 **28 / 83** 更新为 **30 / 89**（语言数与预注册集合不变）。复算同上方命令，期望读数 30 / 89。
+
+> **2026-11-20 增量（Rating / ActionSheet / Tabbar 文案）**：新增 `rating`（`label` / `readonlyLabel` / `valueLabel` 3 键）、`actionSheet`（`label` / `cancel` 2 键）与 `tabbar`（`label` 1 键）三个命名空间，10 语同步；每语由 **30 / 89** 更新为 **33 / 95**（语言数与预注册集合不变）。复算同上方命令，期望读数 33 / 95。
 
 ### 2.6 `InputNumber` 的 `step` 语义（按 `reka-ui` 2.10.4 冻结）
 

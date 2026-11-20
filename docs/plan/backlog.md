@@ -73,6 +73,7 @@
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
 | 宽屏视觉基线（1536 / 1920） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：为 DataTable / Dialog / Form 等宽屏敏感组件补 1920 视觉用例（亮暗各一份）；约 +3–5 文件 +4–6 PNG、+1–2 天。**触发条件 = 宽屏布局出现真实回归，或下一次视觉基线批次** | 中 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
+| E2E 装置既有失败清理 | 2026-11-20 全量回归发现、已在干净 HEAD 复现的既有失败：`back-top.e2e.ts` 夹具遮挡、`overlay-stacking.e2e.ts` 模态内容后代命中自证、`navigation-motion.e2e.ts` SplitButton chevron、`selector-motion.e2e.ts` DatePicker 入场 / reduced-motion 压平、`data-table-scroll.e2e.ts` 行展开区。**触发条件 = 下一次 E2E 稳定性批次或用户裁定**；修复时须逐例给出负向对照，不混入功能条目 | 低 |
 
 ### 1.7 服务层候选（composables）
 

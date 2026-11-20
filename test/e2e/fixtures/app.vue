@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineComponent, h, onMounted, ref } from 'vue'
-import { Settings } from '@lucide/vue'
+import { Compass, Home, Settings, User } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import { use } from 'echarts/core'
@@ -8,6 +8,12 @@ import { CanvasRenderer } from 'echarts/renderers'
 import {
     CaomeiAccordion,
     CaomeiAccordionItem,
+    CaomeiActionSheet,
+    CaomeiCell,
+    CaomeiCellGroup,
+    CaomeiEmpty,
+    CaomeiTabbar,
+    CaomeiTabbarItem,
     CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiAvatar,
@@ -673,6 +679,35 @@ const ConfirmDriver = defineComponent({
             )
     },
 })
+
+/**
+ * 移动壳与空态用例（见 `test/e2e/mobile-shell.e2e.ts`）：
+ * Tabbar 只做展示层（不接路由），ActionSheet 以底部 Drawer 组合。
+ */
+const tabbarValue = ref<'home' | 'explore' | 'me'>('home')
+const actionSheetOpen = ref(false)
+const actionSheetLog = ref('')
+const actionSheetGroups = [
+    {
+        label: '项目操作',
+        items: [
+            { label: '分享给成员', value: 'share' },
+            { label: '复制链接', value: 'copy' },
+            { label: '移动到文件夹', value: 'move' },
+            { label: '导出为压缩包', value: 'export' },
+            { label: '归档项目', value: 'archive' },
+            { label: '转移所有权', value: 'transfer' },
+            { label: '查看操作日志', value: 'logs' },
+            { label: '删除项目', value: 'delete', danger: true, description: '不可撤销' },
+        ],
+    },
+]
+
+function onActionSheetSelect(value: unknown): void {
+    actionSheetLog.value = typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+}
+
+const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='72'%3E%3Crect width='96' height='72' rx='8' fill='%23e2e8f0'/%3E%3C/svg%3E`
 </script>
 
 <template>
@@ -2775,6 +2810,85 @@ const ConfirmDriver = defineComponent({
                     锁定背景的页面级浮层。
                 </CaomeiPopoverContent>
             </CaomeiPopover>
+        </section>
+
+        <section id="cell-group" class="fixture__case">
+            <CaomeiCellGroup title="账户设置">
+                <CaomeiCell
+                    title="个人资料"
+                    description="头像、昵称与简介"
+                    value="已完善"
+                    arrow
+                />
+                <CaomeiCell
+                    as="button"
+                    title="消息通知"
+                    value="开启"
+                />
+                <CaomeiCell
+                    as="a"
+                    href="#tabbar"
+                    title="帮助与反馈"
+                    arrow
+                />
+            </CaomeiCellGroup>
+        </section>
+
+        <section id="tabbar" class="fixture__case">
+            <CaomeiTabbar
+                v-model="tabbarValue"
+                label="主导航"
+            >
+                <CaomeiTabbarItem
+                    value="home"
+                    label="首页"
+                    :icon="Home"
+                />
+                <CaomeiTabbarItem
+                    value="explore"
+                    label="发现"
+                    :icon="Compass"
+                    badge="5"
+                />
+                <CaomeiTabbarItem
+                    value="me"
+                    label="我的"
+                    :icon="User"
+                />
+            </CaomeiTabbar>
+        </section>
+
+        <section id="action-sheet" class="fixture__case">
+            <CaomeiButton
+                id="action-sheet-open"
+                variant="secondary"
+                @click="actionSheetOpen = true"
+            >
+                打开操作面板
+            </CaomeiButton>
+            <CaomeiActionSheet
+                v-model:open="actionSheetOpen"
+                title="更多操作"
+                description="选择要执行的操作"
+                :groups="actionSheetGroups"
+                @select="onActionSheetSelect"
+            />
+            <span id="action-sheet-log">{{ actionSheetLog }}</span>
+        </section>
+
+        <section id="empty" class="fixture__case">
+            <CaomeiEmpty
+                title="还没有任何项目"
+                description="创建第一个项目后，它会出现在这里。"
+                :image="EMPTY_IMAGE"
+                image-alt=""
+            >
+                <template #action>
+                    <CaomeiButton size="sm">
+                        新建项目
+                    </CaomeiButton>
+                </template>
+            </CaomeiEmpty>
         </section>
     </main>
 </template>

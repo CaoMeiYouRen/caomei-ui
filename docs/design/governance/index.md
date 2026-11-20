@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-20-next-stage-scope-evaluation-23.md](./2026-11-20-next-stage-scope-evaluation-23.md)：**下一阶段范围评估（第二十三轮）**。现状：`1.3.0` / 无进行中阶段 / open issue #71 / 0 PR / 0 安全告警；P0 缺口 InputOtp、Popconfirm、Result、Descriptions；推荐核心 5 主线 / 11 条（四组件 + 阶段进度表机检 + `1.4.0` 发布），可选文档站 P1 设备预览与 5 例 E2E 质量收口；Form rules / 虚拟滚动 / i18n 二期 / 移动第二波 / P1 组件维持 Backlog。**未登记阶段**。**Review Gate**：见本记录 §7。
 - [2026-11-20-planning-doc-model-v1-evaluation.md](./2026-11-20-planning-doc-model-v1-evaluation.md)：**规划文档模型 v1 研判（issue #71）**。采纳阶段进度表、阶段 / 主线 / 原子条目分层、小条目四要素、归档块 6 项（仅新块）与索引覆盖规则；存量 `phase-*.md` 改名延后为独立机械批次（实际链接面大于提案估计，含治理记录）；`roadmap-phases-*.md` 与索引倒序不采纳，400 行阈值维持；机检随改名批次 / 下一次阶段登记落地。**Review Gate**：见本记录 §7。
 - [2026-11-20-phase38-archive.md](./2026-11-20-phase38-archive.md)：**Phase 38 归档批次**。11 条原子条目全部交付且不发布；`todo.md` 回到「当前无进行中阶段」，Phase 38 入窗并把 Phase 32 迁入深度归档（主窗口 Phase 33 ~ 38 / 374 行）；`roadmap`、`archive/index`、`recurring` 第 42 轮与 `.session` 同批切换。**Review Gate**：见本记录 §1 / §3。
 - [2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md](./2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md)：**Phase 38 M2–M4 交付记录：移动壳、操作 / 空态与验收扩面**。Cell / CellGroup 行语义与分组、Tabbar 展示层与 `aria-current`、ActionSheet 复用底部 Drawer（含 Drawer 可访问名回退）、Empty 页面 / 区块空态；M2 / M3 的 10 语文案与台账、移动端布局配方、44px 政策与邻接判据、`mobile-shell` 常驻用例、六个定向验收档与 `MIN_SECTIONS` 扩面；极窄探针修复夹具最小内容宽导致的布局视口失真。**Review Gate**：见本记录 §3。

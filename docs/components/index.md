@@ -12,6 +12,8 @@
 - [Button 按钮](./button)：按钮用于触发一个操作。
 - [ButtonGroup 按钮组](./button-group)：按钮组把多个按钮拼接为单一控件：相邻按钮的边框自动合并、内侧圆角去除，常用于一组紧密相关的操作。
 - [Card 卡片](./card)：卡片用于分组承载相关内容，作为纯布局容器不引入任何交互逻辑，自带边框 / 阴影 / 填充三种基础外观。
+- [Cell 单元格](./cell)：移动端列表的基本行，承载标题、描述、右值与前后插槽；点击语义由宿主元素（`div` / `button` / `a`）承载。
+- [CellGroup 单元格分组](./cell-group)：把多个 Cell 收进带边框与分隔线的容器，可提供分组标题。
 - [Col 栅格列](./col)：栅格列是栅格行的子项，以 24 栏栅格定位自身，支持跨栏、偏移、排序与响应式断点覆盖。
 - [Divider 分隔线](./divider)：分隔线用于区隔内容区块，支持水平 / 垂直方向、内容插槽与线型。
 - [Image 图片](./image)：图片组件基于原生 `img` 自建，提供比例占位、懒加载与加载 / 失败占位，避免加载过程引发布局跳动。
@@ -64,6 +66,7 @@
 
 - [DataTable 表格](./data-table)：表格用于展示结构化数据，基于 `@tanstack/vue-table` 的无头能力自建渲染，默认提供极简表样式与空态。
 - [DataView 数据视图](./data-view)：数据视图用同一组数据在列表与网格两种布局间切换：`layout` 决定渲染 `list` 还是 `grid` 插槽，条目结构与网格列数由插槽内容自行定义。自建实现，不依赖 Reka UI。
+- [Empty 空态](./empty)：页面或区块级空态，提供图标 / 图片、标题、说明与操作区；容器内空态由 DataView 承担。
 - [Paginator 分页](./paginator)：分页用于在数据分片间切换，基于 Reka UI Pagination 封装。
 - [ProgressBar 进度条](./progress-bar)：进度条用于展示确定的进度值或不确定的等待状态，基于 Reka UI Progress 封装，与 ProgressSpinner 同源。
 - [ProgressSpinner 加载指示](./progress-spinner)：加载指示器用于表示正在进行的异步操作，基于 Reka UI Progress 封装（不确定进度）。
@@ -72,10 +75,12 @@
 ## 导航与操作
 
 - [Accordion 折叠面板](./accordion)：折叠面板将内容分节收纳，点击标题逐项展开 / 收起，基于 Reka UI Accordion 封装。
+- [ActionSheet 操作面板](./action-sheet)：从底部弹出的操作列表，以 Drawer 的底部抽屉组合实现；支持分组、危险项、取消项与选择后关闭。
 - [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
 - [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。
 - [Stepper 步骤条](./stepper)：步骤条展示多步流程的进度，并在步骤之间导航。基于 Reka UI Stepper（稳定 primitive）封装，采用与 Tabs 一致的组合式 API。
+- [Tabbar 标签栏](./tabbar)：移动端顶层视图切换的展示层，维护 `v-model` 选中值与 `aria-current`；不接 vue-router、不做页面切换。
 - [Tabs 选项卡](./tabs)：选项卡在一组同级内容间切换，同一时刻只展示一个面板，基于 Reka UI Tabs 封装。
 - [Toolbar 工具条](./toolbar)：工具条用于将一组操作控件组织为单一键盘导航区域，基于 Reka UI Toolbar 封装，由 `CaomeiToolbar` 与 `CaomeiToolbarButton` / `CaomeiToolbarLink` / `CaomeiToolbarSeparator` / `CaomeiToolbarToggleGroup` / `CaomeiToolbarToggleItem` 组合使用。
 

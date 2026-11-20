@@ -137,12 +137,12 @@ docs/
 
 | 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序） |
 | --- | --- | --- |
-| 基础与布局 | Basics & Layout | Avatar、BackTop、Badge、Button、ButtonGroup、Card、Col、Divider、Image、Row、SplitButton、Tag |
+| 基础与布局 | Basics & Layout | Avatar、BackTop、Badge、Button、ButtonGroup、Card、Cell、CellGroup、Col、Divider、Image、Row、SplitButton、Tag |
 | 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea、TimePicker |
 | 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、MultiSelect、Select、SelectButton、ToggleButton |
 | 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、Dialog、Drawer、Message、Popover、Toast、Tooltip |
-| 数据展示 | Data Display | DataTable、DataView、Paginator、ProgressBar、ProgressSpinner、Skeleton |
-| 导航与操作 | Navigation & Actions | Accordion、Breadcrumb、DropdownMenu、Menu、Stepper、Tabs、Toolbar |
+| 数据展示 | Data Display | DataTable、DataView、Empty、Paginator、ProgressBar、ProgressSpinner、Skeleton |
+| 导航与操作 | Navigation & Actions | Accordion、ActionSheet、Breadcrumb、DropdownMenu、Menu、Stepper、Tabbar、Tabs、Toolbar |
 | 高级组件 | Advanced | Chart、RichTextEditor |
 
 > 分组映射与决策背景（用户决策：6 分组 + 组内字母序）见 [2026-09-16 新需求评估记录](./governance/2026-09-16-new-requirements-evaluation.md)（附录 A 为当时的决策快照）。**2026-09-30 用户决策追加「高级组件 / Advanced」为第 7 组**（承载外部依赖内核类组件；当前仅 `RichTextEditor`），置于 6 个组件分组之后、能力说明之前。

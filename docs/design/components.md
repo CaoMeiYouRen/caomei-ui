@@ -20,7 +20,7 @@
 - 组件清单以「Reka UI 对应」列为准维护：新增组件时先判定能否封装，再决定是否自建。
 - Reka UI 文档站无 `/docs/components` 索引页（404）；组件清单以任一组件页的侧栏导航或本地 `reka-ui` 导出为准，外链统一指向 [官方简介](https://reka-ui.com/docs/overview/introduction)。
 
-## 2. Tier 0：必选（9 个）
+## 2. Tier 0：必选（10 个）
 
 覆盖下游约 80% 使用场景。
 
@@ -52,7 +52,7 @@
 | Paginator | 封装 Pagination | Pagination |
 | Switch（统一 ToggleSwitch / InputSwitch） | 封装 Switch（文档 / 测试已补齐） | Switch |
 
-## 4. Tier 2：按需（6 个）
+## 4. Tier 2：按需（10 个）
 
 | 组件 | 实现方式 | Reka UI 对应 |
 |------|----------|--------------|
@@ -62,6 +62,12 @@
 | Image | 自建（img + 懒加载 + 点击预览） | Dialog（预览遮罩模态） |
 | SelectButton / SegmentedControl | 封装 ToggleGroup | ToggleGroup |
 | FileUpload | 自建 | 无 |
+| Cell / CellGroup | 自建（行布局 + 分组容器） | 无 |
+| Tabbar / TabbarItem | 自建（展示层，不接 vue-router） | 无 |
+| ActionSheet | 组合（`Drawer position="bottom"`） | Dialog 派生 |
+| Empty | 自建（图标 / 图片 + 标题 / 说明 + 操作区） | 无 |
+
+> 分档依据：Cell / Tabbar / ActionSheet / Empty 属移动端壳层与页面级空态，单项职责薄、可组合（ActionSheet 复用 Drawer，Empty 复用 dataView 文案），故列 Tier 2「按需」；不因移动端场景整体升档。
 
 ## 5. Tier 3：长尾（按需）
 

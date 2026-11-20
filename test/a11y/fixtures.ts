@@ -3,6 +3,7 @@ import { defineComponent, h, ref } from 'vue'
 import {
     CaomeiAccordion,
     CaomeiAccordionItem,
+    CaomeiActionSheet,
     CaomeiAlert,
     CaomeiAutoComplete,
     CaomeiAvatar,
@@ -14,6 +15,8 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCard,
+    CaomeiCell,
+    CaomeiCellGroup,
     CaomeiChart,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
@@ -36,6 +39,7 @@ import {
     CaomeiDropdownMenuRadioItem,
     CaomeiDropdownMenuSeparator,
     CaomeiDropdownMenuTrigger,
+    CaomeiEmpty,
     CaomeiFileUpload,
     CaomeiFloatLabel,
     CaomeiForm,
@@ -79,6 +83,8 @@ import {
     CaomeiStepperTrigger,
     CaomeiSubMenu,
     CaomeiSwitch,
+    CaomeiTabbar,
+    CaomeiTabbarItem,
     CaomeiTabContent,
     CaomeiTabList,
     CaomeiTabTrigger,
@@ -318,6 +324,19 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiTimePicker', root: CaomeiTimePicker, definition: { components: { CaomeiTimePicker }, template: '<CaomeiTimePicker label="时间" :model-value="time" />', setup: () => ({ time: new Date(2026, 0, 1, 9, 30, 0) }) } },
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
+    /* 移动端壳层 / 操作与空态：本批追加，位置保持在本批新增段内便于对照变更集 */
+    { name: 'CaomeiCellGroup', root: CaomeiCellGroup, definition: { components: { CaomeiCellGroup, CaomeiCell }, template: '<CaomeiCellGroup title="账户设置"><CaomeiCell title="个人资料" description="头像、昵称与简介" value="已完善" arrow /><CaomeiCell as="button" title="消息通知" value="开启" /></CaomeiCellGroup>' } },
+    { name: 'CaomeiTabbar', root: CaomeiTabbar, definition: { components: { CaomeiTabbar, CaomeiTabbarItem }, template: '<CaomeiTabbar label="主导航"><CaomeiTabbarItem value="home" label="首页" /><CaomeiTabbarItem value="me" label="我的" badge="5" /></CaomeiTabbar>' } },
+    {
+        name: 'CaomeiActionSheet',
+        root: CaomeiActionSheet,
+        definition: {
+            components: { CaomeiActionSheet },
+            template: '<CaomeiActionSheet :open="true" title="更多操作" :groups="[{ items: [{ label: \'复制链接\', value: \'copy\' }, { label: \'删除项目\', value: \'delete\', danger: true }] }]" />',
+        },
+        requiredSelectors: ['.caomei-action-sheet', '.caomei-action-sheet__cancel'],
+    },
+    { name: 'CaomeiEmpty', root: CaomeiEmpty, definition: { components: { CaomeiEmpty }, template: '<CaomeiEmpty title="还没有任何项目" description="创建第一个项目后，它会出现在这里。" />' } },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
     /* 工具提示：夹具自带 Provider，覆盖「Provider 存在时沿用上层配置」的主路径（缺失时由根组件内建兜底）。 */
     { name: 'CaomeiTooltip', root: CaomeiTooltip, definition: { components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent }, template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent>扫描范围为所选仓库的全部开放依赖告警。</CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>' } },
@@ -361,6 +380,8 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiTabList', component: CaomeiTabList, fixture: 'CaomeiTabs' },
     { name: 'CaomeiTabTrigger', component: CaomeiTabTrigger, fixture: 'CaomeiTabs' },
     { name: 'CaomeiTabContent', component: CaomeiTabContent, fixture: 'CaomeiTabs' },
+    { name: 'CaomeiCell', component: CaomeiCell, fixture: 'CaomeiCellGroup' },
+    { name: 'CaomeiTabbarItem', component: CaomeiTabbarItem, fixture: 'CaomeiTabbar' },
     { name: 'CaomeiToolbarButton', component: CaomeiToolbarButton, fixture: 'CaomeiToolbar' },
     { name: 'CaomeiToolbarLink', component: CaomeiToolbarLink, fixture: 'CaomeiToolbar' },
     { name: 'CaomeiToolbarSeparator', component: CaomeiToolbarSeparator, fixture: 'CaomeiToolbar' },
@@ -403,4 +424,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 65
+export const A11Y_FIXTURE_BUDGET = 69

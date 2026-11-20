@@ -247,6 +247,7 @@ const overlayMultiValue = ref<string[]>([])
 const overlayAutoValue = ref<string>()
 const overlayColorValue = ref('#60a5fa')
 const overlayDateValue = ref<Date | null>(null)
+const overlayTimeValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
 /**
  * Select 长列表可滚动用例（见 `test/e2e/select-long-list.e2e.ts`）：60 个选项使面板自然高度
@@ -286,6 +287,9 @@ const timePickerValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const visualTimeValue = new Date(2026, 0, 1, 9, 30, 45)
 /** 12 小时制字段的独立受控值，便于断言日序切换后的回写。 */
 const timePicker12Value = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
+/** 滚轮模式与「输入 + 滚轮」模式的独立受控值。 */
+const timePickerWheelValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
+const timePickerBothValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
 
 /*
@@ -1031,6 +1035,13 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                             v-model="overlayDateValue"
                             placeholder="选择扫描日期"
                             label="扫描日期"
+                        />
+                    </div>
+                    <div id="overlay-time-picker">
+                        <CaomeiTimePicker
+                            v-model="overlayTimeValue"
+                            label="提醒时间"
+                            mode="wheel"
                         />
                     </div>
                     <div id="overlay-popover">
@@ -2632,8 +2643,23 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 label="时间（12 小时制）"
                 hour-format="12"
             />
+            <CaomeiTimePicker
+                id="time-picker-wheel"
+                v-model="timePickerWheelValue"
+                label="滚轮时间"
+                mode="wheel"
+                show-seconds
+            />
+            <CaomeiTimePicker
+                id="time-picker-both"
+                v-model="timePickerBothValue"
+                label="输入与滚轮"
+                mode="both"
+            />
             <span id="time-picker-value">{{ timePickerValue?.toTimeString() }}</span>
             <span id="time-picker-12-value">{{ timePicker12Value?.toTimeString() }}</span>
+            <span id="time-picker-wheel-value">{{ timePickerWheelValue?.toTimeString() }}</span>
+            <span id="time-picker-both-value">{{ timePickerBothValue?.toTimeString() }}</span>
         </section>
         <!-- BackTop 视觉基线面（见 test/visual/components.visual.ts）：阈值 -1 让按钮常显，元素级截图 -->
         <section class="fixture__case">

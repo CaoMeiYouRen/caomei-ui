@@ -321,7 +321,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiTag', root: CaomeiTag, definition: { components: { CaomeiTag }, template: '<CaomeiTag>标签</CaomeiTag>' } },
     { name: 'CaomeiTagsInput', root: CaomeiTagsInput, definition: { components: { CaomeiTagsInput }, template: '<CaomeiTagsInput label="标签" :model-value="tags" />', setup: () => ({ tags: ['React'] }) } },
     { name: 'CaomeiTextarea', root: CaomeiTextarea, definition: { components: { CaomeiTextarea }, template: '<CaomeiTextarea label="备注" placeholder="备注" />' } },
-    { name: 'CaomeiTimePicker', root: CaomeiTimePicker, definition: { components: { CaomeiTimePicker }, template: '<CaomeiTimePicker label="时间" :model-value="time" />', setup: () => ({ time: new Date(2026, 0, 1, 9, 30, 0) }) } },
+    { name: 'CaomeiTimePicker', root: CaomeiTimePicker, definition: { components: { CaomeiTimePicker }, template: '<CaomeiTimePicker label="时间" mode="both" :model-value="time" />', setup: () => ({ time: new Date(2026, 0, 1, 9, 30, 0) }) } },
     { name: 'CaomeiToastProvider', root: CaomeiToastProvider, definition: ToastHost },
     { name: 'CaomeiToggleButton', root: CaomeiToggleButton, definition: { components: { CaomeiToggleButton }, template: '<CaomeiToggleButton label="固定">固定</CaomeiToggleButton>' } },
     /* 移动端壳层 / 操作与空态：本批追加，位置保持在本批新增段内便于对照变更集 */

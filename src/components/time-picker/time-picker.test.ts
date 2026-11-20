@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { DOMWrapper, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
 import { CaomeiTimePicker } from './index'
@@ -10,6 +10,20 @@ const SECOND = 'input[aria-label="秒"]'
 /** 读取输入框当前值（happy-dom 下元素类型由测试工具推断，统一收窄）。 */
 function inputValue(wrapper: ReturnType<typeof mount>, selector: string): string {
     return (wrapper.get(selector).element as HTMLInputElement).value
+}
+
+/** Portal 内容不在 wrapper 内，按文档查询后包装。 */
+function getWheelContent(): DOMWrapper<Element> {
+    const content = document.body.querySelector('.caomei-time-picker__content')
+    expect(content).not.toBeNull()
+    return new DOMWrapper(content as Element)
+}
+
+function optionByText(column: { element: Element }, text: string): DOMWrapper<Element> {
+    const option = [...column.element.querySelectorAll('[role="option"]')]
+        .find((element) => element.textContent?.trim() === text)
+    expect(option, `未找到选项「${text}」`).toBeDefined()
+    return new DOMWrapper(option as Element)
 }
 
 afterEach(() => {
@@ -167,5 +181,119 @@ describe('CaomeiTimePicker', () => {
         expect(group.attributes('aria-label')).toBe('会议开始时间')
         expect(group.attributes('aria-labelledby')).toBeUndefined()
         wrapper.unmount()
+    })
+})
+
+describe('CaomeiTimePicker 选择模式', () => {
+    it('默认 input 模式不渲染滚轮入口', () => {
+        const wrapper = mount(CaomeiTimePicker, {
+            props: { label: '时间', modelValue: new Date(2026, 0, 1, 9, 30, 0) },
+            attachTo: document.body,
+        })
+        expect(wrapper.find('.caomei-time-picker__wheel-trigger').exists()).toBe(false)
+        expect(wrapper.findAll('input')).toHaveLength(2)
+        wrapper.unmount()
+    })
+
+    it('wheel 模式只读展示，弹层内提供时 / 分两列并回写选择', async () => {
+        const wrapper = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'wheel', modelValue: new Date(2026, 0, 1, 9, 30, 0) },
+            attachTo: document.body,
+        })
+        expect(wrapper.findAll('input')).toHaveLength(0)
+        expect(wrapper.get('.caomei-time-picker__wheel-text').text()).toBe('09:30')
+
+        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await nextTick()
+        const content = getWheelContent()
+        expect(content.findAll('[role="listbox"]')).toHaveLength(2)
+
+        const minuteColumn = content.get('[role="listbox"][aria-label="分"]')
+        await optionByText(minuteColumn, '45').trigger('click')
+        expect((wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date).getMinutes()).toBe(45)
+        wrapper.unmount()
+    })
+
+    it('both 模式保留输入并增加滚轮入口', async () => {
+        const wrapper = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'both', modelValue: new Date(2026, 0, 1, 9, 30, 0) },
+            attachTo: document.body,
+        })
+        expect(wrapper.findAll('input')).toHaveLength(2)
+        await wrapper.get('.caomei-time-picker__wheel-trigger').trigger('click')
+        await nextTick()
+
+        const hourColumn = getWheelContent().get('[role="listbox"][aria-label="时"]')
+        await optionByText(hourColumn, '10').trigger('click')
+        const value = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date
+        expect(value.getHours()).toBe(10)
+        expect(value.getMinutes()).toBe(30)
+        wrapper.unmount()
+    })
+
+    it('12 小时制滚轮提供本地化日序列，切换后按 24 小时回写', async () => {
+        const wrapper = mount(CaomeiTimePicker, {
+            props: {
+                label: '时间',
+                mode: 'wheel',
+                hourFormat: '12',
+                modelValue: new Date(2026, 0, 1, 15, 30, 0),
+            },
+            attachTo: document.body,
+        })
+        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await nextTick()
+        const content = getWheelContent()
+        const columns = content.findAll('[role="listbox"]')
+        expect(columns).toHaveLength(3)
+
+        await optionByText(columns.at(-1) as { element: Element }, '上午').trigger('click')
+        expect((wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date).getHours()).toBe(3)
+        wrapper.unmount()
+    })
+
+    it('wheel 模式把非法日期按空值处理，不回写 NaN', async () => {
+        const wrapper = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'wheel', modelValue: new Date(Number.NaN) },
+            attachTo: document.body,
+        })
+        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await nextTick()
+        const minuteColumn = getWheelContent().get('[role="listbox"][aria-label="分"]')
+        await optionByText(minuteColumn, '45').trigger('click')
+
+        const value = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date
+        expect(Number.isNaN(value.getTime())).toBe(false)
+        expect(value.getHours()).toBe(0)
+        expect(value.getMinutes()).toBe(45)
+        wrapper.unmount()
+    })
+
+    it('空值展示占位；disabled 入口不可用，readonly 可打开只读面板', async () => {
+        const empty = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'wheel', modelValue: null },
+            attachTo: document.body,
+        })
+        expect(empty.get('.caomei-time-picker__wheel-text').text()).toBe('--:--')
+        empty.unmount()
+
+        const disabled = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'wheel', disabled: true, modelValue: new Date(2026, 0, 1, 9, 0, 0) },
+            attachTo: document.body,
+        })
+        expect(disabled.get('.caomei-time-picker__field--wheel').attributes('disabled')).toBeDefined()
+        disabled.unmount()
+
+        const readonly = mount(CaomeiTimePicker, {
+            props: { label: '时间', mode: 'wheel', readonly: true, modelValue: new Date(2026, 0, 1, 9, 0, 0) },
+            attachTo: document.body,
+        })
+        expect(readonly.get('.caomei-time-picker__field--wheel').attributes('disabled')).toBeUndefined()
+        await readonly.get('.caomei-time-picker__field--wheel').trigger('click')
+        await nextTick()
+        const column = getWheelContent().get('[role="listbox"][aria-label="时"]')
+        expect(column.attributes('aria-readonly')).toBe('true')
+        expect(column.attributes('tabindex')).toBe('-1')
+        readonly.unmount()
     })
 })

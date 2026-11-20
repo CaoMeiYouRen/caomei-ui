@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { computed, useId, useSlots } from 'vue'
+import { computed, ref, useId, useSlots } from 'vue'
+import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
 import { useLocale } from '../../composables/use-locale'
+import { CaomeiIcon, useInternalIcons } from '../../icons'
+import { CaomeiPopoverTrigger } from '../popover'
+import TimeWheel from './time-wheel.vue'
+import { buildTimeValue, clamp } from './utils'
 import type { TimePickerEmits, TimePickerProps, TimePickerStep } from './types'
 
-defineOptions({ name: 'CaomeiTimePicker' })
+defineOptions({ name: 'CaomeiTimePicker', inheritAttrs: false })
 
 const props = withDefaults(defineProps<TimePickerProps>(), {
     modelValue: null,
     label: undefined,
     ariaLabel: undefined,
+    mode: 'input',
     hourFormat: '24',
     showSeconds: false,
     step: undefined,
@@ -23,6 +29,7 @@ const emit = defineEmits<TimePickerEmits>()
 
 const slots = useSlots()
 const messages = useLocale()
+const icons = useInternalIcons()
 const fieldId = useId()
 const resolvedId = computed(() => props.id ?? fieldId)
 const accessibleName = computed(() => props.ariaLabel ?? props.label)
@@ -63,53 +70,40 @@ const secondDisplay = computed(() => (isEmpty.value ? '' : String(second.value))
 const descriptionId = computed(() => `${resolvedId.value}-description`)
 const hasDescription = computed(() => Boolean(slots.description))
 
-function clamp(value: number, min: number, max: number): number {
-    return Math.min(max, Math.max(min, Math.round(value)))
-}
-
 /** 各段步进：`step.hour` / `step.minute` / `step.second`，缺省 1。 */
 function stepOf(part: keyof TimePickerStep): number {
     const value = props.step?.[part]
     return value && Number.isFinite(value) && value > 0 ? value : 1
 }
 
-/** 把目标时刻夹到 `minValue` / `maxValue` 之间（只比较时间部分；`min > max` 的跨日区间不夹取）。 */
-function clampToRange(next: Date): Date {
-    const start = props.minValue
-    const end = props.maxValue
-    if (!start && !end) {
-        return next
-    }
-    const target = next.getHours() * 3600 + next.getMinutes() * 60 + next.getSeconds()
-    const minSeconds = start ? start.getHours() * 3600 + start.getMinutes() * 60 + start.getSeconds() : 0
-    const maxSeconds = end ? end.getHours() * 3600 + end.getMinutes() * 60 + end.getSeconds() : 24 * 3600 - 1
-    if (minSeconds > maxSeconds) {
-        return next
-    }
-    const clamped = Math.min(maxSeconds, Math.max(minSeconds, target))
-    if (clamped === target) {
-        return next
-    }
-    const result = new Date(next)
-    result.setHours(Math.floor(clamped / 3600), Math.floor((clamped % 3600) / 60), clamped % 60, 0)
-    return result
+/** 把一次编辑写回 `Date`：日期部分沿用当前值（空值取今天），时间部分取编辑后的段值。 */
+function commit(next: { hour?: number, minute?: number, second?: number }): void {
+    emit('update:modelValue', buildTimeValue(props.modelValue, next, {
+        showSeconds: props.showSeconds,
+        minValue: props.minValue,
+        maxValue: props.maxValue,
+    }))
 }
 
-/**
- * 把一次编辑写回 `Date`：日期部分沿用当前值（空值取今天），时间部分取编辑后的段值。
- * 未开启秒时强制秒归零，避免旧值的秒数在秒段不可见时仍然保留。
- */
-function commit(next: { hour?: number, minute?: number, second?: number }): void {
-    const base = props.modelValue && !Number.isNaN(props.modelValue.getTime())
-        ? new Date(props.modelValue)
-        : new Date()
-    base.setHours(
-        next.hour ?? hour.value,
-        next.minute ?? minute.value,
-        props.showSeconds ? (next.second ?? second.value) : 0,
-        0,
-    )
-    emit('update:modelValue', clampToRange(base))
+const open = ref(false)
+
+function pad(value: number): string {
+    return String(value).padStart(2, '0')
+}
+
+/** 滚轮模式下的只读展示文本；空值保持空串，与内联输入的占位语义一致。 */
+const wheelText = computed(() => {
+    if (isEmpty.value) {
+        return ''
+    }
+    const period = is12Hour.value ? `${isPm.value ? pmLabel.value : amLabel.value} ` : ''
+    const display = is12Hour.value ? displayHour.value : hour.value
+    const seconds = props.showSeconds ? `:${pad(second.value)}` : ''
+    return `${period}${pad(display)}:${pad(minute.value)}${seconds}`
+})
+
+function onWheelUpdate(value: Date | null): void {
+    emit('update:modelValue', value)
 }
 
 /** 读取输入框数值；空串或非法值返回 `undefined`。 */
@@ -208,56 +202,68 @@ function onSegmentKeydown(event: KeyboardEvent, part: 'hour' | 'minute' | 'secon
 </script>
 
 <template>
-    <div
-        :id="resolvedId"
-        class="caomei-time-picker"
-        :class="{'caomei-time-picker--disabled': disabled}"
-    >
-        <label
-            v-if="label"
-            :id="`${resolvedId}-label`"
-            class="caomei-time-picker__label"
-        >
-            {{ label }}
-        </label>
+    <PopoverRoot v-model:open="open">
         <div
-            class="caomei-time-picker__field"
-            role="group"
-            :aria-label="accessibleName"
-            :aria-labelledby="label && !ariaLabel ? `${resolvedId}-label` : undefined"
-            :aria-disabled="disabled || undefined"
-            :aria-describedby="hasDescription ? descriptionId : undefined"
+            v-bind="$attrs"
+            :id="resolvedId"
+            class="caomei-time-picker"
+            :class="{'caomei-time-picker--disabled': disabled}"
         >
-            <input
-                class="caomei-time-picker__segment"
-                type="number"
-                inputmode="numeric"
-                :min="is12Hour ? 1 : 0"
-                :max="is12Hour ? 12 : 23"
-                :step="stepOf('hour')"
-                :value="hourDisplay"
-                :aria-label="hourLabel"
-                :disabled="disabled"
-                :readonly="readonly"
-                @change="onHourInput"
-                @keydown="onSegmentKeydown($event, 'hour')"
+            <label
+                v-if="label"
+                :id="`${resolvedId}-label`"
+                class="caomei-time-picker__label"
             >
-            <span class="caomei-time-picker__separator" aria-hidden="true">:</span>
-            <input
-                class="caomei-time-picker__segment"
-                type="number"
-                inputmode="numeric"
-                min="0"
-                max="59"
-                :step="stepOf('minute')"
-                :value="minuteDisplay"
-                :aria-label="minuteLabel"
-                :disabled="disabled"
-                :readonly="readonly"
-                @change="onMinuteInput"
-                @keydown="onSegmentKeydown($event, 'minute')"
+                {{ label }}
+            </label>
+            <template v-if="mode === 'wheel'">
+                <CaomeiPopoverTrigger
+                    as-child
+                    unstyled
+                    :disabled="disabled"
+                >
+                    <button
+                        type="button"
+                        class="caomei-time-picker__field caomei-time-picker__field--wheel"
+                        :aria-label="accessibleName ?? hourLabel"
+                        :aria-labelledby="label && !ariaLabel ? `${resolvedId}-label` : undefined"
+                        :aria-disabled="disabled || undefined"
+                        :aria-describedby="hasDescription ? descriptionId : undefined"
+                    >
+                        <span
+                            class="caomei-time-picker__wheel-text"
+                            :data-empty="wheelText ? undefined : 'true'"
+                        >{{ wheelText || '--:--' }}</span>
+                        <CaomeiIcon
+                            :icon="icons.chevronDown"
+                            class="caomei-time-picker__wheel-icon"
+                        />
+                    </button>
+                </CaomeiPopoverTrigger>
+            </template>
+            <div
+                v-else
+                class="caomei-time-picker__field"
+                role="group"
+                :aria-label="accessibleName"
+                :aria-labelledby="label && !ariaLabel ? `${resolvedId}-label` : undefined"
+                :aria-disabled="disabled || undefined"
+                :aria-describedby="hasDescription ? descriptionId : undefined"
             >
-            <template v-if="showSeconds">
+                <input
+                    class="caomei-time-picker__segment"
+                    type="number"
+                    inputmode="numeric"
+                    :min="is12Hour ? 1 : 0"
+                    :max="is12Hour ? 12 : 23"
+                    :step="stepOf('hour')"
+                    :value="hourDisplay"
+                    :aria-label="hourLabel"
+                    :disabled="disabled"
+                    :readonly="readonly"
+                    @change="onHourInput"
+                    @keydown="onSegmentKeydown($event, 'hour')"
+                >
                 <span class="caomei-time-picker__separator" aria-hidden="true">:</span>
                 <input
                     class="caomei-time-picker__segment"
@@ -265,40 +271,93 @@ function onSegmentKeydown(event: KeyboardEvent, part: 'hour' | 'minute' | 'secon
                     inputmode="numeric"
                     min="0"
                     max="59"
-                    :step="stepOf('second')"
-                    :value="secondDisplay"
-                    :aria-label="secondLabel"
+                    :step="stepOf('minute')"
+                    :value="minuteDisplay"
+                    :aria-label="minuteLabel"
                     :disabled="disabled"
                     :readonly="readonly"
-                    @change="onSecondInput"
-                    @keydown="onSegmentKeydown($event, 'second')"
+                    @change="onMinuteInput"
+                    @keydown="onSegmentKeydown($event, 'minute')"
                 >
-            </template>
-            <select
-                v-if="is12Hour"
-                class="caomei-time-picker__day-period"
-                :value="isPm ? 'pm' : 'am'"
-                :aria-label="`${hourLabel} ${amLabel}/${pmLabel}`"
-                :disabled="disabled"
-                :aria-readonly="readonly || undefined"
-                @change="onDayPeriodChange"
+                <template v-if="showSeconds">
+                    <span class="caomei-time-picker__separator" aria-hidden="true">:</span>
+                    <input
+                        class="caomei-time-picker__segment"
+                        type="number"
+                        inputmode="numeric"
+                        min="0"
+                        max="59"
+                        :step="stepOf('second')"
+                        :value="secondDisplay"
+                        :aria-label="secondLabel"
+                        :disabled="disabled"
+                        :readonly="readonly"
+                        @change="onSecondInput"
+                        @keydown="onSegmentKeydown($event, 'second')"
+                    >
+                </template>
+                <select
+                    v-if="is12Hour"
+                    class="caomei-time-picker__day-period"
+                    :value="isPm ? 'pm' : 'am'"
+                    :aria-label="`${hourLabel} ${amLabel}/${pmLabel}`"
+                    :disabled="disabled"
+                    :aria-readonly="readonly || undefined"
+                    @change="onDayPeriodChange"
+                >
+                    <option value="am">
+                        {{ amLabel }}
+                    </option>
+                    <option value="pm">
+                        {{ pmLabel }}
+                    </option>
+                </select>
+                <CaomeiPopoverTrigger
+                    v-if="mode === 'both'"
+                    as-child
+                    unstyled
+                    :disabled="disabled"
+                >
+                    <button
+                        type="button"
+                        class="caomei-time-picker__wheel-trigger"
+                        :aria-label="accessibleName ?? hourLabel"
+                    >
+                        <CaomeiIcon
+                            :icon="icons.chevronDown"
+                            class="caomei-time-picker__wheel-icon"
+                        />
+                    </button>
+                </CaomeiPopoverTrigger>
+            </div>
+            <span
+                v-if="hasDescription"
+                :id="descriptionId"
+                class="caomei-time-picker__description"
             >
-                <option value="am">
-                    {{ amLabel }}
-                </option>
-                <option value="pm">
-                    {{ pmLabel }}
-                </option>
-            </select>
+                <slot name="description" />
+            </span>
+            <PopoverPortal v-if="mode !== 'input'">
+                <PopoverContent
+                    class="caomei-time-picker__content"
+                    align="start"
+                    :side-offset="6"
+                    :aria-label="accessibleName ?? hourLabel"
+                >
+                    <TimeWheel
+                        :model-value="modelValue"
+                        :show-seconds="showSeconds"
+                        :hour-format="hourFormat"
+                        :min-value="minValue"
+                        :max-value="maxValue"
+                        :disabled="disabled"
+                        :readonly="readonly"
+                        @update:model-value="onWheelUpdate"
+                    />
+                </PopoverContent>
+            </PopoverPortal>
         </div>
-        <span
-            v-if="hasDescription"
-            :id="descriptionId"
-            class="caomei-time-picker__description"
-        >
-            <slot name="description" />
-        </span>
-    </div>
+    </PopoverRoot>
 </template>
 
 <style scoped>
@@ -377,8 +436,95 @@ function onSegmentKeydown(event: KeyboardEvent, part: 'hour' | 'minute' | 'secon
     font: inherit;
 }
 
+.caomei-time-picker__field--wheel {
+    justify-content: space-between;
+    gap: var(--caomei-space-2);
+    width: 100%;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+
+.caomei-time-picker__field--wheel:disabled {
+    cursor: not-allowed;
+}
+
+.caomei-time-picker__wheel-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.caomei-time-picker__wheel-text[data-empty] {
+    color: var(--caomei-color-text-muted);
+}
+
+.caomei-time-picker__wheel-trigger {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--caomei-time-picker-trigger-size, 1.5rem);
+    height: var(--caomei-time-picker-trigger-size, 1.5rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--caomei-radius-sm);
+    background: transparent;
+    color: var(--caomei-color-text-muted);
+    cursor: pointer;
+}
+
+.caomei-time-picker__wheel-trigger:hover:not(:disabled) {
+    color: var(--caomei-color-text);
+}
+
+.caomei-time-picker__wheel-trigger:focus-visible {
+    outline: 2px solid var(--caomei-color-primary);
+    outline-offset: 1px;
+}
+
+.caomei-time-picker__wheel-icon {
+    flex-shrink: 0;
+    color: var(--caomei-color-text-muted);
+}
+
+.caomei-time-picker--disabled .caomei-time-picker__wheel-icon,
+.caomei-time-picker--disabled .caomei-time-picker__wheel-trigger {
+    opacity: var(--caomei-disabled-opacity, 0.6);
+}
+
 .caomei-time-picker__description {
     color: var(--caomei-color-text-muted);
     font-size: var(--caomei-font-size-sm);
+}
+</style>
+
+<!-- Portal 面板：Portal 内元素不带父级 scoped 属性，样式集中为命名空间化的非 scoped 规则 -->
+<style>
+.caomei-time-picker__content {
+    box-sizing: border-box;
+    z-index: var(--caomei-time-picker-z-index, var(--caomei-z-dropdown));
+    width: max-content;
+
+    /*
+      窄屏上限：面板不得超出 popper 可用宽 / 可用高（`--reka-popover-content-available-*` 由 Reka
+      PopoverContentImpl 写入，回退 `none` 保持原行为）；可用空间不足时在面板内滚动，避免内容不可达。
+    */
+    max-width: var(--reka-popover-content-available-width, none);
+    max-height: var(--reka-popover-content-available-height, none);
+    overflow: auto;
+    padding: var(--caomei-space-2);
+    border: 1px solid var(--caomei-color-border);
+    border-radius: var(--caomei-radius-md);
+    background: var(--caomei-color-bg-elevated);
+    color: var(--caomei-color-text);
+    box-shadow: var(--caomei-shadow-md);
+    font-family: var(--caomei-font-sans);
+    font-size: var(--caomei-font-size-md);
+    outline: none;
+    transform-origin: var(--reka-popover-content-transform-origin);
 }
 </style>

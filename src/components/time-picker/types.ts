@@ -1,4 +1,15 @@
-/** 各时间段的步进：方向键与原生 `step` 属性共用该值（缺省 1）。 */
+/** 滚轮列的一个候选项。 */
+export interface TimeWheelOption {
+    value: string | number
+    label: string
+}
+
+/**
+ * 各时间段的步进：方向键与原生 `step` 属性共用该值（缺省 1）。
+ * 它是增量提示而非取值约束：输入与滚轮仍可落在任意值上（滚轮列不按该值过滤）。
+ * @en Step for arrow keys and the native `step` attribute (default 1). It is an increment hint,
+ * not a validity constraint: typing and the wheel can still land on any value.
+ */
 export interface TimePickerStep {
     /** 小时步进 */
     hour?: number
@@ -22,6 +33,14 @@ export interface TimePickerProps {
     label?: string
     /** 显式可访问名；不提供时回退 `label` */
     ariaLabel?: string
+    /**
+     * 选择模式：`input` 为内联输入（默认）；`wheel` 为只读展示 + 滚轮弹层；
+     * `both` 为内联输入 + 滚轮入口
+     * @default 'input'
+     * @en Picker mode: `input` for inline fields (default), `wheel` for a read-only display
+     * with a wheel popover, `both` for inline fields plus a wheel entry
+     */
+    mode?: 'input' | 'wheel' | 'both'
     /**
      * 小时制：12 或 24，默认 24
      * @default '24'

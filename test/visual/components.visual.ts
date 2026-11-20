@@ -74,7 +74,8 @@ const NEGATIVE_CONTROL = process.env.VISUAL_NEGATIVE_CONTROL === '1'
  * - `.caomei-dialog__content`：浮层轴面（portal 挂 `document.body`，在 `#app` 之外）；
  * - `#hit-target`：P0 命中区轴面（多值字段折行）；
  * - `#form`：表单组合层面；
- * - `.caomei-date-picker__content`：区间面板轴面（portal 挂 `document.body`）。
+ * - `.caomei-date-picker__content`：区间面板轴面（portal 挂 `document.body`）；
+ * - `.caomei-time-picker__content`：滚轮面板轴面（portal 挂 `document.body`）。
  */
 const NEGATIVE_CONTROL_CSS = [
     '#app .fixture__state { padding: 24px !important; }',
@@ -83,6 +84,7 @@ const NEGATIVE_CONTROL_CSS = [
     '#hit-target { padding: 24px !important; }',
     '#form { padding: 24px !important; }',
     '.caomei-date-picker__content { padding: 0 !important; }',
+    '.caomei-time-picker__content { padding: 0 !important; }',
     '#ds-back-top-button { padding: 24px !important; }',
     '#ds-time-picker { padding: 24px !important; }',
     '#ds-rating { padding: 24px !important; }',
@@ -111,10 +113,11 @@ const FORM_AXIS_CASES = [
     { key: 'overlay-dialog-open', label: 'dialog@打开态', target: '.caomei-dialog__content', setup: 'dialog' },
     { key: 'hit-target-390', label: 'P0 命中区@390 视口', target: '#hit-target', setup: 'hit-target' },
     { key: 'date-range-picker', label: 'date-picker 区间面板', target: '.caomei-date-picker__content', setup: 'range-picker' },
+    { key: 'time-wheel-open', label: 'time-picker 滚轮面板', target: '.caomei-time-picker__content', setup: 'time-wheel' },
 ] as const
 
 /** 形态轴面下界守卫：轴面被静默移除即失败。 */
-const MIN_FORM_AXIS = 6
+const MIN_FORM_AXIS = 7
 
 /** 固定时钟（日期轴确定化）：月 / 日 / 「今日」高亮均由该时刻派生。 */
 const FIXED_CLOCK = new Date('2026-01-15T09:30:00+08:00')
@@ -187,6 +190,10 @@ async function prepareFormAxis(page: Page, setup: string, theme: string): Promis
     if (setup === 'range-picker') {
         await page.click('#panel-date-picker-range .caomei-date-picker')
         await page.waitForSelector('.caomei-date-picker__content')
+    }
+    if (setup === 'time-wheel') {
+        await page.click('#time-picker-wheel .caomei-time-picker__field--wheel')
+        await page.waitForSelector('.caomei-time-picker__content')
     }
     if (theme === 'dark') {
         await page.evaluate(() => {

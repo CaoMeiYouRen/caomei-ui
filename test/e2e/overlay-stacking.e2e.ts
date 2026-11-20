@@ -36,14 +36,14 @@ interface PanelCase {
  * 与声明层守卫 `check:overlay-z-index` 的 T10 **双向对账**：`src` 中声明锚定浮层档位的组件
  * 必须逐项出现在本清单，反之亦然（新增 portal 浮层组件而未补清单即 `governance:check` 失败）。
  *
- * 覆盖**全部 8 个 portal 浮层面板**：均由 Reka 的 popper 包裹层承载 z-index，任一类的档位
+ * 覆盖**全部 9 个 portal 浮层面板**：均由 Reka 的 popper 包裹层承载 z-index，任一类的档位
  * 低于模态内容即被盖住。夹具见 `test/e2e/fixtures/app.vue` 的 `#overlay-in-dialog` 段。
  */
 const PANEL_CASES: PanelCase[] = panelCases.cases
 // color-picker 面板挂 body、无法用祖先限定；`inline` 形态复用同一基类，清单以 `:not(...)` 显式排除
 
 /** 受检面下界（冗余守卫：精确对账由 `check:overlay-z-index` 的 T10 承担） */
-const MIN_PANEL_CASES = 8
+const MIN_PANEL_CASES = 9
 
 const DIALOG_CONTENT = '.caomei-dialog__content'
 const DIALOG_OVERLAY = '.caomei-dialog__overlay'
@@ -115,6 +115,14 @@ async function paintOrderHitTest(
             element.style.pointerEvents = 'auto'
         })
     }
+    // 嵌套模态浮层（如 Dialog 内的 Select）会把背景内容标成 `inert`；`inert` 子树不参与命中测试，
+    // 会掩盖绘制顺序。这里同样临时摘除并还原——本用例只验证绘制顺序，不改变浮层的可交互语义。
+    const needsInertCompensation = await dialog.evaluate((element) => element.hasAttribute('inert'))
+    if (needsInertCompensation) {
+        await dialog.evaluate((element) => {
+            element.removeAttribute('inert')
+        })
+    }
     try {
         const hitTestable = await dialog.evaluate((element) => getComputedStyle(element).pointerEvents !== 'none')
         expect(
@@ -161,6 +169,11 @@ async function paintOrderHitTest(
             }
         }, { x, y })
     } finally {
+        if (needsInertCompensation) {
+            await dialog.evaluate((element) => {
+                element.setAttribute('inert', '')
+            })
+        }
         if (needsCompensation) {
             await dialog.evaluate((element, value) => {
                 element.style.pointerEvents = value

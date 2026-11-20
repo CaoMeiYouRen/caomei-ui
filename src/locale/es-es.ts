@@ -155,6 +155,13 @@ const esES: CaomeiLocaleMessages = {
         am: 'a. m.',
         pm: 'p. m.',
     },
+    actionSheet: {
+        label: 'Panel de acciones',
+        cancel: 'Cancelar',
+    },
+    tabbar: {
+        label: 'Navegación principal',
+    },
 }
 
 export default esES

@@ -155,6 +155,13 @@ const jaJP: CaomeiLocaleMessages = {
         am: '午前',
         pm: '午後',
     },
+    actionSheet: {
+        label: '操作パネル',
+        cancel: 'キャンセル',
+    },
+    tabbar: {
+        label: 'メインナビゲーション',
+    },
 }
 
 export default jaJP

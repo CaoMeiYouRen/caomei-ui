@@ -155,6 +155,13 @@ const ptBR: CaomeiLocaleMessages = {
         am: 'AM',
         pm: 'PM',
     },
+    actionSheet: {
+        label: 'Painel de ações',
+        cancel: 'Cancelar',
+    },
+    tabbar: {
+        label: 'Navegação principal',
+    },
 }
 
 export default ptBR

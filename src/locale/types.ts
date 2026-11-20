@@ -7,6 +7,10 @@ export type CaomeiLocaleMessageOverrides = {
 }
 
 export interface CaomeiLocaleMessages {
+    actionSheet: {
+        label: string
+        cancel: string
+    }
     backTop: {
         label: string
     }
@@ -152,6 +156,9 @@ export interface CaomeiLocaleMessages {
         collapseRowGroup: string
         expandRow: string
         collapseRow: string
+    }
+    tabbar: {
+        label: string
     }
     tagsInput: {
         clear: string

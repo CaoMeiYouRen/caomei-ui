@@ -155,6 +155,13 @@ const frFR: CaomeiLocaleMessages = {
         am: 'AM',
         pm: 'PM',
     },
+    actionSheet: {
+        label: 'Panneau d\'actions',
+        cancel: 'Annuler',
+    },
+    tabbar: {
+        label: 'Navigation principale',
+    },
 }
 
 export default frFR

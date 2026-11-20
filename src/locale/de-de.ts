@@ -155,6 +155,13 @@ const deDE: CaomeiLocaleMessages = {
         am: 'AM',
         pm: 'PM',
     },
+    actionSheet: {
+        label: 'Aktionspanel',
+        cancel: 'Abbrechen',
+    },
+    tabbar: {
+        label: 'Hauptnavigation',
+    },
 }
 
 export default deDE

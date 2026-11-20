@@ -155,6 +155,13 @@ const enUS: CaomeiLocaleMessages = {
         am: 'AM',
         pm: 'PM',
     },
+    actionSheet: {
+        label: 'Action panel',
+        cancel: 'Cancel',
+    },
+    tabbar: {
+        label: 'Main navigation',
+    },
 }
 
 export default enUS

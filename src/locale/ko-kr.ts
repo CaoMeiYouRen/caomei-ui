@@ -155,6 +155,13 @@ const koKR: CaomeiLocaleMessages = {
         am: '오전',
         pm: '오후',
     },
+    actionSheet: {
+        label: '작업 패널',
+        cancel: '취소',
+    },
+    tabbar: {
+        label: '주요 탐색',
+    },
 }
 
 export default koKR

@@ -155,6 +155,13 @@ const zhTW: CaomeiLocaleMessages = {
         am: '上午',
         pm: '下午',
     },
+    actionSheet: {
+        label: '操作面板',
+        cancel: '取消',
+    },
+    tabbar: {
+        label: '主導覽',
+    },
 }
 
 export default zhTW

@@ -155,6 +155,13 @@ const ruRU: CaomeiLocaleMessages = {
         am: 'AM',
         pm: 'PM',
     },
+    actionSheet: {
+        label: 'Панель действий',
+        cancel: 'Отмена',
+    },
+    tabbar: {
+        label: 'Основная навигация',
+    },
 }
 
 export default ruRU

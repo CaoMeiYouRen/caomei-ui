@@ -28,8 +28,8 @@ const CHROMIUM_ARGS = [
 
 /**
  * 响应式设计 §4 的验收视口（mobile 390×844 / tablet 768×1024 / desktop 1280×800），
- * 另加两条**定向**档（mobile-320 / gap-900，只承载响应式用例）。每个视口一个 project、
- * 常驻用例跑三遍；desktop 档同时承担形态回归。
+ * 另加六条**定向**档（mobile-320 / gap-900 / mobile-360 / mobile-414 / wide-1536 / desktop-1920，
+ * 只承载响应式用例）。每个视口一个 project、常驻用例跑三遍；desktop 档同时承担形态回归。
  *
  * 设备描述符取对应形态（手机 / 平板 / 桌面），视口按 §4 覆盖——库内断点只消费视口宽度，
  * 但 UA / 触摸 / DPR 保持形态一致，避免「名为手机实为桌面 UA」的失真（`isMobile` 影响
@@ -60,6 +60,14 @@ export const MATRIX_VIEWPORTS = {
     mobile320: { width: 320, height: 568 },
     /** 空档档：`sm` / `md` 命名之外的 769–1023px 区间内部点 */
     gap900: { width: 900, height: 1024 },
+    /** 主流移动档：360 宽（Android 常见宽度） */
+    mobile360: { width: 360, height: 800 },
+    /** 主流移动档：414 宽（大屏手机） */
+    mobile414: { width: 414, height: 896 },
+    /** 宽屏档：1536×960（2K 笔记本常见可用区） */
+    wide1536: { width: 1536, height: 960 },
+    /** 宽屏档：1920×1080（桌面全高清） */
+    desktop1920: { width: 1920, height: 1080 },
 } as const
 
 const PROJECTS: E2EProject[] = [
@@ -68,6 +76,10 @@ const PROJECTS: E2EProject[] = [
     { name: 'desktop', device: 'Desktop Chrome', ...MATRIX_VIEWPORTS.desktop },
     { name: 'mobile-320', device: 'Galaxy S9+', ...MATRIX_VIEWPORTS.mobile320, only: 'responsive' },
     { name: 'gap-900', device: 'Galaxy Tab S4', ...MATRIX_VIEWPORTS.gap900, only: 'responsive' },
+    { name: 'mobile-360', device: 'Pixel 5', ...MATRIX_VIEWPORTS.mobile360, only: 'responsive' },
+    { name: 'mobile-414', device: 'Pixel 5', ...MATRIX_VIEWPORTS.mobile414, only: 'responsive' },
+    { name: 'wide-1536', device: 'Desktop Chrome', ...MATRIX_VIEWPORTS.wide1536, only: 'responsive' },
+    { name: 'desktop-1920', device: 'Desktop Chrome', ...MATRIX_VIEWPORTS.desktop1920, only: 'responsive' },
 ]
 
 export default defineConfig({

@@ -82,15 +82,28 @@ const LG_BREAKPOINT = 1024
  * 「矩阵档口径」用例——不跨项目 import `playwright.config.ts`：它属 composite 的 `tsconfig.node.json`，
  * 跨项目引用会触发 TS6305（输出 `.d.ts` 未构建），故改在运行时从 Playwright 全量配置读回对账）。
  */
-const NARROW_320_PROJECT = 'mobile-320'
-const GAP_900_PROJECT = 'gap-900'
-const NARROW_320_WIDTH = 320
-const GAP_900_WIDTH = 900
+const DIRECTED_VIEWPORTS = [
+    { name: 'mobile-320', width: 320 },
+    { name: 'gap-900', width: 900 },
+    { name: 'mobile-360', width: 360 },
+    { name: 'mobile-414', width: 414 },
+    { name: 'wide-1536', width: 1536 },
+    { name: 'desktop-1920', width: 1920 },
+] as const
 
 /**
  * 承载**自驱视口探针**的档（矩阵扩面档不承载，口径见文件头）；由漂移守卫对账。
  */
 const FULL_MATRIX_PROJECTS: readonly string[] = ['mobile', 'tablet', 'desktop']
+
+/** 定向档视口宽度的读取入口（与 `DIRECTED_VIEWPORTS` 同源，避免重复字面量） */
+function directedWidth(name: string): number {
+    const viewport = DIRECTED_VIEWPORTS.find((entry) => entry.name === name)
+    if (!viewport) {
+        throw new Error(`未登记的定向档：${name}`)
+    }
+    return viewport.width
+}
 
 /**
  * 触摸密度轴在默认 / touch 档的控件高度（与 `src/styles/theme.css` 同源）。
@@ -134,7 +147,7 @@ const GRID_BREAKPOINT_EXPECTATIONS = [
     },
     {
         /** 空档档内部点：`sm` / `md` 命名之外的 769–1023px 应维持 lg（≤1024）形态 */
-        width: GAP_900_WIDTH,
+        width: directedWidth('gap-900'),
         label: `769–1023 空档（lg 仍命中）`,
         a: { start: '1', end: 'span 12', order: '0' },
         b: { start: '13', end: 'span 12', order: '2' },
@@ -153,8 +166,8 @@ const GRID_BREAKPOINT_EXPECTATIONS = [
     },
     {
         /** 极窄档内部点：320px 仍在 sm 档内，取值须与 640px 一致（拦「按精确宽度 / 反向方向」误写的规则） */
-        width: NARROW_320_WIDTH,
-        label: `极窄 ${NARROW_320_WIDTH}（sm 仍命中）`,
+        width: directedWidth('mobile-320'),
+        label: `极窄 ${directedWidth('mobile-320')}（sm 仍命中）`,
         a: { start: '1', end: 'span 24', order: '0' },
         b: { start: '1', end: 'span 24', order: '0' },
     },
@@ -296,6 +309,10 @@ const CASE_SECTION_IDS = [
     'density-outside',
     'hit-target',
     'form',
+    'cell-group',
+    'tabbar',
+    'action-sheet',
+    'empty',
 ]
 
 /**
@@ -305,7 +322,7 @@ const CASE_SECTION_IDS = [
  * 一类静默收窄，不追求余量；配合下方逐 section 的「存在且唯一」断言补上「夹具 section 被移除」方向。
  * **清单扩项时须同步上调本值**（下界低于实际长度才拦得住删项）。
  */
-const MIN_SECTIONS = 21
+const MIN_SECTIONS = 25
 
 /**
  * 自动 fixture：每个用例独立收集 console error / page error（§4 断言 5），
@@ -346,24 +363,18 @@ test.describe('矩阵档口径', () => {
     test('扩面档的档名、视口宽度与承载面与配置一致', () => {
         const projects = test.info().config.projects
         const projectOf = (name: string) => projects.find((project) => project.name === name)
-        const viewportWidthOf = (name: string) => projectOf(name)?.use.viewport?.width
         const projectNames = projects.map((project) => project.name)
+        const directedNames: readonly string[] = DIRECTED_VIEWPORTS.map((viewport) => viewport.name)
 
-        expect(viewportWidthOf(NARROW_320_PROJECT), `${NARROW_320_PROJECT} 档的视口宽度`).toBe(NARROW_320_WIDTH)
-        expect(viewportWidthOf(GAP_900_PROJECT), `${GAP_900_PROJECT} 档的视口宽度`).toBe(GAP_900_WIDTH)
-        // 承载面同样对账：删掉 `only: 'responsive'` 会让定向档回到全量匹配（成本口径漂移）
-        expect(
-            projectOf(NARROW_320_PROJECT)?.testMatch,
-            `${NARROW_320_PROJECT} 档应只承载响应式 spec`,
-        ).toBe('**/responsive.e2e.ts')
-        expect(
-            projectOf(GAP_900_PROJECT)?.testMatch,
-            `${GAP_900_PROJECT} 档应只承载响应式 spec`,
-        ).toBe('**/responsive.e2e.ts')
+        for (const { name, width } of DIRECTED_VIEWPORTS) {
+            expect(projectOf(name)?.use.viewport?.width, `${name} 档的视口宽度`).toBe(width)
+            // 承载面同样对账：删掉 `only: 'responsive'` 会让定向档回到全量匹配（成本口径漂移）
+            expect(projectOf(name)?.testMatch, `${name} 档应只承载响应式 spec`).toBe('**/responsive.e2e.ts')
+        }
         expect(
             [...FULL_MATRIX_PROJECTS],
-            '全量档名单应等于配置中除两个定向档之外的 project（定向档名单与上面两处引用同源）',
-        ).toEqual(projectNames.filter((name) => ![NARROW_320_PROJECT, GAP_900_PROJECT].includes(name)))
+            '全量档名单应等于配置中除定向档之外的 project（定向档清单为单一事实源）',
+        ).toEqual(projectNames.filter((name) => !directedNames.includes(name)))
     })
 })
 
@@ -480,8 +491,26 @@ test.describe('含日历面板：可用宽上限生效路径', () => {
         await page.keyboard.press('Escape')
         await expect(panel).toBeHidden()
 
+        /*
+          夹具的其余 section 会抬高页面最小内容宽（DataTable / Tabs 等），使移动端模拟下的
+          布局视口无法收窄到探针宽度（`innerWidth` 被撑到最小内容宽，上限因而恒不生效）。
+          探针只测日期面板，先把其余 section 隐藏，让布局视口真正跟随 `setViewportSize`。
+        */
+        await page.evaluate(() => {
+            for (const section of document.querySelectorAll('main.fixture > section')) {
+                if (section.id !== 'panel-date-picker') {
+                    section.setAttribute('data-probe-hidden', '')
+                }
+            }
+        })
+        await page.addStyleTag({ content: '[data-probe-hidden] { display: none !important; }' })
+
         // 2. 合成极窄视口后重新打开：点击会把触发器滚入视口，popper 按新视口重算（含可用宽上限）
         await page.setViewportSize({ width: NARROW_PROBE_WIDTH, height: 640 })
+        expect(
+            await page.evaluate(() => window.innerWidth),
+            '移动端模拟下布局视口应跟随探针宽度（否则可用宽上限不会被触发）',
+        ).toBeLessThanOrEqual(NARROW_PROBE_WIDTH + 1)
         await trigger.click()
         await expect(panel).toBeVisible()
 

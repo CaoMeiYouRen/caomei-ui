@@ -155,6 +155,7 @@ AI 在遇到以下情况时，**必须优先使用搜索工具获取一手信息
 - **提交必须通过 `conventional-committer` skill**，禁止裸 `git commit -m "..."`。
 - 提交消息符合 Conventional Commits（`type(scope): description`），描述使用中文。
 - 提交前必须确认 `@code-reviewer` 已放行，且 `lint` / `typecheck` / 必要测试通过。
+- **破坏性提交人工审查**：`!` 头部或 `BREAKING CHANGE:` footer 的提交，提交前须取得项目所有者或其明确授权人的确认，并按 [Git 规范](./docs/standards/git.md) §2 / §3 写入 `Breaking-Review:` 记录；AI 自检与 Review Gate 不替代。
 - 一个提交对应一个逻辑变更。详见 [Git 规范](./docs/standards/git.md)。
 
 ### 9.4 外部协作

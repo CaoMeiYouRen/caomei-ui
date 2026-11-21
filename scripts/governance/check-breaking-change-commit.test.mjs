@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,6 +14,7 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url))
 const scriptPath = join(here, 'check-breaking-change-commit.mjs')
+const hookPath = join(here, '..', '..', '.husky', 'commit-msg')
 const tempDirs = []
 
 afterAll(() => {
@@ -325,5 +326,14 @@ describe('CLI', () => {
     it('main 返回对应退出码', () => {
         expect(main([createMessageFile(breakingMessage())])).toBe(0)
         expect(main([createMessageFile(breakingMessage({ review: '' }))])).toBe(1)
+    })
+})
+
+describe('commit-msg hook', () => {
+    it('先跑 commitlint 并保留失败码，再调用破坏性提交守卫', () => {
+        const hook = readFileSync(hookPath, 'utf8')
+        expect(hook).toContain('check-breaking-change-commit.mjs "$1"')
+        expect(hook).toContain('|| exit $?')
+        expect(hook.indexOf('commitlint')).toBeLessThan(hook.indexOf('check-breaking-change-commit.mjs'))
     })
 })

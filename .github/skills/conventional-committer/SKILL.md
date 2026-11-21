@@ -24,10 +24,12 @@ metadata:
 	- [ ] 3.3 主题、正文必须使用简体中文（或用户显式指定的其他语言），type / scope 必须为英文。
 	- [ ] 3.4 多类型变更时按 feat > refactor/perf > fix > 其他 选取主类型，其余改动沉到正文。
 	- [ ] 3.5 最终消息必须通过「交付前检查」与「消息格式规范」中的硬性约束。
+	- [ ] 3.6 破坏性提交先冻结暂存树并形成最终消息草稿，再取得人工确认；确认对象 = 暂存树 + 消息文本，确认后任一变化须重新确认，AI 自查与 Review Gate 不替代。
+	- [ ] 3.7 `Breaking-Review:` 写在 `BREAKING CHANGE:` 之前；格式、时机与重确认条件见 [Git 规范 §2 / §3](../../../docs/standards/git.md)。
 - [ ] Step 4: 执行提交 (conditional)
 	- [ ] 4.1 只有在用户明确允许时才执行 git add / git commit。
 	- [ ] 4.2 提交后复查消息是否符合 commitlint 习惯。
-	- [ ] 4.3 若环境中的 husky hook 依赖旧版 Node 或工具链不兼容，使用 `--no-verify` 跳过 hook（如 `git commit --no-verify -m "..."`）。仅在已知 hook 不兼容当前环境时使用，不可滥用。
+	- [ ] 4.3 提交必须通过 husky hook；hook 因环境或工具链不兼容失败时先修复环境，禁止使用 `--no-verify` 跳过（见 [Git 规范 §3](../../../docs/standards/git.md)）。
 	- [ ] 4.4 依赖类批量修复统一使用中文格式：`chore(deps): xxx`，让提交消息能跨项目复用。
 
 ## 常见 type
@@ -42,6 +44,14 @@ metadata:
 - chore
 - perf
 - revert
+
+## 破坏性提交
+
+- 判定：头部含 `!`，或 footer 含 `BREAKING CHANGE:`。
+- 流程：冻结暂存树 → 形成最终消息草稿 → 取得项目所有者或授权人确认 → 写入 `Breaking-Review:` → 提交。AI 自查与 Review Gate 不替代人工确认。
+- 消息中同时写 `Breaking-Review:` 与 `BREAKING CHANGE:`，前者在前；只能有一条记录，且与正文以空行分隔；非破坏性提交不得带记录；`BREAKING CHANGE:` 说明不能为空。
+- 确认人标识使用 GitHub 登录名（不带 `@`，不得用 `owner` / `TODO` 等占位标识）；只写 `!` 不带 `BREAKING CHANGE:` footer 不合规，禁用 `BREAKING-CHANGE:` 连字符形式。
+- 格式、时机与重确认条件以 [Git 规范 §2 / §3](../../../docs/standards/git.md) 为唯一权威；本 skill 只保留执行清单与检查项。
 
 ## 消息格式规范
 
@@ -107,10 +117,11 @@ refactor(server): 优化服务器端口配置
 - 不看 diff，直接用模糊消息如 update files。
 - 把多类变更混成一个没有 scope 的提交。
 - 在质量检查未完成时默认提交。
-- 在 husky hook 兼容的环境下滥用 `--no-verify`，跳过了本应生效的检查。
+- 使用 `--no-verify` 跳过本应生效的检查。
 - 主题或正文出现英文长句，违反默认简体中文约定。
 - 在主题里塞括号备注（如 `feat(api): 新增支付接口（兼容老逻辑）`），备注应沉到正文。
 - 多类型变更没有收敛主类型，导致 type 难以反映本次主体意图。
+- 破坏性提交只写 `!` 或只写 `BREAKING CHANGE:`，未先取得人工确认并写 `Breaking-Review:`。
 
 ## 交付前检查
 
@@ -120,6 +131,7 @@ refactor(server): 优化服务器端口配置
 - [ ] type / scope 使用英文，主题与正文使用简体中文（或用户指定语言）。
 - [ ] 多类型变更已收敛主类型，其余改动写入正文。
 - [ ] 主题 ≤ 100 字符，正文每行 ≤ 120 字符，未在主题中夹带括号备注。
+- [ ] 破坏性提交已取得人工确认，并含位于 `BREAKING CHANGE:` 之前的 `Breaking-Review:`。
 - [ ] 已说明任何未完成的质量风险。
 
 

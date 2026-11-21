@@ -60,6 +60,7 @@ import {
     CaomeiRow,
     CaomeiSelect,
     CaomeiRichTextEditor,
+    CaomeiResult,
     CaomeiSelectButton,
     CaomeiSlider,
     CaomeiSplitButton,
@@ -2914,6 +2915,37 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 @select="onActionSheetSelect"
             />
             <span id="action-sheet-log">{{ actionSheetLog }}</span>
+        </section>
+
+        <section id="result" class="fixture__case">
+            <div id="result-success">
+                <CaomeiResult
+                    status="success"
+                    title="操作成功"
+                    description="数据已保存，可以继续下一步。"
+                >
+                    <template #extra>
+                        <CaomeiButton size="sm">
+                            继续
+                        </CaomeiButton>
+                    </template>
+                </CaomeiResult>
+            </div>
+            <div id="result-404">
+                <CaomeiResult
+                    status="404"
+                    title="页面不存在"
+                    description="链接可能已失效，请返回上一页。"
+                />
+            </div>
+            <div id="result-danger">
+                <CaomeiResult
+                    status="danger"
+                    size="lg"
+                    title="提交失败"
+                    description="服务暂时不可用，请稍后重试。"
+                />
+            </div>
         </section>
 
         <section id="popconfirm" class="fixture__case">

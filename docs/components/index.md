@@ -48,7 +48,7 @@
 - [Cascader 级联选择](./cascader)：从多级树形选项中选择一条完整路径，支持展开、清除与 `changeOnSelect`。
 - [ColorPicker 颜色选择器](./color-picker)：颜色选择器由色块触发按钮与浮层面板组成，面板内提供饱和度 / 明度区域、色相滑条与十六进制输入框；组合 Reka UI 的 ColorArea / ColorSlider / ColorField primitive，预设色板为自建单选组（`radiogroup` + `aria-checked`；Reka `ColorSwatchPicker` 未采用，见[设计规范 §7](../design/design-spec.md)）。
 - [DatePicker 日期选择器](./date-picker)：由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`。
-- [TimePicker 时间选择器](./time-picker)：用于录入一天内的时间，支持内联输入 / 滚轮弹层两种模式（`mode`）、12 / 24 小时制、秒精度、步进与时间区间。
+- [TimePicker 时间选择器](./time-picker)：用于录入一天内的时间，支持内联输入 / 滚轮弹层（`mode`）、默认含秒并补 0（`showSeconds` / `pad`）、12 / 24 小时制、步进与时间区间。
 - [MultiSelect 多选选择器](./multi-select)：多选选择器基于 Reka UI `Combobox` 封装，支持多选、`v-model` 数组、已选项标签与输入过滤。展开后可直接输入关键字筛选本地选项。
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
 - [SelectButton 分段选择](./select-button)：分段选择在一组互斥或可多选的选项间切换，视觉上呈现为分段按钮组，等价于 SegmentedControl，基于 Reka UI ToggleGroup 封装。

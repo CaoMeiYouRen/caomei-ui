@@ -5,10 +5,10 @@ export interface TimeWheelOption {
 }
 
 /**
- * 各时间段的步进：方向键与原生 `step` 属性共用该值（缺省 1）。
+ * 各时间段的步进：方向键按该值增减（缺省 1）。
  * 它是增量提示而非取值约束：输入与滚轮仍可落在任意值上（滚轮列不按该值过滤）。
- * @en Step for arrow keys and the native `step` attribute (default 1). It is an increment hint,
- * not a validity constraint: typing and the wheel can still land on any value.
+ * @en Step for arrow keys (default 1). It is an increment hint, not a validity constraint:
+ * typing and the wheel can still land on any value.
  */
 export interface TimePickerStep {
     /** 小时步进 */
@@ -48,13 +48,21 @@ export interface TimePickerProps {
      */
     hourFormat?: '12' | '24'
     /**
-     * 是否精确到秒，默认 false（只到分钟）
-     * @default false
-     * @en Whether seconds are editable, defaults to false (minutes only)
+     * 是否精确到秒，默认 true（显示时 / 分 / 秒）；需要只到分钟时显式关闭
+     * @default true
+     * @en Whether seconds are editable, defaults to true (hours / minutes / seconds);
+     * turn it off explicitly for minute precision
      */
     showSeconds?: boolean
     /**
-     * 步进配置：各段方向键 / 输入时的最小增量
+     * 时间段是否补 0，默认 true（`09:30:00`）；关闭后显示 `9:30:0`
+     * @default true
+     * @en Whether time segments are zero-padded, defaults to true (`09:30:00`);
+     * turning it off shows `9:30:0`
+     */
+    pad?: boolean
+    /**
+     * 步进配置：各段方向键的最小增量（不约束手工输入）
      * @en Step configuration for keyboard and typed increments
      */
     step?: TimePickerStep

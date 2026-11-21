@@ -54,7 +54,7 @@ test.afterEach(({ pageErrors }) => {
 
 test('方向键调整时间并回写 v-model', async ({ page }) => {
     await page.locator(DEFAULT).scrollIntoViewIfNeeded()
-    await expect(page.locator(`${DEFAULT} ${HOUR}`)).toHaveValue('9')
+    await expect(page.locator(`${DEFAULT} ${HOUR}`)).toHaveValue('09')
     await expect(page.locator(`${DEFAULT} ${MINUTE}`)).toHaveValue('30')
 
     await page.locator(`${DEFAULT} ${HOUR}`).focus()
@@ -66,13 +66,13 @@ test('方向键调整时间并回写 v-model', async ({ page }) => {
 test('12 小时制：显示 1–12 并提供本地化日序切换', async ({ page }) => {
     await page.locator(TWELVE).scrollIntoViewIfNeeded()
     const hour = page.locator(`${TWELVE} ${HOUR}`)
-    await expect(hour).toHaveValue('9')
+    await expect(hour).toHaveValue('09')
     const options = await page.locator(`${TWELVE} select option`).allTextContents()
     expect(options).toEqual(['上午', '下午'])
 
     await page.locator(`${TWELVE} select`).selectOption('pm')
     await expect(page.locator(VALUE_12), '切换下午应加 12 小时').toContainText('21:30:00')
-    await expect(hour).toHaveValue('9')
+    await expect(hour).toHaveValue('09')
 })
 
 test('输入分钟并回写受控值', async ({ page }) => {
@@ -87,7 +87,7 @@ test('wheel 模式：打开弹层点击分钟并回写，Esc 关闭', async ({ p
     await page.locator(WHEEL).scrollIntoViewIfNeeded()
     await expect(page.locator(`${WHEEL} .caomei-time-picker__wheel-text`)).toHaveText('09:30:00')
 
-    await page.locator(`${WHEEL} .caomei-time-picker__field--wheel`).click()
+    await page.locator(`${WHEEL} .caomei-time-picker__trigger--fill`).click()
     const panel = page.locator(PANEL)
     await expect(panel).toBeVisible()
     await expect(panel.locator('[role="listbox"]')).toHaveCount(3)
@@ -107,12 +107,12 @@ test('wheel 模式：打开弹层点击分钟并回写，Esc 关闭', async ({ p
 
     await page.keyboard.press('Escape')
     await expect(panel).toBeHidden()
-    await expect(page.locator(`${WHEEL} .caomei-time-picker__field--wheel`), '关闭后焦点应回到触发器').toBeFocused()
+    await expect(page.locator(`${WHEEL} .caomei-time-picker__trigger--fill`), '关闭后焦点应回到触发器').toBeFocused()
 })
 
 test('wheel 模式：键盘按列表方向调整并回写', async ({ page }) => {
     await page.locator(WHEEL).scrollIntoViewIfNeeded()
-    await page.locator(`${WHEEL} .caomei-time-picker__field--wheel`).click()
+    await page.locator(`${WHEEL} .caomei-time-picker__trigger--fill`).click()
     const hour = page.locator(`${PANEL} [role="listbox"][aria-label="时"]`)
     await hour.focus()
     await page.keyboard.press('ArrowUp')
@@ -123,7 +123,7 @@ test('wheel 模式：键盘按列表方向调整并回写', async ({ page }) => 
 
 test('wheel 模式：滚动停止后回写最近选项', async ({ page }) => {
     await page.locator(WHEEL).scrollIntoViewIfNeeded()
-    await page.locator(`${WHEEL} .caomei-time-picker__field--wheel`).click()
+    await page.locator(`${WHEEL} .caomei-time-picker__trigger--fill`).click()
     const minute = page.locator(`${PANEL} [role="listbox"][aria-label="分"]`)
     const optionHeight = await minute.locator('[role="option"]').first()
         .evaluate((element) => element.getBoundingClientRect().height)
@@ -141,7 +141,7 @@ test('wheel 模式：滚动停止后回写最近选项', async ({ page }) => {
  */
 test('wheel 面板打开态无 WCAG A/AA axe 违规', async ({ page }) => {
     await page.locator(WHEEL).scrollIntoViewIfNeeded()
-    await page.locator(`${WHEEL} .caomei-time-picker__field--wheel`).click()
+    await page.locator(`${WHEEL} .caomei-time-picker__trigger--fill`).click()
     await expect(page.locator(PANEL)).toBeVisible()
     await page.addScriptTag({ content: AXE_SOURCE })
 
@@ -156,7 +156,7 @@ test('wheel 面板打开态无 WCAG A/AA axe 违规', async ({ page }) => {
 
 test('both 模式：保留输入并可从滚轮入口打开', async ({ page }) => {
     await page.locator(BOTH).scrollIntoViewIfNeeded()
-    await expect(page.locator(`${BOTH} input[aria-label="时"]`)).toHaveValue('9')
+    await expect(page.locator(`${BOTH} input[aria-label="时"]`)).toHaveValue('09')
     await page.locator(`${BOTH} .caomei-time-picker__wheel-trigger`).click()
     await expect(page.locator(PANEL)).toBeVisible()
 
@@ -165,7 +165,7 @@ test('both 模式：保留输入并可从滚轮入口打开', async ({ page }) =
     await expect(page.locator(BOTH_VALUE)).toContainText('11:30:00')
 })
 
-test('宽容器内宽度封顶 20rem，可用 token 放开', async ({ page }) => {
+test('宽容器内按时间内容宽度封顶，可用 token 放开', async ({ page }) => {
     await page.locator(DEFAULT).scrollIntoViewIfNeeded()
     const capped = await page.locator(DEFAULT).evaluate((host) => {
         host.style.width = '800px'
@@ -175,9 +175,9 @@ test('宽容器内宽度封顶 20rem，可用 token 放开', async ({ page }) =>
             maxWidth: fieldElement ? getComputedStyle(fieldElement).maxWidth : '',
         }
     })
-    // 320px = 20rem × 根字号 16px（夹具未覆盖根字号）；若根字号调整，换算值需同步。
-    expect(capped.maxWidth, '默认上限应与选择器家族同源（20rem = 320px）').toBe('320px')
-    expect(capped.fieldWidth).toBeLessThanOrEqual(321)
+    // 184px = 11.5rem × 根字号 16px（含秒档；夹具未覆盖根字号）；若默认宽度 token 调整，换算值需同步。
+    expect(capped.maxWidth, '默认上限应为含秒时间的内容宽度（11.5rem = 184px）').toBe('184px')
+    expect(capped.fieldWidth).toBeLessThanOrEqual(185)
 
     const released = await page.locator(DEFAULT).evaluate((host) => {
         host.style.setProperty('--caomei-time-picker-max-width', 'none')

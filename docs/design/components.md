@@ -79,7 +79,7 @@
 |------|----------|--------------|:-:|------|
 | Skeleton | 自建 | 无 | — | 纯样式（CSS 动画），成本低（**已实现**） |
 | BackTop | 自建 | 无 | — | 常驻回顶按钮：window / 选择器 / 元素目标、阈值显隐、reduced-motion 兜底（**已实现**） |
-| TimePicker | 自建 | 无（未采用 `TimeField`：12 小时制 ARIA 与多语日序不可用） | — | 三段数字输入 + 可选滚轮弹层（`input` / `wheel` / `both`）、本地化日序、12 / 24 小时制、步进与时间区间（**已实现**） |
+| TimePicker | 自建 | 无（未采用 `TimeField`：12 小时制 ARIA 与多语日序不可用） | — | 三段数字输入 + 可选滚轮弹层（`input` / `wheel` / `both`）、默认含秒并补 0（`showSeconds` / `pad`）、本地化日序、12 / 24 小时制、步进与时间区间（**已实现**） |
 | Divider | 自建（布局 + variants） | 无（Reka `Separator` 仅单元素语义，无内容插槽与两段线结构） | — | 水平 / 垂直、带内容与线型（**已实现**） |
 | Rating | 封装 | Rating | Alpha | 星级评分：整星 / 半星、只读与禁用；内置 `star` 语义图标（**已实现**） |
 | RadioGroup / RadioButton | 封装 | RadioGroup | 稳定 | 表单基础控件（**已实现**） |

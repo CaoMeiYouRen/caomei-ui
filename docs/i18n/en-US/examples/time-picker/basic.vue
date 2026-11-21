@@ -9,6 +9,5 @@ const time = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
     <CaomeiTimePicker
         v-model="time"
         label="Time"
-        show-seconds
     />
 </template>

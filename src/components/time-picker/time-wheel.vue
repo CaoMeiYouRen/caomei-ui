@@ -10,6 +10,7 @@ defineOptions({ name: 'CaomeiTimeWheel' })
 const props = withDefaults(defineProps<{
     modelValue?: Date | null
     showSeconds?: boolean
+    pad?: boolean
     hourFormat?: '12' | '24'
     minValue?: Date
     maxValue?: Date
@@ -17,7 +18,8 @@ const props = withDefaults(defineProps<{
     readonly?: boolean
 }>(), {
     modelValue: null,
-    showSeconds: false,
+    showSeconds: true,
+    pad: true,
     hourFormat: '24',
     minValue: undefined,
     maxValue: undefined,
@@ -59,7 +61,7 @@ const displayHour = computed(() => {
     return value === 0 ? 12 : value
 })
 
-function pad(value: number): string {
+function zeroPad(value: number): string {
     return String(value).padStart(2, '0')
 }
 
@@ -67,15 +69,19 @@ function range(start: number, end: number): number[] {
     return Array.from({ length: end - start + 1 }, (_, index) => start + index)
 }
 
+function format(value: number): string {
+    return props.pad ? zeroPad(value) : String(value)
+}
+
 const hourOptions = computed<TimeWheelOption[]>(() => {
     if (is12Hour.value) {
-        return range(1, 12).map((value) => ({ value, label: pad(value) }))
+        return range(1, 12).map((value) => ({ value, label: format(value) }))
     }
-    return range(0, 23).map((value) => ({ value, label: pad(value) }))
+    return range(0, 23).map((value) => ({ value, label: format(value) }))
 })
 
-const minuteOptions = computed<TimeWheelOption[]>(() => range(0, 59).map((value) => ({ value, label: pad(value) })))
-const secondOptions = computed<TimeWheelOption[]>(() => range(0, 59).map((value) => ({ value, label: pad(value) })))
+const minuteOptions = computed<TimeWheelOption[]>(() => range(0, 59).map((value) => ({ value, label: format(value) })))
+const secondOptions = computed<TimeWheelOption[]>(() => range(0, 59).map((value) => ({ value, label: format(value) })))
 
 const periodOptions = computed<TimeWheelOption[]>(() => [
     { value: 'am', label: amLabel.value },

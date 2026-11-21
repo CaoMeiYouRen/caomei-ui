@@ -192,7 +192,7 @@ async function prepareFormAxis(page: Page, setup: string, theme: string): Promis
         await page.waitForSelector('.caomei-date-picker__content')
     }
     if (setup === 'time-wheel') {
-        await page.click('#time-picker-wheel .caomei-time-picker__field--wheel')
+        await page.click('#time-picker-wheel .caomei-time-picker__trigger--fill')
         await page.waitForSelector('.caomei-time-picker__content')
     }
     if (theme === 'dark') {

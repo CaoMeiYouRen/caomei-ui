@@ -31,33 +31,40 @@ afterEach(() => {
 })
 
 describe('CaomeiTimePicker', () => {
-    it('渲染标签、可访问名与时分输入（默认 24 小时制、不含秒）', () => {
+    it('默认 24 小时制、保留秒并补 0 展示', () => {
         const wrapper = mount(CaomeiTimePicker, {
-            props: { label: '时间', modelValue: new Date(2026, 0, 1, 9, 30, 0) },
+            props: { label: '时间', modelValue: new Date(2026, 0, 1, 9, 30, 5) },
         })
         expect(wrapper.find('[role="group"]').attributes('aria-label')).toBe('时间')
-        expect(wrapper.findAll('input')).toHaveLength(2)
-        expect(inputValue(wrapper, HOUR)).toBe('9')
+        expect(wrapper.findAll('input')).toHaveLength(3)
+        expect(inputValue(wrapper, HOUR)).toBe('09')
         expect(inputValue(wrapper, MINUTE)).toBe('30')
+        expect(inputValue(wrapper, SECOND)).toBe('05')
         wrapper.unmount()
     })
 
-    it('showSeconds 渲染秒输入并展示秒值', () => {
-        const wrapper = mount(CaomeiTimePicker, {
-            props: { label: '时间', showSeconds: true, modelValue: new Date(2026, 0, 1, 9, 30, 45) },
+    it('showSeconds=false 回退到分钟精度，pad=false 关闭补 0', () => {
+        const minuteOnly = mount(CaomeiTimePicker, {
+            props: { label: '时间', showSeconds: false, modelValue: new Date(2026, 0, 1, 9, 30, 45) },
         })
-        expect(wrapper.findAll('input')).toHaveLength(3)
-        expect(inputValue(wrapper, SECOND)).toBe('45')
-        wrapper.unmount()
+        expect(minuteOnly.findAll('input')).toHaveLength(2)
+        expect(inputValue(minuteOnly, HOUR)).toBe('09')
+        minuteOnly.unmount()
+
+        const unpadded = mount(CaomeiTimePicker, {
+            props: { label: '时间', pad: false, modelValue: new Date(2026, 0, 1, 9, 30, 5) },
+        })
+        expect(inputValue(unpadded, HOUR)).toBe('9')
+        expect(inputValue(unpadded, SECOND)).toBe('5')
+        unpadded.unmount()
     })
 
     it('hourFormat=12 显示 1–12 小时并提供本地化日序选择', () => {
         const wrapper = mount(CaomeiTimePicker, {
             props: { label: '时间', hourFormat: '12', modelValue: new Date(2026, 0, 1, 15, 30, 0) },
         })
-        expect(inputValue(wrapper, HOUR), '15 点应显示为 3').toBe('3')
-        expect(wrapper.get(HOUR).attributes('min')).toBe('1')
-        expect(wrapper.get(HOUR).attributes('max')).toBe('12')
+        expect(inputValue(wrapper, HOUR), '15 点应显示为 03').toBe('03')
+        expect(wrapper.get(HOUR).attributes('inputmode'), '数字键盘提示应保留').toBe('numeric')
         const options = wrapper.findAll('select option')
         expect(options.map((option) => option.text())).toEqual(['上午', '下午'])
         expect((wrapper.get('select').element as HTMLSelectElement).value).toBe('pm')
@@ -191,7 +198,7 @@ describe('CaomeiTimePicker 选择模式', () => {
             attachTo: document.body,
         })
         expect(wrapper.find('.caomei-time-picker__wheel-trigger').exists()).toBe(false)
-        expect(wrapper.findAll('input')).toHaveLength(2)
+        expect(wrapper.findAll('input')).toHaveLength(3)
         wrapper.unmount()
     })
 
@@ -201,12 +208,12 @@ describe('CaomeiTimePicker 选择模式', () => {
             attachTo: document.body,
         })
         expect(wrapper.findAll('input')).toHaveLength(0)
-        expect(wrapper.get('.caomei-time-picker__wheel-text').text()).toBe('09:30')
+        expect(wrapper.get('.caomei-time-picker__wheel-text').text()).toBe('09:30:00')
 
-        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await wrapper.get('.caomei-time-picker__trigger--fill').trigger('click')
         await nextTick()
         const content = getWheelContent()
-        expect(content.findAll('[role="listbox"]')).toHaveLength(2)
+        expect(content.findAll('[role="listbox"]')).toHaveLength(3)
 
         const minuteColumn = content.get('[role="listbox"][aria-label="分"]')
         await optionByText(minuteColumn, '45').trigger('click')
@@ -219,7 +226,7 @@ describe('CaomeiTimePicker 选择模式', () => {
             props: { label: '时间', mode: 'both', modelValue: new Date(2026, 0, 1, 9, 30, 0) },
             attachTo: document.body,
         })
-        expect(wrapper.findAll('input')).toHaveLength(2)
+        expect(wrapper.findAll('input')).toHaveLength(3)
         await wrapper.get('.caomei-time-picker__wheel-trigger').trigger('click')
         await nextTick()
 
@@ -241,11 +248,11 @@ describe('CaomeiTimePicker 选择模式', () => {
             },
             attachTo: document.body,
         })
-        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await wrapper.get('.caomei-time-picker__trigger--fill').trigger('click')
         await nextTick()
         const content = getWheelContent()
         const columns = content.findAll('[role="listbox"]')
-        expect(columns).toHaveLength(3)
+        expect(columns).toHaveLength(4)
 
         await optionByText(columns.at(-1) as { element: Element }, '上午').trigger('click')
         expect((wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date).getHours()).toBe(3)
@@ -257,7 +264,7 @@ describe('CaomeiTimePicker 选择模式', () => {
             props: { label: '时间', mode: 'wheel', modelValue: new Date(Number.NaN) },
             attachTo: document.body,
         })
-        await wrapper.get('.caomei-time-picker__field--wheel').trigger('click')
+        await wrapper.get('.caomei-time-picker__trigger--fill').trigger('click')
         await nextTick()
         const minuteColumn = getWheelContent().get('[role="listbox"][aria-label="分"]')
         await optionByText(minuteColumn, '45').trigger('click')
@@ -274,22 +281,22 @@ describe('CaomeiTimePicker 选择模式', () => {
             props: { label: '时间', mode: 'wheel', modelValue: null },
             attachTo: document.body,
         })
-        expect(empty.get('.caomei-time-picker__wheel-text').text()).toBe('--:--')
+        expect(empty.get('.caomei-time-picker__wheel-text').text()).toBe('--:--:--')
         empty.unmount()
 
         const disabled = mount(CaomeiTimePicker, {
             props: { label: '时间', mode: 'wheel', disabled: true, modelValue: new Date(2026, 0, 1, 9, 0, 0) },
             attachTo: document.body,
         })
-        expect(disabled.get('.caomei-time-picker__field--wheel').attributes('disabled')).toBeDefined()
+        expect(disabled.get('.caomei-time-picker__trigger--fill').attributes('disabled')).toBeDefined()
         disabled.unmount()
 
         const readonly = mount(CaomeiTimePicker, {
             props: { label: '时间', mode: 'wheel', readonly: true, modelValue: new Date(2026, 0, 1, 9, 0, 0) },
             attachTo: document.body,
         })
-        expect(readonly.get('.caomei-time-picker__field--wheel').attributes('disabled')).toBeUndefined()
-        await readonly.get('.caomei-time-picker__field--wheel').trigger('click')
+        expect(readonly.get('.caomei-time-picker__trigger--fill').attributes('disabled')).toBeUndefined()
+        await readonly.get('.caomei-time-picker__trigger--fill').trigger('click')
         await nextTick()
         const column = getWheelContent().get('[role="listbox"][aria-label="时"]')
         expect(column.attributes('aria-readonly')).toBe('true')

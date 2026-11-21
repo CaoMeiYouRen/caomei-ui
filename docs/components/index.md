@@ -68,6 +68,7 @@
 
 - [DataTable 表格](./data-table)：表格用于展示结构化数据，基于 `@tanstack/vue-table` 的无头能力自建渲染，默认提供极简表样式与空态。
 - [DataView 数据视图](./data-view)：数据视图用同一组数据在列表与网格两种布局间切换：`layout` 决定渲染 `list` 还是 `grid` 插槽，条目结构与网格列数由插槽内容自行定义。自建实现，不依赖 Reka UI。
+- [Descriptions 描述列表](./descriptions)：描述列表以标签 / 内容成对展示只读字段，支持列数、跨列、带边框与水平 / 垂直布局。
 - [Empty 空态](./empty)：页面或区块级空态，提供图标 / 图片、标题、说明与操作区；容器内空态由 DataView 承担。
 - [Paginator 分页](./paginator)：分页用于在数据分片间切换，基于 Reka UI Pagination 封装。
 - [ProgressBar 进度条](./progress-bar)：进度条用于展示确定的进度值或不确定的等待状态，基于 Reka UI Progress 封装，与 ProgressSpinner 同源。

@@ -31,6 +31,7 @@
 - **组件与样式解耦**：默认极简样式（预设 `minimal`，缺省），可完全通过 `--caomei-*` CSS variables 覆盖，不引入 Tailwind / UnoCSS。
 - **主题与暗色模式**：CSS variables + 语义化 token；支持 `.dark` / `[data-theme="dark"]` 与六套预设（`data-preset`：极简 `minimal`（缺省）/ `caomei` / `momei` / `sakura` / `forest` / `ink`）；系统跟随需显式开启（`data-scheme="auto"`）。
 - **桌面与移动适配**：单包响应式，不拆分移动端包。
+- **内建 10 种语言**：`zh-CN` / `en-US` 预注册，其余 8 种按需引入；支持语言与翻译状态见[内建文案与语言](./docs/components/locale.md)。
 - **单仓库单包**：组件、样式、resolver、Nuxt 模块通过子路径导出，消费者只需安装一个包。
 - **无障碍**：基于 Reka UI 的 ARIA、键盘导航与焦点管理。
 

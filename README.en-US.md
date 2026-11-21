@@ -28,6 +28,7 @@
 - **Decoupled Components & Styles**: Minimal default styles, fully customizable via `--caomei-*` CSS variables. No Tailwind / UnoCSS dependency.
 - **Theme & Dark Mode**: CSS variables + semantic tokens; supports `.dark` / `[data-theme="dark"]` and six presets (`data-preset`: minimal (default) / caomei / momei / sakura / forest / ink).
 - **Desktop & Mobile**: Single responsive package, no separate mobile bundle.
+- **10 built-in locales**: `zh-CN` / `en-US` are pre-registered and the other 8 load on demand; see [Built-in text and locales](./docs/i18n/en-US/components/locale.md) for support and translation status.
 - **Single Package**: Components, styles, resolver, and Nuxt module exported via subpaths.
 - **Accessible**: Built on Reka UI with ARIA, keyboard navigation, and focus management.
 

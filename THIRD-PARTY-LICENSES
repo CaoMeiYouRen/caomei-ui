@@ -219,7 +219,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
-## @lucide/vue@1.70.0
+## @lucide/vue@1.72.0
 
 License: ISC
 Copyright: 2026 Lucide Icons and Contributors
@@ -297,7 +297,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-## @tanstack/vue-table@9.2.4
+## @tanstack/vue-table@9.3.1
 
 License: MIT
 Copyright: 2016 Tanner Linsley
@@ -622,7 +622,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-## vue@3.5.44
+## vue@3.5.45
 
 License: MIT
 Copyright: 2018-present, Yuxi (Evan) You

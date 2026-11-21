@@ -1,5 +1,76 @@
 # caomei-ui
 
+# [1.4.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.3.0...v1.4.0) (2026-11-21)
+
+
+### ✨ 新功能
+
+* **a11y:** DatePicker 与 ColorPicker 展开态隔离背景 ([bf55466](https://github.com/CaoMeiYouRen/caomei-ui/commit/bf55466))
+* **a11y:** DropdownMenu 与 Popover 展开态隔离背景并保留触发器 ([e2fab21](https://github.com/CaoMeiYouRen/caomei-ui/commit/e2fab21))
+* **a11y:** MultiSelect 与 AutoComplete 展开态隔离背景并保留字段交互 ([5c720fc](https://github.com/CaoMeiYouRen/caomei-ui/commit/5c720fc))
+* **back-top:** 新增回顶按钮与自动导入 ([704ec40](https://github.com/CaoMeiYouRen/caomei-ui/commit/704ec40))
+* **cascader:** 新增级联选择组件 ([649dfcd](https://github.com/CaoMeiYouRen/caomei-ui/commit/649dfcd))
+* **components:** 新增 ActionSheet 操作面板 ([0ecd371](https://github.com/CaoMeiYouRen/caomei-ui/commit/0ecd371))
+* **components:** 新增 Cell 与 CellGroup 组件 ([a7e3159](https://github.com/CaoMeiYouRen/caomei-ui/commit/a7e3159))
+* **components:** 新增 Empty 空态组件 ([e203b70](https://github.com/CaoMeiYouRen/caomei-ui/commit/e203b70))
+* **components:** 新增 Tabbar 与 TabbarItem 组件 ([6f91402](https://github.com/CaoMeiYouRen/caomei-ui/commit/6f91402))
+* **components:** 注册新增组件导出与 Nuxt 自动导入 ([6e0c620](https://github.com/CaoMeiYouRen/caomei-ui/commit/6e0c620))
+* **data-table:** 提供可选列宽拖拽手柄 ([ae61ba2](https://github.com/CaoMeiYouRen/caomei-ui/commit/ae61ba2))
+* **data-table:** 支持受控列可见性与列顺序 ([#64](https://github.com/CaoMeiYouRen/caomei-ui/issues/64)) ([28ba5b6](https://github.com/CaoMeiYouRen/caomei-ui/commit/28ba5b6))
+* **data-table:** 支持受控列宽与持久化契约 ([#65](https://github.com/CaoMeiYouRen/caomei-ui/issues/65)) ([0aa3c66](https://github.com/CaoMeiYouRen/caomei-ui/commit/0aa3c66))
+* **data-table:** 支持固定表头与限高滚动 ([3aec7ad](https://github.com/CaoMeiYouRen/caomei-ui/commit/3aec7ad))
+* **data-table:** 新增 selectAllScope 全选作用域 ([b046f8e](https://github.com/CaoMeiYouRen/caomei-ui/commit/b046f8e))
+* **data-table:** 补齐列宽拖拽残余能力 ([f827773](https://github.com/CaoMeiYouRen/caomei-ui/commit/f827773))
+* **data-table:** 逐格提示增加退出开关 ([#62](https://github.com/CaoMeiYouRen/caomei-ui/issues/62)) ([ae28ad4](https://github.com/CaoMeiYouRen/caomei-ui/commit/ae28ad4))
+* **descriptions:** 新增描述列表组件 ([b8c786f](https://github.com/CaoMeiYouRen/caomei-ui/commit/b8c786f))
+* **dialog:** 关闭按钮接入内建提示 ([9a98bcb](https://github.com/CaoMeiYouRen/caomei-ui/commit/9a98bcb))
+* **docs:** 新增文档站 iframe 设备预览 ([b0b544a](https://github.com/CaoMeiYouRen/caomei-ui/commit/b0b544a))
+* **i18n:** 数字与文件体积跟随注入语言格式化 ([dd3afe5](https://github.com/CaoMeiYouRen/caomei-ui/commit/dd3afe5))
+* **i18n:** 日期组件 locale 跟随注入语言 ([11a43b1](https://github.com/CaoMeiYouRen/caomei-ui/commit/11a43b1))
+* **i18n:** 补可访问名文案键并纳入 10 语 ([bd30a2f](https://github.com/CaoMeiYouRen/caomei-ui/commit/bd30a2f))
+* **input-otp:** 新增验证码输入组件 ([ca315a1](https://github.com/CaoMeiYouRen/caomei-ui/commit/ca315a1))
+* **locale:** 新增 BackTop 与 TimePicker 文案键 ([59986b9](https://github.com/CaoMeiYouRen/caomei-ui/commit/59986b9))
+* **locale:** 新增操作面板与标签栏内建文案 ([0710963](https://github.com/CaoMeiYouRen/caomei-ui/commit/0710963))
+* **menu:** 项支持前置图标插槽 ([#63](https://github.com/CaoMeiYouRen/caomei-ui/issues/63)) ([26bbb97](https://github.com/CaoMeiYouRen/caomei-ui/commit/26bbb97)), closes [#icon](https://github.com/CaoMeiYouRen/caomei-ui/issues/icon)
+* **mobile:** 固定定位件接入安全区与 dvh 回退 ([d1f0e4d](https://github.com/CaoMeiYouRen/caomei-ui/commit/d1f0e4d))
+* **paginator:** 翻页图标按钮接入内建提示 ([994fc76](https://github.com/CaoMeiYouRen/caomei-ui/commit/994fc76))
+* **popconfirm:** 新增气泡确认组件 ([36e348a](https://github.com/CaoMeiYouRen/caomei-ui/commit/36e348a))
+* **rating:** 接入表单字段契约并落到可访问根 ([f46d8ae](https://github.com/CaoMeiYouRen/caomei-ui/commit/f46d8ae))
+* **rating:** 新增评分组件 ([#66](https://github.com/CaoMeiYouRen/caomei-ui/issues/66)) ([ad2ffbf](https://github.com/CaoMeiYouRen/caomei-ui/commit/ad2ffbf))
+* **rating:** 补齐 10 语文案与台账 ([#67](https://github.com/CaoMeiYouRen/caomei-ui/issues/67)) ([042cf1a](https://github.com/CaoMeiYouRen/caomei-ui/commit/042cf1a))
+* **result:** 新增结果页组件 ([e6b0eea](https://github.com/CaoMeiYouRen/caomei-ui/commit/e6b0eea))
+* **select:** 支持以 allowEmptyValue 放行空串选项值 ([54e0d86](https://github.com/CaoMeiYouRen/caomei-ui/commit/54e0d86))
+* **split-button:** 下拉图标按钮接入内建提示 ([13f5b0a](https://github.com/CaoMeiYouRen/caomei-ui/commit/13f5b0a))
+* **styles:** 新增安全区 token 与工具类 ([89f0fc6](https://github.com/CaoMeiYouRen/caomei-ui/commit/89f0fc6))
+* **time-picker:** 新增时间选择器与自动导入 ([79e7ba7](https://github.com/CaoMeiYouRen/caomei-ui/commit/79e7ba7))
+* **time-picker:** 新增滚轮选择模式 ([6e11fb1](https://github.com/CaoMeiYouRen/caomei-ui/commit/6e11fb1))
+* **timeline:** 新增时间轴组件 ([679c7e5](https://github.com/CaoMeiYouRen/caomei-ui/commit/679c7e5))
+* **toolbar:** 图标工具条接入内建提示 ([18951ef](https://github.com/CaoMeiYouRen/caomei-ui/commit/18951ef))
+* **tooltip:** P1 icon-only 第一批接入内建提示 ([8052913](https://github.com/CaoMeiYouRen/caomei-ui/commit/8052913))
+* **tooltip:** 新增溢出提示基础契约与 Button 内建提示 ([b6fe58f](https://github.com/CaoMeiYouRen/caomei-ui/commit/b6fe58f))
+* **tooltip:** 长文本截断面接入溢出提示 ([aeca2bb](https://github.com/CaoMeiYouRen/caomei-ui/commit/aeca2bb))
+* **tooltip:** 面板与容器内图标触发器接入提示 ([ced91e6](https://github.com/CaoMeiYouRen/caomei-ui/commit/ced91e6))
+* **transfer:** 新增穿梭框组件 ([e0d2af6](https://github.com/CaoMeiYouRen/caomei-ui/commit/e0d2af6))
+
+
+### 🐛 Bug 修复
+
+* **a11y:** 隔离工具按活动层重算支持多浮层共存 ([9146fe4](https://github.com/CaoMeiYouRen/caomei-ui/commit/9146fe4))
+* **governance:** 补齐新组件的注册面与设计守卫 ([a062e90](https://github.com/CaoMeiYouRen/caomei-ui/commit/a062e90))
+* **popover:** 补齐页面级浮层隔离与锁定背景语义 ([555a023](https://github.com/CaoMeiYouRen/caomei-ui/commit/555a023))
+* **release:** 发布前置断言拆分独立模块以控制文件行数 ([0439680](https://github.com/CaoMeiYouRen/caomei-ui/commit/0439680))
+* **release:** 许可证台账标题由发布链同步，解除依赖升级阻塞 ([e5e8632](https://github.com/CaoMeiYouRen/caomei-ui/commit/e5e8632))
+* **select:** 展开时给面板外兄弟节点补 inert ([7ac7e22](https://github.com/CaoMeiYouRen/caomei-ui/commit/7ac7e22))
+* **select:** 空串选项值不再透传至面板渲染 ([e9b88b9](https://github.com/CaoMeiYouRen/caomei-ui/commit/e9b88b9))
+* **test:** 夹具新增 section 追加到末尾并补视觉顺序纪律 ([4a12903](https://github.com/CaoMeiYouRen/caomei-ui/commit/4a12903))
+* **time-picker:** 限制字段默认宽度 ([677c437](https://github.com/CaoMeiYouRen/caomei-ui/commit/677c437))
+
+
+### 📦 代码重构
+
+* **components:** 接入内置文案并移除失效 locale prop ([df3c2bf](https://github.com/CaoMeiYouRen/caomei-ui/commit/df3c2bf))
+* **overlay:** 隔离接线下沉到共享 composable ([4e95bd7](https://github.com/CaoMeiYouRen/caomei-ui/commit/4e95bd7))
+
 # [1.3.0](https://github.com/CaoMeiYouRen/caomei-ui/compare/v1.2.0...v1.3.0) (2026-11-14)
 
 

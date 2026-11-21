@@ -8,6 +8,7 @@ import { CaomeiToastProvider } from '../../../src/components/toast'
 import { CaomeiTooltipProvider } from '../../../src/components/tooltip'
 import type { CaomeiLocale } from '../../../src/locale'
 import ThemePresetSwitcher from './components/theme-preset-switcher.vue'
+import DevicePreview from './components/device-preview.vue'
 
 const { Layout } = DefaultTheme
 
@@ -24,6 +25,7 @@ const locale = computed<CaomeiLocale>(() => (lang.value === 'en-US' ? 'en-US' : 
                     <Layout>
                         <template #nav-bar-content-after>
                             <ThemePresetSwitcher />
+                            <DevicePreview />
                         </template>
                     </Layout>
                 </CaomeiConfirmDialog>

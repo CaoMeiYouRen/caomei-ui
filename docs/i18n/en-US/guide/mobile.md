@@ -155,6 +155,14 @@ Measured hit areas for key controls (2026-10-16, at 390×844 and 320×568):
 - **P2 shipped (2026-11-12, Phase 31 M4-1)**: row-height-limited targets (Breadcrumb links / DataTable sort / Select clear) also reach **≥24×24** with unchanged visual boxes; the plain Input control stretches to fill the field shell, while the multi-value fields' anchors already handle click-to-focus. See [Responsive design §4](/design/responsive) assertion 7 and the [delivery record](/design/governance/2026-11-12-phase31-m4-1-touch-target-p2) (Chinese).
 - **Suggestions for your app**: for finger-heavy areas (forms, toolbars, row actions), widen the clickable area at the consumer level with container `padding` or a wrapper element. P0 (1.1.0), P1 (Phase 30) and P2 (Phase 31) have all shipped; consumers may still widen wrappers where needed.
 
+## Device preview
+
+The "Device preview" entry in the site navigation opens a **same-origin iframe of the current page** in a drawer, switchable between 390 / 768 / 1024 / 1280. Media queries inside the iframe use the iframe's own width, so the result is a real breakpoint rather than a narrowed or scaled container. The drawer also has light / dark and reload controls; the theme is written only into the iframe, and the main site neither reloads nor navigates.
+
+- **Preview route**: the current page URL plus `device-preview=1`; inside the iframe that marker suppresses the entry to avoid recursion.
+- **Same origin and theme**: the iframe shares the site origin and can read the `localStorage` theme preference; after load it corrects `dark` / `data-theme` for the current preview state.
+- **Scope**: how a whole documentation page (sidebar and navigation included) looks on a device; the P2 single-demo isolated preview is not part of this entry.
+
 ## Narrow-screen self-check
 
 1. **Viewports**: 390×844 (phone), 768×1024 (tablet), 1280×800 (desktop), plus a 320×568 extreme-narrow pass and a 900×1024 pass for the 769–1023 "no-tier" band.

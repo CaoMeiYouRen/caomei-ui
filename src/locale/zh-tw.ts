@@ -77,6 +77,9 @@ const zhTW: CaomeiLocaleMessages = {
         increase: '增加',
         decrease: '減少',
     },
+    inputOtp: {
+        cellLabel: '驗證碼第 {index} 位，共 {total} 位',
+    },
     message: {
         close: '關閉',
     },

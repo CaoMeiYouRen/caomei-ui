@@ -77,6 +77,9 @@ const ptBR: CaomeiLocaleMessages = {
         increase: 'Aumentar',
         decrease: 'Diminuir',
     },
+    inputOtp: {
+        cellLabel: 'Dígito {index} de {total} do código de verificação',
+    },
     message: {
         close: 'Fechar',
     },

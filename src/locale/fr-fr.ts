@@ -77,6 +77,9 @@ const frFR: CaomeiLocaleMessages = {
         increase: 'Augmenter',
         decrease: 'Diminuer',
     },
+    inputOtp: {
+        cellLabel: 'Chiffre {index} sur {total} du code de vérification',
+    },
     message: {
         close: 'Fermer',
     },

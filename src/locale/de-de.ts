@@ -77,6 +77,9 @@ const deDE: CaomeiLocaleMessages = {
         increase: 'Erhöhen',
         decrease: 'Verringern',
     },
+    inputOtp: {
+        cellLabel: 'Bestätigungscode, Ziffer {index} von {total}',
+    },
     message: {
         close: 'Schließen',
     },

@@ -45,6 +45,7 @@ import {
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
+    CaomeiInputOtp,
     CaomeiMessage,
     CaomeiMultiSelect,
     CaomeiPaginator,
@@ -282,7 +283,6 @@ const swatchPickerValue = ref('#e63946')
 
 /** TimePicker 用例（供后续时间选择 E2E 使用）：受控值同时回显，便于断言 v-model。 */
 const timePickerValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
-
 /** 视觉基线用的固定时间（确定性、不含实时日期）。 */
 const visualTimeValue = new Date(2026, 0, 1, 9, 30, 45)
 /** 12 小时制字段的独立受控值，便于断言日序切换后的回写。 */
@@ -290,6 +290,10 @@ const timePicker12Value = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 /** 滚轮模式与「输入 + 滚轮」模式的独立受控值。 */
 const timePickerWheelValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const timePickerBothValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
+
+/** InputOtp 用例：受控值与完成事件回显，避免在示例 / 夹具中打印验证码。 */
+const otpValue = ref('')
+const otpComplete = ref('')
 const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
 
 /*
@@ -2900,6 +2904,41 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 @select="onActionSheetSelect"
             />
             <span id="action-sheet-log">{{ actionSheetLog }}</span>
+        </section>
+
+        <section id="input-otp" class="fixture__case">
+            <div id="otp-basic">
+                <CaomeiInputOtp
+                    v-model="otpValue"
+                    label="验证码"
+                    :length="4"
+                    @complete="otpComplete = $event"
+                />
+            </div>
+            <span id="otp-value">{{ otpValue }}</span>
+            <span id="otp-complete">{{ otpComplete }}</span>
+            <div id="otp-alpha">
+                <CaomeiInputOtp
+                    model-value="AB12"
+                    label="字母验证码"
+                    :length="4"
+                    type="alphanumeric"
+                />
+            </div>
+            <div id="otp-disabled">
+                <CaomeiInputOtp
+                    model-value="123456"
+                    label="禁用验证码"
+                    disabled
+                />
+            </div>
+            <div id="otp-readonly">
+                <CaomeiInputOtp
+                    model-value="123456"
+                    label="只读验证码"
+                    readonly
+                />
+            </div>
         </section>
 
         <section id="empty" class="fixture__case">

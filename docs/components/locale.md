@@ -65,6 +65,7 @@ import {
 | `image` | `label` `preview` `close` | Image |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |
+| `inputOtp` | `cellLabel` | InputOtp |
 | `message` | `close` | Message |
 | `multiSelect` | `open` `remove` `empty` `clear` | MultiSelect |
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |

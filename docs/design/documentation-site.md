@@ -139,7 +139,7 @@ docs/
 | 分组 | Sidebar group（en-US） | 组件（组内按英文名字母序，已登记例外见上） |
 | --- | --- | --- |
 | 基础与布局 | Basics & Layout | Avatar、BackTop、Badge、Button、ButtonGroup、Card、Cell、CellGroup、Col、Divider、Image、Row、SplitButton、Tag |
-| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea |
+| 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、InputOtp、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea |
 | 选择器 | Selectors | AutoComplete、Calendar、ColorPicker、DatePicker、TimePicker、MultiSelect、Select、SelectButton、ToggleButton |
 | 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、Dialog、Drawer、Message、Popover、Toast、Tooltip |
 | 数据展示 | Data Display | DataTable、DataView、Empty、Paginator、ProgressBar、ProgressSpinner、Skeleton |

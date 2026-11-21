@@ -31,6 +31,7 @@
 - [Input 输入框](./input)：输入框用于接收用户的单行文本输入。
 - [InputGroup 输入框组合](./input-group)：输入框组合把多个表单控件拼接为单一控件外观：自动消除相邻重复边框与内侧圆角，并让输入类成员占满剩余宽度。
 - [InputNumber 数字输入框](./input-number)：数字输入框用于录入数值，支持范围限制、步进与小数精度。
+- [InputOtp 验证码输入](./input-otp)：验证码输入用于录入一次性数字或字母数字验证码，支持逐格输入、粘贴分发与完成事件。
 - [Password 密码输入框](./password)：密码输入框由 [Input](/components/input) 衍生，在文本输入基础上提供明文可见性切换与密码自动填充语义。
 - [RadioGroup 单选组](./radio-group)：单选组用于在一组互斥选项中选择一项，基于 Reka UI RadioGroup 封装，由 `CaomeiRadioGroup` 与 `CaomeiRadioButton` 组合使用。
 - [Rating 评分](./rating)：用于收集或展示分值，默认 5 星整星步进，可开启半星，支持只读与禁用。

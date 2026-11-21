@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { TimelineProps } from './types'
+import { labelAttrs } from '../_shared/use-label-attrs'
 
 defineOptions({ name: 'CaomeiTimeline' })
 
@@ -19,7 +20,7 @@ const rootClass = computed(() => [
     <ol
         class="caomei-timeline"
         :class="rootClass"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
     >
         <slot />
     </ol>

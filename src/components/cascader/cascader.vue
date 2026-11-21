@@ -4,6 +4,7 @@ import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { CaomeiPopover, CaomeiPopoverContent, CaomeiPopoverTrigger } from '../popover'
 import type { CascaderOption, CascaderProps, CascaderValue } from './types'
+import { labelAttrs } from '../_shared/use-label-attrs'
 
 defineOptions({ name: 'CaomeiCascader' })
 
@@ -104,7 +105,7 @@ function clear(): void {
                 <button
                     type="button"
                     class="caomei-cascader__trigger"
-                    :aria-label="label"
+                    v-bind="labelAttrs(label)"
                     :aria-expanded="open"
                     :disabled="disabled"
                 >
@@ -135,7 +136,7 @@ function clear(): void {
                 <div
                     class="caomei-cascader__columns"
                     role="group"
-                    :aria-label="label"
+                    v-bind="labelAttrs(label)"
                 >
                     <ul
                         v-for="(column, index) in columns"

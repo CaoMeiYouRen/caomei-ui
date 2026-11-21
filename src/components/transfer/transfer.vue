@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useLocale } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import type { TransferOption, TransferProps, TransferValue } from './types'
+import { labelAttrs } from '../_shared/use-label-attrs'
 
 defineOptions({ name: 'CaomeiTransfer' })
 
@@ -71,7 +72,7 @@ function moveToSource(): void {
     <div
         class="caomei-transfer"
         :class="{'caomei-transfer--disabled': disabled}"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
         role="group"
     >
         <section class="caomei-transfer__panel">

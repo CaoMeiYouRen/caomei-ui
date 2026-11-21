@@ -132,6 +132,18 @@
         }
     },
     {
+        "name": "Cascader",
+        "group": {
+            "zh": "选择器",
+            "en": "Selectors"
+        },
+        "example": "cascader/basic.vue",
+        "description": {
+            "zh": "从多级树形选项中选择一条完整路径，支持逐级展开与清除。",
+            "en": "Selects a full path from a multi-level option tree, with step-by-step expansion and clearing."
+        }
+    },
+    {
         "name": "DatePicker",
         "group": {
             "zh": "选择器",

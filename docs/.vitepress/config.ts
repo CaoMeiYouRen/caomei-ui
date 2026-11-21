@@ -343,6 +343,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'AutoComplete', link: '/en-US/components/auto-complete' },
                                 { text: 'Calendar', link: '/en-US/components/calendar' },
+                                { text: 'Cascader', link: '/en-US/components/cascader' },
                                 { text: 'ColorPicker', link: '/en-US/components/color-picker' },
                                 { text: 'DatePicker', link: '/en-US/components/date-picker' },
                                 { text: 'TimePicker', link: '/en-US/components/time-picker' },
@@ -561,6 +562,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'AutoComplete 自动补全', link: '/components/auto-complete' },
                         { text: 'Calendar 日历', link: '/components/calendar' },
+                        { text: 'Cascader 级联选择', link: '/components/cascader' },
                         { text: 'ColorPicker 颜色选择器', link: '/components/color-picker' },
                         { text: 'DatePicker 日期选择器', link: '/components/date-picker' },
                         { text: 'TimePicker 时间选择器', link: '/components/time-picker' },

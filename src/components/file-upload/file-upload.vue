@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
-import { useLocale } from '../../composables/use-locale'
+import { useLocale, useLocaleCode } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -111,15 +111,34 @@ function fileKey(file: File): string {
     return `${file.name}:${file.size}:${file.lastModified}`
 }
 
-/** 人类可读的文件大小 */
+const localeCode = useLocaleCode()
+const byteFormatter = computed(() => new Intl.NumberFormat(localeCode.value))
+const sizeFormatters = computed(() => ({
+    kilobyte: new Intl.NumberFormat(localeCode.value, {
+        style: 'unit',
+        unit: 'kilobyte',
+        unitDisplay: 'short',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+    }),
+    megabyte: new Intl.NumberFormat(localeCode.value, {
+        style: 'unit',
+        unit: 'megabyte',
+        unitDisplay: 'short',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+    }),
+}))
+
+/** 人类可读的文件大小；数字与单位随注入语言格式化 */
 function formatSize(bytes: number): string {
     if (bytes < 1024) {
-        return `${bytes} B`
+        return `${byteFormatter.value.format(bytes)} B`
     }
     if (bytes < 1024 * 1024) {
-        return `${(bytes / 1024).toFixed(1)} KB`
+        return sizeFormatters.value.kilobyte.format(bytes / 1024)
     }
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    return sizeFormatters.value.megabyte.format(bytes / (1024 * 1024))
 }
 
 /** 请求上传：组件不做传输，仅在 `customUpload` 下抛出 `uploader` 交由业务层处理 */

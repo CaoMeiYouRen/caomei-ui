@@ -17,7 +17,7 @@
 
 ## 大小上限
 
-`maxFileSize` 以字节为单位限制单个文件：超限文件不进入 `v-model`，并在组件内显示提示（文案取内建 locale，可经 `CaomeiConfigProvider` 的 `messages` 覆盖）。提示会在下一次选择时清空；被拒文件不影响列表中的既有文件。
+`maxFileSize` 以字节为单位限制单个文件：超限文件不进入 `v-model`，并在组件内显示提示（文案取内建 locale，可经 `CaomeiConfigProvider` 的 `messages` 覆盖）。文件体积的数字与单位随注入语言格式化（如 `de-DE` 为 `2,0 kB`）。提示会在下一次选择时清空；被拒文件不影响列表中的既有文件。
 
 ## 自动上传与自定义上传
 

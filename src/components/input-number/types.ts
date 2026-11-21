@@ -63,4 +63,9 @@ export interface InputNumberProps extends FieldProps, FieldIdentityProps {
      * @en Accessible label of the decrement button; defaults to the current locale's "Decrease" text
      */
     decreaseLabel?: string
+    /**
+     * 数字分组与小数点的语言（BCP 47）；缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言
+     * @en Locale for grouping and the decimal separator (BCP 47); defaults to the injected locale from `ConfigProvider` / `provideLocale`
+     */
+    locale?: string
 }

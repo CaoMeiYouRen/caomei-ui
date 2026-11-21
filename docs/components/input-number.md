@@ -39,7 +39,7 @@
 
 ## 分组与小数位
 
-`useGrouping`（默认 `true`）控制千分位等分组分隔符；`minFractionDigits` / `maxFractionDigits`（0–20 的整数）控制展示与取整的小数位，`precision` 优先于 `maxFractionDigits`。
+`useGrouping`（默认 `true`）控制千分位等分组分隔符；`minFractionDigits` / `maxFractionDigits`（0–20 的整数）控制展示与取整的小数位，`precision` 优先于 `maxFractionDigits`。分组与小数点缺省跟随 `CaomeiConfigProvider` / `provideLocale` 的注入语言，可用 `locale` prop 覆盖。
 
 <demo
     vue="../examples/input-number/format.vue"
@@ -86,7 +86,7 @@
 | `min` / `max` / `step` | 同名 |
 | 无 | `increaseLabel` / `decreaseLabel`（按钮可访问名）为本库新增 |
 
-**未实现**：`mode`（`decimal` / `currency`）、`currency` / `currencyDisplay`、`prefix` / `suffix`、`format` / `locale` / `localeMatcher`、`buttonLayout`、`incrementIcon` / `decrementIcon` 等图标定制。
+**未实现**：`mode`（`decimal` / `currency`）、`currency` / `currencyDisplay`、`prefix` / `suffix`、`format` / `localeMatcher`、`buttonLayout`、`incrementIcon` / `decrementIcon` 等图标定制。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

@@ -10,7 +10,7 @@ import {
     PaginationRoot,
 } from 'reka-ui'
 import { computed, useAttrs } from 'vue'
-import { useLocale } from '../../composables/use-locale'
+import { useLocale, useLocaleCode } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import type { OptionValue } from '../_shared/option'
@@ -45,6 +45,8 @@ defineSlots<{
 }>()
 
 const locale = useLocale()
+const localeCode = useLocaleCode()
+const numberFormatter = computed(() => new Intl.NumberFormat(localeCode.value))
 const attrs = useAttrs()
 /** 可访问名优先级：显式 `label` > 透传 `aria-label` > 语言兜底文案 */
 const label = computed(() => resolveLabelName(props.label, attrs['aria-label'], locale.value.pagination.label))
@@ -60,11 +62,11 @@ const rowsPerPageLabel = computed(
 
 /** 每页条数候选映射为 Select 的选项对象（本库 Select 仅接受对象选项） */
 const rowsPerPageChoices = computed(() =>
-    (props.rowsPerPageOptions ?? []).map((value) => ({ label: String(value), value })),
+    (props.rowsPerPageOptions ?? []).map((value) => ({ label: numberFormatter.value.format(value), value })),
 )
 
 function resolvePageLabel(value: number): string {
-    return pageLabel.value.replaceAll('{page}', String(value))
+    return pageLabel.value.replaceAll('{page}', numberFormatter.value.format(value))
 }
 
 /**

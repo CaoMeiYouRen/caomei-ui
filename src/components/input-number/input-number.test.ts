@@ -1,7 +1,7 @@
 import { enableAutoUnmount, flushPromises, mount, type DOMWrapper } from '@vue/test-utils'
 import { computed, defineComponent, h, ref } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
-import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocaleCodeKey, caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import type { InputNumberProps } from './types'
 import { CaomeiInputNumber } from './index'
@@ -446,5 +446,33 @@ describe('CaomeiInputNumber', () => {
         const buttons = wrapper.findAll('.caomei-input-number__button')
         expect(buttons[0].attributes('aria-label')).toBe('Decrease')
         expect(buttons[1].attributes('aria-label')).toBe('Increase')
+    })
+})
+
+describe('CaomeiInputNumber locale 缺省', () => {
+    it('缺省跟随注入语言的分组与小数点，显式 locale 优先', () => {
+        const en = mount(CaomeiInputNumber, {
+            props: { modelValue: 1234.56 },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+        expect(en.get('input').element.value).toBe('1,234.56')
+        en.unmount()
+
+        const de = mount(CaomeiInputNumber, {
+            props: { modelValue: 1234.56, locale: 'de-DE' },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+        expect(de.get('input').element.value).toBe('1.234,56')
+        de.unmount()
     })
 })

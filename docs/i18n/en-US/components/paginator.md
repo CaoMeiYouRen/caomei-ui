@@ -31,7 +31,7 @@ When `total` is 0, only page 1 is shown and paging is disabled; `disabled` disab
 
 ## Rows per page
 
-When `rowsPerPageOptions` is provided, a rows-per-page selector is rendered at the end of the paginator; changing it emits `update:itemsPerPage` and **preserves the current first-row offset** `(page - 1) * itemsPerPage`, deriving the new page from it (matching PrimeVue's `first` semantics) — when the offset fits less than one page, the page becomes 1. The selector's accessible name defaults to the current locale's "Rows per page" text, overridable via `rowsPerPageLabel`.
+When `rowsPerPageOptions` is provided, a rows-per-page selector is rendered at the end of the paginator; changing it emits `update:itemsPerPage` and **preserves the current first-row offset** `(page - 1) * itemsPerPage`, deriving the new page from it (matching PrimeVue's `first` semantics) — when the offset fits less than one page, the page becomes 1. The selector's accessible name defaults to the current locale's "Rows per page" text, overridable via `rowsPerPageLabel`. Page counts and page numbers are formatted with the injected locale (for example `1,000`).
 
 <demo
     vue="../examples/paginator/rows-per-page.vue"

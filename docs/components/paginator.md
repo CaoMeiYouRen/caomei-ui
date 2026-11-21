@@ -31,7 +31,7 @@
 
 ## 每页条数
 
-提供 `rowsPerPageOptions` 后，分页器末尾渲染每页条数选择器；切换时抛出 `update:itemsPerPage`，并**保留当前首行偏移** `(page - 1) * itemsPerPage`、按新每页条数重新推导页码（对齐 PrimeVue 的 `first` 语义）——偏移不足一页时回到第 1 页。选择器可访问名默认取当前语言的「每页条数」，可用 `rowsPerPageLabel` 覆盖。
+提供 `rowsPerPageOptions` 后，分页器末尾渲染每页条数选择器；切换时抛出 `update:itemsPerPage`，并**保留当前首行偏移** `(page - 1) * itemsPerPage`、按新每页条数重新推导页码（对齐 PrimeVue 的 `first` 语义）——偏移不足一页时回到第 1 页。选择器可访问名默认取当前语言的「每页条数」，可用 `rowsPerPageLabel` 覆盖。每页条数与页码随注入语言做数字格式化（如 `1,000`）。
 
 <demo
     vue="../examples/paginator/rows-per-page.vue"

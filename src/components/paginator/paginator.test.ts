@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import { computed, createSSRApp, h, nextTick, ref } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { afterEach, describe, expect, it } from 'vitest'
-import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocaleCodeKey, caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiPaginator } from './index'
 
@@ -482,6 +482,24 @@ describe('CaomeiPaginator 内建提示', () => {
             expect(await openTooltip(button.element)).toBeNull()
             expect(button.attributes('data-state')).toBeUndefined()
         }
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiPaginator 数字本地化', () => {
+    it('每页条数选项随注入语言分组', () => {
+        const wrapper = mount(CaomeiPaginator, {
+            props: { total: 2000, itemsPerPage: 1000, rowsPerPageOptions: [1000] },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+
+        expect(wrapper.get('.caomei-paginator__rows-per-page .caomei-select').text()).toBe('1,000')
 
         wrapper.unmount()
     })

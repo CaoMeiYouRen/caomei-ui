@@ -1,8 +1,9 @@
 import { enableAutoUnmount, mount } from '@vue/test-utils'
 import { computed, h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { caomeiLocaleKey } from '../../composables/use-locale'
-import { caomeiLocales } from '../../locale'
+import { caomeiLocaleCodeKey, caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocales, registerLocale } from '../../locale'
+import deDE from '../../locale/de-de'
 import { CaomeiFileUpload } from './index'
 
 enableAutoUnmount(afterEach)
@@ -150,7 +151,7 @@ describe('CaomeiFileUpload', () => {
         })
 
         const sizes = wrapper.findAll('.caomei-file-upload__size').map((node) => node.text())
-        expect(sizes).toEqual(['512 B', '2.0 KB'])
+        expect(sizes).toEqual(['512 B', '2.0 kB'])
     })
 
     it('file 插槽可自定义列表项', () => {
@@ -306,7 +307,7 @@ describe('CaomeiFileUpload mode / chooseLabel / maxFileSize / auto', () => {
         await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 2048)])
 
         expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png 超过大小上限 1.0 KB')
+        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png 超过大小上限 1.0 kB')
         expect(wrapper.get('.caomei-file-upload__message').attributes('role')).toBe('alert')
     })
 
@@ -449,6 +450,29 @@ describe('CaomeiFileUpload mode / chooseLabel / maxFileSize / auto', () => {
 
         await setInputFiles(wrapper, [makeFile('big.png', 'image/png', 4096)])
 
-        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png exceeds the maximum size of 1.0 KB')
+        expect(wrapper.get('.caomei-file-upload__message').text()).toBe('big.png exceeds the maximum size of 1.0 kB')
+    })
+})
+
+describe('CaomeiFileUpload 体积本地化', () => {
+    it('体积数字与单位随注入语言格式化', () => {
+        registerLocale('de-DE', deDE)
+        const wrapper = mountUpload(
+            {
+                modelValue: [makeFile('mid.png', 'image/png', 2048)],
+            },
+            {
+                global: {
+                    provide: {
+                        [caomeiLocaleKey]: computed(() => caomeiLocales['de-DE']),
+                        [caomeiLocaleCodeKey]: computed(() => 'de-DE'),
+                    },
+                },
+            },
+        )
+
+        expect(wrapper.get('.caomei-file-upload__size').text()).toBe('2,0 kB')
+
+        wrapper.unmount()
     })
 })

@@ -6,7 +6,7 @@ import {
     NumberFieldRoot,
 } from 'reka-ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useLocale } from '../../composables/use-locale'
+import { useLocale, useLocaleCode } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
 import { useAttrForwarding } from '../_shared/use-attr-forwarding'
@@ -48,9 +48,12 @@ const { rootAttrs, controlAttrs } = useAttrForwarding()
 
 const inputRef = ref<HTMLInputElement | null>(null)
 
-const locale = useLocale()
-const increaseLabel = computed(() => props.increaseLabel ?? locale.value.inputNumber.increase)
-const decreaseLabel = computed(() => props.decreaseLabel ?? locale.value.inputNumber.decrease)
+const messages = useLocale()
+const localeCode = useLocaleCode()
+/** 数字分组 / 小数点的缺省语言；显式 `locale` 仍优先 */
+const resolvedLocale = computed(() => props.locale ?? localeCode.value)
+const increaseLabel = computed(() => props.increaseLabel ?? messages.value.inputNumber.increase)
+const decreaseLabel = computed(() => props.decreaseLabel ?? messages.value.inputNumber.decrease)
 
 /**
  * 步进按钮的提示停用条件：组件停用 / 只读、或当前值已到边界。
@@ -229,6 +232,7 @@ defineExpose({ focus, blur, inputRef })
         :step="resolvedStep"
         :step-snapping="false"
         :format-options="formatOptions"
+        :locale="resolvedLocale"
         :disabled="disabled"
         :readonly="readonly"
         :name="name"

@@ -17,7 +17,7 @@ Two-way bind the file list (`File[]`) with `v-model`; add files by clicking the 
 
 ## Size limit
 
-`maxFileSize` limits a single file in bytes: over-limit files never enter `v-model` and a message is shown inside the component (text from the built-in locale, overridable through `CaomeiConfigProvider`'s `messages`). The message is cleared on the next selection, and rejected files do not affect the existing list.
+`maxFileSize` limits a single file in bytes: over-limit files never enter `v-model` and a message is shown inside the component (text from the built-in locale, overridable through `CaomeiConfigProvider`'s `messages`). File sizes format their number and unit with the injected locale (for example `2,0 kB` in `de-DE`). The message is cleared on the next selection, and rejected files do not affect the existing list.
 
 ## Auto and custom upload
 

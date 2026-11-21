@@ -39,7 +39,7 @@ On touch devices, set `data-density="touch"` on an ancestor to enlarge control h
 
 ## Grouping and fraction digits
 
-`useGrouping` (default `true`) controls grouping separators such as thousands separators; `minFractionDigits` / `maxFractionDigits` (integers from 0–20) control the fraction digits used for display and rounding, with `precision` taking precedence over `maxFractionDigits`.
+`useGrouping` (default `true`) controls grouping separators such as thousands separators; `minFractionDigits` / `maxFractionDigits` (integers from 0–20) control the fraction digits used for display and rounding, with `precision` taking precedence over `maxFractionDigits`. Grouping and the decimal separator follow the locale injected by `CaomeiConfigProvider` / `provideLocale`; override with the `locale` prop.
 
 <demo
     vue="../examples/input-number/format.vue"
@@ -86,7 +86,7 @@ Besides `update:modelValue` (committed on blur or Enter), it also provides `focu
 | `min` / `max` / `step` | Same names |
 | — | `increaseLabel` / `decreaseLabel` (button accessible names) are new here |
 
-**Not implemented**: `mode` (`decimal` / `currency`), `currency` / `currencyDisplay`, `prefix` / `suffix`, `format` / `locale` / `localeMatcher`, `buttonLayout`, icon customization such as `incrementIcon` / `decrementIcon`.
+**Not implemented**: `mode` (`decimal` / `currency`), `currency` / `currencyDisplay`, `prefix` / `suffix`, `format` / `localeMatcher`, `buttonLayout`, icon customization such as `incrementIcon` / `decrementIcon`.
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

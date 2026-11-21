@@ -4,6 +4,31 @@
 >
 > 活跃条目仍在 `.session/wisdom.md`；蒸馏机制见 [Session Wisdom 蒸馏机制](../../standards/session-wisdom-distillation.md)。条目格式：`- [YYYY-MM-DD] [type] 摘要 → docs/path`。
 
+## 2026-11-21 阶段归档蒸馏（Phase 40）
+
+> 本批活跃 **20 条全部处置**：分态 `migrate 0 / compress 20 / remove 0 / keep 0`。归档摘要 **20 行**（可复算：`awk '/^## 2026-11-21 阶段归档蒸馏（Phase 40）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。落点为既有文档章节；本批只做压缩与指针化，不新增规范正文。
+
+- [2026-11-09] [process] 文档站动效「被压平」先查系统 `prefers-reduced-motion`；VitePress 全站缩短动画，录屏固定 `no-preference` → docs/design/documentation-site.md §12
+- [2026-11-09] [fact] scoped 样式 `@keyframes` 名在 dev 下带哈希后缀；断言动画名用包含匹配，不用精确名 → docs/standards/testing.md §7
+- [2026-11-09] [fact] 宿主 prose 的 `li + li` / `a` 会污染组件外观；scoped 选择器需更高特异性，共享样式加组件前缀 → docs/design/documentation-site.md §13
+- [2026-11-09] [process] 动效 E2E 用 `getAnimations()` + `pause()` + `currentTime`，rAF 轮询配预算，断言绑 token 推导值 → docs/standards/testing.md §7
+- [2026-11-10] [fact] Reka 给 SliderThumb / ColorAreaThumb 内联 `position: absolute`；绝对定位元素本身即包含块，`::after` 无需分叉 → docs/standards/development.md §5
+- [2026-11-10] [process] 命中区探针逐轴取 `max(边长, 24)`；两轴都 <24 时才补四角，宽宿主不取四角 → docs/standards/testing.md
+- [2026-11-13] [fact] reduce 下恢复 transition 需三层突破；按组件重声明完整 shorthand 并用文档站本地时长变量 → docs/design/documentation-site.md §12
+- [2026-11-13] [process] 生产 Vue 是静默修补版，hydration mismatch 不告警；用 JS 关闭 SSG + 水合后 DOM 对照，探针 fail-closed → docs/standards/testing.md §7
+- [2026-11-10] [fact] capture 夹具新增常驻 inline 面板会让浮层 `detached` 等待挂死；选择器须排除 `--inline` 变体 → docs/standards/testing.md
+- [2026-11-14] [process] 负向验证前确认复用中的 dev server 已加载改动；改 `src/**` 后先重启 webServer → docs/standards/testing.md
+- [2026-11-14] [fact] Playwright minor 升级会改 Chromium 栅格化；冻结的像素基线须同批重冻结 → docs/standards/testing.md
+- [2026-11-14] [fact] 第三方编辑器根自写 `data-theme` 会命中本库暗色 token；包装层用 `:where()` 桥接变量 → docs/standards/development.md
+- [2026-11-15] [process] 治理记录的文件面 / 条数断言须附可复算清单与口径，不用省略号占位 → docs/standards/ai-collaboration.md §9
+- [2026-11-15] [process] 字符串替换须在 `lint --fix` 后复核；写后 `grep` 目标行，避免静默不命中 → docs/standards/ai-collaboration.md §9
+- [2026-11-14] [process] 依赖告警的包名 / 严重级以 API 实测为准；引用前复核对应 alert，错写按 §9 修 → docs/standards/ai-collaboration.md §9
+- [2026-11-16] [fact] `aria-hidden` 包的 live region / `script` 是整棵子树豁免；给背景补 `inert` 时须保留提示播报 → docs/standards/development.md
+- [2026-11-20] [fact] `check:design` 禁同规则重复声明；`vh` → `dvh` 回退走 `@supports`，不写字典式回退 → docs/standards/development.md
+- [2026-11-20] [fact] 归档后 `todo.md` 当前状态段不得链接 `todo-archive.md`；`check:stage-counts` 会判 `phase-state-residue` → docs/standards/planning.md §7
+- [2026-11-21] [process] PR rebase 合并会让治理记录里的短 SHA 在 master 不可达；点时记录不回改 → docs/standards/ai-collaboration.md
+- [2026-11-20] [process] 分片改名链接面按「出现次数」估算；单提交 `git mv` + 链接重指，不拆两步 → docs/standards/planning.md §7
+
 ## 2026-11-08 阶段归档蒸馏（Phase 28）
 
 > 本批活跃 **20 条全部处置**：分态 `migrate 0 / compress 20 / remove 0 / keep 0`。归档摘要 **20 行**（可复算：`awk '/^## 2026-11-08 阶段归档蒸馏（Phase 28）/{f=1;next} /^## /{if(f)exit} f' docs/design/governance/experience-archive.md | grep -c '^- \[2026'`）。落点：[发布指南 §3 / §5](../../guide/release.md)、[AI 协作规范 §3.1 / §9](../../standards/ai-collaboration.md)、[测试规范 §2.1 / §7](../../standards/testing.md)、[规划规范 §3.9 / §5 / §7](../../standards/planning.md)、[开发规范 §5 / §8](../../standards/development.md)、[文档规范 §3](../../standards/documentation.md)、[文档与演示站设计 §13](../documentation-site.md)、[版本与兼容策略](../../guide/version-policy.md)；全部为**已存在落点**，本批只做压缩与指针化。

@@ -197,7 +197,7 @@ function onUpdate(value: string[] | (number | undefined)[]): void {
 :where(.caomei-input-otp--lg) {
     --caomei-input-otp-cell-width: var(--caomei-control-height-lg);
     --caomei-input-otp-cell-height: var(--caomei-control-height-lg);
-    --caomei-input-otp-font-size: var(--caomei-font-size-xl);
+    --caomei-input-otp-font-size: var(--caomei-font-size-xl, 20px);
 }
 
 @media (prefers-reduced-motion: reduce) {

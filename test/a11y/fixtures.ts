@@ -26,6 +26,8 @@ import {
     CaomeiDataTable,
     CaomeiDataView,
     CaomeiDatePicker,
+    CaomeiDescriptions,
+    CaomeiDescriptionsItem,
     CaomeiDialog,
     CaomeiDivider,
     CaomeiDrawer,
@@ -49,12 +51,14 @@ import {
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
+    CaomeiInputOtp,
     CaomeiMenu,
     CaomeiMenuItem,
     CaomeiMessage,
     CaomeiMultiSelect,
     CaomeiPaginator,
     CaomeiPassword,
+    CaomeiPopconfirm,
     CaomeiPopover,
     CaomeiPopoverArrow,
     CaomeiPopoverClose,
@@ -65,6 +69,7 @@ import {
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiRating,
+    CaomeiResult,
     CaomeiRichTextEditor,
     CaomeiRow,
     CaomeiSelect,
@@ -220,6 +225,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         definition: { components: { CaomeiDatePicker }, template: '<CaomeiDatePicker selection-mode="range" :open="true" label="日期范围" :model-value="range" />', setup: () => ({ range }) },
         requiredSelectors: ['.caomei-date-picker__content', '[data-selection-start]'],
     },
+    { name: 'CaomeiDescriptions', root: CaomeiDescriptions, definition: { components: { CaomeiDescriptions, CaomeiDescriptionsItem }, template: '<CaomeiDescriptions :columns="2" label-width="6rem"><CaomeiDescriptionsItem label="姓名">甲</CaomeiDescriptionsItem><CaomeiDescriptionsItem label="邮箱">a@example.com</CaomeiDescriptionsItem></CaomeiDescriptions>' } },
     { name: 'CaomeiDialog', root: CaomeiDialog, definition: { components: { CaomeiDialog }, template: '<CaomeiDialog :open="true" title="对话框"><p>内容</p></CaomeiDialog>' } },
     { name: 'CaomeiDivider', root: CaomeiDivider, definition: { components: { CaomeiDivider }, template: '<CaomeiDivider />' } },
     { name: 'CaomeiDrawer', root: CaomeiDrawer, definition: { components: { CaomeiDrawer }, template: '<CaomeiDrawer :open="true" title="抽屉"><p>内容</p></CaomeiDrawer>' } },
@@ -264,11 +270,13 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiInput', root: CaomeiInput, definition: { components: { CaomeiInput }, template: '<CaomeiInput label="姓名" placeholder="姓名" />' } },
     { name: 'CaomeiInputGroup', root: CaomeiInputGroup, definition: { components: { CaomeiInputGroup, CaomeiInput }, template: '<CaomeiInputGroup><CaomeiInput label="组合" /></CaomeiInputGroup>' } },
     { name: 'CaomeiInputNumber', root: CaomeiInputNumber, definition: { components: { CaomeiInputNumber }, template: '<CaomeiInputNumber label="数量" :model-value="2" controls />' } },
+    { name: 'CaomeiInputOtp', root: CaomeiInputOtp, definition: { components: { CaomeiInputOtp }, template: '<CaomeiInputOtp label="验证码" :length="4" model-value="12" />' } },
     { name: 'CaomeiMenu', root: CaomeiMenu, definition: { components: { CaomeiMenu, CaomeiMenuItem, CaomeiSubMenu }, template: '<CaomeiMenu label="主导航"><CaomeiMenuItem href="#menu">概览</CaomeiMenuItem><CaomeiSubMenu label="设置"><CaomeiMenuItem href="#account">账户</CaomeiMenuItem></CaomeiSubMenu></CaomeiMenu>' } },
     { name: 'CaomeiMessage', root: CaomeiMessage, definition: { components: { CaomeiMessage }, template: '<CaomeiMessage title="提示" />' } },
     { name: 'CaomeiMultiSelect', root: CaomeiMultiSelect, definition: { components: { CaomeiMultiSelect }, template: '<CaomeiMultiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiPaginator', root: CaomeiPaginator, definition: { components: { CaomeiPaginator }, template: '<CaomeiPaginator :total="30" :rows="10" :page="1" />' } },
     { name: 'CaomeiPassword', root: CaomeiPassword, definition: { components: { CaomeiPassword }, template: '<CaomeiPassword label="密码" />' } },
+    { name: 'CaomeiPopconfirm', root: CaomeiPopconfirm, definition: { components: { CaomeiPopconfirm }, template: '<CaomeiPopconfirm title="删除该项？" description="删除后无法恢复。" :open="true"><template #trigger>删除</template></CaomeiPopconfirm>' }, requiredSelectors: ['.caomei-popconfirm'] },
     { name: 'CaomeiPopover', root: CaomeiPopover, definition: { components: { CaomeiPopover, CaomeiPopoverTrigger, CaomeiPopoverContent }, template: '<CaomeiPopover><CaomeiPopoverTrigger>打开</CaomeiPopoverTrigger><CaomeiPopoverContent>面板</CaomeiPopoverContent></CaomeiPopover>' } },
     /*
      * 展开态审计单元：受控 `open` 在 happy-dom 下初始化即自关闭、不可稳定驱动（真实浏览器可开合），
@@ -293,6 +301,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRating', root: CaomeiRating, definition: { components: { CaomeiRating }, template: '<CaomeiRating label="评分" :model-value="3" />' } },
+    { name: 'CaomeiResult', root: CaomeiResult, definition: { components: { CaomeiResult }, template: '<CaomeiResult status="success" title="操作完成" description="数据已保存。" />' } },
     { name: 'CaomeiRadioGroup', root: CaomeiRadioGroup, definition: { components: { CaomeiRadioGroup, CaomeiRadioButton }, template: '<CaomeiRadioGroup label="单选" model-value="a"><CaomeiRadioButton value="a">甲</CaomeiRadioButton><CaomeiRadioButton value="b">乙</CaomeiRadioButton></CaomeiRadioGroup>' } },
     { name: 'CaomeiChart', root: CaomeiChart, definition: { components: { CaomeiChart }, template: '<CaomeiChart label="月度趋势" height="12rem" :option="option" />', setup: () => ({ option: chartOption }) } },
     { name: 'CaomeiRichTextEditor', root: CaomeiRichTextEditor, definition: { components: { CaomeiRichTextEditor }, template: '<CaomeiRichTextEditor label="正文" :model-value="content" />', setup: () => ({ content: '# 标题' }) } },
@@ -372,6 +381,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
  */
 export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: string }[] = [
     { name: 'CaomeiFormItem', component: CaomeiFormItem, fixture: 'CaomeiForm' },
+    { name: 'CaomeiDescriptionsItem', component: CaomeiDescriptionsItem, fixture: 'CaomeiDescriptions' },
     { name: 'CaomeiAccordionItem', component: CaomeiAccordionItem, fixture: 'CaomeiAccordion' },
     { name: 'CaomeiBreadcrumbItem', component: CaomeiBreadcrumbItem, fixture: 'CaomeiBreadcrumb' },
     { name: 'CaomeiMenuItem', component: CaomeiMenuItem, fixture: 'CaomeiMenu' },
@@ -424,4 +434,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 69
+export const A11Y_FIXTURE_BUDGET = 73

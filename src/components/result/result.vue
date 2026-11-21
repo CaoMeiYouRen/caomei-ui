@@ -103,21 +103,21 @@ const toneClass = computed(() => `caomei-result--${props.status}`)
     font-size: var(--caomei-result-icon-size, 3rem);
 }
 
-.caomei-result--success .caomei-result__icon {
+:where(.caomei-result--success) .caomei-result__icon {
     --caomei-result-icon-color: var(--caomei-color-success);
 }
 
-.caomei-result--warning .caomei-result__icon,
-.caomei-result--403 .caomei-result__icon {
+:where(.caomei-result--warning) .caomei-result__icon,
+:where(.caomei-result--403) .caomei-result__icon {
     --caomei-result-icon-color: var(--caomei-color-warning);
 }
 
-.caomei-result--danger .caomei-result__icon,
-.caomei-result--500 .caomei-result__icon {
+:where(.caomei-result--danger) .caomei-result__icon,
+:where(.caomei-result--500) .caomei-result__icon {
     --caomei-result-icon-color: var(--caomei-color-danger);
 }
 
-.caomei-result--404 .caomei-result__icon {
+:where(.caomei-result--404) .caomei-result__icon {
     --caomei-result-icon-color: var(--caomei-color-text-muted);
 }
 
@@ -154,7 +154,7 @@ const toneClass = computed(() => `caomei-result--${props.status}`)
 
 :where(.caomei-result--lg) {
     --caomei-result-icon-size: 4rem;
-    --caomei-result-title-size: var(--caomei-font-size-xl);
+    --caomei-result-title-size: var(--caomei-font-size-xl, 20px);
     --caomei-result-padding: calc(var(--caomei-space-4) + var(--caomei-space-4)) var(--caomei-space-3);
 }
 </style>

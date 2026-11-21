@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-21-phase39-m7-2-e2e-weekly-regression.md](./2026-11-21-phase39-m7-2-e2e-weekly-regression.md)：**Phase 39 M7-2 E2E 周回归稳定性与记录**。5 例修复后的定向复跑与全量周回归结论：逐例根因 / 修复点、`safe-area-fixed` 的 BackTop 偏移回归修复、并行 worker 下的动效采样观察项，以及「未放宽断言」的口径。**Review Gate**：见本记录 §5。
 - [2026-11-21-phase39-registration.md](./2026-11-21-phase39-registration.md)：**Phase 39 登记批次**。用户就第二十三轮评估裁定 D0 ③ 核心 + 文档 P1 + E2E 5 例 / D1 四件全取 / D2 仅 P1 / D3 仅 5 例 / D4 不发布；**7 条主线 / 14 条原子条目**（InputOtp 2 / Popconfirm 2 / Result 2 / Descriptions 3 / 治理收口 1 / 文档站设备预览 2 / E2E 质量收口 2；构成对账 2 + 2 + 2 + 3 + 1 + 2 + 2 = 14），不发布（`latest` 维持 `1.3.0`），范围与验收口径唯一载体。**Review Gate**：见本记录 §6。
 - [2026-11-20-next-stage-scope-evaluation-23.md](./2026-11-20-next-stage-scope-evaluation-23.md)：**下一阶段范围评估（第二十三轮）**。现状：`1.3.0` / 无进行中阶段 / open issue #71 / 0 PR / 0 安全告警；P0 缺口 InputOtp、Popconfirm、Result、Descriptions；推荐核心 5 主线 / 11 条（四组件 + 阶段进度表机检 + `1.4.0` 发布），可选文档站 P1 设备预览与 5 例 E2E 质量收口；Form rules / 虚拟滚动 / i18n 二期 / 移动第二波 / P1 组件维持 Backlog。**未登记阶段**。**Review Gate**：见本记录 §7。
 - [2026-11-20-planning-doc-model-v1-evaluation.md](./2026-11-20-planning-doc-model-v1-evaluation.md)：**规划文档模型 v1 研判（issue #71）**。采纳阶段进度表、阶段 / 主线 / 原子条目分层、小条目四要素、归档块 6 项（仅新块）与索引覆盖规则；存量 `phase-*.md` 改名延后为独立机械批次（实际链接面大于提案估计，含治理记录）；`roadmap-phases-*.md` 与索引倒序不采纳，400 行阈值维持；机检随改名批次 / 下一次阶段登记落地。**Review Gate**：见本记录 §7。

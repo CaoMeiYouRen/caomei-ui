@@ -53,6 +53,7 @@ import {
     CaomeiPopover,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
+    CaomeiPopconfirm,
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiRating,
@@ -294,6 +295,15 @@ const timePickerBothValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 /** InputOtp 用例：受控值与完成事件回显，避免在示例 / 夹具中打印验证码。 */
 const otpValue = ref('')
 const otpComplete = ref('')
+
+/** Popconfirm 用例：确认 / 取消结果回显与加载态、禁用态。 */
+const popconfirmLog = ref('')
+function onPopconfirmConfirm(): void {
+    popconfirmLog.value = 'confirmed'
+}
+function onPopconfirmCancel(): void {
+    popconfirmLog.value = 'cancelled'
+}
 const swatchPickerOptions = ['#e63946', '#22c55e', '#3b82f6']
 
 /*
@@ -2904,6 +2914,58 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 @select="onActionSheetSelect"
             />
             <span id="action-sheet-log">{{ actionSheetLog }}</span>
+        </section>
+
+        <section id="popconfirm" class="fixture__case">
+            <div id="popconfirm-basic">
+                <CaomeiPopconfirm
+                    title="删除该项目？"
+                    description="删除后无法恢复，请确认。"
+                    @confirm="onPopconfirmConfirm"
+                    @cancel="onPopconfirmCancel"
+                >
+                    <template #trigger>
+                        删除
+                    </template>
+                </CaomeiPopconfirm>
+            </div>
+            <div id="popconfirm-danger">
+                <CaomeiPopconfirm
+                    title="清除全部数据？"
+                    description="此操作不可撤销。"
+                    tone="danger"
+                    confirm-label="清除"
+                    cancel-label="返回"
+                    @confirm="onPopconfirmConfirm"
+                >
+                    <template #trigger>
+                        清除
+                    </template>
+                </CaomeiPopconfirm>
+            </div>
+            <div id="popconfirm-loading">
+                <CaomeiPopconfirm
+                    title="正在保存"
+                    description="请稍候。"
+                    loading
+                >
+                    <template #trigger>
+                        保存
+                    </template>
+                </CaomeiPopconfirm>
+            </div>
+            <div id="popconfirm-disabled">
+                <CaomeiPopconfirm
+                    title="不可用"
+                    description="当前不可操作。"
+                    disabled
+                >
+                    <template #trigger>
+                        不可用
+                    </template>
+                </CaomeiPopconfirm>
+            </div>
+            <span id="popconfirm-log">{{ popconfirmLog }}</span>
         </section>
 
         <section id="input-otp" class="fixture__case">

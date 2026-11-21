@@ -236,7 +236,7 @@ function clear(): void {
 }
 
 .caomei-cascader__content {
-    z-index: var(--caomei-z-popover, 1000);
+    z-index: var(--caomei-cascader-z-index, var(--caomei-z-dropdown));
     padding: var(--caomei-space-1);
     border: 1px solid var(--caomei-color-border);
     border-radius: var(--caomei-radius-md);

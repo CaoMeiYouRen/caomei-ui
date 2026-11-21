@@ -15,6 +15,7 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCard,
+    CaomeiCascader,
     CaomeiCell,
     CaomeiCellGroup,
     CaomeiChart,
@@ -98,6 +99,9 @@ import {
     CaomeiTagsInput,
     CaomeiTextarea,
     CaomeiTimePicker,
+    CaomeiTimeline,
+    CaomeiTimelineItem,
+    CaomeiTransfer,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -127,6 +131,11 @@ const chartOption = {
 const options = [
     { label: '甲', value: 'a' },
     { label: '乙', value: 'b' },
+]
+
+const cascadeOptions = [
+    { label: '甲', value: 'a', children: [{ label: '甲一', value: 'a1' }] },
+    { label: '乙', value: 'b', children: [{ label: '乙一', value: 'b1' }] },
 ]
 
 const columns = [
@@ -206,6 +215,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiButton', root: CaomeiButton, definition: { components: { CaomeiButton }, template: '<CaomeiButton>确定</CaomeiButton>' } },
     { name: 'CaomeiButtonGroup', root: CaomeiButtonGroup, definition: { components: { CaomeiButtonGroup, CaomeiButton }, template: '<CaomeiButtonGroup><CaomeiButton>一</CaomeiButton><CaomeiButton>二</CaomeiButton></CaomeiButtonGroup>' } },
     { name: 'CaomeiCalendar', root: CaomeiCalendar, definition: { components: { CaomeiCalendar }, template: '<CaomeiCalendar label="日历" />' } },
+    { name: 'CaomeiCascader', root: CaomeiCascader, definition: { components: { CaomeiCascader }, template: '<CaomeiCascader label="地区" :options="cascadeOptions" />', setup: () => ({ cascadeOptions }) } },
     { name: 'CaomeiCard', root: CaomeiCard, definition: { components: { CaomeiCard }, template: '<CaomeiCard title="卡片">内容</CaomeiCard>' } },
     { name: 'CaomeiCheckbox', root: CaomeiCheckbox, definition: { components: { CaomeiCheckbox }, template: '<CaomeiCheckbox label="同意" />' } },
     { name: 'CaomeiCheckboxGroup', root: CaomeiCheckboxGroup, definition: { components: { CaomeiCheckboxGroup }, template: '<CaomeiCheckboxGroup label="多选" :options="options" />', setup: () => ({ options }) } },
@@ -225,6 +235,8 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         definition: { components: { CaomeiDatePicker }, template: '<CaomeiDatePicker selection-mode="range" :open="true" label="日期范围" :model-value="range" />', setup: () => ({ range }) },
         requiredSelectors: ['.caomei-date-picker__content', '[data-selection-start]'],
     },
+    { name: 'CaomeiTimeline', root: CaomeiTimeline, definition: { components: { CaomeiTimeline, CaomeiTimelineItem }, template: '<CaomeiTimeline label="记录"><CaomeiTimelineItem title="一" content="内容" /></CaomeiTimeline>' } },
+    { name: 'CaomeiTransfer', root: CaomeiTransfer, definition: { components: { CaomeiTransfer }, template: '<CaomeiTransfer label="权限" :data-source="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiDescriptions', root: CaomeiDescriptions, definition: { components: { CaomeiDescriptions, CaomeiDescriptionsItem }, template: '<CaomeiDescriptions :columns="2" label-width="6rem"><CaomeiDescriptionsItem label="姓名">甲</CaomeiDescriptionsItem><CaomeiDescriptionsItem label="邮箱">a@example.com</CaomeiDescriptionsItem></CaomeiDescriptions>' } },
     { name: 'CaomeiDialog', root: CaomeiDialog, definition: { components: { CaomeiDialog }, template: '<CaomeiDialog :open="true" title="对话框"><p>内容</p></CaomeiDialog>' } },
     { name: 'CaomeiDivider', root: CaomeiDivider, definition: { components: { CaomeiDivider }, template: '<CaomeiDivider />' } },
@@ -382,6 +394,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
 export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: string }[] = [
     { name: 'CaomeiFormItem', component: CaomeiFormItem, fixture: 'CaomeiForm' },
     { name: 'CaomeiDescriptionsItem', component: CaomeiDescriptionsItem, fixture: 'CaomeiDescriptions' },
+    { name: 'CaomeiTimelineItem', component: CaomeiTimelineItem, fixture: 'CaomeiTimeline' },
     { name: 'CaomeiAccordionItem', component: CaomeiAccordionItem, fixture: 'CaomeiAccordion' },
     { name: 'CaomeiBreadcrumbItem', component: CaomeiBreadcrumbItem, fixture: 'CaomeiBreadcrumb' },
     { name: 'CaomeiMenuItem', component: CaomeiMenuItem, fixture: 'CaomeiMenu' },
@@ -434,4 +447,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 73
+export const A11Y_FIXTURE_BUDGET = 76

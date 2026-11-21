@@ -67,7 +67,7 @@ const slots = useSlots()
 }
 
 .caomei-timeline__dot {
-    z-index: 1;
+    z-index: var(--caomei-z-raise);
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;

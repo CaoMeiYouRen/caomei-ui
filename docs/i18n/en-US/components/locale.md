@@ -130,7 +130,7 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 | `ru-RU` | Русский | Subpath | 106 / 106 | Not reviewed |
 | `pt-BR` | Português (Brasil) | Subpath | 106 / 106 | Not reviewed |
 
-> Key coverage is recomputed by `pnpm check:locale-keys` and is not hand-estimated. Review status reflects the native-language record only: `Source` is the simplified Chinese source; `Reviewed` has a translation review record (`zh-TW` / `ja-JP` / `ko-KR`, Phase 10); `Not reviewed` has no native review record (`en-US` was not separately reviewed; the phase-two five locales are covered by [KL-7](../../../design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations.md)). Not reviewed does not mean keys are missing; it means there is no native review sign-off.
+> Key coverage is recomputed by `pnpm check:locale-keys` and is not hand-estimated. Review status reflects the native-language record only: `Source` is the simplified Chinese source; `Reviewed` has a translation review record (`zh-TW` / `ja-JP` / `ko-KR`, Phase 10); `Not reviewed` has no native review record (`en-US` was not separately reviewed; the phase-two five locales are covered by [KL-7](/design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations)). Not reviewed does not mean keys are missing; it means there is no native review sign-off.
 
 ## On-demand locales
 

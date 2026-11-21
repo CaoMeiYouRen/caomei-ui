@@ -22,6 +22,7 @@ import {
     CaomeiButton,
     CaomeiButtonGroup,
     CaomeiCalendar,
+    CaomeiCascader,
     CaomeiCard,
     CaomeiChart,
     CaomeiCheckbox,
@@ -127,6 +128,22 @@ const panelOptions = [
     { label: '按点赞数量从高到低', value: 'likes-desc' },
     { label: '按评论数量从高到低', value: 'comments-desc' },
     { label: '按标题拼音首字母排序', value: 'title-asc' },
+]
+
+const overlayCascadeOptions = [
+    {
+        label: '生产环境',
+        value: 'prod',
+        children: [
+            { label: '主仓库', value: 'main' },
+            { label: '镜像仓库', value: 'mirror' },
+        ],
+    },
+    {
+        label: '测试环境',
+        value: 'test',
+        children: [{ label: '沙箱', value: 'sandbox' }],
+    },
 ]
 
 const selectValue = ref<string | null>(null)
@@ -252,6 +269,7 @@ const overlayMultiValue = ref<string[]>([])
 const overlayAutoValue = ref<string>()
 const overlayColorValue = ref('#60a5fa')
 const overlayDateValue = ref<Date | null>(null)
+const overlayCascaderValue = ref<(string | number)[]>([])
 const overlayTimeValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 const overlayMenuItems = [{ label: '仅报告' }, { label: '修复并建 PR' }]
 /**
@@ -1039,6 +1057,14 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                             :options="panelOptions"
                             placeholder="按仓库名搜索"
                             label="仓库搜索"
+                        />
+                    </div>
+                    <div id="overlay-cascader">
+                        <CaomeiCascader
+                            v-model="overlayCascaderValue"
+                            :options="overlayCascadeOptions"
+                            placeholder="选择扫描范围"
+                            label="扫描范围"
                         />
                     </div>
                     <div id="overlay-color-picker">

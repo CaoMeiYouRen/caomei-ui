@@ -100,3 +100,34 @@ describe('CaomeiCascader', () => {
         expect(wrapper.get('.caomei-cascader__trigger').attributes('disabled')).toBeDefined()
     })
 })
+
+describe('CaomeiCascader 边界', () => {
+    it('模型路径含缺失层级时按未选择展示', () => {
+        const { wrapper } = mountCascader(['missing', 'leaf'])
+
+        expect(wrapper.get('.caomei-cascader__text').attributes('data-empty')).toBe('true')
+    })
+
+    it('Enter / Space 可选择节点', async () => {
+        const { wrapper, model } = mountCascader()
+        await open(wrapper)
+
+        const first = document.querySelectorAll<HTMLElement>('.caomei-cascader__option')[0]
+        first.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+        await nextTick()
+
+        const leaf = document.querySelectorAll<HTMLElement>('.caomei-cascader__column')[1]
+            .querySelectorAll<HTMLElement>('.caomei-cascader__option')[1]
+        leaf.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+        await nextTick()
+
+        expect(model.value).toEqual(['zhejiang', 'ningbo'])
+    })
+
+    it('空选项渲染空态文案', async () => {
+        const { wrapper } = mountCascader([], { options: [] })
+        await open(wrapper)
+
+        expect(document.body.textContent).toContain('暂无数据')
+    })
+})

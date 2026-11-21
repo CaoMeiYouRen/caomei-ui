@@ -37,9 +37,6 @@
 |------|------|------|--------|
 | 语言矩阵 - 二期 LTR | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.2 建议把「下限」表述为 **17 门 LTR**（现有 10 门 + 二期 7 门），`hi` 视下游补到 18。**触发条件 = 用户裁定语言集扩容** | 低 |
 | 语言矩阵 - 长期 | 用户需求 | 二期之后是否继续扩容，按下游语言需求逐项判定，不追头部 43 ~ 72 门。**触发条件 = 出现新的下游语言需求** | 低 |
-| DatePicker / Calendar 默认 locale 跟随 ConfigProvider | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 组件 `locale` prop 默认 `zh-CN`、与注入语言独立；改为缺省消费 `useLocaleCode()`，显式 prop 仍优先。**影响面**：月份 / 星期 / 一周起始日 / 12–24 小时制默认值。**触发条件 = 用户裁定纳入阶段** | 中 |
-| InputNumber 数字本地化 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 向 Reka `NumberFieldRoot` 透传 `locale`；同批收 `Paginator` 的每页条数与页码（现用 `String(value)`）。**触发条件 = 用户裁定纳入阶段** | 中 |
-| 可访问名文案补口 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | `DataTable` 列宽手柄（`调整「…」列宽`）与 `FileUpload` 移除文件（`移除 …`）为硬编码中文；补 `table` / `fileUpload` 键并纳入 10 语与台账。**触发条件 = 用户裁定纳入阶段** | 中 |
 | 复数与插值能力 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 现插值仅单键 `replace`；新增带计数文案在 `ru` / `pl` 上会出错。**触发条件 = 出现第一条带计数的内建文案** | 低 |
 | RTL（阿拉伯语）支持 | 用户需求 | **2026-11-18 用户裁定**：成本大收益低，**不随二期语言批量落地**，须单独立项评估（`dir` 贯通 / 18 个组件文件的物理方向属性 / 图标镜像 / RTL 回归基线）；RTL 语种不计入语言数量下限。**触发条件 = RTL 专项立项或出现 RTL 语种下游需求** | 低 |
 
@@ -59,10 +56,8 @@
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| 规划文档模型 v1 存量分片改名 + 机检 | [issue #71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) + [研判记录](../design/governance/2026-11-20-planning-doc-model-v1-evaluation.md) §3.6。18 个 `phase-*.md` → `todo-archive-phases-*.md`；实际链接面见研判记录 §2（提案的 54 是去重目标数，不是出现次数，且漏了治理记录与归档块回扫句）。独立机械批次：单个提交内 `git mv` + 链接重指，`git diff -M` 只含 rename 与链接 / 锚点行，剥离链接目标后非空行多重集相等，链接门禁 exit 0；同批接入索引一致性 / 命名机检（覆盖 / 无重复仅约束索引表行；存量豁免清单随改名前移）。**触发条件 = 下一次归档压缩批次或用户单独授权** | 中 |
 | 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 中 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
-| 国际化支持与翻译状态表 | 用户需求（2026-11-18）：`docs/components/locale.md` 中英双页已有语言清单与子路径表，但无「支持语言 + 翻译状态」总表；README 特性节也未提语言支持。拟议列、数据源（`check:locale-keys` / `check:locale-ledger` / 复核记录）与落地口径见[调研记录 §3.5](../design/governance/2026-11-18-i18n-component-and-mobile-research.md)；README 只补一行回链，不复制表格。**触发条件 = 下一次文档批次** | 中 |
 | ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
 | Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
 | Storybook 组件工坊 | 暂不启用 | 低 |
@@ -106,10 +101,7 @@
 | 候选 | 依据 | 优先级 |
 |------|------|:-:|
 | Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
-| Transfer | 记录 **P1**；Element Plus / TDesign，PrimeVue 为 `picklist`；Vant / Varlet 无；权限分配与批量选择 | 中 |
 | Form 校验能力 | 记录 **P1**；Element Plus / TDesign / Vant / Varlet 以 `form` 目录承载 rules 引擎，PrimeVue 为独立 `@primevue/forms`；本库 `Form` 明确无 rules；可先以 `FormRoot` + `Field*` 接 invalid / 错误文案，不承诺与五库 API 对齐 | 中 |
-| Cascader | 记录 **P1**；Element Plus / PrimeVue `cascadeselect` / TDesign / Vant（Varlet 无） | 低 |
-| Timeline | 记录 **P1**；Element Plus / PrimeVue / TDesign | 低 |
 | MonthPicker / YearPicker | 记录 **P2**；作为 `DatePicker` 的 `selectionMode` 扩展；Reka 现成 | 低 |
 | Statistic | 记录 **P2**；Element Plus / TDesign，Varlet 为 `count-to`（近似） | 低 |
 | Countdown | 记录 **P2**；Element Plus / Vant / Varlet | 低 |

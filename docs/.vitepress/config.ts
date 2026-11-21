@@ -370,6 +370,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                                 { text: 'DataView', link: '/en-US/components/data-view' },
+                                { text: 'Descriptions', link: '/en-US/components/descriptions' },
                                 { text: 'Empty', link: '/en-US/components/empty' },
                                 { text: 'Paginator', link: '/en-US/components/paginator' },
                                 { text: 'ProgressBar', link: '/en-US/components/progress-bar' },
@@ -585,6 +586,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'DataView 数据视图', link: '/components/data-view' },
+                        { text: 'Descriptions 描述列表', link: '/components/descriptions' },
                         { text: 'Empty 空态', link: '/components/empty' },
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressBar 进度条', link: '/components/progress-bar' },

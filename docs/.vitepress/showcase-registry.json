@@ -204,6 +204,18 @@
         }
     },
     {
+        "name": "Descriptions",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "descriptions/basic.vue",
+        "description": {
+            "zh": "以标签 / 内容成对展示只读字段，支持列数、跨列与带边框形态。",
+            "en": "Shows read-only fields as label / value pairs, with columns, spanning and a bordered look."
+        }
+    },
+    {
         "name": "ProgressBar",
         "group": {
             "zh": "数据展示",

@@ -23,6 +23,7 @@
 - **摘要不写遗留规模的手写计数（任何量词）**：遗留规模随修复动作增长，手写数字会在同一轮内被自己的修复动作推翻（Phase 34 M1-3 多轮因此被 Review Gate 否决）；改为列出完整编号集合（含承接项；连续时可用区间），并指向记录内的遗留编号清单（章节号以各记录实际结构为准）。该规则自 2026-11-15 起适用于**新建与整条改写**的条目，存量摘要按快照保留。
 
 ## 当前条目
+- [2026-11-21-phase40-archive.md](./2026-11-21-phase40-archive.md)：**Phase 40 归档批次**。15 条原子条目全部交付并发布 `1.4.0`；`todo.md` 回到「当前无进行中阶段」，Phase 40 入窗并把 Phase 34 迁入深度归档；`archive/index.md`、`roadmap` §1 / §5、`recurring` 第 45 轮、wisdom 蒸馏与 `.session` 同批同步。**Review Gate**：见本记录 §6。
 - [2026-11-21-phase40-m3-2-m3-3-release-and-downstream.md](./2026-11-21-phase40-m3-2-m3-3-release-and-downstream.md)：**Phase 40 M3-2 / M3-3：`1.4.0` 发布与下游兼容复验**。Weekly Regression `44909361461` success；Release `44913800718` success，npm latest `1.4.0` / tag `v1.4.0` / GitHub Release 已建；Downstream Compat `44914670234` 三仓 success；长期任务第 44 轮同步。**Review Gate**：见本记录 §5。
 - [2026-11-21-phase40-m3-1-prerelease-check.md](./2026-11-21-phase40-m3-1-prerelease-check.md)：**Phase 40 M3-1 发布前门槛复核（本地）**。`pnpm verify` 全链通过；修正新组件的设计 / locale / a11y / 浮层登记与英文死链；周回归仍为 `cancelled` 且推送未执行，`1.4.0` 未发布，M3-1 待闭环。**Review Gate**：见本记录 §5。
 - [2026-11-21-phase40-registration.md](./2026-11-21-phase40-registration.md)：**Phase 40 登记批次**。用户就第二十四轮评估裁定 D0 ③ / D1 ④ / D2 ① / D3 ①；**4 条主线 / 15 条原子条目**（国际化收口 4 / P1 组件广度 6 / 发布收口 3 / 规划载体收口 2；构成对账 4 + 6 + 3 + 2 = 15），阶段末发布 `1.4.0`；M4 为 issue #71 独立机械批次、不占功能主线。范围与验收口径的唯一载体。**Review Gate**：见本记录 §6。

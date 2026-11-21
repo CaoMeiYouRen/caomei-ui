@@ -64,6 +64,7 @@ const ptBR: CaomeiLocaleMessages = {
         noFileChosen: 'Nenhum arquivo selecionado',
         fileChosen: '{count} arquivos selecionados',
         sizeExceeded: '{name} excede o tamanho máximo de {max}',
+        remove: 'Remover {name}',
     },
     image: {
         label: 'Pré-visualização da imagem',
@@ -139,6 +140,7 @@ const ptBR: CaomeiLocaleMessages = {
         collapseRowGroup: 'Recolher grupo de linhas',
         expandRow: 'Expandir linha',
         collapseRow: 'Recolher linha',
+        columnResize: 'Ajustar a largura de "{column}"',
     },
     tagsInput: {
         clear: 'Limpar',

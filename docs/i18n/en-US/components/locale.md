@@ -61,7 +61,7 @@ import {
 | `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
-| `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` | FileUpload |
+| `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` `remove` | FileUpload |
 | `image` | `label` `preview` `close` | Image |
 | `input` | `clear` | Input |
 | `inputNumber` | `increase` `decrease` | InputNumber |
@@ -78,7 +78,7 @@ import {
 | `splitButton` | `menu` | SplitButton |
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
-| `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` | DataTable |
+| `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` `columnResize` | DataTable |
 | `tabbar` | `label` | Tabbar |
 | `tagsInput` | `clear` | TagsInput |
 | `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |

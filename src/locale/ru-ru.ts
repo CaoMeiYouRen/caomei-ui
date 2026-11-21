@@ -64,6 +64,7 @@ const ruRU: CaomeiLocaleMessages = {
         noFileChosen: 'Файл не выбран',
         fileChosen: 'Выбрано файлов: {count}',
         sizeExceeded: '{name} превышает максимальный размер {max}',
+        remove: 'Удалить {name}',
     },
     image: {
         label: 'Предпросмотр изображения',
@@ -139,6 +140,7 @@ const ruRU: CaomeiLocaleMessages = {
         collapseRowGroup: 'Свернуть группу строк',
         expandRow: 'Развернуть строку',
         collapseRow: 'Свернуть строку',
+        columnResize: 'Изменить ширину столбца «{column}»',
     },
     tagsInput: {
         clear: 'Очистить',

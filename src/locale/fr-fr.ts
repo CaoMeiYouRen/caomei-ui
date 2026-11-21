@@ -64,6 +64,7 @@ const frFR: CaomeiLocaleMessages = {
         noFileChosen: 'Aucun fichier sélectionné',
         fileChosen: '{count} fichiers sélectionnés',
         sizeExceeded: '{name} dépasse la taille maximale de {max}',
+        remove: 'Retirer {name}',
     },
     image: {
         label: 'Aperçu de l’image',
@@ -139,6 +140,7 @@ const frFR: CaomeiLocaleMessages = {
         collapseRowGroup: 'Réduire le groupe de lignes',
         expandRow: 'Développer la ligne',
         collapseRow: 'Réduire la ligne',
+        columnResize: 'Ajuster la largeur de « {column} »',
     },
     tagsInput: {
         clear: 'Effacer',

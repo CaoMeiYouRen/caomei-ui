@@ -64,6 +64,7 @@ const jaJP: CaomeiLocaleMessages = {
         noFileChosen: 'ファイルが選択されていません',
         fileChosen: '{count} 件のファイルを選択済み',
         sizeExceeded: '{name} はサイズ上限 {max} を超えています',
+        remove: '{name} を削除',
     },
     image: {
         label: '画像プレビュー',
@@ -139,6 +140,7 @@ const jaJP: CaomeiLocaleMessages = {
         collapseRowGroup: 'グループを折りたたむ',
         expandRow: '行を展開',
         collapseRow: '行を折りたたむ',
+        columnResize: '「{column}」の列幅を調整',
     },
     tagsInput: {
         clear: 'クリア',

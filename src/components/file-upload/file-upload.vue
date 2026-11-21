@@ -130,6 +130,11 @@ const sizeFormatters = computed(() => ({
     }),
 }))
 
+/** 移除按钮的提示 / 可访问名；`{name}` 替换为文件名 */
+function removeLabel(name: string): string {
+    return locale.value.fileUpload.remove.replace('{name}', name)
+}
+
 /** 人类可读的文件大小；数字与单位随注入语言格式化 */
 function formatSize(bytes: number): string {
     if (bytes < 1024) {
@@ -352,14 +357,14 @@ defineExpose({ upload, clear })
                         <span class="caomei-file-upload__name">{{ file.name }}</span>
                         <span class="caomei-file-upload__size">{{ formatSize(file.size) }}</span>
                         <CaomeiIconTooltip
-                            :content="`移除 ${file.name}`"
+                            :content="removeLabel(file.name)"
                             :disabled="disabled"
                         >
                             <button
                                 type="button"
                                 class="caomei-file-upload__remove"
                                 :disabled="disabled"
-                                :aria-label="`移除 ${file.name}`"
+                                :aria-label="removeLabel(file.name)"
                                 @click="remove(index)"
                             >
                                 <CaomeiIcon :icon="icons.dismiss" />

@@ -64,6 +64,7 @@ const deDE: CaomeiLocaleMessages = {
         noFileChosen: 'Keine Datei ausgewählt',
         fileChosen: '{count} Dateien ausgewählt',
         sizeExceeded: '{name} überschreitet die maximale Größe von {max}',
+        remove: '{name} entfernen',
     },
     image: {
         label: 'Bildvorschau',
@@ -139,6 +140,7 @@ const deDE: CaomeiLocaleMessages = {
         collapseRowGroup: 'Zeilengruppe einklappen',
         expandRow: 'Zeile erweitern',
         collapseRow: 'Zeile einklappen',
+        columnResize: 'Breite von „{column}“ anpassen',
     },
     tagsInput: {
         clear: 'Löschen',

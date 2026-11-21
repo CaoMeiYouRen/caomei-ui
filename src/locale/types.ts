@@ -84,6 +84,8 @@ export interface CaomeiLocaleMessages {
         noFileChosen: string
         fileChosen: string
         sizeExceeded: string
+        /** 移除文件按钮的提示与可访问名；`{name}` 为文件名 */
+        remove: string
     }
     image: {
         label: string
@@ -159,6 +161,8 @@ export interface CaomeiLocaleMessages {
         collapseRowGroup: string
         expandRow: string
         collapseRow: string
+        /** 列宽拖拽手柄的可访问名；`{column}` 为列标题 */
+        columnResize: string
     }
     tabbar: {
         label: string

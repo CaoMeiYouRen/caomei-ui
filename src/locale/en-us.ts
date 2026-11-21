@@ -64,6 +64,7 @@ const enUS: CaomeiLocaleMessages = {
         noFileChosen: 'No file chosen',
         fileChosen: '{count} files chosen',
         sizeExceeded: '{name} exceeds the maximum size of {max}',
+        remove: 'Remove {name}',
     },
     image: {
         label: 'Image preview',
@@ -139,6 +140,7 @@ const enUS: CaomeiLocaleMessages = {
         collapseRowGroup: 'Collapse row group',
         expandRow: 'Expand row',
         collapseRow: 'Collapse row',
+        columnResize: 'Adjust the width of "{column}"',
     },
     tagsInput: {
         clear: 'Clear',

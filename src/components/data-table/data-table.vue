@@ -1359,7 +1359,7 @@ function setPageSize(rows: number): void {
                             class="caomei-data-table__resizer caomei-hit-target"
                             role="separator"
                             aria-orientation="vertical"
-                            :aria-label="`调整「${headerTitle(header.column.id)}」列宽`"
+                            :aria-label="locale.table.columnResize.replace('{column}', headerTitle(header.column.id))"
                             :aria-valuemin="resizeMinWidth"
                             aria-valuemax="2000"
                             :aria-valuenow="resizeHandleValue(header.column.id)"

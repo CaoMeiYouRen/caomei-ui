@@ -64,6 +64,7 @@ const koKR: CaomeiLocaleMessages = {
         noFileChosen: '선택된 파일 없음',
         fileChosen: '{count}개 파일 선택됨',
         sizeExceeded: '{name}이(가) 최대 크기 {max}를 초과합니다',
+        remove: '{name} 삭제',
     },
     image: {
         label: '이미지 미리보기',
@@ -139,6 +140,7 @@ const koKR: CaomeiLocaleMessages = {
         collapseRowGroup: '그룹 접기',
         expandRow: '행 펼치기',
         collapseRow: '행 접기',
+        columnResize: '"{column}" 열 너비 조정',
     },
     tagsInput: {
         clear: '지우기',

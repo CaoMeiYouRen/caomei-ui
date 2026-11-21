@@ -64,6 +64,7 @@ const zhTW: CaomeiLocaleMessages = {
         noFileChosen: '未選擇檔案',
         fileChosen: '已選擇 {count} 個檔案',
         sizeExceeded: '{name} 超過大小上限 {max}',
+        remove: '移除 {name}',
     },
     image: {
         label: '圖片預覽',
@@ -139,6 +140,7 @@ const zhTW: CaomeiLocaleMessages = {
         collapseRowGroup: '收合分組',
         expandRow: '展開此列',
         collapseRow: '收合此列',
+        columnResize: '調整「{column}」欄寬',
     },
     tagsInput: {
         clear: '清空',

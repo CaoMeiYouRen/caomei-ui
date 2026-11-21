@@ -145,6 +145,14 @@ const ruRU: CaomeiLocaleMessages = {
     tagsInput: {
         clear: 'Очистить',
     },
+    transfer: {
+        source: 'Источник',
+        target: 'Цель',
+        search: 'Поиск',
+        empty: 'Нет данных',
+        moveToTarget: 'Переместить вправо',
+        moveToSource: 'Переместить влево',
+    },
     toast: {
         label: 'Уведомление',
         viewport: 'Уведомления ({hotkey})',

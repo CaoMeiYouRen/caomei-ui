@@ -170,6 +170,14 @@ export interface CaomeiLocaleMessages {
     tagsInput: {
         clear: string
     }
+    transfer: {
+        source: string
+        target: string
+        search: string
+        empty: string
+        moveToTarget: string
+        moveToSource: string
+    }
     toast: {
         label: string
         viewport: string

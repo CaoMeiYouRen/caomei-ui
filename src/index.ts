@@ -67,6 +67,7 @@ export * from './components/textarea'
 export * from './components/time-picker'
 export * from './components/toast'
 export * from './components/toggle-button'
+export * from './components/transfer'
 export * from './components/toolbar'
 export * from './components/tooltip'
 

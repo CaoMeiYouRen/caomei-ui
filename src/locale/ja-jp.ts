@@ -145,6 +145,14 @@ const jaJP: CaomeiLocaleMessages = {
     tagsInput: {
         clear: 'クリア',
     },
+    transfer: {
+        source: 'ソース',
+        target: 'ターゲット',
+        search: '検索',
+        empty: 'データなし',
+        moveToTarget: '右へ移動',
+        moveToSource: '左へ移動',
+    },
     toast: {
         label: '通知',
         viewport: '通知 ({hotkey})',

@@ -145,6 +145,14 @@ const ptBR: CaomeiLocaleMessages = {
     tagsInput: {
         clear: 'Limpar',
     },
+    transfer: {
+        source: 'Origem',
+        target: 'Destino',
+        search: 'Pesquisar',
+        empty: 'Sem dados',
+        moveToTarget: 'Mover para a direita',
+        moveToSource: 'Mover para a esquerda',
+    },
     toast: {
         label: 'Notificação',
         viewport: 'Notificações ({hotkey})',

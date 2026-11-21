@@ -145,6 +145,14 @@ const koKR: CaomeiLocaleMessages = {
     tagsInput: {
         clear: '지우기',
     },
+    transfer: {
+        source: '원본',
+        target: '대상',
+        search: '검색',
+        empty: '데이터 없음',
+        moveToTarget: '오른쪽으로 이동',
+        moveToSource: '왼쪽으로 이동',
+    },
     toast: {
         label: '알림',
         viewport: '알림 ({hotkey})',

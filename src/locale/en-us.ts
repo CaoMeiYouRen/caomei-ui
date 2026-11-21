@@ -145,6 +145,14 @@ const enUS: CaomeiLocaleMessages = {
     tagsInput: {
         clear: 'Clear',
     },
+    transfer: {
+        source: 'Source',
+        target: 'Target',
+        search: 'Search',
+        empty: 'No data',
+        moveToTarget: 'Move right',
+        moveToSource: 'Move left',
+    },
     toast: {
         label: 'Notification',
         viewport: 'Notifications ({hotkey})',

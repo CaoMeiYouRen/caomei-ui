@@ -110,6 +110,7 @@ export const caomeiComponents = [
     'CaomeiTimeline',
     'CaomeiTimelineItem',
     'CaomeiTimePicker',
+    'CaomeiTransfer',
     'CaomeiToastProvider',
     'CaomeiToggleButton',
     'CaomeiToolbar',

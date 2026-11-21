@@ -145,6 +145,14 @@ const zhCN: CaomeiLocaleMessages = {
     tagsInput: {
         clear: '清空',
     },
+    transfer: {
+        source: '源列表',
+        target: '目标列表',
+        search: '搜索',
+        empty: '暂无数据',
+        moveToTarget: '移到右侧',
+        moveToSource: '移到左侧',
+    },
     toast: {
         label: '通知',
         viewport: '通知 ({hotkey})',

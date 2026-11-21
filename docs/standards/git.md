@@ -15,17 +15,23 @@
 - `description` 使用中文（或用户使用的语言）。
 - 主题行不超过 120 字符。
 - 一个提交对应一个逻辑变更，避免「大杂烩」提交。
+- 破坏性提交（头部 `!` 或 `BREAKING CHANGE:` footer）必须在 `BREAKING CHANGE:` **之前**写 `Breaking-Review:` footer：`Breaking-Review: <确认人标识> <YYYY-MM-DD> <approved|approved-with-migration>`，可选追加 `@<7-40 位小写十六进制短哈希>` 指向被确认的树。固定位置便于发布说明解析与人工复核。
+- 确认人标识使用 GitHub 登录名（1-39 位字母数字或连字符，不以连字符开头 / 结尾，不带 `@`），不得使用 `owner` / `TODO` / `TBD` / `me` / `self` / `unknown` / `n/a` 等占位标识；日期必须为真实日历日期；结论只允许 `approved` / `approved-with-migration`。
+- 破坏性提交只能有一条 `Breaking-Review:`，且必须与正文以空行分隔；`BREAKING CHANGE:` 说明不能为空；非破坏性提交不得包含 `Breaking-Review:`。
+- 只写 `!` 不带 `BREAKING CHANGE:` footer 不合规；禁用连字符 `BREAKING-CHANGE:`（发布链的 `noteKeywords` 只识别空格形式）。
 
 ## 3. 提交流程
 
 1. 确认 `@code-reviewer` Review Gate 已放行。
-2. 确认质量门通过（`lint` / `typecheck` / 必要测试 / 涉及构建时 `build`）。
-3. 通过 `conventional-committer` skill 生成提交消息并提交，**禁止**裸 `git commit -m "..."`。
-4. 提交必须通过 husky 钩子（commitlint / lint-staged），禁止 `--no-verify`。
-5. lint-staged 仅运行 ESLint（`*.{js,mjs,cjs,ts,vue}`）；含样式改动时先手动执行 `pnpm lint:css:check`，避免 Stylelint 问题在提交后才由 `pnpm verify` 暴露。
-6. 提交信息声明的状态变更必须能在 `git show` 中看到对应 hunk：规划台账的勾选 / 状态字段要与 diff 实际内容一致，禁止只追加说明而不改状态。
-7. 涉及规划台账规模数字（文件数 / 行数）时须与同一 index 同源：改完数字后重新 `git add`，提交前用 `git show :<file>` 核验索引版文本，避免暂存内容自相矛盾。
-8. 批次内已有子范围取得 Review Gate `Pass` 时**先提交该子范围**（部分交付），不累积到整批通过：提交信息写清未关闭项去向，**禁止把未审内容混入该提交**。多轮审查未过时的缩面要求见 [AI 协作规范 §3.5](./ai-collaboration.md)。
+2. 破坏性提交须在 `git add` 后、`git commit` 前取得项目所有者或其明确授权人的确认；确认对象 = 最终暂存树 + 最终提交消息，AI 自检与 Review Gate 不替代。
+3. 确认后暂存树或消息文本任一变化（含 amend / rebase）须重新确认；`Breaking-Review:` 行本身不计入比较。破坏性提交独立成批；历史提交不回补记录。
+4. 确认质量门通过（`lint` / `typecheck` / 必要测试 / 涉及构建时 `build`）。
+5. 通过 `conventional-committer` skill 生成提交消息并提交，**禁止**裸 `git commit -m "..."`。
+6. 提交必须通过 husky 钩子（commitlint / `check-breaking-change-commit` / lint-staged），禁止 `--no-verify`。
+7. lint-staged 仅运行 ESLint（`*.{js,mjs,cjs,ts,vue}`）；含样式改动时先手动执行 `pnpm lint:css:check`，避免 Stylelint 问题在提交后才由 `pnpm verify` 暴露。
+8. 提交信息声明的状态变更必须能在 `git show` 中看到对应 hunk：规划台账的勾选 / 状态字段要与 diff 实际内容一致，禁止只追加说明而不改状态。
+9. 涉及规划台账规模数字（文件数 / 行数）时须与同一 index 同源：改完数字后重新 `git add`，提交前用 `git show :<file>` 核验索引版文本，避免暂存内容自相矛盾。
+10. 批次内已有子范围取得 Review Gate `Pass` 时**先提交该子范围**（部分交付），不累积到整批通过：提交信息写清未关闭项去向，**禁止把未审内容混入该提交**。多轮审查未过时的缩面要求见 [AI 协作规范 §3.5](./ai-collaboration.md)。
 
 > 相邻改动行无法用 `git add -p` 拆 hunk 时，可临时移除同文件内另一条目的改动先行提交本条目，再恢复后提交（等价于手工拆 hunk）。
 

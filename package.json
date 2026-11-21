@@ -74,6 +74,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:geometry": "playwright test test/e2e/component-geometry.e2e.ts --project=desktop",
     "test:e2e:gallery": "playwright test --config playwright.gallery.config.ts",
     "test:visual": "playwright test --config playwright.visual.config.ts",
     "test:visual:update": "playwright test --config playwright.visual.config.ts --update-snapshots",

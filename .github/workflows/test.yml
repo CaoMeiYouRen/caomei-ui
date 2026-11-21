@@ -105,6 +105,8 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Visual regression baseline
         run: pnpm test:visual
+      - name: Component geometry gate
+        run: pnpm test:e2e:geometry
       - name: Upload visual diff
         if: failure()
         uses: actions/upload-artifact@v7

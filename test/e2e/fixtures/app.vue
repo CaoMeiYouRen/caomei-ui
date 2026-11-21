@@ -307,6 +307,9 @@ const swatchPickerValue = ref('#e63946')
 const timePickerValue = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 /** 视觉基线用的固定时间（确定性、不含实时日期）。 */
 const visualTimeValue = new Date(2026, 0, 1, 9, 30, 45)
+/** 尺寸门禁夹具：固定时间 / 日期，保证跨次测量可复现。 */
+const geometryTime = new Date(2026, 0, 1, 9, 30, 5)
+const geometryDate = new Date(2026, 0, 15)
 /** 12 小时制字段的独立受控值，便于断言日序切换后的回写。 */
 const timePicker12Value = ref<Date | null>(new Date(2026, 0, 1, 9, 30, 0))
 /** 滚轮模式与「输入 + 滚轮」模式的独立受控值。 */
@@ -2727,6 +2730,86 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 label="色板颜色"
                 :swatches="swatchPickerOptions"
             />
+        </section>
+        <!--
+          组件尺寸门禁（见 `test/e2e/component-geometry.e2e.ts`）：同一宿主宽度下并排 / 纵向放置
+          TimePicker 三种模式、DatePicker、Select 与 Input，验证内容型默认宽度、字段几何与
+          模式间一致性。宿主故意宽于各组件默认宽度，避免 100% 宽度掩盖默认上限。
+        -->
+        <section id="component-geometry" class="fixture__case">
+            <CaomeiTimePicker
+                id="geometry-time-input"
+                :model-value="geometryTime"
+                label="时间（输入）"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-wheel"
+                :model-value="geometryTime"
+                label="时间（滚轮）"
+                mode="wheel"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-both"
+                :model-value="geometryTime"
+                label="时间（输入 + 滚轮）"
+                mode="both"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-minute"
+                :model-value="geometryTime"
+                label="时间（分钟）"
+                :show-seconds="false"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-unpadded"
+                :model-value="geometryTime"
+                label="时间（不补 0）"
+                :pad="false"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-12"
+                :model-value="geometryTime"
+                label="时间（12 小时制）"
+                hour-format="12"
+            />
+            <CaomeiTimePicker
+                id="geometry-time-disabled"
+                :model-value="geometryTime"
+                label="时间（禁用）"
+                disabled
+            />
+            <CaomeiDatePicker
+                id="geometry-date"
+                :model-value="geometryDate"
+                label="日期"
+            />
+            <CaomeiDatePicker
+                id="geometry-date-time"
+                :model-value="geometryTime"
+                label="日期时间"
+                show-time
+            />
+            <CaomeiSelect
+                id="geometry-select"
+                v-model="dsSelect"
+                :options="dsOptions"
+                label="选择"
+                placeholder="请选择"
+            />
+            <CaomeiInput
+                id="geometry-input"
+                v-model="dsInput"
+                label="输入"
+                placeholder="请输入内容"
+            />
+            <CaomeiInputNumber
+                id="geometry-input-number"
+                v-model="dsNumber"
+                label="数值"
+            />
+            <CaomeiButton id="geometry-button">
+                按钮
+            </CaomeiButton>
         </section>
         <section id="tooltip-truncation" class="fixture__case">
             <CaomeiTooltipProvider :delay-duration="0">

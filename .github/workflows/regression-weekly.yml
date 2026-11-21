@@ -125,7 +125,8 @@ jobs:
   e2e:
     name: E2E Test
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 全量 E2E + 画廊 + capture:styles + 视觉基线串行执行；2026-11-21 实测 30 分钟会被超时取消，放宽到 60。
+    timeout-minutes: 60
     env:
       # 与缓存 key、两条 install 命令共用，扩展浏览器集合时只改这一处。
       PLAYWRIGHT_BROWSERS: chromium

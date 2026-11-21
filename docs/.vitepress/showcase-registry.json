@@ -180,6 +180,18 @@
         }
     },
     {
+        "name": "Popconfirm",
+        "group": {
+            "zh": "反馈与浮层",
+            "en": "Feedback & Overlays"
+        },
+        "example": "popconfirm/basic.vue",
+        "description": {
+            "zh": "在触发按钮旁弹出轻量二次确认，支持危险语气与加载态。",
+            "en": "Opens a lightweight confirmation next to its trigger, with a danger tone and loading state."
+        }
+    },
+    {
         "name": "DataTable",
         "group": {
             "zh": "数据展示",

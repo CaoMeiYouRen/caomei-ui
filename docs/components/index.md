@@ -59,6 +59,7 @@
 - [Dialog 对话框](./dialog)：对话框用于在当前页面之上承载需要用户聚焦处理的内容，基于 Reka UI Dialog 封装。
 - [Drawer 抽屉](./drawer)：抽屉从页面边缘滑出，用于承载次要内容、设置面板或导航；封装 Reka UI 的 Dialog primitive，并提供四向 `position`。
 - [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 live region 播报（默认 `role="status"`，可切 `alert`）；内联常驻提示请用 Alert。
+- [Popconfirm 气泡确认](./popconfirm)：气泡确认在触发按钮旁弹出轻量二次确认，支持危险语气、加载态与受控开合。
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
 - [Toast 轻提示](./toast)：轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
 - [Tooltip 工具提示](./tooltip)：工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；建议在应用根部放置一次 `CaomeiTooltipProvider` 并与触发器 / 面板组合使用（未放置时组件内建兜底），不构成焦点陷阱。

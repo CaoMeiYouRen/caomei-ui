@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { defaultLocale } from '../../locale'
+import { computed } from 'vue'
+import { useLocaleCode } from '../../composables/use-locale'
+import { resolveWeekdayFormat } from '../_shared/locale-defaults'
 import CalendarPanel from './calendar-panel.vue'
 import type { CalendarProps } from './types'
 
@@ -8,8 +10,6 @@ defineOptions({ name: 'CaomeiCalendar' })
 const props = withDefaults(defineProps<CalendarProps>(), {
     disabled: false,
     readonly: false,
-    locale: defaultLocale,
-    weekdayFormat: 'narrow',
     fixedWeeks: false,
     preventDeselect: false,
     pagedNavigation: false,
@@ -17,6 +17,11 @@ const props = withDefaults(defineProps<CalendarProps>(), {
 })
 
 const model = defineModel<Date | null>({ default: null })
+
+const localeCode = useLocaleCode()
+/** 缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言；显式 prop 仍优先 */
+const resolvedLocale = computed(() => props.locale ?? localeCode.value)
+const resolvedWeekdayFormat = computed(() => resolveWeekdayFormat(resolvedLocale.value, props.weekdayFormat))
 </script>
 
 <template>
@@ -27,6 +32,8 @@ const model = defineModel<Date | null>({ default: null })
     <CalendarPanel
         v-bind="props"
         v-model="model"
+        :locale="resolvedLocale"
+        :weekday-format="resolvedWeekdayFormat"
         class="caomei-calendar"
     />
 </template>

@@ -22,8 +22,8 @@ Two-way bind with `v-model`; the value is `null` when nothing is selected.
 
 ## Display and behavior
 
-- `locale` controls month / weekday text and date formatting, defaulting to the library's default locale (`zh-CN`). It is independent of the injected built-in text locale; pass it explicitly when the two must match.
-- `weekStartsOn` sets the first day of the week (0 is Sunday); `weekdayFormat` accepts `narrow` / `short` / `long`.
+- `locale` controls month / weekday text and date formatting and **defaults to the locale injected by `ConfigProvider` / `provideLocale`**; an explicit prop still wins.
+- `weekStartsOn` sets the first day of the week (0 is Sunday); `weekdayFormat` accepts `narrow` / `short` / `long` and defaults to the locale convention (`narrow` for CJK, `short` otherwise).
 - `fixedWeeks` keeps six rows so the height does not jump between months; `preventDeselect` stops a second click from clearing the selection.
 - `disabled` disables the whole calendar; `readonly` keeps it focusable but not changeable.
 
@@ -42,7 +42,7 @@ PrimeVue v4's `Calendar` (a historical alias of `DatePicker` — the same compon
 | `inline` (inline calendar) | Use `CaomeiCalendar` (this component is the inline form) |
 | `minDate` / `maxDate` | `minValue` / `maxValue` |
 | `disabled` / `readonly` | Same names |
-| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; controls the date/calendar language only) |
+| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; defaults to the injected locale, explicit value wins) |
 | — | `weekStartsOn` / `weekdayFormat` / `fixedWeeks` / `preventDeselect`, `pagedNavigation`, `initialFocus` and `label` (accessible name) are new here |
 
 **Not implemented**: `selectionMode`'s `multiple` / `range` (multi-select and range; see §7 and the [Backlog](/plan/backlog), Chinese), `showOtherMonths` / `selectOtherMonths`, `numberOfMonths`, `disabledDates` / `disabledDays` / `maxDateCount`, `view` (month/year views), `showButtonBar`, `responsiveOptions` / `breakpoint`, `showOnFocus` and so on.

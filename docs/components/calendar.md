@@ -22,8 +22,8 @@
 
 ## 展示与行为
 
-- `locale` 控制月份 / 星期文案与日期格式，默认取组件库默认语言（`zh-CN`）；它与注入的内建文案语言相互独立，需要一致时请显式传入。
-- `weekStartsOn` 指定每周起始日（0 为周日）；`weekdayFormat` 取 `narrow` / `short` / `long`。
+- `locale` 控制月份 / 星期文案与日期格式，**缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言**；显式传入时以 prop 为准。
+- `weekStartsOn` 指定每周起始日（0 为周日）；`weekdayFormat` 取 `narrow` / `short` / `long`，缺省按语言惯例推导（CJK 为 `narrow`，其余为 `short`）。
 - `fixedWeeks` 固定 6 行，避免月份切换时高度跳动；`preventDeselect` 禁止再次点击取消选中。
 - `disabled` 禁用整体；`readonly` 可聚焦但不可改值。
 
@@ -42,7 +42,7 @@ PrimeVue v4 的 `Calendar`（`DatePicker` 的历史别名，两者为同一组�
 | `inline`（内联日历） | 改用 `CaomeiCalendar`（本组件即内联形态） |
 | `minDate` / `maxDate` | `minValue` / `maxValue` |
 | `disabled` / `readonly` | 同名 |
-| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop，仅控制日期 / 日历语言） |
+| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop；缺省跟随注入语言，显式值优先） |
 | 无 | `weekStartsOn` / `weekdayFormat` / `fixedWeeks` / `preventDeselect`、`pagedNavigation`、`initialFocus`、`label`（可访问名）为本库新增 |
 
 **未实现**：`selectionMode` 的 `multiple` / `range`（多选与范围选择，见 §7 与 [Backlog](../plan/backlog.md)）、`showOtherMonths` / `selectOtherMonths`、`numberOfMonths`、`disabledDates` / `disabledDays` / `maxDateCount`、`view`（月 / 年视图）、`showButtonBar`、`responsiveOptions` / `breakpoint`、`showOnFocus` 等。

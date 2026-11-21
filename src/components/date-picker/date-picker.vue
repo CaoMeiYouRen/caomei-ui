@@ -2,10 +2,10 @@
 import { PopoverContent, PopoverPortal, PopoverRoot } from 'reka-ui'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useAttrs, watch, watchEffect } from 'vue'
 import { warnDev } from '../../_shared/dev-warn'
-import { useLocale } from '../../composables/use-locale'
+import { useLocale, useLocaleCode } from '../../composables/use-locale'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import CaomeiIconTooltip from '../tooltip/icon-tooltip.vue'
-import { defaultLocale } from '../../locale'
+import { resolveHourFormat, resolveWeekdayFormat } from '../_shared/locale-defaults'
 import { formatDate, formatTime } from '../_shared/date-format'
 import { resolveLabelName } from '../_shared/use-label-attrs'
 import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
@@ -31,17 +31,20 @@ const props = withDefaults(defineProps<DatePickerProps>(), {
     placeholder: '',
     showIcon: true,
     showTime: false,
-    hourFormat: '24',
     showSeconds: false,
     closeOnSelect: true,
-    locale: defaultLocale,
-    weekdayFormat: 'narrow',
     fixedWeeks: false,
     preventDeselect: false,
 })
 
 const model = defineModel<DatePickerModelValue>({ default: null })
 const open = defineModel<boolean>('open', { default: false })
+
+const localeCode = useLocaleCode()
+/** 缺省跟随注入语言；显式 prop 仍优先 */
+const resolvedLocale = computed(() => props.locale ?? localeCode.value)
+const resolvedWeekdayFormat = computed(() => resolveWeekdayFormat(resolvedLocale.value, props.weekdayFormat))
+const resolvedHourFormat = computed(() => resolveHourFormat(resolvedLocale.value, props.hourFormat))
 
 const contentRef = ref<{ $el?: unknown } | null>(null)
 const triggerEl = ref<HTMLElement | null>(null)
@@ -136,18 +139,18 @@ const displayText = computed(() => {
         if (!range) {
             return ''
         }
-        return `${formatDate(range[0], props.dateFormat, props.locale)} – ${formatDate(range[1], props.dateFormat, props.locale)}`
+        return `${formatDate(range[0], props.dateFormat, resolvedLocale.value)} – ${formatDate(range[1], props.dateFormat, resolvedLocale.value)}`
     }
 
-    const dateText = formatDate(singleDate.value, props.dateFormat, props.locale)
+    const dateText = formatDate(singleDate.value, props.dateFormat, resolvedLocale.value)
     if (!props.showTime) {
         return dateText
     }
 
     return [dateText, formatTime(singleDate.value, {
-        hourFormat: props.hourFormat,
+        hourFormat: resolvedHourFormat.value,
         showSeconds: props.showSeconds,
-        locale: props.locale,
+        locale: resolvedLocale.value,
     })].filter(Boolean).join(' ')
 })
 
@@ -321,9 +324,9 @@ watchEffect(() => {
                     :max-value="maxValue"
                     :disabled="disabled"
                     :readonly="readonly"
-                    :locale="locale"
+                    :locale="resolvedLocale"
                     :week-starts-on="weekStartsOn"
-                    :weekday-format="weekdayFormat"
+                    :weekday-format="resolvedWeekdayFormat"
                     :fixed-weeks="fixedWeeks"
                     :prevent-deselect="preventDeselect"
                     class="caomei-calendar"
@@ -336,9 +339,9 @@ watchEffect(() => {
                     :max-value="maxValue"
                     :disabled="disabled"
                     :readonly="readonly"
-                    :locale="locale"
+                    :locale="resolvedLocale"
                     :week-starts-on="weekStartsOn"
-                    :weekday-format="weekdayFormat"
+                    :weekday-format="resolvedWeekdayFormat"
                     :fixed-weeks="fixedWeeks"
                     :prevent-deselect="preventDeselect"
                     class="caomei-calendar"
@@ -351,8 +354,8 @@ watchEffect(() => {
                     <TimeInput
                         :model-value="timeParts"
                         :show-seconds="showSeconds"
-                        :hour-format="hourFormat"
-                        :locale="locale"
+                        :hour-format="resolvedHourFormat"
+                        :locale="resolvedLocale"
                         :disabled="disabled || !singleDate"
                         :readonly="readonly"
                         @update:model-value="onTimeUpdate"

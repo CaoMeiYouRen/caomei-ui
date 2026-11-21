@@ -22,7 +22,7 @@
 
 ## 时间选择
 
-设置 `showTime` 后在面板底部显示时间输入（时 / 分）；`hourFormat` 切换 `12` / `24` 小时制，`showSeconds` 精确到秒。含时间选择时选中日期不会自动收起面板，便于继续选时间；未选择日期时时间输入为禁用（先选日期再选时间）；时间文案随 `locale` 变化。
+设置 `showTime` 后在面板底部显示时间输入（时 / 分）；`hourFormat` 切换 `12` / `24` 小时制（缺省按 `locale` 推导，`en-US` 为 12，其余内建语言为 24），`showSeconds` 精确到秒。含时间选择时选中日期不会自动收起面板，便于继续选时间；未选择日期时时间输入为禁用（先选日期再选时间）；时间文案随 `locale` 变化。
 
 <demo
     vue="../examples/date-picker/datetime.vue"
@@ -49,7 +49,7 @@
 - 宽度：默认 `width: 100%`，并由 `--caomei-date-picker-max-width` 设可覆盖的 `max-width`（未覆盖时回退 `--caomei-select-max-width`，默认 `20rem`；见[主题与样式设计 §4.1](../design/theming.md)）。需要撑满所在列时在同一元素或其祖先上把该变量覆盖为 `none`。
 - `minValue` / `maxValue` 限制可选日期；`closeOnSelect`（默认 `true`）控制选中后是否收起。
 - 展开状态支持 `v-model:open` 受控；`showIcon` 控制是否显示日历图标。
-- `locale` 控制日历与日期的语言，默认取组件库默认语言（`zh-CN`）；它与注入的内建文案语言相互独立，需要一致时请显式传入。
+- `locale` 控制日历与日期的语言，**缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言**；显式传入时以 prop 为准。`weekdayFormat` 与 `hourFormat` 的缺省值同样按该语言推导。
 
 触摸设备上可在祖先元素设置 `data-density="touch"`，统一放大该子树内的控件高度、字号与内容型宽度上限；密度轴与 `size` 档位正交，详见[触摸密度轴](../guide/mobile.md#触摸密度轴与尺寸覆盖)。
 
@@ -87,11 +87,11 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 | `showIcon` / `iconDisplay="input"` | `showIcon`（本组件默认即「触发按钮 + 面板」形态） |
 | `showTime` / `hourFormat` / `showSeconds` | 同名 |
 | `disabled` / `readonly` / `invalid` / `placeholder` | 同名 |
-| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop，仅控制日期 / 日历语言） |
+| `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop；缺省跟随注入语言，显式值优先） |
 | `fluid` | 删除：默认带 `20rem` 上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width` 为 `none`（见[主题与样式 §4.1](../design/theming.md)） |
 | `inputId` | `id`；`aria-label` → `label` |
 
-**已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 仅控制日期 / 日历语言，与内建文案语言相互独立，需要一致时显式传入；区间模式的 `v-model` 静态类型为 `Date | [Date, Date] | null`，从 PrimeVue 迁入的单日期页面需把绑定类型**放宽**为该联合。
+**已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 缺省跟随注入语言，显式传入时只覆盖日期 / 日历语言；区间模式的 `v-model` 静态类型为 `Date | [Date, Date] | null`，从 PrimeVue 迁入的单日期页面需把绑定类型**放宽**为该联合。
 
 **未实现**：`selectionMode` 的 `multiple` 取值（无下游用例，未立候选）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传；`range` 与 `showTime` 不可同时使用（见「范围选择」）。
 

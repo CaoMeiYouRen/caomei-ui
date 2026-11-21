@@ -48,8 +48,8 @@ export interface CalendarProps {
      */
     readonly?: boolean
     /**
-     * 日期格式化与文案语言（BCP 47）
-     * @en Locale used for date formatting (BCP 47)
+     * 日期格式化与文案语言（BCP 47）；缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言
+     * @en Locale used for date formatting (BCP 47); defaults to the injected locale from `ConfigProvider` / `provideLocale`
      */
     locale?: string
     /**
@@ -58,9 +58,9 @@ export interface CalendarProps {
      */
     weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
     /**
-     * 星期表头格式
-     * @default 'narrow'
-     * @en Weekday header format
+     * 星期表头格式；缺省按 `locale` 推导（CJK 为 `narrow`，其余为 `short`）
+     * @default 按 locale 推导
+     * @en Weekday header format; defaults to the `locale` convention (`narrow` for CJK, `short` otherwise)
      */
     weekdayFormat?: 'narrow' | 'short' | 'long'
     /**

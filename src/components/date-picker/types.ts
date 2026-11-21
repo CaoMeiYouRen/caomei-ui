@@ -88,9 +88,9 @@ export interface DatePickerProps {
      */
     showTime?: boolean
     /**
-     * 小时制：12 或 24
-     * @default '24'
-     * @en Hour cycle: 12 or 24
+     * 小时制：12 或 24；缺省按 `locale` 推导（`en-US` 为 12，其余内建语言为 24）
+     * @default 按 locale 推导
+     * @en Hour cycle: 12 or 24; defaults to the `locale` convention (`12` for `en-US`, `24` for the other built-in locales)
      */
     hourFormat?: '12' | '24'
     /**
@@ -106,8 +106,8 @@ export interface DatePickerProps {
      */
     closeOnSelect?: boolean
     /**
-     * 日期格式化语言（BCP 47）；默认取组件库默认语言
-     * @en Locale used for date formatting (BCP 47); defaults to the library's default locale
+     * 日期格式化与面板语言（BCP 47）；缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言
+     * @en Locale used for date formatting and the panel (BCP 47); defaults to the injected locale from `ConfigProvider` / `provideLocale`
      */
     locale?: string
     /**
@@ -117,8 +117,8 @@ export interface DatePickerProps {
     weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
     /**
      * 星期表头格式
-     * @default 'narrow'
-     * @en Weekday header format
+     * @default 按 locale 推导（CJK 为 `narrow`，其余为 `short`）
+     * @en Weekday header format; defaults to the `locale` convention (`narrow` for CJK, `short` otherwise)
      */
     weekdayFormat?: 'narrow' | 'short' | 'long'
     /**

@@ -1,7 +1,7 @@
 import { DOMWrapper, mount } from '@vue/test-utils'
 import { computed, defineComponent, nextTick, ref } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocaleCodeKey, caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { expectSettled } from '../../../test/helpers/settle'
 import { CaomeiDatePicker } from './index'
@@ -188,7 +188,10 @@ describe('CaomeiDatePicker', () => {
     it('无可见文本时使用注入 locale 的可访问名', () => {
         const wrapper = mount(CaomeiDatePicker, {
             global: {
-                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
             },
         })
 
@@ -768,6 +771,42 @@ describe('CaomeiDatePicker selectionMode="range"', () => {
         const wrapper = mountPicker({ modelValue: range, dateFormat: 'yy-mm-dd' })
 
         expect(wrapper.get('.caomei-date-picker').text()).not.toContain('26-09-10')
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiDatePicker locale 缺省', () => {
+    it('未显式传 locale 时跟随注入语言的日期与 12 小时制', () => {
+        const wrapper = mount(CaomeiDatePicker, {
+            props: { modelValue: new Date(2026, 8, 15, 13, 30), showTime: true },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+
+        const text = wrapper.get('.caomei-date-picker__text').text()
+        expect(text).toContain('PM')
+        expect(text).not.toContain('13:30')
+
+        wrapper.unmount()
+    })
+
+    it('显式 hourFormat 优先于语言惯例', () => {
+        const wrapper = mount(CaomeiDatePicker, {
+            props: { modelValue: new Date(2026, 8, 15, 13, 30), showTime: true, hourFormat: '24' },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+
+        expect(wrapper.get('.caomei-date-picker__text').text()).toContain('13:30')
 
         wrapper.unmount()
     })

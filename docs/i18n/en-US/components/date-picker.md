@@ -22,7 +22,7 @@ Two-way bind with `v-model`; `placeholder` is shown while nothing is selected.
 
 ## Time selection
 
-With `showTime`, a time input (hour / minute) is shown at the bottom of the panel; `hourFormat` switches between `12` and `24`-hour cycles, and `showSeconds` refines to seconds. When time selection is on, picking a date does not close the panel so the time can be edited next; the time inputs are disabled until a date is selected; the time text follows `locale`.
+With `showTime`, a time input (hour / minute) is shown at the bottom of the panel; `hourFormat` switches between `12` and `24`-hour cycles (defaults to the `locale` convention: `12` for `en-US`, `24` for the other built-in locales), and `showSeconds` refines to seconds. When time selection is on, picking a date does not close the panel so the time can be edited next; the time inputs are disabled until a date is selected; the time text follows `locale`.
 
 <demo
     vue="../examples/date-picker/datetime.vue"
@@ -49,7 +49,7 @@ Set `selectionMode="range"` to pick an interval; `v-model` becomes `[Date, Date]
 - Width: `width: 100%` by default, with an overridable `max-width` from `--caomei-date-picker-max-width` (falling back to `--caomei-select-max-width`, default `20rem`; see [Theming and styles §4.1](/design/theming), Chinese). To fill its column, set that variable to `none` on the element or an ancestor.
 - `minValue` / `maxValue` constrain selectable dates; `closeOnSelect` (default `true`) controls whether the panel closes after a pick.
 - The open state supports `v-model:open`; `showIcon` toggles the calendar icon.
-- `locale` controls the calendar and date language, defaulting to the library's default locale (`zh-CN`). It is independent of the injected built-in text locale; pass it explicitly when the two must match.
+- `locale` controls the calendar and date language and **defaults to the locale injected by `ConfigProvider` / `provideLocale`**; an explicit prop still wins. The defaults of `weekdayFormat` and `hourFormat` follow the same locale.
 
 On touch devices, set `data-density="touch"` on an ancestor to enlarge control heights, font sizes and content-width caps in that subtree. The density axis is orthogonal to the `size` tiers; see [Touch density axis](/en-US/guide/mobile#touch-density-axis-and-size-overrides).
 
@@ -87,11 +87,11 @@ PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) f
 | `showIcon` / `iconDisplay="input"` | `showIcon` (this component is a "trigger button + panel" by default) |
 | `showTime` / `hourFormat` / `showSeconds` | Same names |
 | `disabled` / `readonly` / `invalid` / `placeholder` | Same names |
-| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; controls the date/calendar language only) |
+| `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; defaults to the injected locale, explicit value wins) |
 | `fluid` | Drop it: a `20rem` cap applies by default; set `--caomei-date-picker-max-width` to `none` for true full width (see [Theming and styles §4.1](/design/theming), Chinese) |
 | `inputId` | `id`; `aria-label` → `label` |
 
-**Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` only controls the date/calendar language and is independent of the built-in text language — pass it explicitly when they must match; in range mode the static `v-model` type is `Date | [Date, Date] | null`, so single-date pages migrated from PrimeVue need their binding type widened to that union.
+**Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` defaults to the injected locale and, when passed, overrides only the date/calendar language; in range mode the static `v-model` type is `Date | [Date, Date] | null`, so single-date pages migrated from PrimeVue need their binding type widened to that union.
 
 **Not implemented**: the `multiple` value of `selectionMode` (no downstream use case, no Backlog entry), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding; `range` and `showTime` cannot be combined (see "Range selection").
 

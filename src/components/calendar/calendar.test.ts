@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { computed, defineComponent, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
-import { caomeiLocaleKey } from '../../composables/use-locale'
+import { caomeiLocaleCodeKey, caomeiLocaleKey } from '../../composables/use-locale'
 import { caomeiLocales } from '../../locale'
 import { CaomeiCalendar } from './index'
 
@@ -163,7 +163,10 @@ describe('CaomeiCalendar', () => {
         const wrapper = mount(CaomeiCalendar, {
             props: { modelValue: new Date(2026, 8, 15) },
             global: {
-                provide: { [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']) },
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
             },
         })
 
@@ -183,6 +186,52 @@ describe('CaomeiCalendar', () => {
 
         const last = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date
         expect(last.getDate()).toBe(15)
+
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiCalendar locale 缺省', () => {
+    it('未显式传 locale 时跟随注入语言的面板文案与星期格式', () => {
+        const wrapper = mount(CaomeiCalendar, {
+            props: { modelValue: new Date(2026, 8, 15) },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+
+        expect(wrapper.get('.caomei-calendar__heading').text()).toContain('September')
+        expect(wrapper.findAll('.caomei-calendar__weekday')[0].text().length).toBeGreaterThan(1)
+
+        wrapper.unmount()
+    })
+
+    it('显式 locale 优先于注入语言', () => {
+        const wrapper = mount(CaomeiCalendar, {
+            props: { modelValue: new Date(2026, 8, 15), locale: 'ja-JP' },
+            global: {
+                provide: {
+                    [caomeiLocaleKey]: computed(() => caomeiLocales['en-US']),
+                    [caomeiLocaleCodeKey]: computed(() => 'en-US'),
+                },
+            },
+        })
+
+        const heading = wrapper.get('.caomei-calendar__heading').text()
+        expect(heading).not.toContain('September')
+
+        wrapper.unmount()
+    })
+
+    it('显式 weekdayFormat 优先于语言惯例', () => {
+        const wrapper = mount(CaomeiCalendar, {
+            props: { modelValue: new Date(2026, 8, 15), locale: 'en-US', weekdayFormat: 'long' },
+        })
+
+        expect(wrapper.findAll('.caomei-calendar__weekday')[0].text().length).toBeGreaterThan(3)
 
         wrapper.unmount()
     })

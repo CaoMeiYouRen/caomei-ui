@@ -7,10 +7,24 @@ import type { PopoverContentProps } from './types'
 
 defineOptions({ name: 'CaomeiPopoverContent', inheritAttrs: false })
 
+const emit = defineEmits<{
+    /**
+     * 面板自动聚焦时抛出，供复合组件接管初始焦点
+     * @en Emitted when the panel auto-focuses, so composite components can take over initial focus
+     */
+    openAutoFocus: [event: Event]
+}>()
+
 const contentRef = ref<{ $el?: unknown } | null>(null)
 const triggerRef = inject(triggerElementKey, null)
 
 const { release, sync } = useOpenStateIsolation(contentRef, () => [triggerRef?.value])
+
+/** 先同步隔离面，再把事件交给复合层（如 Popconfirm 聚焦确认按钮）。 */
+function onOpenAutoFocus(event: Event): void {
+    sync()
+    emit('openAutoFocus', event)
+}
 
 const props = withDefaults(defineProps<PopoverContentProps>(), {
     side: 'bottom',
@@ -47,7 +61,7 @@ function onOutsideDismiss(event: Event): void {
             :avoid-collisions="avoidCollisions"
             :disable-outside-pointer-events="disableOutsidePointerEvents"
             class="caomei-popover__content"
-            @open-auto-focus="sync"
+            @open-auto-focus="onOpenAutoFocus"
             @close-auto-focus="release"
             @pointer-down-outside="onOutsideDismiss"
             @focus-outside="onOutsideDismiss"

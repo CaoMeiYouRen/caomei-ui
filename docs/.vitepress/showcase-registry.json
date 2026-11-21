@@ -216,6 +216,18 @@
         }
     },
     {
+        "name": "Result",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "result/basic.vue",
+        "description": {
+            "zh": "承载操作或页面的最终结果，提供图标、说明与下一步操作。",
+            "en": "Carries the final outcome of an action or page with an icon, description and next step."
+        }
+    },
+    {
         "name": "Tabs",
         "group": {
             "zh": "导航与操作",

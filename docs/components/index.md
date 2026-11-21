@@ -72,6 +72,7 @@
 - [Paginator 分页](./paginator)：分页用于在数据分片间切换，基于 Reka UI Pagination 封装。
 - [ProgressBar 进度条](./progress-bar)：进度条用于展示确定的进度值或不确定的等待状态，基于 Reka UI Progress 封装，与 ProgressSpinner 同源。
 - [ProgressSpinner 加载指示](./progress-spinner)：加载指示器用于表示正在进行的异步操作，基于 Reka UI Progress 封装（不确定进度）。
+- [Result 结果页](./result)：结果页用于承载操作或页面的最终结果，支持语义状态与 403 / 404 / 500，并提供下一步操作区。
 - [Skeleton 骨架屏](./skeleton)：骨架屏用于在内容加载完成前占位，降低布局跳动并提示加载状态。为纯样式自建组件，不依赖外部 primitive。
 
 ## 导航与操作

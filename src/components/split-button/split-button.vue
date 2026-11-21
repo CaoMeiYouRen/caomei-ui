@@ -139,24 +139,24 @@ function onSelect(item: SplitButtonMenuItem, event: Event): void {
     gap: var(--caomei-space-2);
 }
 
-/* 动效优先模式：菜单按钮的 chevron 随开合旋转 */
-:where([data-motion='expressive']) .caomei-split-button__menu :deep(.caomei-icon) {
+/* 动效优先模式：菜单按钮的 chevron 随开合旋转（按扭为 ButtonGroup 后代，需整体 :deep） */
+[data-motion='expressive'] .caomei-split-button :deep(.caomei-split-button__menu .caomei-icon) {
     transition: transform var(--caomei-motion-duration-base) var(--caomei-motion-ease-standard);
 }
 
-:where([data-motion='expressive']) .caomei-split-button__menu[data-state='open'] :deep(.caomei-icon) {
+[data-motion='expressive'] .caomei-split-button :deep(.caomei-split-button__menu[data-state='open'] .caomei-icon) {
     transform: rotate(180deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    :where([data-motion='expressive']) .caomei-split-button__menu :deep(.caomei-icon) {
+    [data-motion='expressive'] .caomei-split-button :deep(.caomei-split-button__menu .caomei-icon) {
         transition: none;
         transform: none;
     }
 }
 
 /* 菜单展开时的状态反馈：用 background-image 叠加，不覆盖各 variant 的 background-color */
-.caomei-split-button__menu[data-state='open'] {
+.caomei-split-button :deep(.caomei-split-button__menu[data-state='open']) {
     background-image: linear-gradient(
         color-mix(in srgb, currentcolor 8%, transparent),
         color-mix(in srgb, currentcolor 8%, transparent)

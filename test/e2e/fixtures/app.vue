@@ -481,7 +481,7 @@ const ratingHalf = ref(0)
  * 列宽之和 48 + 400 + 400 + 400 + 320 = 1568px，超过最宽常驻视口的容器宽，横向必然溢出。
  */
 const dataTableScrollFrozenColumns = [
-    { key: 'expand', expander: true, width: '48px' },
+    { key: 'expand', expander: true, width: '48px', frozen: 'left' as const },
     { key: 'name', header: '姓名', width: '400px', frozen: 'left' as const, sortable: true },
     { key: 'city', header: '城市', width: '400px' },
     { key: 'score', header: '分数', width: '400px', align: 'right' as const },
@@ -3319,6 +3319,11 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 
 #ds-time-picker .caomei-time-picker {
     width: fit-content;
+}
+
+#ds-back-top-button {
+    --caomei-back-top-right: 5rem;
+    --caomei-back-top-bottom: 5rem;
 }
 
 #back-top-scroller {

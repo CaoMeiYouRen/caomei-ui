@@ -205,7 +205,7 @@ test('scrollable + 冻结列：横向滚动后冻结表头仍是最上层', asyn
     expect(hit, '冻结表头必须存在').not.toBeNull()
     expect(hit?.hitSelf, '横向滚动后冻结表头中心必须命中自身').toBe(true)
 
-    // 选择 / 行展开 / 排序与限高同用：三者都在滚动容器内可用
+    // 选择 / 行展开 / 排序与限高同用：三者都在滚动容器内可用。
     const firstRow = container.locator('tbody tr').first()
     const checkbox = firstRow.locator('.caomei-checkbox__control').first()
     await checkbox.click()

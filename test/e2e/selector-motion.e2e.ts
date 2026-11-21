@@ -197,6 +197,11 @@ test.describe('expressive 面板与选择状态', () => {
         expect(timeline.maxDuration, 'expressive 下应取 duration-fast 160ms').toBe(160)
 
         await page.keyboard.press('Escape')
+        await page.waitForTimeout(100)
+        // 程序化触发未经过 pointerdown，同触发器上的图标提示仍占一层：先关提示，再关面板
+        await page.keyboard.press('Escape')
+        await page.waitForTimeout(100)
+        await page.keyboard.press('Escape')
         await expect(page.locator(DATE_CONTENT)).toHaveCount(0)
     })
 
@@ -268,6 +273,7 @@ test.describe('minimal 不新增动效', () => {
             'minimal 选中指示器无入场动画',
         ).toBe('none')
         await page.keyboard.press('Escape')
+        await expect(page.locator(MULTI_CONTENT)).toHaveCount(0)
 
         await openAuto(page)
         expect(
@@ -275,6 +281,7 @@ test.describe('minimal 不新增动效', () => {
             'minimal AutoComplete 面板无入场动画',
         ).toBe('none')
         await page.keyboard.press('Escape')
+        await expect(page.locator(AUTO_CONTENT)).toHaveCount(0)
 
         expect(
             parseDurations(await page.locator(CALENDAR_DAY).first().evaluate((element) => getComputedStyle(element).transitionDuration)).every((value) => value === 0),
@@ -331,6 +338,9 @@ test.describe('reduced-motion 压平', () => {
         const thumb = page.locator(COLOR_THUMB).first()
         await thumb.hover()
         expect(computedScale(await readScale(thumb)), 'reduce 手柄悬浮不放大').toBeCloseTo(1, 2)
+        // 颜色面板是浮层：不关闭会拦截后续元素的指针命中
+        await page.keyboard.press('Escape')
+        await expect(page.locator(COLOR_PANEL)).toHaveCount(0)
 
         expect(await readActiveScale(page, page.locator(SELECT_BUTTON_ITEM).first()), 'reduce 分段按钮不缩放').toBeCloseTo(1, 2)
         expect(await readActiveScale(page, page.locator(TOGGLE_BUTTON)), 'reduce 切换按钮不缩放').toBeCloseTo(1, 2)

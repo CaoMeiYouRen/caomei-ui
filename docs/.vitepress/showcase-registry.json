@@ -120,6 +120,18 @@
         }
     },
     {
+        "name": "Transfer",
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
+        "example": "transfer/basic.vue",
+        "description": {
+            "zh": "在候选集与已选集之间移动条目，支持搜索与禁用。",
+            "en": "Moves items between a source and a target list, with search and disabled states."
+        }
+    },
+    {
         "name": "DatePicker",
         "group": {
             "zh": "选择器",

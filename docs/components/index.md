@@ -39,6 +39,7 @@
 - [Switch 开关](./switch)：开关用于切换单个选项的开启 / 关闭状态，基于 Reka UI Switch 封装。
 - [TagsInput 标签输入](./tags-input)：标签输入用于录入多个自由文本标签，支持回车 / 分隔符提交、粘贴拆分、点击删除与数量 / 去重约束，基于 Reka UI TagsInput 封装。
 - [Textarea 多行输入](./textarea)：多行文本输入框，适用于备注、描述等场景。
+- [Transfer 穿梭框](./transfer)：在候选集与已选集之间移动条目，支持搜索、禁用与受控值集合。
 
 ## 选择器
 

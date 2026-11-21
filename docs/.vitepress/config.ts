@@ -335,6 +335,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Switch', link: '/en-US/components/switch' },
                                 { text: 'TagsInput', link: '/en-US/components/tags-input' },
                                 { text: 'Textarea', link: '/en-US/components/textarea' },
+                                { text: 'Transfer', link: '/en-US/components/transfer' },
                             ],
                         },
                         {
@@ -552,6 +553,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Switch 开关', link: '/components/switch' },
                         { text: 'TagsInput 标签输入', link: '/components/tags-input' },
                         { text: 'Textarea 多行输入', link: '/components/textarea' },
+                        { text: 'Transfer 穿梭框', link: '/components/transfer' },
                     ],
                 },
                 {

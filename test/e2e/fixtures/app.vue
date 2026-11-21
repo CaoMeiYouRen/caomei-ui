@@ -3322,8 +3322,8 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 }
 
 #ds-back-top-button {
-    --caomei-back-top-right: 5rem;
-    --caomei-back-top-bottom: 5rem;
+    /* 视觉基线按钮用位移避开右上/右下同坐标的实际用例按钮；不改 right / bottom，安全区断言仍读默认值 */
+    transform: translate(-5rem, -5rem);
 }
 
 #back-top-scroller {

@@ -32,6 +32,8 @@ import {
     CaomeiDataTable,
     CaomeiDataView,
     CaomeiDatePicker,
+    CaomeiDescriptions,
+    CaomeiDescriptionsItem,
     CaomeiDialog,
     CaomeiDivider,
     CaomeiDrawer,
@@ -2915,6 +2917,50 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 @select="onActionSheetSelect"
             />
             <span id="action-sheet-log">{{ actionSheetLog }}</span>
+        </section>
+
+        <section id="descriptions" class="fixture__case">
+            <CaomeiDescriptions
+                id="descriptions-grid"
+                :columns="3"
+                label-width="6rem"
+            >
+                <CaomeiDescriptionsItem label="姓名">
+                    草梅友仁
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem label="邮箱">
+                    dev@example.com
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem label="角色">
+                    管理员
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem
+                    label="长内容"
+                    :span="3"
+                >
+                    这是一段用于验证窄屏换行的长内容，包含一个超长连续字符串
+                    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem label="创建时间">
+                    2026-11-21 09:30
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem label="状态">
+                    正常
+                </CaomeiDescriptionsItem>
+            </CaomeiDescriptions>
+            <CaomeiDescriptions
+                id="descriptions-bordered"
+                bordered
+                layout="vertical"
+                :columns="2"
+            >
+                <CaomeiDescriptionsItem label="项目">
+                    组件库
+                </CaomeiDescriptionsItem>
+                <CaomeiDescriptionsItem label="版本">
+                    1.3.0
+                </CaomeiDescriptionsItem>
+            </CaomeiDescriptions>
         </section>
 
         <section id="result" class="fixture__case">

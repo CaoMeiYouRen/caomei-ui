@@ -77,6 +77,9 @@ const esES: CaomeiLocaleMessages = {
         increase: 'Aumentar',
         decrease: 'Disminuir',
     },
+    inputOtp: {
+        cellLabel: 'Dígito {index} de {total} del código de verificación',
+    },
     message: {
         close: 'Cerrar',
     },

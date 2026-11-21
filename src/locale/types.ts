@@ -97,6 +97,9 @@ export interface CaomeiLocaleMessages {
         increase: string
         decrease: string
     }
+    inputOtp: {
+        cellLabel: string
+    }
     message: {
         close: string
     }

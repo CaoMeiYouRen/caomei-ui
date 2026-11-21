@@ -77,6 +77,9 @@ const jaJP: CaomeiLocaleMessages = {
         increase: '増やす',
         decrease: '減らす',
     },
+    inputOtp: {
+        cellLabel: '確認コード {total} 桁中 {index} 桁目',
+    },
     message: {
         close: '閉じる',
     },

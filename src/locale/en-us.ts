@@ -77,6 +77,9 @@ const enUS: CaomeiLocaleMessages = {
         increase: 'Increase',
         decrease: 'Decrease',
     },
+    inputOtp: {
+        cellLabel: 'Verification code digit {index} of {total}',
+    },
     message: {
         close: 'Close',
     },

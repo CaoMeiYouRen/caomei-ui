@@ -77,6 +77,9 @@ const koKR: CaomeiLocaleMessages = {
         increase: '증가',
         decrease: '감소',
     },
+    inputOtp: {
+        cellLabel: '인증 코드 {total}자리 중 {index}번째',
+    },
     message: {
         close: '닫기',
     },

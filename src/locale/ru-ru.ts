@@ -77,6 +77,9 @@ const ruRU: CaomeiLocaleMessages = {
         increase: 'Увеличить',
         decrease: 'Уменьшить',
     },
+    inputOtp: {
+        cellLabel: 'Цифра {index} из {total} кода подтверждения',
+    },
     message: {
         close: 'Закрыть',
     },

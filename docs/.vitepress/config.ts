@@ -377,6 +377,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'ProgressSpinner', link: '/en-US/components/progress-spinner' },
                                 { text: 'Result', link: '/en-US/components/result' },
                                 { text: 'Skeleton', link: '/en-US/components/skeleton' },
+                                { text: 'Timeline', link: '/en-US/components/timeline' },
                             ],
                         },
                         {
@@ -593,6 +594,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },
                         { text: 'Result 结果页', link: '/components/result' },
                         { text: 'Skeleton 骨架屏', link: '/components/skeleton' },
+                        { text: 'Timeline 时间轴', link: '/components/timeline' },
                     ],
                 },
                 {

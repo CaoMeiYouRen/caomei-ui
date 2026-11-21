@@ -240,6 +240,18 @@
         }
     },
     {
+        "name": "Timeline",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "timeline/basic.vue",
+        "description": {
+            "zh": "按时间顺序展示事件，支持单侧 / 交替布局与语气色节点。",
+            "en": "Presents events in time order with single-side / alternating layouts and tone-colored dots."
+        }
+    },
+    {
         "name": "Tabs",
         "group": {
             "zh": "导航与操作",

@@ -75,6 +75,7 @@
 - [ProgressSpinner 加载指示](./progress-spinner)：加载指示器用于表示正在进行的异步操作，基于 Reka UI Progress 封装（不确定进度）。
 - [Result 结果页](./result)：结果页用于承载操作或页面的最终结果，支持语义状态与 403 / 404 / 500，并提供下一步操作区。
 - [Skeleton 骨架屏](./skeleton)：骨架屏用于在内容加载完成前占位，降低布局跳动并提示加载状态。为纯样式自建组件，不依赖外部 primitive。
+- [Timeline 时间轴](./timeline)：按时间顺序展示事件，支持单侧 / 交替布局、反转顺序与语气色节点。
 
 ## 导航与操作
 

@@ -2,6 +2,10 @@
 
 A date picker made of a trigger button plus a calendar panel: click the trigger to open the calendar, and the selected date is shown using `dateFormat`. The public model uses native `Date`; with `selectionMode="range"` it is a closed `[Date, Date]` interval.
 
+## Upgrade note
+
+This release changes the trigger's default width from the selector family's `20rem` to date-content tiers (date `12rem` / with time `15rem` / range `18rem`). This is a display-default adjustment, not treated as a breaking change; override `--caomei-date-picker-max-width` for the old width or to align with other form controls.
+
 ## Basic usage
 
 Two-way bind with `v-model`; `placeholder` is shown while nothing is selected.
@@ -46,7 +50,7 @@ Set `selectionMode="range"` to pick an interval; `v-model` becomes `[Date, Date]
 ## States and behavior
 
 - `disabled` / `readonly` / `invalid` / `size` behave as in the Input family.
-- Width: `width: 100%` by default, with an overridable `max-width` from `--caomei-date-picker-max-width` (falling back to `--caomei-select-max-width`, default `20rem`; see [Theming and styles §4.1](/design/theming), Chinese). To fill its column, set that variable to `none` on the element or an ancestor.
+- Width: `width: 100%` by default, with an overridable `max-width` from `--caomei-date-picker-max-width`. Date text has a predictable length, so when unset it caps by content tier (date `12rem`, with time `15rem`, range `18rem`) instead of inheriting the selector family's `20rem`. To align with other form controls or fill the column, set that variable to `100%` or `none`; adjust it as well when a custom `dateFormat` is clearly longer (see [Theming and styles §4.1](/design/theming), Chinese).
 - `minValue` / `maxValue` constrain selectable dates; `closeOnSelect` (default `true`) controls whether the panel closes after a pick.
 - The open state supports `v-model:open`; `showIcon` toggles the calendar icon.
 - `locale` controls the calendar and date language and **defaults to the locale injected by `ConfigProvider` / `provideLocale`**; an explicit prop still wins. The defaults of `weekdayFormat` and `hourFormat` follow the same locale.
@@ -65,7 +69,7 @@ On touch devices, set `data-density="touch"` on an ancestor to enlarge control h
 
 | Variable | Default | Description |
 |------|------|------|
-| `--caomei-date-picker-max-width` | `--caomei-select-max-width` | Maximum trigger width |
+| `--caomei-date-picker-max-width` | Content tier (date `12rem` / with time `15rem` / range `18rem`) | Maximum trigger width; override to `100%` or `none` to align with other form controls |
 
 ```css
 .caomei-date-picker {
@@ -88,7 +92,7 @@ PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) f
 | `showTime` / `hourFormat` / `showSeconds` | Same names |
 | `disabled` / `readonly` / `invalid` / `placeholder` | Same names |
 | `locale` (a **global config** on the PrimeVue side, not a component prop) | `locale` (a prop here; defaults to the injected locale, explicit value wins) |
-| `fluid` | Drop it: a `20rem` cap applies by default; set `--caomei-date-picker-max-width` to `none` for true full width (see [Theming and styles §4.1](/design/theming), Chinese) |
+| `fluid` | Drop it: the width caps by date content by default; set `--caomei-date-picker-max-width` to `100%` / `none` to align with other form controls or go truly full width (see [Theming and styles §4.1](/design/theming), Chinese) |
 | `inputId` | `id`; `aria-label` → `label` |
 
 **Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` defaults to the injected locale and, when passed, overrides only the date/calendar language; in range mode the static `v-model` type is `Date | [Date, Date] | null`, so single-date pages migrated from PrimeVue need their binding type widened to that union.

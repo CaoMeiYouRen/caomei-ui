@@ -2,6 +2,10 @@
 
 由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`；`selectionMode="range"` 时为 `[Date, Date]` 闭区间。
 
+## 升级说明
+
+本版把触发器默认宽度从选择器家族的 `20rem` 改为日期内容档位（日期 `12rem` / 含时间 `15rem` / 区间 `18rem`）。这是展示默认值调整，不视为破坏性变更；需要旧宽度或与同列表单对齐时，覆盖 `--caomei-date-picker-max-width`。
+
 ## 基础用法
 
 通过 `v-model` 双向绑定；未选择时展示 `placeholder`。
@@ -46,7 +50,7 @@
 ## 状态与行为
 
 - `disabled` / `readonly` / `invalid` / `size` 与 Input 家族一致。
-- 宽度：默认 `width: 100%`，并由 `--caomei-date-picker-max-width` 设可覆盖的 `max-width`（未覆盖时回退 `--caomei-select-max-width`，默认 `20rem`；见[主题与样式设计 §4.1](../design/theming.md)）。需要撑满所在列时在同一元素或其祖先上把该变量覆盖为 `none`。
+- 宽度：默认 `width: 100%`，并由 `--caomei-date-picker-max-width` 设可覆盖的 `max-width`。日期文本长度可预见，未覆盖时按内容档位封顶（日期 `12rem`、含时间 `15rem`、区间 `18rem`），不再继承选择器家族的 `20rem`；需要与其它表单控件对齐或撑满所在列时，把该变量覆盖为 `100%` 或 `none`；自定义 `dateFormat` 明显更长时也按实际文案调整该变量（见[主题与样式设计 §4.1](../design/theming.md)）。
 - `minValue` / `maxValue` 限制可选日期；`closeOnSelect`（默认 `true`）控制选中后是否收起。
 - 展开状态支持 `v-model:open` 受控；`showIcon` 控制是否显示日历图标。
 - `locale` 控制日历与日期的语言，**缺省跟随 `ConfigProvider` / `provideLocale` 的注入语言**；显式传入时以 prop 为准。`weekdayFormat` 与 `hourFormat` 的缺省值同样按该语言推导。
@@ -65,7 +69,7 @@
 
 | 变量 | 默认 | 说明 |
 |------|------|------|
-| `--caomei-date-picker-max-width` | `--caomei-select-max-width` | 触发器最大宽度 |
+| `--caomei-date-picker-max-width` | 内容档位（日期 `12rem` / 含时间 `15rem` / 区间 `18rem`） | 触发器最大宽度；与其它表单对齐时覆盖为 `100%` 或 `none` |
 
 ```css
 .caomei-date-picker {
@@ -88,7 +92,7 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 | `showTime` / `hourFormat` / `showSeconds` | 同名 |
 | `disabled` / `readonly` / `invalid` / `placeholder` | 同名 |
 | `locale`（PrimeVue 侧为**全局 config**，非组件 prop） | `locale`（本组件为 prop；缺省跟随注入语言，显式值优先） |
-| `fluid` | 删除：默认带 `20rem` 上限，需要真正全宽时覆盖 `--caomei-date-picker-max-width` 为 `none`（见[主题与样式 §4.1](../design/theming.md)） |
+| `fluid` | 删除：默认按日期内容宽度封顶，需要与其它表单对齐或真正全宽时把 `--caomei-date-picker-max-width` 覆盖为 `100%` / `none`（见[主题与样式 §4.1](../design/theming.md)） |
 | `inputId` | `id`；`aria-label` → `label` |
 
 **已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 缺省跟随注入语言，显式传入时只覆盖日期 / 日历语言；区间模式的 `v-model` 静态类型为 `Date | [Date, Date] | null`，从 PrimeVue 迁入的单日期页面需把绑定类型**放宽**为该联合。

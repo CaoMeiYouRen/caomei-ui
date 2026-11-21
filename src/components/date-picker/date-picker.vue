@@ -284,6 +284,8 @@ watchEffect(() => {
                 type="button"
                 class="caomei-date-picker"
                 :class="rootClass"
+                :data-range="isRange || undefined"
+                :data-show-time="showTime && !isRange || undefined"
                 :aria-label="triggerLabel"
                 :aria-invalid="invalid || undefined"
                 :disabled="disabled"
@@ -368,10 +370,22 @@ watchEffect(() => {
 
 <style scoped>
 /*
-  宽度上限：与选择器家族（Select / MultiSelect / AutoComplete）同源，默认回退 `--caomei-select-max-width`
-  （20rem），避免在宽容器中把触发按钮拉到过长；需要撑满所在列时在同一元素或其祖先上把
-  `--caomei-date-picker-max-width` 覆盖为 `none`。上限声明在触发器自身（本组件无字段包装层）。
+  宽度策略：日期文本长度可预见，默认只为日期留出合适宽度，不再继承选择器家族的 20rem 上限。
+  含时间 / 区间时按内容档位放宽；需要与其它表单控件对齐时把 `--caomei-date-picker-max-width`
+  覆盖为 `100%` 或 `none`。上限声明在触发器自身（本组件无字段包装层）。
 */
+:where(.caomei-date-picker) {
+    --caomei-date-picker-default-width: 12rem;
+}
+
+:where(.caomei-date-picker[data-show-time]) {
+    --caomei-date-picker-default-width: 15rem;
+}
+
+:where(.caomei-date-picker[data-range]) {
+    --caomei-date-picker-default-width: 18rem;
+}
+
 .caomei-date-picker {
     box-sizing: border-box;
     position: relative;
@@ -380,7 +394,7 @@ watchEffect(() => {
     justify-content: space-between;
     gap: var(--caomei-space-2);
     width: 100%;
-    max-width: var(--caomei-date-picker-max-width, var(--caomei-select-max-width));
+    max-width: var(--caomei-date-picker-max-width, var(--caomei-date-picker-default-width));
     height: var(--caomei-date-picker-height, var(--caomei-control-height-md));
     padding: 0 var(--caomei-date-picker-padding-x, var(--caomei-space-3));
     border: 1px solid var(--caomei-color-control-border);

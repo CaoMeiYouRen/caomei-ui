@@ -25,7 +25,7 @@
 ## 2. 归档动作
 
 - `todo.md`：清空当前阶段状态句与条目表，回到「当前无进行中阶段」；未完成项汇总只保留等待外部反馈指针。
-- `todo-archive.md`：Phase 37 归档块入窗；主窗口由 6 块（Phase 31 ~ 36）变为 7 块后越过 `docs:check:line-count` 的 warn 阈值（409 行），按既有口径把最早的 Phase 31 迁入深度归档 [phase-31.md](../../plan/archive/phase-31.md)，主窗口回到 **Phase 32 ~ Phase 37 共 6 块 / 363 行**。
+- `todo-archive.md`：Phase 37 归档块入窗；主窗口由 6 块（Phase 31 ~ 36）变为 7 块后越过 `docs:check:line-count` 的 warn 阈值（409 行），按既有口径把最早的 Phase 31 迁入深度归档 [phase-31.md](../../plan/archive/todo-archive-phases-31.md)，主窗口回到 **Phase 32 ~ Phase 37 共 6 块 / 363 行**。
 - `roadmap.md`：§1 当前态改为「当前无进行中阶段」，阶段表 Phase 37 行改为「已完成（2026-11-19 归档）」，并回链本记录与待办归档。
 - `recurring.md`：新增第 **41** 轮门槛复核（Phase 37 收口轮）并补触发义务句。
 - `docs/design/governance/index.md`：登记本记录。

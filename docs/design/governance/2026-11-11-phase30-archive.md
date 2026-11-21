@@ -8,7 +8,7 @@
 
 - **5 条主线 / 5 条原子条目**全部交付：表单输入动效 1 / 基础与布局动效 1 / 选择器动效 1 / 触摸目标 P1 1 / 治理小项 1。
 - **本阶段不发布**（D2 ②）：`latest` 维持 `1.2.0`，未执行 `pnpm release`、未触发 Release workflow；提交已推送 `master`（`git ls-remote` 实测与本地 HEAD 一致）。
-- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 30 块；主窗口由 `Phase 25 ~ Phase 30` 6 块 + 归档索引构成（Phase 30 入窗后 417 行，越过 warn 400 触发压缩；Phase 24 迁出后 366 行，`docs:check:line-count` 口径），Phase 24 迁深度归档 [phase-24.md](../../plan/archive/phase-24.md)。
+- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 30 块；主窗口由 `Phase 25 ~ Phase 30` 6 块 + 归档索引构成（Phase 30 入窗后 417 行，越过 warn 400 触发压缩；Phase 24 迁出后 366 行，`docs:check:line-count` 口径），Phase 24 迁深度归档 [phase-24.md](../../plan/archive/todo-archive-phases-24.md)。
 
 ## 2. 提交对账
 

@@ -8,7 +8,7 @@
 
 - **6 条主线 / 8 条原子条目**全部交付：动效基础层 1 / 反馈与浮层 1 / 导航与操作 1 / 图标体系 3 / Paginator 1 / 动效验收与人工复核 1。
 - **本阶段不发布**（D5 ②）：`latest` 维持 `1.2.0`，未执行 `pnpm release`、未推送。
-- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 29 块；主窗口由 `Phase 24 ~ Phase 29` 6 块 + 归档索引构成（373 行，`check-line-count` 口径），Phase 23 迁深度归档 [phase-23.md](../../plan/archive/phase-23.md)。
+- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 29 块；主窗口由 `Phase 24 ~ Phase 29` 6 块 + 归档索引构成（373 行，`check-line-count` 口径），Phase 23 迁深度归档 [phase-23.md](../../plan/archive/todo-archive-phases-23.md)。
 
 ## 2. 提交对账
 

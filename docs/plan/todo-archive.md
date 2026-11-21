@@ -2,7 +2,7 @@
 
 本文档归档已完成阶段的原子条目与验收结论。当前阶段完成后，从 [todo.md](./todo.md) 迁入此处。
 
-> **主窗口口径（2026-11-21 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 33，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 34 ~ Phase 39 共 6 块**，目标窗口 5 个；`docs:check:line-count` 读数 384 行，未越 warn 400，按「迁移触发 = 越过阈值」暂不迁出）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/phase-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/phase-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/phase-18.md)（Phase 18）、[phase-19.md](./archive/phase-19.md)（Phase 19）、[phase-20.md](./archive/phase-20.md)（Phase 20）、[phase-21.md](./archive/phase-21.md)（Phase 21）、[phase-22.md](./archive/phase-22.md)（Phase 22）、[phase-23.md](./archive/phase-23.md)（Phase 23）、[phase-24.md](./archive/phase-24.md)（Phase 24）、[phase-25.md](./archive/phase-25.md)（Phase 25）、[phase-26.md](./archive/phase-26.md)（Phase 26）、[phase-27.md](./archive/phase-27.md)（Phase 27）、[phase-28.md](./archive/phase-28.md)（Phase 28）、[phase-29.md](./archive/phase-29.md)（Phase 29）、[phase-30.md](./archive/phase-30.md)（Phase 30）、[phase-31.md](./archive/phase-31.md)（Phase 31）、[phase-32.md](./archive/phase-32.md)（Phase 32）、[phase-33.md](./archive/phase-33.md)（Phase 33）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（同日规则段 +3 行后检查器读数 **377 行**）；2026-11-21 Phase 39 入窗并迁出 Phase 33 后 **384 行**（`docs:check:line-count` 值，仍低于 warn 400）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
+> **主窗口口径（2026-11-21 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 33，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 34 ~ Phase 39 共 6 块**，目标窗口 5 个；`docs:check:line-count` 读数 384 行，未越 warn 400，按「迁移触发 = 越过阈值」暂不迁出）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/todo-archive-phases-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/todo-archive-phases-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/todo-archive-phases-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/todo-archive-phases-18.md)（Phase 18）、[phase-19.md](./archive/todo-archive-phases-19.md)（Phase 19）、[phase-20.md](./archive/todo-archive-phases-20.md)（Phase 20）、[phase-21.md](./archive/todo-archive-phases-21.md)（Phase 21）、[phase-22.md](./archive/todo-archive-phases-22.md)（Phase 22）、[phase-23.md](./archive/todo-archive-phases-23.md)（Phase 23）、[phase-24.md](./archive/todo-archive-phases-24.md)（Phase 24）、[phase-25.md](./archive/todo-archive-phases-25.md)（Phase 25）、[phase-26.md](./archive/todo-archive-phases-26.md)（Phase 26）、[phase-27.md](./archive/todo-archive-phases-27.md)（Phase 27）、[phase-28.md](./archive/todo-archive-phases-28.md)（Phase 28）、[phase-29.md](./archive/todo-archive-phases-29.md)（Phase 29）、[phase-30.md](./archive/todo-archive-phases-30.md)（Phase 30）、[phase-31.md](./archive/todo-archive-phases-31.md)（Phase 31）、[phase-32.md](./archive/todo-archive-phases-32.md)（Phase 32）、[phase-33.md](./archive/todo-archive-phases-33.md)（Phase 33）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（同日规则段 +3 行后检查器读数 **377 行**）；2026-11-21 Phase 39 入窗并迁出 Phase 33 后 **384 行**（`docs:check:line-count` 值，仍低于 warn 400）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
 
 ## 归档格式
 
@@ -27,41 +27,41 @@
 
 | 阶段 | 时间 | 交付摘要 | 深度归档 |
 |:---|:---|:---|:---|
-| Phase 0 | 2026-09-11 ~ 09-12 | 立项与 POC：命名 / 关键决策冻结、tsdown 构建与子路径导出、`--caomei-*` token 草案与暗色方案、AI / 文档基建、`src/` 骨架 | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 1 | 2026-09-12 | Tier 0 组件：Button / Input 家族 / Tag·Badge / Select / Dialog / Toast / Card / Checkbox / DataTable（列定义） | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 2 | 2026-09-13 | Tier 1 组件：Avatar / Paginator / Message / ProgressSpinner / ConfirmDialog（`useConfirm`）/ Password / MultiSelect | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 3 | 2026-09-13 | Tier 2 组件：Tabs / Accordion / DropdownMenu（10 件）/ SelectButton / Image / FileUpload | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 4 | 2026-09-13 | Tier 3 稳定批：RadioGroup / Slider / ToggleButton / Toolbar / Skeleton / ProgressBar / Popover | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 5 第一阶段 | 2026-09-13 ~ 09-14 | 文档站增强：docs `vue-tsc` 类型检查、站内搜索（中文分词）、站点 i18n 骨架 | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 6 | 2026-09-14 | 组件库补全与规范化：momei 使用复核台账、设计规范与主题预设、Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 补全 | [phase-00-06](./archive/phase-00-06.md) |
-| Phase 7 第一阶段 | 2026-09-14 ~ 09-16 | 迁移就绪：消费路径与 Nuxt 接入（本地 link 先行）、组件 i18n 注入机制、DataTable 能力增强、DatePicker / Calendar / Drawer / SplitButton / ColorPicker / DataView | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 9 | 2026-09-16 | 发布前收口：文档站信息架构（6 分组 + 组内字母序）、代码质量门与守卫、发布清单 | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 10 | 2026-09-16 ~ 09-17 | 国际化与移动端适配：内建 5 语种、locale 键集合守卫、移动端与响应式适配 | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 7 第二阶段 | 2026-09-17 ~ 09-19 | 库侧迁移就绪与交接计划：迁移计划与验收标准、B0a 交接资产、6 主线 / 33 条原子条目 | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 5 第二阶段 | 2026-09-19 | 首版发布：本地手动 0.x 首发（0.1.0）、发布指南 runbook、annotated 基线 tag | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 11 | 2026-09-20 | 组件样式按需化与能力增强：`unbundle + css.inject`、`theme.css` 入口、4 主线 / 15 条原子条目 | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 12 | 2026-09-21 ~ 09-23 | 发布就绪、文档对外与一致性收官：0.2.0 发布、文档对外可用性、样式一致性收官、a11y 基线、治理守卫精选 | [phase-07-12](./archive/phase-07-12.md) |
-| Phase 13 | 2026-09-23 ~ 09-24 | 组件能力补齐与 dependfix 迁移解阻：DataTable 行分组 / 可折叠分组 / 行展开 / 多列排序与降序优先、TagsInput 补齐、0.3.0 发布、文档站双花括号插值守卫 | [phase-13-17](./archive/phase-13-17.md) |
-| Phase 14 | 2026-09-25 ~ 09-27 | 质量与一致性收口：a11y 例外处置与受检面扩面、样式 token 一致性、对比度与配对、跨根链接守卫、测试回归、switch 滑块前景判定、组件能力长尾判定 | [phase-13-17](./archive/phase-13-17.md) |
-| Phase 15 | 2026-09-27 ~ 09-28 | 治理收口深化 + 组件能力补齐 + 下游迁移护航：字段 shell 样式层共享、引用型属性回归规则、Button `iconOnly`、Select `#value`、对比度盘点、迁移陷阱文档、条件候选判定表 | [phase-13-17](./archive/phase-13-17.md) |
-| Phase 16 | 2026-09-28 ~ 09-29 | 质量收口与治理装置落地：治理守卫精选落地、0.4.0 发布收口 | [phase-13-17](./archive/phase-13-17.md) |
-| Phase 17 | 2026-09-30 | 极简主题预设与富文本封装 + 治理补口：极简具名预设 `minimal` 成为缺省、`CaomeiRichTextEditor` 轻量封装、类名前缀守卫、取证命令 revision 钉定守卫、模态内浮层档位修复与门禁 | [phase-13-17](./archive/phase-13-17.md) |
-| Phase 18 | 2026-09-30 ~ 10-01 | 发布收口、测试稳定性与一致性治理：0.5.0 发布后校验与版本句同步、并行负载 flaky 类根因修复与并发上限兜底、计算样式采样面扩至 Toast / Switch、设计规范 §6 可机检性分级评估、治理台账漂移消缺 | [phase-18](./archive/phase-18.md) |
-| Phase 19 | 2026-10-02 ~ 10-07 | 设计一致性口径落地、组件文档去重与观感缺陷处置：设计规范 §6 七项口径裁定与 P1 ~ P3 装置、迁移映射去重 3 批、Tab 指示条 / 富文本下拉 / `iconOnly` 示例修复、`.session` 与 `todo` 约束 | [phase-19](./archive/phase-19.md) |
-| Phase 20 | 2026-10-07 ~ 10-09 | 测试装置扩面、治理守卫补口与发布收口：Tabs 采样 / 焦点与禁用态扩面、文档站主题 CSS lint、直连 Reka 守卫、浮层交互 E2E、0.6.0 发布、视觉基线立项评估 | [phase-20](./archive/phase-20.md) |
-| Phase 21 | 2026-10-10 | 下游回归机制启动、发布流统一与视觉基线落地：上游触发的下游兼容检查、`release:manual` 脚本编排、Playwright 视觉基线装置与 CI 非阻断接入 | [phase-21](./archive/phase-21.md) |
-| Phase 22 | 2026-10-10 ~ 10-12 | 机制真实贯通、依赖安全与升级治理、治理与测试收口：下游兼容检查首次真实触发、视觉基线首跑转阻断、`source-map-js` 修复、`simple-git` 4 升级、治理守卫与文档站遗留项 | [phase-22](./archive/phase-22.md) |
-| Phase 23 | 2026-10-12 ~ 10-13 | 机制收口与回归判别力、依赖与 CI 环境治理、治理与测试收口：视觉基线受检面扩至 30 张、下游兼容检查判别力、CI 运行器镜像检测点、归档载体二次压缩、示例外链守卫 | [phase-23](./archive/phase-23.md) |
-| Phase 24 | 2026-10-13 ~ 11-03 | 机制远端生效与判别力收口、CI 环境治理、治理装置与规划载体补口、组件缺口补齐、图表能力：视觉基线阻断远端复核、下游兼容检查负向判别力、暂存区卫生 / 归档 RG 计数 / 取证命令守卫扩面、Row · Col / Tooltip / Menu · Breadcrumb / Alert、图表封装与主题联动 | [phase-24](./archive/phase-24.md) |
-| Phase 25 | 2026-10-16 ~ 10-21 | 归档载体收口、移动端与响应式优化、国际化一期（5 语）、0.7.0 发布收口 | [phase-25](./archive/phase-25.md) |
-| Phase 26 | 2026-10-22 ~ 11-03 | 1.0 发布前收尾：冻结面终审与 1.x 承诺、行为收口与准破坏性变更、发布链路就绪与 `1.0.0` 交付、下游复验、UI 可用性与示例可访问名 | [phase-26](./archive/phase-26.md) |
-| Phase 27 | 2026-11-03 ~ 11-06 | 移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布：0.7 → 1.1.0 的发布链路统一与下游复验 | [phase-27](./archive/phase-27.md) |
-| Phase 28 | 2026-11-07 ~ 11-08 | caomei-auth 迁移反馈收口与图标体系调研：DatePicker `range`、Toast 逐语气 token、DataTable 密度 / 选择列宽度 token、图标体系调研（零实现）、`1.2.0` 发布 | [phase-28](./archive/phase-28.md) |
-| Phase 29 | 2026-11-08 ~ 11-09 | 动效体系与图标体系落地：motion tokens 与 `data-motion`、反馈 / 浮层 / 导航动效、`CaomeiIcon` 三态与映射、Paginator 尺寸（不发布） | [phase-29](./archive/phase-29.md) |
-| Phase 30 | 2026-11-10 ~ 11-11 | 表单 / 布局 / 选择器动效、触摸目标 P1（17 个控件 ≥24×24 命中区）、`check-stage-counts` 无阶段交叉校验（不发布） | [phase-30](./archive/phase-30.md) |
-| Phase 31 | 2026-11-12 | 下游兼容扩容、实际安装版本断言、数据展示动效 A7、触摸目标 P2、依赖 PR 卫生（不发布） | [phase-31](./archive/phase-31.md) |
-| Phase 32 | 2026-11-12 ~ 11-13 | 质量收口与文档站回归：`reka-ui` 2.11 适配、`with-select` 可访问名、首页 hydration 定性、demo 过渡（不发布） | [phase-32](./archive/phase-32.md) |
-| Phase 33 | 2026-11-13 ~ 11-14 | 依赖与工具链升级、下游适配、组件增强与质量守卫；ColorPicker 色板 radiogroup、Paginator `#report`、协作测试 P0；发布 `1.3.0` | [phase-33](./archive/phase-33.md) |
+| Phase 0 | 2026-09-11 ~ 09-12 | 立项与 POC：命名 / 关键决策冻结、tsdown 构建与子路径导出、`--caomei-*` token 草案与暗色方案、AI / 文档基建、`src/` 骨架 | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 1 | 2026-09-12 | Tier 0 组件：Button / Input 家族 / Tag·Badge / Select / Dialog / Toast / Card / Checkbox / DataTable（列定义） | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 2 | 2026-09-13 | Tier 1 组件：Avatar / Paginator / Message / ProgressSpinner / ConfirmDialog（`useConfirm`）/ Password / MultiSelect | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 3 | 2026-09-13 | Tier 2 组件：Tabs / Accordion / DropdownMenu（10 件）/ SelectButton / Image / FileUpload | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 4 | 2026-09-13 | Tier 3 稳定批：RadioGroup / Slider / ToggleButton / Toolbar / Skeleton / ProgressBar / Popover | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 5 第一阶段 | 2026-09-13 ~ 09-14 | 文档站增强：docs `vue-tsc` 类型检查、站内搜索（中文分词）、站点 i18n 骨架 | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 6 | 2026-09-14 | 组件库补全与规范化：momei 使用复核台账、设计规范与主题预设、Divider / InputGroup / FloatLabel / ButtonGroup / AutoComplete / Stepper 补全 | [phase-00-06](./archive/todo-archive-phases-00-06.md) |
+| Phase 7 第一阶段 | 2026-09-14 ~ 09-16 | 迁移就绪：消费路径与 Nuxt 接入（本地 link 先行）、组件 i18n 注入机制、DataTable 能力增强、DatePicker / Calendar / Drawer / SplitButton / ColorPicker / DataView | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 9 | 2026-09-16 | 发布前收口：文档站信息架构（6 分组 + 组内字母序）、代码质量门与守卫、发布清单 | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 10 | 2026-09-16 ~ 09-17 | 国际化与移动端适配：内建 5 语种、locale 键集合守卫、移动端与响应式适配 | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 7 第二阶段 | 2026-09-17 ~ 09-19 | 库侧迁移就绪与交接计划：迁移计划与验收标准、B0a 交接资产、6 主线 / 33 条原子条目 | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 5 第二阶段 | 2026-09-19 | 首版发布：本地手动 0.x 首发（0.1.0）、发布指南 runbook、annotated 基线 tag | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 11 | 2026-09-20 | 组件样式按需化与能力增强：`unbundle + css.inject`、`theme.css` 入口、4 主线 / 15 条原子条目 | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 12 | 2026-09-21 ~ 09-23 | 发布就绪、文档对外与一致性收官：0.2.0 发布、文档对外可用性、样式一致性收官、a11y 基线、治理守卫精选 | [phase-07-12](./archive/todo-archive-phases-07-12.md) |
+| Phase 13 | 2026-09-23 ~ 09-24 | 组件能力补齐与 dependfix 迁移解阻：DataTable 行分组 / 可折叠分组 / 行展开 / 多列排序与降序优先、TagsInput 补齐、0.3.0 发布、文档站双花括号插值守卫 | [phase-13-17](./archive/todo-archive-phases-13-17.md) |
+| Phase 14 | 2026-09-25 ~ 09-27 | 质量与一致性收口：a11y 例外处置与受检面扩面、样式 token 一致性、对比度与配对、跨根链接守卫、测试回归、switch 滑块前景判定、组件能力长尾判定 | [phase-13-17](./archive/todo-archive-phases-13-17.md) |
+| Phase 15 | 2026-09-27 ~ 09-28 | 治理收口深化 + 组件能力补齐 + 下游迁移护航：字段 shell 样式层共享、引用型属性回归规则、Button `iconOnly`、Select `#value`、对比度盘点、迁移陷阱文档、条件候选判定表 | [phase-13-17](./archive/todo-archive-phases-13-17.md) |
+| Phase 16 | 2026-09-28 ~ 09-29 | 质量收口与治理装置落地：治理守卫精选落地、0.4.0 发布收口 | [phase-13-17](./archive/todo-archive-phases-13-17.md) |
+| Phase 17 | 2026-09-30 | 极简主题预设与富文本封装 + 治理补口：极简具名预设 `minimal` 成为缺省、`CaomeiRichTextEditor` 轻量封装、类名前缀守卫、取证命令 revision 钉定守卫、模态内浮层档位修复与门禁 | [phase-13-17](./archive/todo-archive-phases-13-17.md) |
+| Phase 18 | 2026-09-30 ~ 10-01 | 发布收口、测试稳定性与一致性治理：0.5.0 发布后校验与版本句同步、并行负载 flaky 类根因修复与并发上限兜底、计算样式采样面扩至 Toast / Switch、设计规范 §6 可机检性分级评估、治理台账漂移消缺 | [phase-18](./archive/todo-archive-phases-18.md) |
+| Phase 19 | 2026-10-02 ~ 10-07 | 设计一致性口径落地、组件文档去重与观感缺陷处置：设计规范 §6 七项口径裁定与 P1 ~ P3 装置、迁移映射去重 3 批、Tab 指示条 / 富文本下拉 / `iconOnly` 示例修复、`.session` 与 `todo` 约束 | [phase-19](./archive/todo-archive-phases-19.md) |
+| Phase 20 | 2026-10-07 ~ 10-09 | 测试装置扩面、治理守卫补口与发布收口：Tabs 采样 / 焦点与禁用态扩面、文档站主题 CSS lint、直连 Reka 守卫、浮层交互 E2E、0.6.0 发布、视觉基线立项评估 | [phase-20](./archive/todo-archive-phases-20.md) |
+| Phase 21 | 2026-10-10 | 下游回归机制启动、发布流统一与视觉基线落地：上游触发的下游兼容检查、`release:manual` 脚本编排、Playwright 视觉基线装置与 CI 非阻断接入 | [phase-21](./archive/todo-archive-phases-21.md) |
+| Phase 22 | 2026-10-10 ~ 10-12 | 机制真实贯通、依赖安全与升级治理、治理与测试收口：下游兼容检查首次真实触发、视觉基线首跑转阻断、`source-map-js` 修复、`simple-git` 4 升级、治理守卫与文档站遗留项 | [phase-22](./archive/todo-archive-phases-22.md) |
+| Phase 23 | 2026-10-12 ~ 10-13 | 机制收口与回归判别力、依赖与 CI 环境治理、治理与测试收口：视觉基线受检面扩至 30 张、下游兼容检查判别力、CI 运行器镜像检测点、归档载体二次压缩、示例外链守卫 | [phase-23](./archive/todo-archive-phases-23.md) |
+| Phase 24 | 2026-10-13 ~ 11-03 | 机制远端生效与判别力收口、CI 环境治理、治理装置与规划载体补口、组件缺口补齐、图表能力：视觉基线阻断远端复核、下游兼容检查负向判别力、暂存区卫生 / 归档 RG 计数 / 取证命令守卫扩面、Row · Col / Tooltip / Menu · Breadcrumb / Alert、图表封装与主题联动 | [phase-24](./archive/todo-archive-phases-24.md) |
+| Phase 25 | 2026-10-16 ~ 10-21 | 归档载体收口、移动端与响应式优化、国际化一期（5 语）、0.7.0 发布收口 | [phase-25](./archive/todo-archive-phases-25.md) |
+| Phase 26 | 2026-10-22 ~ 11-03 | 1.0 发布前收尾：冻结面终审与 1.x 承诺、行为收口与准破坏性变更、发布链路就绪与 `1.0.0` 交付、下游复验、UI 可用性与示例可访问名 | [phase-26](./archive/todo-archive-phases-26.md) |
+| Phase 27 | 2026-11-03 ~ 11-06 | 移动端密度轴、`Form` 组合层、迁移护航、机制收口与 CI 发布：0.7 → 1.1.0 的发布链路统一与下游复验 | [phase-27](./archive/todo-archive-phases-27.md) |
+| Phase 28 | 2026-11-07 ~ 11-08 | caomei-auth 迁移反馈收口与图标体系调研：DatePicker `range`、Toast 逐语气 token、DataTable 密度 / 选择列宽度 token、图标体系调研（零实现）、`1.2.0` 发布 | [phase-28](./archive/todo-archive-phases-28.md) |
+| Phase 29 | 2026-11-08 ~ 11-09 | 动效体系与图标体系落地：motion tokens 与 `data-motion`、反馈 / 浮层 / 导航动效、`CaomeiIcon` 三态与映射、Paginator 尺寸（不发布） | [phase-29](./archive/todo-archive-phases-29.md) |
+| Phase 30 | 2026-11-10 ~ 11-11 | 表单 / 布局 / 选择器动效、触摸目标 P1（17 个控件 ≥24×24 命中区）、`check-stage-counts` 无阶段交叉校验（不发布） | [phase-30](./archive/todo-archive-phases-30.md) |
+| Phase 31 | 2026-11-12 | 下游兼容扩容、实际安装版本断言、数据展示动效 A7、触摸目标 P2、依赖 PR 卫生（不发布） | [phase-31](./archive/todo-archive-phases-31.md) |
+| Phase 32 | 2026-11-12 ~ 11-13 | 质量收口与文档站回归：`reka-ui` 2.11 适配、`with-select` 可访问名、首页 hydration 定性、demo 过渡（不发布） | [phase-32](./archive/todo-archive-phases-32.md) |
+| Phase 33 | 2026-11-13 ~ 11-14 | 依赖与工具链升级、下游适配、组件增强与质量守卫；ColorPicker 色板 radiogroup、Paginator `#report`、协作测试 P0；发布 `1.3.0` | [phase-33](./archive/todo-archive-phases-33.md) |
 
 ---
 
@@ -116,7 +116,7 @@
 ### 回扫口径（三段式）
 
 - **机检面**：`check:governance-records` / `check:planning-numbers` / `check:stage-counts`（无进行中阶段分支）/ `docs:check` / `check:archive-rg-counts` / `check:design` 全绿。
-- **人工面**：`todo.md`（清空阶段状态句与条目表）/ `roadmap.md`（§1 当前态与 Phase 34 行）/ `todo-archive.md`（本块入窗、Phase 27 迁出、主窗口口径与行数）/ `archive/index.md`（新增 Phase 27 行与迁出时点）/ `recurring.md`（第 38 轮）/ 治理索引（本批次记录）逐处核过；另修 1 处失效指针 `2026-10-11-phase22-m6-3-governance-counts-guard.md:6`（`[待办事项 §Phase 22](../../plan/todo-archive.md)` → `[待办归档 §Phase 22](../../plan/archive/phase-22.md)`，理由：目标块已迁出、仅剩索引行）。
+- **人工面**：`todo.md`（清空阶段状态句与条目表）/ `roadmap.md`（§1 当前态与 Phase 34 行）/ `todo-archive.md`（本块入窗、Phase 27 迁出、主窗口口径与行数）/ `archive/index.md`（新增 Phase 27 行与迁出时点）/ `recurring.md`（第 38 轮）/ 治理索引（本批次记录）逐处核过；另修 1 处失效指针 `2026-10-11-phase22-m6-3-governance-counts-guard.md:6`（`[待办事项 §Phase 22](../../plan/todo-archive.md)` → `[待办归档 §Phase 22](../../plan/archive/todo-archive-phases-22.md)`，理由：目标块已迁出、仅剩索引行）。
 - **未处理面**：历史记录中指向 `docs/plan/todo.md` 的时点陈述按既有边界不回改；同类「载体名 + Phase NN 指向 `todo-archive.md`」而块已深度归档的散文指针（如 `2026-10-05-phase19-m1-2-visual-alignment.md:4`、`2026-10-07-phase20-m2-5-audit-protocol-convergence.md:4`、`2026-10-10-phase21-m3-1-visual-baseline-device.md:4`）按点时记录不回改，仅本批为解除机检红灯修 1 处并在此枚举。
 
 ### 遗留与后续候选

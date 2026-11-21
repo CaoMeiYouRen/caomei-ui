@@ -8,7 +8,7 @@
 
 - **5 条主线 / 6 条原子条目**全部交付：下游兼容扩容 1 / 实际安装版本断言 1 / 数据展示动效 A7 1 / 触摸目标 P2 1 / 依赖 PR 卫生 2（构成对账 1 + 1 + 1 + 1 + 2 = 6）。
 - **本阶段不发布**（D2 ②）：`latest` 维持 `1.2.0`，未执行 `pnpm release`、未触发 Release workflow；提交已推送 `master`（`git ls-remote` 与本地 HEAD 一致）。
-- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 31 块；主窗口由 `Phase 26 ~ Phase 31` 6 块 + 归档索引构成（Phase 31 入窗后 **416 行**、越过 warn 400；Phase 25 迁出后 **367 行**，均为 `docs:check:line-count` 口径：前态 366 + 块 49（含分隔空行）+ 归档索引行 1 = 416，迁出 49 后 367），Phase 25 迁深度归档 [phase-25.md](../../plan/archive/phase-25.md)。
+- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 31 块；主窗口由 `Phase 26 ~ Phase 31` 6 块 + 归档索引构成（Phase 31 入窗后 **416 行**、越过 warn 400；Phase 25 迁出后 **367 行**，均为 `docs:check:line-count` 口径：前态 366 + 块 49（含分隔空行）+ 归档索引行 1 = 416，迁出 49 后 367），Phase 25 迁深度归档 [phase-25.md](../../plan/archive/todo-archive-phases-25.md)。
 
 ## 2. 提交对账
 

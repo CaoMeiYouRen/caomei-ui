@@ -8,7 +8,7 @@
 
 - **3 条主线 / 4 条原子条目**全部交付：依赖适配与例外收口 1 / 文档站质量收口 2 / 文档站 demo 过渡 1（构成对账 1 + 2 + 1 = 4）。
 - **本阶段不发布**：`latest` 维持 `1.2.0`，未执行 `pnpm release`、未触发 Release workflow；提交已推送 `master`（`git ls-remote` 与本地 HEAD 一致）。
-- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 32 块；主窗口由 `Phase 27 ~ Phase 32` 6 块 + 归档索引构成（Phase 32 入窗后 **408 行**、越过 warn 400（前态 367 + 增量 41）；Phase 26 迁出 77 行后 **331 行**，均为 `docs:check:line-count` 口径（408 − 77 = 331）），Phase 26 迁深度归档 [phase-26.md](../../plan/archive/phase-26.md)。
+- 归档落点：[待办归档](../../plan/todo-archive.md) Phase 32 块；主窗口由 `Phase 27 ~ Phase 32` 6 块 + 归档索引构成（Phase 32 入窗后 **408 行**、越过 warn 400（前态 367 + 增量 41）；Phase 26 迁出 77 行后 **331 行**，均为 `docs:check:line-count` 口径（408 − 77 = 331）），Phase 26 迁深度归档 [phase-26.md](../../plan/archive/todo-archive-phases-26.md)。
 
 ## 2. 提交对账
 
@@ -43,7 +43,7 @@
 - `roadmap.md`：§1 当前态改为无进行中阶段、Phase 32 行置「完成并归档」、§5 深度归档清单补 Phase 26 与第十次压缩记录。
 - `todo-archive.md`：Phase 32 入窗（主窗口 367 → 408，`docs:check:line-count` 口径）；Phase 26 块机械迁出——**77 行迁出段逐行核对，改写 = 25 处 `../` → `../../` + 2 处 `./` → `../`（`./backlog.md`、`./recurring.md`），正文零改写**；迁出后 **331 行**。
 - `archive/index.md`：新增 phase-26 文件行与 2026-11-13 迁出记录。
-- **机检改指 1 处**：Phase 26 迁出使 `M2-3` 离开主窗口，`docs/design/governance/2026-10-10-phase22-m2-3-major-upgrades.md:6` 的 `[待办事项 §Phase 22]` 指针改为 `[待办归档 Phase 22 §M2-3](../../plan/archive/phase-22.md)`；`check:governance-records` 由 1 处失败转为全绿。同形散文指针（`2026-10-10-phase22-m2-2-*`、`2026-10-11-phase22-m6-3-*`）按既有边界不回改。
+- **机检改指 1 处**：Phase 26 迁出使 `M2-3` 离开主窗口，`docs/design/governance/2026-10-10-phase22-m2-3-major-upgrades.md:6` 的 `[待办事项 §Phase 22]` 指针改为 `[待办归档 Phase 22 §M2-3](../../plan/archive/todo-archive-phases-22.md)`；`check:governance-records` 由 1 处失败转为全绿。同形散文指针（`2026-10-10-phase22-m2-2-*`、`2026-10-11-phase22-m6-3-*`）按既有边界不回改。
 - `recurring.md`：§3 第 35 轮门槛复核留痕 + 触发义务句补记 + §2「上次执行」列。
 - `.session`：阶段态同步为「无进行中阶段」。
 - 治理索引：本记录入索引。

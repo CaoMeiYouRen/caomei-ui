@@ -24,7 +24,7 @@
 
 ### M4 归档载体压缩（1 条）
 
-- **M4-1 归档载体压缩**（提交 `771077d`；记录见 [M4-1](../../design/governance/2026-10-13-phase23-m4-1-todo-archive-compression.md)）：主窗口 **574 → 314 行**（`docs:check:line-count` 判 ok），**Phase 13 ~ 17** 五个完整块迁入新增深度归档 [phase-13-17.md](../../plan/archive/phase-13-17.md)（262 行正文 + 7 行文件头）；**近线窗口口径 = 最近 5 个已完成阶段**（本次 Phase 18 ~ 22），迁出触发规则写入主窗口口径句。**机械迁移零改写**：以压缩前基线取原段、按链接深度替换后与新文件正文 `diff` **零差异**（**68 处**链接改写 = 唯一改动面：design 37 / standards 11 / backlog 14 / recurring 6）。**回扫三段式**：机检 2 处 `stale-planning-pointer` 同批改指、人工面 6 处逐条枚举（2 处改指 / 4 处边界内不改）、未处理面显式声明（「阶段限定 + 复用编号」14 处 / 13 文件，记 follow-up）。RG `standard` **Pass**（0 / 1 / 1）。
+- **M4-1 归档载体压缩**（提交 `771077d`；记录见 [M4-1](../../design/governance/2026-10-13-phase23-m4-1-todo-archive-compression.md)）：主窗口 **574 → 314 行**（`docs:check:line-count` 判 ok），**Phase 13 ~ 17** 五个完整块迁入新增深度归档 [phase-13-17.md](../../plan/archive/todo-archive-phases-13-17.md)（262 行正文 + 7 行文件头）；**近线窗口口径 = 最近 5 个已完成阶段**（本次 Phase 18 ~ 22），迁出触发规则写入主窗口口径句。**机械迁移零改写**：以压缩前基线取原段、按链接深度替换后与新文件正文 `diff` **零差异**（**68 处**链接改写 = 唯一改动面：design 37 / standards 11 / backlog 14 / recurring 6）。**回扫三段式**：机检 2 处 `stale-planning-pointer` 同批改指、人工面 6 处逐条枚举（2 处改指 / 4 处边界内不改）、未处理面显式声明（「阶段限定 + 复用编号」14 处 / 13 文件，记 follow-up）。RG `standard` **Pass**（0 / 1 / 1）。
 
 ### M5 治理载体与文档站守卫（2 条）
 

@@ -20,7 +20,7 @@ Phase 17 归档前，`todo-archive.md` 已达 **594** 行（`docs:check:line-cou
 
 ## 2. 归档动作清单
 
-1. **深度归档迁出**：新建 [`docs/plan/archive/`](../../plan/archive/index.md)，把主窗口 Phase 0 ~ Phase 12 的 14 个归档块**机械迁移**为两份文件——[phase-00-06.md](../../plan/archive/phase-00-06.md)（Phase 0 ~ Phase 6，7 块 / 140 行）与 [phase-07-12.md](../../plan/archive/phase-07-12.md)（Phase 7 第一阶段 ~ Phase 12，7 块 / 236 行）；迁移只做**链接深度调整**（`../` → `../../`、`./` → `../`），正文不改写；新增 [archive/index.md](../../plan/archive/index.md) 作为目录页（同时消除 VitePress 对目录链接的 dead link 判定）。
+1. **深度归档迁出**：新建 [`docs/plan/archive/`](../../plan/archive/index.md)，把主窗口 Phase 0 ~ Phase 12 的 14 个归档块**机械迁移**为两份文件——[phase-00-06.md](../../plan/archive/todo-archive-phases-00-06.md)（Phase 0 ~ Phase 6，7 块 / 140 行）与 [phase-07-12.md](../../plan/archive/todo-archive-phases-07-12.md)（Phase 7 第一阶段 ~ Phase 12，7 块 / 236 行）；迁移只做**链接深度调整**（`../` → `../../`、`./` → `../`），正文不改写；新增 [archive/index.md](../../plan/archive/index.md) 作为目录页（同时消除 VitePress 对目录链接的 dead link 判定）。
 2. **主窗口重构**：`todo-archive.md` 改为「主窗口口径说明 + 归档索引（Phase 0 ~ Phase 12，逐阶段一行摘要 + 深度归档链接）+ Phase 13 ~ Phase 17 完整块」；行数由 594 回落至 warn 下界以下（**终态数值与复算命令见 §8**，不在本节复写易变数字）。
 3. **Phase 17 归档块**：3 条主线 / 8 条原子条目逐条交付记录 + 提交对账（`e23b70e..2b2b129` = **24** 提交）+ 质量门 + 长期任务第 18 轮 + 回扫口径三段式 + wisdom 结论 + 已知观察 + 遗留与后续候选。
 4. **`todo.md` 清空**：改为「**当前无进行中阶段**（Phase 17 已归档）+ 未完成项汇总」；删除阶段条目表、状态播报、提交号、非目标段与 M3 准入依据（归档清理规则：已归档条目不得在 `todo.md` / `backlog.md` 保留任何内容）；未完成项汇总去里程碑编号，仅保留能力名与取证入口。

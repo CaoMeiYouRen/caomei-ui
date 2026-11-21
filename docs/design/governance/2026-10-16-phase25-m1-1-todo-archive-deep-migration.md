@@ -2,7 +2,7 @@
 
 > 阶段 / 条目：Phase 25 M1-1（归档与规划载体收口——归档载体深度归档与行数口径收口）。
 > 验收口径依据：[Phase 25 登记批次记录](./2026-10-16-phase25-registration.md) §2；压缩次序依据 [规划规范 §7](../../standards/planning.md)（机械迁出 → `diff` 核对 → 修机检指针 → 枚举人工面 + 声明未处理面 → 回填口径句 / 索引 / `roadmap §5`）。
-> 关联：[todo-archive.md 主窗口口径](../../plan/todo-archive.md)、[深度归档索引](../../plan/archive/index.md)、新深度归档文件 [phase-18.md](../../plan/archive/phase-18.md)。
+> 关联：[todo-archive.md 主窗口口径](../../plan/todo-archive.md)、[深度归档索引](../../plan/archive/index.md)、新深度归档文件 [phase-18.md](../../plan/archive/todo-archive-phases-18.md)。
 
 ## 1. 背景与触发
 
@@ -17,7 +17,7 @@
 ## 2. 迁移口径
 
 - **近线窗口（迁移后）= Phase 19 ~ Phase 23**（5 块 = 最近 5 个已完成阶段）。
-- **迁出范围 = Phase 18**（1 个完整归档块），迁入新深度归档文件 [`phase-18.md`](../../plan/archive/phase-18.md)。
+- **迁出范围 = Phase 18**（1 个完整归档块），迁入新深度归档文件 [`phase-18.md`](../../plan/archive/todo-archive-phases-18.md)。
 - **文件粒度 = 每次压缩批次一个文件**（沿用 `phase-00-06` / `phase-07-12` / `phase-13-17` 的既有形态：不复用、不改名既有文件，故 `phase-13-17.md` 维持原名）。
 - **时间序不变**：主窗口保留块（Phase 19 ~ Phase 23）时间序不动；`archive/index.md` 文件表按同序 +1 行。
 - **归档块事实零改写**：迁移为**机械操作**，正文一字不改，仅调整相对链接深度。
@@ -123,7 +123,7 @@ PY
   | 8 | `docs/design/governance/2026-10-01-phase18-m4-2-contrast-terminal-conclusions.md:4` | `M4-2` | **维持** |
   | 9 | `docs/design/governance/2026-10-01-phase18-m6-1-ledger-drift-disposal.md:4` | `M6-1` | **维持** |
 
-  **处置口径（本批不改，沿用 Phase 23 M4-1 §7③ 的既有边界）**：① 主窗口「归档索引」表对 Phase 18 提供**带深度归档链接的逐阶段行摘要**（`[phase-18](./archive/phase-18.md)`），故此类指针**仍可达**（多一跳）；② 其指向的编号在 [phase-18.md](../../plan/archive/phase-18.md) 的 `## Phase 18` 段内**逐条存在**（本批逐条核验：上表 11 个编号形态 `M1-1` / `M1-2` / `M1-3` / `M2-1` ~ `M2-5` / `M3-1` / `M4-2` / `M6-1` 均在段内命中）；③ 逐条改指属**跨载体一致性排查**（9 份点时记录的表头改写），按 [AI 协作规范 §3.4](../../standards/ai-collaboration.md) 记 **follow-up**，不由本条目承载。
+  **处置口径（本批不改，沿用 Phase 23 M4-1 §7③ 的既有边界）**：① 主窗口「归档索引」表对 Phase 18 提供**带深度归档链接的逐阶段行摘要**（`[phase-18](./archive/todo-archive-phases-18.md)`），故此类指针**仍可达**（多一跳）；② 其指向的编号在 [phase-18.md](../../plan/archive/todo-archive-phases-18.md) 的 `## Phase 18` 段内**逐条存在**（本批逐条核验：上表 11 个编号形态 `M1-1` / `M1-2` / `M1-3` / `M2-1` ~ `M2-5` / `M3-1` / `M4-2` / `M6-1` 均在段内命中）；③ 逐条改指属**跨载体一致性排查**（9 份点时记录的表头改写），按 [AI 协作规范 §3.4](../../standards/ai-collaboration.md) 记 **follow-up**，不由本条目承载。
 - **跨分隔符散文指针**：编号与链接之间有散文相隔者机检不覆盖；沿用既有边界，按[规划规范 §7](../../standards/planning.md) 属「登记动作的时点陈述」，**不回改、不登记为待办**。
 
 ## 8. Review Gate

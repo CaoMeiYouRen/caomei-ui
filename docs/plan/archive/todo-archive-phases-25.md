@@ -10,7 +10,7 @@
 
 ### M1 归档与规划载体收口（1 条）
 
-- **M1-1 归档载体深度归档与行数口径收口**（提交 `746b75e`；记录见 [M1-1](../../design/governance/2026-10-16-phase25-m1-1-todo-archive-deep-migration.md)）：Phase 18 完整块机械迁入新增深度归档 [phase-18.md](../archive/phase-18.md)，主窗口 **404 → 342 行**（`docs:check:line-count` 判 ok）；迁出段与原文 `diff` 零差异（**14 处**链接目标改写为唯一改动面）；主窗口口径句与 `archive/index.md` 同步；指针回扫三段式留痕。RG `standard` R1 `Pass` → R2 delta `quick` `Pass`。
+- **M1-1 归档载体深度归档与行数口径收口**（提交 `746b75e`；记录见 [M1-1](../../design/governance/2026-10-16-phase25-m1-1-todo-archive-deep-migration.md)）：Phase 18 完整块机械迁入新增深度归档 [phase-18.md](../archive/todo-archive-phases-18.md)，主窗口 **404 → 342 行**（`docs:check:line-count` 判 ok）；迁出段与原文 `diff` 零差异（**14 处**链接目标改写为唯一改动面）；主窗口口径句与 `archive/index.md` 同步；指针回扫三段式留痕。RG `standard` R1 `Pass` → R2 delta `quick` `Pass`。
 
 ### M2 移动端与响应式优化（3 条）
 

@@ -84,6 +84,18 @@
         }
     },
     {
+        "name": "InputOtp",
+        "group": {
+            "zh": "表单输入",
+            "en": "Form Inputs"
+        },
+        "example": "input-otp/basic.vue",
+        "description": {
+            "zh": "录入一次性验证码：逐格输入、粘贴分发，并在填满后抛出完成事件。",
+            "en": "Captures a one-time code with one cell per character, paste distribution and a complete event."
+        }
+    },
+    {
         "name": "Switch",
         "group": {
             "zh": "表单输入",

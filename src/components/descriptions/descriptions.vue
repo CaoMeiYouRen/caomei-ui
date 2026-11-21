@@ -84,13 +84,13 @@ const rootStyle = computed<StyleValue>(() => ({
 
 /* 窄屏档：3 列及以上退 2 列；640 以下全部单列 */
 @media (width <= 1024px) {
-    .caomei-descriptions:not(.caomei-descriptions--cols-1) {
+    .caomei-descriptions:where(:not(.caomei-descriptions--cols-1)) {
         --caomei-descriptions-columns: 2;
     }
 }
 
 @media (width <= 640px) {
-    .caomei-descriptions:not(.caomei-descriptions--cols-1) {
+    .caomei-descriptions:where(:not(.caomei-descriptions--cols-1)) {
         --caomei-descriptions-columns: 1;
     }
 }

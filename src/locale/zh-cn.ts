@@ -19,6 +19,10 @@ const zhCN: CaomeiLocaleMessages = {
         loading: '正在加载图表…',
         loadFailed: '图表加载失败，请确认已安装 vue-echarts',
     },
+    cascader: {
+        empty: '暂无数据',
+        clear: '清除',
+    },
     checkbox: {
         selectAll: '全选',
     },

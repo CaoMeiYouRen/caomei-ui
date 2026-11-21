@@ -19,6 +19,10 @@ const ruRU: CaomeiLocaleMessages = {
         loading: 'Загрузка диаграммы…',
         loadFailed: 'Не удалось загрузить диаграмму. Убедитесь, что vue-echarts установлен.',
     },
+    cascader: {
+        empty: 'Нет данных',
+        clear: 'Очистить',
+    },
     checkbox: {
         selectAll: 'Выбрать все',
     },

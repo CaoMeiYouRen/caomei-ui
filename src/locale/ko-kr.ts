@@ -19,6 +19,10 @@ const koKR: CaomeiLocaleMessages = {
         loading: '차트를 불러오는 중…',
         loadFailed: '차트를 불러오지 못했습니다. vue-echarts 설치를 확인하세요',
     },
+    cascader: {
+        empty: '데이터 없음',
+        clear: '지우기',
+    },
     checkbox: {
         selectAll: '전체 선택',
     },

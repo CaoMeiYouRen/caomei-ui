@@ -19,6 +19,10 @@ const esES: CaomeiLocaleMessages = {
         loading: 'Cargando gráfico…',
         loadFailed: 'No se pudo cargar el gráfico. Asegúrate de que vue-echarts esté instalado.',
     },
+    cascader: {
+        empty: 'Sin datos',
+        clear: 'Limpiar',
+    },
     checkbox: {
         selectAll: 'Seleccionar todo',
     },

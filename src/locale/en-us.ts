@@ -19,6 +19,10 @@ const enUS: CaomeiLocaleMessages = {
         loading: 'Loading chart…',
         loadFailed: 'Failed to load the chart. Make sure vue-echarts is installed.',
     },
+    cascader: {
+        empty: 'No data',
+        clear: 'Clear',
+    },
     checkbox: {
         selectAll: 'Select all',
     },

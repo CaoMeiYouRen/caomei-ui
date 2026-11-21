@@ -19,6 +19,10 @@ const frFR: CaomeiLocaleMessages = {
         loading: 'Chargement du graphique…',
         loadFailed: 'Impossible de charger le graphique. Vérifiez que vue-echarts est installé.',
     },
+    cascader: {
+        empty: 'Aucune donnée',
+        clear: 'Effacer',
+    },
     checkbox: {
         selectAll: 'Tout sélectionner',
     },

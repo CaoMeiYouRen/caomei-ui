@@ -39,6 +39,10 @@ export interface CaomeiLocaleMessages {
         next: string
         label: string
     }
+    cascader: {
+        empty: string
+        clear: string
+    }
     checkbox: {
         selectAll: string
     }

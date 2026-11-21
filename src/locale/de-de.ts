@@ -19,6 +19,10 @@ const deDE: CaomeiLocaleMessages = {
         loading: 'Diagramm wird geladen…',
         loadFailed: 'Diagramm konnte nicht geladen werden. Stelle sicher, dass vue-echarts installiert ist.',
     },
+    cascader: {
+        empty: 'Keine Daten',
+        clear: 'Leeren',
+    },
     checkbox: {
         selectAll: 'Alle auswählen',
     },

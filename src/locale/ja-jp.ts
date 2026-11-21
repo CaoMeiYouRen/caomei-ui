@@ -19,6 +19,10 @@ const jaJP: CaomeiLocaleMessages = {
         loading: 'グラフを読み込み中…',
         loadFailed: 'グラフの読み込みに失敗しました。vue-echarts がインストールされているか確認してください',
     },
+    cascader: {
+        empty: 'データなし',
+        clear: 'クリア',
+    },
     checkbox: {
         selectAll: 'すべて選択',
     },

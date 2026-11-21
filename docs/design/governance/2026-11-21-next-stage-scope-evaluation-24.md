@@ -9,7 +9,7 @@
 
 | 面 | 读数 |
 |:---|:---|
-| 版本 | `latest` = **`1.3.0`**（2026-11-14 经 CI 发布）。`1.3.0` 之后累计交付 **11 个组件包**未发布：`action-sheet` / `back-top` / `cell` / `descriptions` / `empty` / `input-otp` / `popconfirm` / `rating` / `result` / `tabbar` / `time-picker`（`git log v1.3.0..HEAD --diff-filter=A -- 'src/components/*/index.ts'`） |
+| 版本 | `latest` = **`1.3.0`**（2026-11-14 经 CI 发布）。`1.3.0` 之后累计交付 **11 个组件包**未发布：`action-sheet` / `back-top` / `cell` / `descriptions` / `empty` / `input-otp` / `popconfirm` / `rating` / `result` / `tabbar` / `time-picker`（`git log v1.3.0..f5cf0c32 --diff-filter=A -- 'src/components/*/index.ts'`） |
 | 仓库 | `master` = `f5cf0c32`，`origin/master` = `f5cf0c32`，无未推送提交；Phase 39 经 PR #72 rebase 合并 |
 | Issue / PR | open issue **1**（[#71](https://github.com/CaoMeiYouRen/caomei-ui/issues/71) 规划文档模型 v1，规则层已采纳，存量改名批次未执行）；open PR **0** |
 | 安全告警 | Dependabot open **0**；Code Scanning open **0** |
@@ -37,7 +37,7 @@
 | C1 | 国际化功能缺口 #1 ~ #6 | [三问调研](./2026-11-18-i18n-component-and-mobile-research.md) §3.3；Backlog §1.4 | **下游驱动，当前最高价值**。三仓均用 `ConfigProvider` 切换 `zh-CN` / `en-US`，且实际使用受影响的日期、数字、分页、上传与表格组件。现状：`DatePicker` / `Calendar` 的 `locale` 默认 `zh-CN`、`weekdayFormat: 'narrow'`、`hourFormat: '24'`；`InputNumber` 未向 Reka `NumberFieldRoot` 透传 `locale`；`Paginator` 用 `String(value)`；`FileUpload` 体积用 `toFixed(1) + ' KB'`；`DataTable` 列宽手柄与 `FileUpload` 移除按钮为硬编码中文可访问名。六项均属**输出错误或读屏语言错误**，不是缺功能 | **阶段候选（核心）** |
 | C2 | 支持语言与翻译状态表 | Backlog §1.6；调研 §3.5 | 数据源齐备（`check:locale-keys` / `check:locale-ledger` / 复核记录），缺的是一张「语言 × 分发形态 × 键覆盖 × 复核状态」总表；与 C1 同批做不会引入新代码面 | **阶段候选（核心，随 C1）** |
 | C3 | Form 校验能力 | Backlog §1.11 P1（生态对照） | **产品驱动 / 生态缺口**。`Form` / `FormItem` 现为独立组合层，`FormItem` 已有受控 `invalid` / `error`，不内建 rules；caomei-auth 在 12 个文件使用 `CaomeiFormItem`，但校验仍手写受控。Reka 2.11 实测导出 `FormRoot` / `FieldRoot` / `FieldError` / `FieldLabel` / `FieldDescription`，且支持 `validate`、`validation-mode`、服务端 `errors` 与提交聚焦首个无效字段 | **阶段候选（可选）** |
-| C4 | `1.4.0` 发布与下游复验 | Phase 39 遗留；`v1.3.0..HEAD` 新增组件 | 11 个新组件包未发布，下游三仓全部停在 `1.2.0` / `1.3.0`；发布是让 Phase 34 ~ 39 成果进入下游的常规路径。发布后 `release.yml` 自动 dispatch 下游兼容检查（tag 由 `GITHUB_TOKEN` 创建，只能走 `workflow_dispatch`） | **阶段候选（核心）** |
+| C4 | `1.4.0` 发布与下游复验 | Phase 39 遗留；`v1.3.0..f5cf0c32` 新增组件 | 11 个新组件包未发布，下游三仓全部停在 `1.2.0` / `1.3.0`；发布是让 Phase 34 ~ 39 成果进入下游的常规路径。发布后 `release.yml` 自动 dispatch 下游兼容检查（tag 由 `GITHUB_TOKEN` 创建，只能走 `workflow_dispatch`） | **阶段候选（核心）** |
 | C5 | 规划文档模型 v1 存量改名 + 机检 | issue #71；[研判记录](./2026-11-20-planning-doc-model-v1-evaluation.md) §3.6 | 规则层已采纳；剩余为机械批次（存量 `phase-*.md` 分片 19 个实测 → `todo-archive-phases-*.md`，链接面 135 处 / 23 文件，含治理记录与归档块回扫句）。与功能改动混批会放大 diff 与回滚面 | **独立机械批次（待授权）** |
 | C6 | 国际化二期 LTR（7 语） | Backlog §1.4 | 语言集已收敛为 `it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`；**无新的下游语言需求**，7 语文案、台账、可访问名与回归面显著 | **待用户决策** |
 | C7 | 语言矩阵长期扩容 | Backlog §1.4 | 触发条件 = 出现新的下游语言需求；本轮未命中 | 维持 Backlog |

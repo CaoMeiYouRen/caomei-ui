@@ -73,6 +73,12 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 }
 ```
 
+## Mobile and narrow screens
+
+- The visual box defaults to 40×22 (override with `--caomei-switch-width` / `--caomei-switch-height`) while `.caomei-hit-target` extends the hit area to at least 24×24 (the visual box is unchanged); no extra enlargement is needed on narrow screens.
+- The control keeps `role="switch"` and `aria-checked`; when tapping the text should toggle it, wrap the text in a clickable label yourself (the component renders no visible label).
+- **Known limits**: the switch carries no validation state (no `invalid` channel); associate error text through `aria-describedby`.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

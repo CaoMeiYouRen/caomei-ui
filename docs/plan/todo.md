@@ -12,7 +12,7 @@
 | M2 日期选择器形态扩展 | 2 / 2 | 已闭环 | 本批 | R3 Pass；文档批 Pass | 2 → 0 |
 | M3 治理与可达性收尾 | 2 / 2 | 已闭环 | 本批 | R1 Pass | 2 → 0 |
 | M4 移动组件 | 3 / 3 | 已闭环 | 本批 | 各批 Pass | 3 → 0 |
-| M5 移动文档 | 1 / 4 | 进行中 | 本批 | R1 Pass（修复后） | 4 → 1 |
+| M5 移动文档 | 3 / 4 | 进行中 | 本批 | 各批 Pass（修复后） | 4 → 3 |
 
 尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。阶段范围与验收口径见 [Phase 41 登记批次](../design/governance/2026-11-22-phase41-registration.md)。
 
@@ -32,8 +32,8 @@
 | M4-2 | 移动组件 | NavBar 文档与登记面（例外项） | 已交付 |
 | M4-3 | 移动组件 | SearchBar 配方与示例 | 已交付 |
 | M5-1 | 移动文档 | 移动端就绪矩阵 | 已交付 |
-| M5-2 | 移动文档 | 高流量页移动说明 A（DataTable / Dialog / Form / Tabs） | 待执行 |
-| M5-3 | 移动文档 | 高流量页移动说明 B（FileUpload / Switch / Drawer / Popover） | 待执行 |
+| M5-2 | 移动文档 | 高流量页移动说明 A（DataTable / Dialog / Form / Tabs） | 已交付 |
+| M5-3 | 移动文档 | 高流量页移动说明 B（FileUpload / Switch / Drawer / Popover） | 已交付 |
 | M5-4 | 移动文档 | 移动壳层示例与英文同步（含真机清单） | 待执行 |
 
 ## 未完成项汇总

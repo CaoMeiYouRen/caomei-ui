@@ -92,6 +92,12 @@
 
 `disableOutsidePointerEvents` 开启后，面板外的点击 / 聚焦不再关闭浮层，`Escape` 与触发器切换仍可关闭；关闭该配置后恢复既有口径（外部点击 / 聚焦照旧关闭）。打开态背景隔离（`inert` + `aria-hidden`，Tab 不进入背景）与本节开关无关，见「无障碍」节。
 
+## 移动端与窄屏
+
+- 面板宽度按 `min(20rem, 可用宽)` 收敛（`--caomei-popover-max-width` 可覆盖），内容超出时纵向滚动；默认开启碰撞避让，面板落在可用视口内。
+- 触摸设备建议用点击触发（默认即 click），不要把关键操作只挂在 hover 上。
+- **已知边界**：面板不做「移动端转底部抽屉」，需要底部形态时改用 `ActionSheet` 或 `Drawer`。
+
 ## 从 PrimeVue 迁移
 
 | PrimeVue | 本组件 |

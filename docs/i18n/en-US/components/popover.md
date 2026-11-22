@@ -92,6 +92,12 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 With `disableOutsidePointerEvents` on, pointer clicks and focus moves outside the panel no longer close it, while `Escape` and toggling the trigger still close it; turning the flag off restores the existing behavior (outside clicks and focus close it again). Background isolation while open (`inert` + `aria-hidden`, so Tab does not enter the background) does not depend on this flag; see the Accessibility section.
 
+## Mobile and narrow screens
+
+- The panel converges to `min(20rem, available width)` (override with `--caomei-popover-max-width`) and scrolls when the content overflows; collision avoidance is on by default, so it stays inside the available viewport.
+- On touch devices prefer click triggers (the default) and never hide critical actions behind hover only.
+- **Known limits**: the panel does not become a bottom sheet on mobile; use `ActionSheet` or `Drawer` when a bottom form is needed.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

@@ -73,6 +73,12 @@
 }
 ```
 
+## 移动端与窄屏
+
+- 开关视觉盒默认 40×22（`--caomei-switch-width` / `--caomei-switch-height` 可覆盖），命中区经 `.caomei-hit-target` 扩展到 ≥24×24（视觉盒不变）；窄屏不需要额外放大。
+- 开关本身保留 `role="switch"` 与 `aria-checked`；需要「点击文字也能切换」时把文字放进可点击的 label 或自行包一层（组件不渲染可见标签）。
+- **已知边界**：开关不承载校验状态（没有 `invalid` 通道），错误文案请用 `aria-describedby` 关联。
+
 ## 从 PrimeVue 迁移
 
 | PrimeVue | 本组件 |

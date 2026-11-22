@@ -54,6 +54,12 @@ The `#header` slot replaces the content of the title area while the close button
 
 > **Known trade-off (nested overlays)**: opening another Dialog / Drawer / ConfirmDialog inside a drawer puts the child overlay (1000) below the parent content (1001), so the parent content is not dimmed although it is blocked and cannot be interacted with; a floating panel already open in the parent (1050) sits above the child content (1001) and stays visible, but inherits the modal lock's `pointer-events: none` — **visible but not clickable**; clicking that area first closes the child as an outside click and then falls through to the revealed option. Closing order, focus isolation and scroll locking still follow "close only the topmost layer". See [nested overlay layering evaluation](/design/governance/2026-11-15-phase34-m2-1-nested-overlay-layering) for the evaluation and the implementation sketch.
 
+## Mobile and narrow screens
+
+- Left / right drawers converge to `min(90vw, size)` and top / bottom drawers to `min(90vh, size)`; the `dvh` fallback is built in, so the address bar collapsing does not shift the panel.
+- Bottom drawers add `--caomei-safe-area-bottom` and scroll their body; the overlay and scroll lock work the same on narrow screens.
+- **Known limits**: a drawer never turns full screen by itself; override `size` to `100vw` / `100dvh` and handle the safe area yourself when needed.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

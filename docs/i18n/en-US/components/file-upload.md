@@ -70,6 +70,12 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 > The component only handles selection and list management; chunking, resumable upload, progress and server errors are implemented in the application layer.
 
+## Mobile and narrow screens
+
+- File names always converge with `min-width: 0` and an ellipsis, so they never break the container on narrow screens either; on touch devices put the upload area inside a `data-density="touch"` subtree (the basic button reaches 44px with the step, while the advanced drop zone height comes from its padding).
+- Drag and drop is unavailable on touch devices (no drag events), so make sure the "choose file" button stays visible and tappable.
+- **Known limits**: the component does not scroll a long file list itself — constrain the height with your container; file-name rows only ellipsize and do not expand.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

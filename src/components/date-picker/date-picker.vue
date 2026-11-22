@@ -12,6 +12,7 @@ import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import { CaomeiPopoverTrigger } from '../popover'
 import CalendarPanel from '../calendar/calendar-panel.vue'
 import CalendarRangePanel from '../calendar/calendar-range-panel.vue'
+import MonthYearPanel from './month-year-panel.vue'
 import PopoverTriggerId from './popover-trigger-id.vue'
 import TimeInput from './time-input.vue'
 import type { DatePickerModelValue, DatePickerProps, DatePickerRange, TimeParts } from './types'
@@ -115,8 +116,12 @@ onBeforeUnmount(() => {
 })
 
 const isRange = computed(() => props.selectionMode === 'range')
+const isMonth = computed(() => props.selectionMode === 'month')
+const isYear = computed(() => props.selectionMode === 'year')
+/** 月 / 年粒度：值仍为 `Date`，但只保留到月或年 */
+const isGranular = computed(() => isMonth.value || isYear.value)
 
-/** 单日期模型：非 `single` 模式或模型为区间时视为未选择 */
+/** 单值模型（`single` / `month` / `year`）：模型为区间时视为未选择 */
 const singleDate = computed<Date | null>(() => (model.value instanceof Date ? model.value : null))
 /** 区间模型：仅 `range` 模式且模型为「两个原生 Date」时成立；异常形状按未选择处理 */
 const rangeModel = computed<DatePickerRange | null>(() => {
@@ -133,6 +138,34 @@ const rangeModel = computed<DatePickerRange | null>(() => {
 })
 
 const messages = useLocale()
+
+/** 月 / 年粒度的 Intl 格式化器缓存（键为 locale + 粒度） */
+const granularFormatters = new Map<string, Intl.DateTimeFormat>()
+
+function granularFormatter(): Intl.DateTimeFormat {
+    const key = `${resolvedLocale.value}|${isYear.value ? 'year' : 'month'}`
+    const cached = granularFormatters.get(key)
+    if (cached) {
+        return cached
+    }
+    const formatter = new Intl.DateTimeFormat(resolvedLocale.value, isYear.value
+        ? { year: 'numeric' }
+        : { year: 'numeric', month: 'long' })
+    granularFormatters.set(key, formatter)
+    return formatter
+}
+
+/** 月 / 年粒度的展示：显式 `dateFormat` 优先，否则按 locale 输出「年月」或「年」 */
+function formatGranular(date: Date | null): string {
+    if (!date) {
+        return ''
+    }
+    if (props.dateFormat) {
+        return formatDate(date, props.dateFormat, resolvedLocale.value)
+    }
+    return granularFormatter().format(date)
+}
+
 const displayText = computed(() => {
     if (isRange.value) {
         const range = rangeModel.value
@@ -140,6 +173,10 @@ const displayText = computed(() => {
             return ''
         }
         return `${formatDate(range[0], props.dateFormat, resolvedLocale.value)} – ${formatDate(range[1], props.dateFormat, resolvedLocale.value)}`
+    }
+
+    if (isGranular.value) {
+        return formatGranular(singleDate.value)
     }
 
     const dateText = formatDate(singleDate.value, props.dateFormat, resolvedLocale.value)
@@ -234,6 +271,20 @@ function onDateUpdate(value: Date | null): void {
     }
 }
 
+/** 按粒度归一化：月份 → 当月 1 日 00:00；年份 → 1 月 1 日 00:00（本地时区） */
+function normalizeGranular(value: Date): Date {
+    return isYear.value
+        ? new Date(value.getFullYear(), 0, 1, 0, 0, 0, 0)
+        : new Date(value.getFullYear(), value.getMonth(), 1, 0, 0, 0, 0)
+}
+
+function onGranularUpdate(value: Date): void {
+    model.value = normalizeGranular(value)
+    if (props.closeOnSelect) {
+        open.value = false
+    }
+}
+
 function onTimeUpdate(value: TimeParts): void {
     const next = singleDate.value ? new Date(singleDate.value) : new Date()
     next.setHours(value.hour, value.minute, value.second, 0)
@@ -248,14 +299,14 @@ function onRangeUpdate(value: DatePickerRange | null): void {
     }
 }
 
-// `showTime` 与区间选择不兼容：Reka 的 RangeCalendar 不含时间层，忽略而非静默降级到「只选开始时间」
-let warnedRangeTime = false
+// `showTime` 与 range / month / year 不兼容：粒度不含时间层，忽略而非静默降级
+let warnedTimeIgnored = false
 watchEffect(() => {
-    if (warnedRangeTime || !isRange.value || !props.showTime) {
+    if (warnedTimeIgnored || !props.showTime || (!isRange.value && !isGranular.value)) {
         return
     }
-    warnedRangeTime = true
-    warnDev('[CaomeiDatePicker] selectionMode="range" 不支持 showTime，时间部分将被忽略。')
+    warnedTimeIgnored = true
+    warnDev(`[CaomeiDatePicker] selectionMode="${props.selectionMode}" 不支持 showTime，时间部分将被忽略。`)
 })
 </script>
 
@@ -285,7 +336,8 @@ watchEffect(() => {
                 class="caomei-date-picker"
                 :class="rootClass"
                 :data-range="isRange || undefined"
-                :data-show-time="showTime && !isRange || undefined"
+                :data-granular="isGranular || undefined"
+                :data-show-time="showTime && !isRange && !isGranular || undefined"
                 :aria-label="triggerLabel"
                 :aria-invalid="invalid || undefined"
                 :disabled="disabled"
@@ -319,8 +371,19 @@ watchEffect(() => {
                 :aria-label="panelLabel"
                 @escape-key-down="markEscapeClose"
             >
+                <MonthYearPanel
+                    v-if="isGranular"
+                    :mode="isYear ? 'year' : 'month'"
+                    :model-value="singleDate"
+                    :min-value="minValue"
+                    :max-value="maxValue"
+                    :disabled="disabled"
+                    :readonly="readonly"
+                    :locale="resolvedLocale"
+                    @update:model-value="onGranularUpdate"
+                />
                 <CalendarPanel
-                    v-if="!isRange"
+                    v-else-if="!isRange"
                     :model-value="dateOnly"
                     :min-value="minValue"
                     :max-value="maxValue"
@@ -350,7 +413,7 @@ watchEffect(() => {
                     @update:model-value="onRangeUpdate"
                 />
                 <div
-                    v-if="showTime && !isRange"
+                    v-if="showTime && !isRange && !isGranular"
                     class="caomei-date-picker__time"
                 >
                     <TimeInput
@@ -384,6 +447,10 @@ watchEffect(() => {
 
 :where(.caomei-date-picker[data-range]) {
     --caomei-date-picker-default-width: 18rem;
+}
+
+:where(.caomei-date-picker[data-granular]) {
+    --caomei-date-picker-default-width: 13rem;
 }
 
 .caomei-date-picker {

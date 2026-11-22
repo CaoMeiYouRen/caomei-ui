@@ -11,11 +11,20 @@ export interface TimeParts {
 /** 范围选择值：已完成的闭区间（开始、结束） */
 export type DatePickerRange = DateRangeValue
 
-/** 选择模式：单日期或日期区间 */
-export type DatePickerSelectionMode = 'single' | 'range'
+/**
+ * 选择模式：单日期 / 日期区间 / 月份 / 年份。
+ *
+ * `month` 与 `year` 的值仍是原生 `Date`，按粒度归一化（月份 → 当月 1 日 00:00，年份 → 1 月 1 日 00:00，本地时区）。
+ * @en Selection mode: single date, date range, month or year.
+ *
+ * `month` and `year` still use a native `Date`, normalized to the granularity (month → the 1st at 00:00,
+ * year → January 1st at 00:00, local time zone).
+ */
+export type DatePickerSelectionMode = 'single' | 'range' | 'month' | 'year'
 
 /**
- * 组件模型：`single` 为原生 `Date`，`range` 为 `[Date, Date]` 闭区间；未选择时为 `null`。
+ * 组件模型：`single` / `month` / `year` 为原生 `Date`（月 / 年按粒度归一化），
+ * `range` 为 `[Date, Date]` 闭区间；未选择时为 `null`。
  *
  * 类型为联合而非按 `selectionMode` 收窄：`selectionMode` 是运行期 prop，无法在消费方
  * 静态窄化模型类型；`single` 用法请把绑定值声明为 `Date | null` 之外的联合（见组件页说明）。
@@ -24,9 +33,10 @@ export type DatePickerModelValue = Date | DatePickerRange | null
 
 export interface DatePickerProps {
     /**
-     * 选择模式：`single` 单选日期，`range` 选择日期区间
+     * 选择模式：`single` 单选日期，`range` 日期区间，`month` 月份，`year` 年份
      * @default 'single'
-     * @en Selection mode: `single` for one date, `range` for a date interval
+     * @en Selection mode: `single` for one date, `range` for a date interval, `month` for a month,
+     * `year` for a year
      */
     selectionMode?: DatePickerSelectionMode
 
@@ -82,9 +92,10 @@ export interface DatePickerProps {
      */
     showIcon?: boolean
     /**
-     * 是否在面板中选择时间（时 / 分，可选秒）；`selectionMode="range"` 时不支持（日期区间只含日期，时间部分被忽略）
+     * 是否在面板中选择时间（时 / 分，可选秒）；`range` / `month` / `year` 模式下不支持（日期粒度小于日，时间部分被忽略并给出开发期告警）
      * @default false
-     * @en Whether to pick a time (hour / minute, optionally seconds) in the panel; not supported when `selectionMode="range"` (a range only carries dates, the time part is ignored)
+     * @en Whether to pick a time (hour / minute, optionally seconds) in the panel; not supported in `range` /
+     * `month` / `year` modes (the granularity is coarser than a day, the time part is ignored with a dev warning)
      */
     showTime?: boolean
     /**
@@ -128,9 +139,10 @@ export interface DatePickerProps {
      */
     fixedWeeks?: boolean
     /**
-     * 禁止取消已选日期（再次点击不会清空）
+     * 禁止取消已选日期（再次点击不会清空）；`month` / `year` 模式不支持取消选择，本 prop 只在 `single` 生效
      * @default false
-     * @en Prevent deselecting the selected date
+     * @en Prevent deselecting the selected date; `month` / `year` modes cannot be deselected, so this
+     * prop only applies to `single`
      */
     preventDeselect?: boolean
     /**

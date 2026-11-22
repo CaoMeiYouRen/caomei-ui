@@ -662,6 +662,9 @@ const htFormColorB = ref('#dc2626')
  * 表单组合层用例（见 `test/e2e/form.e2e.ts` 与视觉基线）：
  * 空名称提交后展示错误态与 `aria-invalid`；`#form-submitted` 记录提交结果。
  */
+const granularMonth = ref<Date | null>(new Date(2026, 8, 1))
+const granularMonthMin = new Date(2026, 5, 1)
+const granularYear = ref<Date | null>(new Date(2026, 0, 1))
 const formName = ref('')
 const formFruit = ref<string>('a')
 const formRoles = ref<string[]>(['reader'])
@@ -3271,6 +3274,19 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             <p id="form-builtin-log">
                 {{ builtinLog }}
             </p>
+        </section>
+        <section id="date-picker-granular" class="fixture__case">
+            <CaomeiDatePicker
+                id="dp-month"
+                v-model="granularMonth"
+                selection-mode="month"
+                :min-value="granularMonthMin"
+            />
+            <CaomeiDatePicker
+                id="dp-year"
+                v-model="granularYear"
+                selection-mode="year"
+            />
         </section>
     </main>
 </template>

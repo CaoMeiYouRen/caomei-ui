@@ -811,3 +811,175 @@ describe('CaomeiDatePicker locale 缺省', () => {
         wrapper.unmount()
     })
 })
+
+describe('CaomeiDatePicker selectionMode="month" / "year"', () => {
+    async function openPicker(props: Record<string, unknown>) {
+        const wrapper = mountPicker(props)
+        await wrapper.get('.caomei-date-picker').trigger('click')
+        await nextTick()
+        return wrapper
+    }
+
+    function itemAt(index: number) {
+        const item = getContent().findAll('.caomei-month-year-panel__item')[index]
+        if (!item) {
+            throw new Error(`缺少第 ${index} 个面板项`)
+        }
+        return item
+    }
+
+    it('month 模式展示年月并按当月 1 日 00:00 归一化', async () => {
+        const wrapper = await openPicker({ selectionMode: 'month', locale: 'zh-CN' })
+
+        const panel = getContent().get('.caomei-month-year-panel')
+        expect(panel.classes()).toContain('caomei-month-year-panel--month')
+        const eighth = itemAt(8)
+        const eighthLabel = eighth.text()
+        await eighth.trigger('click')
+        await nextTick()
+
+        expect(eighthLabel).toBe(
+            new Intl.DateTimeFormat('zh-CN', { month: 'short' }).format(new Date(new Date().getFullYear(), 8, 1)),
+        )
+        const value = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date
+        expect(value.getFullYear()).toBe(new Date().getFullYear())
+        expect(value.getMonth()).toBe(8)
+        expect(value.getDate()).toBe(1)
+        expect(value.getHours()).toBe(0)
+        expect(value.getMinutes()).toBe(0)
+        expect(value.getSeconds()).toBe(0)
+        wrapper.unmount()
+    })
+
+    it('year 模式按 1 月 1 日 00:00 归一化', async () => {
+        const wrapper = await openPicker({ selectionMode: 'year', modelValue: new Date(2026, 5, 15) })
+
+        const panel = getContent().get('.caomei-month-year-panel')
+        expect(panel.classes()).toContain('caomei-month-year-panel--year')
+        await itemAt(1).trigger('click')
+        await nextTick()
+
+        const value = wrapper.emitted('update:modelValue')?.at(-1)?.[0] as Date
+        expect(value.getFullYear()).toBe(2017)
+        expect(value.getMonth()).toBe(0)
+        expect(value.getDate()).toBe(1)
+        expect(value.getHours()).toBe(0)
+        wrapper.unmount()
+    })
+
+    it('已有值按粒度展示，且 dateFormat 优先', () => {
+        const month = mountPicker({ selectionMode: 'month', modelValue: new Date(2026, 8, 5) })
+        expect(month.get('.caomei-date-picker').text()).toContain('2026')
+        month.unmount()
+
+        const formatted = mountPicker({ selectionMode: 'month', modelValue: new Date(2026, 8, 5), dateFormat: 'yyyy-mm' })
+        expect(formatted.get('.caomei-date-picker').text()).toBe('2026-09')
+        formatted.unmount()
+    })
+
+    it('minValue / maxValue 之外的月与年不可选', async () => {
+        const wrapper = await openPicker({
+            selectionMode: 'year',
+            minValue: new Date(2020, 0, 1),
+            maxValue: new Date(2023, 11, 31),
+            modelValue: new Date(2021, 0, 1),
+        })
+
+        const items = getContent().findAll('.caomei-month-year-panel__item')
+        const disabled = items.filter((item) => item.attributes('aria-disabled') === 'true')
+        expect(disabled.length).toBeGreaterThan(0)
+        const enabledYears = items
+            .filter((item) => item.attributes('aria-disabled') !== 'true')
+            .map((item) => Number(item.text()))
+        expect(enabledYears).toEqual([2020, 2021, 2022, 2023])
+
+        const firstDisabled = disabled[0]
+        if (firstDisabled) {
+            await firstDisabled.trigger('click')
+        }
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('方向键在同一面板内移动焦点', async () => {
+        const wrapper = await openPicker({ selectionMode: 'month' })
+        const first = itemAt(0)
+        const second = itemAt(1)
+        const fifth = itemAt(4)
+        ;(first.element as HTMLButtonElement).focus()
+
+        first.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
+        await nextTick()
+        expect(document.activeElement).toBe(second.element)
+
+        second.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+        await nextTick()
+        expect(document.activeElement).toBe(fifth.element)
+        wrapper.unmount()
+    })
+
+    it('只读时输出 aria-readonly 且选中项保持可聚焦', async () => {
+        const wrapper = await openPicker({
+            selectionMode: 'month',
+            readonly: true,
+            modelValue: new Date(2026, 8, 1),
+        })
+        const grid = getContent().get('.caomei-month-year-panel__grid')
+        expect(grid.attributes('role')).toBe('listbox')
+        expect(grid.attributes('aria-readonly')).toBe('true')
+        const items = getContent().findAll('.caomei-month-year-panel__item')
+        const selected = items.find((item) => item.attributes('aria-selected') === 'true')
+        if (!selected) {
+            throw new Error('缺少选中项')
+        }
+        expect(selected.attributes('tabindex')).toBe('0')
+        expect(selected.attributes('disabled')).toBeUndefined()
+
+        await selected.trigger('click')
+        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+        wrapper.unmount()
+    })
+
+    it('方向键跳过禁用项，Home / End 落到首个 / 末个可用项', async () => {
+        const wrapper = await openPicker({
+            selectionMode: 'month',
+            modelValue: new Date(2026, 5, 1),
+            minValue: new Date(2026, 3, 1),
+        })
+        const items = getContent().findAll('.caomei-month-year-panel__item')
+        const april = items[3]
+        if (!april) {
+            throw new Error('缺少 4 月选项')
+        }
+        ;(april.element as HTMLButtonElement).focus()
+
+        const december = items[11]
+        if (!december) {
+            throw new Error('缺少 12 月选项')
+        }
+        april.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }))
+        await nextTick()
+        // 1–3 月被 minValue 禁用，首个可用项是 4 月
+        expect(document.activeElement).toBe(april.element)
+        expect(items[0]?.attributes('aria-disabled')).toBe('true')
+
+        december.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }))
+        await nextTick()
+        expect(document.activeElement).toBe(april.element)
+
+        april.element.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+        await nextTick()
+        expect(document.activeElement).toBe(december.element)
+        wrapper.unmount()
+    })
+
+    it('showTime 与月 / 年组合只告警一次且不渲染时间输入', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+        const wrapper = await openPicker({ selectionMode: 'month', showTime: true })
+
+        expect(warn).toHaveBeenCalledTimes(1)
+        expect(String(warn.mock.calls[0]?.[0])).toContain('showTime')
+        expect(document.body.querySelector('.caomei-date-picker__time')).toBeNull()
+        wrapper.unmount()
+    })
+})

@@ -123,6 +123,21 @@
 - 页面内容要预留与操作条等高的底部留白，否则最后一段内容会被遮住；留白同样要包含安全区。
 - 操作条内的主按钮建议 `size="lg"` 或放在 `data-density="touch"` 子树内（见下文 44px 路径）。
 
+### 搜索栏（SearchBar 配方）
+
+搜索栏由 `Input` + `InputGroup` + `Button` 组合而成，库内**不提供** SearchBar 组件（组件化留待第二处真实复用取证）。四条路径必须都有去处：清除、取消、提交、空态。
+
+<demo
+    vue="../examples/mobile/search-bar.vue"
+    ssg="true"
+/>
+
+- **清除**：输入框 `clearable` + 监听 `clear`，同时复位结果与状态，避免「清空输入但旧结果还在」。
+- **取消**：只在有内容时显示取消按钮（`variant="ghost"`），点击回到初始态；不要用 `close` 图形代替，移动端文字更易识别。
+- **提交**：按钮点击与键盘 `enter` 走同一个处理函数；`enter` 由 `Input` 的 `enter` 事件给出，不要另接原生 keydown。
+- **空态**：提交空关键词时用 `role="status"` 的行内提示，而不是 toast —— 搜索框仍在视野内，行内反馈更近。
+- 触摸密度：整条搜索栏放在 `data-density="touch"` 子树内即可获得 44px 高度；不要单独放大输入框。
+
 ### 软键盘与可见性
 
 - 库内**不监听** `visualViewport`，也不做 JS 视口分支；地址栏收起 / 展开的差异统一交给 `dvh`（Drawer / Dialog / Toast / 图片预览已内置 `dvh` 回退）。

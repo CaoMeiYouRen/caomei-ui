@@ -123,6 +123,21 @@ These recipes apply "safe area + dynamic viewport + touch minimums" to common mo
 - Reserve bottom spacing equal to the bar height (including the safe area) on the page content, or the last block will sit underneath it.
 - Prefer `size="lg"` or a `data-density="touch"` subtree for the primary button in the bar (see the 44px path below).
 
+### Search bar (SearchBar recipe)
+
+The search bar is composed from `Input` + `InputGroup` + `Button`; the library ships **no** SearchBar component (componentising it waits for a second real reuse case). All four paths need a home: clear, cancel, submit, empty.
+
+<demo
+    vue="../examples/mobile/search-bar.vue"
+    ssg="true"
+/>
+
+- **Clear**: `clearable` on the input plus the `clear` event, resetting both the result and the state so an old result never outlives the cleared keyword.
+- **Cancel**: show it only when there is text (`variant="ghost"`); a text label is easier to recognise on mobile than a close glyph.
+- **Submit**: button click and the keyboard `enter` share one handler; `enter` comes from `Input`'s `enter` event, so do not wire a raw keydown.
+- **Empty**: report an empty submit with an inline `role="status"` line rather than a toast — the field is still in view.
+- Touch density: put the whole bar in a `data-density="touch"` subtree for 44px heights; do not enlarge the input alone.
+
 ### Soft keyboard and visibility
 
 - The library does **not** listen to `visualViewport` and has no JavaScript viewport branch; address-bar changes are handled by `dvh` (Drawer / Dialog / Toast / image preview already ship the `dvh` fallback).

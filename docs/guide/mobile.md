@@ -188,6 +188,7 @@
 6. 完整断言口径（含键盘聚焦的分档判定）见[响应式设计 §4](../design/responsive.md)。
 
 ## 相关
+- [移动端就绪矩阵](./mobile-readiness.md)——逐组件页的 320 / 390 / 768 形态与缺口
 
 - [响应式设计](../design/responsive.md)——断点语义 / 窄屏行为矩阵 / 验收标准（单一事实源）
 - [主题与样式](../design/theming.md)——控件宽度上限与 token 覆盖

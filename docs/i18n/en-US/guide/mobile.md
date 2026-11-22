@@ -188,6 +188,7 @@ The "Device preview" entry in the site navigation opens a **same-origin iframe o
 6. Full assertion details (including the tiered keyboard-focus rule) are in [Responsive design §4](/design/responsive) (Chinese).
 
 ## Related
+- [Mobile readiness matrix](./mobile-readiness.md) — per-page 320 / 390 / 768 shapes and gaps
 
 - [Responsive design](/design/responsive) (Chinese) — breakpoints, behaviour matrix, acceptance criteria (single source of truth)
 - [Theming and styles](/design/theming) (Chinese) — control width limits and token overrides

@@ -181,6 +181,14 @@ test.describe('组件尺寸门禁', () => {
         expect(dateTime.width, '含时间的日期宽度应为日期时间内容宽度').toBeLessThanOrEqual(241)
         expect(dateTime.width).toBeGreaterThan(date.width)
 
+        const month = await measureDateField(page, `${ROOT} #geometry-date-month`)
+        // 13rem = 208px（月 / 年粒度档位）。
+        expect(month.width, '月份默认宽度应使用粒度档位').toBeLessThanOrEqual(209)
+        expect(month.width, '月份宽度应大于日期档位，证明 13rem 档位生效').toBeGreaterThan(date.width)
+        const year = await measureDateField(page, `${ROOT} #geometry-date-year`)
+        expect(year.width, '年份默认宽度应使用粒度档位').toBeLessThanOrEqual(209)
+        expect(year.width, '年份宽度应大于日期档位，证明 13rem 档位生效').toBeGreaterThan(date.width)
+
         const select = await measureDateField(page, `${ROOT} #geometry-select`)
         expect(select.width, '选择器仍保持 20rem 上限作为对照').toBeGreaterThanOrEqual(319)
         expect(widths[0], '时间选择器应明显窄于普通选择器').toBeLessThan(select.width - 100)

@@ -33,6 +33,21 @@ With `showTime`, a time input (hour / minute) is shown at the bottom of the pane
     ssg="true"
 />
 
+## Month / year selection
+
+`selectionMode="month"` / `"year"` swaps the panel for a month or year grid; the value is still a native `Date`, **normalized** to the granularity: a month writes back the 1st at 00:00, a year writes back January 1st at 00:00 (local time zone). The panel closes after a pick when `closeOnSelect` applies.
+
+<demo
+    vue="../examples/date-picker/granular.vue"
+    ssg="true"
+/>
+
+- `minValue` / `maxValue` compare at month / year granularity: out-of-range options are disabled and cannot be picked.
+- Keyboard: arrow keys move within the grid (±1 horizontally, ±3 vertically, stopping at the first / last item instead of wrapping), `Home` / `End` jump to the first / last enabled option and disabled options are skipped; the year grid also pages with ‹ › (12 years per page); the grid is a `listbox` (`aria-readonly` carries the read-only state) and options use `aria-selected`.
+- Display: by default the locale renders "month year" / "year"; an explicit `dateFormat` wins (`yyyy-mm` renders `2026-09`).
+- **Deselect is not supported**: clicking the selected month / year again does not clear it, and `preventDeselect` only applies to `single`.
+- **`showTime` is not supported**: the granularity is coarser than a day, the time layer is ignored with a dev warning; the default width step is 13rem.
+
 ## Range selection
 
 Set `selectionMode="range"` to pick an interval; `v-model` becomes `[Date, Date]` (start, end) and `null` when nothing is selected. Click a start date and then an end date to complete the range; `closeOnSelect` (default `true`) closes the panel once both ends exist. A half-open selection (start only) is never emitted; the panel keeps it so the end can be chosen next. Clearing has three cases: with a complete range, clicking any date restarts the selection from that date (the trigger keeps showing the old range until the end is chosen); when the range is a single day (`[d, d]`), clicking that day again clears it and emits `null`; `preventDeselect` disables clearing.
@@ -97,7 +112,7 @@ PrimeVue v4 uses a single `DatePicker` (`Calendar` being its historical alias) f
 
 **Intentional differences**: PrimeVue's `Calendar` is a typeable input, while this component is a "trigger button + panel" and **does not support typing a date** (confirm there is no typing dependency before migrating); `locale` defaults to the injected locale and, when passed, overrides only the date/calendar language; in range mode the static `v-model` type is `Date | [Date, Date] | null`, so single-date pages migrated from PrimeVue need their binding type widened to that union.
 
-**Not implemented**: the `multiple` value of `selectionMode` (no downstream use case, no Backlog entry), `numberOfMonths`, `view`, `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding; `range` and `showTime` cannot be combined (see "Range selection").
+**Not implemented**: the `multiple` value of `selectionMode` (no downstream use case, no Backlog entry), `numberOfMonths`, the other `view` values (`date` / `datetime`, etc.), `showOtherMonths` / `selectOtherMonths`, `disabledDates` / `disabledDays`, the button bar (`showButtonBar` / `today`), `responsiveOptions` / `breakpoint`, time stepping (`timeOnly` / `stepHour`), `appendTo` and panel style forwarding; `range` and `showTime` cannot be combined (see "Range selection").
 
 > For the workflow and shared pitfalls see [Migration from PrimeVue](/en-US/guide/primevue-migration).
 

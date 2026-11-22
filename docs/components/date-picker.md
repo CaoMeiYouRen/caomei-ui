@@ -33,6 +33,21 @@
     ssg="true"
 />
 
+## 月 / 年选择
+
+`selectionMode="month"` / `"year"` 把面板换成月份或年份网格；值仍是原生 `Date`，按粒度**归一化**：月份写回当月 1 日 00:00，年份写回 1 月 1 日 00:00（本地时区）。选择后按 `closeOnSelect` 收起面板。
+
+<demo
+    vue="../examples/date-picker/granular.vue"
+    ssg="true"
+/>
+
+- `minValue` / `maxValue` 按年月粒度比较：范围外的月 / 年为禁用态，不会被选中。
+- 键盘：方向键在网格内移动（左右 ±1、上下 ±3，首 / 末项处停住不环绕），`Home` / `End` 跳到首个 / 末个可用项，禁用项会被跳过；年份网格另有 ‹ › 翻页（一次 12 年）；网格是 `listbox`（`aria-readonly` 承载只读态），选项用 `aria-selected` 表达选中。
+- 展示：缺省按 `locale` 输出「年月」/「年」；显式 `dateFormat` 优先（可用 `yyyy-mm` 得到 `2026-09`）。
+- **不支持**取消选择：月 / 年模式再次点击已选项不会清空，`preventDeselect` 只在 `single` 生效。
+- **不支持** `showTime`：粒度粗于日，时间层被忽略并给出开发期告警；默认宽度档位为 13rem。
+
 ## 范围选择
 
 设置 `selectionMode="range"` 后改为选择日期区间，`v-model` 为 `[Date, Date]`（开始、结束）；未选择时为 `null`。依次点击起点与终点即完成选择，`closeOnSelect`（默认 `true`）在两端齐全后收起面板。只选到起点时不会写回模型（半开区间不对外），面板内可继续选择终点。清空行为分三种情形：已有完整区间时点击任意日期会以该日为起点重新开始（触发器仍显示旧区间，直到选完终点）；区间为同一天（`[d, d]`）时再次点击该日取消并写回 `null`；`preventDeselect` 为真时不清空。
@@ -84,6 +99,7 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 | PrimeVue | 本组件 |
 | --- | --- |
 | `modelValue`（`Date`） | `v-model`（原生 `Date`，语义一致） |
+| `view="month"` / `view="year"` | `selectionMode="month"` / `"year"`；值仍为 `Date` 并按粒度归一化，不支持 `showTime` |
 | `selection-mode="range"` | `selectionMode="range"`；`v-model` 改为 `[Date, Date]`（`null` 表示未选择）。`multiple` 未实现 |
 | `manual-input="false"` | 无需映射：本组件固定为「触发按钮 + 面板」，不支持手工键入 |
 | `minDate` / `maxDate` | `minValue` / `maxValue` |
@@ -97,7 +113,7 @@ PrimeVue v4 用单个 `DatePicker`（`Calendar` 为其历史别名）同时承�
 
 **已知差异（有意）**：PrimeVue 的 `Calendar` 是可键入的 input，本组件为「触发按钮 + 面板」，**不支持手工键入日期**（迁移前需确认无键入依赖）；`locale` 缺省跟随注入语言，显式传入时只覆盖日期 / 日历语言；区间模式的 `v-model` 静态类型为 `Date | [Date, Date] | null`，从 PrimeVue 迁入的单日期页面需把绑定类型**放宽**为该联合。
 
-**未实现**：`selectionMode` 的 `multiple` 取值（无下游用例，未立候选）、`numberOfMonths`、`view`、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传；`range` 与 `showTime` 不可同时使用（见「范围选择」）。
+**未实现**：`selectionMode` 的 `multiple` 取值（无下游用例，未立候选）、`numberOfMonths`、`view` 的其余取值（`date` / `datetime` 等）、`showOtherMonths` / `selectOtherMonths`、`disabledDates` / `disabledDays`、`showButtonBar` / `today` 等按钮栏、`responsiveOptions` / `breakpoint`、`timeOnly` / `stepHour` 等时间步进、`appendTo` 与面板样式透传；`range` 与 `showTime` 不可同时使用（见「范围选择」）。
 
 > 迁移流程与通用陷阱见[从 PrimeVue 迁移](../guide/primevue-migration.md)。
 

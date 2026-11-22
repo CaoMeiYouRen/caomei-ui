@@ -130,7 +130,7 @@
 
 日期与时间文本长度可预见，`DatePicker` / `TimePicker` **不再继承** `--caomei-select-max-width`，而是按内容档位声明默认上限：
 
-- `DatePicker`：日期 `12rem`、含时间 `15rem`、区间 `18rem`（`--caomei-date-picker-max-width` 覆盖）；
+- `DatePicker`：日期 `12rem`、含时间 `15rem`、区间 `18rem`、月 / 年粒度 `13rem`（`--caomei-date-picker-max-width` 覆盖）；
 - `TimePicker`：含秒 `11.5rem`、只到分钟 `8.5rem`、12 小时制再加 `3.75rem`（`--caomei-time-picker-max-width` 覆盖）。
 
 需要与其它表单控件对齐或撑满所在列时，把对应 token 覆盖为 `100%` / `none`：`Select` 的上限由字段外层 `.caomei-select__field` 承载，需覆盖在该元素或其祖先上；`MultiSelect` / `AutoComplete` / `DatePicker` / `TimePicker` 直接读取组件内字段的 token，覆盖在组件元素或其祖先上即可。

@@ -2806,6 +2806,18 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 label="日期"
             />
             <CaomeiDatePicker
+                id="geometry-date-month"
+                :model-value="geometryDate"
+                selection-mode="month"
+                label="月份"
+            />
+            <CaomeiDatePicker
+                id="geometry-date-year"
+                :model-value="geometryDate"
+                selection-mode="year"
+                label="年份"
+            />
+            <CaomeiDatePicker
                 id="geometry-date-time"
                 :model-value="geometryTime"
                 label="日期时间"

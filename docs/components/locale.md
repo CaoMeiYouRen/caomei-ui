@@ -45,7 +45,7 @@ import {
 
 ## 文案分组与消费组件
 
-`CaomeiLocaleMessages` 按组件域划分为 36 个命名空间，对应下列消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
+`CaomeiLocaleMessages` 按组件域划分为 37 个命名空间，对应下列消费组件（下表由 `check-locale-ledger` 与 `src/locale/types.ts` 对账）：
 
 | 命名空间 | 文案键 | 消费组件 |
 | --- | --- | --- |
@@ -59,7 +59,8 @@ import {
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `dataView` | `empty` | DataView / Empty |
-| `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
+| `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` `prevYear` `nextYear` | DatePicker |
+| `navBar` | `label` `back` | NavBar |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
 | `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` `remove` | FileUpload |

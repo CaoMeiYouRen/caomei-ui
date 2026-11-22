@@ -53,6 +53,12 @@ const jaJP: CaomeiLocaleMessages = {
         hour: '時',
         minute: '分',
         second: '秒',
+        prevYear: '前年',
+        nextYear: '翌年',
+    },
+    navBar: {
+        label: 'ナビゲーションバー',
+        back: '戻る',
     },
     dialog: {
         label: 'ダイアログ',

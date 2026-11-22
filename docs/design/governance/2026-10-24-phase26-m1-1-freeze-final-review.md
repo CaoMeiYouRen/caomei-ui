@@ -157,6 +157,8 @@ comm -23 tokens-consumed-undocumented.txt tokens-defined.txt | wc -l
 
 > **2026-11-20 增量（Rating / ActionSheet / Tabbar 文案）**：新增 `rating`（`label` / `readonlyLabel` / `valueLabel` 3 键）、`actionSheet`（`label` / `cancel` 2 键）与 `tabbar`（`label` 1 键）三个命名空间，10 语同步；每语由 **30 / 89** 更新为 **33 / 95**（语言数与预注册集合不变）。复算同上方命令，期望读数 33 / 95。
 
+> **2026-11-22 增量（NavBar / DatePicker 月年翻页）**：新增 `navBar`（`label` / `back` 2 键）命名空间，`datePicker` 增加 `prevYear` / `nextYear` 2 键，10 语同步；每语由 **33 / 95** 更新为 **37 / 110**（语言数与预注册集合不变）。复算同上方命令，期望读数 37 / 110。
+
 ### 2.6 `InputNumber` 的 `step` 语义（按 `reka-ui` 2.10.4 冻结）
 
 `reka-ui` 版本固定为 **2.10.4**（`package.json` 的 `dependencies`）。当前语义：

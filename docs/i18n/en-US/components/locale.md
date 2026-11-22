@@ -45,7 +45,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 36 namespaces by component area, covering the consuming components below (the table is checked against `src/locale/types.ts` by `check-locale-ledger`):
+`CaomeiLocaleMessages` is split into 37 namespaces by component area, covering the consuming components below (the table is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -59,7 +59,8 @@ import {
 | `colorPicker` | `label` `hex` `hue` `area` `swatches` `saturation` `brightness` `areaRole` `thumbRole` | ColorPicker |
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `dataView` | `empty` | DataView / Empty |
-| `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` | DatePicker |
+| `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` `prevYear` `nextYear` | DatePicker |
+| `navBar` | `label` `back` | NavBar |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
 | `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` `remove` | FileUpload |

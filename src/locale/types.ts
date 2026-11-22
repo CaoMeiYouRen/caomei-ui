@@ -73,6 +73,12 @@ export interface CaomeiLocaleMessages {
         hour: string
         minute: string
         second: string
+        prevYear: string
+        nextYear: string
+    }
+    navBar: {
+        label: string
+        back: string
     }
     dialog: {
         label: string

@@ -53,6 +53,12 @@ const ptBR: CaomeiLocaleMessages = {
         hour: 'Hora',
         minute: 'Minuto',
         second: 'Segundo',
+        prevYear: 'Ano anterior',
+        nextYear: 'Próximo ano',
+    },
+    navBar: {
+        label: 'Barra de navegação',
+        back: 'Voltar',
     },
     dialog: {
         label: 'Diálogo',

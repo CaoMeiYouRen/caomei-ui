@@ -53,6 +53,12 @@ const zhTW: CaomeiLocaleMessages = {
         hour: '時',
         minute: '分',
         second: '秒',
+        prevYear: '上一年',
+        nextYear: '下一年',
+    },
+    navBar: {
+        label: '導覽列',
+        back: '返回',
     },
     dialog: {
         label: '對話框',

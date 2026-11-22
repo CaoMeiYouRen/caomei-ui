@@ -53,6 +53,12 @@ const ruRU: CaomeiLocaleMessages = {
         hour: 'Час',
         minute: 'Минута',
         second: 'Секунда',
+        prevYear: 'Предыдущий год',
+        nextYear: 'Следующий год',
+    },
+    navBar: {
+        label: 'Панель навигации',
+        back: 'Назад',
     },
     dialog: {
         label: 'Диалог',

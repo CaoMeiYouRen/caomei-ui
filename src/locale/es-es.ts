@@ -53,6 +53,12 @@ const esES: CaomeiLocaleMessages = {
         hour: 'Hora',
         minute: 'Minuto',
         second: 'Segundo',
+        prevYear: 'Año anterior',
+        nextYear: 'Año siguiente',
+    },
+    navBar: {
+        label: 'Barra de navegación',
+        back: 'Atrás',
     },
     dialog: {
         label: 'Diálogo',

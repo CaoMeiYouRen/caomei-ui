@@ -53,6 +53,12 @@ const koKR: CaomeiLocaleMessages = {
         hour: '시',
         minute: '분',
         second: '초',
+        prevYear: '이전 해',
+        nextYear: '다음 해',
+    },
+    navBar: {
+        label: '내비게이션 바',
+        back: '뒤로',
     },
     dialog: {
         label: '대화 상자',

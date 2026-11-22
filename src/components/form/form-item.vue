@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { computed, useId } from 'vue'
+import { computed, getCurrentInstance, inject, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { warnDev } from '../../_shared/dev-warn'
+import {
+    formContextKey,
+    isPromiseLike,
+    type FormValidateOutcome,
+    type FormValidateResult,
+} from './context'
 import type { FormItemProps, FormItemSlotProps } from './types'
 
 defineOptions({ name: 'CaomeiFormItem' })
@@ -12,6 +19,9 @@ const props = withDefaults(defineProps<FormItemProps>(), {
     error: '',
     required: false,
     invalid: false,
+    modelValue: undefined,
+    validate: undefined,
+    validationMode: undefined,
 })
 
 defineSlots<{
@@ -23,6 +33,17 @@ defineSlots<{
 }>()
 
 const instanceId = useId()
+const formContext = inject(formContextKey, null)
+
+const itemRef = ref<HTMLElement | null>(null)
+const localError = ref('')
+/** 校验函数抛错：按失败处理但不展示文案（只标红），避免静默放行 */
+const validateFailed = ref(false)
+/** 服务端错误的下发版本：每次 `errors` 源或该字段文案变化时自增 */
+const serverErrorVersion = ref(0)
+/** 值变更时已消费到的版本；`errors` 版本更高时才重新展示服务端错误 */
+const clearedAtVersion = ref(-1)
+const instance = getCurrentInstance()
 
 /** 控件 id：显式 id 优先，缺省按实例生成（SSR 与客户端一致） */
 const controlId = computed(() => props.id || `caomei-form-item-${instanceId}`)
@@ -30,14 +51,37 @@ const labelId = computed(() => `${instanceId}-label`)
 const hintId = computed(() => `${instanceId}-hint`)
 const errorId = computed(() => `${instanceId}-error`)
 
-/** `error` 非空即视为校验失败，避免使用方两处状态不同步 */
-const isInvalid = computed(() => props.invalid || Boolean(props.error))
+/** 服务端下发的原始错误文案（不经过「已清除」状态） */
+const serverErrorValue = computed(() => {
+    const name = props.name
+    if (!name || !formContext) {
+        return ''
+    }
+    const value = formContext.errors()[name]
+    const first = Array.isArray(value) ? value[0] : value
+    return first || ''
+})
+
+/** 服务端 / 提交回填错误：仅展示晚于最近一次值变更的版本 */
+const serverError = computed(() => (
+    serverErrorVersion.value > clearedAtVersion.value ? serverErrorValue.value : ''
+))
+
+/**
+ * 展示用错误文案，优先级：受控 `error` > 本地校验 > 服务端 `errors`。
+ *
+ * 受控 `error` 代表使用方最新的判断；本地校验比服务端快照更接近当前值，故高于 `errors`。
+ */
+const displayError = computed(() => props.error || localError.value || serverError.value)
+
+/** `error` / 本地校验 / 服务端错误 / 校验抛错任一成立即失败；`invalid` 可单独使用（只标红不显示文案） */
+const isInvalid = computed(() => Boolean(props.invalid || displayError.value || validateFailed.value))
 
 /** hint / error 的 id 列表；只有实际渲染的文本才进入 `aria-describedby` */
 const describedBy = computed(() => {
     const ids = [
         props.hint ? hintId.value : '',
-        props.error ? errorId.value : '',
+        displayError.value ? errorId.value : '',
     ].filter(Boolean)
     return ids.length > 0 ? ids.join(' ') : undefined
 })
@@ -49,12 +93,213 @@ const slotProps = computed<FormItemSlotProps>(() => ({
     'aria-describedby': describedBy.value,
     invalid: isInvalid.value,
 }))
+
+const validationMode = computed(() => props.validationMode ?? formContext?.validationMode() ?? 'onSubmit')
+
+/** 是否真的传入了 `modelValue`（`undefined` 也可能是显式传入） */
+function hasValueChannel(): boolean {
+    const vnodeProps = instance?.vnode.props
+    return Boolean(vnodeProps && ('modelValue' in vnodeProps || 'model-value' in vnodeProps))
+}
+let warnedMissingValue = false
+let warnedWritableModel = false
+
+/** 校验序号：异步结果只采纳最近一次，避免旧结果覆盖新结果 */
+let validateId = 0
+
+function normalizeMessage(result: FormValidateResult): string {
+    if (!result) {
+        return ''
+    }
+    if (Array.isArray(result)) {
+        return result.find(Boolean) ?? ''
+    }
+    return result
+}
+
+/**
+ * 执行字段校验，返回是否通过。
+ *
+ * 异步结果同样被等待（不做请求编排）；校验器抛错按**失败**处理（只标红、不展示文案），避免静默放行。
+ */
+function runValidate(): FormValidateOutcome {
+    if (!props.validate) {
+        localError.value = ''
+        validateFailed.value = false
+        return true
+    }
+    if (!hasValueChannel() && !warnedMissingValue) {
+        warnedMissingValue = true
+        warnDev('[CaomeiFormItem] 已提供 validate 但未传入 modelValue：校验将收到 undefined。请把字段值传给 modelValue。')
+    }
+    if (!warnedWritableModel && instance?.vnode.props && 'onUpdate:modelValue' in instance.vnode.props) {
+        warnedWritableModel = true
+        warnDev('[CaomeiFormItem] modelValue 是只读值通道，不会 emit update:modelValue；请把 v-model 绑到内部字段组件上。')
+    }
+    const currentId = ++validateId
+    let result: FormValidateResult | Promise<FormValidateResult>
+    try {
+        result = props.validate(props.modelValue, formContext?.getValues() ?? {})
+    } catch (error) {
+        console.error(error)
+        if (currentId === validateId) {
+            localError.value = ''
+            validateFailed.value = true
+        }
+        return false
+    }
+    if (isPromiseLike(result)) {
+        return result.then(
+            (resolved) => {
+                const message = normalizeMessage(resolved)
+                if (currentId === validateId) {
+                    localError.value = message
+                    validateFailed.value = false
+                }
+                // 过期结果只跳过状态写入，不篡改本次调用的真实结论
+                return !message
+            },
+            (error: unknown) => {
+                console.error(error)
+                if (currentId === validateId) {
+                    localError.value = ''
+                    validateFailed.value = true
+                }
+                return false
+            },
+        )
+    }
+    const message = normalizeMessage(result)
+    localError.value = message
+    validateFailed.value = false
+    return !message
+}
+
+/**
+ * 字段内可聚焦控件的优先级：原生控件 → 可访问触发件 / 组根 → 非破坏性按钮。
+ *
+ * 逐个选择器查询（而非逗号合并）：合并后 `querySelector` 按文档顺序取首个命中，
+ * 会让标签删除按钮（位于输入框之前）抢走焦点。
+ */
+const CONTROL_SELECTORS = [
+    'input:not([type="hidden"])',
+    'textarea',
+    'select',
+    '[role="combobox"]',
+    '[role="checkbox"]',
+    '[role="switch"]',
+    '[role="radiogroup"][tabindex]',
+    '[role="group"][tabindex]',
+    '[role="radio"]',
+]
+/** 兜底按钮：排除 hit-target（清除 / 删除类破坏性按钮） */
+const FALLBACK_BUTTON_SELECTOR = 'button:not([disabled]):not(.caomei-hit-target)'
+
+function resolveControl(): HTMLElement | null {
+    const root = itemRef.value
+    if (!root) {
+        return null
+    }
+    for (const selector of CONTROL_SELECTORS) {
+        const found = root.querySelector<HTMLElement>(selector)
+        if (found) {
+            return found
+        }
+    }
+    return root.querySelector<HTMLElement>(FALLBACK_BUTTON_SELECTOR)
+}
+
+/**
+ * 值变更即清除该字段的服务端错误。
+ *
+ * 用同步 flush：先于任何排队中的 `errors` 版本自增执行，使「同一 tick 内值变更 + 新错误」
+ * 不会把刚下发的新错误压掉。
+ */
+watch(
+    () => props.modelValue,
+    () => {
+        clearedAtVersion.value = serverErrorVersion.value
+    },
+    { flush: 'sync' },
+)
+
+watch(
+    () => props.modelValue,
+    () => {
+        const mode = validationMode.value
+        const submitted = (formContext?.submitCount() ?? 0) > 0
+        if (mode === 'onChange' || (mode === 'onSubmit' && submitted)) {
+            void runValidate()
+        }
+    },
+)
+
+/**
+ * `errors` 源或该字段文案变化即视为「服务端重新下发」，自增版本使新错误重新可见。
+ *
+ * 与值变更的先后由「同步 flush 的清除 + 排队中的版本自增」保证，不依赖 watcher 创建顺序。
+ */
+watch([(): Record<string, string | string[] | undefined> | undefined => formContext?.errors(), serverErrorValue], (): void => {
+    serverErrorVersion.value += 1
+})
+
+/**
+ * 仅在**移除**校验器时复位本地状态。
+ *
+ * 不能按引用变化复位：模板内联的 `:validate="(v) => …"` 每次父渲染都是新引用，
+ * 复位会让已展示的错误被无关重渲染清空（`onChange` 下甚至完全不展示）。
+ */
+watch(
+    () => props.validate,
+    (validate) => {
+        if (!validate) {
+            localError.value = ''
+            validateFailed.value = false
+        }
+    },
+)
+
+/** `onBlur` 模式：焦点离开字段（含子控件间移动不触发）即校验 */
+function onFocusOut(event: FocusEvent): void {
+    if (validationMode.value !== 'onBlur') {
+        return
+    }
+    const next = event.relatedTarget as Node | null
+    if (next && itemRef.value?.contains(next)) {
+        return
+    }
+    void runValidate()
+}
+
+let unregister: (() => void) | undefined
+
+onMounted(() => {
+    if (!formContext) {
+        return
+    }
+    unregister = formContext.register({
+        name: () => props.name,
+        value: () => props.modelValue,
+        root: () => itemRef.value,
+        control: resolveControl,
+        validate: runValidate,
+        invalid: () => isInvalid.value,
+    })
+})
+
+onBeforeUnmount(() => {
+    validateId += 1
+    unregister?.()
+    unregister = undefined
+})
 </script>
 
 <template>
     <div
+        ref="itemRef"
         class="caomei-form-item"
         :class="{'caomei-form-item--invalid': isInvalid}"
+        @focusout="onFocusOut"
     >
         <span
             v-if="label"
@@ -79,12 +324,12 @@ const slotProps = computed<FormItemSlotProps>(() => ({
             {{ hint }}
         </p>
         <p
-            v-if="error"
+            v-if="displayError"
             :id="errorId"
             class="caomei-form-item__error"
             role="alert"
         >
-            {{ error }}
+            {{ displayError }}
         </p>
     </div>
 </template>

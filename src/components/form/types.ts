@@ -1,3 +1,5 @@
+import type { FormValidateFn, FormValidationMode } from './context'
+
 /**
  * `CaomeiForm` 的属性。
  *
@@ -16,6 +18,21 @@ export interface FormProps {
      * @en Whether to disable the browser's native validation bubbles (maps to the native `novalidate`)
      */
     novalidate?: boolean
+    /**
+     * 服务端 / 提交回填错误：键为字段 `name`，值为文案或文案数组；空值视为无错误。
+     * 字段值变更后该字段的服务端错误让位于本地校验结果，直到服务端重新下发。
+     * 字段 `name` 应唯一：重名时 `errors` 会同时命中多个字段、值集由最后注册的字段覆盖
+     * @en Server-side / submit-back errors keyed by field `name`; a message or a message list,
+     * empty values mean no error. Once a field changes, its server error yields to local
+     * validation until the server sends a new one
+     */
+    errors?: Record<string, string | string[] | undefined>
+    /**
+     * 表单级默认校验时机；字段可通过 `FormItem` 的 `validationMode` 覆盖
+     * @en Form-level default validation timing; a field can override it through
+     * `FormItem`'s `validationMode`
+     */
+    validationMode?: FormValidationMode
 }
 
 /**
@@ -79,6 +96,25 @@ export interface FormItemProps {
      * @en Validation failure state; automatically true when `error` is non-empty
      */
     invalid?: boolean
+    /**
+     * 只读值通道：把字段当前值交给 `validate` 与表单值集。组件不 emit `update:modelValue`，
+     * 校验结果也不会写回该值；未传时 `validate` 收到 `undefined` 并在首次校验时告警
+     * @en Read-only value channel: hands the field's current value to `validate` and to the form
+     * value map. The component never emits `update:modelValue` and validation results are never
+     * written back; when omitted, `validate` receives `undefined` and a warning is logged once
+     */
+    modelValue?: unknown
+    /**
+     * 字段校验函数；返回文案即失败、返回空值即通过（不提供布尔约定）。返回数组时只渲染首个非空文案
+     * @en Field validator; a returned message means invalid, an empty value means valid
+     * (no boolean convention). With an array, only the first non-empty message is rendered
+     */
+    validate?: FormValidateFn
+    /**
+     * 字段级校验时机；缺省继承 `CaomeiForm` 的 `validationMode`
+     * @en Field-level validation timing; defaults to `CaomeiForm`'s `validationMode`
+     */
+    validationMode?: FormValidationMode
 }
 
 /**

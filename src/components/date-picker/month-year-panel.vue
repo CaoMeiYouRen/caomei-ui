@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
+import { useLocale } from '../../composables/use-locale'
 
 /**
  * 月 / 年粒度选择面板：`DatePicker` 在 `selectionMode="month" | "year"` 时使用。
@@ -30,6 +31,7 @@ const emit = defineEmits<{
     'update:modelValue': [value: Date]
 }>()
 
+const messages = useLocale()
 const currentYear = new Date().getFullYear()
 const anchorYear = ref(props.modelValue?.getFullYear() ?? currentYear)
 
@@ -141,13 +143,14 @@ function shift(step: number): void {
         : anchorYear.value + step
 }
 
-/** 导航可访问名：年份模式给出目标整页区间，避免与网格内的年份选项同名 */
+/** 导航可访问名：动作语义 + 目标（年份模式给整页区间），避免与网格内的选项同名 */
 function navLabel(offset: number): string {
+    const action = offset < 0 ? messages.value.datePicker.prevYear : messages.value.datePicker.nextYear
     if (props.mode === 'month') {
-        return String(anchorYear.value + offset)
+        return `${action} ${anchorYear.value + offset}`
     }
     const start = yearStart.value + offset * 12
-    return `${start}–${start + 11}`
+    return `${action} ${start}–${start + 11}`
 }
 
 const previousLabel = computed(() => navLabel(-1))

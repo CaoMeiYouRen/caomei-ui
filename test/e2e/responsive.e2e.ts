@@ -311,6 +311,7 @@ const CASE_SECTION_IDS = [
     'hit-target',
     'form',
     'form-builtin',
+    'nav-bar',
     'cell-group',
     'tabbar',
     'action-sheet',
@@ -324,7 +325,7 @@ const CASE_SECTION_IDS = [
  * 一类静默收窄，不追求余量；配合下方逐 section 的「存在且唯一」断言补上「夹具 section 被移除」方向。
  * **清单扩项时须同步上调本值**（下界低于实际长度才拦得住删项）。
  */
-const MIN_SECTIONS = 27
+const MIN_SECTIONS = 28
 
 /**
  * 自动 fixture：每个用例独立收集 console error / page error（§4 断言 5），

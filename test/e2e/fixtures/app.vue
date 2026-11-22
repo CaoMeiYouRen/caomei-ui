@@ -51,6 +51,7 @@ import {
     CaomeiInputOtp,
     CaomeiMessage,
     CaomeiMultiSelect,
+    CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
     CaomeiPopover,
@@ -662,6 +663,12 @@ const htFormColorB = ref('#dc2626')
  * 表单组合层用例（见 `test/e2e/form.e2e.ts` 与视觉基线）：
  * 空名称提交后展示错误态与 `aria-invalid`；`#form-submitted` 记录提交结果。
  */
+const navBackLog = ref(0)
+
+function onNavBack(): void {
+    navBackLog.value += 1
+}
+
 const granularMonth = ref<Date | null>(new Date(2026, 8, 1))
 const granularMonthMin = new Date(2026, 5, 1)
 const granularYear = ref<Date | null>(new Date(2026, 0, 1))
@@ -3299,6 +3306,36 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 v-model="granularYear"
                 selection-mode="year"
             />
+        </section>
+        <section id="nav-bar" class="fixture__case">
+            <CaomeiNavBar
+                id="navbar-basic"
+                title="设置"
+                @back="onNavBack"
+            />
+            <CaomeiNavBar
+                id="navbar-long"
+                title="这是一个明显超过一行宽度的页面标题用于验证省略号并且确保在三百二十到七百六十八像素的视口下都会发生截断而不是换行"
+                sticky
+                @back="onNavBack"
+            >
+                <template #end>
+                    <CaomeiButton
+                        size="sm"
+                        variant="ghost"
+                    >
+                        保存
+                    </CaomeiButton>
+                </template>
+            </CaomeiNavBar>
+            <CaomeiNavBar
+                id="navbar-plain"
+                title="无安全区"
+                :safe-area="false"
+            />
+            <p id="nav-bar-log">
+                {{ navBackLog }}
+            </p>
         </section>
     </main>
 </template>

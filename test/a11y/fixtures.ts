@@ -57,6 +57,7 @@ import {
     CaomeiMenuItem,
     CaomeiMessage,
     CaomeiMultiSelect,
+    CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
     CaomeiPopconfirm,
@@ -286,6 +287,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiMenu', root: CaomeiMenu, definition: { components: { CaomeiMenu, CaomeiMenuItem, CaomeiSubMenu }, template: '<CaomeiMenu label="主导航"><CaomeiMenuItem href="#menu">概览</CaomeiMenuItem><CaomeiSubMenu label="设置"><CaomeiMenuItem href="#account">账户</CaomeiMenuItem></CaomeiSubMenu></CaomeiMenu>' } },
     { name: 'CaomeiMessage', root: CaomeiMessage, definition: { components: { CaomeiMessage }, template: '<CaomeiMessage title="提示" />' } },
     { name: 'CaomeiMultiSelect', root: CaomeiMultiSelect, definition: { components: { CaomeiMultiSelect }, template: '<CaomeiMultiSelect label="城市" :options="options" />', setup: () => ({ options }) } },
+    { name: 'CaomeiNavBar', root: CaomeiNavBar, definition: { components: { CaomeiNavBar }, template: '<CaomeiNavBar title="设置" />' } },
     { name: 'CaomeiPaginator', root: CaomeiPaginator, definition: { components: { CaomeiPaginator }, template: '<CaomeiPaginator :total="30" :rows="10" :page="1" />' } },
     { name: 'CaomeiPassword', root: CaomeiPassword, definition: { components: { CaomeiPassword }, template: '<CaomeiPassword label="密码" />' } },
     { name: 'CaomeiPopconfirm', root: CaomeiPopconfirm, definition: { components: { CaomeiPopconfirm }, template: '<CaomeiPopconfirm title="删除该项？" description="删除后无法恢复。" :open="true"><template #trigger>删除</template></CaomeiPopconfirm>' }, requiredSelectors: ['.caomei-popconfirm'] },
@@ -447,4 +449,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 76
+export const A11Y_FIXTURE_BUDGET = 77

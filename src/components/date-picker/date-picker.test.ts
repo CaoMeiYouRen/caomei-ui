@@ -833,6 +833,7 @@ describe('CaomeiDatePicker selectionMode="month" / "year"', () => {
 
         const panel = getContent().get('.caomei-month-year-panel')
         expect(panel.classes()).toContain('caomei-month-year-panel--month')
+        expect(panel.get('.caomei-month-year-panel__nav').attributes('aria-label')).toBe(`上一年 ${new Date().getFullYear() - 1}`)
         const eighth = itemAt(8)
         const eighthLabel = eighth.text()
         await eighth.trigger('click')

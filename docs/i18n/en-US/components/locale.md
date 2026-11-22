@@ -60,7 +60,6 @@ import {
 | `confirm` | `confirm` `cancel` | ConfirmDialog |
 | `dataView` | `empty` | DataView / Empty |
 | `datePicker` | `label` `range` `rangeStart` `rangeEnd` `time` `hour` `minute` `second` `prevYear` `nextYear` | DatePicker |
-| `navBar` | `label` `back` | NavBar |
 | `dialog` | `label` `close` | Dialog |
 | `drawer` | `label` `close` | Drawer |
 | `fileUpload` | `choose` `prompt` `noFileChosen` `fileChosen` `sizeExceeded` `remove` | FileUpload |
@@ -70,6 +69,7 @@ import {
 | `inputOtp` | `cellLabel` | InputOtp |
 | `message` | `close` | Message |
 | `multiSelect` | `open` `remove` `empty` `clear` | MultiSelect |
+| `navBar` | `label` `back` | NavBar |
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |

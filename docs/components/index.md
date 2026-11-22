@@ -86,6 +86,7 @@
 - [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
 - [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。
+- [NavBar 导航栏](./nav-bar)：路由级页头，左侧返回、中间标题、右侧操作，可选吸顶与安全区；不接 vue-router，`back` 事件交给使用方。
 - [Stepper 步骤条](./stepper)：步骤条展示多步流程的进度，并在步骤之间导航。基于 Reka UI Stepper（稳定 primitive）封装，采用与 Tabs 一致的组合式 API。
 - [Tabbar 标签栏](./tabbar)：移动端顶层视图切换的展示层，维护 `v-model` 选中值与 `aria-current`；不接 vue-router、不做页面切换。
 - [Tabs 选项卡](./tabs)：选项卡在一组同级内容间切换，同一时刻只展示一个面板，基于 Reka UI Tabs 封装。

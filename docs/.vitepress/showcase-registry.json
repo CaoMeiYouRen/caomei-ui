@@ -276,6 +276,18 @@
         }
     },
     {
+        "name": "NavBar",
+        "group": {
+            "zh": "导航与操作",
+            "en": "Navigation & Actions"
+        },
+        "example": "nav-bar/basic.vue",
+        "description": {
+            "zh": "路由级页头：返回、标题与尾部操作，可选吸顶与安全区；不接 vue-router。",
+            "en": "A route-level header with back, title and trailing actions, optional stickiness and safe area; no vue-router dependency."
+        }
+    },
+    {
         "name": "Tabs",
         "group": {
             "zh": "导航与操作",

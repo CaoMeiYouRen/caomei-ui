@@ -52,7 +52,7 @@
 | Paginator | 封装 Pagination | Pagination |
 | Switch（统一 ToggleSwitch / InputSwitch） | 封装 Switch（文档 / 测试已补齐） | Switch |
 
-## 4. Tier 2：按需（10 个）
+## 4. Tier 2：按需（11 个）
 
 | 组件 | 实现方式 | Reka UI 对应 |
 |------|----------|--------------|
@@ -64,10 +64,11 @@
 | FileUpload | 自建 | 无 |
 | Cell / CellGroup | 自建（行布局 + 分组容器） | 无 |
 | Tabbar / TabbarItem | 自建（展示层，不接 vue-router） | 无 |
+| NavBar | 自建（路由级页头，不接 vue-router） | 无 |
 | ActionSheet | 组合（`Drawer position="bottom"`） | Dialog 派生 |
 | Empty | 自建（图标 / 图片 + 标题 / 说明 + 操作区） | 无 |
 
-> 分档依据：Cell / Tabbar / ActionSheet / Empty 属移动端壳层与页面级空态，单项职责薄、可组合（ActionSheet 复用 Drawer，Empty 复用 dataView 文案），故列 Tier 2「按需」；不因移动端场景整体升档。
+> 分档依据：Cell / Tabbar / NavBar / ActionSheet / Empty 属移动端壳层与页面级空态，单项职责薄、可组合（ActionSheet 复用 Drawer，Empty 复用 dataView 文案，NavBar 为自建页头），故列 Tier 2「按需」；不因移动端场景整体升档。NavBar 同时是 §11.5 三条准入标准的例外项（第 1 条不成立、第 2 条存疑）。
 
 ## 5. Tier 3：长尾（按需）
 

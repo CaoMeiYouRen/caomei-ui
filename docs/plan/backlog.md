@@ -48,9 +48,7 @@
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
 | Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估。**2026-11-21 进展**：`TimePicker` 已内置滚轮模式（`mode="wheel"` / `"both"`），本候选收窄为**非时间场景的通用 Picker**；时间选择不再依赖本候选 | 中 |
 | Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 低 |
-| NavBar（路由级页头） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；本仓推断（caomei-todo §11.5 未单列） | `Toolbar` + `Button` 可拼；缺返回 / 标题 / 吸顶语义。caomei-todo 先用应用层布局。触发条件 = 下游出现真实路由级移动导航用例 | 低 |
 | 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 低 |
-| Search 栏组合件 | caomei-todo 需求 FR-TASK-07 + 本仓推断（搜索栏形态） | 搜索输入 + 图标 + 清除 + 取消；`Input` / `InputGroup` / `Button` 可拼。先出配方；组件化需 ≥2 下游或出现原生无法覆盖的用例 | 低 |
 
 ### 1.6 基建与治理候选
 
@@ -102,8 +100,6 @@
 | 候选 | 依据 | 优先级 |
 |------|------|:-:|
 | Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
-| Form 校验能力 | 记录 **P1**；Element Plus / TDesign / Vant / Varlet 以 `form` 目录承载 rules 引擎，PrimeVue 为独立 `@primevue/forms`；本库 `Form` 明确无 rules；可先以 `FormRoot` + `Field*` 接 invalid / 错误文案，不承诺与五库 API 对齐 | 中 |
-| MonthPicker / YearPicker | 记录 **P2**；作为 `DatePicker` 的 `selectionMode` 扩展；Reka 现成 | 低 |
 | Statistic | 记录 **P2**；Element Plus / TDesign，Varlet 为 `count-to`（近似） | 低 |
 | Countdown | 记录 **P2**；Element Plus / Vant / Varlet | 低 |
 | Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 低 |

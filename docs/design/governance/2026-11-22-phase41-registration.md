@@ -26,7 +26,7 @@
 | 编号 | 主线 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|:---|:---|
 | **M1-1** | 表单校验 | 接线探针与契约 | 用 Reka `FormRoot` / `FieldRoot` / `FieldControl` 对 13 个字段做一次性探针，确认哪些可直接作为 control；写定 `errors` / `validate` / `validation-mode` 的作用面与 `invalid` / `error` 的优先级；探针失败则降级为「只设计」并留痕 | ≈ 5 | 无 |
-| **M1-2** | 表单校验 | 最小实现 | `CaomeiForm` 承接服务端 `errors`，提交时聚焦首个无效字段；`CaomeiFormItem` 透传 `validate` / `validation-mode` 并由 `FieldError` 渲染；既有受控通道不回归 | ≈ 8 | M1-1 |
+| **M1-2** | 表单校验 | 最小实现 | `CaomeiForm` 承接服务端 `errors`，提交时聚焦首个无效字段；`CaomeiFormItem` 透传 `validate` / `validation-mode` 并由 `FieldError` 渲染（2026-11-22 机制裁定：改为等价自有渲染，见 §3）；既有受控通道不回归 | ≈ 8 | M1-1 |
 | **M1-3** | 表单校验 | 文档 / 示例 / 迁移表 | 中英组件页、必填 / 自定义 `validate` / 服务端错误示例；迁移表去掉「无等价 rules 引擎」的绝对句并写明边界；`docs:check:i18n-parity` 绿 | ≈ 6 | M1-2 |
 | **M1-4** | 表单校验 | 双通道回归与 a11y | 受控 `error` 与 Field 校验同时存在的优先级断言；错误 `role="alert"` / `aria-describedby`；axe 打开态通过；定向 E2E | ≈ 4 | M1-2 |
 | **M2-1** | 日期形态 | `month` / `year` 模式与测试 | `selectionMode` 增加 `month` / `year`，值仍为 `Date`，按模式归一化（月 → 当月 1 日 00:00，年 → 1 月 1 日 00:00，本地时区）；`minValue` / `maxValue` 截断；键盘与读屏路径；320 不溢出；`showTime` 组合触发开发期告警 | ≈ 8 | 无 |
@@ -47,6 +47,7 @@
 
 - **任务粒度**：单条 ≤ 10 文件 / 800 行；移动文档条目（原 M4-4 ~ M4-6）的拆分与顺延见 §1。计数回扫按[规划规范 §3.9](../../standards/planning.md) 覆盖 `todo.md` / `roadmap.md` / 本记录 / 索引摘要 / `.session`。
 - **执行顺序建议**：先做 M3（治理与可达性，两个小批次），再做 M1 / M2，最后 M4 / M5（移动组件与文档无强依赖，但文档批次宜在前三者稳定后收口）。
+- **M1 机制裁定（2026-11-22，用户）**：M1-1 探针判定 Reka `FieldControl` 直连四维全过 0 / 13 后，用户取 **A 路径**——`FormItem` 只读 `modelValue` 值通道 + 内部注册汇总 `values`、自持校验态；M1-2 验收中的「由 `FieldError` 渲染」按等价自有渲染（`role="alert"`）执行，未传值时开发期告警。M1 条目数不变（不降级为只设计）。详见[接线契约](./2026-11-22-form-validation-wiring-contract.md) §4。
 - **NavBar 例外管理**：M4-1 / M4-2 是用户 D1' ① 明确授权的例外项；文档与提交正文须标注「第 1 条不成立、第 2 条存疑（三条未全部满足）」，不得写成「满足三条标准」。若后续用户撤回例外，M4-1 / M4-2 移出并重算为 13 条。
 - **质量门**：每条目 `lint` / `typecheck` / 定向测试 / 必要 E2E / Review Gate；阶段末 `pnpm verify`。
 - **状态词**：条目表沿用 `待执行 / 已交付`；进度表用 `未开始` / `进行中` / `已闭环` / `已阻塞`。映射：未开始 / 进行中 → 待执行，已闭环 → 已交付；已阻塞 → 待执行（阶段收口前须转为已交付或移出）。

@@ -40,5 +40,5 @@
 
 > 本节仅为**状态指针**，用于跨阶段可见性，不构成条目登记、不构成启动授权。条件触发候选、已发布版本、长期任务与归档遗留均以各自单一载体为准，本节不再复写。
 
-- **等待用户裁定**：本轮探针判定 Reka `FieldControl` 直连四个维度全过为 0 / 13（直连不可用），登记 §2 的 fallback 已触发——降级为「只设计」是默认走势；反向授权方案（`modelValue` 值通道 + 自持状态机 / 扩 13 字段契约）与随之而来的阶段条目数调整均待裁定，裁定前条目数维持不变。口径见[表单校验接线契约](../design/governance/2026-11-22-form-validation-wiring-contract.md) §4。
+- **M1 机制已裁定（2026-11-22）**：用户取 A 路径——`FormItem` 可选且只读的 `modelValue` 值通道 + 内部注册汇总 `values` + 自持校验态，错误行以等价自有渲染替代 `FieldError`，未传值时开发期告警；阶段条目数维持 15。口径见[表单校验接线契约](../design/governance/2026-11-22-form-validation-wiring-contract.md) §4。
 - **等待外部反馈**：momei 侧迁移由对应仓库执行、本仓等待反馈。**下游锁定版本复核（2026-11-22，取各仓 `pnpm-lock.yaml` 解析值）**：dependfix **`1.4.0`**（`5870042b`）/ caomei-auth **`1.4.0`**（`8cc2e89`）/ momei **`1.4.0`**（`596c25fd`）。**momei 页面级反馈仍未提供**，本指针维持；`1.4.0` 发布与下游复验细节见[发布记录](../design/governance/2026-11-21-phase40-m3-2-m3-3-release-and-downstream.md)。面向上游消费方的升级注意见[升级到 1.0](../guide/upgrade-to-1.0.md)。

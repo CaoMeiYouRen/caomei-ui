@@ -63,3 +63,53 @@ test.describe('表单编排', () => {
         await expect(page.locator(`#${selectLabelledBy}`)).toHaveText('水果')
     })
 })
+
+/**
+ * 内建校验（`validate` / `errors`）的真实浏览器路径，夹具见 `#form-builtin`。
+ *
+ * 覆盖单测无法取证的浏览器行为：提交被拦下时焦点落到首个无效字段、
+ * 服务端错误回填后再次输入即让位。
+ */
+test.describe('内建校验', () => {
+    test('必填未通过时阻止提交并聚焦首个无效字段', async ({ page }) => {
+        await page.goto('/')
+
+        await expect(page.locator('#form-builtin-log')).toHaveText('未提交')
+        await page.locator('#form-builtin button[type="submit"]').click()
+
+        await expect(page.locator('#form-builtin-log')).toHaveText('未提交')
+
+        const error = page.locator('#form-builtin .caomei-form-item__error')
+        await expect(error).toHaveCount(1)
+        await expect(error).toHaveAttribute('role', 'alert')
+        await expect(error).toHaveText('名称不能为空')
+
+        const input = page.locator('#form-builtin .caomei-input input').first()
+        await expect(input).toBeFocused()
+        await expect(input).toHaveAttribute('aria-invalid', 'true')
+
+        // hint 与 error 都在 aria-describedby 内，且各自可解析
+        const describedBy = await input.getAttribute('aria-describedby')
+        const describedIds = describedBy?.split(' ') ?? []
+        expect(describedIds).toHaveLength(2)
+        await expect(page.locator(`#${describedIds[0]}`)).toHaveText('必填；提交时校验')
+        await expect(page.locator(`#${describedIds[1]}`)).toHaveText('名称不能为空')
+    })
+
+    test('校验通过后提交，服务端错误在再次输入时让位', async ({ page }) => {
+        await page.goto('/')
+
+        await page.locator('#form-builtin .caomei-input input').first().fill('草梅')
+        await page.locator('#form-builtin button[type="submit"]').click()
+
+        await expect(page.locator('#form-builtin-log')).toHaveText('已提交：草梅')
+
+        const emailError = page.locator('#form-builtin .caomei-form-item__error')
+        await expect(emailError).toHaveCount(1)
+        await expect(emailError).toHaveText('邮箱已被占用')
+
+        const emailInput = page.locator('#form-builtin .caomei-input input').nth(1)
+        await emailInput.fill('a@b.c')
+        await expect(page.locator('#form-builtin .caomei-form-item__error')).toHaveCount(0)
+    })
+})

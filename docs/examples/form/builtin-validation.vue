@@ -12,14 +12,17 @@ const errors = ref<Record<string, string>>({})
 const message = ref('')
 
 function validateName(value: unknown): string {
-    return String(value ?? '').trim() ? '' : '名称不能为空'
+    const text = typeof value === 'string' ? value.trim() : ''
+    return text ? '' : '名称不能为空'
 }
 
 function validateConfirm(value: unknown, values: Record<string, unknown>): string {
-    if (!value) {
+    const text = typeof value === 'string' ? value : ''
+    if (!text) {
         return '请再次输入密码'
     }
-    return String(value) === String(values.password ?? '') ? '' : '两次输入的密码不一致'
+    const expected = typeof values.password === 'string' ? values.password : ''
+    return text === expected ? '' : '两次输入的密码不一致'
 }
 
 function onSubmit(): void {

@@ -684,6 +684,25 @@ function onSubmitForm(): void {
 }
 
 /**
+ * 内建校验用例（见 `test/e2e/form.e2e.ts`）：必填 `validate`、提交聚焦首个无效字段、
+ * 服务端 `errors` 回填与「值变更即让位」。
+ */
+const builtinName = ref('')
+const builtinEmail = ref('')
+const builtinErrors = ref<Record<string, string>>({})
+const builtinLog = ref('未提交')
+
+function builtinValidateName(value: unknown): string {
+    const text = typeof value === 'string' ? value.trim() : ''
+    return text ? '' : '名称不能为空'
+}
+
+function onSubmitBuiltin(): void {
+    builtinLog.value = `已提交：${builtinName.value}`
+    builtinErrors.value = { email: '邮箱已被占用' }
+}
+
+/**
  * 动效夹具（见 `test/e2e/form-motion.e2e.ts` / `basic-layout-motion.e2e.ts`）：
  * 表单输入与基础布局的 `data-motion` 状态采样。图片用内联 SVG，避免外网依赖。
  */
@@ -3203,6 +3222,55 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                     </CaomeiButton>
                 </template>
             </CaomeiEmpty>
+        </section>
+        <section id="form-builtin" class="fixture__case">
+            <CaomeiForm
+                :errors="builtinErrors"
+                @submit="onSubmitBuiltin"
+            >
+                <CaomeiFormItem
+                    label="名称"
+                    name="name"
+                    hint="必填；提交时校验"
+                    :model-value="builtinName"
+                    :validate="builtinValidateName"
+                    required
+                >
+                    <template #default="{id, name: fieldName, invalid, ...aria}">
+                        <CaomeiInput
+                            :id="id"
+                            v-model="builtinName"
+                            :name="fieldName"
+                            :invalid="invalid"
+                            placeholder="请输入名称"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiFormItem
+                    label="邮箱"
+                    name="email"
+                    hint="提交后由服务端回填错误"
+                    :model-value="builtinEmail"
+                >
+                    <template #default="{id, name: fieldName, invalid, ...aria}">
+                        <CaomeiInput
+                            :id="id"
+                            v-model="builtinEmail"
+                            :name="fieldName"
+                            :invalid="invalid"
+                            placeholder="请输入邮箱"
+                            v-bind="aria"
+                        />
+                    </template>
+                </CaomeiFormItem>
+                <CaomeiButton type="submit">
+                    提交
+                </CaomeiButton>
+            </CaomeiForm>
+            <p id="form-builtin-log">
+                {{ builtinLog }}
+            </p>
         </section>
     </main>
 </template>

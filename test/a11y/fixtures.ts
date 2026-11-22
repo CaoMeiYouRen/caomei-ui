@@ -276,7 +276,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     },
     { name: 'CaomeiFileUpload', root: CaomeiFileUpload, definition: { components: { CaomeiFileUpload }, template: '<CaomeiFileUpload label="上传" />' } },
     { name: 'CaomeiFloatLabel', root: CaomeiFloatLabel, definition: { components: { CaomeiFloatLabel, CaomeiInput }, template: '<CaomeiFloatLabel><CaomeiInput id="a11y-float" /><label for="a11y-float">名称</label></CaomeiFloatLabel>' } },
-    { name: 'CaomeiForm', root: CaomeiForm, definition: { components: { CaomeiForm, CaomeiFormItem, CaomeiInput }, template: '<CaomeiForm><CaomeiFormItem label="名称" name="name" hint="请输入名称" required><template #default="{ id, name, invalid, ...aria }"><CaomeiInput :id="id" :name="name" :invalid="invalid" v-bind="aria" /></template></CaomeiFormItem></CaomeiForm>' } },
+    { name: 'CaomeiForm', root: CaomeiForm, definition: { components: { CaomeiForm, CaomeiFormItem, CaomeiInput }, requiredSelectors: ['.caomei-form-item__error', '[role="alert"]'], template: '<CaomeiForm :errors="{ name: \'名称不能为空\' }"><CaomeiFormItem label="名称" name="name" hint="请输入名称" required><template #default="{ id, name, invalid, ...aria }"><CaomeiInput :id="id" :name="name" :invalid="invalid" v-bind="aria" /></template></CaomeiFormItem></CaomeiForm>' } },
     { name: 'CaomeiIcon', root: CaomeiIcon, definition: { components: { CaomeiIcon }, template: '<CaomeiIcon :icon="Bold" />', setup: () => ({ Bold }) } },
     { name: 'CaomeiImage', root: CaomeiImage, definition: { components: { CaomeiImage }, template: '<CaomeiImage src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="占位" />' } },
     { name: 'CaomeiInput', root: CaomeiInput, definition: { components: { CaomeiInput }, template: '<CaomeiInput label="姓名" placeholder="姓名" />' } },

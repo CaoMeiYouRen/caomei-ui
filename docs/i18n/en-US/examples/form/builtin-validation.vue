@@ -12,14 +12,17 @@ const errors = ref<Record<string, string>>({})
 const message = ref('')
 
 function validateName(value: unknown): string {
-    return String(value ?? '').trim() ? '' : 'Name is required'
+    const text = typeof value === 'string' ? value.trim() : ''
+    return text ? '' : 'Name is required'
 }
 
 function validateConfirm(value: unknown, values: Record<string, unknown>): string {
-    if (!value) {
+    const text = typeof value === 'string' ? value : ''
+    if (!text) {
         return 'Please confirm the password'
     }
-    return String(value) === String(values.password ?? '') ? '' : 'The two passwords do not match'
+    const expected = typeof values.password === 'string' ? values.password : ''
+    return text === expected ? '' : 'The two passwords do not match'
 }
 
 function onSubmit(): void {

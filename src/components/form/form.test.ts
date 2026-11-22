@@ -451,6 +451,9 @@ describe('CaomeiFormItem 校验', () => {
             errors: { email: '服务端错误' },
         })
         await nextTick()
+        // 先让本地校验落地，确保「受控 error > 本地校验」是真双值共存
+        controlled.wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
         expect(errorTexts(controlled.wrapper)).toEqual(['受控错误'])
         controlled.wrapper.unmount()
 

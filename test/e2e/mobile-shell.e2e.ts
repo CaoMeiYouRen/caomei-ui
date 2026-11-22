@@ -205,3 +205,32 @@ test.describe('相邻目标间距判定', () => {
         await page.evaluate(() => document.querySelector('#compact-pair-probe')?.remove())
     })
 })
+
+test.describe('移动壳层吸顶', () => {
+    test('壳层滚动时页头在滚动容器内保持吸顶', async ({ page }) => {
+        const scroll = page.locator('#mobile-shell-sticky .shell-fixture__scroll')
+        const nav = page.locator('#shell-nav')
+        await expect(nav).toBeVisible()
+
+        const containerBox = await scroll.boundingBox()
+        const initialBox = await nav.boundingBox()
+        expect(containerBox).not.toBeNull()
+        expect(initialBox).not.toBeNull()
+        if (!containerBox || !initialBox) {
+            throw new Error('壳层夹具未渲染')
+        }
+        expect(initialBox.y).toBeCloseTo(containerBox.y, 0)
+
+        await scroll.evaluate((element) => {
+            element.scrollTop = 200
+        })
+        await expect.poll(async () => (await scroll.evaluate((element) => element.scrollTop))).toBeGreaterThan(0)
+
+        const scrolledBox = await nav.boundingBox()
+        expect(scrolledBox).not.toBeNull()
+        if (!scrolledBox) {
+            throw new Error('滚动后页头消失')
+        }
+        expect(scrolledBox.y).toBeCloseTo(containerBox.y, 0)
+    })
+})

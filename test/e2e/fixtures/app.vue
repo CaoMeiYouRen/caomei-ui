@@ -3337,6 +3337,27 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 {{ navBackLog }}
             </p>
         </section>
+        <section id="mobile-shell-sticky" class="fixture__case">
+            <div class="shell-fixture">
+                <div class="shell-fixture__scroll">
+                    <CaomeiNavBar
+                        id="shell-nav"
+                        title="项目列表"
+                        sticky
+                        label="页面导航"
+                    />
+                    <div class="shell-fixture__body">
+                        <p
+                            v-for="index in 12"
+                            :key="index"
+                            class="shell-fixture__row"
+                        >
+                            项目 {{ index }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -3639,5 +3660,36 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.shell-fixture {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    height: 320px;
+    overflow: hidden;
+    border: 1px solid var(--caomei-color-border);
+}
+
+.shell-fixture__scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: auto;
+}
+
+.shell-fixture__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+}
+
+.shell-fixture__row {
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--caomei-color-bg-elevated);
+    border-radius: var(--caomei-radius-md);
 }
 </style>

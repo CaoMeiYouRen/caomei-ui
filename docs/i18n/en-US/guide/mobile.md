@@ -138,6 +138,21 @@ The search bar is composed from `Input` + `InputGroup` + `Button`; the library s
 - **Empty**: report an empty submit with an inline `role="status"` line rather than a toast — the field is still in view.
 - Touch density: put the whole bar in a `data-density="touch"` subtree for 44px heights; do not enlarge the input alone.
 
+### Mobile shell example
+
+Compose a header, search bar, list, bottom action bar and tab bar into a runnable app shell: the header sticks and adds the safe area, the action bar reserves the bottom safe area, and the tab bar stays at the bottom.
+
+<demo
+    vue="../examples/mobile/shell.vue"
+    ssg="true"
+/>
+
+- Use `CaomeiNavBar` for the header (`sticky` plus the default `safe-area`); back only emits an event, so routing stays in your app.
+- The search bar reuses the recipe above; submit and `enter` share one handler.
+- Inside the shell the action bar can simply be a flex footer (as in the example, which needs no extra list padding); to float above the content use `position: fixed` or `sticky bottom` and reserve equal space at the end of the list.
+- Only the **bottom-most** fixed element carries the bottom safe area: when a tab bar sits at the bottom, the action bar above it must not add `--caomei-safe-area-bottom` again, or the spacing doubles.
+- Use `CaomeiTabbar` for the tab bar; items share the width and never overflow. Give the header and tab bar different `label`s so the two landmarks are distinguishable.
+
 ### Soft keyboard and visibility
 
 - The library does **not** listen to `visualViewport` and has no JavaScript viewport branch; address-bar changes are handled by `dvh` (Drawer / Dialog / Toast / image preview already ship the `dvh` fallback).
@@ -186,6 +201,19 @@ The "Device preview" entry in the site navigation opens a **same-origin iframe o
 4. **Wrapping containers**: no vertical clipping (every member fully inside the container's client rect) — checking only horizontal `scrollWidth` misses rows cut off by a fixed height.
 5. **No desktop regression**: the desktop tier matches the previous form (layout and computed styles).
 6. Full assertion details (including the tiered keyboard-focus rule) are in [Responsive design §4](/design/responsive) (Chinese).
+
+
+## Device execution log
+
+The three items below need real hardware and are **not executed** yet (this repository has no iOS / Android device attached); automated suites and the documented design stand in for now. Record results here when executed.
+
+| Item | Focus | Status | Stand-in evidence |
+| --- | --- | --- | --- |
+| iOS `dvh` | Drawer, dialog, toast and image preview do not jump when the address bar collapses | **Not executed (no device)** | `@supports (height: 100dvh)` fallbacks exist in Drawer / Dialog / Toast; Playwright mobile steps cover layout |
+| Touch scrolling | Inner panel scrolling does not move the page; scroll lock restores; hit areas under momentum scrolling | **Not executed (no device)** | `responsive.e2e.ts` covers horizontal scrolling and unclipped members; the scroll lock is covered by `ui-validator` records |
+| OTP autofill | `autocomplete="one-time-code"` integration with the system keyboard | **Not executed (no device)** | InputOtp unit and E2E tests cover paste distribution and completion; system-level autofill cannot be simulated in a browser |
+
+> When executed, change Status to `Executed (device / OS version / result)` and keep the stand-in column for comparison.
 
 ## Related
 - [Mobile readiness matrix](./mobile-readiness.md) — per-page 320 / 390 / 768 shapes and gaps

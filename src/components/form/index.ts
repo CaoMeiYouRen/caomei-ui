@@ -6,3 +6,8 @@ export type {
     FormItemSlotProps,
     FormProps,
 } from './types'
+export type {
+    FormValidateFn,
+    FormValidateResult,
+    FormValidationMode,
+} from './context'

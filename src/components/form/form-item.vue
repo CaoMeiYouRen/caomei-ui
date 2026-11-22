@@ -253,6 +253,8 @@ watch(
     () => props.validate,
     (validate) => {
         if (!validate) {
+            // 作废在飞的异步结果，避免其回填已移除校验器的字段
+            validateId += 1
             localError.value = ''
             validateFailed.value = false
         }

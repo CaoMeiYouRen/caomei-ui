@@ -1,5 +1,5 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import { createSSRApp, defineComponent, h, nextTick, reactive, type Component } from 'vue'
+import { createSSRApp, defineComponent, h, nextTick, reactive, ref, type Component } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CaomeiAutoComplete } from '../auto-complete'
@@ -16,7 +16,7 @@ import { CaomeiSwitch } from '../switch'
 import { CaomeiTagsInput } from '../tags-input'
 import { CaomeiTextarea } from '../textarea'
 import type { FormExposed, FormItemSlotProps } from './types'
-import { CaomeiForm, CaomeiFormItem } from './index'
+import { CaomeiForm, CaomeiFormItem, type FormValidateFn, type FormValidationMode } from './index'
 
 afterEach(() => {
     document.body.innerHTML = ''
@@ -380,8 +380,8 @@ describe('字段继承面逐项绑定', () => {
 interface ValidatedFieldSpec {
     name: string
     value: string
-    validationMode?: 'onSubmit' | 'onBlur' | 'onChange'
-    validate?: (value: unknown, values: Record<string, unknown>) => string | string[] | null | undefined | Promise<string | string[] | null | undefined>
+    validationMode?: FormValidationMode
+    validate?: FormValidateFn
     error?: string
 }
 
@@ -706,7 +706,201 @@ describe('CaomeiFormItem 校验补充', () => {
         tick.value += 1
         await nextTick()
         await nextTick()
+        expect(wrapper.get('[data-tick]').attributes('data-tick')).toBe('1')
         expect(errorTexts(wrapper)).toEqual(['必填'])
+        wrapper.unmount()
+    })
+})
+
+describe('CaomeiFormItem 校验边界', () => {
+    it('服务端错误在值变更后让位，服务端以新对象重新下发后恢复', async () => {
+        const state = reactive({ name: 'a' })
+        const errors = ref<Record<string, string>>({ name: '已占用' })
+        const Host = defineComponent({
+            name: 'ServerErrorHost',
+            render: () => h(CaomeiForm, { errors: errors.value }, {
+                default: () => h(CaomeiFormItem, { name: 'name', modelValue: state.name }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, {
+                        id: slotProps.id,
+                        modelValue: state.name,
+                        'onUpdate:modelValue': (value: string) => {
+                            state.name = value
+                        },
+                    }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual(['已占用'])
+
+        state.name = 'b'
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual([])
+
+        // 同一文案、新对象 = 服务端重新下发
+        errors.value = { name: '已占用' }
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual(['已占用'])
+        wrapper.unmount()
+    })
+
+    it('同一 tick 内的值变更与新错误不会互相吞掉', async () => {
+        const state = reactive({ name: 'a' })
+        const errors = reactive<{ name?: string }>({ name: '旧错误' })
+        const Host = defineComponent({
+            name: 'SameTickHost',
+            render: () => h(CaomeiForm, { errors }, {
+                default: () => h(CaomeiFormItem, { name: 'name', modelValue: state.name }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, {
+                        id: slotProps.id,
+                        modelValue: state.name,
+                        'onUpdate:modelValue': (value: string) => {
+                            state.name = value
+                        },
+                    }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual(['旧错误'])
+
+        state.name = 'b'
+        errors.name = '新错误'
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual(['新错误'])
+        wrapper.unmount()
+    })
+
+    it('异步乱序：过期结果不得改写结论或放行提交', async () => {
+        const resolvers: ((value: string) => void)[] = []
+        const validate = (): Promise<string> => new Promise<string>((resolve) => {
+            resolvers.push(resolve)
+        })
+        const submitted: SubmitEvent[] = []
+        const Host = defineComponent({
+            name: 'StaleAsyncHost',
+            render: () => h(CaomeiForm, { onSubmit: (event: SubmitEvent) => submitted.push(event) }, {
+                default: () => h(CaomeiFormItem, { name: 'name', modelValue: '', validate }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, { id: slotProps.id }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
+        expect(resolvers).toHaveLength(2)
+
+        // 新结果先回（失败），旧结果后回（通过）：过期结果不得覆盖新结论、也不得放行
+        resolvers[1]?.('新错误')
+        await flushPromises()
+        expect(submitted).toHaveLength(0)
+        expect(errorTexts(wrapper)).toEqual(['新错误'])
+
+        resolvers[0]?.('')
+        await flushPromises()
+        expect(submitted).toHaveLength(0)
+        expect(errorTexts(wrapper)).toEqual(['新错误'])
+        wrapper.unmount()
+    })
+
+    it('移除 validate 后立即清除错误并不再校验', async () => {
+        const state = reactive({ name: '', validate: true })
+        const Host = defineComponent({
+            name: 'RemoveValidateHost',
+            render: () => h(CaomeiForm, null, {
+                default: () => h(CaomeiFormItem, {
+                    name: 'name',
+                    modelValue: state.name,
+                    validate: state.validate ? (value: unknown): string => (value ? '' : '必填') : undefined,
+                }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, {
+                        id: slotProps.id,
+                        modelValue: state.name,
+                    }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual(['必填'])
+
+        state.validate = false
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual([])
+
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
+        expect(errorTexts(wrapper)).toEqual([])
+        wrapper.unmount()
+    })
+
+    it('校验器抛错时按失败处理，只标红不展示文案', async () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+        const validate: FormValidateFn = (): string => {
+            throw new Error('boom')
+        }
+        const submitted: SubmitEvent[] = []
+        const Host = defineComponent({
+            name: 'ThrowingValidatorHost',
+            render: () => h(CaomeiForm, { onSubmit: (event: SubmitEvent) => submitted.push(event) }, {
+                default: () => h(CaomeiFormItem, { name: 'name', modelValue: 'a', validate }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, { id: slotProps.id, modelValue: 'a' }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
+
+        expect(submitted).toHaveLength(0)
+        expect(errorTexts(wrapper)).toEqual([])
+        expect(wrapper.get('.caomei-form-item').classes()).toContain('caomei-form-item--invalid')
+        expect(error).toHaveBeenCalled()
+        wrapper.unmount()
+    })
+
+    it('移除 validate 后在飞的异步结果被作废', async () => {
+        const resolvers: ((value: string) => void)[] = []
+        const state = reactive({ validate: true })
+        const Host = defineComponent({
+            name: 'RemovedWhilePendingHost',
+            render: () => h(CaomeiForm, null, {
+                default: () => h(CaomeiFormItem, {
+                    name: 'name',
+                    modelValue: '',
+                    validate: state.validate
+                        ? (): Promise<string> => new Promise<string>((resolve) => {
+                            resolvers.push(resolve)
+                        })
+                        : undefined,
+                }, {
+                    default: (slotProps: FormItemSlotProps) => h(CaomeiInput, { id: slotProps.id }),
+                }),
+            }),
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        await nextTick()
+
+        wrapper.get('form').element.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        await nextTick()
+        expect(resolvers).toHaveLength(1)
+
+        state.validate = false
+        await nextTick()
+        resolvers[0]?.('旧错误')
+        await flushPromises()
+
+        expect(errorTexts(wrapper)).toEqual([])
         wrapper.unmount()
     })
 })

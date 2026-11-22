@@ -95,12 +95,19 @@ function settle(result: FormValidateOutcome, event: SubmitEvent): void {
     emit('submit', event)
 }
 
+/** 提交序号：异步校验返回时只让最近一次提交结算（旧提交不 emit、不聚焦） */
+let submitEpoch = 0
+
 function onSubmit(event: SubmitEvent): void {
     event.preventDefault()
     submitCount.value += 1
+    const epoch = ++submitEpoch
     const result = validateAll()
     if (isPromiseLike(result)) {
         void result.then((valid) => {
+            if (epoch !== submitEpoch) {
+                return
+            }
             settle(valid, event)
         })
         return

@@ -70,6 +70,12 @@ Besides the controlled `open`, you can pass a trigger element via the `trigger` 
 
 > **Known trade-off (nested modals)**: when another Dialog / Drawer / ConfirmDialog opens inside a dialog, the child overlay (1000) sits below the parent content (1001), so **the parent content is not dimmed** although it is already blocked and cannot be interacted with; a floating panel already open in the parent (1050) sits above the child content (1001) and stays visible, but inherits the modal lock's `pointer-events: none` — **visible but not clickable**; clicking that area first closes the child modal as an outside click and then falls through to the revealed option. Closing order, focus isolation and scroll locking still follow "close only the topmost layer". See [nested overlay layering evaluation](/design/governance/2026-11-15-phase34-m2-1-nested-overlay-layering) for the evaluation and the implementation sketch.
 
+## Mobile and narrow screens
+
+- On narrow screens (≤640px) the width narrows to `calc(100vw - 2 × space-4)`; tablets keep `min(90vw, 480px)` (the `size` step). The footer wraps when the buttons do not fit.
+- Use `breakpoints` to switch widths per viewport (see Behaviour options above). The component never listens to the viewport and never turns full screen by itself.
+- **Known limits**: a full-screen dialog is the consumer's job — override `width: 100vw`, `max-height: 100dvh`, `border-radius: 0` and handle the safe area; the overlay and scroll lock work the same on narrow screens.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

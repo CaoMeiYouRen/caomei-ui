@@ -367,6 +367,13 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 | `--caomei-data-table-pagination-justify` | `flex-end` | Pagination container main-axis alignment (PrimeVue centers it by default; set to `center` to match) |
 | `--caomei-data-table-pagination-sticky-bg` | `--caomei-color-bg` | Background of the sticky paginator under `scrollable` (keeps scrolling rows from showing through) |
 
+## Mobile and narrow screens
+
+- The table **scrolls horizontally** on narrow screens (container `overflow-x: auto`) and keeps the header on one line; the first column is not frozen by default (use the frozen-columns option when needed).
+- On touch devices put the table inside a `data-density="touch"` subtree: cell padding stays the same while font size and row height grow with the density step.
+- Sort buttons and the column-resize handle keep a hit area of at least 24×24 through `.caomei-hit-target` (visual box unchanged); custom row buttons must add that primitive themselves.
+- **Known limits**: turning rows into cards on narrow screens is not a built-in behaviour; implement it per product. With many columns, set widths explicitly or drop columns.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This component |

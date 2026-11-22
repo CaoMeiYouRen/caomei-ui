@@ -86,6 +86,12 @@ Styles are based on CSS variables and kept low-specificity for easy overriding:
 
 > **Scroll behaviour**: the trigger list is a **horizontal** scroll container — it scrolls natively (horizontally) when the content exceeds the available width, which is why no scroll navigator buttons (`scrollable` / `showNavigators`) are provided; the list never shows a vertical scrollbar. With `orientation="vertical"` the list does not scroll.
 
+## Mobile and narrow screens
+
+- The tab list **scrolls horizontally** on narrow screens (`overflow-x: auto`) instead of wrapping; the active tab is marked by `aria-selected` and the underline.
+- Arrow keys move between tabs and `Home` / `End` jump to the ends; when a tab is fully outside the visible area the browser scrolls it into view (the component never calls `scrollIntoView`, and a partially visible tab is not guaranteed to become fully visible).
+- **Known limits**: with many tabs prefer a select or segmented control; panel height changes do not scroll the page automatically.
+
 ## Migration from PrimeVue
 
 PrimeVue v4 composes tabs from five components; this library merges them into four:

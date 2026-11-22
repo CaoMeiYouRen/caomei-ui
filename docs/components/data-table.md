@@ -367,6 +367,13 @@
 | `--caomei-data-table-pagination-justify` | `flex-end` | 分页容器主轴对齐（PrimeVue 默认居中，可设为 `center`） |
 | `--caomei-data-table-pagination-sticky-bg` | `--caomei-color-bg` | `scrollable` 下吸底分页器的背景色（避免滚动行从下方透出） |
 
+## 移动端与窄屏
+
+- 表格在窄屏**横向滚动**（容器 `overflow-x: auto`），表头不换行；默认不冻结首列，需要时用冻结列配置。
+- 触摸设备可把表格放进 `data-density="touch"` 子树：单元格内边距不变，字号与行高随密度档放大。
+- 排序按钮与列宽拖拽手柄的命中区经 `.caomei-hit-target` 保证 ≥24×24（视觉盒不变）；行内自定义按钮需自行加该原语。
+- **已知边界**：卡片化（窄屏把行转成卡片列表）不是组件默认行为，由使用方按业务实现；列很多时请显式设置列宽或减少列数。
+
 ## 从 PrimeVue 迁移
 
 | PrimeVue | 本组件 |

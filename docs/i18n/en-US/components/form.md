@@ -144,6 +144,13 @@ A non-empty `error` implies an invalid state and renders a `role="alert"` error 
 - `FormItem` places the label **above** the control, suitable for regular forms; `FloatLabel` floats the label **inside** the control, suitable for compact layouts.
 - Do not use both visible labels on the same field, or the field gets two accessible names; when a floating label is needed, keep only the `FloatLabel` `<label>` and let `FormItem` own hint / error.
 
+## Mobile and narrow screens
+
+- Fields follow the container (`width: 100%`), so narrow screens need no extra styling; labels sit above the control and long labels wrap naturally.
+- On touch devices put the form inside a `data-density="touch"` subtree: control heights grow with the step (md 44px / sm 36px / lg 52px) and the font size rises to 16px, which avoids iOS focus zoom.
+- When validation fails on submit, the **first invalid field in document order receives focus**; the component only calls `focus()`, so whether the page scrolls to it is up to the browser. The error row is announced through `role="alert"`.
+- **Known limits**: multi-column layouts must collapse to one column yourself; `Form` has no built-in responsive column count.
+
 ## Migration from PrimeVue
 
 | PrimeVue | This library |

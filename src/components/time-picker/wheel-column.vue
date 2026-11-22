@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { labelAttrs } from '../_shared/use-label-attrs'
 import { WHEEL_SCROLL_IGNORE_MS } from './utils'
 import type { TimeWheelOption } from './types'
 
@@ -164,7 +165,7 @@ onBeforeUnmount(clearSettleTimer)
             'caomei-time-wheel__column--readonly': readonly
         }"
         role="listbox"
-        :aria-label="label"
+        v-bind="labelAttrs(label)"
         :aria-activedescendant="optionId(selectedIndex)"
         :aria-disabled="disabled || undefined"
         :aria-readonly="readonly || undefined"

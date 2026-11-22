@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { DOMWrapper, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -302,5 +304,36 @@ describe('CaomeiTimePicker 选择模式', () => {
         expect(column.attributes('aria-readonly')).toBe('true')
         expect(column.attributes('tabindex')).toBe('-1')
         readonly.unmount()
+    })
+})
+
+describe('TimePicker 滚轮列可访问名', () => {
+    it('非空标签经 labelAttrs 落为 aria-label，空标签不输出该属性', async () => {
+        const { default: WheelColumn } = await import('./wheel-column.vue')
+        const labeled = mount(WheelColumn, {
+            props: {
+                label: '小时',
+                options: [{ label: '00', value: 0 }, { label: '01', value: 1 }],
+                modelValue: 0,
+            },
+        })
+        expect(labeled.get('[role="listbox"]').attributes('aria-label')).toBe('小时')
+        labeled.unmount()
+
+        const unlabeled = mount(WheelColumn, {
+            props: {
+                label: '',
+                options: [{ label: '00', value: 0 }],
+                modelValue: 0,
+            },
+        })
+        expect(unlabeled.get('[role="listbox"]').attributes('aria-label')).toBeUndefined()
+        unlabeled.unmount()
+    })
+
+    it('模板中不再直接绑定 :aria-label（回归守卫）', () => {
+        const source = readFileSync(join(process.cwd(), 'src/components/time-picker/wheel-column.vue'), 'utf8')
+        expect(source).not.toContain(':aria-label="label"')
+        expect(source).toContain('labelAttrs(label)')
     })
 })

@@ -205,15 +205,17 @@ The "Device preview" entry in the site navigation opens a **same-origin iframe o
 
 ## Device execution log
 
-The three items below need real hardware and are **not executed** yet (this repository has no iOS / Android device attached); automated suites and the documented design stand in for now. Record results here when executed.
+The three items below need real hardware: **executed as a browser device-viewport simulation (not a real device) on 2026-11-23**, while **real-device execution is still pending** (this repository has no iOS / Android device attached). The simulation used the Playwright `webkit` presets `iPhone 12` (preset viewport 390×664) and `iPhone SE` (320×568), including mobile UA, DPR and `hasTouch`; per-item results and uncovered parts are in the [Phase 42 M2-1 record](/design/governance/2026-11-23-phase42-m2-1-simulated-mobile-verification) (Chinese).
 
-| Item | Focus | Status | Stand-in evidence |
+| Item | Focus | Status | Simulated result (not a real device) and uncovered parts |
 | --- | --- | --- | --- |
-| iOS `dvh` | Drawer, dialog, toast and image preview do not jump when the address bar collapses | **Not executed (no device)** | `@supports (height: 100dvh)` fallbacks exist in Drawer / Dialog / Toast; Playwright mobile steps cover layout |
-| Touch scrolling | Inner panel scrolling does not move the page; scroll lock restores; hit areas under momentum scrolling | **Not executed (no device)** | `responsive.e2e.ts` covers horizontal scrolling and unclipped members; the scroll lock is covered by `ui-validator` records |
-| OTP autofill | `autocomplete="one-time-code"` integration with the system keyboard | **Not executed (no device)** | InputOtp unit and E2E tests cover paste distribution and completion; system-level autofill cannot be simulated in a browser |
+| iOS `dvh` | Drawer, dialog, toast and image preview do not jump when the address bar collapses | **Simulated (not a real device); real device pending** | Simulated: `dvh` supported, `90dvh` within 1px of 90% of the viewport height, the `ActionSheet` panel converges to `min(90dvh, 420px)` and stays inside the viewport. Not covered: the address bar actually collapsing (the viewport is static in simulation) and notch / home-indicator insets (safe area is 0 in simulation). Stand-in: `@supports (height: 100dvh)` fallbacks exist in Drawer / Dialog / Toast |
+| Touch scrolling | Inner panel scrolling does not move the page; scroll lock restores; hit areas under momentum scrolling | **Simulated (not a real device); real device pending** | Simulated: the shell scroll container scrolls (`clientHeight` 400 / `scrollHeight` 564), the sticky header stays at the container top after scrolling, and the action bar and tab bar stay inside the shell. Not covered: inner panel scrolling not moving the page, momentum scrolling, scroll-lock restoration. Stand-in: `responsive.e2e.ts` covers horizontal scrolling and unclipped members; the scroll lock is covered by `ui-validator` records |
+| OTP autofill | `autocomplete="one-time-code"` integration with the system keyboard | **Simulated (not a real device); real device pending** | Simulated: all six cells carry `autocomplete="one-time-code"` and `inputmode="numeric"`; typing six digits fills the cells in order, syncs the model and leaves focus on the last cell. Not covered: the system keyboard and SMS autofill. Stand-in: InputOtp unit and E2E tests cover paste distribution and completion |
 
-> When executed, change Status to `Executed (device / OS version / result)` and keep the stand-in column for comparison.
+> "Simulated (not a real device)" only means the problem did not reproduce in simulation; it is not a real-device acceptance result. When executed on hardware, change Status to `Executed (device / OS version / result)` and keep the simulated column for comparison.
+
+**Boundaries found alongside the simulation (not a library issue)**: the same run found page-level horizontal overflow in the docs site at 320×568 (from the site's top bar and hamburger button), and source-code blocks on component example pages overflow at 360 / 390; the library's shell example has no horizontal overflow at those widths. Both belong to the docs site and the example surface and do not affect component behaviour or breakpoint semantics; readings and the probe method are in the [Phase 42 M2-1 record §5](/design/governance/2026-11-23-phase42-m2-1-simulated-mobile-verification) (Chinese), and this page does not restate the counts.
 
 ## Related
 - [Mobile readiness matrix](./mobile-readiness.md) — per-page 320 / 390 / 768 shapes and gaps

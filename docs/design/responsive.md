@@ -74,6 +74,11 @@
 | 19 | 移动端列表壳 | Cell / CellGroup / Tabbar | 行高 ≥44（触摸密度 52）；长文案单行截断；标签栏均分且不横向溢出 | 同左 | 同左 | 已实现（`cell.vue` 行高取 `--caomei-control-height-lg`、标题 / 描述 / 值 `text-overflow: ellipsis`；`tabbar-item.vue` 条目 `flex: 1 1 0` + `min-width: 0`、底部叠加安全区） |
 | 20 | 底部操作面板 | ActionSheet | 高度 `min(90dvh, 420px)`；正文纵向滚动、取消项常驻；落在视口内 | 同左 | 同左 | 已实现（以 Drawer `position="bottom"` 组合，`drawer.vue` 的 `height` 与 `@supports (height: 100dvh)` 回退；正文 `overflow: auto`） |
 | 21 | 空态 | Empty | 标题 / 说明 / 操作按 `overflow-wrap` 折行，不裁切、不横向溢出 | 同左 | 同左 | 已实现（`empty.vue` 的 `overflow-wrap: anywhere` 与 `max-width: 100%`；窄屏只收紧留白） |
+| 22 | 双栏穿梭 | Transfer | 双栏转单列上下堆叠，动作区改横排 | 双栏并排（≤640 才转单列） | 双栏并排 | 已实现（`transfer.vue:285-293`：`@media (width <= 640px)` 把 `.caomei-transfer` 置 `grid-template-columns: 1fr`、`.caomei-transfer__actions` 改 `flex-direction: row`） |
+| 23 | 浮层面板可用宽收敛 | Popover / Popconfirm / Tooltip | 面板宽取 `min(20rem, 可用宽)`（可用宽由 popper 给出，含碰撞内边距，故面板始终落在视口内） | 同左 | 同左 | 已实现（`popover-content.vue:85` 的 `max-width`、`popconfirm.vue:207` 的 `width`、`tooltip-content.vue:45` 的 `max-width` 均取 `--reka-*-content-available-width`；Tooltip 有显式回退 `20rem`，Popover 的 `max-width` 与 Popconfirm 的 `width` 未设显式回退（变量缺失时分别退 `none` / `auto`）。三者均无宽度 / 断点类 `@media`，收敛完全由 popper 可用宽驱动） |
+| 24 | 级联列面板 | Cascader | 列容器 `max-width: min(40rem, 80vw)` 且横向可滚（`overflow: auto`） | 同左 | 同左 | 已实现（`cascader.vue:250-252`） |
+| 25 | 时间面板可用尺寸 | TimePicker | 面板 `max-width` / `max-height` 取 popper 可用宽 / 高（回退 `none`），可用空间不足时面板内 `overflow: auto` 滚动 | 同左 | 同左 | 已实现（`time-picker.vue:628-630`） |
+| 26 | 描述列表列数 | Descriptions | 强制单列（`cols-1` 不受该媒体查询约束，效果同为单列） | 退 2 列（原 ≥3 列配置） | 按 `column` 配置（恰 1024px 仍命中 2 列档；`cols-1` 除外） | 已实现（`descriptions.vue:86-96` 两条 `@media`；条目跨列见 `descriptions-item.vue:106,112`） |
 
 ## 4. 验收标准
 

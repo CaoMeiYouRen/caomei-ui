@@ -7,7 +7,7 @@
 - Rows = every component page under `docs/components/` (**72 rows**, excluding the overview `index`, `composables`, `icons`, `locale` and `showcase`).
 - Data comes from **the §3 behaviour patterns plus a source-code check**; items not measured separately say so in the Known limits column instead of claiming a measurement.
 - Viewports: 320 (an interior point of the sm step) / 390 (mobile matrix) / 768 (tablet matrix); desktop (≥1024) is noted only where the row differs.
-- Counts: **49 rows** carry a §3 pattern (Source gives the number), **7 rows** have a narrow-screen rule in source that §3 does not register (Source names the file), and **16 rows** have no dedicated rule (follow the container).
+- Counts: **56 rows** carry a §3 pattern (Source gives the number) and **16 rows** have no dedicated rule (follow the container); the former 7 "source rule, not in §3" rows were back-filled into §3 #22 ~ #26 on 2026-11-23. The Toast height cap (`100vh` / `100dvh`) and the Image preview layer (`90vw` / `90vh`) do not form a separate behaviour pattern (other viewport-relative sizing is registered as #1 / #2 / #20) and follow the `dvh` wording and safe-area tokens in [Mobile and responsive](/en-US/guide/mobile).
 - Count reconciliation: the registration estimate counted pages with page-level mobile prose (30 + 41 = 71); this table maps §3 patterns plus source rules and yields 72 (NavBar is the 72nd page added in Phase 41). The two sets differ; see the note at the end.
 
 ## Matrix
@@ -26,7 +26,7 @@
 | `button-group` | Toolbar wraps; group scrolls horizontally | group scrolls (≤1024) | Toolbar single line; group scrolls | Wrap or scroll, members never clipped | 769–1023 is a no-breakpoint range | §3 #7 |
 | `calendar` | Panel stays in the viewport, scroll fallback | same | content-sized | Available width / height + scroll | Inline calendar overflows under 198px container | §3 #6 |
 | `card` | Adapts to the container | same | same | Follows the container | — | §3 #15 |
-| `cascader` | Panel max-width = min(40rem, 80vw) | same | same | Converges to 80vw | — | Source `cascader.vue` (not registered in §3) |
+| `cascader` | Panel max-width = min(40rem, 80vw) | same | same | Converges to 80vw | — | §3 #24 |
 | `cell` | Row height ≥44; single-line truncation; tabs share width | same | same | Touch density 52 | — | §3 #19 |
 | `cell-group` | Row height ≥44; single-line truncation; tabs share width | same | same | Touch density 52 | — | §3 #19 |
 | `chart` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
@@ -38,7 +38,7 @@
 | `data-table` | Container scrolls horizontally; header stays on one line | same | column widths | Horizontal scroll | Card layout is the consumer’s job | §3 #9 / #16 |
 | `data-view` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `date-picker` | Panel stays in the viewport, scroll fallback | same | content-sized | Available width / height + scroll | Inline calendar overflows under 198px container | §3 #6 |
-| `descriptions` | Forced single column ≤640 | Forced single column ≤640 | Multiple columns | Media query switches to one column | — | Source `descriptions.vue` (not registered in §3) |
+| `descriptions` | Forced single column ≤640 | Forced single column ≤640 | Multiple columns | Media query switches to one column | — | §3 #26 |
 | `dialog` | Dialog narrows (100vw − 2×space-4) | min(90vw, 480/400px) | min(90vw, preset width) | Width follows the viewport; footer wraps | — | §3 #1 / #17 |
 | `divider` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `drawer` | Inline min(90vw, size); block min(90vh, size) | same | same | Narrows by viewport ratio | — | §3 #2 |
@@ -58,8 +58,8 @@
 | `nav-bar` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `paginator` | Wraps automatically | same | single line | Wraps | — | §3 #11 |
 | `password` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14（口径 · §3 未逐条登记） |
-| `popconfirm` | Panel width = min(20rem, available width) | same | same | Converges to available width | — | Source `popconfirm.vue` (not registered in §3) |
-| `popover` | Panel max-width = min(20rem, available width), scrollable | same | same | Portal panel converges to available width | — | Source `popover-content.vue` (not registered in §3) |
+| `popconfirm` | Panel width = min(20rem, available width) | same | same | Converges to available width | — | §3 #23 |
+| `popover` | Panel max-width = min(20rem, available width), scrollable | same | same | Portal panel converges to available width | — | §3 #23 |
 | `progress-bar` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `progress-spinner` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `radio-group` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14 / #16（口径 · §3 未逐条登记） |
@@ -79,18 +79,18 @@
 | `tag` | Adapts to the container | same | same | Follows the container | — | §3 #15 / #16 |
 | `tags-input` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14 / #16（口径 · §3 未逐条登记） |
 | `textarea` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14（口径 · §3 未逐条登记） |
-| `time-picker` | Panel converges to available width / height, scrollable | same | same | Portal panel converges to available size | — | Source `time-picker.vue` (not registered in §3) |
+| `time-picker` | Panel converges to available width / height, scrollable | same | same | Portal panel converges to available size | — | §3 #25 |
 | `timeline` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `toast` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `toggle-button` | Follows the container | Follows the container | Follows the container | No dedicated narrow-screen rule; width follows the container and overflow is the consumer’s to constrain | Not measured separately | No dedicated rule |
 | `toolbar` | Toolbar wraps; group scrolls horizontally | group scrolls (≤1024) | Toolbar single line; group scrolls | Wrap or scroll, members never clipped | 769–1023 is a no-breakpoint range | §3 #7 |
-| `tooltip` | Panel max-width = min(20rem, available width) | same | same | Converges to available width | — | Source `tooltip-content.vue` (not registered in §3) |
-| `transfer` | Stacks vertically (two columns → one) | stacked | two columns | Single column ≤640 + actions in a row | — | Source `transfer.vue` (not registered in §3) |
+| `tooltip` | Panel max-width = min(20rem, available width) | same | same | Converges to available width | — | §3 #23 |
+| `transfer` | Stacks vertically (two columns → one) | stacked | two columns | Single column ≤640 + actions in a row | — | §3 #22 |
 
 ## Known gaps and usage advice
 
 - The 16 "follows the container" rows have no dedicated narrow-screen rule: readability at narrow widths depends on your container, so self-test the key pages at 320.
-- The 7 "source rule, not in §3" rows are **registration gaps**, not missing rules: `transfer` stacks to one column at ≤640; `popover` / `popconfirm` / `tooltip` panels converge to `min(20rem, available width)`; `cascader` to `min(40rem, 80vw)`; `time-picker` converges to the available width / height and scrolls; `descriptions` forces one column at ≤640. This table is the interim statement until §3 is back-filled.
+- The former 7 "source rule, not in §3" registration gaps were back-filled into §3 on 2026-11-23: `transfer` (#22), `popover` / `popconfirm` / `tooltip` (#23), `cascader` (#24), `time-picker` (#25) and `descriptions` (#26); the Source column now points at pattern numbers. Adding a component page from now on requires updating this table, and §3 when that component has a dedicated behaviour.
 - Intentional inner scrolling: ButtonGroup / SplitButton / Tabs / DataTable (container scrolls horizontally, members are never clipped).
 - Consumer responsibilities: DataTable card layout, full-screen Dialog, Stepper direction change, over-long option widths.
 - Touch targets (§3 #16) are marked on the rows they cover; unmarked components are outside that pattern.

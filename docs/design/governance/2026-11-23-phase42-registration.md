@@ -8,6 +8,7 @@
 
 - **编号推导**：取授权启动时已有最大编号 Phase 41 + 1 = **Phase 42**（[规划规范 §4](../../standards/planning.md)）。
 - **5 条主线 / 15 条原子条目**：发布收口 **3** / 浏览器模拟移动验收 **2** / 治理与文档收尾 **3** / P2 组件 **5** / 宽屏视觉基线 **2**；构成对账 3 + 2 + 3 + 5 + 2 = 15。
+- **执行期追加（2026-11-23）**：原登记 **5 条主线 / 15 条原子条目**；2026-11-23 依据 [caomei-ui 1.4.0 下游升级反馈研判](./2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) 追加 **M6 下游升级兼容修复 2 条**，追加后为 **6 条主线 / 17 条原子条目**（构成对账 3 + 2 + 3 + 5 + 2 + 2 = 17）。17 条超过建议 15 条但未超上限 20 条；M6 为发布前必须收口的兼容性问题，拆阶段会把已知回归留在 `1.5.0` 之后，故不拆阶段；主线数 6 未超建议上限 6。
 - **裁定到构成的映射**：
   - D0 ① 给出 M1 + M2 + M3（3 主线 / 8 条）。
   - D2 ② 追加 **M5 宽屏视觉基线**（+2 条）——该候选原触发条件为「宽屏出现真实回归或下一次视觉基线批次」，本轮由用户明确授权作为「下一次基线批次」。
@@ -45,8 +46,10 @@
 | **M4-5** | P2 组件 | P2 组件共用登记面 | `Statistic` / `Countdown` 的 locale 命名空间与台账、根导出、Nuxt 注册、a11y 夹具同批；`check:locale-keys` / `check:nuxt` / `test:a11y` / `docs:check` 绿 | ≈ 6 | M4-1 / M4-3 |
 | **M5-1** | 宽屏视觉基线 | 宽屏视口参数化与 `DataTable` 基线 | 为 `test/visual` 增加宽屏视口参数化，并新增**独立宽屏夹具段**（不改 `SAMPLE_SECTIONS` 的 1280 循环，避免多产 2 张）；采集 `DataTable` 在 1536 / 1920 的亮暗共 **4 张**基线；基线在与 CI 相同环境生成；断言沿用 `threshold 0.1` + `maxDiffPixels 100` | ≈ 5 | 无 |
 | **M5-2** | 宽屏视觉基线 | `Form` 宽屏用例与口径同步 | 追加 `Form` 的 1536 / 1920 亮暗 4 张基线；[测试规范](../../standards/testing.md) 与 `playwright.visual.config.ts` 注释补宽屏用例说明；`pnpm test:visual` 全绿（既有 **46** 例 + 本阶段新增 8 例 = **54**） | ≈ 5 | M5-1 |
+| **M6-1** | 下游升级兼容修复 | `DataTable` 表头行高回归修复与守卫 | 在 `CaomeiTooltipText` 包装下恢复 1.3.0 表头行高（momei 实测 32.59px；以真实浏览器计算样式或视觉基线断言）；不改 `cellTooltips` 默认值与 `mode="auto"` 语义；新增能区分修复前后的回归守卫；`pnpm test` / 定向 E2E / `pnpm test:visual` 通过 | ≈ 6 | 无 |
+| **M6-2** | 下游升级兼容修复 | 1.4.0 消费方可见变化升级注意补录 | 新增 `docs/release-notes/1.4.0.md`，覆盖 Button 根节点 `Passthrough`、内容 `nowrap`、DataTable 表头 / 单元格 `TooltipText`、浮层 `inert`、Paginator / Select 几何、下游适配写法；每家下游至少一条可复现证据与链接；`pnpm lint:md:check` / `pnpm docs:check` 通过 | ≈ 4 | 无 |
 
-> 文件面为登记估算，实施时按[规划规范 §5](../../standards/planning.md) 的 10 文件阈值拆分。**M2 的「模拟」口径与 M4 / M5 的条目拆分若在实施中越阈值，按同一规则拆分并回填进度表。**
+> 文件面为登记估算，实施时按[规划规范 §5](../../standards/planning.md) 的 10 文件阈值拆分。**M2 的「模拟」口径与 M4 / M5 / M6 的条目拆分若在实施中越阈值，按同一规则拆分并回填进度表。**
 
 ## 3. 阶段规则
 
@@ -59,15 +62,16 @@
 - **Review Gate**：每条目至少一轮 `@code-reviewer`；未 `Pass` 不得提交；发布条目（M1-2）额外要求发布前门槛证据入记录。
 - **文档**：组件能力变化同步中英组件页与设计登记；不虚构未实现能力；移动文档标注「模拟（非真机）」。
 - **长期任务**：按[规划规范 §8](../../standards/planning.md)，阶段收口前与发布前各执行一轮门槛复核（`recurring.md`）并留痕。
+- **版本升级兼容性**：后续版本升级按[发布指南](../../guide/release.md) §10.1 执行升级影响面评估——逐条分级 `BREAKING` / 消费方可见非 `BREAKING` / 仅内部；消费方可见变化必须写升级注意；涉及 DOM / 默认样式 / 交互时序时须跑下游视觉或关键流回归；下游反馈须回流 Backlog 或治理记录。
 - **依赖**：不新增运行时依赖。
 
 ## 4. 载体同步与候选流转
 
-- `backlog.md`：迁出已登记候选——§1.6 的「宽屏视觉基线（1536 / 1920）」1 行 +「`typecheck:docs` 纳入阶段验证集」「移动就绪矩阵 §3 回填」「NavBar / Tabbar 同页 landmark 提示」3 行、§1.11 的 `Statistic` / `Countdown` 2 行，共 **6** 行（候选池 42 → **36**；§1.6 17 → **13**、§1.11 10 → **8**）。不写 `→ Phase 42` 迁出标注（[规划规范 §7](../../standards/planning.md)）。`xl` 断点、通用 Picker、国际化二期与其余候选维持。
-- `todo.md`：新增 Phase 42 当前状态句、进度表与 15 条条目表；下游锁定版本指针维持三仓 `1.4.0`（2026-11-22 读数），待 M1-3 更新。
-- `roadmap.md`：§1 当前态切到 Phase 42；阶段表新增 Phase 42 行（5 条主线 / 15 条原子条目；构成对账 3 + 2 + 3 + 5 + 2 = 15）。
-- 治理索引：本记录登记一行。
-- `.session`：`current_phase` / `plan_state` 同批切到 Phase 42（15 条待执行）。
+- `backlog.md`：登记时迁出已登记候选——§1.6 的「宽屏视觉基线（1536 / 1920）」1 行 +「`typecheck:docs` 纳入阶段验证集」「移动就绪矩阵 §3 回填」「NavBar / Tabbar 同页 landmark 提示」3 行、§1.11 的 `Statistic` / `Countdown` 2 行，共 **6** 行（**登记时点**：候选池 42 → **36**；§1.6 17 → **13**、§1.11 10 → **8**）。不写 `→ Phase 42` 迁出标注（[规划规范 §7](../../standards/planning.md)）。**执行期追加（2026-11-23）**：回流 1.4.0 下游反馈的 P1 / P2 共 **6** 项——§1.6 4 项（Button 单元素根、Button 换行开关、CSS `@layer`、升级影响面评估自动化）、§1.1 1 项（`inert` 首击）、§1.8 1 项（三家下游 1.4.0 适配回收）；候选池 36 → **42**（36 + 6 = 42）。`xl` 断点、通用 Picker、国际化二期与其余候选维持。
+- `todo.md`：新增 Phase 42 当前状态句、进度表与 **17** 条条目表（原登记 15 条 + 执行期追加 M6 2 条）；下游锁定版本指针维持三仓 `1.4.0`（2026-11-22 读数），待 M1-3 更新；下游反馈指针改为「已归集 + momei 页面级反馈待补」。
+- `roadmap.md`：§1 当前态切到 Phase 42；阶段表新增 Phase 42 行（**6 条主线 / 17 条原子条目**；构成对账 3 + 2 + 3 + 5 + 2 + 2 = 17，原登记 5 条主线 / 15 条原子条目）。
+- 治理索引：本记录登记一行；另登记 [caomei-ui 1.4.0 下游升级反馈研判](./2026-11-23-caomei-ui-1.4.0-downstream-feedback.md)。
+- `.session`：`current_phase` / `plan_state` 同批切到 Phase 42（**17 条待执行**）。
 - **发布**：登记 Release 条目（M1-2），不改 `release.yml` 触发模型。
 
 ## 5. Review Gate
@@ -75,3 +79,4 @@
 - **R1（2026-11-23，`standard`，时间盒 ≤10 分钟）**：**Reject**（1 blocker / 6 warning / 5 suggest）。blocker：已登记的 M3 三项候选（`typecheck:docs` / 矩阵回填 / landmark 提示）仍留在 Backlog 候选池，且 §4 迁出计数不可复算（42 已含这 3 项，应迁出 6 行 → 36）。warning：提名期 `M4` / `M5` 与登记编号缺显式映射（同日两份文档 `M5` 两义）；进度表「容量」列 `N → N` 与「未开始」互斥；M5-1 体量约 12 张 PNG / 14 文件超阈值；M3-1 指向不存在的「阶段收口检查清单」；`.session` 的 `active_plan.feature` / `verification_state.reason` 仍为 Phase 41 残留；D1 ② 覆盖评估记录交付形态未声明。修复：删除 Backlog 6 行并改计数；补映射句与覆盖声明；容量列改 `N → 0`；M5 拆为「`DataTable` 4 张」+「视口参数化与 `Form` 4 张」；M3-1 点名 `development.md` 质量红线表与 `ai-collaboration.md` D 阶段自检句；`.session` 同步；suggest（设备预设、登记面补 locale / Nuxt / a11y、升级注意载体、长期任务轮次）同批落实。
 - **R2（2026-11-23，`standard` delta，时间盒 ≤10 分钟）**：**Pass**（0 blocker / 3 warning / 3 suggest）。B1 与 W1 ~ W6 闭合；S1 ~ S4 落实，S5（阶段表行序）维持既有「按登记追加」约定。新增 warning 同批修：① M1-1 的「升级注意」载体应为 `docs/release-notes/1.5.0.md`（CHANGELOG 由 semantic-release 重写，直接写入会被覆盖）；② M5-1 需写明「独立宽屏夹具段、不改 `SAMPLE_SECTIONS`」，且视口参数化应前置到 M5-1；③ M4-2 / M4-4 补登记面后文件面约 14，超单条阈值——抽出 **M4-5 共用登记面**（locale / 根导出 / Nuxt / a11y），M4 变 5 条、阶段变 **15 条**（3 + 2 + 3 + 5 + 2 = 15）。suggest：`development.md` 节名改为 §11「质量门」；`todo.md` 条目名按登记名回填。
 - **R3（2026-11-23，`quick` delta，时间盒 ≤5 分钟）**：**Pass**（0 blocker / 2 warning / 1 suggest）。W7 / W8 / W9 / S6 / S7 闭合；15 条在登记 / `todo` / `roadmap` / 索引 / `.session` 一致，M4 = 5 条不超单主线上限，Backlog 36 行不变，PNG 总数 8 自洽。warning 同批修：① `.session/runtime-state.json` 的 `current_item` / `verification_state.reason` 仍写「14 条」，改 15；② M5-2 的「既有 50 例」应为 **46**（`SAMPLE_SECTIONS` 16 × 2 + `FORM_AXIS_CASES` 7 × 2），收口后 54。suggest：M3-1 去掉行号定位，改为点名两条命令。
+- **R4（2026-11-23，`standard` delta，时间盒 ≤10 分钟；实测约 4 分钟）**：**Pass**（0 blocker / 1 warning / 2 suggest）。P0 插队 M6 后 **6 条主线 / 17 条原子条目**在 `todo` / `roadmap` / 索引 / `.session` 一致；`check-stage-counts` / `check-stage-progress` 通过。warning（发布指南 §10.1 的升级注意要求缺「自本规则生效起」）已同批修复；suggest 见 [1.4.0 下游反馈研判记录](./2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) §7。

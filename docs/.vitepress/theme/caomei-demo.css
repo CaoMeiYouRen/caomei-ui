@@ -19,15 +19,59 @@
   属死规则，已移除。真实成因是**导航栏**：`.VPNavBar .content-body` 在 768px 下被
   既有英文导航 + `ThemePresetSwitcher`（及其后新增的导航版本项）撑破视口。
   完整归因、用户裁定与复验见 docs/design/governance/2026-09-22-m2-1-nav-overflow-fix.md；
-  窄档收敛规则见本文件末的 `@media (max-width: 959px)`。
+  窄档收敛规则见下方「导航栏与站点级控件窄屏收敛」段。
 */
 
-/* 导航栏窄档（<960px）收敛：收紧导航项内边距，配合切换器隐藏标签，消除 768–959px 档的横向溢出。
-   规则置于文档站全局层并用 .VPNavBar 前缀限定，避免与默认主题风格漂移。 */
+/* 导航栏与站点级控件窄屏收敛（<960px）：收紧导航项内边距，配合切换器隐藏标签，消除
+   768–959px 档的横向溢出；标题 + 搜索 + 主题预设切换 + 设备预览 + 汉堡挤不进 `.container`
+   （其 `.content` 的 `min-width: auto` 不收缩，会把整页撑出横向滚动），故在更窄档隐藏两个
+   站点级次要控件——设备预览（带文字标签，英文 110px）≤959px、主题预设切换（59px）≤359px。
+   规则置于文档站全局层并用 .VPNavBar 前缀限定，避免与默认主题风格漂移。
+
+   特异性说明：组件内的 scoped 规则为 `.device-preview[data-v-*]`（0-2-0），与本文件的
+   `.VPNavBar .device-preview`（0-2-0）同档，胜负取决于注入顺序；重复一次类名升到 0-3-0，
+   使隐藏规则不依赖源序。 */
 @media (width <= 959px) {
     .VPNavBar .VPNavBarMenuLink {
         padding: 0 5px;
         font-size: 13px;
+    }
+
+    .VPNavBar .device-preview.device-preview {
+        display: none;
+    }
+}
+
+@media (width <= 359px) {
+    .VPNavBar .theme-preset-switcher.theme-preset-switcher {
+        display: none;
+    }
+}
+
+/*
+  演示区窄屏收敛（2026-11-24）：栅格演示的 24 列在 `gutter` 下最小宽 = 23 × gutter（16px → 368px），
+  作为 grid / flex 子项时 `min-width: auto` 不会收缩，会把整页撑出横向滚动；行式演示（按钮组、
+  步骤条操作）默认不换行。窄屏改为「演示容器内横向滚动 + 行式布局折行」，页面宽度不变。
+
+  说明：栅格内部的横向滚动是**演示层选择**（避免把整页撑破）；组件口径仍是「窄屏按断点减小
+  `gutter`」（见 `src/components/row/row.vue` 注释与响应式设计 §3 #18）。`demo-row` / `demo-actions`
+  是站点级演示约定类，后续新增演示默认折行。 */
+@media (width <= 640px) {
+    .vitepress-demo-plugin-preview .caomei-row {
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+    .vitepress-demo-plugin-preview .demo-row.demo-row,
+    .vitepress-demo-plugin-preview .demo-actions.demo-actions {
+        flex-wrap: wrap;
+    }
+
+    /* 横向步骤条：长文案（英文标题 / 描述）使整条列表的最小宽超过演示区，窄屏改为列表内横向滚动。
+       纵向形态不受影响；组件口径仍是「窄屏由使用方切换 vertical 或自加滚动容器」（见响应式设计 §3 #10）。 */
+    .vitepress-demo-plugin-preview .caomei-stepper[data-orientation='horizontal'] .caomei-stepper__list {
+        min-width: 0;
+        overflow-x: auto;
     }
 }
 

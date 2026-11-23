@@ -123,7 +123,12 @@ import { CaomeiButton } from '@/components/button'
     gap: 12px;
 }
 
-.demo-truncate {
+/*
+  1.4.0 起 Button 的两条分支在 vnode 层都是多根（Fragment）：父级 scope id 没有落点，
+  `.demo-truncate` 的父级 scoped 规则因此不命中按钮元素，按钮按 `nowrap` 内容撑开，
+  窄屏下把文档撑出横向滚动。用 `:deep()` 从示例容器下钻到按钮，保留页面级作用域。
+*/
+.demo-row :deep(.demo-truncate) {
     max-width: 220px;
 }
 </style>

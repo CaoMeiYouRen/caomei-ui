@@ -122,6 +122,11 @@ docs/
 - **Demo 翻译**：仅翻译含文案的 demo，英文版放在 `docs/i18n/en-US/examples/<component>/`，en 组件页以 `../examples/...` 引用；文案为语言中性的 demo 复用中文 `docs/examples/`（`../../../examples/...`），避免无意义复制。
 - **API 描述双语**：组件 `types.ts` 的 JSDoc 以中文为主，用 `@en` 标签补充英文（如 `@en Visual variant`），`gen-component-meta.mjs` 额外输出 `descriptionEn`，`<ComponentApi>` 按 locale 选用（缺失时回退中文）。`@en` 会被 tsdown 保留进 `dist/*.d.ts`，作为可接受的注释副作用。
 
+## 10.1 站点窄屏断点
+
+- 文档站**站点 chrome**（导航栏与右上控件）的窄屏收敛只用两个断点，落点是 `docs/.vitepress/theme/caomei-demo.css`：**≤959px** 收紧导航项内边距并隐藏设备预览入口（该档导航已满），**≤359px** 再隐藏主题预设切换器（320 档仅保留标题 / 搜索 / 汉堡）。**演示区**另有 **≤640px** 收敛（栅格演示容器内横向滚动、`.demo-row` / `.demo-actions` 折行、横向步骤条列表内滚动），与站点 chrome 断点分开计数；`demo-row` / `demo-actions` 是站点级演示约定类，新增演示默认折行。三档均不参与组件断点语义（`sm` / `md` / `lg`），新增站点断点前须先在本节登记。
+- 组件示例的样式约束以示例自身的 scoped 样式表达；父级 scoped 规则无法命中经包装渲染的组件根（Button 等多根组件的 vnode 为 Fragment），需用 `:deep()` 从示例容器下钻。
+
 ## 11. 组件分区与排序
 
 - `/components/` 侧栏按 **7 个组件分组**组织，组间顺序固定为本节表格自上而下的顺序（不采用「按使用频率」等主观口径；新增分组须先在本节登记，登记位置即最终位置）；组内按**英文组件名字母序**排列。

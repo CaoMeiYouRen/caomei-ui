@@ -184,6 +184,7 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 - **变更分级**：发布前逐条把本版提交分为 `BREAKING` / 消费方可见但非 `BREAKING` / 仅内部。消费方可见面包括公开 API、类型、DOM 结构、类名、默认样式、默认行为、交互时序与可访问性语义。
 - **非冻结面不等于无需披露**：DOM 结构、类名、计算样式与像素细节属[版本与兼容策略](./version-policy.md)的非冻结面，不构成 SemVer 破坏，但仍是消费方可见变化，须按上一条写升级注意。
 - **升级注意**：自本规则生效起，所有消费方可见变化必须写入 `docs/release-notes/<version>.md` 的「升级注意」，至少包含现象、影响面与下游修复写法；`BREAKING` 另须在 CHANGELOG 的 `BREAKING CHANGES` 段与发布说明中列明。
+- **发布说明的链接形态**：`docs/release-notes/<version>.md` 会在发布时**原文注入** GitHub Release 正文（见 `scripts/release/release-notes.mjs`），站内相对链接在 Release 页会失效——该目录文案指向仓内其它文档时使用仓库绝对 URL（`https://github.com/CaoMeiYouRen/caomei-ui/blob/master/docs/...`）。
 - **下游验证**：`Downstream Compat` 的 `typecheck` + `build` 只证明构建兼容，不证明渲染 / 交互兼容；涉及 DOM 结构、默认样式或交互时序时，须在至少一个已接入下游执行视觉或关键流回归，或在本版发布记录中写明未覆盖项与风险。
 - **反馈回流**：下游在升级中报告的问题须在 [Backlog](../plan/backlog.md) 或治理记录留痕；[待办事项](../plan/todo.md) 的「等待外部反馈」指针随反馈到达更新，不得以「下游未反馈」替代取证。
 

@@ -13,6 +13,7 @@ Latest version: **v{{ theme.version }}**
 - **npm**: `pnpm add caomei-ui` (or `npm i caomei-ui`) — registry page: [npmjs.com/package/caomei-ui](https://www.npmjs.com/package/caomei-ui).
 - **GitHub Releases**: [CaoMeiYouRen/caomei-ui releases](https://github.com/CaoMeiYouRen/caomei-ui/releases) (release notes and tags).
 - **Changelog**: [CHANGELOG](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/CHANGELOG.md) — breaking changes are listed separately under `BREAKING CHANGES`; the package-format change and downstream fixes are described in [Release guide](./release.md) §9.
+- **Consumer-visible changes**: [Release notes](/release-notes/) — per release, the consumer-visible changes with symptom, impact and downstream fix, plus reproducible evidence (Chinese).
 
 ## 1.x compatibility policy
 

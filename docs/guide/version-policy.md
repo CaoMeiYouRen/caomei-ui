@@ -13,6 +13,7 @@ const { theme } = useData()
 - **npm**：`pnpm add caomei-ui`（或 `npm i caomei-ui`），registry 页：[npmjs.com/package/caomei-ui](https://www.npmjs.com/package/caomei-ui)。
 - **GitHub Releases**：[CaoMeiYouRen/caomei-ui releases](https://github.com/CaoMeiYouRen/caomei-ui/releases)（含版本说明与 tag）。
 - **变更记录**：[CHANGELOG](https://github.com/CaoMeiYouRen/caomei-ui/blob/master/CHANGELOG.md)——破坏性变更在 `BREAKING CHANGES` 段单列，形态与适配说明见[发布指南](./release.md) §9。
+- **消费方可见变化说明**：[发布说明](../release-notes/)——按「现象 / 影响面 / 下游修复写法」逐版列出消费方可见变化与可复现证据。
 
 ## 1.x 兼容策略
 

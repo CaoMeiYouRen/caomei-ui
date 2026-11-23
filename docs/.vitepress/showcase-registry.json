@@ -216,6 +216,18 @@
         }
     },
     {
+        "name": "Countdown",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "countdown/basic.vue",
+        "description": {
+            "zh": "面向截止时间的倒计时：秒级刷新、格式模板可配、到点触发 finish 并冻结；回拨不恢复计时。",
+            "en": "A countdown towards a deadline: per-second refresh, configurable format template, finish event and a frozen reached state; a clock rollback does not resume it."
+        }
+    },
+    {
         "name": "DataTable",
         "group": {
             "zh": "数据展示",

@@ -68,6 +68,7 @@
 
 ## 数据展示
 
+- [Countdown 倒计时](./countdown)：面向截止时间的倒计时，按秒刷新、模板可配、到点触发 `finish` 并停表；回拨不恢复计时。
 - [DataTable 表格](./data-table)：表格用于展示结构化数据，基于 `@tanstack/vue-table` 的无头能力自建渲染，默认提供极简表样式与空态。
 - [DataView 数据视图](./data-view)：数据视图用同一组数据在列表与网格两种布局间切换：`layout` 决定渲染 `list` 还是 `grid` 插槽，条目结构与网格列数由插槽内容自行定义。自建实现，不依赖 Reka UI。
 - [Descriptions 描述列表](./descriptions)：描述列表以标签 / 内容成对展示只读字段，支持列数、跨列、带边框与水平 / 垂直布局。

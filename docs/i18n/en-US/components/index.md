@@ -58,6 +58,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Popover](/en-US/components/popover)
 - [Toast](/en-US/components/toast)
 - [Tooltip](/en-US/components/tooltip)
+- [Countdown](/en-US/components/countdown)
 - [DataTable](/en-US/components/data-table)
 - [DataView](/en-US/components/data-view)
 - [Descriptions](/en-US/components/descriptions)

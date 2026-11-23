@@ -371,6 +371,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         {
                             text: 'Data Display',
                             items: [
+                                { text: 'Countdown', link: '/en-US/components/countdown' },
                                 { text: 'DataTable', link: '/en-US/components/data-table' },
                                 { text: 'DataView', link: '/en-US/components/data-view' },
                                 { text: 'Descriptions', link: '/en-US/components/descriptions' },
@@ -593,6 +594,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                 {
                     text: '数据展示',
                     items: [
+                        { text: 'Countdown 倒计时', link: '/components/countdown' },
                         { text: 'DataTable 表格', link: '/components/data-table' },
                         { text: 'DataView 数据视图', link: '/components/data-view' },
                         { text: 'Descriptions 描述列表', link: '/components/descriptions' },

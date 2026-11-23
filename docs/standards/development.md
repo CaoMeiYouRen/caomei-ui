@@ -228,6 +228,8 @@ const attrs = computed(() => {
 - `pnpm test`（全部通过）
 - `pnpm build`（无报错，发布前对产物冒烟）
 
+> **阶段收口必须执行 `pnpm typecheck:docs`**：`pnpm verify` 与 CI `Test` 的 Quality 作业已覆盖该命令，本条只补阶段收口验证集（含 D 阶段自检与阶段末验证）的执行义务，不新增 CI 步骤。
+
 ## 12. Lint 与类型解析约定
 
 - 统计某 lint 规则的违规数时，口径必须写成「**启用后的配置 + 命令 + 范围**」：规则在预设中被设为 `off` 时，报告 0 只代表「未启用」而非「零违规」。

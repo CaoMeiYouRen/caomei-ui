@@ -7,7 +7,7 @@
 | 阶段 | 主责 | 关键动作 | 退出条件 |
 |------|------|----------|----------|
 | **P (Plan)** | `@product-manager` / `@full-stack-master` | 需求澄清、范围判定、验收标准、`todo.md` 对齐、受影响文件清单 | 需求明确、验收标准可验证 |
-| **D (Do)** | `@full-stack-master` / `@frontend-developer` | 按方案实现，遵守开发规范 | 自检 `lint` + `typecheck` + 定向测试通过 |
+| **D (Do)** | `@full-stack-master` / `@frontend-developer` | 按方案实现，遵守开发规范 | 自检 `lint` + `typecheck` + 定向测试通过；阶段收口批次还须执行 `pnpm typecheck:docs` |
 | **A (Audit)** | `@code-reviewer` | Review Gate，输出 Pass/Reject 与问题分级 | 所有 blocker 关闭且验证矩阵满足 |
 | **V (Validate)** | `@ui-validator` | 浏览器渲染、响应式、主题、暗色验证 | 验证通过或显式说明跳过理由 |
 | **T (Test)** | `@test-engineer` | 测试补强与回归验证 | 测试通过且覆盖率不回退 |

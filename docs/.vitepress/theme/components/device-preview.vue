@@ -232,8 +232,11 @@ watch(dark, () => {
 }
 
 .device-preview__option[aria-pressed='true'] {
+    /* 自适应 `primary` 作实底时，前景必须用配套的 `primary-foreground`；
+       `primary-text` 是「柔和底上的蓝字」语义（暗色下等于 primary 本身），用在实底上不可读。
+       注意 `-solid` 实底不走这条配对（见 `src/styles/theme.css` 文件头的 token 禁令）。 */
     background: var(--caomei-color-primary);
-    color: var(--caomei-color-primary-text, #fff);
+    color: var(--caomei-color-primary-foreground);
 }
 
 .device-preview__actions {

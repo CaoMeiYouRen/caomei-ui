@@ -213,8 +213,11 @@ const starredOptions: StarredFruit[] = [
 .selected-tag {
     font-size: 12px;
     padding: 1px 6px;
-    background: var(--caomei-color-success);
-    color: white;
+
+    /* 实底用 `-solid`（跨主题稳定）配 `on-solid`：`--caomei-color-success` 在缺省预设暗色会翻成
+       浅绿，与白字只剩 1.74:1；`success-solid` + `on-solid` 在缺省预设两态均 5.02:1。 */
+    background: var(--caomei-color-success-solid);
+    color: var(--caomei-color-on-solid);
     border-radius: var(--caomei-radius-sm);
     margin-right: 4px;
 }

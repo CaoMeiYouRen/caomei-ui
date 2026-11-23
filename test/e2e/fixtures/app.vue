@@ -424,6 +424,24 @@ const resizeFrozenData = [
     { dept: '设计', name: '赵六', score: 81, note: '已归档' },
 ]
 
+/**
+ * DataTable 表头行高守卫（见 `test/e2e/data-table-header-height.e2e.ts`）：
+ * 三张结构相同的表，列宽都受限（5rem），只改「表头文本如何承载」：
+ * - `wrapped`：默认路径，表头经 `CaomeiTooltipText` 包装（受检对象）；
+ * - `slot`：`#header-*` 插槽直接渲染文本，不经过包装（1.3.0 等价基线）；
+ * - `no-tip`：`:cell-tooltips="false"`，单元格走 `.caomei-data-table__cell-box` 降级盒
+ *   （该开关只影响默认单元格，表头恒走提示包装）。
+ * `wrapped` 与 `slot` 的表头行高应一致；包装盒若对齐到行盒基线，`wrapped` 会高出数像素。
+ */
+const headerHeightColumns = [
+    { key: 'truncated', header: '受限列宽的表头文本', width: '5rem' },
+    { key: 'plain', header: '不受限表头' },
+]
+
+const headerHeightData = [
+    { truncated: '甲', plain: '乙' },
+]
+
 const sortWidthData: SortWidthRow[] = [
     { dept: '研发', name: '张三', score: 88 },
     { dept: '研发', name: '李四', score: 92 },
@@ -3357,6 +3375,37 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                     </div>
                 </div>
             </div>
+        </section>
+        <section id="data-table-header-height" class="fixture__case">
+            <CaomeiDataTable
+                id="header-height-wrapped"
+                :data="headerHeightData"
+                :columns="headerHeightColumns"
+                row-key="plain"
+                caption="表头行高：提示包装"
+            />
+            <CaomeiDataTable
+                id="header-height-slot"
+                :data="headerHeightData"
+                :columns="headerHeightColumns"
+                row-key="plain"
+                caption="表头行高：插槽"
+            >
+                <template #header-truncated="{column}">
+                    {{ typeof column.header === 'string' ? column.header : '' }}
+                </template>
+                <template #header-plain="{column}">
+                    {{ typeof column.header === 'string' ? column.header : '' }}
+                </template>
+            </CaomeiDataTable>
+            <CaomeiDataTable
+                id="header-height-no-tip"
+                :data="headerHeightData"
+                :columns="headerHeightColumns"
+                row-key="plain"
+                :cell-tooltips="false"
+                caption="表头行高：关闭提示"
+            />
         </section>
     </main>
 </template>

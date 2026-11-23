@@ -1841,9 +1841,29 @@ function setPageSize(rows: number): void {
 
 <style>
 /*
+  表头 / 默认单元格里的文本盒对齐到行盒顶部：
+  `.caomei-tooltip-text` 与关闭提示时的 `.caomei-data-table__cell-box` 都是可测量的
+  `inline-block`，截断配方（`overflow: hidden`）会把它们的基线改为底边，行盒因此多出行高下缘的
+  降部空间（本仓夹具实测：截断表头 34.5 → 37.5px；下游 momei 实测表头 32.59 → 35.69px）。
+  顶部对齐后行高与未包装文本一致。
+
+  作用面：
+  - 只覆盖表格内的文本盒，不改 `CaomeiTooltipText` 的全局默认（其他宿主可能依赖基线对齐）；
+  - 排序表头内层是 `display: inline-flex` 的按钮（flex 子项忽略 `vertical-align`）；实测对排序表头
+    强制截断后两种对齐取值下 `th` 行高恒为 34.5px（Chromium / 1280 视口），即该路径无此回归；
+  - `mode="auto"` 的溢出测量仍依赖该盒（不能改成 `inline`，否则 `scrollWidth` 恒为 0）；
+  - 后代选择器同样作用于表头 / 单元格插槽里自建的 `CaomeiTooltipText`，属有意为之（防同源回归）。
+*/
+.caomei-data-table__th .caomei-tooltip-text,
+.caomei-data-table__td .caomei-tooltip-text,
+.caomei-data-table__td .caomei-data-table__cell-box {
+    vertical-align: top;
+}
+
+/*
   关闭逐格提示时的可测量盒：与 `CaomeiTooltipText` 的默认盒一致（`inline-block` + 可被父容器压缩）。
   截断配方（`overflow: hidden` / `text-overflow` / `max-width`）在 `inline` 元素上不生效，
-  不补这一层会让「关闭提示」连带丢掉单行省略与列宽上限。
+  不补这一层会让「关闭提示」连带丢掉单行省略与列宽上限；垂直对齐由上方规则统一为 `top`。
 */
 .caomei-data-table__cell-box {
     box-sizing: border-box;

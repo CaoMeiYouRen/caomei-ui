@@ -18,6 +18,7 @@
 |------|------|------|:-:|
 | Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 低 |
 | 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 低 |
+| 展示型组件 `label` 语义与开发规范 §6 分叉 | Phase 42 M4-1（[Statistic 组件页](../components/statistic.md)） | 开发规范 §6 已单点定义「`label` = 不可见可访问名、可见文案用语义化 prop」；`Statistic` 的 `label` 是**可见标签**（并以 `aria-labelledby` 复用为可访问名），`Descriptions` 同类分歧先于该组件存在。候选 = 按 §6 整改这两个组件（展示型改 `title` / `text`、`label` 只留可访问名），或为其登记例外条款；**不得另立第二套定义**。**触发条件** = 用户就组件 API 语义统一裁定，或出现第三个同形分歧 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
 

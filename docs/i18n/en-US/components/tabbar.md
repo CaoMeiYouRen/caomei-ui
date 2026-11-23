@@ -41,7 +41,7 @@ Disabled items cannot be clicked and do not emit `update:modelValue`; `badge` ov
 
 ## Accessibility
 
-- The root is a `nav`; its accessible name comes from `label` > forwarded `aria-label` > the locale's "Main navigation" text.
+- The root is a `nav`; its accessible name comes from `label` > forwarded `aria-label` > the locale's "Main navigation" text. A `NavBar` defaults to the locale's "Navigation bar", so the two names differ by default; if you set the same `label` on both (or forward the same `aria-label`), the page ends up with two identically named `nav` landmarks, so keep them distinct.
 - Only the selected item carries `aria-current="page"`, at most one at a time.
 - Items are native `button` elements, keyboard reachable one by one; the bar does not hijack arrow keys.
 

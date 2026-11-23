@@ -38,7 +38,7 @@
 | **M2-2** | 模拟移动验收 | 依结果的修复或文档化 | 模拟发现的问题修复，或在 `mobile.md` 中英写明边界；真机清单的「未执行（无真机）」改为「模拟已执行（非真机）+ 真机未执行」；`docs:check:i18n-parity` 绿 | ≈ 4 | M2-1 |
 | **M3-1** | 治理与文档收尾 | `typecheck:docs` 纳入阶段收口验证集 | 在[开发规范](../../standards/development.md) §11「质量门」的两条命令（`pnpm typecheck` / `pnpm typecheck:docs`）与[AI 协作规范](../../standards/ai-collaboration.md) §1 D 阶段自检句写入「阶段收口必须执行 `pnpm typecheck:docs`」；说明 `pnpm verify` 与 CI `Test` 的 Quality 作业已覆盖该命令，本项只补阶段收口验证集；本阶段执行至少一次并留痕 | ≈ 3 | 无 |
 | **M3-2** | 治理与文档收尾 | 移动就绪矩阵 §3 回填 7 行 | 把矩阵中「源码有窄屏规则、§3 未登记」的 7 行（`transfer` / `popover` / `popconfirm` / `tooltip` / `cascader` / `time-picker` / `descriptions`）补进 `responsive.md` §3，矩阵「依据」列由「未登记」改为 `§3 #N`；中英同步；`check:design` / `docs:check` 绿 | ≈ 3 | 无 |
-| **M3-3** | 治理与文档收尾 | NavBar / Tabbar 同页 landmark 提示 | NavBar 与 Tabbar 组件页中英各补一句「同页组合时 `label` 默认同名，会出现两个同名 `nav` landmark，需显式区分」；不改组件默认值 | ≈ 4 | 无 |
+| **M3-3** | 治理与文档收尾 | NavBar / Tabbar 同页 landmark 提示 | NavBar 与 Tabbar 组件页中英各补一句「两者默认可访问名不同名（当前语言的「导航栏」/「主导航」），若显式设为同名 `label` 或透传同名 `aria-label`，同页会出现两个同名 `nav` landmark，需显式区分」（执行期事实修正：登记原文「`label` 默认同名」与实现及 locale 断言不符）；不改组件默认值 | ≈ 4 | 无 |
 | **M4-1** | P2 组件 | Statistic 实现与测试 | 数值展示组件：`value` / 精度 / 千分位 / 前缀后缀 / 加载态；空值与非法输入降级；单测覆盖边界（0 / 负数 / 大数 / 非数字）；a11y 不引入多余 landmark | ≈ 6 | 无 |
 | **M4-2** | P2 组件 | Statistic 文档面 | 中英组件页 + 示例 + 侧栏 / 总览 / 画廊 / 设计清单 §5 登记；`check:design` / `docs:check` 绿 | ≈ 8 | M4-1 |
 | **M4-3** | P2 组件 | Countdown 实现与测试 | 目标时间倒计时：秒级刷新、`finish` 事件、自定义格式、卸载清理定时器；单测用假时钟覆盖跨秒 / 到点 / 回拨；SSR 下无 `window` 依赖 | ≈ 6 | 无 |

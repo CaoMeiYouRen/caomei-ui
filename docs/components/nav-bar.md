@@ -53,7 +53,7 @@
 
 ## 无障碍
 
-- 根元素是 `nav` landmark，可访问名优先级为「显式 `label` > 透传 `aria-label` > 当前语言「导航栏」」；同页还有 `Tabbar` 时请分别设置 `label`，避免两个同名 landmark。
+- 根元素是 `nav` landmark，可访问名优先级为「显式 `label` > 透传 `aria-label` > 当前语言「导航栏」」；`Tabbar` 的默认名是当前语言的「主导航」，两者默认不同名，但若把 `label` 设为同一个值（或透传同名 `aria-label`），同页会出现两个同名 `nav` landmark，需显式区分。
 - 返回按钮是原生 `button`，`aria-label` 取 `backLabel` 或当前语言的「返回」；视觉盒默认 44px（`data-density="touch"` 下 52px），命中区经 `.caomei-hit-target` 保证 ≥24×24。
 - 标题单行省略（`text-overflow: ellipsis`），完整文本仍在 DOM 中；需要读屏读到完整标题时不要截断业务关键信息。
 

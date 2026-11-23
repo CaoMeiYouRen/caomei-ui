@@ -53,7 +53,7 @@ A route-level page header: back on the left, title in the middle, actions on the
 
 ## Accessibility
 
-- The root is a `nav` landmark; its name is "explicit `label` > forwarded `aria-label` > the locale's Navigation bar". When a `Tabbar` shares the page, set distinct `label`s to avoid two identically named landmarks.
+- The root is a `nav` landmark; its name is "explicit `label` > forwarded `aria-label` > the locale's Navigation bar". A `Tabbar` defaults to the locale's "Main navigation", so the two names differ by default; if you set the same `label` on both (or forward the same `aria-label`), the page ends up with two identically named `nav` landmarks, so keep them distinct.
 - The back button is a native `button` whose `aria-label` comes from `backLabel` or the locale's Back; its visual box is 44px by default (52px under `data-density="touch"`), and `.caomei-hit-target` keeps the hit area at least 24×24.
 - The title truncates with `text-overflow: ellipsis` while the full text stays in the DOM; avoid truncating information that is critical for assistive technology.
 

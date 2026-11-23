@@ -387,7 +387,7 @@
 
 ### 未覆盖边界
 
-- **真实设备与示例类型检查**：iOS `dvh`、触摸滚动、OTP 自动填充仍无真机执行（M5-4 清单显式记录「未执行（无真机）」）；`docs/examples/**` 不在 `vue-tsc` 受检面，示例 props 依赖 Review Gate 拦截。
+- **真实设备与示例类型检查**：iOS `dvh`、触摸滚动、OTP 自动填充仍无真机执行（M5-4 清单显式记录「未执行（无真机）」）；`docs/examples/**` 在 `typecheck:docs`（`vue-tsc -p docs/tsconfig.json`）受检面内，但本轮验证集未含该命令，示例 props 拼写实际依赖 Review Gate 拦截（已拦下 `variant="text"`；补跑 `pnpm typecheck:docs` 通过）。
 - **NavBar 例外**：不满足 §11.5 三条标准第 1 条、第 2 条存疑；文档与组件页已标注，撤回时需重算阶段条目。
 - **`month` / `year` 导航可访问名**：已补动作语义（`prevYear` / `nextYear`）；月 / 年模式不支持取消选择，`preventDeselect` 仅 `single` 生效。
 

@@ -47,5 +47,5 @@
 - **真实设备**：iOS `dvh`、触摸滚动、OTP 自动填充仍无真机执行；M5-4 真机清单显式记录「未执行（无真机）」并给出替代证据。
 - **NavBar 例外撤回条件**：若用户撤回例外，M4-1 / M4-2 移出并按 13 条重算。
 - **发布**：本阶段不发布；未发布变更（表单校验、月 / 年粒度、NavBar、`labelAttrs` 收口）留在 `master`，下一次发布统一收口，版本判定按发布链为 minor。
-- **文档站示例类型检查**：`docs/examples/**` 不在 `vue-tsc` 受检面，示例 props 拼写依赖 Review Gate 拦截（本轮已拦下 `variant="text"`）。
+- **文档站示例类型检查**：`docs/examples/**` 在 `typecheck:docs`（`vue-tsc -p docs/tsconfig.json`）受检面内，但本轮验证集未含该命令（`pnpm typecheck` 覆盖 `src` / `playground` / `test`，不含 `docs/examples`）；示例 props 拼写实际依赖 Review Gate 拦截（已拦下 `variant="text"`）。2026-11-23 补跑 `pnpm typecheck:docs` 通过，故「示例类型检查」不再是缺口，只保留「阶段验证集未含该命令」的记录。
 - **下游反馈**：momei 页面级反馈仍未提供，维持等待外部反馈指针。

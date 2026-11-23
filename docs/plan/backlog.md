@@ -68,7 +68,9 @@
 | 宽屏视觉基线（1536 / 1920） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：为 DataTable / Dialog / Form 等宽屏敏感组件补 1920 视觉用例（亮暗各一份）；约 +3–5 文件 +4–6 PNG、+1–2 天。**触发条件 = 宽屏布局出现真实回归，或下一次视觉基线批次** | 中 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
 | `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 低 |
-
+| `typecheck:docs` 纳入阶段验证集 | 来源：Phase 41 复盘（`variant="text"` 未被阶段验证集拦住，由 Review Gate 拦下）。`docs/examples/**` 在 `typecheck:docs`（`vue-tsc -p docs/tsconfig.json`）受检面内，但阶段验证集只跑 `pnpm typecheck`（覆盖 `src` / `playground` / `test`，`playground/nuxt` 与 E2E fixture 被 exclude，不含 `docs/examples`）。候选 = 把 `typecheck:docs` 写入阶段收口固定验证集（规范 / 检查清单）；`pnpm verify` 与 CI `Test` 的 Quality 作业已覆盖该命令，无需改 CI。**触发条件 = 下一阶段登记时默认纳入收口验证集** | 中 |
+| 移动就绪矩阵 §3 回填 | 来源：Phase 41 M5-1。矩阵识别 7 行「源码有窄屏规则、§3 未登记」（`transfer` / `popover` / `popconfirm` / `tooltip` / `cascader` / `time-picker` / `descriptions`），当前以矩阵为临时口径。**触发条件 = 下一阶段治理收尾纳入** | 中 |
+| NavBar / Tabbar 同页 landmark 提示 | 来源：Phase 41 M4-2。两者默认 `label` 同名，同页组合会出现两个同名 `nav` landmark；现仅 NavBar 页提示。**触发条件 = 下一阶段文档收尾纳入** | 低 |
 ### 1.7 服务层候选（composables）
 
 | 候选 | 来源 | 说明 | 优先级 |

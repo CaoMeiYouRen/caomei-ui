@@ -24,6 +24,7 @@ import {
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
+    CaomeiCountdown,
     CaomeiDataTable,
     CaomeiDataView,
     CaomeiDatePicker,
@@ -78,6 +79,7 @@ import {
     CaomeiSelectButton,
     CaomeiSelectGroup,
     CaomeiSkeleton,
+    CaomeiStatistic,
     CaomeiSlider,
     CaomeiSplitButton,
     CaomeiStepper,
@@ -336,6 +338,8 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-select-group'],
     },
     { name: 'CaomeiSkeleton', root: CaomeiSkeleton, definition: { components: { CaomeiSkeleton }, template: '<CaomeiSkeleton />' } },
+    { name: 'CaomeiStatistic', root: CaomeiStatistic, definition: { components: { CaomeiStatistic }, template: '<CaomeiStatistic label="本月收入" :value="1234567.891" :precision="2" prefix="¥" suffix="元" />' }, requiredSelectors: ['.caomei-statistic__value[role="group"]', '.caomei-statistic__label'] },
+    { name: 'CaomeiCountdown', root: CaomeiCountdown, definition: { components: { CaomeiCountdown }, template: '<CaomeiCountdown :target="target" label="距离结束" />', setup: () => ({ target: Date.now() + 3600_000 }) }, requiredSelectors: ['[role="timer"]'] },
     { name: 'CaomeiSlider', root: CaomeiSlider, definition: { components: { CaomeiSlider }, template: '<CaomeiSlider label="滑块" :model-value="3" />' } },
     { name: 'CaomeiSplitButton', root: CaomeiSplitButton, definition: { components: { CaomeiSplitButton }, template: '<CaomeiSplitButton label="操作" :items="[{ label: \'一\' }]" />' } },
     { name: 'CaomeiStepper', root: CaomeiStepper, definition: { components: { CaomeiStepper, CaomeiStepperList, CaomeiStepperItem, CaomeiStepperTrigger, CaomeiStepperIndicator, CaomeiStepperTitle, CaomeiStepperDescription, CaomeiStepperSeparator }, template: '<CaomeiStepper :model-value="1"><CaomeiStepperList><CaomeiStepperItem :step="1"><CaomeiStepperTrigger><CaomeiStepperIndicator>1</CaomeiStepperIndicator><CaomeiStepperTitle>账户</CaomeiStepperTitle><CaomeiStepperDescription>填写登录信息</CaomeiStepperDescription></CaomeiStepperTrigger><CaomeiStepperSeparator /></CaomeiStepperItem><CaomeiStepperItem :step="2"><CaomeiStepperTrigger><CaomeiStepperIndicator>2</CaomeiStepperIndicator><CaomeiStepperTitle>资料</CaomeiStepperTitle><CaomeiStepperDescription>补充个人资料</CaomeiStepperDescription></CaomeiStepperTrigger></CaomeiStepperItem></CaomeiStepperList></CaomeiStepper>' } },
@@ -449,4 +453,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 77
+export const A11Y_FIXTURE_BUDGET = 79

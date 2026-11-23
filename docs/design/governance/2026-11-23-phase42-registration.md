@@ -43,7 +43,7 @@
 | **M4-2** | P2 组件 | Statistic 文档面 | 中英组件页 + 示例 + 侧栏 / 总览 / 画廊 / 设计清单 §5 登记；`check:design` / `docs:check` 绿 | ≈ 8 | M4-1 |
 | **M4-3** | P2 组件 | Countdown 实现与测试 | 目标时间倒计时：秒级刷新、`finish` 事件、自定义格式、卸载清理定时器；单测用假时钟覆盖跨秒 / 到点 / 回拨；SSR 下无 `window` 依赖 | ≈ 6 | 无 |
 | **M4-4** | P2 组件 | Countdown 文档面 | 中英组件页 + 示例 + 侧栏 / 总览 / 画廊 / 设计清单 §5 登记；`check:design` / `docs:check` 绿 | ≈ 8 | M4-3 |
-| **M4-5** | P2 组件 | P2 组件共用登记面 | `Statistic` / `Countdown` 的 locale 命名空间与台账、根导出、Nuxt 注册、a11y 夹具同批；`check:locale-keys` / `check:nuxt` / `test:a11y` / `docs:check` 绿 | ≈ 6 | M4-1 / M4-3 |
+| **M4-5** | P2 组件 | P2 组件共用登记面 | `Statistic` / `Countdown` 的根导出、Nuxt 注册、a11y 夹具同批（**执行期事实修正**，对应 R2 提法中的 locale 项：两组件无语言兜底文案——`Statistic` 的数字 / 前后缀与 `Countdown` 的 `finishText` 均由使用方提供；且新增命名空间需同改 10 个语种文件 + `types.ts` + 中英台账共 13 文件，超单条 10 文件阈值，故不新增命名空间、台账维持）；`check:locale-keys` / `check:locale-ledger` / `check:nuxt` / `test:a11y` / `docs:check` / `check:build` 绿，导出后重跑 `pnpm build` 并做产物冒烟 | ≈ 6 | M4-1 / M4-3 |
 | **M5-1** | 宽屏视觉基线 | 宽屏视口参数化与 `DataTable` 基线 | 为 `test/visual` 增加宽屏视口参数化，并新增**独立宽屏夹具段**（不改 `SAMPLE_SECTIONS` 的 1280 循环，避免多产 2 张）；采集 `DataTable` 在 1536 / 1920 的亮暗共 **4 张**基线；基线在与 CI 相同环境生成；断言沿用 `threshold 0.1` + `maxDiffPixels 100` | ≈ 5 | 无 |
 | **M5-2** | 宽屏视觉基线 | `Form` 宽屏用例与口径同步 | 追加 `Form` 的 1536 / 1920 亮暗 4 张基线；[测试规范](../../standards/testing.md) 与 `playwright.visual.config.ts` 注释补宽屏用例说明；`pnpm test:visual` 全绿（既有 **46** 例 + 本阶段新增 8 例 = **54**） | ≈ 5 | M5-1 |
 | **M6-1** | 下游升级兼容修复 | `DataTable` 表头行高回归修复与守卫 | 在 `CaomeiTooltipText` 包装下恢复 1.3.0 表头行高（momei 实测 32.59px；以真实浏览器计算样式或视觉基线断言）；不改 `cellTooltips` 默认值与 `mode="auto"` 语义；新增能区分修复前后的回归守卫；`pnpm test` / 定向 E2E / `pnpm test:visual` 通过 | ≈ 6 | 无 |

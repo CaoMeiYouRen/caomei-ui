@@ -67,6 +67,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [ProgressSpinner](/en-US/components/progress-spinner)
 - [Result](/en-US/components/result)
 - [Skeleton](/en-US/components/skeleton)
+- [Statistic](/en-US/components/statistic)
 - [Timeline](/en-US/components/timeline)
 - [Accordion](/en-US/components/accordion)
 - [ActionSheet](/en-US/components/action-sheet)

@@ -264,6 +264,18 @@
         }
     },
     {
+        "name": "Statistic",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "statistic/basic.vue",
+        "description": {
+            "zh": "大号数值展示：精度、千分位、前后缀与加载态；空值与非法输入降级为占位。",
+            "en": "Large numeric display with precision, thousands separators, prefix / suffix and a loading state; empty or invalid input falls back to a placeholder."
+        }
+    },
+    {
         "name": "Timeline",
         "group": {
             "zh": "数据展示",

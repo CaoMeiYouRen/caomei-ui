@@ -53,8 +53,8 @@ export interface StatisticProps {
      */
     label?: string
     /**
-     * 加载态：隐藏数值并显示占位骨架，数值区标记 `aria-busy`
-     * @en Loading state: hides the value behind a skeleton and marks the value region `aria-busy`
+     * 加载态：隐藏数值区内容（含前后缀）并显示占位骨架，数值区标记 `aria-busy`
+     * @en Loading state: hides the value region's content (prefix and suffix included) behind a skeleton and marks the value region `aria-busy`
      */
     loading?: boolean
     /**

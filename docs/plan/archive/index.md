@@ -28,6 +28,7 @@
 | [phase-32.md](./todo-archive-phases-32.md) | Phase 32（质量收口与文档站回归） |
 | [phase-33.md](./todo-archive-phases-33.md) | Phase 33（依赖与工具链升级、下游适配、组件增强与质量守卫，发布 `1.3.0`） |
 | [phase-34.md](./todo-archive-phases-34.md) | Phase 34（Tooltip 提示体系、协作测试 T3、质量门禁、DataTable 数据面与长尾组件，不发布） |
+| [phase-35.md](./todo-archive-phases-35.md) | Phase 35（质量与无障碍收口、DataTable 列可见性 / 列宽、长尾 Rating，不发布） |
 
 > `phase-07-12.md` 另含各阶段块之间的「跨阶段预落地条目」等过渡段，随迁入一并保留。
 
@@ -49,3 +50,4 @@
 - 2026-11-20（Phase 38 归档批次）：Phase 38 入窗后主窗口将有 7 块，按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径压缩为「**Phase 33 ~ Phase 38** + 归档索引」，Phase 32 迁入本目录 [phase-32.md](./todo-archive-phases-32.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；**迁出后 374 行**）。
 - 2026-11-21（Phase 39 归档批次）：Phase 39 入窗后主窗口 384 行（`docs:check:line-count`，未越 warn 400），按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径压缩为「**Phase 34 ~ Phase 39** + 归档索引」，Phase 33 迁入本目录 [phase-33.md](./todo-archive-phases-33.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；**迁出后 384 行**）。
 - 2026-11-21（Phase 40 归档批次）：Phase 40 入窗后主窗口 378 行（`docs:check:line-count`，未越 warn 400），按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径保持「**Phase 35 ~ Phase 40** + 归档索引」，Phase 34 迁入本目录 [phase-34.md](./todo-archive-phases-34.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；**迁出后 378 行**）。
+- 2026-11-23（Phase 41 归档批次）：Phase 41 迁出后主窗口 400 行（`docs:check:line-count` 读数，未越 warn 400、恰在边界；入窗前读数未留），按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径压缩为「**Phase 36 ~ Phase 41** + 归档索引」，Phase 35 迁入本目录 [phase-35.md](./todo-archive-phases-35.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；迁出后 400 行）。

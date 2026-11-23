@@ -119,6 +119,23 @@ const FORM_AXIS_CASES = [
 /** 形态轴面下界守卫：轴面被静默移除即失败。 */
 const MIN_FORM_AXIS = 7
 
+/**
+ * 宽屏视口基线（Phase 42 M5）：独立夹具段，不复用 `SAMPLE_SECTIONS` 的 1280 循环，
+ * 避免既有面多产基线。每段在 1536 / 1920 两档各出亮 / 暗两张。
+ */
+const WIDE_VIEWPORTS = [
+    { width: 1536, height: 960 },
+    { width: 1920, height: 1080 },
+] as const
+
+/** 宽屏受检面：先纳入 `data-table`，`form` 随下一批追加。 */
+const WIDE_VIEWPORT_CASES = [
+    { key: 'wide-data-table', label: '宽屏 DataTable', target: '#data-table-sort-width' },
+] as const
+
+/** 宽屏基线张数下界守卫（受检面 × 视口档 × 主题）。 */
+const MIN_WIDE_SNAPSHOTS = 4
+
 /** 固定时钟（日期轴确定化）：月 / 日 / 「今日」高亮均由该时刻派生。 */
 const FIXED_CLOCK = new Date('2026-01-15T09:30:00+08:00')
 
@@ -221,6 +238,10 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
         expect(FORM_AXIS_CASES.length).toBeGreaterThanOrEqual(MIN_FORM_AXIS)
     })
 
+    test('宽屏基线张数未收窄', () => {
+        expect(WIDE_VIEWPORT_CASES.length * WIDE_VIEWPORTS.length * THEMES.length).toBeGreaterThanOrEqual(MIN_WIDE_SNAPSHOTS)
+    })
+
     test('视觉测试字体已加载且覆盖受检面文本', async ({ page }) => {
         await page.clock.setFixedTime(FIXED_CLOCK)
         await gotoVisual(page)
@@ -239,6 +260,7 @@ test.describe('视觉回归基线（代表组件 × 亮暗）', () => {
         const selectors = [
             ...SAMPLE_SECTIONS.map(({ id }) => `#${id}`),
             ...FORM_AXIS_CASES.map(({ target }) => target),
+            ...WIDE_VIEWPORT_CASES.map(({ target }) => target),
         ]
         const text = await page.evaluate(({ targets, textInputTypes }) => {
             const allowedInputTypes = new Set(textInputTypes)
@@ -303,6 +325,32 @@ test.describe('形态轴扩面（视口 / 预设 / 日期 / 浮层 / P0 命中�
                 await prepareFormAxis(page, setup, theme)
                 await expect(page.locator(target)).toHaveScreenshot(`${key}-${theme}.png`)
             })
+        }
+    }
+})
+
+test.describe('宽屏视口基线（1536 / 1920 × 亮暗）', () => {
+    for (const theme of THEMES) {
+        for (const { width, height } of WIDE_VIEWPORTS) {
+            for (const { key, label, target } of WIDE_VIEWPORT_CASES) {
+                test(`${label}@${width}（${theme}）`, async ({ page }) => {
+                    await gotoVisual(page)
+                    await page.setViewportSize({ width, height })
+                    await page.waitForSelector(target)
+                    // 前置守卫：受检面必须随视口铺满（否则两档退化为同宽图，宽屏轴失去判别力）
+                    const box = await page.locator(target).boundingBox()
+                    expect(box?.width ?? 0, `${target} 在 ${width} 档应铺满可用宽`).toBeGreaterThan(width - 120)
+                    if (theme === 'dark') {
+                        await page.evaluate(() => {
+                            document.documentElement.setAttribute('data-theme', 'dark')
+                        })
+                    }
+                    if (NEGATIVE_CONTROL) {
+                        await page.addStyleTag({ content: NEGATIVE_CONTROL_CSS })
+                    }
+                    await expect(page.locator(target)).toHaveScreenshot(`${key}-${width}-${theme}.png`)
+                })
+            }
         }
     }
 })

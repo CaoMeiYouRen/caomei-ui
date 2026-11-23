@@ -65,12 +65,8 @@
 | `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 低 |
 | `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
-| 宽屏视觉基线（1536 / 1920） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：为 DataTable / Dialog / Form 等宽屏敏感组件补 1920 视觉用例（亮暗各一份）；约 +3–5 文件 +4–6 PNG、+1–2 天。**触发条件 = 宽屏布局出现真实回归，或下一次视觉基线批次** | 中 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
 | `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 低 |
-| `typecheck:docs` 纳入阶段验证集 | 来源：Phase 41 复盘（`variant="text"` 未被阶段验证集拦住，由 Review Gate 拦下）。`docs/examples/**` 在 `typecheck:docs`（`vue-tsc -p docs/tsconfig.json`）受检面内，但阶段验证集只跑 `pnpm typecheck`（覆盖 `src` / `playground` / `test`，`playground/nuxt` 与 E2E fixture 被 exclude，不含 `docs/examples`）。候选 = 把 `typecheck:docs` 写入阶段收口固定验证集（规范 / 检查清单）；`pnpm verify` 与 CI `Test` 的 Quality 作业已覆盖该命令，无需改 CI。**触发条件 = 下一阶段登记时默认纳入收口验证集** | 中 |
-| 移动就绪矩阵 §3 回填 | 来源：Phase 41 M5-1。矩阵识别 7 行「源码有窄屏规则、§3 未登记」（`transfer` / `popover` / `popconfirm` / `tooltip` / `cascader` / `time-picker` / `descriptions`），当前以矩阵为临时口径。**触发条件 = 下一阶段治理收尾纳入** | 中 |
-| NavBar / Tabbar 同页 landmark 提示 | 来源：Phase 41 M4-2。两者默认 `label` 同名，同页组合会出现两个同名 `nav` landmark；现仅 NavBar 页提示。**触发条件 = 下一阶段文档收尾纳入** | 低 |
 ### 1.7 服务层候选（composables）
 
 | 候选 | 来源 | 说明 | 优先级 |
@@ -102,8 +98,6 @@
 | 候选 | 依据 | 优先级 |
 |------|------|:-:|
 | Tree / TreeSelect | 记录 **P1**；五库均有对应件（Vant `tree-select` / Varlet `tree-menu` 为近似件）；Reka `TreeRoot` 为 Alpha，需锁版本与回归 | 中 |
-| Statistic | 记录 **P2**；Element Plus / TDesign，Varlet 为 `count-to`（近似） | 低 |
-| Countdown | 记录 **P2**；Element Plus / Vant / Varlet | 低 |
 | Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 低 |
 | Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 低 |
 | Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 低 |

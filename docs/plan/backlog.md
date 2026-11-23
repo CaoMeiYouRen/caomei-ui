@@ -51,6 +51,7 @@
 | Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估。**2026-11-21 进展**：`TimePicker` 已内置滚轮模式（`mode="wheel"` / `"both"`），本候选收窄为**非时间场景的通用 Picker**；时间选择不再依赖本候选 | 中 |
 | Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 低 |
 | 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 低 |
+| Stepper 横向形态极窄容器下的排版退化 | 用户缺陷报告（2026-11-24，文档站窄视口） | 横向 3 步步骤条（文档站 `basic` 示例：描述 6 / 6 / 5 字，缺省 `md` 尺寸）在内容宽 270 / 310 / 340 / 430px（视口 320 / 360 / 390 / 480）下标题均塌成单字一行（实测 14 ~ 24px 宽），示例自绘的上一步 / 下一步按钮同时折两行；640 与 768 档（内容宽 590 / 686）恢复单行，中间区间未取样。320 / 360 档列表另有 18 / 7px 内部溢出，在文档站示例的列表滚动容器内可横向滚动（≤640 档 `overflow-x: auto`），页面级仍满足 `scrollWidth === innerWidth`。机制为 item 均分压缩（`flex: 1 1 0` + `min-width: 0`），具体分配未逐层取证。**用户裁定（2026-11-24）：暂不修复**，改为在 [Stepper 组件文档](../components/stepper.md) 写明「窄屏不推荐横向步骤条」。**触发条件 = 用户改判，或出现必须在视口 ≤ 480px（内容宽约 ≤ 430px）内展示横向步骤条的用例**。**复算** = `pnpm docs:build` + `pnpm docs:preview`，页面 `components/stepper`，Chromium 按上述六档量 `.caomei-stepper__title` 高度 / 行高 | 低 |
 
 ### 1.6 基建与治理候选
 

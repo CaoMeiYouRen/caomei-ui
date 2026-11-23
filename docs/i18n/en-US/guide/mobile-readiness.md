@@ -72,7 +72,7 @@
 | `skeleton` | Adapts to the container | same | same | Follows the container | — | §3 #15 |
 | `slider` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14 / #16 |
 | `split-button` | Toolbar wraps; group scrolls horizontally | group scrolls (≤1024) | Toolbar single line; group scrolls | Wrap or scroll, members never clipped | 769–1023 is a no-breakpoint range | §3 #7 |
-| `stepper` | Compresses with the container (no auto direction) | same | equal-width horizontal | Consumer switches to vertical | No automatic direction change | §3 #10 |
+| `stepper` | Compresses with the container (no auto direction) | same | equal-width horizontal | Consumer switches to vertical | No automatic direction change; degrades in very narrow containers (not fixed for now, see Backlog §1.5) | §3 #10 |
 | `switch` | width:100%, capped by the container | same | default max-width token | Follows the container | — | §3 #14 / #16（口径 · §3 未逐条登记） |
 | `tabbar` | Row height ≥44; single-line truncation; tabs share width | same | same | Touch density 52 | — | §3 #19 |
 | `tabs` | List scrolls horizontally | same | single line | Horizontal scroll | — | §3 #12 |

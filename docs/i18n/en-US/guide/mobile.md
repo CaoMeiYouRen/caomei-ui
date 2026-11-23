@@ -25,7 +25,7 @@ The library is **desktop-first**: the default form is the desktop form, and narr
 - **Width limits for text controls** — the library sets no maximum by default; your container decides.
 - **Table columns and card layouts** — `CaomeiDataTable` degrades to container scrolling on narrow screens; card lists are business-side work.
 - **Full-screen dialogs** — narrow screens inset the width by default; implement full-screen when needed.
-- **Stepper direction** — the horizontal form compresses with the container; switch to `orientation="vertical"` when a vertical layout is required.
+- **Stepper direction** — the horizontal form compresses with the container; switch to `orientation="vertical"` when a vertical layout is required. At very narrow widths the horizontal layout degrades (titles one character per line), so it is not recommended there (see Backlog §1.5, Chinese).
 - **Long text** — a single very long option can overflow by itself (e.g. long enums at the narrowest viewports), so constrain copy length or container width.
 
 ## Safe areas (notch and home indicator)

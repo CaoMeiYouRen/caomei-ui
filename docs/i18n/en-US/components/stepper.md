@@ -26,6 +26,8 @@ The root default slot forwards Reka's context (`modelValue`, `totalSteps`, `isPr
 
 Narrow screens (≤640px) do **not** auto-switch horizontal to vertical: a horizontal stepper compresses with its container, so pass `orientation="vertical"` when you want the stacked form. See matrix #10 in [Responsive design](/design/responsive) (Chinese).
 
+Narrower containers degrade the horizontal form further: step titles collapse to one character per line and the connectors and steps become hard to read (measured breakpoints for the docs `basic` example are in Backlog §1.5, Chinese). This is **known behaviour, not fixed for now** (user decision, 2026-11-24), so the horizontal form is **not recommended** on narrow screens — prefer `orientation="vertical"`, and provide your own horizontal scroll container if you really need horizontal.
+
 ## Controlled and uncontrolled
 
 - Controlled: pass `v-model`, and the current step is decided entirely by external state.

@@ -3544,6 +3544,17 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     max-width: 420px;
 }
 
+/*
+  宽屏视觉面（`test/visual` 的宽屏段）：仅在 ≥1536px 解禁 420px 上限，让表单字段拉伸，
+  使「宽屏档」具有判别力。1280 视觉档不受影响；E2E 的 1536 / 1920 定向档会命中该媒体查询，
+  只改变 `#form` 宽度（responsive 用例在该段仅断言无横向溢出）。
+*/
+@media (min-width: 1536px) {
+    .fixture-form {
+        max-width: none;
+    }
+}
+
 .fixture__state {
     display: flex;
     box-sizing: border-box;

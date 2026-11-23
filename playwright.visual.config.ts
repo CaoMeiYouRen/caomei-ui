@@ -20,6 +20,9 @@ import { defineConfig, devices } from '@playwright/test'
  * - **双轴容差**：`threshold`（色差轴）+ 绝对 `maxDiffPixels`（面积轴）——细粒度 token 改动不被
  *   视口比例吞掉（下游实证口径）。
  * - 基线随仓库提交（`test/visual/__screenshots__/`）；失败产物落 gitignored 的 `test-results/visual/`。
+ * - **宽屏用例**：`components.visual.ts` 的「宽屏视口基线」段独立于 1280 主循环，宽屏两档各出亮 / 暗两张，
+ *   当前覆盖 `DataTable` 与 `Form`；**组件内容**须随视口拉伸（用例内断言其宽 > 视口宽 − 120px，
+ *   测父容器恒等于容器宽属形式断言），否则该轴退化为同宽图。档位尺寸见响应式设计 §4。
  * - **不进 `pnpm verify` 常驻链**（需真实浏览器）；命令 `pnpm test:visual` / `pnpm test:visual:update`。
  */
 

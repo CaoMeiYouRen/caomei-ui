@@ -120,7 +120,7 @@ const FORM_AXIS_CASES = [
 const MIN_FORM_AXIS = 7
 
 /**
- * 宽屏视口基线（Phase 42 M5）：独立夹具段，不复用 `SAMPLE_SECTIONS` 的 1280 循环，
+ * 宽屏视口基线：独立夹具段，不复用 `SAMPLE_SECTIONS` 的 1280 循环，
  * 避免既有面多产基线。每段在 1536 / 1920 两档各出亮 / 暗两张。
  */
 const WIDE_VIEWPORTS = [
@@ -128,13 +128,22 @@ const WIDE_VIEWPORTS = [
     { width: 1920, height: 1080 },
 ] as const
 
-/** 宽屏受检面：先纳入 `data-table`，`form` 随下一批追加。 */
+/** 宽屏受检面：`data-table` 与 `form`（两档视口 × 亮暗）。 */
 const WIDE_VIEWPORT_CASES = [
     { key: 'wide-data-table', label: '宽屏 DataTable', target: '#data-table-sort-width' },
+    { key: 'wide-form', label: '宽屏 Form', target: '#form' },
 ] as const
 
 /** 宽屏基线张数下界守卫（受检面 × 视口档 × 主题）。 */
-const MIN_WIDE_SNAPSHOTS = 4
+const MIN_WIDE_SNAPSHOTS = 8
+
+/**
+ * 受检面 → 「须随视口拉伸」的内容元素：外层 section 恒等于容器宽（形式断言），
+ * 必须测组件自身内容，否则固定的 `max-width` 会被父容器宽度掩盖。
+ */
+const WIDE_CONTENT_TARGETS: Record<string, string> = {
+    '#form': '#form .caomei-input',
+}
 
 /** 固定时钟（日期轴确定化）：月 / 日 / 「今日」高亮均由该时刻派生。 */
 const FIXED_CLOCK = new Date('2026-01-15T09:30:00+08:00')
@@ -337,9 +346,10 @@ test.describe('宽屏视口基线（1536 / 1920 × 亮暗）', () => {
                     await gotoVisual(page)
                     await page.setViewportSize({ width, height })
                     await page.waitForSelector(target)
-                    // 前置守卫：受检面必须随视口铺满（否则两档退化为同宽图，宽屏轴失去判别力）
-                    const box = await page.locator(target).boundingBox()
-                    expect(box?.width ?? 0, `${target} 在 ${width} 档应铺满可用宽`).toBeGreaterThan(width - 120)
+                    // 前置守卫：受检组件内容必须随视口拉伸（否则两档退化为同宽图，宽屏轴失去判别力）
+                    const contentSelector = WIDE_CONTENT_TARGETS[target] ?? target
+                    const box = await page.locator(contentSelector).first().boundingBox()
+                    expect(box?.width ?? 0, `${contentSelector} 在 ${width} 档应随视口拉伸`).toBeGreaterThan(width - 120)
                     if (theme === 'dark') {
                         await page.evaluate(() => {
                             document.documentElement.setAttribute('data-theme', 'dark')

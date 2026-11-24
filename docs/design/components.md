@@ -113,12 +113,14 @@
 | Transfer | 自建（双列表 + 原生复选框） | 无 | — | 穿梭框：候选 / 已选两栏、搜索、禁用、受控值集合（**已实现**） |
 | Cascader | 自建（Popover + 多级列 + 原生按钮） | 无 | — | 级联选择：多级路径、`changeOnSelect`、清除、禁用与分隔符（**已实现**） |
 | Timeline | 自建（`ol` / `li` 语义） | 无 | — | 时间轴：单侧 / 交替布局、反转顺序、语气色节点、自定义图标（**已实现**） |
+| Tree | 封装 | Tree | Alpha | 树形控件：`items` 递归数据、展开 / 折叠、单选 / 多选、节点禁用、受控与非受控、方向键与 `Home` / `End` 导航；`TreeVirtualizer` 未启用（**已实现**） |
+| TreeSelect | 自建（Popover + Tree 组合） | 无（Popover 承载浮层与隔离） | — | 树形选择：键值单选 / 多选、已选回显、清空、禁用、打开态隔离与 320 / 390 窄屏碰撞收敛（**已实现**） |
 | Countdown | 自建（展示层 + 定时器） | 无 | — | 倒计时：目标时间归一、`DD` / `HH` / `mm` / `ss` / `SSS` 模板、到点停表冻结与 `finish` 去重、回拨不恢复（**已实现**） |
 | Statistic | 自建（展示层） | 无 | — | 统计数值：精度 / 千分位 / 前后缀 / 加载态，空值与非法输入降级为占位；不做数字滚动动画（**已实现**） |
 | Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Tree（Alpha）、Form / Field（校验与字段 ARIA）、MonthPicker / YearPicker、Splitter、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
+Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea、Separator（Divider 已自建，未采用）、PinInput、Editable、Form / Field（校验与字段 ARIA）、MonthPicker / YearPicker、Splitter、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
 
 ## 6. 不自研
 

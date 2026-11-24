@@ -353,6 +353,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Select', link: '/en-US/components/select' },
                                 { text: 'SelectButton', link: '/en-US/components/select-button' },
                                 { text: 'ToggleButton', link: '/en-US/components/toggle-button' },
+                                { text: 'TreeSelect', link: '/en-US/components/tree-select' },
                             ],
                         },
                         {
@@ -384,6 +385,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Skeleton', link: '/en-US/components/skeleton' },
                                 { text: 'Statistic', link: '/en-US/components/statistic' },
                                 { text: 'Timeline', link: '/en-US/components/timeline' },
+                                { text: 'Tree', link: '/en-US/components/tree' },
                             ],
                         },
                         {
@@ -577,6 +579,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Select 选择器', link: '/components/select' },
                         { text: 'SelectButton 分段选择', link: '/components/select-button' },
                         { text: 'ToggleButton 开关按钮', link: '/components/toggle-button' },
+                        { text: 'TreeSelect 树形选择', link: '/components/tree-select' },
                     ],
                 },
                 {
@@ -608,6 +611,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Skeleton 骨架屏', link: '/components/skeleton' },
                         { text: 'Statistic 统计数值', link: '/components/statistic' },
                         { text: 'Timeline 时间轴', link: '/components/timeline' },
+                        { text: 'Tree 树形控件', link: '/components/tree' },
                     ],
                 },
                 {

@@ -53,6 +53,7 @@
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
 - [SelectButton 分段选择](./select-button)：分段选择在一组互斥或可多选的选项间切换，视觉上呈现为分段按钮组，等价于 SegmentedControl，基于 Reka UI ToggleGroup 封装。
 - [ToggleButton 开关按钮](./toggle-button)：开关按钮用于在单个按钮上切换按下 / 未按下状态（如工具条中的加粗、斜体），基于 Reka UI Toggle 封装。
+- [TreeSelect 树形选择](./tree-select)：以「字段 + 浮层树」形态在层级数据中选择值，支持单选 / 多选、清空与窄屏碰撞避让，基于 Popover 与 Tree 组合。
 
 ## 反馈与浮层
 
@@ -80,6 +81,7 @@
 - [Skeleton 骨架屏](./skeleton)：骨架屏用于在内容加载完成前占位，降低布局跳动并提示加载状态。为纯样式自建组件，不依赖外部 primitive。
 - [Statistic 统计数值](./statistic)：大号数值展示，支持精度、千分位、前后缀与加载态；空值与非法输入降级为占位，不做数字滚动动画。
 - [Timeline 时间轴](./timeline)：按时间顺序展示事件，支持单侧 / 交替布局、反转顺序与语气色节点。
+- [Tree 树形控件](./tree)：按层级展示可展开的数据，支持单选 / 多选、节点禁用与键盘导航，基于 Reka UI 的 Tree 原语（Alpha）封装。
 
 ## 导航与操作
 

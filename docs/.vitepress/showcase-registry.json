@@ -180,6 +180,18 @@
         }
     },
     {
+        "name": "TreeSelect",
+        "group": {
+            "zh": "选择器",
+            "en": "Selectors"
+        },
+        "example": "tree-select/basic.vue",
+        "description": {
+            "zh": "以字段加浮层树的形态在层级数据中选择值，支持多选、清空与窄屏碰撞避让。",
+            "en": "Picks values from hierarchical data through a field plus a tree panel, with multiple selection, clearing and collision-aware placement."
+        }
+    },
+    {
         "name": "Dialog",
         "group": {
             "zh": "反馈与浮层",
@@ -297,6 +309,18 @@
         "description": {
             "zh": "按时间顺序展示事件，支持单侧 / 交替布局与语气色节点。",
             "en": "Presents events in time order with single-side / alternating layouts and tone-colored dots."
+        }
+    },
+    {
+        "name": "Tree",
+        "group": {
+            "zh": "数据展示",
+            "en": "Data Display"
+        },
+        "example": "tree/basic.vue",
+        "description": {
+            "zh": "按层级展示可展开的数据，支持单选 / 多选、节点禁用与方向键导航。",
+            "en": "Shows expandable hierarchical data with single / multiple selection, per-node disabled state and arrow-key navigation."
         }
     },
     {

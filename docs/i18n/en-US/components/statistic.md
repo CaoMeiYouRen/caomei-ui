@@ -23,7 +23,7 @@ Large numeric display: precision, thousands separators, prefix / suffix and a lo
 | `decimalSeparator` | `string` | `.` | Decimal point |
 | `prefix` | `string` | — | Value prefix (such as a currency symbol), read together with the value |
 | `suffix` | `string` | — | Value suffix (such as a unit), read together with the value |
-| `label` | `string` | — | **Visible label** (unlike this library's Input / Select, where `label` only provides the accessible name); when provided, it (or the `label` slot content) names the value region |
+| `label` | `string` | — | **Visible label**: unlike this library's convention that `label` only provides the accessible name — registered as an exception in [development standards §6](/standards/development#_6-组件-api-设计约定); when provided, it (or the `label` slot content) names the value region |
 | `loading` | `boolean` | `false` | Loading state: hides the value region's content (prefix and suffix included) behind a skeleton and marks the value region `aria-busy` |
 | `placeholder` | `string` | `--` | Placeholder for empty values |
 | `size` | `'sm' \| 'md' \| 'lg'` | `md` | Size step |

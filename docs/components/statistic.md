@@ -23,7 +23,7 @@
 | `decimalSeparator` | `string` | `.` | 小数点符号 |
 | `prefix` | `string` | — | 数值前缀（如货币符号），随数值一起朗读 |
 | `suffix` | `string` | — | 数值后缀（如单位），随数值一起朗读 |
-| `label` | `string` | — | **可见标签**（与本库 Input / Select 等表单控件「`label` 仅提供可访问名」的约定不同）；提供后数值区以它（或 `label` 插槽内容）作为可访问名 |
+| `label` | `string` | — | **可见标签**：与本库「`label` 仅提供可访问名」的约定不同，已按[开发规范 §6](../standards/development.md#_6-组件-api-设计约定) 登记为例外；提供后数值区以它（或 `label` 插槽内容）作为可访问名 |
 | `loading` | `boolean` | `false` | 加载态：隐藏数值区内容（含前后缀）并显示骨架，数值区标记 `aria-busy` |
 | `placeholder` | `string` | `--` | 空值占位 |
 | `size` | `'sm' \| 'md' \| 'lg'` | `md` | 尺寸档 |

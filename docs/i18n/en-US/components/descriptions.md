@@ -6,6 +6,8 @@ Descriptions present read-only fields as label / value pairs, typically in the b
 
 `columns` sets the desktop column count (1–6, default 3) and `labelWidth` the label column width; each item supplies its label through `label` and its value through the default slot.
 
+> An item's `label` is a **visible label** (rendered as `dt`), which differs from this library's convention that `label` is an invisible accessible name; it is registered as an exception in [development standards §6](/standards/development#_6-组件-api-设计约定), and any further use of this shape must be reviewed and registered one by one.
+
 <demo
     vue="../examples/descriptions/basic.vue"
     ssg="true"

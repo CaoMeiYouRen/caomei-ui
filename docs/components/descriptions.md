@@ -6,6 +6,8 @@
 
 `columns` 控制桌面档列数（1–6，默认 3），`labelWidth` 控制标签列宽度；每个条目通过 `label` 提供标签，默认插槽提供值。
 
+> 条目 `label` 是**可见标签**（渲染为 `dt`），与本库「`label` 即不可见可访问名」的约定不同，已按[开发规范 §6](../standards/development.md#_6-组件-api-设计约定) 登记为例外。
+
 <demo
     vue="../examples/descriptions/basic.vue"
     ssg="true"

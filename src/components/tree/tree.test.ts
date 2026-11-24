@@ -211,6 +211,14 @@ describe('CaomeiTree', () => {
         warn.mockRestore()
     })
 
+    it('透传 class 落在根 ul（文档示例的宽度 / 边框覆盖依赖此落点）', () => {
+        const wrapper = mount(CaomeiTree, { props: { items: tree }, attrs: { class: 'demo-tree' } })
+        const root = wrapper.element as Element
+
+        expect(root.classList.contains('demo-tree')).toBe(true)
+        expect(root.classList.contains('caomei-tree')).toBe(true)
+    })
+
     it('空树不渲染任何节点，也不报错', () => {
         const wrapper = mount(CaomeiTree, { props: { items: [] } })
         expect((wrapper.element as Element).getAttribute('role')).toBe('tree')

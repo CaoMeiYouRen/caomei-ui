@@ -15,7 +15,7 @@
 
 尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。`1.5.0` 的发布时机按用户裁定为 2026-11-29 前后。
 
-> **交付摘要（10 条）**：M2-1 Button 单元素根（含 `CaomeiTooltipText` 同源修复与 Popover / Popconfirm 触发器可解析）· M2-2 `wrap` 换行开关 · M2-3 `@layer` 不落地评估（`docs/design/governance/2026-11-24-phase43-m2-3-layer-strategy.md`）· M2-4 中英「下游样式覆盖指引」· M3-1 `label` 可见标签例外登记 · M4-1 `CaomeiTree` · M4-2 `CaomeiTreeSelect` · M4-3 / M4-4 中英组件页与示例 · M4-5 侧栏 / 总览 / 画廊 / §5 / §11 登记面。**M1 待发布窗口**：M1-1 须补写 1.5.0 升级注意 3 条（Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄，清单见 `2026-11-24-phase43-m2-1-single-root.md` §6）。
+> **交付摘要**：Button 未启用提示时恢复单元素根（含 `CaomeiTooltipText` 同源修复与 Popover / Popconfirm 触发器可解析）、`wrap` 内容换行开关、`@layer` 不落地评估（见[评估记录](../design/governance/2026-11-24-phase43-m2-3-layer-strategy.md)）、中英「下游样式覆盖指引」（见[指南](../guide/overriding-styles.md)）、`label` 可见标签例外登记（见[例外记录](../design/governance/2026-11-24-phase43-m3-1-label-semantics.md)）、`CaomeiTree` 与 `CaomeiTreeSelect` 及其中英组件页 / 示例 / 登记面。**发布收口待窗口**：升级注意须补 Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄三项（清单见[根形态修复记录](../design/governance/2026-11-24-phase43-m2-1-single-root.md) §6）。
 
 ## Phase 43 原子条目
 

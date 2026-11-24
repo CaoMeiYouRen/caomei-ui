@@ -84,6 +84,7 @@ import {
     CaomeiTag,
     CaomeiTextarea,
     CaomeiTimePicker,
+    CaomeiTree,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -354,6 +355,13 @@ const alertCombos = alertTones.flatMap((tone) => alertVariants.map((variant) => 
 /* 按钮状态对比度受检面：3 变体 × 6 语气（含 disabled 一条），见 `test/e2e/button-states.e2e.ts`。 */
 const buttonContrastVariants = ['primary', 'secondary', 'ghost'] as const
 const buttonContrastTones = ['none', 'neutral', 'primary', 'success', 'warning', 'danger'] as const
+const treeSelected = ref<string[]>([])
+const treeExpanded = ref<string[]>([])
+const treeItems = [
+    { id: 'basic', label: '基础', children: [{ id: 'button', label: '按钮' }, { id: 'input', label: '输入框' }] },
+    { id: 'display', label: '数据展示' },
+]
+
 const buttonContrastCombos = buttonContrastVariants.flatMap((variant) => buttonContrastTones.map((tone) => ({ variant, tone })))
 
 /* 预设对比度矩阵受检面：5 语气 × soft / outline × Tag / Message，见 `test/e2e/preset-contrast.e2e.ts`。 */
@@ -3405,6 +3413,20 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 row-key="plain"
                 :cell-tooltips="false"
                 caption="表头行高：关闭提示"
+            />
+        </section>
+        <!--
+          树形控件受检面：展开 / 选中 / 键盘导航（Reka alpha primitive 的真实渲染）。
+        -->
+        <section
+            id="tree"
+            class="fixture__case"
+        >
+            <CaomeiTree
+                v-model="treeSelected"
+                v-model:expanded="treeExpanded"
+                label="组件目录"
+                :items="treeItems"
             />
         </section>
         <!--

@@ -123,6 +123,7 @@ export const caomeiComponents = [
     'CaomeiToolbarSeparator',
     'CaomeiToolbarToggleGroup',
     'CaomeiToolbarToggleItem',
+    'CaomeiTree',
     'CaomeiTooltip',
     'CaomeiTooltipArrow',
     'CaomeiTooltipContent',

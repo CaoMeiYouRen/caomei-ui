@@ -3407,6 +3407,71 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 caption="表头行高：关闭提示"
             />
         </section>
+        <!--
+          按钮内容换行（`wrap`）受检面：默认单行截断与换行档的几何对照。
+          长串取 ja / ko 无空格文本——它们在 `white-space: normal` 下按字（音节）断行，
+          `overflow-wrap: anywhere` 另兜长英文单词 / URL 这类不可断串。
+        -->
+        <section
+            id="button-wrap"
+            class="fixture__case"
+        >
+            <CaomeiButton
+                class="fixture-button-wrap__narrow"
+                data-wrap-case="truncate"
+            >
+                アカウントの設定を開いて続行する
+            </CaomeiButton>
+            <CaomeiButton
+                class="fixture-button-wrap__narrow"
+                data-wrap-case="wrap-ja"
+                wrap
+            >
+                アカウントの設定を開いて続行する
+            </CaomeiButton>
+            <CaomeiButton
+                class="fixture-button-wrap__narrow"
+                data-wrap-case="wrap-ko"
+                variant="secondary"
+                wrap
+            >
+                계정설정을열어계속진행하기
+            </CaomeiButton>
+            <CaomeiButton
+                data-wrap-case="wrap-wide"
+                wrap
+            >
+                宽度充裕时不折行，高度保持档位高度
+            </CaomeiButton>
+            <CaomeiButton
+                data-wrap-case="wrap-icon"
+                icon-only
+                label="设置"
+                wrap
+            >
+                <template #icon>
+                    <span aria-hidden="true">*</span>
+                </template>
+            </CaomeiButton>
+            <div class="fixture-button-wrap__narrow">
+                <CaomeiButton
+                    data-wrap-case="wrap-block"
+                    block
+                    wrap
+                >
+                    ブロック幅で折り返される長いラベルのボタン
+                </CaomeiButton>
+            </div>
+            <div class="fixture-button-wrap__narrow">
+                <CaomeiButton
+                    data-wrap-case="wrap-loading"
+                    loading
+                    wrap
+                >
+                    読み込み中でも折り返される長いラベルのボタン
+                </CaomeiButton>
+            </div>
+        </section>
     </main>
 </template>
 
@@ -3714,6 +3779,11 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 */
 .fixture__truncate-box {
     width: min(8rem, 100%);
+}
+
+/* 换行受检面：固定窄宽，使长 ja / ko 文本必然需要折行 */
+.fixture-button-wrap__narrow {
+    width: 9rem;
 }
 
 .fixture__truncate-text {

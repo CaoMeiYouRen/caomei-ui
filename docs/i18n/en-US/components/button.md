@@ -109,6 +109,20 @@ Truncation prerequisite: the text element is single-line (`nowrap` + `overflow: 
 
 > Known trade-off: the `iconOnly` + `tooltip` content defaults to the `aria-label` and the panel is exposed to screen readers as a **description**, so the same text may be announced twice. Use `tooltip="{ content: '...' }"` to provide distinct supplementary text. See [Tooltip](./tooltip.md) for the provider fallback and its skip-delay trade-off.
 
+## Text wrapping
+
+`wrap` controls whether the label may wrap (defaults to `false`):
+
+- Default (single line): the text layer uses `nowrap` + `overflow: hidden` + `text-overflow: ellipsis`; the button sizes to its content and ends with an ellipsis when width-constrained. This is also what `tooltip`'s `auto` mode checks for truncation.
+- `wrap` enabled: the label wraps to the available width and the button hands its height back to the content (`min-height` keeps the size's control height as the floor). Tune it with `--caomei-button-wrap-line-height` / `--caomei-button-wrap-padding-y`; Japanese / Korean break at character (syllable) boundaries under `white-space: normal`, while `overflow-wrap: anywhere` covers long unbreakable Latin words and URLs so narrow containers do not overflow.
+- `iconOnly` has no text layer, so the switch has no effect (the square shape and padding are unchanged).
+- Once wrapped there is no horizontal truncation, so `tooltip`'s `auto` mode never fires; pass `tooltip="..."` when you need an explicit hint.
+
+<demo
+    vue="../examples/button/wrap.vue"
+    ssg="true"
+/>
+
 ## Accessibility
 
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).

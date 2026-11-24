@@ -336,7 +336,7 @@ describe('CaomeiButton', () => {
     })
 
     it('hover / active 规则由 color-mix 派生且全部排除 disabled（真实计算样式由 capture:styles 承载）', () => {
-        const source = readFileSync(join(process.cwd(), 'src/components/button/button.vue'), 'utf8')
+        const source = readFileSync(join(import.meta.dirname, 'button.vue'), 'utf8')
 
         // 三变体都声明了两态；实底与文字型变体分别走「加深」与「向 text 混合」的派生方向
         for (const variant of ['primary', 'secondary', 'ghost']) {
@@ -402,6 +402,54 @@ describe('CaomeiButton 根节点', () => {
         // 提示分支需要触发器与面板两级节点，根为包装层而非按钮本身
         expect((wrapper.element as Element).tagName).not.toBe('BUTTON')
         expect(button.classes()).toContain('caomei-button')
+    })
+})
+
+describe('CaomeiButton 内容换行', () => {
+    const source = readFileSync(join(import.meta.dirname, 'button.vue'), 'utf8')
+
+    /** 取某条规则块内的声明文本（与书写顺序无关，逐条断言更稳） */
+    function declarationsOf(selector: string): string {
+        const start = source.indexOf(`${selector} {`)
+        expect(start, `缺少规则 ${selector}`).toBeGreaterThanOrEqual(0)
+        return source.slice(start, source.indexOf('}', start))
+    }
+
+    it('默认不折行：不加换行类，文本层保持单行截断', () => {
+        const wrapper = mount(CaomeiButton, { slots: { default: '确定' } })
+
+        expect(wrapper.get('button').classes()).not.toContain('caomei-button--wrap')
+        const content = declarationsOf('.caomei-button__content')
+        expect(content).toContain('white-space: nowrap;')
+        expect(content).toContain('text-overflow: ellipsis;')
+    })
+
+    it('wrap 开启时加换行类，内容折行且高度交还内容', () => {
+        const wrapper = mount(CaomeiButton, { props: { wrap: true }, slots: { default: '確定して続行する' } })
+
+        expect(wrapper.get('button').classes()).toContain('caomei-button--wrap')
+
+        const shell = declarationsOf('.caomei-button--wrap:not(.caomei-button--icon-only)')
+        expect(shell).toContain('height: auto;')
+        expect(shell).toContain('min-height: var(--caomei-button-height);')
+        expect(shell).toContain('padding-top: var(--caomei-button-wrap-padding-y')
+
+        const content = declarationsOf('.caomei-button--wrap .caomei-button__content')
+        expect(content).toContain('white-space: normal;')
+        expect(content).toContain('overflow: visible;')
+        expect(content).toContain('overflow-wrap: anywhere;')
+    })
+
+    it('wrap 与 iconOnly 组合时不渲染文本层，且换行档的纵向内边距排除图标形态', () => {
+        const wrapper = mount(CaomeiButton, {
+            props: { wrap: true, iconOnly: true, label: '设置' },
+            slots: { icon: () => 'i', default: '不应出现的文本' },
+        })
+        const button = wrapper.get('button')
+
+        expect(button.classes()).toContain('caomei-button--wrap')
+        expect(button.classes()).toContain('caomei-button--icon-only')
+        expect(button.find('.caomei-button__content').exists()).toBe(false)
     })
 })
 

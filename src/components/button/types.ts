@@ -68,6 +68,18 @@ export interface ButtonProps {
      */
     label?: string
     /**
+     * 内容是否允许折行。
+     *
+     * 默认 `false`：内容单行截断（`nowrap` + `ellipsis`），按钮按内容撑开、被限宽时省略号收尾，
+     * 这也是内建提示 `auto` 模式的触发前提。开启后内容按可用宽度折行、高度自适应（不低于尺寸档位高度），
+     * 适合 ja / ko 长标签、长单词或 URL 在窄容器中使用。`iconOnly` 时无文本层，开关不生效。
+     * @en Whether the label may wrap. Defaults to `false` (single line with ellipsis, which is also what
+     * the built-in tooltip's `auto` mode detects). When enabled the label wraps to the available width and
+     * the button grows in height (never below the size's control height) — useful for long Japanese /
+     * Korean labels, long words or URLs in narrow containers. Has no effect with `iconOnly` (no text layer).
+     */
+    wrap?: boolean
+    /**
      * 内建提示。
      *
      * `true` 取 `label` / 可见文本，字符串直接作为提示内容，对象可分别指定 `content` 与 `mode`。

@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     iconPosition: 'start',
     type: 'button',
     badgeTone: 'neutral',
+    wrap: false,
     tooltip: false,
 })
 
@@ -158,6 +159,7 @@ const rootClass = computed(() => [
         'caomei-button--rounded': props.rounded,
         'caomei-button--loading': props.loading,
         'caomei-button--icon-only': props.iconOnly,
+        'caomei-button--wrap': props.wrap,
     },
 ])
 
@@ -446,6 +448,28 @@ function onClick(event: MouseEvent): void {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+/*
+  换行开关（`wrap`）：默认仍是上面的单行截断（内建提示 `auto` 模式的触发前提）；开启后内容折行、
+  按钮高度交还给内容，`min-height` 保底到尺寸档位高度。ja / ko 本身在 `white-space: normal` 下即可
+  在字（音节）间断行；`overflow-wrap: anywhere` 额外兜住长英文单词 / URL 这类原本不可断的串，
+  避免它们把按钮撑出容器。
+  `:not(.caomei-button--icon-only)` 排除图标形态：该形态没有文本层，且 `padding: 0` 的方形约束不能被换行档的纵向内边距破坏。
+*/
+.caomei-button--wrap:not(.caomei-button--icon-only) {
+    height: auto;
+    min-height: var(--caomei-button-height);
+    padding-top: var(--caomei-button-wrap-padding-y, var(--caomei-space-1));
+    padding-bottom: var(--caomei-button-wrap-padding-y, var(--caomei-space-1));
+}
+
+.caomei-button--wrap .caomei-button__content {
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+    line-height: var(--caomei-button-wrap-line-height, 1.25);
 }
 
 .caomei-button__icon,

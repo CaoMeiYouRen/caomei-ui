@@ -109,6 +109,20 @@
 
 > 已知取舍：`iconOnly` + `tooltip` 的提示内容默认取 `aria-label`，面板以**描述**形式暴露给读屏，因此读屏可能把同一段文字朗读两次。需要补充说明时用 `tooltip="{ content: '...' }"` 提供不同文案。Provider 缺失时的兜底与免延迟取舍见 [Tooltip](./tooltip.md)。
 
+## 文本换行
+
+`wrap` 控制内容是否允许折行（默认 `false`）：
+
+- 默认单行：文本层 `nowrap` + `overflow: hidden` + `text-overflow: ellipsis`，按钮按内容撑开、被限宽时以省略号收尾；这也是 `tooltip` 的 `auto` 模式判定「是否被截断」的前提。
+- `wrap` 开启：内容按可用宽度折行，按钮高度交还内容（`min-height` 保底到尺寸档位高度），可用 `--caomei-button-wrap-line-height` / `--caomei-button-wrap-padding-y` 微调行高与纵向内边距；ja / ko 在 `white-space: normal` 下即可按字 / 音节断开，长英文单词与 URL 这类不可断串由 `overflow-wrap: anywhere` 兜住，窄容器不溢出。
+- `iconOnly` 无文本层，开关不生效（方形与内边距约束保持不变）。
+- 折行后不再产生横向截断，因此 `tooltip` 的 `auto` 模式不会触发；需要补充说明时改用 `tooltip="..."` 显式给内容。
+
+<demo
+    vue="../examples/button/wrap.vue"
+    ssg="true"
+/>
+
 ## 无障碍
 
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。

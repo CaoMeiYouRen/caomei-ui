@@ -114,6 +114,7 @@ import {
     CaomeiToolbarToggleGroup,
     CaomeiToolbarToggleItem,
     CaomeiTree,
+    CaomeiTreeSelect,
     CaomeiTooltip,
     CaomeiTooltipArrow,
     CaomeiTooltipContent,
@@ -240,6 +241,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-date-picker__content', '[data-selection-start]'],
     },
     { name: 'CaomeiTimeline', root: CaomeiTimeline, definition: { components: { CaomeiTimeline, CaomeiTimelineItem }, template: '<CaomeiTimeline label="记录"><CaomeiTimelineItem title="一" content="内容" /></CaomeiTimeline>' } },
+    { name: 'CaomeiTreeSelect', root: CaomeiTreeSelect, requiredSelectors: ['.caomei-tree-select__field'], definition: { components: { CaomeiTreeSelect }, template: '<CaomeiTreeSelect label="所属模块" :items="treeItems" />', setup: () => ({ treeItems: [{ id: 'a', label: '基础', children: [{ id: 'a-1', label: '按钮' }] }, { id: 'b', label: '数据展示' }] }) } },
     { name: 'CaomeiTree', root: CaomeiTree, requiredSelectors: ['[role="tree"]', '[role="treeitem"]', '[aria-expanded]', '[aria-disabled="true"]'], definition: { components: { CaomeiTree }, template: '<CaomeiTree label="组件目录" :items="treeItems" />', setup: () => ({ treeItems: [{ id: 'a', label: '基础', children: [{ id: 'a-1', label: '按钮' }] }, { id: 'b', label: '数据展示' }, { id: 'c', label: '禁用组', disabled: true }] }) } },
     { name: 'CaomeiTransfer', root: CaomeiTransfer, definition: { components: { CaomeiTransfer }, template: '<CaomeiTransfer label="权限" :data-source="options" />', setup: () => ({ options }) } },
     { name: 'CaomeiDescriptions', root: CaomeiDescriptions, definition: { components: { CaomeiDescriptions, CaomeiDescriptionsItem }, template: '<CaomeiDescriptions :columns="2" label-width="6rem"><CaomeiDescriptionsItem label="姓名">甲</CaomeiDescriptionsItem><CaomeiDescriptionsItem label="邮箱">a@example.com</CaomeiDescriptionsItem></CaomeiDescriptions>' } },
@@ -455,4 +457,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 80
+export const A11Y_FIXTURE_BUDGET = 81

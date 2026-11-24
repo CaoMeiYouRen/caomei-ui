@@ -85,6 +85,7 @@ import {
     CaomeiTextarea,
     CaomeiTimePicker,
     CaomeiTree,
+    CaomeiTreeSelect,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -355,6 +356,7 @@ const alertCombos = alertTones.flatMap((tone) => alertVariants.map((variant) => 
 /* 按钮状态对比度受检面：3 变体 × 6 语气（含 disabled 一条），见 `test/e2e/button-states.e2e.ts`。 */
 const buttonContrastVariants = ['primary', 'secondary', 'ghost'] as const
 const buttonContrastTones = ['none', 'neutral', 'primary', 'success', 'warning', 'danger'] as const
+const treeSelectValue = ref<string[]>([])
 const treeSelected = ref<string[]>([])
 const treeExpanded = ref<string[]>([])
 const treeItems = [
@@ -3430,6 +3432,29 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             />
         </section>
         <!--
+          树选择器受检面：键盘开关、选中回显、清空、窄屏浮层几何。
+        -->
+        <section
+            id="tree-select"
+            class="fixture__case"
+        >
+            <CaomeiTreeSelect
+                v-model="treeSelectValue"
+                label="所属模块"
+                placeholder="请选择模块"
+                clearable
+                :items="treeItems"
+            />
+            <div class="fixture-tree-select__narrow">
+                <CaomeiTreeSelect
+                    v-model="treeSelectValue"
+                    label="窄屏所属模块"
+                    placeholder="请选择模块"
+                    :items="treeItems"
+                />
+            </div>
+        </section>
+        <!--
           按钮内容换行（`wrap`）受检面：默认单行截断与换行档的几何对照。
           长串取 ja / ko 无空格文本——它们在 `white-space: normal` 下按字（音节）断行，
           `overflow-wrap: anywhere` 另兜长英文单词 / URL 这类不可断串。
@@ -3806,6 +3831,11 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 /* 换行受检面：固定窄宽，使长 ja / ko 文本必然需要折行 */
 .fixture-button-wrap__narrow {
     width: 9rem;
+}
+
+/* 树选择器窄屏几何：容器 16rem，配合 320 / 390 视口观察面板碰撞收敛 */
+.fixture-tree-select__narrow {
+    width: min(16rem, 100%);
 }
 
 .fixture__truncate-text {

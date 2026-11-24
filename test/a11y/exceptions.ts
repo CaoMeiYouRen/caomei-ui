@@ -85,7 +85,14 @@ export const A11Y_EXCEPTIONS: A11yException[] = [
         rule: 'aria-valid-attr-value',
         kind: 'incomplete',
         count: 1,
-        judgment: 'axe `controlsWithinPopup`：`aria-haspopup` + `aria-controls` 指向 portal 内的 popover，静态扫描无法判定引用是否存在（axe 明确标记为 needsReview）。引用目标经组件单测（`受控 open 展开时 aria-controls 指向面板`）与 E2E 实测存在；axe 对 `aria-haspopup` + portal 面板的静态可判定性限制本身无法消除，故按待复核登记',
+        judgment: 'axe `controlsWithinPopup`：`aria-haspopup` + `aria-controls` 指向 portal 内的 popover，静态扫描无法判定引用是否存在（axe 明确标记为 needsReview）。引用目标经组件单测（`受控 open 展开时 aria-controls 指向面板`）与 E2E 实测存在；axe 对 `aria-haspopup` + portal 面板的静态可判定性限制本身无法消除，故按待复核登记。**源码依据**：axe-core `ariaValidAttrValueEvaluate` 的 `aria-controls` preCheck 只要 `aria-haspopup` 非 `false` / `null` 就置 `needsReview = controlsWithinPopup`，与目标 id 是否存在无关——保留 `aria-haspopup` 即无法转成 `pass`',
+    },
+    {
+        component: 'CaomeiPopconfirm',
+        rule: 'aria-valid-attr-value',
+        kind: 'incomplete',
+        count: 1,
+        judgment: 'axe `controlsWithinPopup`，与 `CaomeiDatePicker` 同因：`CaomeiButton` 恢复单元素根后触发器根元素可解析，其 `aria-haspopup="dialog"` + `aria-controls` 指向 portal 内的面板。该 axe preCheck 对任何带 `aria-haspopup` 的节点无条件置 needsReview（与引用是否存在无关），故保留 `aria-haspopup` 即不可消除；引用目标经组件单测（`展开时触发器的 aria-controls 指向面板 id`）实测存在，按待复核登记',
     },
 ]
 

@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { mount } from '@vue/test-utils'
 import { renderToString } from 'vue/server-renderer'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createSSRApp, defineComponent, h, nextTick } from 'vue'
+import { createSSRApp, defineComponent, h, nextTick, vShow, withDirectives } from 'vue'
 import { resetResizeObserverStub, ResizeObserverStub, setElementMetrics, triggerMeasurement } from '../../../test/helpers/resize-observer'
 import { CaomeiTooltipProvider } from '../tooltip'
 import { CaomeiButton } from './index'
@@ -359,6 +359,49 @@ describe('CaomeiButton', () => {
 
         // 减动效分支仍在（关闭过渡，但保留状态差异）
         expect(source).toMatch(/@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.caomei-button \{[\s\S]*?transition: none;/u)
+    })
+})
+
+describe('CaomeiButton 根节点', () => {
+    /** 带 scoped 属性的父组件；`__scopeId` 与 SFC 编译产物同形，用于验证父级 scoped 属性是否落到按钮根 */
+    function createScopedParent(options: { disabled?: boolean } = {}, directive?: () => unknown) {
+        return defineComponent({
+            name: 'ButtonScopedParent',
+            __scopeId: 'data-v-button-scope',
+            render: () => (directive ? directive() : h(CaomeiButton, options, () => '确定')),
+        })
+    }
+
+    it('未启用内建提示时根节点是 button，父级 scoped 属性落到按钮根', () => {
+        const wrapper = mount(createScopedParent())
+        const button = wrapper.get('button')
+
+        expect((wrapper.element as Element).tagName).toBe('BUTTON')
+        expect(button.attributes('data-v-button-scope')).toBeDefined()
+    })
+
+    it('禁用态同样保持单元素根', () => {
+        const wrapper = mount(createScopedParent({ disabled: true }))
+        const button = wrapper.get('button')
+
+        expect((wrapper.element as Element).tagName).toBe('BUTTON')
+        expect(button.attributes('data-v-button-scope')).toBeDefined()
+        expect(button.attributes('disabled')).toBeDefined()
+    })
+
+    it('父级 v-show 作用到按钮根（多根时指令无处附着）', () => {
+        const wrapper = mount(createScopedParent({}, () => withDirectives(h(CaomeiButton, () => '确定'), [[vShow, false]])))
+
+        expect(wrapper.get('button').attributes('style')).toContain('display: none')
+    })
+
+    it('启用内建提示时维持包装分支，按钮仍可访问', () => {
+        const wrapper = mount(CaomeiButton, { props: { tooltip: '提示内容' }, slots: { default: '确定' } })
+        const button = wrapper.get('button')
+
+        // 提示分支需要触发器与面板两级节点，根为包装层而非按钮本身
+        expect((wrapper.element as Element).tagName).not.toBe('BUTTON')
+        expect(button.classes()).toContain('caomei-button')
     })
 })
 

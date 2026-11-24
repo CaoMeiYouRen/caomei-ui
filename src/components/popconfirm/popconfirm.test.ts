@@ -155,6 +155,28 @@ describe('CaomeiPopconfirm', () => {
         expect(wrapper.emitted('confirm')).toBeUndefined()
     })
 
+    it('展开时触发器的 aria-controls 指向面板 id', async () => {
+        mountPopconfirm({ open: true })
+        await flush()
+
+        // 定位：本用例是 a11y 例外「引用目标确实存在」的证据，不是根形态回归锁
+        const trigger = triggerButton()
+        const content = panel()
+        expect(content).not.toBeNull()
+        expect(trigger.getAttribute('aria-haspopup')).toBe('dialog')
+        expect(trigger.getAttribute('aria-controls')).toBe(content?.id)
+    })
+
+    it('打开态：as-child 复用的按钮触发器不在隔离面内', async () => {
+        mountPopconfirm({ open: true })
+        await flush()
+
+        const trigger = triggerButton()
+        // 触发器根元素可解析后成为隔离保留根，其祖先链不再整片 inert
+        expect(trigger.getAttribute('data-state')).toBe('open')
+        expect(trigger.closest('[inert]')).toBeNull()
+    })
+
     it('disabled 禁用触发按钮且不展开', async () => {
         mountPopconfirm({ disabled: true })
         await flush()

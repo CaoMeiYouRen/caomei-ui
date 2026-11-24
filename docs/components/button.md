@@ -123,6 +123,8 @@
     ssg="true"
 />
 
+> 覆盖按钮外观（token / 自定义类 / 特异性）见[下游样式覆盖指引](../guide/overriding-styles.md)：`wrap`、`block`、`rounded` 等形态优先用 API，颜色与尺寸优先用 `--caomei-button-*` 钩子。
+
 ## 无障碍
 
 - `label` 用于无可见文本（仅图标）时提供可访问名，映射为 `aria-label`；`label` 优先级高于透传的 `aria-label`，未提供（或为空）时透传值生效。

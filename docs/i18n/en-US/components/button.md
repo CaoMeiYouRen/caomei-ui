@@ -123,6 +123,8 @@ Truncation prerequisite: the text element is single-line (`nowrap` + `overflow: 
     ssg="true"
 />
 
+> For overriding the look (tokens / your own classes / specificity) see [Overriding styles downstream](../guide/overriding-styles.md): prefer the API for `wrap` / `block` / `rounded` and the `--caomei-button-*` hooks for colors and sizing.
+
 ## Accessibility
 
 - `label` provides an accessible name when there is no visible text (icon-only buttons) and maps to `aria-label`; `label` takes precedence over a forwarded `aria-label`, and the forwarded value applies when `label` is not provided (or empty).

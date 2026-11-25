@@ -79,6 +79,7 @@ export const caomeiComponents = [
     'CaomeiPopoverTrigger',
     'CaomeiProgressBar',
     'CaomeiProgressSpinner',
+    'CaomeiQRCode',
     'CaomeiRadioButton',
     'CaomeiRadioGroup',
     'CaomeiRating',

@@ -51,6 +51,8 @@ export default defineConfig({
             '@nuxt/schema',
             // 富文本编辑器为可选 peer：始终 external，未安装时由包装组件运行期降级
             'md-editor-v3',
+            // 二维码编码器为可选 peer：运行时按需加载，未安装时渲染提示
+            'qrcode',
             '@vavt/cm-extension',
         ],
     },

@@ -73,6 +73,7 @@ import {
 | `pagination` | `label` `first` `previous` `next` `last` `page` `rowsPerPage` | Paginator |
 | `password` | `show` `hide` `prompt` `weak` `medium` `strong` | Password |
 | `progress` | `loading` `bar` | ProgressBar / ProgressSpinner / AutoComplete / DataTable / DataView |
+| `qrcode` | `label` `loading` `loadFailed` | QRCode |
 | `rating` | `label` `readonlyLabel` `valueLabel` | Rating |
 | `richTextEditor` | `loading` `loadFailed` | RichTextEditor |
 | `select` | `clear` | Select |
@@ -121,16 +122,16 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 | Locale | Native name | Distribution | Key coverage | Review status |
 | --- | --- | --- | --- | --- |
-| `zh-CN` | 简体中文 | Pre-registered | 115 / 115 | Source |
-| `en-US` | English | Pre-registered | 115 / 115 | Not separately reviewed |
-| `zh-TW` | 繁體中文 | Subpath | 115 / 115 | Reviewed |
-| `ja-JP` | 日本語 | Subpath | 115 / 115 | Reviewed |
-| `ko-KR` | 한국어 | Subpath | 115 / 115 | Reviewed |
-| `es-ES` | Español | Subpath | 115 / 115 | Not reviewed |
-| `fr-FR` | Français | Subpath | 115 / 115 | Not reviewed |
-| `de-DE` | Deutsch | Subpath | 115 / 115 | Not reviewed |
-| `ru-RU` | Русский | Subpath | 115 / 115 | Not reviewed |
-| `pt-BR` | Português (Brasil) | Subpath | 115 / 115 | Not reviewed |
+| `zh-CN` | 简体中文 | Pre-registered | 118 / 118 | Source |
+| `en-US` | English | Pre-registered | 118 / 118 | Not separately reviewed |
+| `zh-TW` | 繁體中文 | Subpath | 118 / 118 | Reviewed |
+| `ja-JP` | 日本語 | Subpath | 118 / 118 | Reviewed |
+| `ko-KR` | 한국어 | Subpath | 118 / 118 | Reviewed |
+| `es-ES` | Español | Subpath | 118 / 118 | Not reviewed |
+| `fr-FR` | Français | Subpath | 118 / 118 | Not reviewed |
+| `de-DE` | Deutsch | Subpath | 118 / 118 | Not reviewed |
+| `ru-RU` | Русский | Subpath | 118 / 118 | Not reviewed |
+| `pt-BR` | Português (Brasil) | Subpath | 118 / 118 | Not reviewed |
 
 > Key coverage is recomputed by `pnpm check:locale-keys` and is not hand-estimated. Review status reflects the native-language record only: `Source` is the simplified Chinese source; `Reviewed` has a translation review record (`zh-TW` / `ja-JP` / `ko-KR`, Phase 10); `Not reviewed` has no native review record (`en-US` was not separately reviewed; the phase-two five locales are covered by [KL-7](/design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations)). Not reviewed does not mean keys are missing; it means there is no native review sign-off.
 

@@ -21,6 +21,11 @@ export interface CaomeiLocaleMessages {
         am: string
         pm: string
     }
+    qrcode: {
+        label: string
+        loading: string
+        loadFailed: string
+    }
     rating: {
         label: string
         readonlyLabel: string

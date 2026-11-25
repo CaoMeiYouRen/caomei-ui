@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhTW: CaomeiLocaleMessages = {
+    qrcode: {
+        label: '二維碼',
+        loading: '正在產生二維碼…',
+        loadFailed: '二維碼產生失敗，請確認已安裝 qrcode 且內容可編碼。',
+    },
     rating: {
         label: '評分',
         readonlyLabel: '唯讀評分',

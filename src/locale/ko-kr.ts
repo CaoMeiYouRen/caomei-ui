@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const koKR: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'QR 코드',
+        loading: 'QR 코드를 생성하는 중…',
+        loadFailed: 'QR 코드 생성에 실패했습니다. qrcode가 설치되어 있고 내용을 인코딩할 수 있는지 확인하세요.',
+    },
     rating: {
         label: '평점',
         readonlyLabel: '읽기 전용 평점',

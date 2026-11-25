@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const ptBR: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'Código QR',
+        loading: 'Gerando código QR…',
+        loadFailed: 'Não foi possível gerar o código QR. Verifique se o qrcode está instalado e o conteúdo é codificável.',
+    },
     rating: {
         label: 'Avaliação',
         readonlyLabel: 'Avaliação somente leitura',

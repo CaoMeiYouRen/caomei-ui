@@ -69,6 +69,7 @@ import {
     CaomeiPopoverTrigger,
     CaomeiProgressBar,
     CaomeiProgressSpinner,
+    CaomeiQRCode,
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiRating,
@@ -399,6 +400,19 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-tour', '[role="dialog"]', '.caomei-tour__card'],
     },
+    /*
+      二维码为可选 peer 内核：受检对象是容器与图片的可访问名，
+      编码在挂载后异步完成，故关键元素只取容器（图片由组件单测覆盖）。
+    */
+    {
+        name: 'CaomeiQRCode',
+        root: CaomeiQRCode,
+        definition: {
+            components: { CaomeiQRCode },
+            template: '<CaomeiQRCode value="https://example.com" label="示例二维码" />',
+        },
+        requiredSelectors: ['.caomei-qrcode'],
+    },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
         name: 'CaomeiTooltipText',
@@ -471,4 +485,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 82
+export const A11Y_FIXTURE_BUDGET = 83

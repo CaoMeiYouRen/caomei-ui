@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhCN: CaomeiLocaleMessages = {
+    qrcode: {
+        label: '二维码',
+        loading: '正在生成二维码…',
+        loadFailed: '二维码生成失败，请确认已安装 qrcode 且内容可编码。',
+    },
     rating: {
         label: '评分',
         readonlyLabel: '只读评分',

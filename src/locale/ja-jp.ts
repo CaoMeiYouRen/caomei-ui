@@ -1,6 +1,11 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const jaJP: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'QR コード',
+        loading: 'QR コードを生成しています…',
+        loadFailed: 'QR コードの生成に失敗しました。qrcode がインストールされ、内容がエンコード可能か確認してください。',
+    },
     rating: {
         label: '評価',
         readonlyLabel: '読み取り専用の評価',

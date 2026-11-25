@@ -51,7 +51,7 @@
 
 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|
-| M2-1 QRCode 实现与可选 peer | `CaomeiQRCode` 支持 `value` / `size` / `level` / `margin` / 前景与背景色 / 图标 / 布局插槽；`qrcode` 声明为**可选 peer**（同 `echarts` / 编辑器族），未安装时渲染明确提示且不抛未捕获异常；导出与 resolver / Nuxt 登记；单测覆盖参数与缺失 peer 路径 | `src/components/qrcode/*`、`package.json`（`peerDependencies` + `peerDependenciesMeta.optional` + `devDependencies` 自测用）、`pnpm-lock.yaml`（生成物，随依赖声明同提交）、`THIRD-PARTY-LICENSES`、`src/index.ts`、resolver / nuxt 模块、`tests/unit/qrcode*` | `qrcode`（可选 peer） |
+| M2-1 QRCode 实现与可选 peer | `CaomeiQRCode` 支持 `value` / `size` / `level` / `margin` / 前景与背景色 / 图标 / 布局插槽；`qrcode` 声明为**可选 peer**（同 `echarts` / 编辑器族）：`npm install` 不强制、类型面不静态引用；**消费方无论是否使用本组件，都需安装 `qrcode` 才能通过打包**——字面量动态 `import()` 会在模块图中被解析，未安装即构建期报错并点名模块（消费方 fixture 实测见 `pnpm check:optional-peer`，属本仓可选 peer 的既有结构边界，改进候选已登记 [Backlog](../../plan/backlog.md)）；运行期加载失败或内容不可编码时清空旧图并渲染 `role="alert"` 失败提示，不抛未捕获异常；导出与 resolver / Nuxt 登记；单测覆盖参数与缺失 peer 路径 | `src/components/qrcode/*`、`package.json`（`peerDependencies` + `peerDependenciesMeta.optional` + `devDependencies` 自测用）、`pnpm-lock.yaml`（生成物，随依赖声明同提交）、`THIRD-PARTY-LICENSES`、`src/index.ts`、resolver / nuxt 模块、`tests/unit/qrcode*` | `qrcode`（可选 peer） |
 | M2-2 QRCode 文档、locale 与 peer 说明 | 中英组件页 + 示例（基础 / 带图标 / 尺寸与容错级别）；安装说明写明 peer 与缺失行为（与 `md-editor-v3` 同段）；10 语 locale；组件测试 + 文档站示例构建；共用登记面与示例双语同步后 `pnpm docs:check` / `pnpm governance:check` 绿 | `docs/components/qrcode.md`、`docs/i18n/en-US/components/qrcode.md`、`docs/examples/qrcode/*`、`docs/guide/getting-started.md` 与 `docs/i18n/en-US/guide/getting-started.md`（可选 peer 段落）、`src/locale/*`、`docs/i18n/en-US/examples/qrcode/*`（含 §2 共用登记面） | M2-1 |
 
 ### M3 ContextMenu 右键菜单（2 条）

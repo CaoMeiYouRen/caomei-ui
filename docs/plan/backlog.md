@@ -1,10 +1,10 @@
 # 长期规划与 Backlog
 
-本文档记录**仍待用户决策**的候选与长期主线；候选准入、优先级与插队例外规则见 [规划规范 §3](../standards/planning.md)，本文档不重述。
+本文档记录**仍待用户决策**的候选与长期主线；候选准入与插队例外规则见[规划规范 §3](../standards/planning.md)，重要度 / 紧急度评分与象限口径见[规划规范 §3.1](../standards/planning.md#_3-1-优先级双轴评估与排期-2026-11-25-用户裁定)，本文档不重述。
 
 > **文档结构**
 >
-> - §1 候选池：仅收录**尚未进入阶段**的候选（待决策，以及已决策但尚未登记到当前阶段的过渡态）。
+> - §1 候选池：仅收录**尚未进入阶段**的候选（待决策，以及已决策但尚未登记到当前阶段的过渡态）；每行按[规划规范 §3.1](../standards/planning.md#_3-1-优先级双轴评估与排期-2026-11-25-用户裁定)给出「重要 / 紧急」双轴评分与象限建议。
 > - §2 维护约定。
 > - §3 已评估、不纳入（结论留档）：已判定**不进入候选池**的下游诉求与理由。
 >
@@ -14,10 +14,10 @@
 
 ### 1.1 组件增强候选
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|:-:|
-| Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 低 |
-| 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 低 |
+| 候选 | 来源 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|------|:-:|:-:|:-:|
+| Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 2 | 1 | 延后 |
+| 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 3 | 2 | 延后 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -29,44 +29,44 @@
 
 ### 1.4 国际化候选
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|--------|
-| 语言矩阵 - 二期 LTR | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.2 建议把「下限」表述为 **17 门 LTR**（现有 10 门 + 二期 7 门），`hi` 视下游补到 18。**触发条件 = 用户裁定语言集扩容** | 低 |
-| 语言矩阵 - 长期 | 用户需求 | 二期之后是否继续扩容，按下游语言需求逐项判定，不追头部 43 ~ 72 门。**触发条件 = 出现新的下游语言需求** | 低 |
-| 复数与插值能力 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 现插值仅单键 `replace`；新增带计数文案在 `ru` / `pl` 上会出错。**触发条件 = 出现第一条带计数的内建文案** | 低 |
-| RTL（阿拉伯语）支持 | 用户需求 | **2026-11-18 用户裁定**：成本大收益低，**不随二期语言批量落地**，须单独立项评估（`dir` 贯通 / 18 个组件文件的物理方向属性 / 图标镜像 / RTL 回归基线）；RTL 语种不计入语言数量下限。**触发条件 = RTL 专项立项或出现 RTL 语种下游需求** | 低 |
+| 候选 | 来源 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|------|:-:|:-:|:-:|
+| 语言矩阵 - 二期 LTR | 用户需求 | **收敛为二期语言集**：`it-IT` / `nl-NL` / `pl-PL` / `tr-TR` / `vi-VN` / `th-TH` / `id-ID`（2026-10-13 修订）。[调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.2 建议把「下限」表述为 **17 门 LTR**（现有 10 门 + 二期 7 门），`hi` 视下游补到 18。**触发条件 = 用户裁定语言集扩容** | 3 | 2 | 延后 |
+| 语言矩阵 - 长期 | 用户需求 | 二期之后是否继续扩容，按下游语言需求逐项判定，不追头部 43 ~ 72 门。**触发条件 = 出现新的下游语言需求** | 2 | 1 | 延后 |
+| 复数与插值能力 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §3.3 | 现插值仅单键 `replace`；新增带计数文案在 `ru` / `pl` 上会出错。**触发条件 = 出现第一条带计数的内建文案** | 3 | 2 | 延后 |
+| RTL（阿拉伯语）支持 | 用户需求 | **2026-11-18 用户裁定**：成本大收益低，**不随二期语言批量落地**，须单独立项评估（`dir` 贯通 / 18 个组件文件的物理方向属性 / 图标镜像 / RTL 回归基线）；RTL 语种不计入语言数量下限。**触发条件 = RTL 专项立项或出现 RTL 语种下游需求** | 3 | 1 | 延后 |
 
 ### 1.5 移动端与响应式候选
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|--------|
-| 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 低 |
-| Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 低 |
-| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估。**2026-11-21 进展**：`TimePicker` 已内置滚轮模式（`mode="wheel"` / `"both"`），本候选收窄为**非时间场景的通用 Picker**；时间选择不再依赖本候选 | 中 |
-| Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 低 |
-| 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 低 |
-| Stepper 横向形态极窄容器下的排版退化 | 用户缺陷报告（2026-11-24，文档站窄视口） | 横向 3 步步骤条（文档站 `basic` 示例：描述 6 / 6 / 5 字，缺省 `md` 尺寸）在内容宽 270 / 310 / 340 / 430px（视口 320 / 360 / 390 / 480）下标题均塌成单字一行（实测 14 ~ 24px 宽），示例自绘的上一步 / 下一步按钮同时折两行；640 与 768 档（内容宽 590 / 686）恢复单行，中间区间未取样。320 / 360 档列表另有 18 / 7px 内部溢出，在文档站示例的列表滚动容器内可横向滚动（≤640 档 `overflow-x: auto`），页面级仍满足 `scrollWidth === innerWidth`。机制为 item 均分压缩（`flex: 1 1 0` + `min-width: 0`），具体分配未逐层取证。**用户裁定（2026-11-24）：暂不修复**，改为在 [Stepper 组件文档](../components/stepper.md) 写明「窄屏不推荐横向步骤条」。**触发条件 = 用户改判，或出现必须在视口 ≤ 480px（内容宽约 ≤ 430px）内展示横向步骤条的用例**。**复算** = `pnpm docs:build` + `pnpm docs:preview`，页面 `components/stepper`，Chromium 按上述六档量 `.caomei-stepper__title` 高度 / 行高 | 低 |
-| 真机验收（iOS `dvh` 真实收缩 / 触摸滚动惯性 / OTP 自动填充） | Phase 42 M2 仅完成浏览器设备视口模拟（非真机），三项行为无真机执行 | **等待外部条件**：需设备或真机反馈后执行；本仓不设自研自动化 | 中 |
+| 候选 | 来源 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|------|:-:|:-:|:-:|
+| 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 2 | 1 | 延后 |
+| Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 2 | 1 | 延后 |
+| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估。**2026-11-21 进展**：`TimePicker` 已内置滚轮模式（`mode="wheel"` / `"both"`），本候选收窄为**非时间场景的通用 Picker**；时间选择不再依赖本候选 | 3 | 2 | 延后 |
+| Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 2 | 2 | 延后 |
+| 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 3 | 2 | 延后 |
+| Stepper 横向形态极窄容器下的排版退化 | 用户缺陷报告（2026-11-24，文档站窄视口） | 横向 3 步步骤条（文档站 `basic` 示例：描述 6 / 6 / 5 字，缺省 `md` 尺寸）在内容宽 270 / 310 / 340 / 430px（视口 320 / 360 / 390 / 480）下标题均塌成单字一行（实测 14 ~ 24px 宽），示例自绘的上一步 / 下一步按钮同时折两行；640 与 768 档（内容宽 590 / 686）恢复单行，中间区间未取样。320 / 360 档列表另有 18 / 7px 内部溢出，在文档站示例的列表滚动容器内可横向滚动（≤640 档 `overflow-x: auto`），页面级仍满足 `scrollWidth === innerWidth`。机制为 item 均分压缩（`flex: 1 1 0` + `min-width: 0`），具体分配未逐层取证。**用户裁定（2026-11-24）：暂不修复**，改为在 [Stepper 组件文档](../components/stepper.md) 写明「窄屏不推荐横向步骤条」。**触发条件 = 用户改判，或出现必须在视口 ≤ 480px（内容宽约 ≤ 430px）内展示横向步骤条的用例**。**复算** = `pnpm docs:build` + `pnpm docs:preview`，页面 `components/stepper`，Chromium 按上述六档量 `.caomei-stepper__title` 高度 / 行高 | 2 | 1 | 延后 |
+| 真机验收（iOS `dvh` 真实收缩 / 触摸滚动惯性 / OTP 自动填充） | Phase 42 M2 仅完成浏览器设备视口模拟（非真机），三项行为无真机执行 | **等待外部条件**：需设备或真机反馈后执行；本仓不设自研自动化 | 3 | 2 | 延后 |
 
 ### 1.6 基建与治理候选
 
-| 候选 | 说明 | 优先级 |
-|------|------|--------|
-| `1.5.0` 发布收口 | 门槛复核与升级注意（须补 Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄三项）、经 `release.yml` 发布与发布后校验、下游三仓兼容复验与适配回收清单。**已决策待窗口**：用户 2026-11-25 裁定自 Phase 43 移除，**2026-11-29 之前不列入规划**；触发条件 = 到达发布窗口（2026-11-29 前后）且用户明确授权发布 | 高 |
-| 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 中 |
-| 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 低 |
-| ui-validator 资产 follow-up | agent/skill 定义优化 | 低 |
-| Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 低 |
-| Storybook 组件工坊 | 暂不启用 | 低 |
-| `conventional-changelog` 8 升级 | 来源：Phase 22 M2-3 follow-up（Phase 23 M3-2 复核）；v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；本仓维持 **7.2.1**（最新 **8.1.3**）。**2026-11-13 复核**：preset 最新仍为 **3.0.0**（未发布支持 writer 9 的新版），见[直接依赖大版本升级评估](../design/governance/2026-11-13-dependency-major-evaluation.md)。**触发条件（可判定）= preset 发布 > 3.0.0 且其模板 API 兼容 writer 9**（届时复跑 `pnpm changelog` 无 `headerPartial is not a function`） | 低 |
-| 文档站示例外链守卫漏判面扩展 | 来源：Phase 23 M5-1 follow-up（第八轮 N2）；现行守卫为**整文件 fail-closed**（`docs/**/examples/**` 出现 `http(s)://` 即判 `external-image-source` 失败），无法区分「图片源」与「合法非图片外链」。**触发条件 = 出现合法非图片外链用例**（如示例中引用外部 API / 文档链接）时需重新划面；**复算 = `pnpm docs:check:demo-external-images`**（受检面 363 个示例文件 / 下界 `MIN_SCANNED_EXAMPLES = 300`，含中英两侧示例目录覆盖断言）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 低 |
-| CI 运行器镜像迁移检测（`ubuntu-26.04`） | Phase 24 M2-1 归档后承接的**待触发检测义务**：`ubuntu-latest` 自 2026-10-19 起分批迁移 Ubuntu 26.04；检测点 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04`；命中后按重冻结 5 步执行视觉基线并留痕。**触发条件 = 该检测点命中** | 中 |
-| `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 低 |
-| `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 低 |
-| dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
-| `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
-| `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 低 |
-| 版本升级影响面评估自动化 | 同上；[发布指南 §10.1](../guide/release.md) 已先落人工规则 | 当前 `Downstream Compat` 只跑 `typecheck` + `build`，无法捕捉 DOM 结构 / 默认样式 / 交互时序变化。候选 = 在发布链生成「消费方可见变化」清单，并对已接入下游跑视觉或关键流回归。**触发条件 = 下次发布前评估或用户裁定** | 中 |
+| 候选 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|:-:|:-:|:-:|
+| `1.5.0` 发布收口（窗口 2026-11-29 后） | 门槛复核与升级注意（须补 Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄三项）、经 `release.yml` 发布与发布后校验、下游三仓兼容复验与适配回收清单。**已决策待窗口**：用户 2026-11-25 裁定自 Phase 43 移除，**2026-11-29 之前不列入规划**；触发条件 = 到达发布窗口（2026-11-29 前后）且用户明确授权发布；**评分依据**：重要 5 = 阻断发布 / 版本一致性；紧急 4 = 明确发布窗口（用户裁定窗口前不列入规划）。 | 5 | 4 | 首排 |
+| 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 3 | 1 | 延后 |
+| 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 2 | 1 | 延后 |
+| ui-validator 资产 follow-up | agent/skill 定义优化 | 2 | 1 | 延后 |
+| Tailwind preset（可选） | 为 Tailwind 用户提供 token 映射 | 2 | 1 | 延后 |
+| Storybook 组件工坊 | 暂不启用 | 2 | 1 | 延后 |
+| `conventional-changelog` 8 升级 | 来源：Phase 22 M2-3 follow-up（Phase 23 M3-2 复核）；v8 拉入 `conventional-changelog-writer@9`，与 preset `conventional-changelog-cmyr-config@3.0.0`（仅支持 writer `^8.4.0`）模板 API 不兼容（`headerPartial is not a function`）；本仓维持 **7.2.1**（最新 **8.1.3**）。**2026-11-13 复核**：preset 最新仍为 **3.0.0**（未发布支持 writer 9 的新版），见[直接依赖大版本升级评估](../design/governance/2026-11-13-dependency-major-evaluation.md)。**触发条件（可判定）= preset 发布 > 3.0.0 且其模板 API 兼容 writer 9**（届时复跑 `pnpm changelog` 无 `headerPartial is not a function`） | 2 | 1 | 延后 |
+| 文档站示例外链守卫漏判面扩展 | 来源：Phase 23 M5-1 follow-up（第八轮 N2）；现行守卫为**整文件 fail-closed**（`docs/**/examples/**` 出现 `http(s)://` 即判 `external-image-source` 失败），无法区分「图片源」与「合法非图片外链」。**触发条件 = 出现合法非图片外链用例**（如示例中引用外部 API / 文档链接）时需重新划面；**复算 = `pnpm docs:check:demo-external-images`**（受检面 363 个示例文件 / 下界 `MIN_SCANNED_EXAMPLES = 300`，含中英两侧示例目录覆盖断言）；取证与判定见[第八轮范围评估](../design/governance/2026-10-13-next-stage-scope-evaluation-8.md) §3.9 | 2 | 1 | 延后 |
+| CI 运行器镜像迁移检测（`ubuntu-26.04`） | Phase 24 M2-1 归档后承接的**待触发检测义务**：`ubuntu-latest` 自 2026-10-19 起分批迁移 Ubuntu 26.04；检测点 = 周级 `e2e` 作业 `Set up job` 的 `Image:` 出现 `ubuntu-26.04`；命中后按重冻结 5 步执行视觉基线并留痕。**触发条件 = 该检测点命中** | 3 | 2 | 延后 |
+| `typescript` 7 升级（阻塞：工具链 API） | 来源：同上评估（2026-11-13）；当前 **6.0.3**，目标 **7.0.2**。实测 npm 包根导出仅 `version` / `unstable/*`，`createProgram`、`sys` 缺失；`vue-tsc` 3.3.14 入口依赖 `ts.run` / `ts.sys`。**触发条件 = `vue-tsc` 与 `tsdown` 声明并实测支持 TS 7 原生 API**（届时 `pnpm typecheck` / `check:nuxt` / `build` 全绿）；不设时间点，不做试运行分支 | 3 | 2 | 延后 |
+| `glob` 跨 major 覆盖（安全公告） | 来源：2026-11-04 依赖告警复核的 `pnpm audit` 新发现（GHSA-3g3m-2fjr-6pw4，moderate；Dependabot 未登记）。`glob >=9.0.0 <=14.0.1` 存在 ReDoS；当前受影响链为 `@lint-md/cli` / `js-beautify` / `@vercel/nft` → 13.0.6、`archiver-utils` → 10.5.0（`commitizen` 的 7.2.3 不在公告区间）。覆盖到 14.0.2 属跨 major（模块形态 / 引擎要求变化）；**触发条件 = 上述上游支持 glob ≥ 14.0.2 且本仓 `lint:md` / `docs:build` / `test:nuxt-smoke` 全绿时**，未验证前不引入 override | 5 | 3 | 排期 |
+| dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 3 | 2 | 延后 |
+| `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 3 | 1 | 延后 |
+| `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 2 | 1 | 延后 |
+| 版本升级影响面评估自动化 | 同上；[发布指南 §10.1](../guide/release.md) 已先落人工规则 | 当前 `Downstream Compat` 只跑 `typecheck` + `build`，无法捕捉 DOM 结构 / 默认样式 / 交互时序变化。候选 = 在发布链生成「消费方可见变化」清单，并对已接入下游跑视觉或关键流回归。**触发条件 = 用户裁定启动，不绑定本发布窗口**。**证据**：1.4.0 升级时 caomei-auth 有 11 个文件、momei 有 35 个选择器 / 25 个文件需改 `:deep()` 锚定祖先 scope（**正确规避**）；另有 `!important` / `white-space: normal` / `vertical-align: top` 等应急写法（见 [1.4.0 反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) §3 / §6）。 | 4 | 3 | 排期 |
 
 ### 1.7 服务层候选（composables）
 
@@ -74,18 +74,18 @@
 
 ### 1.8 下游协同候选
 
-| 候选 | 说明 | 优先级 |
-|------|------|--------|
-| momei 侧迁移执行与页面级反馈 | **执行主体为 momei 项目**；迁移已执行，**页面级反馈仍待补**（本仓等待外部输入） | 等待外部反馈 |
-| 三家下游 1.4.0 适配回收 | Button 单元素根与换行开关**已交付**（Phase 43），待 `1.5.0` 发布后按[覆盖指引](../guide/overriding-styles.md)回收下游临时写法：caomei-auth 的 `!important` 与 `white-space: normal`、momei 的 `vertical-align: top`，并复核 dependfix 的 `inert` e2e 手势。**触发条件 = `1.5.0` 发布后** | 中 |
+| 候选 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|:-:|:-:|:-:|
+| momei 侧迁移执行与页面级反馈 | **执行主体为 momei 项目**；迁移已执行，**页面级反馈仍待补**（本仓等待外部输入） | 3 | 2 | 延后 |
+| 三家下游 1.4.0 适配回收 | Button 单元素根与换行开关**已交付**（Phase 43），待 `1.5.0` 发布后按[覆盖指引](../guide/overriding-styles.md)回收下游临时写法：caomei-auth 的 `!important` 与 `white-space: normal`、momei 的 `vertical-align: top`，并复核 dependfix 的 `inert` e2e 手势。**触发条件 = `1.5.0` 发布后** | 4 | 2 | 排期 |
 
 ### 1.9 图标体系候选
 
 > 来源：用户 2026-11-07 指令「图标是无穷无尽的，本项目无法也不应提供所有图标；需要预留接口让第三方图标更好引入，同时预设样式以兼容本项目样式」。**Phase 28 M4-1 已完成调研（2026-11-07，零实现 / 零依赖）**，结论与接口草案见[图标体系调研](../design/governance/2026-11-07-phase28-m4-1-icon-system-research.md)；**I1 ~ I4 已于 2026-11-08 登记 Phase 29**（见[Phase 29 登记批次记录](../design/governance/2026-11-08-phase29-registration.md) §2），本表只保留条件触发项。
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|:-:|
-| I5 可选运行时 `@iconify/vue` peer | M4-1 调研 §5 | **条件触发**：仅当出现「必须运行时按字符串加载」的真实下游用例；须同时给出 CSP / 离线 / SSR 指引；默认不引入 | 低 |
+| 候选 | 来源 | 说明 | 重要 | 紧急 | 建议 |
+|------|------|------|:-:|:-:|:-:|
+| I5 可选运行时 `@iconify/vue` peer | M4-1 调研 §5 | **条件触发**：仅当出现「必须运行时按字符串加载」的真实下游用例；须同时给出 CSP / 离线 / SSR 指引；默认不引入 | 2 | 1 | 延后 |
 
 ### 1.10 动效体系候选
 
@@ -95,15 +95,17 @@
 
 > 来源：[国际化、组件缺口与移动端调研](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §4（2026-11-18）。用户裁定「组件缺口后续列入计划完善」——本组只登记候选，**不立即启动、不分配阶段编号**。Reka 2.11.0 实测已导出对应 primitive（§4.1），封装成本主要在样式与文档。
 
-| 候选 | 依据 | 优先级 |
-|------|------|:-:|
-| Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 低 |
-| Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 低 |
-| Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 低 |
-| Splitter | 记录 **P2**；Element Plus / PrimeVue；Reka `SplitterGroup` 现成 | 低 |
-| Anchor | 记录 **P2**；Element Plus / TDesign；PrimeVue 无独立件（`animateonscroll` 为滚动动画指令） | 低 |
-| QRCode | 记录 **P2**；仅 TDesign 有独立件，按下游需求再定 | 低 |
-| ContextMenu / HoverCard / Menubar / NavigationMenu | 记录 **P2**；Reka 原语现成；PrimeVue 有 `contextmenu` / `menubar`；Varlet 仅有 `hover`，无 ContextMenu / Menubar | 低 |
+> **象限提示（快速开发期）**：本组是本仓「新组件 / 新功能」主入口，全部按用户指定的快速开发期方向取重要度 4、紧急度 2（无硬时点），象限为**排期**——即按节奏逐步推进，而不是插队。各条「记录 P2」为来源记录（2026-11-18 调研）的单轴分级，非现行排序；排序以本表「重要 / 紧急」为准。
+
+| 候选 | 依据 | 重要 | 紧急 | 建议 |
+|------|------|:-:|:-:|:-:|
+| Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 4 | 2 | 排期 |
+| Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 4 | 2 | 排期 |
+| Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 4 | 2 | 排期 |
+| Splitter | 记录 **P2**；Element Plus / PrimeVue；Reka `SplitterGroup` 现成 | 4 | 2 | 排期 |
+| Anchor | 记录 **P2**；Element Plus / TDesign；PrimeVue 无独立件（`animateonscroll` 为滚动动画指令） | 4 | 2 | 排期 |
+| QRCode | 记录 **P2**；仅 TDesign 有独立件，按下游需求再定 | 4 | 2 | 排期 |
+| ContextMenu / HoverCard / Menubar / NavigationMenu | 记录 **P2**；Reka 原语现成；PrimeVue 有 `contextmenu` / `menubar`；Varlet 仅有 `hover`，无 ContextMenu / Menubar | 4 | 2 | 排期 |
 
 - **不建议纳入**：App Shell（`container` / `aside` / `header`）与 `Overlay` / `Fab` / `List`（结论见 §3）；业务件（`address-*` / `coupon-*` / `contact-*`）与 `TreeTable` / `Knob` / `OrganizationChart`（见 [组件设计 §6](../design/components.md)）。
 - **Sticky / SafeArea**：`Sticky` 工具形态仍登记在 §1.5；`SafeArea` 已于 2026-11-20 登记 Phase 38 M1-1 / M1-2，不在本表重复。`Sticky` 若最终按组件实现，再从 §1.5 迁入。
@@ -111,7 +113,7 @@
 
 ## 2. 维护约定
 
-- 新增候选时注明来源与初步优先级。
+- 新增候选时注明来源，并按[规划规范 §3.1](../standards/planning.md#_3-1-优先级双轴评估与排期-2026-11-25-用户裁定)给出**重要度 / 紧急度**（各 1–5）与象限建议（首排 / 排期 / 快速评估 / 延后）。
 - 被否决的候选记录结论与理由（见 §3）。
 - 候选状态流转：§1 候选池 → 用户决策后登记到待办事项当前阶段 → 阶段完成后随待办归档迁移；**已交付 / 已归档条目不在本表保留任何内容**。
 - **已裁定行的转述边界**：只记载用户裁定原文要点与其可验证语义，不引入未讨论的形态推断（如具体实现分层）或定性升格（如把行为要求升格为契约）；形态边界与兼容语义留待实施批次论证。

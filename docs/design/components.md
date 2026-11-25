@@ -97,6 +97,11 @@
 | Form / FormItem | 自建（组合层） | 无 | — | 表单布局与提交编排；`FormItem` 以 5 键插槽作用域提供 `id` / `name` / `aria-*` / `invalid`，不含 rules 引擎（**已实现**） |
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
+| Splitter | 封装 | SplitterGroup / SplitterPanel / SplitterResizeHandle | 稳定 | 水平 / 垂直分栏：尺寸约束、折叠 / 展开、键盘调整与嵌套；受控布局对无事件折叠按渲染态回读兜底（**已实现**） |
+| Anchor | 自建（scroll-spy） | 无 | — | 锚点导航：窗口 / 容器判定线激活、嵌套缩进、点击对齐判定线、pushState 与 hashchange 同步（**已实现**） |
+| ContextMenu | 封装 | ContextMenu | 稳定 | 右键 / 触屏长按：数据条目（图标 / 快捷键 / 危险 / 禁用 / command）+ Group / Label / Item / Separator 子组件；复用浮层隔离与受控开合（**已实现**） |
+| QRCode | 封装（可选 peer `qrcode`，按需加载） | 无（`qrcode` 为编码内核） | — | 文本 / 链接编码：尺寸、容错级别、静区、配色、居中图标与插槽；失败清空旧图并 `role="alert"`（**已实现**） |
+| Tour | 自建（遮罩挖空 + 目标定位 + 模态滚动锁） | 无 | — | 分步引导：`steps` 驱动、受控步骤、挖空高亮与翻转钳位、滚动 / 尺寸变化重算、`Escape` 归还焦点（**已实现**） |
 | Tooltip | 封装（+ 一次性 Provider） | Tooltip | 稳定 | 悬停 / 聚焦即显的只读提示；不构成焦点陷阱，描述经隐藏 `role="tooltip"` 元素接线；库内图标触发器与长文本面内建提示（Button 需 `tooltip` 开启，其余默认开启）（**已实现**） |
 | Menu | 自建（disclosure 导航 + Reka `Collapsible`） | Collapsible（子菜单展开） | 稳定 | 导航菜单（含 `SubMenu` / `MenuItem` 子件）：方向键序列、子菜单就地展开、`aria-current` 标记当前项（**已实现**） |
 | Breadcrumb | 自建（容器 + 有序列表 + `aria-current`） | 无 | — | 层级导航（含 `BreadcrumbItem` 子件）：分隔符经 prop 定制、末级标记当前页（**已实现**） |

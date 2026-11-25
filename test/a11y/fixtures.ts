@@ -5,6 +5,7 @@ import {
     CaomeiAccordionItem,
     CaomeiActionSheet,
     CaomeiAlert,
+    CaomeiAnchor,
     CaomeiAutoComplete,
     CaomeiAvatar,
     CaomeiBackTop,
@@ -24,6 +25,13 @@ import {
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
+    CaomeiContextMenu,
+    CaomeiContextMenuContent,
+    CaomeiContextMenuGroup,
+    CaomeiContextMenuItem,
+    CaomeiContextMenuLabel,
+    CaomeiContextMenuSeparator,
+    CaomeiContextMenuTrigger,
     CaomeiCountdown,
     CaomeiDataTable,
     CaomeiDataView,
@@ -69,6 +77,7 @@ import {
     CaomeiPopoverTrigger,
     CaomeiProgressBar,
     CaomeiProgressSpinner,
+    CaomeiQRCode,
     CaomeiRadioButton,
     CaomeiRadioGroup,
     CaomeiRating,
@@ -82,6 +91,9 @@ import {
     CaomeiStatistic,
     CaomeiSlider,
     CaomeiSplitButton,
+    CaomeiSplitter,
+    CaomeiSplitterPanel,
+    CaomeiSplitterResizeHandle,
     CaomeiStepper,
     CaomeiStepperDescription,
     CaomeiStepperIndicator,
@@ -399,6 +411,42 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-tour', '[role="dialog"]', '.caomei-tour__card'],
     },
+    /*
+      二维码为可选 peer 内核：受检对象是容器与图片的可访问名，
+      编码在挂载后异步完成，故关键元素只取容器（图片由组件单测覆盖）。
+    */
+    {
+        name: 'CaomeiQRCode',
+        root: CaomeiQRCode,
+        definition: {
+            components: { CaomeiQRCode },
+            template: '<CaomeiQRCode value="https://example.com" label="示例二维码" />',
+        },
+        requiredSelectors: ['.caomei-qrcode'],
+    },
+    { name: 'CaomeiContextMenu', root: CaomeiContextMenu, definition: { components: { CaomeiContextMenu, CaomeiContextMenuTrigger, CaomeiContextMenuContent }, template: '<CaomeiContextMenu><CaomeiContextMenuTrigger>右键区域</CaomeiContextMenuTrigger><CaomeiContextMenuContent :model="[{ label: \'一\' }]" /></CaomeiContextMenu>' } },
+    {
+        name: 'CaomeiContextMenuContent',
+        root: CaomeiContextMenuContent,
+        definition: {
+            components: { CaomeiContextMenu, CaomeiContextMenuContent, CaomeiContextMenuGroup, CaomeiContextMenuItem, CaomeiContextMenuLabel, CaomeiContextMenuSeparator },
+            setup: () => ({ open: ref(true) }),
+            template: `<CaomeiContextMenu v-model:open="open">
+              <CaomeiContextMenuContent>
+                <CaomeiContextMenuItem>查看</CaomeiContextMenuItem>
+                <CaomeiContextMenuSeparator />
+                <CaomeiContextMenuGroup>
+                  <CaomeiContextMenuLabel>操作</CaomeiContextMenuLabel>
+                  <CaomeiContextMenuItem shortcut="⌘C">复制</CaomeiContextMenuItem>
+                  <CaomeiContextMenuItem danger>删除</CaomeiContextMenuItem>
+                </CaomeiContextMenuGroup>
+              </CaomeiContextMenuContent>
+            </CaomeiContextMenu>`,
+        },
+        requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
+    },
+    { name: 'CaomeiSplitter', root: CaomeiSplitter, definition: { components: { CaomeiSplitter, CaomeiSplitterPanel, CaomeiSplitterResizeHandle }, template: '<CaomeiSplitter style="height: 120px"><CaomeiSplitterPanel>左</CaomeiSplitterPanel><CaomeiSplitterResizeHandle /><CaomeiSplitterPanel>右</CaomeiSplitterPanel></CaomeiSplitter>' }, requiredSelectors: ['.caomei-splitter', '.caomei-splitter__handle'] },
+    { name: 'CaomeiAnchor', root: CaomeiAnchor, definition: { components: { CaomeiAnchor }, template: '<div><CaomeiAnchor :items="[{ key: \'a\', title: \'第一节\' }, { key: \'b\', title: \'第二节\' }]" /><h2 id="a">第一节</h2><h2 id="b">第二节</h2></div>' }, requiredSelectors: ['.caomei-anchor', '.caomei-anchor__link'] },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
         name: 'CaomeiTooltipText',
@@ -453,6 +501,13 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiPopoverArrow', component: CaomeiPopoverArrow, fixture: 'CaomeiPopoverContent' },
     { name: 'CaomeiPopoverClose', component: CaomeiPopoverClose, fixture: 'CaomeiPopoverContent' },
     { name: 'CaomeiTooltipTrigger', component: CaomeiTooltipTrigger, fixture: 'CaomeiTooltip' },
+    { name: 'CaomeiContextMenuTrigger', component: CaomeiContextMenuTrigger, fixture: 'CaomeiContextMenu' },
+    { name: 'CaomeiContextMenuItem', component: CaomeiContextMenuItem, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
+    { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
@@ -471,4 +526,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 82
+export const A11Y_FIXTURE_BUDGET = 87

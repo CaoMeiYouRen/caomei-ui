@@ -31,6 +31,7 @@
 | [phase-35.md](./todo-archive-phases-35.md) | Phase 35（质量与无障碍收口、DataTable 列可见性 / 列宽、长尾 Rating，不发布） |
 | [phase-36-37.md](./todo-archive-phases-36-37.md) | Phase 36（浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理、选择器空值诊断）、Phase 37（质量收口与回归补齐、选择器空值 opt-in、迁移口径、Rating 表单集成） |
 | [phase-38.md](./todo-archive-phases-38.md) | Phase 38（移动端体验：基础层、移动壳与操作 / 空态） |
+| [phase-39.md](./todo-archive-phases-39.md) | Phase 39（P0 组件缺口、文档站设备预览与质量收口） |
 
 > `phase-07-12.md` 另含各阶段块之间的「跨阶段预落地条目」等过渡段，随迁入一并保留。
 
@@ -55,3 +56,4 @@
 - 2026-11-23（Phase 41 归档批次）：Phase 41 迁出后主窗口 400 行（`docs:check:line-count` 读数，未越 warn 400、恰在边界；入窗前读数未留），按「目标窗口 5 个；未越 `warn` 暂留 6 块」口径压缩为「**Phase 36 ~ Phase 41** + 归档索引」，Phase 35 迁入本目录 [phase-35.md](./todo-archive-phases-35.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；迁出后 400 行）。
 - 2026-11-24（Phase 42 归档批次）：Phase 42 入窗后主窗口 **419 行**（`docs:check:line-count` warn > 400；5 块窗口 + 索引之外的累积），按「目标窗口 5 个」口径压缩为「**Phase 38 ~ Phase 42** + 归档索引」，Phase 36 / Phase 37 迁入本目录 [phase-36-37.md](./todo-archive-phases-36-37.md)（迁移为机械操作：链接深度 `../` → `../../`，同目录 `./` → `../`，正文不改写；**迁出后 371 行**，373 为索引补行后的读数）。
 - 2026-11-25（Phase 43 归档批次）：Phase 43 入窗（3 条主线 / 10 条原子条目），主窗口入窗后 **428 行**（派生值 = 迁出后 379 + 迁出块 50 − 索引行 1），按「目标窗口 5 个」口径压缩为「**Phase 39 ~ Phase 43** + 归档索引」，最早一块 Phase 38 迁入本目录 [phase-38.md](./todo-archive-phases-38.md)（迁移为机械操作：链接深度 `../` → `../../`，另含同目录 `./` → `../` 修正，正文不改写），迁出后 **379 行**。**批次口径载体见[治理记录](../../design/governance/2026-11-25-phase43-archive.md)**。
+- 2026-11-26（Phase 44 归档批次）：Phase 44 入窗（5 条主线 / 10 条原子条目），按「目标窗口 5 个」口径压缩为「**Phase 40 ~ Phase 44** + 归档索引」，最早一块 Phase 39 迁入本目录 [phase-39.md](./todo-archive-phases-39.md)（迁移为机械操作：链接深度 `../` → `../../`，另含同目录 `./` → `../` 修正，正文不改写），迁出后主窗口 **375 行**。**批次口径载体见[治理记录](../../design/governance/2026-11-26-phase44-archive.md)**。

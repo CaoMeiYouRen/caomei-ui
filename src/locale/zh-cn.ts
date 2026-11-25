@@ -1,10 +1,18 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhCN: CaomeiLocaleMessages = {
+    qrcode: {
+        label: '二维码',
+        loading: '正在生成二维码…',
+        loadFailed: '二维码生成失败，请确认已安装 qrcode 且内容可编码。',
+    },
     rating: {
         label: '评分',
         readonlyLabel: '只读评分',
         valueLabel: '{value}',
+    },
+    anchor: {
+        label: '锚点导航',
     },
     autoComplete: {
         empty: '无匹配建议',
@@ -135,6 +143,9 @@ const zhCN: CaomeiLocaleMessages = {
     },
     splitButton: {
         menu: '更多操作',
+    },
+    splitter: {
+        resize: '调整面板大小',
     },
     stepper: {
         label: '步骤',

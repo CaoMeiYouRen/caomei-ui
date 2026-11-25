@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 /**
  * 可选 peer 依赖的引用形态契约。
  *
- * 本库把三个内核类依赖声明为**可选 peer**（`peerDependenciesMeta.<pkg>.optional = true`）：
+ * 本库把四个内核类依赖声明为**可选 peer**（`peerDependenciesMeta.<pkg>.optional = true`）：
  * 未使用对应组件的下游不必安装它们。该承诺成立的前提是：
  *
  * 1. 包根可达的模块图**不得静态引用**可选 peer——静态引用（含 `import type`）会让未安装
@@ -27,7 +27,7 @@ const STATIC_IMPORT_ALLOWLIST: Record<string, string[]> = {
 }
 
 /** 必须有动态 `import()` 加载路径的可选 peer（否则「按需加载」无从成立）。 */
-const LAZY_PEERS = ['md-editor-v3', 'vue-echarts'] as const
+const LAZY_PEERS = ['md-editor-v3', 'qrcode', 'vue-echarts'] as const
 
 interface PeerImports {
     /** 静态引用（含 `import type` / `export ... from` / `require`）所在行 */

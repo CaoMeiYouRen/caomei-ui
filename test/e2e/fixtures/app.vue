@@ -15,6 +15,7 @@ import {
     CaomeiTabbar,
     CaomeiTabbarItem,
     CaomeiAlert,
+    CaomeiAnchor,
     CaomeiAutoComplete,
     CaomeiAvatar,
     CaomeiBackTop,
@@ -30,6 +31,9 @@ import {
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
+    CaomeiContextMenu,
+    CaomeiContextMenuContent,
+    CaomeiContextMenuTrigger,
     CaomeiDataTable,
     CaomeiDataView,
     CaomeiDatePicker,
@@ -68,6 +72,9 @@ import {
     CaomeiSelectButton,
     CaomeiSlider,
     CaomeiSplitButton,
+    CaomeiSplitter,
+    CaomeiSplitterPanel,
+    CaomeiSplitterResizeHandle,
     CaomeiStepper,
     CaomeiStepperIndicator,
     CaomeiStepperItem,
@@ -96,6 +103,7 @@ import {
     CaomeiTooltipProvider,
     CaomeiTooltipText,
     CaomeiTooltipTrigger,
+    CaomeiTour,
     CaomeiBreadcrumb,
     CaomeiBreadcrumbItem,
     CaomeiMenu,
@@ -267,6 +275,33 @@ const fieldGroupTextarea = ref(textareaOverflow)
  * 包裹层承载面板 z-index），任一类回退到遮罩层档位都会被模态内容盖住。
  */
 const overlayDialogOpen = ref(false)
+const anchorItems = [
+    { key: 'anchor-a', title: '第一节' },
+    { key: 'anchor-b', title: '第二节' },
+    { key: 'anchor-c', title: '第三节' },
+]
+
+const contextMenuLog = ref('')
+const splitterLog = ref('')
+const splitterHorizontalLog = ref('')
+const contextMenuItems = [
+    { label: '查看详情' },
+    { label: '复制链接', shortcut: '⌘C' },
+    { separator: true },
+    { label: '无权限', disabled: true },
+    { label: '删除', danger: true },
+]
+
+function runContextMenuCommand(event: { item: { label?: string } }) {
+    contextMenuLog.value = event.item.label ?? ''
+}
+
+const overlayContextMenuItems = [
+    { label: '查看详情' },
+    { label: '复制链接', shortcut: '⌘C' },
+    { separator: true },
+    { label: '删除', danger: true },
+]
 const overlaySelectValue = ref<string | null>(null)
 const overlayMultiValue = ref<string[]>([])
 const overlayAutoValue = ref<string>()
@@ -786,6 +821,30 @@ const ConfirmDriver = defineComponent({
 const tabbarValue = ref<'home' | 'explore' | 'me'>('home')
 const actionSheetOpen = ref(false)
 const actionSheetLog = ref('')
+
+/**
+ * Tour 用例（见 `test/e2e/tour.e2e.ts`）：选择器目标、缺失目标降级、滚动跟随与遮罩几何。
+ * 第二个目标与第一个之间留出长距离，用于验证 scrollIntoView 与滚动跟随。
+ */
+const tourOpen = ref(false)
+const tourCurrent = ref(0)
+const tourMissingOpen = ref(false)
+const tourSteps = [
+    { target: '#tour-target-a', title: '第一步：目标 A', description: '用于验证挖空高亮与卡片定位。' },
+    { target: '#tour-target-b', title: '第二步：目标 B', description: '用于验证步骤切换后的滚动跟随。' },
+]
+const tourMissingSteps = [
+    { target: '#tour-missing-target', title: '目标不存在', description: '应降级为居中卡片与整屏遮罩。' },
+]
+
+function startTour(): void {
+    tourCurrent.value = 0
+    tourOpen.value = true
+}
+
+function startMissingTour(): void {
+    tourMissingOpen.value = true
+}
 const actionSheetGroups = [
     {
         label: '项目操作',
@@ -1095,6 +1154,21 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 description="验证模态内打开的浮层面板是否渲染在模态内容之上。"
             >
                 <div class="fixture__overlay-stack">
+                    <div id="overlay-context-menu">
+                        <CaomeiContextMenu>
+                            <CaomeiContextMenuTrigger>
+                                <div
+                                    id="overlay-context-menu-target"
+                                    class="fixture__state"
+                                >
+                                    右键打开菜单
+                                </div>
+                            </CaomeiContextMenuTrigger>
+                            <CaomeiContextMenuContent
+                                :model="overlayContextMenuItems"
+                            />
+                        </CaomeiContextMenu>
+                    </div>
                     <div id="overlay-select">
                         <CaomeiSelect
                             v-model="overlaySelectValue"
@@ -3519,6 +3593,162 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 </CaomeiButton>
             </div>
         </section>
+        <!--
+          Tour（供后续引导 E2E 使用）：选择器目标 + 缺失目标降级，
+          两个目标之间留出长距离以覆盖 scrollIntoView 与滚动跟随。
+        -->
+        <section id="tour" class="fixture__case">
+            <button
+                id="tour-start"
+                type="button"
+                @click="startTour"
+            >
+                开始引导
+            </button>
+            <div
+                id="tour-target-a"
+                class="fixture__state"
+            >
+                目标 A
+            </div>
+            <div
+                id="tour-spacer"
+                class="fixture__state"
+            />
+            <div
+                id="tour-target-b"
+                class="fixture__state"
+            >
+                目标 B
+            </div>
+            <button
+                id="tour-missing-start"
+                type="button"
+                @click="startMissingTour"
+            >
+                缺失目标
+            </button>
+            <CaomeiTour
+                v-model:open="tourOpen"
+                v-model:current="tourCurrent"
+                :steps="tourSteps"
+            />
+            <CaomeiTour
+                v-model:open="tourMissingOpen"
+                :steps="tourMissingSteps"
+            />
+        </section>
+        <!--
+          ContextMenu（供右键菜单 E2E 使用）：右键打开、命令回调、禁用项与危险项。
+        -->
+        <section id="context-menu" class="fixture__case">
+            <button
+                id="context-menu-before"
+                type="button"
+            >
+                先聚焦这里
+            </button>
+            <CaomeiContextMenu>
+                <CaomeiContextMenuTrigger>
+                    <div
+                        id="context-menu-target"
+                        class="fixture__state"
+                    >
+                        右键打开菜单
+                    </div>
+                </CaomeiContextMenuTrigger>
+                <CaomeiContextMenuContent :model="contextMenuItems.map((item) => ({...item, command: runContextMenuCommand}))" />
+            </CaomeiContextMenu>
+            <div id="context-menu-log">
+                {{ contextMenuLog }}
+            </div>
+        </section>
+        <!--
+          Splitter（供分栏 E2E 使用）：水平、垂直与禁用分隔条。
+        -->
+        <section id="splitter" class="fixture__case">
+            <div id="splitter-horizontal" class="fixture__state">
+                <CaomeiSplitter
+                    style="height: 160px"
+                    @layout="splitterHorizontalLog = $event.map((value) => value.toFixed(0)).join(',')"
+                >
+                    <CaomeiSplitterPanel :default-size="30" :min-size="10">
+                        左
+                    </CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel :default-size="70">
+                        右
+                    </CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-vertical" class="fixture__state">
+                <CaomeiSplitter
+                    direction="vertical"
+                    style="height: 180px"
+                >
+                    <CaomeiSplitterPanel>上</CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel>下</CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-disabled" class="fixture__state">
+                <CaomeiSplitter style="height: 120px">
+                    <CaomeiSplitterPanel>一</CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle disabled />
+                    <CaomeiSplitterPanel>二</CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-collapsible" class="fixture__state">
+                <CaomeiSplitter
+                    style="height: 140px"
+                    @layout="splitterLog = $event.map((value) => value.toFixed(0)).join(',')"
+                >
+                    <CaomeiSplitterPanel
+                        collapsible
+                        :collapsed-size="0"
+                        :min-size="15"
+                    >
+                        可折叠左
+                    </CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel>
+                        右
+                    </CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-horizontal-log">
+                {{ splitterHorizontalLog }}
+            </div>
+            <div id="splitter-log">
+                {{ splitterLog }}
+            </div>
+        </section>
+        <!--
+          Anchor（供锚点导航 E2E 使用）：容器 scroll-spy、点击跳转与 hash 同步。
+        -->
+        <section id="anchor" class="fixture__case">
+            <div id="anchor-nav">
+                <CaomeiAnchor
+                    container="#anchor-scroller"
+                    :items="anchorItems"
+                    :offset="12"
+                />
+            </div>
+            <div id="anchor-scroller" class="fixture__state">
+                <h2 id="anchor-a">
+                    第一节
+                </h2>
+                <div class="anchor-space" />
+                <h2 id="anchor-b">
+                    第二节
+                </h2>
+                <div class="anchor-space" />
+                <h2 id="anchor-c">
+                    第三节
+                </h2>
+                <div class="anchor-space" />
+            </div>
+        </section>
     </main>
 </template>
 
@@ -3769,6 +3999,34 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 
 #back-top-content {
     height: 24rem;
+}
+
+/* Anchor 用例：可滚动容器，标题之间留出距离 */
+#anchor-scroller {
+    display: block;
+    box-sizing: border-box;
+    width: auto;
+    max-width: 100%;
+    max-height: 240px;
+    overflow: auto;
+    border: 1px solid var(--caomei-color-border);
+}
+
+.anchor-space {
+    height: 360px;
+}
+
+#anchor-scroller h2 {
+    margin: 0;
+}
+
+/* Tour 用例：长距离目标，迫使步骤切换时发生页面滚动 */
+#tour-spacer {
+    height: 60rem;
+}
+
+#tour-target-b {
+    margin-top: var(--caomei-space-4);
 }
 
 /*

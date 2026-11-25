@@ -21,10 +21,18 @@ export interface CaomeiLocaleMessages {
         am: string
         pm: string
     }
+    qrcode: {
+        label: string
+        loading: string
+        loadFailed: string
+    }
     rating: {
         label: string
         readonlyLabel: string
         valueLabel: string
+    }
+    anchor: {
+        label: string
     }
     autoComplete: {
         empty: string
@@ -156,6 +164,9 @@ export interface CaomeiLocaleMessages {
     }
     splitButton: {
         menu: string
+    }
+    splitter: {
+        resize: string
     }
     stepper: {
         label: string

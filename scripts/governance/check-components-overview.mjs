@@ -101,9 +101,12 @@ function parseOverviewEn(filepath) {
     return result
 }
 
-/**
- * 获取英文组件文件集合
- */
+// 文件名 → 英文组件名例外：默认推导无法还原首字母缩写（`qrcode` → `Qrcode`，§11 用 `QRCode`）
+const EN_COMPONENT_NAME_OVERRIDES = new Map([
+    ['qrcode', 'QRCode'],
+])
+
+/** 获取英文组件文件集合（文件名按例外表或 kebab-case 推导为英文组件名）。 */
 function getEnComponentFiles() {
     const files = collectDocsMarkdownFiles(EN_COMPONENTS_DIR)
     const components = new Set()
@@ -114,11 +117,15 @@ function getEnComponentFiles() {
         }
         // kebab-case 文件名 -> 英文组件名
         const basename = rel.replace(/\.md$/, '')
-        const enName = basename.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('')
+        const enName = EN_COMPONENT_NAME_OVERRIDES.get(basename)
+            ?? basename.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('')
         components.add(enName)
     }
     return components
 }
+
+// 受检面下界：按上线时实跑规模取同数量级保守值，防总览页被整体删减后仍静默通过
+const MIN_OVERVIEW_COMPONENTS = 70
 
 function checkOverview() {
     const errors = []
@@ -193,7 +200,6 @@ function checkOverview() {
     }
 
     // 7. 受检面下界校验（防静默收窄）
-    const MIN_OVERVIEW_COMPONENTS = 45 // 当前组件总数
     const totalZhComponents = Object.values(overviewZh).flat().length
     if (totalZhComponents < MIN_OVERVIEW_COMPONENTS) {
         errors.push(`中文总览页组件条目 ${totalZhComponents} 低于下界 ${MIN_OVERVIEW_COMPONENTS}：怀疑受检面被静默收窄`)

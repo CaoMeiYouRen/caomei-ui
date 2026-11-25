@@ -1,10 +1,18 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const ruRU: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'QR-код',
+        loading: 'Создание QR-кода…',
+        loadFailed: 'Не удалось создать QR-код. Убедитесь, что qrcode установлен, а содержимое поддаётся кодированию.',
+    },
     rating: {
         label: 'Оценка',
         readonlyLabel: 'Оценка только для чтения',
         valueLabel: '{value}',
+    },
+    anchor: {
+        label: 'Навигация по якорям',
     },
     autoComplete: {
         empty: 'Нет подходящих предложений',
@@ -135,6 +143,9 @@ const ruRU: CaomeiLocaleMessages = {
     },
     splitButton: {
         menu: 'Другие действия',
+    },
+    splitter: {
+        resize: 'Изменить размер панелей',
     },
     stepper: {
         label: 'Шаги',

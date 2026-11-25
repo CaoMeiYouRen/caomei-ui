@@ -315,6 +315,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Image', link: '/en-US/components/image' },
                                 { text: 'Row', link: '/en-US/components/row' },
                                 { text: 'SplitButton', link: '/en-US/components/split-button' },
+                                { text: 'Splitter', link: '/en-US/components/splitter' },
                                 { text: 'Tag', link: '/en-US/components/tag' },
                             ],
                         },
@@ -361,6 +362,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Alert', link: '/en-US/components/alert' },
                                 { text: 'ConfirmDialog', link: '/en-US/components/confirm-dialog' },
+                                { text: 'ContextMenu', link: '/en-US/components/context-menu' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'Drawer', link: '/en-US/components/drawer' },
                                 { text: 'Message', link: '/en-US/components/message' },
@@ -368,6 +370,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Popover', link: '/en-US/components/popover' },
                                 { text: 'Toast', link: '/en-US/components/toast' },
                                 { text: 'Tooltip', link: '/en-US/components/tooltip' },
+                                { text: 'Tour', link: '/en-US/components/tour' },
                             ],
                         },
                         {
@@ -381,6 +384,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Paginator', link: '/en-US/components/paginator' },
                                 { text: 'ProgressBar', link: '/en-US/components/progress-bar' },
                                 { text: 'ProgressSpinner', link: '/en-US/components/progress-spinner' },
+                                { text: 'QRCode', link: '/en-US/components/qrcode' },
                                 { text: 'Result', link: '/en-US/components/result' },
                                 { text: 'Skeleton', link: '/en-US/components/skeleton' },
                                 { text: 'Statistic', link: '/en-US/components/statistic' },
@@ -393,6 +397,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
                                 { text: 'ActionSheet', link: '/en-US/components/action-sheet' },
+                                { text: 'Anchor', link: '/en-US/components/anchor' },
                                 { text: 'Breadcrumb', link: '/en-US/components/breadcrumb' },
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
                                 { text: 'Menu', link: '/en-US/components/menu' },
@@ -541,6 +546,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Image 图片', link: '/components/image' },
                         { text: 'Row 栅格行', link: '/components/row' },
                         { text: 'SplitButton 分裂按钮', link: '/components/split-button' },
+                        { text: 'Splitter 分栏', link: '/components/splitter' },
                         { text: 'Tag 标签', link: '/components/tag' },
                     ],
                 },
@@ -587,6 +593,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'Alert 提示框', link: '/components/alert' },
                         { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },
+                        { text: 'ContextMenu 右键菜单', link: '/components/context-menu' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Drawer 抽屉', link: '/components/drawer' },
                         { text: 'Message 提示条', link: '/components/message' },
@@ -594,6 +601,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Popover 浮层', link: '/components/popover' },
                         { text: 'Toast 轻提示', link: '/components/toast' },
                         { text: 'Tooltip 工具提示', link: '/components/tooltip' },
+                        { text: 'Tour 引导', link: '/components/tour' },
                     ],
                 },
                 {
@@ -607,6 +615,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Paginator 分页', link: '/components/paginator' },
                         { text: 'ProgressBar 进度条', link: '/components/progress-bar' },
                         { text: 'ProgressSpinner 加载指示', link: '/components/progress-spinner' },
+                        { text: 'QRCode 二维码', link: '/components/qrcode' },
                         { text: 'Result 结果页', link: '/components/result' },
                         { text: 'Skeleton 骨架屏', link: '/components/skeleton' },
                         { text: 'Statistic 统计数值', link: '/components/statistic' },
@@ -619,6 +628,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'Accordion 折叠面板', link: '/components/accordion' },
                         { text: 'ActionSheet 操作面板', link: '/components/action-sheet' },
+                        { text: 'Anchor 锚点导航', link: '/components/anchor' },
                         { text: 'Breadcrumb 面包屑', link: '/components/breadcrumb' },
                         { text: 'DropdownMenu 下拉菜单', link: '/components/dropdown-menu' },
                         { text: 'Menu 导航菜单', link: '/components/menu' },

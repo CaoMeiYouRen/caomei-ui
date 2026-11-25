@@ -19,6 +19,7 @@
 - [Image 图片](./image)：图片组件基于原生 `img` 自建，提供比例占位、懒加载与加载 / 失败占位，避免加载过程引发布局跳动。
 - [Row 栅格行](./row)：栅格行基于 CSS Grid 提供 24 栏布局基础，负责网格容器、列间距与交叉轴对齐。
 - [SplitButton 分裂按钮](./split-button)：分裂按钮由一个主按钮与一个下拉按钮组成：主按钮触发默认操作，下拉按钮展开一组次要操作。自建实现，内部组合 `CaomeiButton` 与 `CaomeiDropdownMenu`。
+- [Splitter 分栏](./splitter)：把区域拆成可拖拽调整的分栏，支持水平 / 垂直、尺寸约束、折叠 / 展开与嵌套；受控布局在拖拽、键盘与折叠后回写。
 - [Tag 标签](./tag)：标签用于对内容进行分类或标记，支持语义色调、多种变体与可关闭交互。
 
 ## 表单输入
@@ -59,6 +60,7 @@
 
 - [Alert 提示框](./alert)：提示框用于展示内联常驻提示（环境说明、配置警告、整体错误汇总），是 [Message](./message) 的语义预设包装：共用同一外观层，默认不进 live region。
 - [ConfirmDialog 确认对话框](./confirm-dialog)：确认对话框用于中断用户当前操作并获取明确确认，基于 Reka UI AlertDialog 封装，并提供 `useConfirm()` 服务式调用。弹层强制模态、锁定页面滚动，且**点击遮罩不会关闭**——用户必须显式选择确认或取消（Esc 视为取消）。
+- [ContextMenu 右键菜单](./context-menu)：在指定区域右键或触屏长按弹出上下文菜单，菜单项 / 分组 / 快捷键 / 危险项语义与下拉菜单一致，支持受控开合与键盘导航。
 - [Dialog 对话框](./dialog)：对话框用于在当前页面之上承载需要用户聚焦处理的内容，基于 Reka UI Dialog 封装。
 - [Drawer 抽屉](./drawer)：抽屉从页面边缘滑出，用于承载次要内容、设置面板或导航；封装 Reka UI 的 Dialog primitive，并提供四向 `position`。
 - [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 live region 播报（默认 `role="status"`，可切 `alert`）；内联常驻提示请用 Alert。
@@ -66,6 +68,7 @@
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
 - [Toast 轻提示](./toast)：轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
 - [Tooltip 工具提示](./tooltip)：工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；建议在应用根部放置一次 `CaomeiTooltipProvider` 并与触发器 / 面板组合使用（未放置时组件内建兜底），不构成焦点陷阱。
+- [Tour 引导](./tour)：引导按步骤高亮页面目标并展示说明卡片，支持受控步骤、遮罩挖空、滚动锁与焦点归还；无目标时降级为居中卡片。
 
 ## 数据展示
 
@@ -77,6 +80,7 @@
 - [Paginator 分页](./paginator)：分页用于在数据分片间切换，基于 Reka UI Pagination 封装。
 - [ProgressBar 进度条](./progress-bar)：进度条用于展示确定的进度值或不确定的等待状态，基于 Reka UI Progress 封装，与 ProgressSpinner 同源。
 - [ProgressSpinner 加载指示](./progress-spinner)：加载指示器用于表示正在进行的异步操作，基于 Reka UI Progress 封装（不确定进度）。
+- [QRCode 二维码](./qrcode)：把文本或链接编码为二维码，支持容错级别、静区、配色与居中图标；编码器 `qrcode` 为可选 peer，失败时清空旧图并给出提示。
 - [Result 结果页](./result)：结果页用于承载操作或页面的最终结果，支持语义状态与 403 / 404 / 500，并提供下一步操作区。
 - [Skeleton 骨架屏](./skeleton)：骨架屏用于在内容加载完成前占位，降低布局跳动并提示加载状态。为纯样式自建组件，不依赖外部 primitive。
 - [Statistic 统计数值](./statistic)：大号数值展示，支持精度、千分位、前后缀与加载态；空值与非法输入降级为占位，不做数字滚动动画。
@@ -87,6 +91,7 @@
 
 - [Accordion 折叠面板](./accordion)：折叠面板将内容分节收纳，点击标题逐项展开 / 收起，基于 Reka UI Accordion 封装。
 - [ActionSheet 操作面板](./action-sheet)：从底部弹出的操作列表，以 Drawer 的底部抽屉组合实现；支持分组、危险项、取消项与选择后关闭。
+- [Anchor 锚点导航](./anchor)：把标题索引为目录，滚动时高亮当前章节，点击平滑跳转；支持窗口 / 自定义滚动容器、嵌套缩进、受控激活项与 hash 同步。
 - [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
 - [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。

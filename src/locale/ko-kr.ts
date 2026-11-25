@@ -1,10 +1,18 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const koKR: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'QR 코드',
+        loading: 'QR 코드를 생성하는 중…',
+        loadFailed: 'QR 코드 생성에 실패했습니다. qrcode가 설치되어 있고 내용을 인코딩할 수 있는지 확인하세요.',
+    },
     rating: {
         label: '평점',
         readonlyLabel: '읽기 전용 평점',
         valueLabel: '{value}',
+    },
+    anchor: {
+        label: '앵커 탐색',
     },
     autoComplete: {
         empty: '일치하는 제안이 없습니다',
@@ -135,6 +143,9 @@ const koKR: CaomeiLocaleMessages = {
     },
     splitButton: {
         menu: '추가 작업',
+    },
+    splitter: {
+        resize: '패널 크기 조정',
     },
     stepper: {
         label: '단계',

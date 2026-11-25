@@ -1,10 +1,18 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const zhTW: CaomeiLocaleMessages = {
+    qrcode: {
+        label: '二維碼',
+        loading: '正在產生二維碼…',
+        loadFailed: '二維碼產生失敗，請確認已安裝 qrcode 且內容可編碼。',
+    },
     rating: {
         label: '評分',
         readonlyLabel: '唯讀評分',
         valueLabel: '{value}',
+    },
+    anchor: {
+        label: '錨點導覽',
     },
     autoComplete: {
         empty: '沒有符合的建議',
@@ -135,6 +143,9 @@ const zhTW: CaomeiLocaleMessages = {
     },
     splitButton: {
         menu: '更多操作',
+    },
+    splitter: {
+        resize: '調整面板大小',
     },
     stepper: {
         label: '步驟',

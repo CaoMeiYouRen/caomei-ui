@@ -1,10 +1,18 @@
 import type { CaomeiLocaleMessages } from './types'
 
 const esES: CaomeiLocaleMessages = {
+    qrcode: {
+        label: 'Código QR',
+        loading: 'Generando código QR…',
+        loadFailed: 'No se pudo generar el código QR. Asegúrate de que qrcode esté instalado y el contenido sea codificable.',
+    },
     rating: {
         label: 'Valoración',
         readonlyLabel: 'Valoración de solo lectura',
         valueLabel: '{value}',
+    },
+    anchor: {
+        label: 'Navegación por anclas',
     },
     autoComplete: {
         empty: 'No hay sugerencias coincidentes',
@@ -135,6 +143,9 @@ const esES: CaomeiLocaleMessages = {
     },
     splitButton: {
         menu: 'Más acciones',
+    },
+    splitter: {
+        resize: 'Cambiar el tamaño de los paneles',
     },
     stepper: {
         label: 'Pasos',

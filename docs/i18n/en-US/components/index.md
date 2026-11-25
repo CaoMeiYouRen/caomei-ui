@@ -21,6 +21,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Image](/en-US/components/image)
 - [Row](/en-US/components/row)
 - [SplitButton](/en-US/components/split-button)
+- [Splitter](/en-US/components/splitter)
 - [Tag](/en-US/components/tag)
 - [Checkbox](/en-US/components/checkbox)
 - [CheckboxGroup](/en-US/components/checkbox-group)

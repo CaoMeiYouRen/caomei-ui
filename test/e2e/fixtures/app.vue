@@ -71,6 +71,9 @@ import {
     CaomeiSelectButton,
     CaomeiSlider,
     CaomeiSplitButton,
+    CaomeiSplitter,
+    CaomeiSplitterPanel,
+    CaomeiSplitterResizeHandle,
     CaomeiStepper,
     CaomeiStepperIndicator,
     CaomeiStepperItem,
@@ -272,6 +275,8 @@ const fieldGroupTextarea = ref(textareaOverflow)
  */
 const overlayDialogOpen = ref(false)
 const contextMenuLog = ref('')
+const splitterLog = ref('')
+const splitterHorizontalLog = ref('')
 const contextMenuItems = [
     { label: '查看详情' },
     { label: '复制链接', shortcut: '⌘C' },
@@ -3649,6 +3654,66 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </CaomeiContextMenu>
             <div id="context-menu-log">
                 {{ contextMenuLog }}
+            </div>
+        </section>
+        <!--
+          Splitter（供分栏 E2E 使用）：水平、垂直与禁用分隔条。
+        -->
+        <section id="splitter" class="fixture__case">
+            <div id="splitter-horizontal" class="fixture__state">
+                <CaomeiSplitter
+                    style="height: 160px"
+                    @layout="splitterHorizontalLog = $event.map((value) => value.toFixed(0)).join(',')"
+                >
+                    <CaomeiSplitterPanel :default-size="30" :min-size="10">
+                        左
+                    </CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel :default-size="70">
+                        右
+                    </CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-vertical" class="fixture__state">
+                <CaomeiSplitter
+                    direction="vertical"
+                    style="height: 180px"
+                >
+                    <CaomeiSplitterPanel>上</CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel>下</CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-disabled" class="fixture__state">
+                <CaomeiSplitter style="height: 120px">
+                    <CaomeiSplitterPanel>一</CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle disabled />
+                    <CaomeiSplitterPanel>二</CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-collapsible" class="fixture__state">
+                <CaomeiSplitter
+                    style="height: 140px"
+                    @layout="splitterLog = $event.map((value) => value.toFixed(0)).join(',')"
+                >
+                    <CaomeiSplitterPanel
+                        collapsible
+                        :collapsed-size="0"
+                        :min-size="15"
+                    >
+                        可折叠左
+                    </CaomeiSplitterPanel>
+                    <CaomeiSplitterResizeHandle />
+                    <CaomeiSplitterPanel>
+                        右
+                    </CaomeiSplitterPanel>
+                </CaomeiSplitter>
+            </div>
+            <div id="splitter-horizontal-log">
+                {{ splitterHorizontalLog }}
+            </div>
+            <div id="splitter-log">
+                {{ splitterLog }}
             </div>
         </section>
     </main>

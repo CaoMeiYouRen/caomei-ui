@@ -2,7 +2,7 @@
 
 本文档归档已完成阶段的原子条目与验收结论。当前阶段完成后，从 [todo.md](./todo.md) 迁入此处。
 
-> **主窗口口径（2026-11-24 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 37，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 38 ~ Phase 42 共 5 块**，目标窗口 5 个；`docs:check:line-count` 读数 **373 行**（迁出后 371 / 索引补两行后 373），未越 warn 400）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/todo-archive-phases-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/todo-archive-phases-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/todo-archive-phases-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/todo-archive-phases-18.md)（Phase 18）、[phase-19.md](./archive/todo-archive-phases-19.md)（Phase 19）、[phase-20.md](./archive/todo-archive-phases-20.md)（Phase 20）、[phase-21.md](./archive/todo-archive-phases-21.md)（Phase 21）、[phase-22.md](./archive/todo-archive-phases-22.md)（Phase 22）、[phase-23.md](./archive/todo-archive-phases-23.md)（Phase 23）、[phase-24.md](./archive/todo-archive-phases-24.md)（Phase 24）、[phase-25.md](./archive/todo-archive-phases-25.md)（Phase 25）、[phase-26.md](./archive/todo-archive-phases-26.md)（Phase 26）、[phase-27.md](./archive/todo-archive-phases-27.md)（Phase 27）、[phase-28.md](./archive/todo-archive-phases-28.md)（Phase 28）、[phase-29.md](./archive/todo-archive-phases-29.md)（Phase 29）、[phase-30.md](./archive/todo-archive-phases-30.md)（Phase 30）、[phase-31.md](./archive/todo-archive-phases-31.md)（Phase 31）、[phase-32.md](./archive/todo-archive-phases-32.md)（Phase 32）、[phase-33.md](./archive/todo-archive-phases-33.md)（Phase 33）、[phase-34.md](./archive/todo-archive-phases-34.md)（Phase 34）、[phase-35.md](./archive/todo-archive-phases-35.md)（Phase 35）、[phase-36-37.md](./archive/todo-archive-phases-36-37.md)（Phase 36 ~ 37）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（同日规则段 +3 行后检查器读数 **377 行**）；2026-11-21 Phase 39 入窗并迁出 Phase 33 后 **384 行**；2026-11-21 Phase 40 入窗并迁出 Phase 34 后 **378 行**；**2026-11-23 Phase 41 入窗并迁出 Phase 35 后 400 行**（`docs:check:line-count` 值，恰在 warn 400 边界内）；**2026-11-24 Phase 42 入窗并迁出 Phase 36 / Phase 37 后 371 行**（`docs:check:line-count` 值，迁出前 419 行，越过 warn 400）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
+> **主窗口口径（2026-11-25 更新）**：主窗口只保留**归档索引**（Phase 0 ~ Phase 38，逐阶段一行摘要 + 深度归档链接）与**近线阶段窗口**（**当前为 Phase 39 ~ Phase 43 共 5 块**，目标窗口 5 个；`docs:check:line-count` 读数 **379 行**，未越 warn 400）；更早阶段的完整归档块迁入**深度归档**目录 [`archive/`](./archive/)，收录范围分别为 [phase-00-06.md](./archive/todo-archive-phases-00-06.md)（Phase 0 ~ 6）、[phase-07-12.md](./archive/todo-archive-phases-07-12.md)（Phase 7 第一阶段 ~ Phase 12）、[phase-13-17.md](./archive/todo-archive-phases-13-17.md)（Phase 13 ~ 17）、[phase-18.md](./archive/todo-archive-phases-18.md)（Phase 18）、[phase-19.md](./archive/todo-archive-phases-19.md)（Phase 19）、[phase-20.md](./archive/todo-archive-phases-20.md)（Phase 20）、[phase-21.md](./archive/todo-archive-phases-21.md)（Phase 21）、[phase-22.md](./archive/todo-archive-phases-22.md)（Phase 22）、[phase-23.md](./archive/todo-archive-phases-23.md)（Phase 23）、[phase-24.md](./archive/todo-archive-phases-24.md)（Phase 24）、[phase-25.md](./archive/todo-archive-phases-25.md)（Phase 25）、[phase-26.md](./archive/todo-archive-phases-26.md)（Phase 26）、[phase-27.md](./archive/todo-archive-phases-27.md)（Phase 27）、[phase-28.md](./archive/todo-archive-phases-28.md)（Phase 28）、[phase-29.md](./archive/todo-archive-phases-29.md)（Phase 29）、[phase-30.md](./archive/todo-archive-phases-30.md)（Phase 30）、[phase-31.md](./archive/todo-archive-phases-31.md)（Phase 31）、[phase-32.md](./archive/todo-archive-phases-32.md)（Phase 32）、[phase-33.md](./archive/todo-archive-phases-33.md)（Phase 33）、[phase-34.md](./archive/todo-archive-phases-34.md)（Phase 34）、[phase-35.md](./archive/todo-archive-phases-35.md)（Phase 35）、[phase-36-37.md](./archive/todo-archive-phases-36-37.md)（Phase 36 ~ 37）、[phase-38.md](./archive/todo-archive-phases-38.md)（Phase 38）。**主窗口累计超过 `docs:check:line-count` 的 warn 阈值（400 行）时，把最早的阶段块迁入深度归档（链接深度机械调整，另含同目录 `./` → `../` 修正，正文不改写）**；该阈值由 `docs:check:line-count` 驱动——2026-11-15 Phase 34 入窗后 **397 行**；2026-11-16 Phase 35 入窗并迁出 Phase 28 ~ Phase 30 后 **311 行**；2026-11-19 Phase 37 入窗并迁出 Phase 31 后 **363 行**；2026-11-20 Phase 38 入窗并迁出 Phase 32 后 **374 行**（同日规则段 +3 行后检查器读数 **377 行**）；2026-11-21 Phase 39 入窗并迁出 Phase 33 后 **384 行**；2026-11-21 Phase 40 入窗并迁出 Phase 34 后 **378 行**；**2026-11-23 Phase 41 入窗并迁出 Phase 35 后 400 行**（`docs:check:line-count` 值，恰在 warn 400 边界内）；**2026-11-24 Phase 42 入窗并迁出 Phase 36 / Phase 37 后 371 行**（`docs:check:line-count` 值，迁出前 419 行，越过 warn 400）；**2026-11-25 Phase 43 入窗并迁出 Phase 38 后 379 行**（`docs:check:line-count` 值；入窗后 / 迁出前 **428 行** = 379 + 迁出块 50 − 索引行 1，Phase 38 迁出后主窗口回到 Phase 39 ~ Phase 43 五块）。**深度归档不改变权威**：阶段交付的权威记录仍是各阶段治理记录（见[治理索引](../design/governance/index.md)），深度归档只保存主窗口迁出的原始正文。
 
 ## 归档格式
 
@@ -21,7 +21,7 @@
 
 ---
 
-## 归档索引（Phase 0 ~ Phase 37）
+## 归档索引（Phase 0 ~ Phase 38）
 
 > 完整归档块见「深度归档」列；阶段交付摘要如下（每行一行，细节以深度归档与治理记录为准）。
 
@@ -66,58 +66,9 @@
 | Phase 35 | 2026-11-15 ~ 11-16 | 质量与无障碍收口、DataTable 列可见性 / 列宽、长尾 Rating（不发布） | [phase-35](./archive/todo-archive-phases-35.md) |
 | Phase 36 | 2026-11-17 ~ 11-18 | 浮层隔离扩面、DataTable 列宽拖拽与虚拟滚动评估、质量治理、选择器空值诊断（不发布） | [phase-36-37](./archive/todo-archive-phases-36-37.md) |
 | Phase 37 | 2026-11-18 ~ 11-19 | 质量收口与回归补齐、选择器空值 opt-in、迁移口径、Rating 表单集成（不发布） | [phase-36-37](./archive/todo-archive-phases-36-37.md) |
+| Phase 38 | 2026-11-20 | 移动端体验：安全区 token、移动壳（Cell / Tabbar）、操作与空态（ActionSheet / Empty）、适配指南与验收视口扩面（不发布） | [phase-38](./archive/todo-archive-phases-38.md) |
 
 ---
-
-## Phase 38：移动端体验（基础层、移动壳与操作 / 空态）（**2026-11-20 完成并归档；本阶段不发布**）
-
-- 时间：2026-11-20 用户就[第二十二轮范围评估](../design/governance/2026-11-20-mobile-experience-evaluation.md) §6 裁定 D0 ① / D1 ① / D2 ① / D3 ① / D4 ② 后登记；同日交付 **4 条主线 / 11 条原子条目**并完成阶段归档（用户指令「开始归档」）。
-- 范围与授权：**基础层 2 / 移动壳 3 / 操作与空态 3 / 口径与验收 3**，构成对账 **2 + 3 + 3 + 3 = 11**（原登记 10 条，执行期追加 M4-3）；本阶段**不发布**（`latest` 维持 `1.3.0`）。范围与验收口径的唯一载体见 [Phase 38 登记批次](../design/governance/2026-11-20-phase38-registration.md) §1 / §2。
-- 非目标：移动端独立包、手势、JS 视口分支、`DataTable` 卡片化、视觉尺寸放大、vue-router 耦合、Picker / NavBar / Search 组件化、全量矩阵宽屏化、宽屏视觉基线、`xl` 断点、i18n 二期 / RTL、新增运行时依赖、自动发布。
-
-### M1 基础层（2 条）
-
-- **M1-1 安全区 token 与工具类**（`89f0fc6`；记录见 [M1-1](../design/governance/2026-11-20-phase38-m1-1-safe-area.md)）：四个 `--caomei-safe-area-*` 默认 `env()`，六个工具类写同侧 `padding`；中英指南补「安全区」节；RG R1 `standard` `Pass` → R2 `quick` `Pass`。
-- **M1-2 固定定位件接入与 `dvh` 回退**（`d1f0e4d`；记录见 [M1-2](../design/governance/2026-11-20-phase38-m1-2-fixed-overlays.md)）：Drawer / Dialog / ConfirmDialog / Toast / BackTop / Image preview 接入安全区与 `dvh`；RG R1 `standard` `Pass` → R2 `quick` `Pass`。
-
-### M2 移动壳（3 条）
-
-- **M2-1 Cell / CellGroup**（`a7e3159` + `2097a24`）：行语义、`div` / `button` / `a` 宿主、前后插槽、分组标题与分隔线；中英页面与示例同批。
-- **M2-2 Tabbar / TabbarItem**（`6f91402` + `50dbcc7`）：`v-model`、`aria-current` 单值、图标 / 角标 / 禁用、安全区与可选吸底；不接 vue-router。
-- **M2-3 M2 的 10 语、台账与文档**（`0710963` + `cb8d03b` + `6052436`）：`tabbar.label` 纳入 10 语；台账、侧栏、总览与 Tier 2 清单同步。
-
-### M3 操作与空态（3 条）
-
-- **M3-1 ActionSheet**（`0ecd371` + `9f7dd1d`）：以 Drawer 底部抽屉组合，支持分组 / 危险项 / 取消项 / 选择后关闭 / 焦点回退 / 内容滚动；Drawer 增加可选 `label` 可访问名回退。
-- **M3-2 Empty**（`e203b70` + `ef6d7c4`）：图标 / 图片、标题、说明、操作区、尺寸档与 `as` 语义标签；与 DataView 空态分工单点声明。
-- **M3-3 M3 的 10 语、台账与文档**（`0710963` + `cb8d03b` + `6052436`）：`actionSheet.label` / `cancel` 纳入 10 语；台账、DataView 关系与计数回扫同批。
-
-### M4 口径与验收（3 条）
-
-- **M4-1 移动端适配指南**（`0115a33`）：中英指南新增 bottom sheet、吸顶、固定底部操作条、软键盘、五条下限与 44px 达成路径。
-- **M4-2 44px 政策与回归扩面**（`47ff782` + `d582e26` + `b71b655`）：维持 24 下限，44 由 `size="lg"` / `data-density="touch"` 达成；移动壳常驻 E2E 与相邻目标间距负向对照；四组新组件进入矩阵受检面。
-- **M4-3 验收视口扩面**（`b71b655` + `7218e98`）：定向档 2 → 6（360 / 414 / 1536 / 1920），矩阵守卫改为单点清单；极窄探针修复夹具最小内容宽导致的布局视口失真。
-
-### 阶段总结
-
-- **4 条主线 / 11 条原子条目全部交付**；本阶段不发布，`latest` 维持 `1.3.0`。
-- **提交对账**：窗口 `git log --oneline --no-merges d1f0e4d..291499e` → **18**（9 条实现 / 测试 / 文档与规划状态回填）；另含归档提交 1 个。
-- **质量门**：`pnpm verify` 全绿；全量单测 **182 文件 / 3553 例**；E2E `mobile-shell` **27/27**、`responsive` 9 档 **186 passed / 12 skipped**；`capture:styles` **399 项 0 差异**；`test:visual` **48/48**。
-- **Review Gate**：三区分审 R1 `standard`（运行时 Pass / 文档 Reject / 测试 Reject）→ R2 delta（文档 Reject）→ R3 `quick` `Pass`；5 个 blocker 与全部可收口 warning 同批关闭，详见[交付记录](../design/governance/2026-11-20-phase38-m2-m4-mobile-shell-and-acceptance.md) §3。
-- **长期任务**：第 **42** 轮门槛复核（2026-11-20，Phase 38 收口轮）——见 [长期任务](./recurring.md)。
-- **wisdom 蒸馏**：`pnpm distill:wisdom --check` → **17 条活跃**（< 阈值 20，不蒸馏）。
-
-### 回扫口径（三段式）
-
-- **机检面**：`check:governance-records` / `check:planning-numbers` / `check:stage-counts`（无进行中阶段分支）/ `check:archive-rg-counts` / `check:governance-counts` / `check:design` / `docs:check` / `governance:check` 全绿。
-- **人工面**：`todo.md`（清空阶段状态句与条目表）/ `roadmap.md`（§1 当前态、Phase 38 行与 §5）/ `todo-archive.md`（本块入窗与主窗口口径句）/ `archive/index.md`（phase-32 行与迁出时点）/ `recurring.md`（第 42 轮与触发义务句）/ `governance/index.md`（归档记录行）逐处核过；`.session` 两份文件同批切到「无进行中阶段」。
-- **未处理面**：历史记录中指向 `docs/plan/todo.md` 的时点陈述按既有边界不回改；本批无新增失效指针。
-
-### 遗留与后续候选
-
-- **真实设备验收**：iOS safe-area / 软键盘与 `dvh` 动态差异无自动化条目，随真机验收执行。
-- **既有 E2E 装置失败**：back-top、overlay-stacking、navigation-motion、selector-motion、data-table-scroll 已在干净 HEAD 复现，登记 [Backlog §1.6](./backlog.md)，待用户裁定是否排期。
-- **宽屏视觉基线 / `xl` 断点**：维持 [Backlog §1.6](./backlog.md) 候选，按触发条件启动。
 
 ## Phase 39：P0 组件缺口、文档站设备预览与质量收口（**2026-11-21 完成并归档；本阶段不发布**）
 
@@ -370,3 +321,58 @@
 - **Stepper 横向窄屏退化**：极窄容器下标题单字一行，用户裁定暂不修复、以组件文档指引替代（[Backlog §1.5](./backlog.md)，记录 `ec0fcb2f`）。
 - **1.4.0 下游适配回收**：待 Button 单元素根 / 换行开关修复后复核 caomei-auth 的 `!important` 与 momei 的 `vertical-align`（Backlog §1.8）。
 - 其余条件触发候选见 [Backlog](./backlog.md)；启动需用户明确授权。
+
+## Phase 43：下游覆盖兼容、语义收口与 Tree / TreeSelect（**2026-11-25 完成并归档；`1.5.0` 发布收口按用户裁定移出至 Backlog，本阶段不发布**）
+
+- 时间：2026-11-24 用户就[第二十八轮范围评估](../design/governance/2026-11-24-next-stage-scope-evaluation-28.md)裁定 D0 ④ / D1 ① 后登记；2026-11-25 用户指令「M1-1 / M1-2 / M1-3 直接移除，11-29 之前不列入规划」并「开始归档」，同日交付 **3 条主线 / 10 条原子条目**并完成阶段归档。
+- 范围与授权：**下游覆盖兼容 4 / 语义收口 1 / Tree · TreeSelect 5**，构成对账 **4 + 1 + 5 = 10**（登记时点为 4 条主线 / 13 条，含发布收口 3 条；归档前按用户裁定移出发布收口，见 [Phase 43 登记批次](../design/governance/2026-11-24-phase43-registration.md) §1 的范围变更）；本阶段**不发布**，`latest` 维持 `1.4.0`。
+- 非目标：国际化二期 7 语与 RTL、`xl` 断点与宽屏布局规则、其余 P2 组件、通用 Picker、单 Demo 抽屉、依赖与工具链升级、破坏性 API、新增运行时依赖；Tree 虚拟滚动（`TreeVirtualizer` 仅说明不启用）、Tree 拖拽排序、懒加载之外的异步数据源抽象。
+
+### M2 下游覆盖兼容（4 条）
+
+- **M2-1 `CaomeiButton` 未启用提示时恢复单元素根**（`45b9a762` + `78e7cb95`；记录见[根形态修复](../design/governance/2026-11-24-phase43-m2-1-single-root.md)）：修共享 `Passthrough`（过滤注释后仅剩一个可见子节点时直接交出该 vnode），父级 scoped 属性与 `v-show` 恢复命中；连带恢复 `CaomeiTooltipText` 根形态、使 `as-child` 复用按钮的 Popover / Popconfirm 触发器成为隔离保留根；新增 axe 待复核例外（带 `aria-haspopup` 的 `aria-controls` 无条件 needsReview，源码级不可消除）。RG R1 `standard` `Pass`。
+- **M2-2 内容换行开关**（`9a5dcec4`）：`wrap` 可选 prop（默认单行截断不变），折行时 `height: auto` + `min-height` 保底、`overflow-wrap: anywhere` 兜长英文 / URL；`iconOnly` 经 `:not()` 排除；中英页面与示例、真实 Chromium 几何用例（默认截断 / 折行增高 / 宽容器不折行 / 方形图标 / `block` 与 `loading`）。RG R1 `standard` `Reject`（stylelint）→ R2 `quick` `Pass`。
+- **M2-3 `@layer` 策略评估**（`bc668b95`；记录见[评估记录](../design/governance/2026-11-24-phase43-m2-3-layer-strategy.md)）：**结论不落地**——收益只覆盖「下游覆盖库样式」单一路径，代价是下游全局 reset 反压与层顺序跨来源配置，opt-in 变体需两套产物或下游构建期包裹；给出按档特异性矩阵（(0,2,0) ~ (0,5,0)）与复评条件。RG R1 `quick` `Reject`（resolver `sideEffects` 事实、状态档特异性）→ R2 `quick` `Pass`。
+- **M2-4 下游覆盖指引**（`489e1800`）：中英指南（覆盖顺序 / token 两级作用域 / 特异性矩阵 / 可执行示例 / 内部类边界 / 反例），并在指南侧栏登记、与 `1.5.0` 升级注意互链。RG R1 `quick` `Reject`（类名契约与版本策略冲突、token 作用域、单根限定）→ R2 `quick` `Pass`。
+
+### M3 语义收口（1 条）
+
+- **M3-1 `label` 语义收口（登记例外）**（`b2325d4a`；记录见[例外记录](../design/governance/2026-11-24-phase43-m3-1-label-semantics.md)）：`Statistic` / `DescriptionsItem` 的 `label` 是可见标签，与「`label` 即不可见可访问名」相反；两者均为展示型组件、改名无下游收益，按开发规范 §6 第二分支登记例外（含撤回条件与「新增同类用法须逐条复核」闸口），设计规范 §7 绝对表述改为链 §6。RG R1 `quick` `Pass`。
+
+### M4 Tree · TreeSelect（5 条）
+
+- **M4-1 `CaomeiTree`**（`6c9d23e8`）：封装 `reka-ui@2.11.0` 的 `TreeRoot` / `TreeItem`（Alpha）；扁平渲染 + 按层注入 `aria-level` / `setsize` / `posinset`；单选向 primitive 传单节点（数组会让 `aria-selected` 恒 false）；`itemKey` / `labelKey` / `childrenKey` 改名、缺键开发期告警、空 `children` 归一；单测 16 例 + 真实 Chromium E2E（角色 / 层级 / 点击展开选中 / 方向键 / `Home` / `End`）。RG R1 `standard` `Pass`（4 warning 同批修）。
+- **M4-2 `CaomeiTreeSelect`**（`1b07a672`）：Popover + Tree 组合；字段为原生 `button`、面板 portal；单选 / 多选、回显、清空、禁用、打开态隔离复用 `useOpenStateIsolation`、320 / 390 窄屏碰撞收敛；面板规则落非 scoped 块（portal 面板的 `data-v` 落在 popper 包裹层）。RG R1 `standard` `Reject`（面板 scoped 死规则、非受控清空）→ R2 `standard` `Pass`（残留文本让位同批修）。
+- **M4-3 Tree 文档与示例**（`2e5993a6`）：中英组件页（键位语义、多选与 `propagateSelect` / `bubbleSelect`、不输出半选态、数据量与虚拟滚动边界、无障碍、主题变量）+ 中英示例各 2 个。RG R1 `quick` `Reject`（示例 lint、半选虚构）→ R2 `quick` `Pass`（同批修复后复审）。
+- **M4-4 TreeSelect 文档与示例**（`26b7828c`）：中英组件页（打开与键盘、单选 / 多选、清空、窄屏、浮层与层级、无障碍）+ 中英示例各 2 个。RG R1 `quick` `Reject`（层级口径与 `--caomei-z-*` 表相反）→ R2 `quick` `Pass`。
+- **M4-5 两组件共用登记面**（`4980d843`）：侧栏（中英）/ 总览 / 画廊登记 / 设计清单 §5 / 文档与演示站 §11 同批；`check:components-overview` / `check:design-catalog`（§5 41 行 ↔ §11 76 成员）/ `governance:check` 复绿。RG R1 `quick` `Pass`。
+
+### 阶段总结
+
+- **3 条主线 / 10 条原子条目全部交付**；发布收口 3 条按用户裁定移出至 [Backlog](./backlog.md)（已决策待窗口，2026-11-29 之前不列入规划）；本阶段不发布，`latest` 维持 `1.4.0`。
+- **提交对账**：窗口 `git log --oneline --no-merges 206329e5..4980d843` → **11**（10 条交付 + M2-1 状态同步 `78e7cb95`）；`d5fca0d5`（十项交付同步）在窗口右端之外，故 `..d5fca0d5` 为 **12**；收口期的 `b0234fc9`（规划载体去掉条目编号）与 `ee8516a9`（1.4.0 反馈指针更新）同属窗口外提交。
+- **质量门**：`pnpm verify` exit 0（全量单测 **3810 例**、`build`、`check:build` / `check:resolver` / `check:nuxt`、`docs:build`、`docs:check` 全链与 `governance:check`）；`pnpm test:visual` **59 项 0 基线差异**；定向 E2E（tree / tree-select / button-wrap / popconfirm）**12 项**；推送后 master CI（Test / Deploy VitePress / Security Alerts / CodeQL / Run TODO to Issue）全部 **success**（head `ee8516a9`）。
+- **Review Gate**：10 条逐项过闸；其中 **6 条**经历 Reject（M2-2 / M2-3 / M2-4 / M4-2 / M4-3 / M4-4 各 1 轮，后者 3 条为本轮同批修复或 R2 复审判定），其余 4 条 R1 `Pass`；无条目触及 3 轮上限。
+- **长期任务**：本阶段未执行发布，周级门槛复核留给发布窗口（归档前一次 `pnpm verify` 全量已覆盖阶段质量门）。
+- **wisdom 蒸馏**：`pnpm distill:wisdom --check` → **4 条活跃**（< 阈值 20，不蒸馏）。
+
+### 回扫口径（三段式）
+
+- **机检面**：`check:governance-records` / `check:planning-numbers` / `check:stage-counts`（无进行中阶段分支）/ `check:archive-rg-counts` / `check:governance-counts` / `check:design` / `docs:check` / `governance:check` 全绿。
+- **人工面**：`todo.md`（清空阶段状态句与条目表）/ `roadmap.md`（§1 当前态、Phase 43 行与 §5）/ `todo-archive.md`（本块入窗与主窗口口径句）/ `archive/index.md`（phase-38 行与迁出时点）/ `backlog.md`（发布收口回流行）/ `governance/index.md`（归档记录行与登记摘要的范围变更注记）逐处核过；`.session` 两份文件同批切到「无进行中阶段」。
+- **未处理面**：历史记录中指向 `docs/plan/todo.md` 的时点陈述按既有边界不回改；本批无新增失效指针。
+
+### 未覆盖边界
+
+- **发布与下游复验**：本阶段不发布；`1.5.0` 的门槛复核、升级注意补写（Button 根形态 / `CaomeiTooltipText` 根形态 / Popover·Popconfirm 打开态 `inert` 面收窄）、发布执行与三仓复验均未执行，整体待发布窗口与用户授权。
+- **真机验收**：真机仍未执行（iOS `dvh` 真实收缩、触摸惯性滚动、系统 OTP 填充与安全区让位），既有记录为浏览器设备视口模拟。
+- **Tree / TreeSelect 能力边界**：`TreeVirtualizer` 未启用（大数据仅文档说明 + 懒加载建议）；`propagateSelect` / `bubbleSelect` 只透传 primitive 能力、无专项断言；`ArrowDown` 未用于打开树选择器面板（已在组件页写明键位）。
+- **存量缺陷（本批外）**：`cascader.vue` 的面板样式与 TreeSelect R1 同因（写在 scoped 块中，portal 下为死规则），未在本批修复。
+- **文档面存量**：英文总览「Chinese documentation」镜像列表与已翻译列表有 12 项不一致（本批补 Tree / TreeSelect 两项）；Phase 39 归档块缺 `未覆盖边界` 小节（6 项必填生效期内的存量）。
+
+### 遗留与后续候选
+
+- **`1.5.0` 发布收口**：门槛复核与升级注意、发布与发布后校验、下游兼容复验与适配回收；已回流 [Backlog §1.6](./backlog.md)（**已决策待窗口，2026-11-29 之前不列入规划**，触发条件 = 到达发布窗口且用户明确授权发布）。
+- **`cascader` 面板样式死规则**：建议评估后入 Backlog（与 TreeSelect R1 同因，属可比照修复的存量项）。
+- **英文总览镜像列表对齐**：建议单列清理（存量 12 项）。
+- **momei 页面级反馈**：等待外部反馈。

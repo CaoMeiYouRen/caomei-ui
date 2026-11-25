@@ -18,6 +18,7 @@
 |------|------|------|:-:|:-:|:-:|
 | Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 2 | 1 | 延后 |
 | 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 3 | 2 | 延后 |
+| `CaomeiCascader` 面板样式在 portal 下失效 | Phase 43 归档遗留（`cascader.vue` scoped 块 + portal，`data-v` 落在 popper 包裹层） | 面板 `padding` / `max-width` 等声明在真实浏览器不生效，与 TreeSelect 同因；修法 = 样式移出 scoped 或改用非 scoped `:where()` 块，并补几何守卫。属**视觉观感**问题、有 scoped → 非 scoped `:where()` 的替代路径，故不按「已确认功能缺陷」取 5。**触发条件 = 用户裁定或该面板出现真实观感问题** | 3 | 2 | 延后 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -67,6 +68,8 @@
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 3 | 1 | 延后 |
 | `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 2 | 1 | 延后 |
 | 版本升级影响面评估自动化 | 同上；[发布指南 §10.1](../guide/release.md) 已先落人工规则 | 当前 `Downstream Compat` 只跑 `typecheck` + `build`，无法捕捉 DOM 结构 / 默认样式 / 交互时序变化。候选 = 在发布链生成「消费方可见变化」清单，并对已接入下游跑视觉或关键流回归。**触发条件 = 用户裁定启动，不绑定本发布窗口**。**证据**：1.4.0 升级时 caomei-auth 有 11 个文件、momei 有 35 个选择器 / 25 个文件需改 `:deep()` 锚定祖先 scope（**正确规避**）；另有 `!important` / `white-space: normal` / `vertical-align: top` 等应急写法（见 [1.4.0 反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) §3 / §6）。 | 4 | 3 | 排期 |
+| 英文总览「Chinese documentation」镜像列表 12 项不一致 | Phase 43 归档遗留 | 英文总览页镜像列表与中文总览成员不一致；改动面小、可机检化（复用 `check-components-overview` 解析）。**触发条件 = 用户裁定** | 2 | 1 | 延后 |
+| Phase 39 归档块缺「未覆盖边界」小节 | Phase 43 归档遗留 | 6 项必填生效期内的存量缺项；补齐后可加守卫防同类再发生。**触发条件 = 用户裁定** | 2 | 1 | 延后 |
 
 ### 1.7 服务层候选（composables）
 
@@ -95,17 +98,13 @@
 
 > 来源：[国际化、组件缺口与移动端调研](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §4（2026-11-18）。用户裁定「组件缺口后续列入计划完善」——本组只登记候选，**不立即启动、不分配阶段编号**。Reka 2.11.0 实测已导出对应 primitive（§4.1），封装成本主要在样式与文档。
 
-> **象限提示（快速开发期）**：本组是本仓「新组件 / 新功能」主入口，全部按用户指定的快速开发期方向取重要度 4、紧急度 2（无硬时点），象限为**排期**——即按节奏逐步推进，而不是插队。各条「记录 P2」为来源记录（2026-11-18 调研）的单轴分级，非现行排序；排序以本表「重要 / 紧急」为准。
+> **象限提示（快速开发期）**：本组是本仓「新组件 / 新功能」主入口，现存候选按用户指定的快速开发期方向取重要度 4、紧急度 2（无硬时点），象限为**排期**——即按节奏逐步推进，而不是插队；已登记到当前阶段的组件以 [`todo.md`](./todo.md) 为准，本表只保留未进入阶段的候选。各条「记录 P2」为来源记录（2026-11-18 调研）的单轴分级，非现行排序；排序以本表「重要 / 紧急」为准。
 
 | 候选 | 依据 | 重要 | 紧急 | 建议 |
 |------|------|:-:|:-:|:-:|
-| Tour | 记录 **P2**；Element Plus `tour` / TDesign `guide` | 4 | 2 | 排期 |
 | Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 4 | 2 | 排期 |
 | Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 4 | 2 | 排期 |
-| Splitter | 记录 **P2**；Element Plus / PrimeVue；Reka `SplitterGroup` 现成 | 4 | 2 | 排期 |
-| Anchor | 记录 **P2**；Element Plus / TDesign；PrimeVue 无独立件（`animateonscroll` 为滚动动画指令） | 4 | 2 | 排期 |
-| QRCode | 记录 **P2**；仅 TDesign 有独立件，按下游需求再定 | 4 | 2 | 排期 |
-| ContextMenu / HoverCard / Menubar / NavigationMenu | 记录 **P2**；Reka 原语现成；PrimeVue 有 `contextmenu` / `menubar`；Varlet 仅有 `hover`，无 ContextMenu / Menubar | 4 | 2 | 排期 |
+| Menubar / NavigationMenu / HoverCard | 记录 **P2**；Reka 原语现成（`Menubar*` / `NavigationMenu*` / `HoverCard*`）；Varlet 仅有 `hover` | 4 | 2 | 排期 |
 
 - **不建议纳入**：App Shell（`container` / `aside` / `header`）与 `Overlay` / `Fab` / `List`（结论见 §3）；业务件（`address-*` / `coupon-*` / `contact-*`）与 `TreeTable` / `Knob` / `OrganizationChart`（见 [组件设计 §6](../design/components.md)）。
 - **Sticky / SafeArea**：`Sticky` 工具形态仍登记在 §1.5；`SafeArea` 已于 2026-11-20 登记 Phase 38 M1-1 / M1-2，不在本表重复。`Sticky` 若最终按组件实现，再从 §1.5 迁入。

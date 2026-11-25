@@ -141,6 +141,9 @@ const koKR: CaomeiLocaleMessages = {
     splitButton: {
         menu: '추가 작업',
     },
+    splitter: {
+        resize: '패널 크기 조정',
+    },
     stepper: {
         label: '단계',
     },

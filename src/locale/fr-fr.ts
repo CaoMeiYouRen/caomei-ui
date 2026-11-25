@@ -141,6 +141,9 @@ const frFR: CaomeiLocaleMessages = {
     splitButton: {
         menu: 'Plus d’actions',
     },
+    splitter: {
+        resize: 'Redimensionner les panneaux',
+    },
     stepper: {
         label: 'Étapes',
     },

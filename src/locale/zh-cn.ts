@@ -141,6 +141,9 @@ const zhCN: CaomeiLocaleMessages = {
     splitButton: {
         menu: '更多操作',
     },
+    splitter: {
+        resize: '调整面板大小',
+    },
     stepper: {
         label: '步骤',
     },

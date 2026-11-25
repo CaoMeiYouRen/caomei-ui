@@ -141,6 +141,9 @@ const jaJP: CaomeiLocaleMessages = {
     splitButton: {
         menu: 'その他の操作',
     },
+    splitter: {
+        resize: 'パネルのサイズを変更',
+    },
     stepper: {
         label: 'ステップ',
     },

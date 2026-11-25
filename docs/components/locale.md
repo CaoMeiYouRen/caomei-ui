@@ -79,6 +79,7 @@ import {
 | `select` | `clear` | Select |
 | `slider` | `thumb` `minimum` `maximum` | Slider |
 | `splitButton` | `menu` | SplitButton |
+| `splitter` | `resize` | Splitter |
 | `stepper` | `label` | Stepper |
 | `tag` | `close` | Tag |
 | `table` | `empty` `selectAll` `selectRow` `expandRowGroup` `collapseRowGroup` `expandRow` `collapseRow` `columnResize` | DataTable |
@@ -122,16 +123,16 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 | 语言标识 | 本地名称 | 分发形态 | 键覆盖 | 复核状态 |
 | --- | --- | --- | --- | --- |
-| `zh-CN` | 简体中文 | 预注册 | 118 / 118 | 基准 |
-| `en-US` | English | 预注册 | 118 / 118 | 未单独复核 |
-| `zh-TW` | 繁體中文 | 子路径 | 118 / 118 | 已复核 |
-| `ja-JP` | 日本語 | 子路径 | 118 / 118 | 已复核 |
-| `ko-KR` | 한국어 | 子路径 | 118 / 118 | 已复核 |
-| `es-ES` | Español | 子路径 | 118 / 118 | 未复核 |
-| `fr-FR` | Français | 子路径 | 118 / 118 | 未复核 |
-| `de-DE` | Deutsch | 子路径 | 118 / 118 | 未复核 |
-| `ru-RU` | Русский | 子路径 | 118 / 118 | 未复核 |
-| `pt-BR` | Português (Brasil) | 子路径 | 118 / 118 | 未复核 |
+| `zh-CN` | 简体中文 | 预注册 | 119 / 119 | 基准 |
+| `en-US` | English | 预注册 | 119 / 119 | 未单独复核 |
+| `zh-TW` | 繁體中文 | 子路径 | 119 / 119 | 已复核 |
+| `ja-JP` | 日本語 | 子路径 | 119 / 119 | 已复核 |
+| `ko-KR` | 한국어 | 子路径 | 119 / 119 | 已复核 |
+| `es-ES` | Español | 子路径 | 119 / 119 | 未复核 |
+| `fr-FR` | Français | 子路径 | 119 / 119 | 未复核 |
+| `de-DE` | Deutsch | 子路径 | 119 / 119 | 未复核 |
+| `ru-RU` | Русский | 子路径 | 119 / 119 | 未复核 |
+| `pt-BR` | Português (Brasil) | 子路径 | 119 / 119 | 未复核 |
 
 > 键覆盖由 `pnpm check:locale-keys` 复算，不手写估计。复核状态只反映母语文档记录：`基准` 为简体中文源文案；`已复核` 有译文复核记录（`zh-TW` / `ja-JP` / `ko-KR`，Phase 10）；`未复核` 尚无母语审校记录（`en-US` 未单独复核，二期 5 语见 [KL-7](../design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations.md)）。未复核不等于缺键，只表示没有母语审校背书。
 

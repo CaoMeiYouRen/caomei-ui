@@ -90,6 +90,9 @@ import {
     CaomeiStatistic,
     CaomeiSlider,
     CaomeiSplitButton,
+    CaomeiSplitter,
+    CaomeiSplitterPanel,
+    CaomeiSplitterResizeHandle,
     CaomeiStepper,
     CaomeiStepperDescription,
     CaomeiStepperIndicator,
@@ -441,6 +444,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
     },
+    { name: 'CaomeiSplitter', root: CaomeiSplitter, definition: { components: { CaomeiSplitter, CaomeiSplitterPanel, CaomeiSplitterResizeHandle }, template: '<CaomeiSplitter style="height: 120px"><CaomeiSplitterPanel>左</CaomeiSplitterPanel><CaomeiSplitterResizeHandle /><CaomeiSplitterPanel>右</CaomeiSplitterPanel></CaomeiSplitter>' }, requiredSelectors: ['.caomei-splitter', '.caomei-splitter__handle'] },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
         name: 'CaomeiTooltipText',
@@ -500,6 +504,8 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
+    { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
@@ -518,4 +524,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 85
+export const A11Y_FIXTURE_BUDGET = 86

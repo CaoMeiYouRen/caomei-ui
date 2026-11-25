@@ -141,6 +141,9 @@ const deDE: CaomeiLocaleMessages = {
     splitButton: {
         menu: 'Weitere Aktionen',
     },
+    splitter: {
+        resize: 'Panelgröße ändern',
+    },
     stepper: {
         label: 'Schritte',
     },

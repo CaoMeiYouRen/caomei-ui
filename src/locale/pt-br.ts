@@ -141,6 +141,9 @@ const ptBR: CaomeiLocaleMessages = {
     splitButton: {
         menu: 'Mais ações',
     },
+    splitter: {
+        resize: 'Redimensionar painéis',
+    },
     stepper: {
         label: 'Etapas',
     },

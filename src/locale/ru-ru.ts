@@ -141,6 +141,9 @@ const ruRU: CaomeiLocaleMessages = {
     splitButton: {
         menu: 'Другие действия',
     },
+    splitter: {
+        resize: 'Изменить размер панелей',
+    },
     stepper: {
         label: 'Шаги',
     },

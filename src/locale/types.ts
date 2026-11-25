@@ -162,6 +162,9 @@ export interface CaomeiLocaleMessages {
     splitButton: {
         menu: string
     }
+    splitter: {
+        resize: string
+    }
     stepper: {
         label: string
     }

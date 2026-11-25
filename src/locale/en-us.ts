@@ -185,6 +185,13 @@ const enUS: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Main navigation',
     },
+    tour: {
+        label: 'Product tour',
+        next: 'Next',
+        prev: 'Back',
+        skip: 'Skip',
+        finish: 'Finish',
+    },
 }
 
 export default enUS

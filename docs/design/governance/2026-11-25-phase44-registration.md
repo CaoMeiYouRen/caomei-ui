@@ -38,13 +38,14 @@
   - 路径：`docs/design/documentation-site.md`（§11 分组表）、`docs/.vitepress/config.ts`（中英侧栏）、`docs/components/index.md` 与 `docs/i18n/en-US/components/index.md`（总览）、`docs/design/components.md`（§5 组件清单与「（已实现）」标记）、`docs/components/locale.md` 与 `docs/i18n/en-US/components/locale.md`（locale 台账）。画廊登记表为选录，不强制。
   - **示例双语两套**：英文组件页的 `<demo>` 相对 `docs/i18n/en-US/components/` 解析，故英文示例树 `docs/i18n/en-US/examples/<name>/*` 与中文 `docs/examples/<name>/*` 必须同时建立。
 - **粒度注记**：`src/locale/*` 的 10 个文件属文案小改动，不单独计入「≤ 10 文件」拆分判据；文档条目实际文件数约 8–12（含共用登记面），超阈值时按「文档 / 示例 / 登记面」拆分，不合并提交。
+- **实现条目的伴随面（M1-1 起）**：新组件的 locale 命名空间、两份 locale 台账行、`check-overlay-z-index` 的浮层声明计数与例外名单、a11y 夹具登记必须与实现同批——`check-locale-ledger`、`check-overlay-z-index` 与 `pnpm test` 的受检面下界都要求它们在**同一提交**内同时成立，拆开会把中间态留在红门上。据此 M1-1 同批交付 `src/components/_shared/scroll-lock.ts`（模态遮罩锁滚动，依据[主题与样式设计 §5.1](../../design/theming.md#_5-1-浮层滚动锁与布局稳定性)的决策 ①）及其单测；后续 Mx-2 不再重复计 locale 与台账。
 
 ### M1 Tour 引导（2 条）
 
 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|
 | M1-1 Tour 核心与定位 | `CaomeiTour` 按 `steps` 渲染；`v-model:current` 受控；上一步 / 下一步 / 跳过 / 完成各 emit 一次；遮罩挖空高亮与目标定位正确，滚动容器滚动与窗口 resize 后重算；Esc 关闭并把焦点归还触发元素；单测覆盖步进边界与重算触发 | `src/components/tour/*`、`src/index.ts`、resolver / Nuxt 模块登记面、`tests/unit/tour*` | Reka 无 Tour 原语，自研；复用既有浮层定位 / 隔离接线 |
-| M1-2 Tour 文档、locale 与回归 | 中英组件页 + 示例（基础 / 受控 / 自定义内容 / 关闭遮罩）；10 语 locale 进台账；组件测试 + E2E（滚动跟随、目标缺失时的降级）；共用登记面与示例双语同步后 `pnpm docs:check` / `pnpm governance:check` 绿 | `docs/components/tour.md`、`docs/i18n/en-US/components/tour.md`、`docs/examples/tour/*`、`src/locale/*`、`tests/e2e/tour*`、`docs/i18n/en-US/examples/tour/*`（含 §2 共用登记面） | M1-1 |
+| M1-2 Tour 文档、locale 与回归 | 中英组件页 + 示例（基础 / 受控 / 自定义内容 / 关闭遮罩）；10 语 locale 进台账；组件测试 + E2E（滚动跟随、目标缺失时的降级、[测试规范 §5.1](../../standards/testing.md#_5-1-浮层组件的页面稳定性-必测) 的宿主页面稳定性：遮罩完整覆盖、fixed 几何、CLS，须附经典滚动条环境实测；文档写明暗色下页面底色须设在 `html` / `body`——锁滚动的 `padding-right` 补偿留白由页面底色承载）；共用登记面与示例双语同步后 `pnpm docs:check` / `pnpm governance:check` 绿 | `docs/components/tour.md`、`docs/i18n/en-US/components/tour.md`、`docs/examples/tour/*`、`src/locale/*`、`tests/e2e/tour*`、`docs/i18n/en-US/examples/tour/*`（含 §2 共用登记面） | M1-1 |
 
 ### M2 QRCode 二维码（2 条）
 

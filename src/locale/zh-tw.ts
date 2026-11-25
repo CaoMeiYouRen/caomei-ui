@@ -185,6 +185,13 @@ const zhTW: CaomeiLocaleMessages = {
     tabbar: {
         label: '主導覽',
     },
+    tour: {
+        label: '產品導覽',
+        next: '下一步',
+        prev: '上一步',
+        skip: '略過',
+        finish: '完成',
+    },
 }
 
 export default zhTW

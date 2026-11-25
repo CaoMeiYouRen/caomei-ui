@@ -185,6 +185,13 @@ const frFR: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Navigation principale',
     },
+    tour: {
+        label: 'Visite du produit',
+        next: 'Suivant',
+        prev: 'Précédent',
+        skip: 'Passer',
+        finish: 'Terminer',
+    },
 }
 
 export default frFR

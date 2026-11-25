@@ -185,6 +185,13 @@ const koKR: CaomeiLocaleMessages = {
     tabbar: {
         label: '주요 탐색',
     },
+    tour: {
+        label: '둘러보기',
+        next: '다음',
+        prev: '이전',
+        skip: '건너뛰기',
+        finish: '완료',
+    },
 }
 
 export default koKR

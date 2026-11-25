@@ -185,6 +185,13 @@ const esES: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Navegación principal',
     },
+    tour: {
+        label: 'Guía del producto',
+        next: 'Siguiente',
+        prev: 'Anterior',
+        skip: 'Omitir',
+        finish: 'Finalizar',
+    },
 }
 
 export default esES

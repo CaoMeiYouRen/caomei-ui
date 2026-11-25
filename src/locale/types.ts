@@ -193,4 +193,11 @@ export interface CaomeiLocaleMessages {
         viewport: string
         close: string
     }
+    tour: {
+        label: string
+        next: string
+        prev: string
+        skip: string
+        finish: string
+    }
 }

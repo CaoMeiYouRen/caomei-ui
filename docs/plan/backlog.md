@@ -18,7 +18,6 @@
 |------|------|------|:-:|
 | Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 低 |
 | 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 低 |
-| 展示型组件 `label` 语义与开发规范 §6 分叉 | Phase 42 M4-1（[Statistic 组件页](../components/statistic.md)） | 开发规范 §6 已单点定义「`label` = 不可见可访问名、可见文案用语义化 prop」；`Statistic` 的 `label` 是**可见标签**（并以 `aria-labelledby` 复用为可访问名），`Descriptions` 同类分歧先于该组件存在。候选 = 按 §6 整改这两个组件（展示型改 `title` / `text`、`label` 只留可访问名），或为其登记例外条款；**不得另立第二套定义**。**触发条件** = 用户就组件 API 语义统一裁定，或出现第三个同形分歧 | 低 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -71,9 +70,6 @@
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 低 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 中 |
 | `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 低 |
-| `CaomeiButton` 未启用提示时恢复单元素根 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | 1.4.0 未启用内建提示时也经 `CaomeiPassthrough`；其 render 返回插槽数组，在 vnode 层是 Fragment，父组件 scoped 属性不再落到内层 `<button>`（momei 35 选择器 / caomei-auth 11 文件）。修复方向 = 未启用提示时根节点直接 `<button>`，或改用指令 / Teleport 不增加组件边界；同时补「父级 scoped 样式命中按钮根」回归测试。**触发条件 = 下一版本兼容修复批次或用户裁定** | 高 |
-| `CaomeiButton` 内容换行开关 | 同上 | 1.4.0 把按钮内容改为 `block + nowrap + ellipsis`，ja / ko 长标签在窄容器溢出；新增 `wrap` prop 或 `--caomei-button-content-white-space` token，默认保持单行截断。**触发条件 = 下一版本组件增强批次** | 中 |
-| 组件库 CSS `@layer` 层叠策略 | 同上 | 库未使用 `@layer`；`.caomei-button[data-v-*]` 与下游同特异性规则并存时由加载顺序决定胜负，下游需 `!important`。评估 `@layer caomei-ui`（消费方未分层样式天然优先）或至少把覆盖所需特异性写入文档。**触发条件 = 下一轮样式架构评估** | 中 |
 | 版本升级影响面评估自动化 | 同上；[发布指南 §10.1](../guide/release.md) 已先落人工规则 | 当前 `Downstream Compat` 只跑 `typecheck` + `build`，无法捕捉 DOM 结构 / 默认样式 / 交互时序变化。候选 = 在发布链生成「消费方可见变化」清单，并对已接入下游跑视觉或关键流回归。**触发条件 = 下次发布前评估或用户裁定** | 中 |
 
 ### 1.7 服务层候选（composables）

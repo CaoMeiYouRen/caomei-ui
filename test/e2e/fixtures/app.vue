@@ -30,6 +30,9 @@ import {
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
+    CaomeiContextMenu,
+    CaomeiContextMenuContent,
+    CaomeiContextMenuTrigger,
     CaomeiDataTable,
     CaomeiDataView,
     CaomeiDatePicker,
@@ -268,6 +271,12 @@ const fieldGroupTextarea = ref(textareaOverflow)
  * 包裹层承载面板 z-index），任一类回退到遮罩层档位都会被模态内容盖住。
  */
 const overlayDialogOpen = ref(false)
+const overlayContextMenuItems = [
+    { label: '查看详情' },
+    { label: '复制链接', shortcut: '⌘C' },
+    { separator: true },
+    { label: '删除', danger: true },
+]
 const overlaySelectValue = ref<string | null>(null)
 const overlayMultiValue = ref<string[]>([])
 const overlayAutoValue = ref<string>()
@@ -1120,6 +1129,21 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 description="验证模态内打开的浮层面板是否渲染在模态内容之上。"
             >
                 <div class="fixture__overlay-stack">
+                    <div id="overlay-context-menu">
+                        <CaomeiContextMenu>
+                            <CaomeiContextMenuTrigger>
+                                <div
+                                    id="overlay-context-menu-target"
+                                    class="fixture__state"
+                                >
+                                    右键打开菜单
+                                </div>
+                            </CaomeiContextMenuTrigger>
+                            <CaomeiContextMenuContent
+                                :model="overlayContextMenuItems"
+                            />
+                        </CaomeiContextMenu>
+                    </div>
                     <div id="overlay-select">
                         <CaomeiSelect
                             v-model="overlaySelectValue"

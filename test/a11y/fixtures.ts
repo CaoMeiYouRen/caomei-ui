@@ -24,6 +24,13 @@ import {
     CaomeiCol,
     CaomeiColorPicker,
     CaomeiConfirmDialog,
+    CaomeiContextMenu,
+    CaomeiContextMenuContent,
+    CaomeiContextMenuGroup,
+    CaomeiContextMenuItem,
+    CaomeiContextMenuLabel,
+    CaomeiContextMenuSeparator,
+    CaomeiContextMenuTrigger,
     CaomeiCountdown,
     CaomeiDataTable,
     CaomeiDataView,
@@ -413,6 +420,27 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-qrcode'],
     },
+    { name: 'CaomeiContextMenu', root: CaomeiContextMenu, definition: { components: { CaomeiContextMenu, CaomeiContextMenuTrigger, CaomeiContextMenuContent }, template: '<CaomeiContextMenu><CaomeiContextMenuTrigger>右键区域</CaomeiContextMenuTrigger><CaomeiContextMenuContent :model="[{ label: \'一\' }]" /></CaomeiContextMenu>' } },
+    {
+        name: 'CaomeiContextMenuContent',
+        root: CaomeiContextMenuContent,
+        definition: {
+            components: { CaomeiContextMenu, CaomeiContextMenuContent, CaomeiContextMenuGroup, CaomeiContextMenuItem, CaomeiContextMenuLabel, CaomeiContextMenuSeparator },
+            setup: () => ({ open: ref(true) }),
+            template: `<CaomeiContextMenu v-model:open="open">
+              <CaomeiContextMenuContent>
+                <CaomeiContextMenuItem>查看</CaomeiContextMenuItem>
+                <CaomeiContextMenuSeparator />
+                <CaomeiContextMenuGroup>
+                  <CaomeiContextMenuLabel>操作</CaomeiContextMenuLabel>
+                  <CaomeiContextMenuItem shortcut="⌘C">复制</CaomeiContextMenuItem>
+                  <CaomeiContextMenuItem danger>删除</CaomeiContextMenuItem>
+                </CaomeiContextMenuGroup>
+              </CaomeiContextMenuContent>
+            </CaomeiContextMenu>`,
+        },
+        requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
+    },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
         name: 'CaomeiTooltipText',
@@ -467,6 +495,11 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiPopoverArrow', component: CaomeiPopoverArrow, fixture: 'CaomeiPopoverContent' },
     { name: 'CaomeiPopoverClose', component: CaomeiPopoverClose, fixture: 'CaomeiPopoverContent' },
     { name: 'CaomeiTooltipTrigger', component: CaomeiTooltipTrigger, fixture: 'CaomeiTooltip' },
+    { name: 'CaomeiContextMenuTrigger', component: CaomeiContextMenuTrigger, fixture: 'CaomeiContextMenu' },
+    { name: 'CaomeiContextMenuItem', component: CaomeiContextMenuItem, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
@@ -485,4 +518,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 83
+export const A11Y_FIXTURE_BUDGET = 85

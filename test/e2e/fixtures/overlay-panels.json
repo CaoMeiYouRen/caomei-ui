@@ -50,6 +50,12 @@
             "name": "cascader",
             "trigger": "#overlay-cascader .caomei-cascader__trigger",
             "panel": ".caomei-cascader__content"
+        },
+        {
+            "name": "context-menu",
+            "trigger": "#overlay-context-menu-target",
+            "panel": ".caomei-context-menu__content",
+            "open": "contextmenu"
         }
     ]
 }

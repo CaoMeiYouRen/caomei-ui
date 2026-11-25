@@ -78,6 +78,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Tree](/en-US/components/tree)
 - [Accordion](/en-US/components/accordion)
 - [ActionSheet](/en-US/components/action-sheet)
+- [Anchor](/en-US/components/anchor)
 - [Breadcrumb](/en-US/components/breadcrumb)
 - [DropdownMenu](/en-US/components/dropdown-menu)
 - [Menu](/en-US/components/menu)

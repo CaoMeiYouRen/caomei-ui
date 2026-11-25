@@ -72,8 +72,8 @@
 
 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|
-| M5-1 Anchor 实现 | `CaomeiAnchor` 支持容器内 scroll-spy、`v-model:active` 受控、层级缩进、点击平滑滚动、`offset`、hash 同步；导出与 resolver 登记；单测覆盖激活计算与 `offset` 边界 | `src/components/anchor/*`、`src/index.ts`、resolver / nuxt 模块、`tests/unit/anchor*` | 自研 scroll-spy（无 Reka 原语） |
-| M5-2 Anchor 文档、locale 与回归 | 中英组件页 + 示例（基础 / 指定滚动容器 / 嵌套层级）；10 语 locale；组件测试 + E2E（滚动高亮切换、跳转与 hash）；共用登记面与示例双语同步后 `pnpm docs:check` / `pnpm governance:check` 绿 | `docs/components/anchor.md`、`docs/i18n/en-US/components/anchor.md`、`docs/examples/anchor/*`、`src/locale/*`、`tests/e2e/anchor*`、`docs/i18n/en-US/examples/anchor/*`（含 §2 共用登记面） | M5-1 |
+| M5-1 Anchor 实现 | `CaomeiAnchor` 支持容器内 scroll-spy、`v-model:active` 受控、层级缩进、点击平滑滚动、`offset`、hash 同步；导出与 resolver 登记；单测覆盖激活计算与 `offset` 边界 | `src/components/anchor/*`、`src/index.ts`、resolver / nuxt 模块、`src/components/anchor/anchor.test.ts` | 自研 scroll-spy（无 Reka 原语） |
+| M5-2 Anchor 文档、locale 与回归 | 中英组件页 + 示例（基础 / 指定滚动容器 / 嵌套层级）；10 语 locale；组件测试 + E2E（滚动高亮切换、跳转与 hash）；共用登记面与示例双语同步后 `pnpm docs:check` / `pnpm governance:check` 绿 | `docs/components/anchor.md`、`docs/i18n/en-US/components/anchor.md`、`docs/examples/anchor/*`、`src/locale/*`、`test/e2e/anchor.e2e.ts`、`docs/i18n/en-US/examples/anchor/*`（含 §2 共用登记面） | M5-1 |
 
 ## 3. 非目标
 

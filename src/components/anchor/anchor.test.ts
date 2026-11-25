@@ -272,6 +272,51 @@ describe('CaomeiAnchor', () => {
         expect(wrapper.emitted('update:active')?.at(-1)).toEqual(['usage'])
     })
 
+    it('外部写入 active 只改高亮、不触发滚动', async () => {
+        makeHeading('intro', -100)
+        makeHeading('guide', 10)
+        makeHeading('install', 100)
+        makeHeading('usage', 200)
+        const scrollTo = vi.fn()
+        window.scrollTo = scrollTo as unknown as typeof window.scrollTo
+
+        const wrapper = mount(CaomeiAnchor, {
+            props: { items: ITEMS, active: 'intro' },
+            attachTo: document.body,
+        })
+        wrappers.push(wrapper)
+        await flush()
+
+        await wrapper.setProps({ active: 'usage' })
+        await flush()
+
+        expect(scrollTo, '外部写入不应触发滚动').not.toHaveBeenCalled()
+        expect(document.querySelector('.caomei-anchor__link[href="#usage"]')?.getAttribute('aria-current')).toBe('location')
+    })
+
+    it('修饰键点击交给浏览器、不写回模型', async () => {
+        makeHeading('intro', -100)
+        makeHeading('guide', 10)
+        makeHeading('install', 100)
+        makeHeading('usage', 200)
+
+        const wrapper = mount(CaomeiAnchor, {
+            props: { items: ITEMS },
+            attachTo: document.body,
+        })
+        wrappers.push(wrapper)
+        await flush()
+        const emittedBefore = wrapper.emitted('update:active')?.length ?? 0
+
+        const link = document.querySelector<HTMLAnchorElement>('.caomei-anchor__link[href="#usage"]')
+        const event = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true, button: 0 })
+        link?.dispatchEvent(event)
+
+        // 同步阶段：点击处理器应直接放行（原生 hashchange 之后的写回属浏览器默认行为）
+        expect(event.defaultPrevented, '修饰键点击不应被拦截').toBe(false)
+        expect(wrapper.emitted('update:active')?.length ?? 0).toBe(emittedBefore)
+    })
+
     it('自定义可访问名与禁用 hash 同步', async () => {
         makeHeading('intro', -100)
         const wrapper = mount(CaomeiAnchor, {

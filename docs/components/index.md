@@ -91,6 +91,7 @@
 
 - [Accordion 折叠面板](./accordion)：折叠面板将内容分节收纳，点击标题逐项展开 / 收起，基于 Reka UI Accordion 封装。
 - [ActionSheet 操作面板](./action-sheet)：从底部弹出的操作列表，以 Drawer 的底部抽屉组合实现；支持分组、危险项、取消项与选择后关闭。
+- [Anchor 锚点导航](./anchor)：把标题索引为目录，滚动时高亮当前章节，点击平滑跳转；支持窗口 / 自定义滚动容器、嵌套缩进、受控激活项与 hash 同步。
 - [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
 - [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。

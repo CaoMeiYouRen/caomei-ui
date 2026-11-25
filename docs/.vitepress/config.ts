@@ -397,6 +397,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Accordion', link: '/en-US/components/accordion' },
                                 { text: 'ActionSheet', link: '/en-US/components/action-sheet' },
+                                { text: 'Anchor', link: '/en-US/components/anchor' },
                                 { text: 'Breadcrumb', link: '/en-US/components/breadcrumb' },
                                 { text: 'DropdownMenu', link: '/en-US/components/dropdown-menu' },
                                 { text: 'Menu', link: '/en-US/components/menu' },
@@ -627,6 +628,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'Accordion 折叠面板', link: '/components/accordion' },
                         { text: 'ActionSheet 操作面板', link: '/components/action-sheet' },
+                        { text: 'Anchor 锚点导航', link: '/components/anchor' },
                         { text: 'Breadcrumb 面包屑', link: '/components/breadcrumb' },
                         { text: 'DropdownMenu 下拉菜单', link: '/components/dropdown-menu' },
                         { text: 'Menu 导航菜单', link: '/components/menu' },

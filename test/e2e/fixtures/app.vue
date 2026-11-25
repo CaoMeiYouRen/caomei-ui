@@ -15,6 +15,7 @@ import {
     CaomeiTabbar,
     CaomeiTabbarItem,
     CaomeiAlert,
+    CaomeiAnchor,
     CaomeiAutoComplete,
     CaomeiAvatar,
     CaomeiBackTop,
@@ -274,6 +275,12 @@ const fieldGroupTextarea = ref(textareaOverflow)
  * 包裹层承载面板 z-index），任一类回退到遮罩层档位都会被模态内容盖住。
  */
 const overlayDialogOpen = ref(false)
+const anchorItems = [
+    { key: 'anchor-a', title: '第一节' },
+    { key: 'anchor-b', title: '第二节' },
+    { key: 'anchor-c', title: '第三节' },
+]
+
 const contextMenuLog = ref('')
 const splitterLog = ref('')
 const splitterHorizontalLog = ref('')
@@ -3716,6 +3723,32 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 {{ splitterLog }}
             </div>
         </section>
+        <!--
+          Anchor（供锚点导航 E2E 使用）：容器 scroll-spy、点击跳转与 hash 同步。
+        -->
+        <section id="anchor" class="fixture__case">
+            <div id="anchor-nav">
+                <CaomeiAnchor
+                    container="#anchor-scroller"
+                    :items="anchorItems"
+                    :offset="12"
+                />
+            </div>
+            <div id="anchor-scroller" class="fixture__state">
+                <h2 id="anchor-a">
+                    第一节
+                </h2>
+                <div class="anchor-space" />
+                <h2 id="anchor-b">
+                    第二节
+                </h2>
+                <div class="anchor-space" />
+                <h2 id="anchor-c">
+                    第三节
+                </h2>
+                <div class="anchor-space" />
+            </div>
+        </section>
     </main>
 </template>
 
@@ -3966,6 +3999,25 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 
 #back-top-content {
     height: 24rem;
+}
+
+/* Anchor 用例：可滚动容器，标题之间留出距离 */
+#anchor-scroller {
+    display: block;
+    box-sizing: border-box;
+    width: auto;
+    max-width: 100%;
+    max-height: 240px;
+    overflow: auto;
+    border: 1px solid var(--caomei-color-border);
+}
+
+.anchor-space {
+    height: 360px;
+}
+
+#anchor-scroller h2 {
+    margin: 0;
 }
 
 /* Tour 用例：长距离目标，迫使步骤切换时发生页面滚动 */

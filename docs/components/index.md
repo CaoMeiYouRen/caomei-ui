@@ -78,6 +78,7 @@
 - [Paginator 分页](./paginator)：分页用于在数据分片间切换，基于 Reka UI Pagination 封装。
 - [ProgressBar 进度条](./progress-bar)：进度条用于展示确定的进度值或不确定的等待状态，基于 Reka UI Progress 封装，与 ProgressSpinner 同源。
 - [ProgressSpinner 加载指示](./progress-spinner)：加载指示器用于表示正在进行的异步操作，基于 Reka UI Progress 封装（不确定进度）。
+- [QRCode 二维码](./qrcode)：把文本或链接编码为二维码，支持容错级别、静区、配色与居中图标；编码器 `qrcode` 为可选 peer，失败时清空旧图并给出提示。
 - [Result 结果页](./result)：结果页用于承载操作或页面的最终结果，支持语义状态与 403 / 404 / 500，并提供下一步操作区。
 - [Skeleton 骨架屏](./skeleton)：骨架屏用于在内容加载完成前占位，降低布局跳动并提示加载状态。为纯样式自建组件，不依赖外部 primitive。
 - [Statistic 统计数值](./statistic)：大号数值展示，支持精度、千分位、前后缀与加载态；空值与非法输入降级为占位，不做数字滚动动画。

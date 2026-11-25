@@ -8,7 +8,7 @@ The chart wrapper renders Apache ECharts charts inside a page: `option` is forwa
 > pnpm add vue-echarts echarts
 > ```
 >
-> Both are **optional peer dependencies** (this library never installs them for you, and downstreams that do not use this component are unaffected). **Importing this component without them** fails to resolve at bundle time (verified in this repo with esbuild: `Could not resolve "vue-echarts/style.css"`). **The package root and downstreams that do not use this component are unaffected** — the root never imports the kernel statically, so the module is tree-shaken away. See “Dependencies and on-demand registration” below.
+> Both are **optional peer dependencies** (this library never installs them for you, and the public type surface never references them). **Without them installed**, the bundler resolves the loader's dynamic `import()` (a literal specifier) through the module graph, so **any bundle that reaches the package root fails at build time** with "cannot resolve vue-echarts", whether or not this component is used (measured with a consumer fixture, `pnpm check:optional-peer`). Install both alongside this library. See “Dependencies and on-demand registration” below.
 
 ## Basic usage
 

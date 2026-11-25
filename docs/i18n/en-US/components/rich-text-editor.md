@@ -8,7 +8,7 @@ A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor:
 > pnpm add md-editor-v3
 > ```
 >
-> The kernel is an **optional peer dependency** (this library does not force it; consumers that never use this component are unaffected). **Importing this component without installing it** fails at build time with "cannot resolve md-editor-v3" (measured with Vite / Rolldown). The extra locale pack `@vavt/cm-extension` ships with this library (no manual install), and the kernel styles are loaded on demand by the component — the host does not need to `import` them. See [Dependencies and styling](#dependencies-and-styling) below.
+> The kernel is an **optional peer dependency** (this library does not force it and the public type surface never references it). **Without it installed**, the bundler resolves the loader's dynamic `import()` through the module graph, so **any bundle that reaches the package root** fails at build time with "cannot resolve md-editor-v3", whether or not this component is used (measured with a consumer fixture, `pnpm check:optional-peer`). The extra locale pack `@vavt/cm-extension` ships with this library (no manual install), and the kernel styles are loaded on demand by the component — the host does not need to `import` them. See [Dependencies and styling](#dependencies-and-styling) below.
 
 ## Basic usage
 
@@ -49,7 +49,7 @@ A **lightweight wrapper** around the third-party `md-editor-v3` Markdown editor:
 ## Dependencies and styling
 
 - `md-editor-v3` (kernel) is an **optional peer dependency**: install it before using this component (`pnpm add md-editor-v3`). `@vavt/cm-extension` (extra locale pack) ships with this library for the eight on-demand locales other than `zh-CN` / `en-US` (`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`); no manual install needed.
-- When `md-editor-v3` is not installed: **importing this component** fails at build time with "cannot resolve md-editor-v3" (Vite / Rolldown, measured 2026-09-30); consumers that **do not use this component** are unaffected (the package root does not statically import the kernel, so the module is tree-shaken away). The component's placeholder covers **runtime load failures** of the kernel (for example when SSR externalizes the peer, or the assets fail to load): it renders a `role="alert"` placeholder and emits a console warning.
+- When `md-editor-v3` is not installed: the bundler resolves the loader's dynamic `import()` through the module graph, so **any bundle that reaches the package root** fails at build time with "cannot resolve md-editor-v3", whether or not this component is used (measured with a consumer fixture, `pnpm check:optional-peer`). The component's placeholder covers **runtime load failures** of the kernel (for example when SSR externalizes the peer, or the assets fail to load): it renders a `role="alert"` placeholder and emits a console warning.
 - The kernel styles and texts are loaded **on demand** by the component (`md-editor-v3/lib/style.css` and friends); the host does not need to `import` them manually.
 - Override hooks: `--caomei-rich-text-editor-radius` (radius), `--caomei-rich-text-editor-min-height` (placeholder min height).
 - The container border uses the interactive control-boundary token (`--caomei-color-control-border`, ≥ 3:1 against `bg` / `bg-elevated`); the kernel root's `data-theme` triggers this library's dark tokens, so the wrapper bridges the value before applying it and keeps the preset value intact.

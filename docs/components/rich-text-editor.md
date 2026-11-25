@@ -8,7 +8,7 @@
 > pnpm add md-editor-v3
 > ```
 >
-> 内核是**可选 peer 依赖**（本库不强制安装，未使用本组件的下游不受影响）；**未安装就引入本组件**会在打包期报「无法解析 md-editor-v3」（Vite / Rolldown 实测）。扩展语言包 `@vavt/cm-extension` 随本库安装，无需手工安装；内核样式由组件按需加载，宿主无需手工 `import`。详见下文「[依赖与样式定制](#依赖与样式定制)」。
+> 内核是**可选 peer 依赖**（本库不强制安装、公共类型面不引用）；**未安装时**打包器会在模块图中解析加载器的动态 `import()`，因此**无论是否使用本组件**，打包链路过包根导出即会在构建期报「无法解析 md-editor-v3」（消费方 fixture 实测，`pnpm check:optional-peer`）。扩展语言包 `@vavt/cm-extension` 随本库安装，无需手工安装；内核样式由组件按需加载，宿主无需手工 `import`。详见下文「[依赖与样式定制](#依赖与样式定制)」。
 
 ## 基础用法
 
@@ -49,7 +49,7 @@
 ## 依赖与样式定制
 
 - `md-editor-v3`（内核）为**可选 peer 依赖**：使用本组件前需自行安装（`pnpm add md-editor-v3`）。`@vavt/cm-extension`（扩展语言包）随本库安装，用于除 `zh-CN` / `en-US` 外的 8 门按需语言（`zh-TW` / `ja-JP` / `ko-KR` / `es-ES` / `fr-FR` / `de-DE` / `ru-RU` / `pt-BR`），无需手工安装。
-- `md-editor-v3` 未安装时：**引入本组件**会在打包期报「无法解析 md-editor-v3」（Vite / Rolldown 实测，2026-09-30）；**未使用本组件**的下游不受影响（包根不静态引用内核，模块被 tree-shaking 丢弃）。组件内的占位降级覆盖内核**运行期加载失败**（如 SSR 将 peer 外部化、资源加载失败），此时渲染 `role="alert"` 占位并给出控制台告警。
+- `md-editor-v3` 未安装时：打包器会在模块图中解析加载器的动态 `import()`，**无论是否使用本组件**，打包链路过包根导出都会在构建期报「无法解析 md-editor-v3」（消费方 fixture 实测，`pnpm check:optional-peer`）。组件内的占位降级覆盖内核**运行期加载失败**（如 SSR 将 peer 外部化、资源加载失败），此时渲染 `role="alert"` 占位并给出控制台告警。
 - 内核样式与文案由组件**按需加载**（`md-editor-v3/lib/style.css` 等），宿主无需手工 `import`。
 - 覆盖钩子：`--caomei-rich-text-editor-radius`（圆角）、`--caomei-rich-text-editor-min-height`（占位最小高度）。
 - 容器描边取交互控件边界 token（`--caomei-color-control-border`，对 `bg` / `bg-elevated` ≥ 3:1）；内核根元素的 `data-theme` 会触发本库暗色 token，组件在包装层桥接后再应用，保证预设取值不被回退。

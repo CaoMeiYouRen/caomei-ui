@@ -50,7 +50,7 @@ pnpm add caomei-ui
 
 当前最新版本为 `1.4.0`（样式入口为 `caomei-ui/theme.css`；0.5.0 新增 `CaomeiRichTextEditor` 富文本编辑器封装（可选 peer 依赖 `md-editor-v3`）、把极简具名预设 `minimal` 设为缺省预设，并修复模态内浮层被遮挡的缺陷；0.6.0 修复 Tabs 激活指示条被裁剪与多余纵向滚动条、`DataTable` 排序指示条列宽跳动，并统一组件背景 / 阴影 token 与分组标签 / 折叠触发器可访问性；0.7.0 新增 Chart / Tooltip / 导航骨架 / 栅格布局与 Alert，并将内建语言改为预注册 + 按需子路径〔非预注册语言需 `registerLocale`〕），组件库以 Vue 3.5+ 作为 peer 依赖（需在项目中自行安装）。1.x 起遵循语义化版本兼容承诺；冻结面与弃用政策见[版本与兼容策略](./docs/guide/version-policy.md)。
 
-除 Vue 3.5+ 外，**部分组件另有可选 peer 依赖**（当前为 `CaomeiRichTextEditor` 的编辑器内核 `md-editor-v3`）：未使用这些组件的下游无需安装、也不受影响；使用前须自行安装（`pnpm add md-editor-v3`）。
+除 Vue 3.5+ 外，**部分组件另有可选 peer 依赖**：`CaomeiRichTextEditor` → `md-editor-v3`、`CaomeiChart` → `vue-echarts` + `echarts`、`CaomeiQRCode` → `qrcode`。`pnpm add` 不会强制拉取它们，公共类型面也不引用；但**无论是否使用对应组件，打包链路过包根导出时都必须安装**——加载器的动态 `import()` 是字面量说明符，会在模块图中被解析，未安装即构建期报「无法解析对应包名」。请在安装本库时一并安装（如 `pnpm add md-editor-v3`）。
 
 需要参与开发或本地联调时，也可通过本地依赖（`file:` / `link:`）消费构建产物，步骤见[本地联调](./docs/guide/local-linking.md)。
 

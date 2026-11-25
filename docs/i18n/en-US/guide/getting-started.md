@@ -14,7 +14,7 @@ pnpm add caomei-ui
 
 > The latest version is **v{{ theme.version }}** (style entry: `caomei-ui/theme.css`; see [Versioning & Compatibility](/en-US/guide/version-policy) for the breaking package-format change and downstream fixes). From 1.x on the library follows semantic versioning (breaking changes ship only in `major`; see that page for the frozen surfaces and the deprecation policy); Vue 3.5+ is a peer dependency. See the [roadmap](/plan/roadmap) for progress.
 
-Vue 3.5+ must be installed by your project. On top of that, **some components carry optional peer dependencies** (currently the editor core `md-editor-v3` for `CaomeiRichTextEditor`): downstreams that do not use those components neither install them nor are affected, while using them requires installing the peer first (`pnpm add md-editor-v3`) — otherwise the build fails with "cannot resolve md-editor-v3".
+Vue 3.5+ must be installed by your project. On top of that, **some components carry optional peer dependencies**: `CaomeiRichTextEditor` → `md-editor-v3`, `CaomeiChart` → `vue-echarts` + `echarts`, `CaomeiQRCode` → `qrcode`. `pnpm add` does not pull them and the public type surface never references them, but **any bundle that reaches the package root must install the matching peer** — the loader's dynamic `import()` uses a literal specifier that the bundler resolves through the module graph, failing with "cannot resolve" and the package name when missing. Install the peer alongside this library (for example `pnpm add md-editor-v3`). The improvement candidate for this boundary is tracked in the [Backlog](/plan/backlog).
 
 For local development, downstream projects can also consume the local build through [local linking](/en-US/guide/local-linking).
 

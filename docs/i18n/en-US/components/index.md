@@ -68,6 +68,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Paginator](/en-US/components/paginator)
 - [ProgressBar](/en-US/components/progress-bar)
 - [ProgressSpinner](/en-US/components/progress-spinner)
+- [QRCode](/en-US/components/qrcode)
 - [Result](/en-US/components/result)
 - [Skeleton](/en-US/components/skeleton)
 - [Statistic](/en-US/components/statistic)

@@ -14,7 +14,7 @@ pnpm add caomei-ui
 
 > 当前最新版本为 **v{{ theme.version }}**（样式入口为 `caomei-ui/theme.css`；破坏性形态变更与下游修复指引见[版本与兼容策略](./version-policy.md)）。1.x 起遵循语义化版本兼容承诺（破坏性变更仅随 `major` 发布，冻结面与弃用政策见该页）；组件库以 Vue 3.5+ 作为 peer 依赖。规划与进展见 [路线图](../plan/roadmap.md)。
 
-Vue 3.5+ 需在项目中自行安装。此外**部分组件带可选 peer 依赖**（当前为 `CaomeiRichTextEditor` 的编辑器内核 `md-editor-v3`）：未使用这些组件的下游无需安装、也不受影响；使用前须自行安装（`pnpm add md-editor-v3`），否则会在打包期报「无法解析 md-editor-v3」。
+Vue 3.5+ 需在项目中自行安装。此外**部分组件带可选 peer 依赖**：`CaomeiRichTextEditor` → `md-editor-v3`、`CaomeiChart` → `vue-echarts` + `echarts`、`CaomeiQRCode` → `qrcode`。`pnpm add` 不会强制拉取它们，公共类型面也不引用；但**只要打包链路过包根导出，就必须安装对应 peer**——加载器里的动态 `import()` 是字面量说明符，打包器会在模块图中解析，未安装即报「无法解析对应包名」。请在安装本库时一并安装（如 `pnpm add md-editor-v3`）。该结构边界的改进候选见 [Backlog](../plan/backlog.md)。
 
 需要本地联调时，下游项目也可通过[本地联调](./local-linking.md)消费本地构建产物。
 

@@ -66,6 +66,7 @@
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
 - [Toast 轻提示](./toast)：轻提示用于对用户操作给出简短反馈，基于 Reka UI Toast 封装，并提供 `useToast()` 服务式调用。提示由视口内的可访问区域承载，支持自动关闭、滑动关闭、操作按钮与语义语气。
 - [Tooltip 工具提示](./tooltip)：工具提示在指针悬停或键盘聚焦时展示一段简短说明，基于 Reka UI Tooltip 封装；建议在应用根部放置一次 `CaomeiTooltipProvider` 并与触发器 / 面板组合使用（未放置时组件内建兜底），不构成焦点陷阱。
+- [Tour 引导](./tour)：引导按步骤高亮页面目标并展示说明卡片，支持受控步骤、遮罩挖空、滚动锁与焦点归还；无目标时降级为居中卡片。
 
 ## 数据展示
 

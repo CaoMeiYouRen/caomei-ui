@@ -96,6 +96,7 @@ import {
     CaomeiTooltipProvider,
     CaomeiTooltipText,
     CaomeiTooltipTrigger,
+    CaomeiTour,
     CaomeiBreadcrumb,
     CaomeiBreadcrumbItem,
     CaomeiMenu,
@@ -786,6 +787,30 @@ const ConfirmDriver = defineComponent({
 const tabbarValue = ref<'home' | 'explore' | 'me'>('home')
 const actionSheetOpen = ref(false)
 const actionSheetLog = ref('')
+
+/**
+ * Tour 用例（见 `test/e2e/tour.e2e.ts`）：选择器目标、缺失目标降级、滚动跟随与遮罩几何。
+ * 第二个目标与第一个之间留出长距离，用于验证 scrollIntoView 与滚动跟随。
+ */
+const tourOpen = ref(false)
+const tourCurrent = ref(0)
+const tourMissingOpen = ref(false)
+const tourSteps = [
+    { target: '#tour-target-a', title: '第一步：目标 A', description: '用于验证挖空高亮与卡片定位。' },
+    { target: '#tour-target-b', title: '第二步：目标 B', description: '用于验证步骤切换后的滚动跟随。' },
+]
+const tourMissingSteps = [
+    { target: '#tour-missing-target', title: '目标不存在', description: '应降级为居中卡片与整屏遮罩。' },
+]
+
+function startTour(): void {
+    tourCurrent.value = 0
+    tourOpen.value = true
+}
+
+function startMissingTour(): void {
+    tourMissingOpen.value = true
+}
 const actionSheetGroups = [
     {
         label: '项目操作',
@@ -3519,6 +3544,51 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 </CaomeiButton>
             </div>
         </section>
+        <!--
+          Tour（供后续引导 E2E 使用）：选择器目标 + 缺失目标降级，
+          两个目标之间留出长距离以覆盖 scrollIntoView 与滚动跟随。
+        -->
+        <section id="tour" class="fixture__case">
+            <button
+                id="tour-start"
+                type="button"
+                @click="startTour"
+            >
+                开始引导
+            </button>
+            <div
+                id="tour-target-a"
+                class="fixture__state"
+            >
+                目标 A
+            </div>
+            <div
+                id="tour-spacer"
+                class="fixture__state"
+            />
+            <div
+                id="tour-target-b"
+                class="fixture__state"
+            >
+                目标 B
+            </div>
+            <button
+                id="tour-missing-start"
+                type="button"
+                @click="startMissingTour"
+            >
+                缺失目标
+            </button>
+            <CaomeiTour
+                v-model:open="tourOpen"
+                v-model:current="tourCurrent"
+                :steps="tourSteps"
+            />
+            <CaomeiTour
+                v-model:open="tourMissingOpen"
+                :steps="tourMissingSteps"
+            />
+        </section>
     </main>
 </template>
 
@@ -3769,6 +3839,15 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 
 #back-top-content {
     height: 24rem;
+}
+
+/* Tour 用例：长距离目标，迫使步骤切换时发生页面滚动 */
+#tour-spacer {
+    height: 60rem;
+}
+
+#tour-target-b {
+    margin-top: var(--caomei-space-4);
 }
 
 /*

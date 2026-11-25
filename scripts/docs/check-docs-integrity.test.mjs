@@ -160,7 +160,9 @@ describe('仓库不变量（结构下界）', () => {
     it('豁免文件的骨架标题仍在，且收窄口径已声明', () => {
         expect(STRUCTURAL_HEADING_MAX_LEVEL).toBe(2)
         const content = readFileSync(join(PROJECT_ROOT, 'docs/plan/todo.md'), 'utf8')
-        // 有意的仓库状态断言：豁免文件须保留骨架标题（归档会合并 H2 时须同步改本行）
-        expect(countStructuralHeadings(content)).toBeGreaterThanOrEqual(3)
+        // 有意的仓库状态断言：豁免文件须保留骨架标题（归档会合并 H2 时须同步改本行）。
+        // 2026-11-25 起 `todo.md` 在「无进行中阶段」且未完成项汇总裁撤时只剩 H1 + 「当前状态」
+        // 两个骨架标题（用户指令清空 todo），下界随载体实况调整为 2，仍能拦住「骨架被删」。
+        expect(countStructuralHeadings(content)).toBeGreaterThanOrEqual(2)
     })
 })

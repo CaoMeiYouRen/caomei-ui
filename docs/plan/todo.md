@@ -12,7 +12,7 @@
 | M2 QRCode 二维码 | 2 / 2 | 已闭环 | `22e49857`、`f3655364` | R3 Pass | 2 → 0 |
 | M3 ContextMenu 右键菜单 | 2 / 2 | 已闭环 | `e5ecb6bb`、`e90e232e` | R3 Pass | 2 → 0 |
 | M4 Splitter 分栏 | 2 / 2 | 已闭环 | `9e525e0d`、`caefa7db` | R3 Pass | 2 → 0 |
-| M5 Anchor 锚点导航 | 0 / 2 | 未开始 | — | — | 2 → 0 |
+| M5 Anchor 锚点导航 | 1 / 2 | 进行中 | `6287b52d` | R2 Pass | 2 → 1 |
 
 尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。本阶段取向为新功能优先、不发布；`1.5.0` 发布收口按用户裁定留待 2026-11-29 之后。
 
@@ -28,5 +28,5 @@
 | M3-2 | ContextMenu 右键菜单 | ContextMenu 文档、locale 与回归 | 已交付 |
 | M4-1 | Splitter 分栏 | Splitter 实现 | 已交付 |
 | M4-2 | Splitter 分栏 | Splitter 文档、locale 与回归 | 已交付 |
-| M5-1 | Anchor 锚点导航 | Anchor 实现 | 待执行 |
+| M5-1 | Anchor 锚点导航 | Anchor 实现 | 已交付 |
 | M5-2 | Anchor 锚点导航 | Anchor 文档、locale 与回归 | 待执行 |

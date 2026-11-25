@@ -11,6 +11,9 @@ const ptBR: CaomeiLocaleMessages = {
         readonlyLabel: 'Avaliação somente leitura',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Navegação por âncoras',
+    },
     autoComplete: {
         empty: 'Nenhuma sugestão correspondente',
         open: 'Mostrar sugestões',

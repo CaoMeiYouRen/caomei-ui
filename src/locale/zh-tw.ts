@@ -11,6 +11,9 @@ const zhTW: CaomeiLocaleMessages = {
         readonlyLabel: '唯讀評分',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: '錨點導覽',
+    },
     autoComplete: {
         empty: '沒有符合的建議',
         open: '展開建議',

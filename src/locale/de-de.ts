@@ -11,6 +11,9 @@ const deDE: CaomeiLocaleMessages = {
         readonlyLabel: 'Bewertung (schreibgeschützt)',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Ankernavigation',
+    },
     autoComplete: {
         empty: 'Keine passenden Vorschläge',
         open: 'Vorschläge anzeigen',

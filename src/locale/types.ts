@@ -31,6 +31,9 @@ export interface CaomeiLocaleMessages {
         readonlyLabel: string
         valueLabel: string
     }
+    anchor: {
+        label: string
+    }
     autoComplete: {
         empty: string
         open: string

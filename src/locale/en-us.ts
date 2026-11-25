@@ -11,6 +11,9 @@ const enUS: CaomeiLocaleMessages = {
         readonlyLabel: 'Read-only rating',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Anchor navigation',
+    },
     autoComplete: {
         empty: 'No matching suggestions',
         open: 'Show suggestions',

@@ -11,6 +11,9 @@ const jaJP: CaomeiLocaleMessages = {
         readonlyLabel: '読み取り専用の評価',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'アンカーナビゲーション',
+    },
     autoComplete: {
         empty: '一致する候補がありません',
         open: '候補を表示',

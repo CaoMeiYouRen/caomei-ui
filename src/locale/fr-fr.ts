@@ -11,6 +11,9 @@ const frFR: CaomeiLocaleMessages = {
         readonlyLabel: 'Note en lecture seule',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Navigation par ancres',
+    },
     autoComplete: {
         empty: 'Aucune suggestion correspondante',
         open: 'Afficher les suggestions',

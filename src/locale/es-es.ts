@@ -11,6 +11,9 @@ const esES: CaomeiLocaleMessages = {
         readonlyLabel: 'Valoración de solo lectura',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Navegación por anclas',
+    },
     autoComplete: {
         empty: 'No hay sugerencias coincidentes',
         open: 'Mostrar sugerencias',

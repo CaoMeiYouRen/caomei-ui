@@ -11,6 +11,9 @@ const zhCN: CaomeiLocaleMessages = {
         readonlyLabel: '只读评分',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: '锚点导航',
+    },
     autoComplete: {
         empty: '无匹配建议',
         open: '展开建议',

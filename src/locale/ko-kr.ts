@@ -11,6 +11,9 @@ const koKR: CaomeiLocaleMessages = {
         readonlyLabel: '읽기 전용 평점',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: '앵커 탐색',
+    },
     autoComplete: {
         empty: '일치하는 제안이 없습니다',
         open: '제안 표시',

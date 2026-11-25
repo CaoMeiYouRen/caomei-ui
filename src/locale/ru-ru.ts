@@ -11,6 +11,9 @@ const ruRU: CaomeiLocaleMessages = {
         readonlyLabel: 'Оценка только для чтения',
         valueLabel: '{value}',
     },
+    anchor: {
+        label: 'Навигация по якорям',
+    },
     autoComplete: {
         empty: 'Нет подходящих предложений',
         open: 'Показать предложения',

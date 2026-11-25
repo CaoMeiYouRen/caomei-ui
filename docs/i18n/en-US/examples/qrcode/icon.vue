@@ -8,7 +8,7 @@ const icon = withBase('/demo/avatar.svg')
 <template>
     <div class="qr-demo">
         <CaomeiQRCode
-            value="https://caomei.example.com/profile"
+            value="PROFILE-CAOMEI-2026"
             level="H"
             :icon="icon"
             label="QR code with icon"

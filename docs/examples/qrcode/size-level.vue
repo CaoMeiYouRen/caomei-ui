@@ -5,16 +5,16 @@ import { CaomeiQRCode } from '@/components/qrcode'
 <template>
     <div class="qr-demo">
         <CaomeiQRCode
-            value="https://caomei.example.com/small"
+            value="SMALL-96"
             :size="96"
             label="小尺寸二维码"
         />
         <CaomeiQRCode
-            value="https://caomei.example.com/default"
+            value="DEFAULT-160"
             label="默认尺寸二维码"
         />
         <CaomeiQRCode
-            value="https://caomei.example.com/dark"
+            value="CUSTOM-COLOR-160"
             :size="160"
             :margin="4"
             color="#12326e"
@@ -22,7 +22,7 @@ import { CaomeiQRCode } from '@/components/qrcode'
             label="自定义配色二维码"
         />
         <CaomeiQRCode
-            value="https://caomei.example.com/level"
+            value="LEVEL-120"
             :size="120"
             level="L"
             label="低容错级别二维码"
@@ -30,7 +30,7 @@ import { CaomeiQRCode } from '@/components/qrcode'
             L 级（约 7%）
         </CaomeiQRCode>
         <CaomeiQRCode
-            value="https://caomei.example.com/level"
+            value="LEVEL-120"
             :size="120"
             level="H"
             label="高容错级别二维码"

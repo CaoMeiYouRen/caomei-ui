@@ -5,7 +5,7 @@ import { CaomeiQRCode } from '@/components/qrcode'
 <template>
     <div class="qr-demo">
         <CaomeiQRCode
-            value="https://caomei.example.com/invite/8f3c"
+            value="INVITE-8F3C-2026"
             label="邀请链接二维码"
         >
             扫码加入

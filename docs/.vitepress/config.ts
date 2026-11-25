@@ -361,6 +361,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Alert', link: '/en-US/components/alert' },
                                 { text: 'ConfirmDialog', link: '/en-US/components/confirm-dialog' },
+                                { text: 'ContextMenu', link: '/en-US/components/context-menu' },
                                 { text: 'Dialog', link: '/en-US/components/dialog' },
                                 { text: 'Drawer', link: '/en-US/components/drawer' },
                                 { text: 'Message', link: '/en-US/components/message' },
@@ -589,6 +590,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'Alert 提示框', link: '/components/alert' },
                         { text: 'ConfirmDialog 确认对话框', link: '/components/confirm-dialog' },
+                        { text: 'ContextMenu 右键菜单', link: '/components/context-menu' },
                         { text: 'Dialog 对话框', link: '/components/dialog' },
                         { text: 'Drawer 抽屉', link: '/components/drawer' },
                         { text: 'Message 提示条', link: '/components/message' },

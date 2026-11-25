@@ -2,7 +2,8 @@
 import { ContextMenuContent, ContextMenuPortal } from 'reka-ui'
 import { computed, inject, ref } from 'vue'
 import { CaomeiIcon } from '../../icons'
-import { triggerElementKey } from '../_shared/trigger-element'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { panelElementKey, triggerElementKey } from '../_shared/trigger-element'
 import { useOpenStateIsolation } from '../_shared/use-open-state-isolation'
 import CaomeiContextMenuItem from './context-menu-item.vue'
 import CaomeiContextMenuSeparator from './context-menu-separator.vue'
@@ -17,6 +18,20 @@ const props = withDefaults(defineProps<ContextMenuContentProps>(), {
 
 const contentRef = ref<{ $el?: unknown } | null>(null)
 const triggerRef = inject(triggerElementKey, null)
+const panelEl = inject(panelElementKey, null)
+
+onMounted(() => {
+    const element = contentRef.value?.$el
+    if (panelEl && element instanceof HTMLElement) {
+        panelEl.value = element
+    }
+})
+
+onBeforeUnmount(() => {
+    if (panelEl && panelEl.value === contentRef.value?.$el) {
+        panelEl.value = null
+    }
+})
 
 const { release, sync } = useOpenStateIsolation(contentRef, () => [triggerRef?.value])
 

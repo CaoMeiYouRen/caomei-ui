@@ -59,6 +59,7 @@
 
 - [Alert 提示框](./alert)：提示框用于展示内联常驻提示（环境说明、配置警告、整体错误汇总），是 [Message](./message) 的语义预设包装：共用同一外观层，默认不进 live region。
 - [ConfirmDialog 确认对话框](./confirm-dialog)：确认对话框用于中断用户当前操作并获取明确确认，基于 Reka UI AlertDialog 封装，并提供 `useConfirm()` 服务式调用。弹层强制模态、锁定页面滚动，且**点击遮罩不会关闭**——用户必须显式选择确认或取消（Esc 视为取消）。
+- [ContextMenu 右键菜单](./context-menu)：在指定区域右键或触屏长按弹出上下文菜单，菜单项 / 分组 / 快捷键 / 危险项语义与下拉菜单一致，支持受控开合与键盘导航。
 - [Dialog 对话框](./dialog)：对话框用于在当前页面之上承载需要用户聚焦处理的内容，基于 Reka UI Dialog 封装。
 - [Drawer 抽屉](./drawer)：抽屉从页面边缘滑出，用于承载次要内容、设置面板或导航；封装 Reka UI 的 Dialog primitive，并提供四向 `position`。
 - [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 live region 播报（默认 `role="status"`，可切 `alert`）；内联常驻提示请用 Alert。

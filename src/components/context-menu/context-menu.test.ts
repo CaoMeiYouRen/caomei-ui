@@ -168,6 +168,38 @@ describe('CaomeiContextMenu', () => {
         expect(panel(), '受控父级未回写时应保持打开').not.toBeNull()
     })
 
+    it('Escape 关闭后把焦点归还打开前的元素', async () => {
+        const Host = defineComponent({
+            components: { CaomeiContextMenu, CaomeiContextMenuContent, CaomeiContextMenuTrigger },
+            setup: () => ({ open: ref(false) }),
+            template: `
+                <div>
+                    <button id="cm-before" type="button">先聚焦</button>
+                    <CaomeiContextMenu v-model:open="open">
+                        <CaomeiContextMenuTrigger><div id="cm-target">目标</div></CaomeiContextMenuTrigger>
+                        <CaomeiContextMenuContent :model="[{ label: '一' }]" />
+                    </CaomeiContextMenu>
+                </div>
+            `,
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        wrappers.push(wrapper as unknown as ReturnType<typeof mount>)
+        await nextTick()
+
+        const before = document.querySelector<HTMLElement>('#cm-before')
+        before?.focus()
+        expect(document.activeElement).toBe(before)
+
+        await openMenu()
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        await flush()
+        await new Promise((resolve) => {
+            setTimeout(resolve, 10)
+        })
+
+        expect(document.activeElement, '关闭后焦点应回到打开前的元素').toBe(before)
+    })
+
     it('展开时隔离背景，关闭后还原', async () => {
         const Host = defineComponent({
             components: { CaomeiContextMenu, CaomeiContextMenuContent, CaomeiContextMenuTrigger },

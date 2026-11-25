@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ContextMenuTrigger } from 'reka-ui'
 import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { triggerElementKey } from '../_shared/trigger-element'
+import { openFocusElementKey, triggerElementKey } from '../_shared/trigger-element'
 import type { ContextMenuTriggerProps } from './types'
 
 defineOptions({ name: 'CaomeiContextMenuTrigger', inheritAttrs: false })
@@ -12,15 +12,35 @@ const props = withDefaults(defineProps<ContextMenuTriggerProps>(), {
 
 const rootRef = ref<{ $el?: unknown } | null>(null)
 const triggerEl = inject(triggerElementKey, null)
+const openFocusEl = inject(openFocusElementKey, null)
+
+/** 记录右键 / 长按前的焦点：右键会把不可聚焦目标上的焦点清到 body，须在 pointerdown 前取 */
+function rememberFocus(): void {
+    if (!openFocusEl) {
+        return
+    }
+    const active = document.activeElement
+    openFocusEl.value = active instanceof HTMLElement && active !== document.body && active !== document.documentElement
+        ? active
+        : null
+}
 
 onMounted(() => {
     const element = rootRef.value?.$el
-    if (triggerEl && element instanceof HTMLElement) {
-        triggerEl.value = element
+    if (element instanceof HTMLElement) {
+        if (triggerEl) {
+            triggerEl.value = element
+        }
+        // 捕获阶段挂在真实元素上：组件事件经 Reka 的 inheritAttrs=false 根可能被丢弃
+        element.addEventListener('pointerdown', rememberFocus, { capture: true })
     }
 })
 
 onBeforeUnmount(() => {
+    const element = rootRef.value?.$el
+    if (element instanceof HTMLElement) {
+        element.removeEventListener('pointerdown', rememberFocus, { capture: true })
+    }
     if (triggerEl) {
         triggerEl.value = null
     }

@@ -271,6 +271,19 @@ const fieldGroupTextarea = ref(textareaOverflow)
  * 包裹层承载面板 z-index），任一类回退到遮罩层档位都会被模态内容盖住。
  */
 const overlayDialogOpen = ref(false)
+const contextMenuLog = ref('')
+const contextMenuItems = [
+    { label: '查看详情' },
+    { label: '复制链接', shortcut: '⌘C' },
+    { separator: true },
+    { label: '无权限', disabled: true },
+    { label: '删除', danger: true },
+]
+
+function runContextMenuCommand(event: { item: { label?: string } }) {
+    contextMenuLog.value = event.item.label ?? ''
+}
+
 const overlayContextMenuItems = [
     { label: '查看详情' },
     { label: '复制链接', shortcut: '⌘C' },
@@ -3612,6 +3625,31 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 v-model:open="tourMissingOpen"
                 :steps="tourMissingSteps"
             />
+        </section>
+        <!--
+          ContextMenu（供右键菜单 E2E 使用）：右键打开、命令回调、禁用项与危险项。
+        -->
+        <section id="context-menu" class="fixture__case">
+            <button
+                id="context-menu-before"
+                type="button"
+            >
+                先聚焦这里
+            </button>
+            <CaomeiContextMenu>
+                <CaomeiContextMenuTrigger>
+                    <div
+                        id="context-menu-target"
+                        class="fixture__state"
+                    >
+                        右键打开菜单
+                    </div>
+                </CaomeiContextMenuTrigger>
+                <CaomeiContextMenuContent :model="contextMenuItems.map((item) => ({...item, command: runContextMenuCommand}))" />
+            </CaomeiContextMenu>
+            <div id="context-menu-log">
+                {{ contextMenuLog }}
+            </div>
         </section>
     </main>
 </template>

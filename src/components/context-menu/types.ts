@@ -46,7 +46,8 @@ export interface ContextMenuTriggerProps {
      *
      * 触发区不生成盒（`display: contents`）、不带 `tabindex`：右键菜单由指针打开，键盘用户
      * 需要入口时由使用方提供（如在可聚焦元素上监听 Shift+F10 并绑定 `v-model:open`）。
-     * `forceMount` 下关闭不卸载焦点域，`close-auto-focus` 不触发，Escape 不会归还焦点（上游限制）。
+     * 关闭后的焦点归还由根组件保证（记录打开前的焦点并重试写入，`forceMount` 下同样生效）；
+     * 若关闭时焦点已被消费方（如 `command` 打开的对话框）接管，则不抢回。
      * @default false
      * @en Drop the built-in trigger area class, keeping only the context-menu wiring
      */

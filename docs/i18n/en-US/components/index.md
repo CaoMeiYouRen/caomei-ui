@@ -52,6 +52,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [TreeSelect](/en-US/components/tree-select)
 - [Alert](/en-US/components/alert)
 - [ConfirmDialog](/en-US/components/confirm-dialog)
+- [ContextMenu](/en-US/components/context-menu)
 - [Dialog](/en-US/components/dialog)
 - [Drawer](/en-US/components/drawer)
 - [Message](/en-US/components/message)

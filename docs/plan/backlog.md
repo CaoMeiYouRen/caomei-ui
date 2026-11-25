@@ -21,12 +21,7 @@
 
 ### 1.2 长尾组件候选（Tier 3）
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|:-:|
-| Sidebar | momei 使用面（标签级统计未命中，待复核） | — 。**下游反馈（2026-09-22，dependfix `1a73abc`）**：`apps/platform` 1 处用 `Sidebar`，其迁移评估确认可由 `CaomeiDrawer` 机械承接（`v-model:open` + `title` / `#header` + `position="right"`），**不构成阻塞**。触发条件：出现 Drawer 语义不适配的用例 | 低 |
-| ScrollPanel 型滚动面板 | dependfix 迁移反馈 | **评估结论：不自研**。下游 2 处（`repo-history-dialog.vue` / `run-detail-dialog.vue`，取证 2026-09-22）均为 `height: 200px` 固定高度日志区，原生滚动容器 + CSS 足以覆盖。触发条件：出现视口检测 / 滚动条定制 / 虚拟滚动等原生无法覆盖的用例。采纳「不自研」时须同步 [组件设计 §5](../design/components.md) 的 `ScrollArea` 候选行，避免两处口径并存 | 低 |
-
-> BackTop / TimePicker 已于 2026-11-14 登记 Phase 34；Rating 已于 2026-11-15 登记 Phase 35（见[登记批次](../design/governance/2026-11-15-phase35-registration.md) §2）；本表只保留尚未登记的候选。
+> **本组暂无在册候选。** BackTop / TimePicker 已于 2026-11-14 登记 Phase 34、Rating 已于 2026-11-15 登记 Phase 35（见[登记批次](../design/governance/2026-11-15-phase35-registration.md) §2）；Sidebar / ScrollPanel 经评估不纳入自研（结论见 §3）。本组只保留尚未登记的候选。
 
 ### 1.3 不纳入自研的能力（外购建议）
 
@@ -51,6 +46,7 @@
 | Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 低 |
 | 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 低 |
 | Stepper 横向形态极窄容器下的排版退化 | 用户缺陷报告（2026-11-24，文档站窄视口） | 横向 3 步步骤条（文档站 `basic` 示例：描述 6 / 6 / 5 字，缺省 `md` 尺寸）在内容宽 270 / 310 / 340 / 430px（视口 320 / 360 / 390 / 480）下标题均塌成单字一行（实测 14 ~ 24px 宽），示例自绘的上一步 / 下一步按钮同时折两行；640 与 768 档（内容宽 590 / 686）恢复单行，中间区间未取样。320 / 360 档列表另有 18 / 7px 内部溢出，在文档站示例的列表滚动容器内可横向滚动（≤640 档 `overflow-x: auto`），页面级仍满足 `scrollWidth === innerWidth`。机制为 item 均分压缩（`flex: 1 1 0` + `min-width: 0`），具体分配未逐层取证。**用户裁定（2026-11-24）：暂不修复**，改为在 [Stepper 组件文档](../components/stepper.md) 写明「窄屏不推荐横向步骤条」。**触发条件 = 用户改判，或出现必须在视口 ≤ 480px（内容宽约 ≤ 430px）内展示横向步骤条的用例**。**复算** = `pnpm docs:build` + `pnpm docs:preview`，页面 `components/stepper`，Chromium 按上述六档量 `.caomei-stepper__title` 高度 / 行高 | 低 |
+| 真机验收（iOS `dvh` 真实收缩 / 触摸滚动惯性 / OTP 自动填充） | Phase 42 M2 仅完成浏览器设备视口模拟（非真机），三项行为无真机执行 | **等待外部条件**：需设备或真机反馈后执行；本仓不设自研自动化 | 中 |
 
 ### 1.6 基建与治理候选
 
@@ -74,16 +70,14 @@
 
 ### 1.7 服务层候选（composables）
 
-| 候选 | 来源 | 说明 | 优先级 |
-|------|------|------|--------|
-| 通用对话框服务 `useDialog` | 用户需求 | **评估结论：暂不实现**。触发条件：出现非组件上下文的命令式弹窗用例 | 低 |
+> **本组暂无在册候选。**
 
 ### 1.8 下游协同候选
 
 | 候选 | 说明 | 优先级 |
 |------|------|--------|
-| momei 侧迁移执行 | **执行主体为 momei 项目**；本仓等待其反馈 | 等待外部反馈 |
-| 三家下游 1.4.0 适配回收 | 待上游 Button 单元素根 / 换行开关修复后，复核删除 caomei-auth 的 `!important` 与 `white-space: normal`、momei 的 `vertical-align: top`，并复核 dependfix 的 `inert` e2e 手势。**触发条件 = 对应上游修复发布后** | 中 |
+| momei 侧迁移执行与页面级反馈 | **执行主体为 momei 项目**；迁移已执行，**页面级反馈仍待补**（本仓等待外部输入） | 等待外部反馈 |
+| 三家下游 1.4.0 适配回收 | Button 单元素根与换行开关**已交付**（Phase 43），待 `1.5.0` 发布后按[覆盖指引](../guide/overriding-styles.md)回收下游临时写法：caomei-auth 的 `!important` 与 `white-space: normal`、momei 的 `vertical-align: top`，并复核 dependfix 的 `inert` e2e 手势。**触发条件 = `1.5.0` 发布后** | 中 |
 
 ### 1.9 图标体系候选
 
@@ -135,3 +129,6 @@
 | 手势交互型移动件（PullRefresh / InfiniteScroll / SwipeCell / 图片捏合预览 / IndexBar / FloatingBubble / Signature） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 C 类；caomei-todo 架构 §11.5 | **不纳入**：与[响应式设计 §1](../design/responsive.md) 的手势非目标一致，且需要独立的交互与测试体系；caomei-todo 明确在应用层用 Pointer Events 实现并保留可见按钮作为兜底与无障碍路径。触发条件 = 用户推翻手势非目标 |
 | NumberKeyboard（自定义数字键盘） | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.3 A 类；caomei-todo 需求全文核对（2026-11-20） | **不纳入**：caomei-todo 一期需求未出现金额输入 / 验证码专用键盘条目，`InputNumber` + 系统键盘可覆盖。触发条件 = 出现必须自定义键盘的金额 / 验证码用例 |
 | 全量 E2E 矩阵宽屏化（1536 / 1920 进入全量档） | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4 | **不纳入**：新增两个全量档会使用例实例接近翻倍，周回归时长与 flaky 风险显著上升；定向档已能覆盖宽屏形态。触发条件 = 定向档连续漏检宽屏回归 |
+| `Sidebar`（侧边导航容器） | momei / dependfix 使用面（2026-09-22 取证） | **不纳入自研**：dependfix `apps/platform` 的单处用法可由 `CaomeiDrawer` 机械承接（`v-model:open` + `title` / `#header` + `position="right"`）；触发条件 = 出现 Drawer 语义不适配的用例 |
+| `ScrollPanel` 型滚动面板 | dependfix 迁移反馈（2026-09-22 取证） | **不纳入自研**：下游两处均为固定高度日志区，原生滚动容器 + CSS 即可覆盖；触发条件 = 出现视口检测 / 滚动条定制 / 虚拟滚动等原生无法覆盖的用例 |
+| 通用对话框服务 `useDialog` | 用户需求（历史候选） | **暂不实现**：触发条件 = 出现非组件上下文的命令式弹窗用例 |

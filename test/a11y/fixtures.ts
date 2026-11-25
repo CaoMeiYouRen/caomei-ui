@@ -113,6 +113,7 @@ import {
     CaomeiToolbarSeparator,
     CaomeiToolbarToggleGroup,
     CaomeiToolbarToggleItem,
+    CaomeiTour,
     CaomeiTree,
     CaomeiTreeSelect,
     CaomeiTooltip,
@@ -385,6 +386,19 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-tooltip__content', '[role="tooltip"]'],
     },
+    /*
+      引导浮层经 Teleport 挂到 body：受检对象是遮罩根与卡片本身，
+      步骤内容走默认插槽（与文档示例同形态），不依赖目标元素的真实布局。
+    */
+    {
+        name: 'CaomeiTour',
+        root: CaomeiTour,
+        definition: {
+            components: { CaomeiTour },
+            template: '<CaomeiTour :steps="[{ title: \'欢迎\', description: \'先看这里再开始\' }, { title: \'第二步\' }]" />',
+        },
+        requiredSelectors: ['.caomei-tour', '[role="dialog"]', '.caomei-tour__card'],
+    },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
         name: 'CaomeiTooltipText',
@@ -457,4 +471,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 81
+export const A11Y_FIXTURE_BUDGET = 82

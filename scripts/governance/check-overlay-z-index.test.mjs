@@ -68,8 +68,8 @@ describe('check-overlay-z-index 仓库不变量', () => {
     it('浮层档位声明数与受检面下界一致（防清单被静默收窄）', () => {
         const result = runChecks()
         expect(result.counts.floatingDeclarations).toBeGreaterThanOrEqual(MIN_FLOATING_DECLARATIONS)
-        // 10 个 portal 面板 + Image 预览遮罩 + 预览内容 + Toast 视口
-        expect(result.counts.floatingDeclarations).toBe(13)
+        // 10 个 portal 面板 + Image 预览遮罩 + 预览内容 + Toast 视口 + Tour 遮罩根
+        expect(result.counts.floatingDeclarations).toBe(14)
     })
 })
 

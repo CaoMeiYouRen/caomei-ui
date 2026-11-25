@@ -185,6 +185,13 @@ const zhCN: CaomeiLocaleMessages = {
     tabbar: {
         label: '主导航',
     },
+    tour: {
+        label: '产品引导',
+        next: '下一步',
+        prev: '上一步',
+        skip: '跳过',
+        finish: '完成',
+    },
 }
 
 export default zhCN

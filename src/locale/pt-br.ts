@@ -185,6 +185,13 @@ const ptBR: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Navegação principal',
     },
+    tour: {
+        label: 'Tour do produto',
+        next: 'Próximo',
+        prev: 'Anterior',
+        skip: 'Pular',
+        finish: 'Concluir',
+    },
 }
 
 export default ptBR

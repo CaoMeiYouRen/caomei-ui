@@ -86,6 +86,7 @@ import {
 | `transfer` | `source` `target` `search` `empty` `moveToTarget` `moveToSource` | Transfer |
 | `timePicker` | `hour` `minute` `second` `am` `pm` | TimePicker |
 | `toast` | `label` `viewport` `close` | Toast |
+| `tour` | `label` `next` `prev` `skip` `finish` | Tour |
 
 ## Quick start
 
@@ -120,16 +121,16 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 | Locale | Native name | Distribution | Key coverage | Review status |
 | --- | --- | --- | --- | --- |
-| `zh-CN` | 简体中文 | Pre-registered | 106 / 106 | Source |
-| `en-US` | English | Pre-registered | 106 / 106 | Not separately reviewed |
-| `zh-TW` | 繁體中文 | Subpath | 106 / 106 | Reviewed |
-| `ja-JP` | 日本語 | Subpath | 106 / 106 | Reviewed |
-| `ko-KR` | 한국어 | Subpath | 106 / 106 | Reviewed |
-| `es-ES` | Español | Subpath | 106 / 106 | Not reviewed |
-| `fr-FR` | Français | Subpath | 106 / 106 | Not reviewed |
-| `de-DE` | Deutsch | Subpath | 106 / 106 | Not reviewed |
-| `ru-RU` | Русский | Subpath | 106 / 106 | Not reviewed |
-| `pt-BR` | Português (Brasil) | Subpath | 106 / 106 | Not reviewed |
+| `zh-CN` | 简体中文 | Pre-registered | 115 / 115 | Source |
+| `en-US` | English | Pre-registered | 115 / 115 | Not separately reviewed |
+| `zh-TW` | 繁體中文 | Subpath | 115 / 115 | Reviewed |
+| `ja-JP` | 日本語 | Subpath | 115 / 115 | Reviewed |
+| `ko-KR` | 한국어 | Subpath | 115 / 115 | Reviewed |
+| `es-ES` | Español | Subpath | 115 / 115 | Not reviewed |
+| `fr-FR` | Français | Subpath | 115 / 115 | Not reviewed |
+| `de-DE` | Deutsch | Subpath | 115 / 115 | Not reviewed |
+| `ru-RU` | Русский | Subpath | 115 / 115 | Not reviewed |
+| `pt-BR` | Português (Brasil) | Subpath | 115 / 115 | Not reviewed |
 
 > Key coverage is recomputed by `pnpm check:locale-keys` and is not hand-estimated. Review status reflects the native-language record only: `Source` is the simplified Chinese source; `Reviewed` has a translation review record (`zh-TW` / `ja-JP` / `ko-KR`, Phase 10); `Not reviewed` has no native review record (`en-US` was not separately reviewed; the phase-two five locales are covered by [KL-7](/design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations)). Not reviewed does not mean keys are missing; it means there is no native review sign-off.
 

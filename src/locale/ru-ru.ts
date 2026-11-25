@@ -185,6 +185,13 @@ const ruRU: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Основная навигация',
     },
+    tour: {
+        label: 'Знакомство с продуктом',
+        next: 'Далее',
+        prev: 'Назад',
+        skip: 'Пропустить',
+        finish: 'Готово',
+    },
 }
 
 export default ruRU

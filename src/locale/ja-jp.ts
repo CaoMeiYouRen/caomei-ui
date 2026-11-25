@@ -185,6 +185,13 @@ const jaJP: CaomeiLocaleMessages = {
     tabbar: {
         label: 'メインナビゲーション',
     },
+    tour: {
+        label: 'ツアー',
+        next: '次へ',
+        prev: '戻る',
+        skip: 'スキップ',
+        finish: '完了',
+    },
 }
 
 export default jaJP

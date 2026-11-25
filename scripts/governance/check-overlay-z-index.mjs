@@ -71,10 +71,11 @@ export const RESERVED_TIERS = new Set()
 
 /**
  * 声明浮层档位但**不是锚定浮层面板**的组件（不参与 E2E 面板清单联动，T10）。
- * `toast` 为命令式视口（非锚定面板）、`image` 为预览灯箱（覆盖整个视口）；
- * 两者档位同样 ≥ 模态内容，但不由 Dialog 内的触发器开合。受反向校验：条目不再声明浮层档位即报错。
+ * `toast` 为命令式视口（非锚定面板）、`image` 为预览灯箱（覆盖整个视口）、
+ * `tour` 为引导遮罩（全视口覆盖，卡片可居中或贴目标）；三者档位同样 ≥ 模态内容，
+ * 但不由 Dialog 内的触发器开合。受反向校验：条目不再声明浮层档位即报错。
  */
-export const NON_PANEL_FLOATING_COMPONENTS = new Set(['toast', 'image'])
+export const NON_PANEL_FLOATING_COMPONENTS = new Set(['toast', 'image', 'tour'])
 
 /** 受检面下界：防扫描器 / 入口静默收窄后「零违规」变成空真。 */
 export const MIN_COMPONENT_FILES = 60

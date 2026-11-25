@@ -185,6 +185,13 @@ const deDE: CaomeiLocaleMessages = {
     tabbar: {
         label: 'Hauptnavigation',
     },
+    tour: {
+        label: 'Produkttour',
+        next: 'Weiter',
+        prev: 'Zurück',
+        skip: 'Überspringen',
+        finish: 'Fertig',
+    },
 }
 
 export default deDE

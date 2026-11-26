@@ -82,6 +82,7 @@ export * from './components/tree-select'
 export * from './components/transfer'
 export * from './components/toolbar'
 export * from './components/tooltip'
+export * from './components/watermark'
 
 export type { OptionFieldAccessor, OptionValue } from './components/_shared/option'
 

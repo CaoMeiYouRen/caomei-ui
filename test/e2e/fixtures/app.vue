@@ -3798,6 +3798,25 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          HoverCard（供悬停卡片 E2E 使用）：普通、禁用与延迟三张卡片。
+        -->
+        <section id="hover-card" class="fixture__case">
+            <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                <CaomeiHoverCardTrigger>术语</CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>无障碍名称的解释</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+            <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                <CaomeiHoverCardTrigger disabled>
+                    禁用卡片
+                </CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>禁用卡片不应出现</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+            <CaomeiHoverCard :open-delay="400" :close-delay="0">
+                <CaomeiHoverCardTrigger>延迟卡片</CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>延迟后出现的内容</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+        </section>
+        <!--
           NavigationMenu（供导航菜单 E2E 使用）：站点导航、两组触发器与内容面板。
         -->
         <section id="navigation-menu" class="fixture__case">

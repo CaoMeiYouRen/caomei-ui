@@ -107,6 +107,40 @@ export function parseCatalogRows(markdown) {
     return rows
 }
 
+/** 匹配 §5 末段的「未纳入本清单的 primitive」句（到首个句号为止）。 */
+const UNADOPTED_SENTENCE_RE = /Reka UI 还提供以下未纳入本清单的 primitive[^。]*。/u
+
+/** 从该句里取出 primitive 名列表：只认「：」之后、句号之前的顿号分隔项，并去掉括号说明。 */
+export function parseUnadoptedPrimitives(markdown) {
+    const match = markdown.match(UNADOPTED_SENTENCE_RE)
+    if (!match) {
+        return []
+    }
+    const list = match[0].split('：')[1]?.replace(/。$/u, '') ?? ''
+    return list
+        .split('、')
+        .map((item) => item.split('（')[0].trim())
+        .filter((item) => item.length > 0)
+}
+
+/**
+ * 已实现组件不得同时出现在「未纳入本清单的 primitive」句中。
+ *
+ * 该句是使用方判断「库是否已支持」的反向清单；漏删会让 §5 自相矛盾，
+ * 而 `check-design-catalog` 的既有对账只看表格行，故单列不变式。
+ *
+ * @param {string} markdown `components.md` 全文
+ * @param {{ nameCell: string, names: string[], implemented: boolean }[]} rows §5 清单行
+ * @returns {string[]} 错误列表
+ */
+export function findUnadoptedConflicts(markdown, rows) {
+    const primitives = new Set(parseUnadoptedPrimitives(markdown))
+    return rows
+        .filter((row) => row.implemented)
+        .flatMap((row) => row.names.filter((name) => primitives.has(name)))
+        .map((name) => `§5「未纳入本清单的 primitive」句仍列出已实现组件 ${name}`)
+}
+
 /**
  * 对账 §5 清单与 §11 登记成员。
  *
@@ -187,9 +221,12 @@ export function checkDesignCatalog({
 
 /** 读取仓库内的 §5 清单与 §11 登记表并执行对账。 */
 export function checkRepository() {
-    const rows = parseCatalogRows(readFileSync(CATALOG_DOC_PATH, 'utf-8'))
+    const markdown = readFileSync(CATALOG_DOC_PATH, 'utf-8')
+    const rows = parseCatalogRows(markdown)
     const registered = registeredComponentsOf(readSection11Groups())
-    return { ...checkDesignCatalog({ registered, rows }), rows, registered }
+    const catalog = checkDesignCatalog({ registered, rows })
+    const conflicts = findUnadoptedConflicts(markdown, rows)
+    return { ...catalog, ok: catalog.ok && conflicts.length === 0, errors: [...catalog.errors, ...conflicts], rows, registered }
 }
 
 if (isDirectExecution(import.meta.url)) {

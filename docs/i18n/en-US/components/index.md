@@ -14,6 +14,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Button](/en-US/components/button)
 - [ButtonGroup](/en-US/components/button-group)
 - [Card](/en-US/components/card)
+- [Carousel](/en-US/components/carousel)
 - [Cell](/en-US/components/cell)
 - [CellGroup](/en-US/components/cell-group)
 - [Col](/en-US/components/col)

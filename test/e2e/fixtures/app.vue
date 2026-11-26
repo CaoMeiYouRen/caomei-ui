@@ -25,6 +25,8 @@ import {
     CaomeiCalendar,
     CaomeiCascader,
     CaomeiCard,
+    CaomeiCarousel,
+    CaomeiCarouselSlide,
     CaomeiChart,
     CaomeiCheckbox,
     CaomeiCheckboxGroup,
@@ -284,6 +286,7 @@ const anchorItems = [
 const contextMenuLog = ref('')
 const splitterLog = ref('')
 const splitterHorizontalLog = ref('')
+const carouselIndex = ref(0)
 const contextMenuItems = [
     { label: '查看详情' },
     { label: '复制链接', shortcut: '⌘C' },
@@ -3724,6 +3727,64 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          Carousel（供轮播 E2E 使用）：水平受控索引、每页 2 张（循环）与纵向高度链。
+        -->
+        <section id="carousel" class="fixture__case">
+            <div id="carousel-horizontal">
+                <CaomeiCarousel
+                    v-model:index="carouselIndex"
+                    label="轮播夹具"
+                    style="max-width: 480px"
+                >
+                    <CaomeiCarouselSlide
+                        v-for="page in ['第一页', '第二页', '第三页']"
+                        :key="page"
+                    >
+                        <div class="carousel-fixture__slide">
+                            {{ page }}
+                        </div>
+                    </CaomeiCarouselSlide>
+                </CaomeiCarousel>
+            </div>
+            <div id="carousel-index">
+                {{ carouselIndex }}
+            </div>
+            <div id="carousel-multi">
+                <CaomeiCarousel
+                    label="多图轮播"
+                    :slides-per-view="2"
+                    :gap="8"
+                    loop
+                    style="max-width: 480px"
+                >
+                    <CaomeiCarouselSlide
+                        v-for="n in 5"
+                        :key="n"
+                    >
+                        <div class="carousel-fixture__slide">
+                            {{ n }}
+                        </div>
+                    </CaomeiCarouselSlide>
+                </CaomeiCarousel>
+            </div>
+            <div id="carousel-vertical">
+                <CaomeiCarousel
+                    label="纵向轮播"
+                    orientation="vertical"
+                    style="height: 240px; max-width: 320px"
+                >
+                    <CaomeiCarouselSlide
+                        v-for="page in ['上', '中', '下']"
+                        :key="page"
+                    >
+                        <div class="carousel-fixture__slide">
+                            {{ page }}
+                        </div>
+                    </CaomeiCarouselSlide>
+                </CaomeiCarousel>
+            </div>
+        </section>
+        <!--
           Anchor（供锚点导航 E2E 使用）：容器 scroll-spy、点击跳转与 hash 同步。
         -->
         <section id="anchor" class="fixture__case">
@@ -3753,6 +3814,21 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 </template>
 
 <style scoped>
+.carousel-fixture__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 140px;
+    border-radius: var(--caomei-radius-md);
+    background: var(--caomei-color-bg-elevated);
+    color: var(--caomei-color-text);
+    font-weight: 600;
+}
+
+#carousel-vertical .carousel-fixture__slide {
+    height: 100%;
+}
+
 .fixture {
     box-sizing: border-box;
     display: flex;

@@ -8,7 +8,7 @@
 
 | 大条目 | 小条目 | 状态 | 提交 | 审计 | 容量 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| M1 Carousel 轮播 | 0 / 3 | 未开始 | — | — | 3 → 0 |
+| M1 Carousel 轮播 | 2 / 3 | 进行中 | `20abf94a` | R3 Pass | 3 → 1 |
 | M2 Watermark 水印 | 0 / 2 | 未开始 | — | — | 2 → 0 |
 | M3 Menubar 菜单栏 | 0 / 3 | 未开始 | — | — | 3 → 0 |
 | M4 NavigationMenu 导航菜单 | 0 / 3 | 未开始 | — | — | 3 → 0 |
@@ -21,8 +21,8 @@
 
 | 编号 | 主线 | 条目 | 验收状态 |
 | :--- | :--- | :--- | :--- |
-| M1-1 | Carousel 轮播 | 依赖与 locale 基础 | 待执行 |
-| M1-2 | Carousel 轮播 | Carousel 实现与测试 | 待执行 |
+| M1-1 | Carousel 轮播 | 依赖与 locale 基础 | 已交付 |
+| M1-2 | Carousel 轮播 | Carousel 实现与测试 | 已交付 |
 | M1-3 | Carousel 轮播 | Carousel 文档、示例与回归 | 待执行 |
 | M2-1 | Watermark 水印 | Watermark 实现与测试 | 待执行 |
 | M2-2 | Watermark 水印 | Watermark 文档与回归（无新增 locale 键） | 待执行 |

@@ -2,7 +2,7 @@ import { defineConfig } from 'tsdown'
 import Vue from 'unplugin-vue/rolldown'
 
 /**
- * tsdown 库构建配置：编译 Vue SFC、external 化 vue/reka-ui、
+ * tsdown 库构建配置：编译 Vue SFC、external 化 vue / reka-ui / embla-carousel-vue、
  * 逐模块产出 ESM 与 CSS（`css.inject` 保留 CSS import，供消费方按需 tree-shaking）、
  * 生成类型声明，并输出 index/resolver/nuxt 多入口。
  *
@@ -45,6 +45,7 @@ export default defineConfig({
         neverBundle: [
             'vue',
             'reka-ui',
+            'embla-carousel-vue',
             '@tanstack/vue-table',
             '@internationalized/date',
             '@nuxt/kit',

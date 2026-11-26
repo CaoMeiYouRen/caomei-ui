@@ -16,6 +16,8 @@ import {
     CaomeiButtonGroup,
     CaomeiCalendar,
     CaomeiCard,
+    CaomeiCarousel,
+    CaomeiCarouselSlide,
     CaomeiCascader,
     CaomeiCell,
     CaomeiCellGroup,
@@ -446,6 +448,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
     },
     { name: 'CaomeiSplitter', root: CaomeiSplitter, definition: { components: { CaomeiSplitter, CaomeiSplitterPanel, CaomeiSplitterResizeHandle }, template: '<CaomeiSplitter style="height: 120px"><CaomeiSplitterPanel>左</CaomeiSplitterPanel><CaomeiSplitterResizeHandle /><CaomeiSplitterPanel>右</CaomeiSplitterPanel></CaomeiSplitter>' }, requiredSelectors: ['.caomei-splitter', '.caomei-splitter__handle'] },
+    { name: 'CaomeiCarousel', root: CaomeiCarousel, definition: { components: { CaomeiCarousel, CaomeiCarouselSlide }, template: '<CaomeiCarousel label="相册"><CaomeiCarouselSlide>第一页</CaomeiCarouselSlide><CaomeiCarouselSlide>第二页</CaomeiCarouselSlide></CaomeiCarousel>' }, requiredSelectors: ['.caomei-carousel', '.caomei-carousel__slide'] },
     { name: 'CaomeiAnchor', root: CaomeiAnchor, definition: { components: { CaomeiAnchor }, template: '<div><CaomeiAnchor :items="[{ key: \'a\', title: \'第一节\' }, { key: \'b\', title: \'第二节\' }]" /><h2 id="a">第一节</h2><h2 id="b">第二节</h2></div>' }, requiredSelectors: ['.caomei-anchor', '.caomei-anchor__link'] },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
     {
@@ -506,6 +509,7 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiCarouselSlide', component: CaomeiCarouselSlide, fixture: 'CaomeiCarousel' },
     { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
@@ -526,4 +530,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 87
+export const A11Y_FIXTURE_BUDGET = 88

@@ -203,6 +203,11 @@ const zhTW: CaomeiLocaleMessages = {
         skip: '略過',
         finish: '完成',
     },
+    carousel: {
+        prev: '上一張',
+        next: '下一張',
+        slide: '第 {index} 張，共 {total} 張',
+    },
 }
 
 export default zhTW

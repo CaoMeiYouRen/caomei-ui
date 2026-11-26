@@ -203,6 +203,11 @@ const deDE: CaomeiLocaleMessages = {
         skip: 'Überspringen',
         finish: 'Fertig',
     },
+    carousel: {
+        prev: 'Vorherige Folie',
+        next: 'Nächste Folie',
+        slide: 'Folie {index} von {total}',
+    },
 }
 
 export default deDE

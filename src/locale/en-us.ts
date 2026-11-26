@@ -203,6 +203,11 @@ const enUS: CaomeiLocaleMessages = {
         skip: 'Skip',
         finish: 'Finish',
     },
+    carousel: {
+        prev: 'Previous slide',
+        next: 'Next slide',
+        slide: 'Slide {index} of {total}',
+    },
 }
 
 export default enUS

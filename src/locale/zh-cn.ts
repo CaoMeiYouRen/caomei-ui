@@ -203,6 +203,11 @@ const zhCN: CaomeiLocaleMessages = {
         skip: '跳过',
         finish: '完成',
     },
+    carousel: {
+        prev: '上一张',
+        next: '下一张',
+        slide: '第 {index} 张，共 {total} 张',
+    },
 }
 
 export default zhCN

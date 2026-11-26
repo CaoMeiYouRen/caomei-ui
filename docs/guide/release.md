@@ -127,9 +127,10 @@ pnpm release:manual announce  --version=1.0.0-rc.1 --yes
 
 ## 7. 第三方许可合规
 
-- 运行时依赖（`reka-ui` / `@tanstack/vue-table` / `@lucide/vue` / `@internationalized/date` / `@vavt/cm-extension`，后者为富文本扩展语言包）、peer 依赖 `vue` 与可选 peer（`md-editor-v3`，富文本内核）的许可证统一声明在仓库根 `THIRD-PARTY-LICENSES`，并随 npm 包分发（已加入 `package.json` 的 `files`）。
+- 运行时依赖（`reka-ui` / `embla-carousel-vue` / `@tanstack/vue-table` / `@lucide/vue` / `@internationalized/date` / `@vavt/cm-extension`，后者为富文本扩展语言包；`embla-carousel-vue` 附带同版本 `embla-carousel` / `embla-carousel-reactive-utils` 两个传递依赖条目）、peer 依赖 `vue` 与可选 peer（`md-editor-v3`，富文本内核）的许可证统一声明在仓库根 `THIRD-PARTY-LICENSES`，并随 npm 包分发（已加入 `package.json` 的 `files`）。
 - 新增或升级运行时依赖后，运行 `pnpm check:licenses` 校验声明覆盖与许可证全文；条目**按包名匹配**，标题版本落后于安装版本时仅告警通过（dependabot 升级因此可自动合并），该检查已纳入 `pnpm verify`（`governance:check`）。
 - 同步更新声明：新增依赖时补充 `## <name>@<version>` 条目与许可证全文（可从 `node_modules/<pkg>/LICENSE` 复制）；**仅版本号变化时不用手改**——发布链 `prepareCmd` 会用 `scripts/release/sync-license-titles.mjs` 同步标题并随发布提交回写，本地可执行 `pnpm licenses:sync`；只有许可证全文变化才需人工更新。
+- 上游未随包提供 LICENSE 时（如 `embla-carousel*`），正文取自上游源码仓库并在条目内以 `Source:` 标注固定 commit，同时登记到 `check-licenses` 测试的「无随包 LICENSE」例外表；同一次安装引入的**传递依赖条目不在 `licenses:sync` 覆盖范围**，主包升级时须人工核对版本并同步标题（`check-licenses` 用例会拦下版本脱钩）。
 - `prepublishOnly` 会在发布前自动执行同一校验，声明缺失或不一致将中止发布。
 
 ## 8. 回滚与弃用

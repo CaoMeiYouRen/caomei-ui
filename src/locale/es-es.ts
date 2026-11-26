@@ -203,6 +203,11 @@ const esES: CaomeiLocaleMessages = {
         skip: 'Omitir',
         finish: 'Finalizar',
     },
+    carousel: {
+        prev: 'Diapositiva anterior',
+        next: 'Diapositiva siguiente',
+        slide: 'Diapositiva {index} de {total}',
+    },
 }
 
 export default esES

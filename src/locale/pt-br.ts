@@ -203,6 +203,11 @@ const ptBR: CaomeiLocaleMessages = {
         skip: 'Pular',
         finish: 'Concluir',
     },
+    carousel: {
+        prev: 'Slide anterior',
+        next: 'Próximo slide',
+        slide: 'Slide {index} de {total}',
+    },
 }
 
 export default ptBR

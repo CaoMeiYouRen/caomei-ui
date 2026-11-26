@@ -56,6 +56,8 @@ const LANG_HEADER_RE = /^\|\s*类别\s*\|\s*语言\s*\|\s*取用方式\s*\|$/
 const LANG_HEADER_RE_EN = /^\|\s*Group\s*\|\s*Locales\s*\|\s*How to use\s*\|$/
 const SUBPATH_HEADER_RE = /^\|\s*语言标识\s*\|\s*子路径\s*\|$/
 const SUBPATH_HEADER_RE_EN = /^\|\s*Locale id\s*\|\s*Subpath\s*\|$/
+const COVERAGE_HEADER_RE = /^\|\s*语言标识\s*\|\s*本地名称\s*\|\s*分发形态\s*\|\s*键覆盖\s*\|/
+const COVERAGE_HEADER_RE_EN = /^\|\s*Locale\s*\|\s*Native name\s*\|\s*Distribution\s*\|\s*Key coverage\s*\|/
 const SEPARATOR_RE = /^\|\s*:?-{2,}.*\|$/
 const INLINE_CODE_RE = /`([^`]+)`/g
 
@@ -236,6 +238,33 @@ export function parseLocaleLanguageTables(content) {
     return { preRegistered, onDemand, subpaths, errors }
 }
 
+/**
+ * 解析「支持语言与翻译状态」表的键覆盖列（`已覆盖 / 总数`）。
+ *
+ * 该列自称由 `check:locale-keys` 复算，但机检不覆盖自然语言计数；
+ * 这里按 `types.ts` 的总键数对账，防止命名空间增删后该列静默漂移。
+ *
+ * @returns {Map<string, string> | null} 语言标识 → 覆盖单元格；表头不存在时返回 null。
+ */
+export function parseLocaleCoverageTable(content) {
+    const rows = parseTable(content, [COVERAGE_HEADER_RE, COVERAGE_HEADER_RE_EN])
+    if (!rows) {
+        return null
+    }
+    const coverage = new Map()
+    for (const cells of rows) {
+        if (cells.length < 4) {
+            continue
+        }
+        const id = extractCodes(cells[0])[0]
+        if (!id || id === '语言标识' || id === 'Locale') {
+            continue
+        }
+        coverage.set(id, cells[3])
+    }
+    return coverage
+}
+
 /** 比较两个字符串列表，返回缺失 / 多出的错误。 */
 function compareLists(actual, expected, label) {
     const errors = []
@@ -278,6 +307,47 @@ function compareLedgerWithTypes(ledger, types, label) {
         }
     }
 
+    return errors
+}
+
+/**
+ * 比较「键覆盖」列与 `types.ts` 的键总数。
+ *
+ * 各语种结构由 `check-locale-keys` 保证一致，因此每格都应等于「总键数 / 总键数」；
+ * 该列是下游判断缺键 / 未复核的唯一入口，漂移必须机检拦截。
+ *
+ * @param content 文档全文
+ * @param registry 语言注册面
+ * @param totalKeys `types.ts` 的键总数
+ * @param label 文档标签
+ * @returns 错误列表
+ */
+function compareCoverageTable(content, registry, totalKeys, label) {
+    const errors = []
+    const coverage = parseLocaleCoverageTable(content)
+    if (!coverage) {
+        errors.push(`${label}未找到「键覆盖」语言表`)
+        return errors
+    }
+    for (const id of registry.union) {
+        const cell = coverage.get(id)
+        if (cell === undefined) {
+            errors.push(`${label}「键覆盖」表缺少语言 ${id}`)
+            continue
+        }
+        const match = cell.match(/^(\d+)\s*\/\s*(\d+)$/u)
+        if (!match) {
+            errors.push(`${label}语言 ${id} 的键覆盖「${cell}」不是「已覆盖 / 总数」形态`)
+            continue
+        }
+        const [, covered, total] = match
+        if (Number(total) !== totalKeys) {
+            errors.push(`${label}语言 ${id} 的键覆盖总数 ${total} 与 types.ts 的 ${totalKeys} 不一致`)
+        }
+        if (Number(covered) !== totalKeys) {
+            errors.push(`${label}语言 ${id} 的已覆盖键数 ${covered} 与总数 ${totalKeys} 不一致（各语种结构须一致，见 check:locale-keys）`)
+        }
+    }
     return errors
 }
 
@@ -352,6 +422,8 @@ export function checkLocaleLedger(root = REPO_ROOT, options = {}) {
         }
     }
 
+    const totalKeys = Object.values(types).reduce((sum, keys) => sum + keys.length, 0)
+
     const docs = [
         { label: '中文台账表', path: LOCALE_MD_ZH },
         { label: '英文台账表', path: LOCALE_MD_EN },
@@ -406,6 +478,7 @@ export function checkLocaleLedger(root = REPO_ROOT, options = {}) {
             languagesEn = tables
         }
         errors.push(...compareLanguageTables(tables, registry, doc.label))
+        errors.push(...compareCoverageTable(content, registry, totalKeys, doc.label))
     }
 
     const namespaceCount = Object.keys(types).length
@@ -416,6 +489,7 @@ export function checkLocaleLedger(root = REPO_ROOT, options = {}) {
     const expectedOnDemand = registry.union.filter((id) => !registry.preRegistered.includes(id))
     const expectedSubpaths = expectedOnDemand.map((id) => `caomei-ui/locale/${id.toLowerCase()}`)
     details.namespaces = namespaceCount
+    details.keys = totalKeys
     details.preRegistered = registry.preRegistered
     details.onDemand = expectedOnDemand
     details.subpaths = expectedSubpaths

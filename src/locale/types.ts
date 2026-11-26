@@ -47,6 +47,12 @@ export interface CaomeiLocaleMessages {
         next: string
         label: string
     }
+    carousel: {
+        prev: string
+        next: string
+        /** 单页可访问名；`{index}` 为当前页序号，`{total}` 为总页数 */
+        slide: string
+    }
     cascader: {
         empty: string
         clear: string

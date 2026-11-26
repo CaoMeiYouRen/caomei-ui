@@ -45,7 +45,7 @@ import {
 
 ## Message groups and consuming components
 
-`CaomeiLocaleMessages` is split into 41 namespaces by component area, covering the consuming components below (the table is checked against `src/locale/types.ts` by `check-locale-ledger`):
+`CaomeiLocaleMessages` is split into 42 namespaces by component area, covering the consuming components below (the table is checked against `src/locale/types.ts` by `check-locale-ledger`):
 
 | Namespace | Keys | Consuming component |
 | --- | --- | --- |
@@ -54,6 +54,7 @@ import {
 | `autoComplete` | `empty` `open` | AutoComplete |
 | `backTop` | `label` | BackTop |
 | `calendar` | `prev` `next` `label` | Calendar / DatePicker |
+| `carousel` | `prev` `next` `slide` | Carousel |
 | `cascader` | `empty` `clear` | Cascader |
 | `chart` | `loading` `loadFailed` | Chart |
 | `checkbox` | `selectAll` | CheckboxGroup |
@@ -124,16 +125,16 @@ import { CaomeiConfigProvider } from 'caomei-ui'
 
 | Locale | Native name | Distribution | Key coverage | Review status |
 | --- | --- | --- | --- | --- |
-| `zh-CN` | 简体中文 | Pre-registered | 120 / 120 | Source |
-| `en-US` | English | Pre-registered | 120 / 120 | Not separately reviewed |
-| `zh-TW` | 繁體中文 | Subpath | 120 / 120 | Reviewed |
-| `ja-JP` | 日本語 | Subpath | 120 / 120 | Reviewed |
-| `ko-KR` | 한국어 | Subpath | 120 / 120 | Reviewed |
-| `es-ES` | Español | Subpath | 120 / 120 | Not reviewed |
-| `fr-FR` | Français | Subpath | 120 / 120 | Not reviewed |
-| `de-DE` | Deutsch | Subpath | 120 / 120 | Not reviewed |
-| `ru-RU` | Русский | Subpath | 120 / 120 | Not reviewed |
-| `pt-BR` | Português (Brasil) | Subpath | 120 / 120 | Not reviewed |
+| `zh-CN` | 简体中文 | Pre-registered | 123 / 123 | Source |
+| `en-US` | English | Pre-registered | 123 / 123 | Not separately reviewed |
+| `zh-TW` | 繁體中文 | Subpath | 123 / 123 | Reviewed |
+| `ja-JP` | 日本語 | Subpath | 123 / 123 | Reviewed |
+| `ko-KR` | 한국어 | Subpath | 123 / 123 | Reviewed |
+| `es-ES` | Español | Subpath | 123 / 123 | Not reviewed |
+| `fr-FR` | Français | Subpath | 123 / 123 | Not reviewed |
+| `de-DE` | Deutsch | Subpath | 123 / 123 | Not reviewed |
+| `ru-RU` | Русский | Subpath | 123 / 123 | Not reviewed |
+| `pt-BR` | Português (Brasil) | Subpath | 123 / 123 | Not reviewed |
 
 > Key coverage is recomputed by `pnpm check:locale-keys` and is not hand-estimated. Review status reflects the native-language record only: `Source` is the simplified Chinese source; `Reviewed` has a translation review record (`zh-TW` / `ja-JP` / `ko-KR`, Phase 10); `Not reviewed` has no native review record (`en-US` was not separately reviewed; the phase-two five locales are covered by [KL-7](/design/governance/2026-10-31-phase26-g4-rollback-and-known-limitations)). Not reviewed does not mean keys are missing; it means there is no native review sign-off.
 

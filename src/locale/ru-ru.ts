@@ -203,6 +203,11 @@ const ruRU: CaomeiLocaleMessages = {
         skip: 'Пропустить',
         finish: 'Готово',
     },
+    carousel: {
+        prev: 'Предыдущий слайд',
+        next: 'Следующий слайд',
+        slide: 'Слайд {index} из {total}',
+    },
 }
 
 export default ruRU

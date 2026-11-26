@@ -203,6 +203,11 @@ const jaJP: CaomeiLocaleMessages = {
         skip: 'スキップ',
         finish: '完了',
     },
+    carousel: {
+        prev: '前のスライド',
+        next: '次のスライド',
+        slide: '{total} 枚中 {index} 枚目',
+    },
 }
 
 export default jaJP

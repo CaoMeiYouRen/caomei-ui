@@ -28,6 +28,8 @@ export const caomeiComponents = [
     'CaomeiCellGroup',
     'CaomeiChart',
     'CaomeiCard',
+    'CaomeiCarousel',
+    'CaomeiCarouselSlide',
     'CaomeiCascader',
     'CaomeiCheckbox',
     'CaomeiCheckboxGroup',

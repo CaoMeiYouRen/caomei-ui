@@ -3787,6 +3787,36 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          NavigationMenu（供导航菜单 E2E 使用）：站点导航、两组触发器与内容面板。
+        -->
+        <section id="navigation-menu" class="fixture__case">
+            <CaomeiNavigationMenu aria-label="导航夹具">
+                <CaomeiNavigationMenuTrigger value="docs">
+                    文档
+                    <template #content>
+                        <CaomeiNavigationMenuContent>
+                            <CaomeiNavigationMenuLink href="#guide">
+                                快速上手
+                            </CaomeiNavigationMenuLink>
+                            <CaomeiNavigationMenuLink href="#api">
+                                组件 API
+                            </CaomeiNavigationMenuLink>
+                        </CaomeiNavigationMenuContent>
+                    </template>
+                </CaomeiNavigationMenuTrigger>
+                <CaomeiNavigationMenuTrigger value="blog">
+                    博客
+                    <template #content>
+                        <CaomeiNavigationMenuContent>
+                            <CaomeiNavigationMenuLink href="#latest">
+                                最新文章
+                            </CaomeiNavigationMenuLink>
+                        </CaomeiNavigationMenuContent>
+                    </template>
+                </CaomeiNavigationMenuTrigger>
+            </CaomeiNavigationMenu>
+        </section>
+        <!--
           Menubar（供菜单栏 E2E 使用）：独立菜单栏、两组菜单与禁用条目。
         -->
         <section id="menubar" class="fixture__case">

@@ -60,6 +60,10 @@ import {
     CaomeiFormItem,
     CaomeiIcon,
     CaomeiImage,
+    CaomeiHoverCard,
+    CaomeiHoverCardArrow,
+    CaomeiHoverCardContent,
+    CaomeiHoverCardTrigger,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -458,6 +462,7 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
     },
     { name: 'CaomeiSplitter', root: CaomeiSplitter, definition: { components: { CaomeiSplitter, CaomeiSplitterPanel, CaomeiSplitterResizeHandle }, template: '<CaomeiSplitter style="height: 120px"><CaomeiSplitterPanel>左</CaomeiSplitterPanel><CaomeiSplitterResizeHandle /><CaomeiSplitterPanel>右</CaomeiSplitterPanel></CaomeiSplitter>' }, requiredSelectors: ['.caomei-splitter', '.caomei-splitter__handle'] },
+    { name: 'CaomeiHoverCard', root: CaomeiHoverCard, definition: { components: { CaomeiHoverCard, CaomeiHoverCardTrigger, CaomeiHoverCardContent, CaomeiHoverCardArrow }, template: '<CaomeiHoverCard :open="true"><CaomeiHoverCardTrigger>悬停查看</CaomeiHoverCardTrigger><CaomeiHoverCardContent>卡片的说明内容<CaomeiHoverCardArrow /></CaomeiHoverCardContent></CaomeiHoverCard>' }, requiredSelectors: ['.caomei-hover-card__trigger', '.caomei-hover-card__content'] },
     { name: 'CaomeiNavigationMenu', root: CaomeiNavigationMenu, definition: { components: { CaomeiNavigationMenu, CaomeiNavigationMenuTrigger, CaomeiNavigationMenuContent, CaomeiNavigationMenuLink }, template: '<CaomeiNavigationMenu aria-label="主导航" model-value="docs"><CaomeiNavigationMenuTrigger value="docs">文档<template #content><CaomeiNavigationMenuContent><CaomeiNavigationMenuLink href="#">快速上手</CaomeiNavigationMenuLink></CaomeiNavigationMenuContent></template></CaomeiNavigationMenuTrigger></CaomeiNavigationMenu>' }, requiredSelectors: ['.caomei-navigation-menu', '.caomei-navigation-menu__trigger', '.caomei-navigation-menu__content', '.caomei-navigation-menu__link'] },
     { name: 'CaomeiMenubar', root: CaomeiMenubar, definition: { components: { CaomeiMenubar, CaomeiMenubarMenu, CaomeiMenubarTrigger, CaomeiMenubarContent, CaomeiMenubarItem }, template: '<CaomeiMenubar><CaomeiMenubarMenu value="file"><CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger><CaomeiMenubarContent force-mount><CaomeiMenubarItem>新建</CaomeiMenubarItem><CaomeiMenubarItem disabled>删除</CaomeiMenubarItem></CaomeiMenubarContent></CaomeiMenubarMenu></CaomeiMenubar>' }, requiredSelectors: ['.caomei-menubar', '.caomei-menubar__trigger', '.caomei-menubar__content', '.caomei-menubar__item'] },
     { name: 'CaomeiWatermark', root: CaomeiWatermark, definition: { components: { CaomeiWatermark }, template: '<CaomeiWatermark content="内部资料"><span>正文</span></CaomeiWatermark>' }, requiredSelectors: ['.caomei-watermark', '.caomei-watermark__overlay'] },
@@ -522,6 +527,9 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiHoverCardTrigger', component: CaomeiHoverCardTrigger, fixture: 'CaomeiHoverCard' },
+    { name: 'CaomeiHoverCardContent', component: CaomeiHoverCardContent, fixture: 'CaomeiHoverCard' },
+    { name: 'CaomeiHoverCardArrow', component: CaomeiHoverCardArrow, fixture: 'CaomeiHoverCard' },
     { name: 'CaomeiNavigationMenuTrigger', component: CaomeiNavigationMenuTrigger, fixture: 'CaomeiNavigationMenu' },
     { name: 'CaomeiNavigationMenuContent', component: CaomeiNavigationMenuContent, fixture: 'CaomeiNavigationMenu' },
     { name: 'CaomeiNavigationMenuLink', component: CaomeiNavigationMenuLink, fixture: 'CaomeiNavigationMenu' },
@@ -550,4 +558,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 91
+export const A11Y_FIXTURE_BUDGET = 92

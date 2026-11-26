@@ -60,6 +60,7 @@ const modelValue = defineModel<string | undefined>('modelValue', { default: unde
     position: absolute;
     top: 100%;
     left: 0;
+    z-index: var(--caomei-navigation-menu-z-index, var(--caomei-z-dropdown));
     width: var(--reka-navigation-menu-viewport-width);
     height: var(--reka-navigation-menu-viewport-height);
     overflow: hidden;

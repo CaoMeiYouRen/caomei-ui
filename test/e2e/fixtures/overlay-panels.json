@@ -61,6 +61,11 @@
             "name": "menubar",
             "trigger": "#overlay-menubar .caomei-menubar__trigger",
             "panel": ".caomei-menubar__content"
+        },
+        {
+            "name": "navigation-menu",
+            "trigger": "#overlay-navigation-menu .caomei-navigation-menu__trigger",
+            "panel": "#overlay-navigation-menu .caomei-navigation-menu__viewport"
         }
     ]
 }

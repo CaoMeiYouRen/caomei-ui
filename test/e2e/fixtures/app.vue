@@ -47,6 +47,10 @@ import {
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
     CaomeiMenubar,
+    CaomeiNavigationMenu,
+    CaomeiNavigationMenuContent,
+    CaomeiNavigationMenuLink,
+    CaomeiNavigationMenuTrigger,
     CaomeiMenubarContent,
     CaomeiMenubarItem,
     CaomeiMenubarMenu,
@@ -1249,6 +1253,30 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                                 扫描范围为所选仓库的全部开放依赖告警。
                             </CaomeiPopoverContent>
                         </CaomeiPopover>
+                    </div>
+                    <div id="overlay-navigation-menu">
+                        <CaomeiNavigationMenu aria-label="浮层导航">
+                            <CaomeiNavigationMenuTrigger value="docs">
+                                文档
+                                <template #content>
+                                    <CaomeiNavigationMenuContent>
+                                        <CaomeiNavigationMenuLink href="#guide">
+                                            快速上手
+                                        </CaomeiNavigationMenuLink>
+                                    </CaomeiNavigationMenuContent>
+                                </template>
+                            </CaomeiNavigationMenuTrigger>
+                            <CaomeiNavigationMenuTrigger value="blog">
+                                博客
+                                <template #content>
+                                    <CaomeiNavigationMenuContent>
+                                        <CaomeiNavigationMenuLink href="#latest">
+                                            最新文章
+                                        </CaomeiNavigationMenuLink>
+                                    </CaomeiNavigationMenuContent>
+                                </template>
+                            </CaomeiNavigationMenuTrigger>
+                        </CaomeiNavigationMenu>
                     </div>
                     <div id="overlay-menubar">
                         <CaomeiMenubar>

@@ -77,7 +77,7 @@
 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|
 | M4-1 组件实现与测试 | 封装 Reka `NavigationMenu*`：根 / 触发器 / 内容 / 链接；悬停与聚焦开合、方向键、Esc；受控 `open`；**本条不声明浮层档位**；单测覆盖开合与键盘 | `src/components/navigation-menu/*`（`navigation-menu.vue` / `navigation-menu-trigger.vue` / `navigation-menu-content.vue` / `navigation-menu-link.vue` / `types.ts` / `index.ts` / `navigation-menu.test.ts`） | Reka `NavigationMenu*` |
-| M4-2 浮层档位与 E2E 清单 | `--caomei-navigation-menu-z-index`（默认 `--caomei-z-dropdown`）；`overlay-panels.json` / `app.vue` / `overlay-stacking.e2e.ts` / `check-overlay-z-index.test.mjs` 同步；`check:overlay-z-index` 与 overlay-stacking E2E 绿 | `src/components/navigation-menu/navigation-menu-content.vue`（样式）、`test/e2e/fixtures/overlay-panels.json`、`test/e2e/fixtures/app.vue`、`test/e2e/overlay-stacking.e2e.ts`、`scripts/governance/check-overlay-z-index.test.mjs` | M4-1 |
+| M4-2 浮层档位与 E2E 清单 | `--caomei-navigation-menu-z-index`（默认 `--caomei-z-dropdown`）；`overlay-panels.json` / `app.vue` / `overlay-stacking.e2e.ts` / `check-overlay-z-index.test.mjs` 同步；`check:overlay-z-index` 与 overlay-stacking E2E 绿 | `src/components/navigation-menu/navigation-menu.vue`（样式，viewport）、`test/e2e/fixtures/overlay-panels.json`、`test/e2e/fixtures/app.vue`、`test/e2e/overlay-stacking.e2e.ts`、`scripts/governance/check-overlay-z-index.test.mjs` | M4-1 |
 | M4-3 文档、示例与回归 | 中英组件页 + 双语示例（基础 / 内容面板）；组件测试 + E2E（悬停 / 键盘、Esc、面板定位）；共用登记面与示例同步后 `docs:check` / `governance:check` 绿 | 中英组件页（2）、中英示例（4）、`test/e2e/navigation-menu.e2e.ts`、§2 共用登记面（5） | M4-2 |
 
 ### M5 HoverCard 悬停卡片（3 条）

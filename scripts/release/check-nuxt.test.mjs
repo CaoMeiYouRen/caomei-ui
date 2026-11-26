@@ -38,16 +38,42 @@ describe('fixture 标记定义', () => {
         const html = [
             '<html data-preset="caomei" data-scheme="auto">',
             '<span class="caomei-button caomei-tag"></span>',
+            '<div class="caomei-carousel"></div>',
+            '<div class="caomei-watermark"></div>',
+            '<div class="caomei-menubar"></div>',
+            '<div class="caomei-navigation-menu"></div>',
+            '<button class="caomei-hover-card__trigger"></button>',
             '<p data-testid="theme-mode">auto</p>',
         ].join('')
         const css = [
             '.caomei-root{font-family:system-ui}',
             ':root{--caomei-color-bg:#fff;--caomei-color-primary:#123456;--caomei-color-primary-foreground:#fefefe}',
             '.caomei-button{}',
+            '.caomei-watermark__overlay{}',
         ].join('')
 
         expect(findMissingMarkers(html, HTML_MARKERS)).toEqual([])
         expect(findMissingMarkers(css, CSS_MARKERS)).toEqual([])
+    })
+})
+
+describe('新组件标记判别力', () => {
+    it('只有内联样式、没有组件 DOM 时不通过', () => {
+        const htmlWithOnlyStyles = [
+            '<html data-preset="caomei" data-scheme="auto">',
+            '<style>.caomei-carousel[data-v-a]{}.caomei-watermark[data-v-a]{}</style>',
+            '<span class="caomei-button caomei-tag"></span>',
+            '<p data-testid="theme-mode">auto</p>',
+        ].join('')
+
+        const missing = findMissingMarkers(htmlWithOnlyStyles, HTML_MARKERS)
+        expect(missing).toEqual(expect.arrayContaining([
+            '组件 CaomeiCarousel 自动导入',
+            '组件 CaomeiWatermark 自动导入',
+            '组件 CaomeiMenubar 自动导入',
+            '组件 CaomeiNavigationMenu 自动导入',
+            '组件 CaomeiHoverCard 自动导入',
+        ]))
     })
 })
 

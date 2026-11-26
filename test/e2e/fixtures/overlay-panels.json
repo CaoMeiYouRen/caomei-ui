@@ -56,6 +56,22 @@
             "trigger": "#overlay-context-menu-target",
             "panel": ".caomei-context-menu__content",
             "open": "contextmenu"
+        },
+        {
+            "name": "menubar",
+            "trigger": "#overlay-menubar .caomei-menubar__trigger",
+            "panel": ".caomei-menubar__content"
+        },
+        {
+            "name": "navigation-menu",
+            "trigger": "#overlay-navigation-menu .caomei-navigation-menu__trigger",
+            "panel": "#overlay-navigation-menu .caomei-navigation-menu__viewport"
+        },
+        {
+            "name": "hover-card",
+            "trigger": "#overlay-hover-card .caomei-hover-card__trigger",
+            "panel": ".caomei-hover-card__content",
+            "open": "hover"
         }
     ]
 }

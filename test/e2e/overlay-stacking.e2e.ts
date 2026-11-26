@@ -29,8 +29,8 @@ interface PanelCase {
     trigger: string
     /** 面板本体选择器（挂在 body 上的 Reka 内容元素） */
     panel: string
-    /** 打开方式：默认单击；右键菜单需 `contextmenu` */
-    open?: 'click' | 'contextmenu'
+    /** 打开方式：默认单击；右键菜单需 `contextmenu`；悬停卡片需 `hover`（`trigger.hover()`） */
+    open?: 'click' | 'contextmenu' | 'hover'
 }
 
 /**
@@ -38,14 +38,14 @@ interface PanelCase {
  * 与声明层守卫 `check:overlay-z-index` 的 T10 **双向对账**：`src` 中声明锚定浮层档位的组件
  * 必须逐项出现在本清单，反之亦然（新增 portal 浮层组件而未补清单即 `governance:check` 失败）。
  *
- * 覆盖**全部 11 个 portal 浮层面板**：均由 Reka 的 popper 包裹层承载 z-index，任一类的档位
+ * 覆盖 portal 浮层面板与 NavigationMenu 视口（内容 teleport 到视口、档位由视口承载）：均由 Reka 的 popper 包裹层承载 z-index，任一类的档位
  * 低于模态内容即被盖住。夹具见 `test/e2e/fixtures/app.vue` 的 `#overlay-in-dialog` 段。
  */
 const PANEL_CASES = panelCases.cases as PanelCase[]
 // color-picker 面板挂 body、无法用祖先限定；`inline` 形态复用同一基类，清单以 `:not(...)` 显式排除
 
 /** 受检面下界（冗余守卫：精确对账由 `check:overlay-z-index` 的 T10 承担） */
-const MIN_PANEL_CASES = 11
+const MIN_PANEL_CASES = 14
 
 const DIALOG_CONTENT = '.caomei-dialog__content'
 const DIALOG_OVERLAY = '.caomei-dialog__overlay'
@@ -260,10 +260,13 @@ test.describe('模态内浮层层级', () => {
             const trigger = page.locator(panelCase.trigger).first()
             if (panelCase.open === 'contextmenu') {
                 await trigger.click({ button: 'right' })
+            } else if (panelCase.open === 'hover') {
+                await trigger.hover()
             } else {
                 await trigger.click()
             }
             const panel = page.locator(panelCase.panel)
+            await expect(panel, `${panelCase.name} 面板应唯一且已挂载`).toHaveCount(1)
             await expect(panel, `${panelCase.name} 面板应打开`).toBeVisible()
 
             const panelRect = await rectOf(panel)

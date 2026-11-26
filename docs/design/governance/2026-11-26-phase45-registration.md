@@ -77,7 +77,7 @@
 | 条目 | 验收口径 | 文件面 | 依赖 |
 |:---|:---|:---|:---|
 | M4-1 组件实现与测试 | 封装 Reka `NavigationMenu*`：根 / 触发器 / 内容 / 链接；悬停与聚焦开合、方向键、Esc；受控 `open`；**本条不声明浮层档位**；单测覆盖开合与键盘 | `src/components/navigation-menu/*`（`navigation-menu.vue` / `navigation-menu-trigger.vue` / `navigation-menu-content.vue` / `navigation-menu-link.vue` / `types.ts` / `index.ts` / `navigation-menu.test.ts`） | Reka `NavigationMenu*` |
-| M4-2 浮层档位与 E2E 清单 | `--caomei-navigation-menu-z-index`（默认 `--caomei-z-dropdown`）；`overlay-panels.json` / `app.vue` / `overlay-stacking.e2e.ts` / `check-overlay-z-index.test.mjs` 同步；`check:overlay-z-index` 与 overlay-stacking E2E 绿 | `src/components/navigation-menu/navigation-menu-content.vue`（样式）、`test/e2e/fixtures/overlay-panels.json`、`test/e2e/fixtures/app.vue`、`test/e2e/overlay-stacking.e2e.ts`、`scripts/governance/check-overlay-z-index.test.mjs` | M4-1 |
+| M4-2 浮层档位与 E2E 清单 | `--caomei-navigation-menu-z-index`（默认 `--caomei-z-dropdown`）；`overlay-panels.json` / `app.vue` / `overlay-stacking.e2e.ts` / `check-overlay-z-index.test.mjs` 同步；`check:overlay-z-index` 与 overlay-stacking E2E 绿 | `src/components/navigation-menu/navigation-menu.vue`（样式，viewport）、`test/e2e/fixtures/overlay-panels.json`、`test/e2e/fixtures/app.vue`、`test/e2e/overlay-stacking.e2e.ts`、`scripts/governance/check-overlay-z-index.test.mjs` | M4-1 |
 | M4-3 文档、示例与回归 | 中英组件页 + 双语示例（基础 / 内容面板）；组件测试 + E2E（悬停 / 键盘、Esc、面板定位）；共用登记面与示例同步后 `docs:check` / `governance:check` 绿 | 中英组件页（2）、中英示例（4）、`test/e2e/navigation-menu.e2e.ts`、§2 共用登记面（5） | M4-2 |
 
 ### M5 HoverCard 悬停卡片（3 条）
@@ -122,4 +122,12 @@
 - **R3**（2026-11-26，`quick`，时间盒 ≤ 5 分钟）：**Reject** —— 1 blocker / 3 warning（blocker：治理索引摘要仍写 5 / 10，与 6 / 15 矛盾；warning：文档条目 12 文件依据引用点时记录、W3 授权未落定、§6 缺 R2 结论行）。
 - **收束（按 [AI 协作规范 §3.5](../../standards/ai-collaboration.md)）**：R3 blocker 为单行计数回填（索引摘要改 6 / 15）——已修正；W2 的粒度依据迁入[规划规范 §5](../../standards/planning.md#_5-任务粒度约束)（活载体）；W3 改为「Phase 43 / 44 收口轮记为未执行（缺口保留），第 48 轮为逾期补测、不追认历史义务」，不再以未来条件句悬置；§6 回填 R1–R3。收束不再开第 4 轮，范围冻结于上述修复点。
 
-**执行期偏差（2026-11-26，M1-2）**：`src/nuxt/components.ts`、`src/index.ts` 与 `test/a11y/fixtures.ts` 中 Carousel 两名随 M1-2 落地，而非按 §2「归属约定」等 M6-1。原因：`src/nuxt/components.test.ts` 以组件目录 barrel 为基准、`test/a11y/a11y.test.ts` 以对外导出清单为基准，新增组件目录即红门；`src/index.ts` 若不同步，Nuxt 端会注册一个包根解析不到的组件名。其余四个组件的导出与 a11y 登记仍在 M6-1 收口，M6-1 须补 `<CaomeiCarousel>` 的真实 Nuxt 渲染用例（`check:nuxt` 当前不覆盖新组件，窗口期无门禁）。
+**执行期澄清（2026-11-27，M6-1）**：五个组件的包根导出（`src/index.ts`）、Nuxt 清单（`src/nuxt/components.ts`）与 a11y 夹具（`test/a11y/fixtures.ts`，预算 92）已随各自实现条目落地；M6-1 收口只补 Nuxt 冒烟面（`playground/nuxt/app.vue` 渲染五个组件 + `check-nuxt` 的 HTML / CSS 标记），并复核 `test` / `check:resolver` / `check:nuxt` 绿。本段同时关闭上方 2026-11-26「执行期偏差（M1-2）」中「其余三个组件仍在 M6-1 收口」与「`check:nuxt` 不覆盖新组件」两条旧判断。
+
+**执行期偏差（2026-11-27，M4-3）**：实际交付 13 文件，超登记文件面与文档条目 12 文件上限：多出 `test/e2e/fixtures/app.vue` 的 `#navigation-menu` 段（E2E 前置，与用例不可分割）。按「E2E 与夹具必须同 commit 才可运行」不拆分批次。
+
+**执行期偏差（2026-11-27，M3-3）**：实际交付 16 文件，超出文档条目 12 文件上限：新增 `test/e2e/fixtures/app.vue` 的 `#menubar` 段（E2E 夹具与用例不可分割）、水印图片示例改站点内置占位图（`cb5e16b9` 的 data URI 命中 `check-demo-external-images`，属必修红门）及其 `docs/public/demo/watermark-logo.svg` 资产。水印修正另拆 `fix(docs)` 提交单独走 Gate，M3-3 主体回到文档 + 示例 + 夹具口径。
+
+**执行期澄清（2026-11-27，M3-2）**：menubar 为非模态浮层（Reka `MenubarMenu` 固定 `modal: false`），**不接入**打开态整页隔离；点击外部或切换触发器即关闭，背景保持可交互。M3-2 的 E2E 只覆盖档位与命中，不覆盖隔离。
+
+**执行期偏差（2026-11-26，M1-2）**：`src/nuxt/components.ts`、`src/index.ts` 与 `test/a11y/fixtures.ts` 中 Carousel 两名随 M1-2 落地，而非按 §2「归属约定」等 M6-1。原因：`src/nuxt/components.test.ts` 以组件目录 barrel 为基准、`test/a11y/a11y.test.ts` 以对外导出清单为基准，新增组件目录即红门；`src/index.ts` 若不同步，Nuxt 端会注册一个包根解析不到的组件名。Watermark 随 M2-1、其余三个组件的导出与 a11y 登记仍在 M6-1 收口，M6-1 须补 `<CaomeiCarousel>` / `<CaomeiWatermark>` 的真实 Nuxt 渲染用例（`check:nuxt` 当前不覆盖新组件，窗口期无门禁）。

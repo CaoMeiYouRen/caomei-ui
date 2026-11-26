@@ -98,8 +98,12 @@
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
 | Splitter | 封装 | SplitterGroup / SplitterPanel / SplitterResizeHandle | 稳定 | 水平 / 垂直分栏：尺寸约束、折叠 / 展开、键盘调整与嵌套；受控布局对无事件折叠按渲染态回读兜底（**已实现**） |
+| Watermark | 自建（canvas 平铺） | 无 | — | 文本 / 图片水印：旋转、透明度、间距、偏移与层级；DOM / 尺寸变化后下一帧重建，卸载即停止；遮罩 `aria-hidden`，像素级篡改不覆盖（**已实现**） |
 | Carousel | 封装（`embla-carousel-vue`） | 无（`embla-carousel-vue` 为运行时依赖） | 稳定 | 水平 / 垂直轮播：循环、每页张数（含 `auto`）、间距、受控页索引、上一页 / 下一页与指示点；容器与页带轮播语义，键盘与拖拽翻页（**已实现**） |
 | Anchor | 自建（scroll-spy） | 无 | — | 锚点导航：窗口 / 容器判定线激活、嵌套缩进、点击对齐判定线、pushState 与 hashchange 同步（**已实现**） |
+| NavigationMenu | 封装 | NavigationMenuRoot / NavigationMenuTrigger / NavigationMenuContent / NavigationMenuLink | 稳定 | 站点级导航菜单：悬停 / 点击切换开合、共享内容视口、受控展开；内容经 Teleport 进视口，非模态（**已实现**） |
+| HoverCard | 封装 | HoverCardRoot / HoverCardTrigger / HoverCardContent / HoverCardArrow | 稳定 | 悬停 / 聚焦浮出的补充信息卡：延迟、方位与箭头；非模态，焦点离开 / Esc 关闭（**已实现**） |
+| Menubar | 封装 | MenubarRoot / MenubarMenu / MenubarTrigger / MenubarContent / MenubarItem | 稳定 | 桌面式菜单栏：一组触发器共享弹出菜单、受控展开、方向键 / Home / End / Esc 与焦点归还；条目支持禁用与快捷键提示（**已实现**） |
 | ContextMenu | 封装 | ContextMenu | 稳定 | 右键 / 触屏长按：数据条目（图标 / 快捷键 / 危险 / 禁用 / command）+ Group / Label / Item / Separator 子组件；复用浮层隔离与受控开合（**已实现**） |
 | QRCode | 封装（可选 peer `qrcode`，按需加载） | 无（`qrcode` 为编码内核） | — | 文本 / 链接编码：尺寸、容错级别、静区、配色、居中图标与插槽；失败清空旧图并 `role="alert"`（**已实现**） |
 | Tour | 自建（遮罩挖空 + 目标定位 + 模态滚动锁） | 无 | — | 分步引导：`steps` 驱动、受控步骤、挖空高亮与翻转钳位、滚动 / 尺寸变化重算、`Escape` 归还焦点（**已实现**） |
@@ -126,7 +130,7 @@
 | Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：HoverCard、Menubar、ContextMenu、NavigationMenu、ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Editable、Form / Field（校验与字段 ARIA）、MonthPicker / YearPicker、Splitter、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
+Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Editable、Field（字段 ARIA）、MonthPicker / YearPicker、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
 
 ## 6. 不自研
 

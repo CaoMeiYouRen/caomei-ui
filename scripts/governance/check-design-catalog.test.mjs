@@ -3,6 +3,7 @@ import {
     CATALOG_ALLOWLIST,
     CATALOG_SUBPART_ALLOWLIST,
     checkDesignCatalog,
+    findUnadoptedConflicts,
     checkRepository,
     parseCatalogRows,
 } from './check-design-catalog.mjs'
@@ -175,5 +176,28 @@ describe('仓库现状', () => {
     it('默认允许名单为空、子部件名单仅登记无独立组件页的子部件', () => {
         expect(CATALOG_ALLOWLIST).toEqual([])
         expect(CATALOG_SUBPART_ALLOWLIST).toEqual(['RadioButton', 'FormItem'])
+    })
+})
+
+
+describe('findUnadoptedConflicts', () => {
+    const markdown = 'Reka UI 还提供以下未纳入本清单的 primitive（以本地导出为准）：HoverCard、Separator（Divider 已自建）、PinInput。'
+
+    it('已实现组件出现在未纳入句时报错', () => {
+        const rows = [
+            { nameCell: 'HoverCard', names: ['HoverCard'], implemented: true },
+            { nameCell: 'Divider', names: ['Divider'], implemented: true },
+        ]
+        expect(findUnadoptedConflicts(markdown, rows)).toEqual([
+            '§5「未纳入本清单的 primitive」句仍列出已实现组件 HoverCard',
+        ])
+    })
+
+    it('未实现行与括号说明不误报', () => {
+        const rows = [
+            { nameCell: 'PinInput', names: ['PinInput'], implemented: false },
+            { nameCell: 'Divider', names: ['Divider'], implemented: true },
+        ]
+        expect(findUnadoptedConflicts(markdown, rows)).toEqual([])
     })
 })

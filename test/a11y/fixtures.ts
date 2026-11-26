@@ -60,6 +60,10 @@ import {
     CaomeiFormItem,
     CaomeiIcon,
     CaomeiImage,
+    CaomeiHoverCard,
+    CaomeiHoverCardArrow,
+    CaomeiHoverCardContent,
+    CaomeiHoverCardTrigger,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -67,6 +71,15 @@ import {
     CaomeiMenu,
     CaomeiMenuItem,
     CaomeiMessage,
+    CaomeiMenubar,
+    CaomeiMenubarContent,
+    CaomeiMenubarItem,
+    CaomeiMenubarMenu,
+    CaomeiMenubarTrigger,
+    CaomeiNavigationMenu,
+    CaomeiNavigationMenuContent,
+    CaomeiNavigationMenuLink,
+    CaomeiNavigationMenuTrigger,
     CaomeiMultiSelect,
     CaomeiNavBar,
     CaomeiPaginator,
@@ -130,6 +143,7 @@ import {
     CaomeiTour,
     CaomeiTree,
     CaomeiTreeSelect,
+    CaomeiWatermark,
     CaomeiTooltip,
     CaomeiTooltipArrow,
     CaomeiTooltipContent,
@@ -448,6 +462,10 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-context-menu__content', '.caomei-context-menu__separator'],
     },
     { name: 'CaomeiSplitter', root: CaomeiSplitter, definition: { components: { CaomeiSplitter, CaomeiSplitterPanel, CaomeiSplitterResizeHandle }, template: '<CaomeiSplitter style="height: 120px"><CaomeiSplitterPanel>左</CaomeiSplitterPanel><CaomeiSplitterResizeHandle /><CaomeiSplitterPanel>右</CaomeiSplitterPanel></CaomeiSplitter>' }, requiredSelectors: ['.caomei-splitter', '.caomei-splitter__handle'] },
+    { name: 'CaomeiHoverCard', root: CaomeiHoverCard, definition: { components: { CaomeiHoverCard, CaomeiHoverCardTrigger, CaomeiHoverCardContent, CaomeiHoverCardArrow }, template: '<CaomeiHoverCard :open="true"><CaomeiHoverCardTrigger>悬停查看</CaomeiHoverCardTrigger><CaomeiHoverCardContent>卡片的说明内容<CaomeiHoverCardArrow /></CaomeiHoverCardContent></CaomeiHoverCard>' }, requiredSelectors: ['.caomei-hover-card__trigger', '.caomei-hover-card__content'] },
+    { name: 'CaomeiNavigationMenu', root: CaomeiNavigationMenu, definition: { components: { CaomeiNavigationMenu, CaomeiNavigationMenuTrigger, CaomeiNavigationMenuContent, CaomeiNavigationMenuLink }, template: '<CaomeiNavigationMenu aria-label="主导航" model-value="docs"><CaomeiNavigationMenuTrigger value="docs">文档<template #content><CaomeiNavigationMenuContent><CaomeiNavigationMenuLink href="#">快速上手</CaomeiNavigationMenuLink></CaomeiNavigationMenuContent></template></CaomeiNavigationMenuTrigger></CaomeiNavigationMenu>' }, requiredSelectors: ['.caomei-navigation-menu', '.caomei-navigation-menu__trigger', '.caomei-navigation-menu__content', '.caomei-navigation-menu__link'] },
+    { name: 'CaomeiMenubar', root: CaomeiMenubar, definition: { components: { CaomeiMenubar, CaomeiMenubarMenu, CaomeiMenubarTrigger, CaomeiMenubarContent, CaomeiMenubarItem }, template: '<CaomeiMenubar><CaomeiMenubarMenu value="file"><CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger><CaomeiMenubarContent force-mount><CaomeiMenubarItem>新建</CaomeiMenubarItem><CaomeiMenubarItem disabled>删除</CaomeiMenubarItem></CaomeiMenubarContent></CaomeiMenubarMenu></CaomeiMenubar>' }, requiredSelectors: ['.caomei-menubar', '.caomei-menubar__trigger', '.caomei-menubar__content', '.caomei-menubar__item'] },
+    { name: 'CaomeiWatermark', root: CaomeiWatermark, definition: { components: { CaomeiWatermark }, template: '<CaomeiWatermark content="内部资料"><span>正文</span></CaomeiWatermark>' }, requiredSelectors: ['.caomei-watermark', '.caomei-watermark__overlay'] },
     { name: 'CaomeiCarousel', root: CaomeiCarousel, definition: { components: { CaomeiCarousel, CaomeiCarouselSlide }, template: '<CaomeiCarousel label="相册"><CaomeiCarouselSlide>第一页</CaomeiCarouselSlide><CaomeiCarouselSlide>第二页</CaomeiCarouselSlide></CaomeiCarousel>' }, requiredSelectors: ['.caomei-carousel', '.caomei-carousel__slide'] },
     { name: 'CaomeiAnchor', root: CaomeiAnchor, definition: { components: { CaomeiAnchor }, template: '<div><CaomeiAnchor :items="[{ key: \'a\', title: \'第一节\' }, { key: \'b\', title: \'第二节\' }]" /><h2 id="a">第一节</h2><h2 id="b">第二节</h2></div>' }, requiredSelectors: ['.caomei-anchor', '.caomei-anchor__link'] },
     /* `always` 形态下提示接线恒常存在，元素自身即受检对象（`auto` 在无布局的环境里不挂载提示）。 */
@@ -509,6 +527,15 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiContextMenuSeparator', component: CaomeiContextMenuSeparator, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuLabel', component: CaomeiContextMenuLabel, fixture: 'CaomeiContextMenuContent' },
     { name: 'CaomeiContextMenuGroup', component: CaomeiContextMenuGroup, fixture: 'CaomeiContextMenuContent' },
+    { name: 'CaomeiHoverCardTrigger', component: CaomeiHoverCardTrigger, fixture: 'CaomeiHoverCard' },
+    { name: 'CaomeiHoverCardContent', component: CaomeiHoverCardContent, fixture: 'CaomeiHoverCard' },
+    { name: 'CaomeiHoverCardArrow', component: CaomeiHoverCardArrow, fixture: 'CaomeiHoverCard' },
+    { name: 'CaomeiNavigationMenuTrigger', component: CaomeiNavigationMenuTrigger, fixture: 'CaomeiNavigationMenu' },
+    { name: 'CaomeiNavigationMenuContent', component: CaomeiNavigationMenuContent, fixture: 'CaomeiNavigationMenu' },
+    { name: 'CaomeiNavigationMenuLink', component: CaomeiNavigationMenuLink, fixture: 'CaomeiNavigationMenu' },
+    { name: 'CaomeiMenubarTrigger', component: CaomeiMenubarTrigger, fixture: 'CaomeiMenubar' },
+    { name: 'CaomeiMenubarContent', component: CaomeiMenubarContent, fixture: 'CaomeiMenubar' },
+    { name: 'CaomeiMenubarItem', component: CaomeiMenubarItem, fixture: 'CaomeiMenubar' },
     { name: 'CaomeiCarouselSlide', component: CaomeiCarouselSlide, fixture: 'CaomeiCarousel' },
     { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
@@ -525,9 +552,10 @@ export const INTERACTION_ONLY_EXPORTS: { name: string, reason: string }[] = []
 
 /** 不渲染自有 DOM 的对外导出（逐条登记理由，避免静默豁免）。 */
 export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
+    { name: 'CaomeiMenubarMenu', reason: '不渲染自有 DOM（仅 provide 菜单上下文并透传插槽），审计对象是兄弟触发器与面板' },
     { name: 'CaomeiConfigProvider', reason: '不渲染自有 DOM（仅 provide 上下文并透传插槽），单独挂载时审计对象是插槽内容而非组件本身' },
     { name: 'CaomeiTooltipProvider', reason: '不渲染自有 DOM（仅 provide 工具提示上下文并透传插槽），单独挂载时审计对象是插槽内容而非组件本身' },
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 88
+export const A11Y_FIXTURE_BUDGET = 92

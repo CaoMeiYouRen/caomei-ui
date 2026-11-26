@@ -30,6 +30,11 @@ export function fixtureDir(root = REPO_ROOT) {
 export const HTML_MARKERS = [
     { label: '组件 CaomeiButton 自动导入', test: (html) => html.includes('caomei-button') },
     { label: '组件 CaomeiTag 自动导入', test: (html) => html.includes('caomei-tag') },
+    { label: '组件 CaomeiCarousel 自动导入', test: (html) => html.includes('class="caomei-carousel') },
+    { label: '组件 CaomeiWatermark 自动导入', test: (html) => html.includes('class="caomei-watermark') },
+    { label: '组件 CaomeiMenubar 自动导入', test: (html) => html.includes('class="caomei-menubar"') },
+    { label: '组件 CaomeiNavigationMenu 自动导入', test: (html) => html.includes('class="caomei-navigation-menu') },
+    { label: '组件 CaomeiHoverCard 自动导入', test: (html) => html.includes('class="caomei-hover-card__trigger"') },
     { label: 'composable useTheme 自动导入', test: (html) => /data-testid="theme-mode"[^<]*auto/.test(html) },
     { label: 'darkMode: media 写入 data-scheme', test: (html) => html.includes('data-scheme="auto"') },
     { label: 'app.head htmlAttrs 透传', test: (html) => html.includes('data-preset="caomei"') },
@@ -38,6 +43,7 @@ export const HTML_MARKERS = [
 /** 打包 CSS 必须包含的关键标记。 */
 export const CSS_MARKERS = [
     { label: '组件样式已注入', test: (css) => css.includes('.caomei-button') },
+    { label: '组件 CaomeiWatermark 样式已注入', test: (css) => css.includes('.caomei-watermark__overlay') },
     { label: '基础层 token 已注入', test: (css) => css.includes('--caomei-color-bg:') },
     { label: '基础层根类已注入', test: (css) => css.includes('.caomei-root') },
     {

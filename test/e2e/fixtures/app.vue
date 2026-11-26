@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, h, onMounted, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
 import { Compass, Home, Settings, User } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
@@ -46,10 +46,22 @@ import {
     CaomeiDrawer,
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
+    CaomeiMenubar,
+    CaomeiNavigationMenu,
+    CaomeiNavigationMenuContent,
+    CaomeiNavigationMenuLink,
+    CaomeiNavigationMenuTrigger,
+    CaomeiMenubarContent,
+    CaomeiMenubarItem,
+    CaomeiMenubarMenu,
+    CaomeiMenubarTrigger,
     CaomeiDropdownMenuTrigger,
     CaomeiFileUpload,
     CaomeiForm,
     CaomeiFormItem,
+    CaomeiHoverCard,
+    CaomeiHoverCardContent,
+    CaomeiHoverCardTrigger,
     CaomeiImage,
     CaomeiInput,
     CaomeiInputGroup,
@@ -95,6 +107,7 @@ import {
     CaomeiTimePicker,
     CaomeiTree,
     CaomeiTreeSelect,
+    CaomeiWatermark,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -287,6 +300,16 @@ const contextMenuLog = ref('')
 const splitterLog = ref('')
 const splitterHorizontalLog = ref('')
 const carouselIndex = ref(0)
+const watermarkVisible = ref(true)
+const watermarkDark = ref(false)
+
+watch(watermarkDark, (value) => {
+    if (value) {
+        document.documentElement.dataset.theme = 'dark'
+    } else {
+        document.documentElement.removeAttribute('data-theme')
+    }
+})
 const contextMenuItems = [
     { label: '查看详情' },
     { label: '复制链接', shortcut: '⌘C' },
@@ -1233,6 +1256,54 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                                 扫描范围为所选仓库的全部开放依赖告警。
                             </CaomeiPopoverContent>
                         </CaomeiPopover>
+                    </div>
+                    <div id="overlay-hover-card">
+                        <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                            <CaomeiHoverCardTrigger>悬停卡片</CaomeiHoverCardTrigger>
+                            <CaomeiHoverCardContent>
+                                卡片说明内容
+                            </CaomeiHoverCardContent>
+                        </CaomeiHoverCard>
+                    </div>
+                    <div id="overlay-navigation-menu">
+                        <CaomeiNavigationMenu aria-label="浮层导航">
+                            <CaomeiNavigationMenuTrigger value="docs">
+                                文档
+                                <template #content>
+                                    <CaomeiNavigationMenuContent>
+                                        <CaomeiNavigationMenuLink href="#guide">
+                                            快速上手
+                                        </CaomeiNavigationMenuLink>
+                                    </CaomeiNavigationMenuContent>
+                                </template>
+                            </CaomeiNavigationMenuTrigger>
+                            <CaomeiNavigationMenuTrigger value="blog">
+                                博客
+                                <template #content>
+                                    <CaomeiNavigationMenuContent>
+                                        <CaomeiNavigationMenuLink href="#latest">
+                                            最新文章
+                                        </CaomeiNavigationMenuLink>
+                                    </CaomeiNavigationMenuContent>
+                                </template>
+                            </CaomeiNavigationMenuTrigger>
+                        </CaomeiNavigationMenu>
+                    </div>
+                    <div id="overlay-menubar">
+                        <CaomeiMenubar>
+                            <CaomeiMenubarMenu value="file">
+                                <CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger>
+                                <CaomeiMenubarContent>
+                                    <CaomeiMenubarItem>新建</CaomeiMenubarItem>
+                                </CaomeiMenubarContent>
+                            </CaomeiMenubarMenu>
+                            <CaomeiMenubarMenu value="edit">
+                                <CaomeiMenubarTrigger>编辑</CaomeiMenubarTrigger>
+                                <CaomeiMenubarContent>
+                                    <CaomeiMenubarItem>撤销</CaomeiMenubarItem>
+                                </CaomeiMenubarContent>
+                            </CaomeiMenubarMenu>
+                        </CaomeiMenubar>
                     </div>
                     <div id="overlay-dropdown-menu">
                         <CaomeiDropdownMenu>
@@ -3727,6 +3798,114 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          HoverCard（供悬停卡片 E2E 使用）：普通、禁用与延迟三张卡片。
+        -->
+        <section id="hover-card" class="fixture__case">
+            <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                <CaomeiHoverCardTrigger>术语</CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>无障碍名称的解释</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+            <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                <CaomeiHoverCardTrigger disabled>
+                    禁用卡片
+                </CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>禁用卡片不应出现</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+            <CaomeiHoverCard :open-delay="400" :close-delay="0">
+                <CaomeiHoverCardTrigger>延迟卡片</CaomeiHoverCardTrigger>
+                <CaomeiHoverCardContent>延迟后出现的内容</CaomeiHoverCardContent>
+            </CaomeiHoverCard>
+        </section>
+        <!--
+          NavigationMenu（供导航菜单 E2E 使用）：站点导航、两组触发器与内容面板。
+        -->
+        <section id="navigation-menu" class="fixture__case">
+            <CaomeiNavigationMenu aria-label="导航夹具">
+                <CaomeiNavigationMenuTrigger value="docs">
+                    文档
+                    <template #content>
+                        <CaomeiNavigationMenuContent>
+                            <CaomeiNavigationMenuLink href="#guide">
+                                快速上手
+                            </CaomeiNavigationMenuLink>
+                            <CaomeiNavigationMenuLink href="#api">
+                                组件 API
+                            </CaomeiNavigationMenuLink>
+                        </CaomeiNavigationMenuContent>
+                    </template>
+                </CaomeiNavigationMenuTrigger>
+                <CaomeiNavigationMenuTrigger value="blog">
+                    博客
+                    <template #content>
+                        <CaomeiNavigationMenuContent>
+                            <CaomeiNavigationMenuLink href="#latest">
+                                最新文章
+                            </CaomeiNavigationMenuLink>
+                        </CaomeiNavigationMenuContent>
+                    </template>
+                </CaomeiNavigationMenuTrigger>
+            </CaomeiNavigationMenu>
+        </section>
+        <!--
+          Menubar（供菜单栏 E2E 使用）：独立菜单栏、两组菜单与禁用条目。
+        -->
+        <section id="menubar" class="fixture__case">
+            <CaomeiMenubar>
+                <CaomeiMenubarMenu value="file">
+                    <CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger>
+                    <CaomeiMenubarContent>
+                        <CaomeiMenubarItem shortcut="⌘N">
+                            新建
+                        </CaomeiMenubarItem>
+                        <CaomeiMenubarItem disabled>
+                            保存
+                        </CaomeiMenubarItem>
+                    </CaomeiMenubarContent>
+                </CaomeiMenubarMenu>
+                <CaomeiMenubarMenu value="edit">
+                    <CaomeiMenubarTrigger>编辑</CaomeiMenubarTrigger>
+                    <CaomeiMenubarContent>
+                        <CaomeiMenubarItem>撤销</CaomeiMenubarItem>
+                        <CaomeiMenubarItem>重做</CaomeiMenubarItem>
+                    </CaomeiMenubarContent>
+                </CaomeiMenubarMenu>
+            </CaomeiMenubar>
+        </section>
+        <!--
+          Watermark（供水印 E2E 使用）：文本水印、卸载开关与暗色切换。
+        -->
+        <section id="watermark" class="fixture__case">
+            <div id="watermark-host">
+                <CaomeiWatermark
+                    v-if="watermarkVisible"
+                    content="caomei-ui 内部资料"
+                    :gap="60"
+                    :opacity="0.2"
+                >
+                    <div class="watermark-fixture__content">
+                        可读正文内容
+                    </div>
+                </CaomeiWatermark>
+            </div>
+            <button
+                id="watermark-unmount"
+                type="button"
+                @click="watermarkVisible = !watermarkVisible"
+            >
+                切换水印挂载
+            </button>
+            <button
+                id="watermark-theme"
+                type="button"
+                @click="watermarkDark = !watermarkDark"
+            >
+                切换暗色
+            </button>
+            <div id="watermark-state">
+                {{ watermarkDark ? 'dark' : 'light' }}
+            </div>
+        </section>
+        <!--
           Carousel（供轮播 E2E 使用）：水平受控索引、每页 2 张（循环）与纵向高度链。
         -->
         <section id="carousel" class="fixture__case">
@@ -3814,6 +3993,17 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 </template>
 
 <style scoped>
+.watermark-fixture__content {
+    display: flex;
+    align-items: center;
+    min-height: 140px;
+    padding: 16px;
+    border: 1px solid var(--caomei-color-border);
+    border-radius: var(--caomei-radius-md);
+    background: var(--caomei-color-bg);
+    color: var(--caomei-color-text);
+}
+
 .carousel-fixture__slide {
     display: flex;
     align-items: center;

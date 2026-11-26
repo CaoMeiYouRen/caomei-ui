@@ -64,6 +64,7 @@
 - [ContextMenu 右键菜单](./context-menu)：在指定区域右键或触屏长按弹出上下文菜单，菜单项 / 分组 / 快捷键 / 危险项语义与下拉菜单一致，支持受控开合与键盘导航。
 - [Dialog 对话框](./dialog)：对话框用于在当前页面之上承载需要用户聚焦处理的内容，基于 Reka UI Dialog 封装。
 - [Drawer 抽屉](./drawer)：抽屉从页面边缘滑出，用于承载次要内容、设置面板或导航；封装 Reka UI 的 Dialog primitive，并提供四向 `position`。
+- [HoverCard 悬停卡片](./hover-card)：悬停或聚焦后浮出补充信息，支持延迟、方位与箭头；非模态，背景保持可交互。
 - [Message 提示条](./message)：提示条用于在当前页面内展示一条与上下文相关的反馈信息，并承载 live region 播报（默认 `role="status"`，可切 `alert`）；内联常驻提示请用 Alert。
 - [Popconfirm 气泡确认](./popconfirm)：气泡确认在触发按钮旁弹出轻量二次确认，支持危险语气、加载态与受控开合。
 - [Popover 浮层](./popover)：浮层用于承载与触发元素相关的临时内容（说明、表单、操作），基于 Reka UI Popover 封装，由 `CaomeiPopover` 与 `CaomeiPopoverTrigger` / `CaomeiPopoverContent` / `CaomeiPopoverArrow` / `CaomeiPopoverClose` 组合使用。
@@ -87,6 +88,7 @@
 - [Statistic 统计数值](./statistic)：大号数值展示，支持精度、千分位、前后缀与加载态；空值与非法输入降级为占位，不做数字滚动动画。
 - [Timeline 时间轴](./timeline)：按时间顺序展示事件，支持单侧 / 交替布局、反转顺序与语气色节点。
 - [Tree 树形控件](./tree)：按层级展示可展开的数据，支持单选 / 多选、节点禁用与键盘导航，基于 Reka UI 的 Tree 原语（Alpha）封装。
+- [Watermark 水印](./watermark)：在内容上覆盖平铺水印（文本或图片），支持旋转、透明度、间距、偏移与层级；遮罩对辅助技术隐藏，插槽内容保持可读。
 
 ## 导航与操作
 
@@ -96,7 +98,9 @@
 - [Breadcrumb 面包屑](./breadcrumb)：面包屑展示当前页面的层级位置，容器为 `nav` + 有序列表，末级经 `aria-current` 标记当前页。
 - [DropdownMenu 下拉菜单](./dropdown-menu)：下拉菜单由触发器展开一组操作，支持分组、禁用、勾选、单选与分隔线，基于 Reka UI DropdownMenu 封装。
 - [Menu 导航菜单](./menu)：导航菜单用于组织页面级导航（侧栏 / 顶栏），采用 disclosure 导航结构，支持方向键序列与子菜单就地展开。
+- [Menubar 菜单栏](./menubar)：桌面式横向菜单栏，一组触发器共享弹出菜单、同一时刻只展开一个；支持受控展开、方向键 / Home / End / Esc 与禁用条目。
 - [NavBar 导航栏](./nav-bar)：路由级页头，左侧返回、中间标题、右侧操作，可选吸顶与安全区；不接 vue-router，`back` 事件交给使用方。
+- [NavigationMenu 导航菜单](./navigation-menu)：站点级导航菜单，一组触发器共享内容视口，悬停 / 点击切换展开、切换不跳动；内容用 `#content` 插槽，当前页链接映射 `aria-current`。
 - [Stepper 步骤条](./stepper)：步骤条展示多步流程的进度，并在步骤之间导航。基于 Reka UI Stepper（稳定 primitive）封装，采用与 Tabs 一致的组合式 API。
 - [Tabbar 标签栏](./tabbar)：移动端顶层视图切换的展示层，维护 `v-model` 选中值与 `aria-current`；不接 vue-router、不做页面切换。
 - [Tabs 选项卡](./tabs)：选项卡在一组同级内容间切换，同一时刻只展示一个面板，基于 Reka UI Tabs 封装。

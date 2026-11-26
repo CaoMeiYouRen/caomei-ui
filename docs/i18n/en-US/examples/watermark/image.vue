@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 import { CaomeiWatermark } from '@/components/watermark'
 
-/** 内联 SVG 作为图片水印，避免示例依赖外部资源 */
-const logo = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22%20width=%22120%22%20height=%2240%22%3E%3Ctext%20x=%220%22%20y=%2228%22%20font-family=%22sans-serif%22%20font-size=%2220%22%20fill=%22%232563eb%22%3ECAOMEI%3C/text%3E%3C/svg%3E'
+/** 站点内置占位图（docs/public/demo），示例不依赖外部资源 */
+const logo = withBase('/demo/watermark-logo.svg')
 </script>
 
 <template>

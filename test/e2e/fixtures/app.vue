@@ -46,6 +46,11 @@ import {
     CaomeiDrawer,
     CaomeiDropdownMenu,
     CaomeiDropdownMenuContent,
+    CaomeiMenubar,
+    CaomeiMenubarContent,
+    CaomeiMenubarItem,
+    CaomeiMenubarMenu,
+    CaomeiMenubarTrigger,
     CaomeiDropdownMenuTrigger,
     CaomeiFileUpload,
     CaomeiForm,
@@ -1244,6 +1249,22 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                                 扫描范围为所选仓库的全部开放依赖告警。
                             </CaomeiPopoverContent>
                         </CaomeiPopover>
+                    </div>
+                    <div id="overlay-menubar">
+                        <CaomeiMenubar>
+                            <CaomeiMenubarMenu value="file">
+                                <CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger>
+                                <CaomeiMenubarContent>
+                                    <CaomeiMenubarItem>新建</CaomeiMenubarItem>
+                                </CaomeiMenubarContent>
+                            </CaomeiMenubarMenu>
+                            <CaomeiMenubarMenu value="edit">
+                                <CaomeiMenubarTrigger>编辑</CaomeiMenubarTrigger>
+                                <CaomeiMenubarContent>
+                                    <CaomeiMenubarItem>撤销</CaomeiMenubarItem>
+                                </CaomeiMenubarContent>
+                            </CaomeiMenubarMenu>
+                        </CaomeiMenubar>
                     </div>
                     <div id="overlay-dropdown-menu">
                         <CaomeiDropdownMenu>

@@ -4,6 +4,9 @@ import type { MenubarContentProps } from './types'
 
 defineOptions({ name: 'CaomeiMenubarContent', inheritAttrs: false })
 
+// 菜单栏为非模态浮层（Reka `MenubarMenu` 固定 `modal: false`）：
+// 不做打开态整页隔离，点击外部或切换触发器即关闭，背景保持可交互。
+
 withDefaults(defineProps<MenubarContentProps>(), {
     side: 'bottom',
     sideOffset: 4,
@@ -38,6 +41,7 @@ withDefaults(defineProps<MenubarContentProps>(), {
 <style>
 .caomei-menubar__content {
     box-sizing: border-box;
+    z-index: var(--caomei-menubar-z-index, var(--caomei-z-dropdown));
     display: flex;
     flex-direction: column;
     min-width: min(var(--caomei-menubar-min-width, 9rem), var(--reka-menubar-content-available-width));

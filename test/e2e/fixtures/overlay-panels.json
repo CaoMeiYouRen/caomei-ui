@@ -56,6 +56,11 @@
             "trigger": "#overlay-context-menu-target",
             "panel": ".caomei-context-menu__content",
             "open": "contextmenu"
+        },
+        {
+            "name": "menubar",
+            "trigger": "#overlay-menubar .caomei-menubar__trigger",
+            "panel": ".caomei-menubar__content"
         }
     ]
 }

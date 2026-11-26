@@ -151,6 +151,19 @@ describe('CaomeiMenubar', () => {
         })
     })
 
+    it('打开时不做整页隔离（非模态浮层）', async () => {
+        mountMenubar()
+        await flush()
+
+        press(triggers()[0])
+        await expectSettled(() => {
+            expect(content()).not.toBeNull()
+        })
+
+        const inert = [...document.body.children].filter((node) => node.hasAttribute('inert'))
+        expect(inert).toEqual([])
+    })
+
     it('禁用条目带 data-disabled 且点击不关闭菜单', async () => {
         mountMenubar()
         await flush()

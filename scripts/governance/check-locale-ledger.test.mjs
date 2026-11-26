@@ -79,6 +79,8 @@ function buildDoc({
     preRegistered = BASE_PRE_REGISTERED,
     onDemand = BASE_ON_DEMAND,
     subpaths = BASE_SUBPATHS,
+    union = BASE_UNION,
+    coverage,
     lang = 'zh',
 } = {}) {
     const isZh = lang === 'zh'
@@ -95,6 +97,16 @@ function buildDoc({
         ? ['| 语言标识 | 子路径 |', '| --- | --- |']
         : ['| Locale id | Subpath |', '| --- | --- |']
     const subpathRows = subpaths.map(([id, path]) => `| \`${id}\` | \`${path}\` |`)
+    const totalKeys = Object.values(namespaces).reduce((sum, keys) => sum + keys.length, 0)
+    const coverageHeader = isZh
+        ? ['| 语言标识 | 本地名称 | 分发形态 | 键覆盖 | 复核状态 |', '| --- | --- | --- | --- | --- |']
+        : ['| Locale | Native name | Distribution | Key coverage | Review status |', '| --- | --- | --- | --- | --- |']
+    const coverageRows = union.map((id) => {
+        const cell = (coverage && coverage[id]) ?? `${totalKeys} / ${totalKeys}`
+        const preRegisteredLabels = isZh ? ['预注册', '子路径'] : ['Pre-registered', 'Subpath']
+        const distribution = preRegisteredLabels[preRegistered.includes(id) ? 0 : 1]
+        return `| \`${id}\` | ${id} | ${distribution} | ${cell} | ${isZh ? '已复核' : 'Reviewed'} |`
+    })
 
     return [
         isZh ? '# 内建文案与语言' : '# Built-in messages and locales',
@@ -102,6 +114,11 @@ function buildDoc({
         isZh ? '| 命名空间 | 文案键 | 消费组件 |' : '| Namespace | Keys | Consuming component |',
         '| --- | --- | --- |',
         ledgerRows,
+        '',
+        isZh ? '## 支持语言与翻译状态' : '## Supported locales and translation status',
+        '',
+        ...coverageHeader,
+        ...coverageRows,
         '',
         isZh ? '## 按需引入语言' : '## On-demand locales',
         '',
@@ -121,14 +138,15 @@ function createFixture({
     subpaths = BASE_SUBPATHS,
     zhDoc,
     enDoc,
+    coverage,
 } = {}) {
     const dir = mkdtempSync(join(tmpdir(), 'caomei-locale-ledger-'))
     tempDirs.push(dir)
     const files = {
         'src/locale/types.ts': buildTypes(namespaces),
         'src/locale/index.ts': buildIndex({ union, preRegistered }),
-        'docs/components/locale.md': zhDoc ?? buildDoc({ namespaces, preRegistered, onDemand, subpaths, lang: 'zh' }),
-        'docs/i18n/en-US/components/locale.md': enDoc ?? buildDoc({ namespaces, preRegistered, onDemand, subpaths, lang: 'en' }),
+        'docs/components/locale.md': zhDoc ?? buildDoc({ namespaces, preRegistered, onDemand, subpaths, union, coverage, lang: 'zh' }),
+        'docs/i18n/en-US/components/locale.md': enDoc ?? buildDoc({ namespaces, preRegistered, onDemand, subpaths, union, coverage, lang: 'en' }),
     }
     for (const [relativePath, content] of Object.entries(files)) {
         const absolutePath = join(dir, relativePath)
@@ -179,6 +197,31 @@ describe('checkLocaleLedger', () => {
         const result = check(createFixture({ namespaces, zhDoc }))
         expect(result.ok).toBe(false)
         expect(result.errors.join('\n')).toContain('中文台账表 命名空间 input 缺少键 reset')
+    })
+
+    it('键覆盖列与 types.ts 键数不一致时报错', () => {
+        const result = check(createFixture({ coverage: { 'fr-FR': '3 / 4' } }))
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('已覆盖键数 3 与总数 4 不一致')
+    })
+
+    it('键覆盖列总数漂移时报错', () => {
+        const result = check(createFixture({ coverage: { 'zh-CN': '4 / 5' } }))
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('键覆盖总数 5 与 types.ts 的 4 不一致')
+    })
+
+    it('缺少键覆盖表时报错', () => {
+        const zhDoc = buildDoc().split('## 支持语言与翻译状态')[0]
+        const result = check(createFixture({ zhDoc }))
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('中文文档未找到「键覆盖」语言表')
+    })
+
+    it('键覆盖单元格形态非法时报错', () => {
+        const result = check(createFixture({ coverage: { 'fr-FR': '全部' } }))
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('不是「已覆盖 / 总数」形态')
     })
 
     it('命名空间数低于下界时报错', () => {

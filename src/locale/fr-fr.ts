@@ -203,6 +203,11 @@ const frFR: CaomeiLocaleMessages = {
         skip: 'Passer',
         finish: 'Terminer',
     },
+    carousel: {
+        prev: 'Diapositive précédente',
+        next: 'Diapositive suivante',
+        slide: 'Diapositive {index} sur {total}',
+    },
 }
 
 export default frFR

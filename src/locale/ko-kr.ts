@@ -203,6 +203,11 @@ const koKR: CaomeiLocaleMessages = {
         skip: '건너뛰기',
         finish: '완료',
     },
+    carousel: {
+        prev: '이전 슬라이드',
+        next: '다음 슬라이드',
+        slide: '전체 {total}장 중 {index}장',
+    },
 }
 
 export default koKR

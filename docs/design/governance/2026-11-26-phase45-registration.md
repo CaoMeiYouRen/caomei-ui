@@ -122,6 +122,8 @@
 - **R3**（2026-11-26，`quick`，时间盒 ≤ 5 分钟）：**Reject** —— 1 blocker / 3 warning（blocker：治理索引摘要仍写 5 / 10，与 6 / 15 矛盾；warning：文档条目 12 文件依据引用点时记录、W3 授权未落定、§6 缺 R2 结论行）。
 - **收束（按 [AI 协作规范 §3.5](../../standards/ai-collaboration.md)）**：R3 blocker 为单行计数回填（索引摘要改 6 / 15）——已修正；W2 的粒度依据迁入[规划规范 §5](../../standards/planning.md#_5-任务粒度约束)（活载体）；W3 改为「Phase 43 / 44 收口轮记为未执行（缺口保留），第 48 轮为逾期补测、不追认历史义务」，不再以未来条件句悬置；§6 回填 R1–R3。收束不再开第 4 轮，范围冻结于上述修复点。
 
+**执行期偏差（2026-11-27，M3-3）**：实际交付 16 文件，超出文档条目 12 文件上限：新增 `test/e2e/fixtures/app.vue` 的 `#menubar` 段（E2E 夹具与用例不可分割）、水印图片示例改站点内置占位图（`cb5e16b9` 的 data URI 命中 `check-demo-external-images`，属必修红门）及其 `docs/public/demo/watermark-logo.svg` 资产。水印修正另拆 `fix(docs)` 提交单独走 Gate，M3-3 主体回到文档 + 示例 + 夹具口径。
+
 **执行期澄清（2026-11-27，M3-2）**：menubar 为非模态浮层（Reka `MenubarMenu` 固定 `modal: false`），**不接入**打开态整页隔离；点击外部或切换触发器即关闭，背景保持可交互。M3-2 的 E2E 只覆盖档位与命中，不覆盖隔离。
 
 **执行期偏差（2026-11-26，M1-2）**：`src/nuxt/components.ts`、`src/index.ts` 与 `test/a11y/fixtures.ts` 中 Carousel 两名随 M1-2 落地，而非按 §2「归属约定」等 M6-1。原因：`src/nuxt/components.test.ts` 以组件目录 barrel 为基准、`test/a11y/a11y.test.ts` 以对外导出清单为基准，新增组件目录即红门；`src/index.ts` 若不同步，Nuxt 端会注册一个包根解析不到的组件名。Watermark 随 M2-1、其余三个组件的导出与 a11y 登记仍在 M6-1 收口，M6-1 须补 `<CaomeiCarousel>` / `<CaomeiWatermark>` 的真实 Nuxt 渲染用例（`check:nuxt` 当前不覆盖新组件，窗口期无门禁）。

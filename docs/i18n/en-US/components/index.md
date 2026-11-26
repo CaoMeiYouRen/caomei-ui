@@ -84,6 +84,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Breadcrumb](/en-US/components/breadcrumb)
 - [DropdownMenu](/en-US/components/dropdown-menu)
 - [Menu](/en-US/components/menu)
+- [Menubar](/en-US/components/menubar)
 - [NavBar](/en-US/components/nav-bar)
 - [Stepper](/en-US/components/stepper)
 - [Tabbar](/en-US/components/tabbar)

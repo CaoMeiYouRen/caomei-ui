@@ -3759,6 +3759,31 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          Menubar（供菜单栏 E2E 使用）：独立菜单栏、两组菜单与禁用条目。
+        -->
+        <section id="menubar" class="fixture__case">
+            <CaomeiMenubar>
+                <CaomeiMenubarMenu value="file">
+                    <CaomeiMenubarTrigger>文件</CaomeiMenubarTrigger>
+                    <CaomeiMenubarContent>
+                        <CaomeiMenubarItem shortcut="⌘N">
+                            新建
+                        </CaomeiMenubarItem>
+                        <CaomeiMenubarItem disabled>
+                            保存
+                        </CaomeiMenubarItem>
+                    </CaomeiMenubarContent>
+                </CaomeiMenubarMenu>
+                <CaomeiMenubarMenu value="edit">
+                    <CaomeiMenubarTrigger>编辑</CaomeiMenubarTrigger>
+                    <CaomeiMenubarContent>
+                        <CaomeiMenubarItem>撤销</CaomeiMenubarItem>
+                        <CaomeiMenubarItem>重做</CaomeiMenubarItem>
+                    </CaomeiMenubarContent>
+                </CaomeiMenubarMenu>
+            </CaomeiMenubar>
+        </section>
+        <!--
           Watermark（供水印 E2E 使用）：文本水印、卸载开关与暗色切换。
         -->
         <section id="watermark" class="fixture__case">

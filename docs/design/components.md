@@ -101,6 +101,7 @@
 | Watermark | 自建（canvas 平铺） | 无 | — | 文本 / 图片水印：旋转、透明度、间距、偏移与层级；DOM / 尺寸变化后下一帧重建，卸载即停止；遮罩 `aria-hidden`，像素级篡改不覆盖（**已实现**） |
 | Carousel | 封装（`embla-carousel-vue`） | 无（`embla-carousel-vue` 为运行时依赖） | 稳定 | 水平 / 垂直轮播：循环、每页张数（含 `auto`）、间距、受控页索引、上一页 / 下一页与指示点；容器与页带轮播语义，键盘与拖拽翻页（**已实现**） |
 | Anchor | 自建（scroll-spy） | 无 | — | 锚点导航：窗口 / 容器判定线激活、嵌套缩进、点击对齐判定线、pushState 与 hashchange 同步（**已实现**） |
+| Menubar | 封装 | MenubarRoot / MenubarMenu / MenubarTrigger / MenubarContent / MenubarItem | 稳定 | 桌面式菜单栏：一组触发器共享弹出菜单、受控展开、方向键 / Home / End / Esc 与焦点归还；条目支持禁用与快捷键提示（**已实现**） |
 | ContextMenu | 封装 | ContextMenu | 稳定 | 右键 / 触屏长按：数据条目（图标 / 快捷键 / 危险 / 禁用 / command）+ Group / Label / Item / Separator 子组件；复用浮层隔离与受控开合（**已实现**） |
 | QRCode | 封装（可选 peer `qrcode`，按需加载） | 无（`qrcode` 为编码内核） | — | 文本 / 链接编码：尺寸、容错级别、静区、配色、居中图标与插槽；失败清空旧图并 `role="alert"`（**已实现**） |
 | Tour | 自建（遮罩挖空 + 目标定位 + 模态滚动锁） | 无 | — | 分步引导：`steps` 驱动、受控步骤、挖空高亮与翻转钳位、滚动 / 尺寸变化重算、`Escape` 归还焦点（**已实现**） |

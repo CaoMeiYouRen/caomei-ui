@@ -101,15 +101,11 @@
 
 > **象限提示（快速开发期）**：本组是本仓「新组件 / 新功能」主入口，现存候选按用户指定的快速开发期方向取重要度 4、紧急度 2（无硬时点），象限为**排期**——即按节奏逐步推进，而不是插队；已登记到当前阶段的组件以 [`todo.md`](./todo.md) 为准，本表只保留未进入阶段的候选。各条「记录 P2」为来源记录（2026-11-18 调研）的单轴分级，非现行排序；排序以本表「重要 / 紧急」为准。
 
-| 候选 | 依据 | 重要 | 紧急 | 建议 |
-|------|------|:-:|:-:|:-:|
-| Carousel | 记录 **P2**；五库均有（Vant / Varlet `swipe`、TDesign `swiper`）；已定 embla headless | 4 | 2 | 排期 |
-| Watermark | 记录 **P2**；Element Plus / TDesign / Vant / Varlet | 4 | 2 | 排期 |
-| Menubar / NavigationMenu / HoverCard | 记录 **P2**；Reka 原语现成（`Menubar*` / `NavigationMenu*` / `HoverCard*`）；Varlet 仅有 `hover` | 4 | 2 | 排期 |
+> **本组暂无在册候选**：Carousel / Watermark / Menubar / NavigationMenu / HoverCard 已于 2026-11-26 登记 Phase 45（见[登记批次](../design/governance/2026-11-26-phase45-registration.md) §2）；后续候选解禁后再行登记。
 
 - **不建议纳入**：App Shell（`container` / `aside` / `header`）与 `Overlay` / `Fab` / `List`（结论见 §3）；业务件（`address-*` / `coupon-*` / `contact-*`）与 `TreeTable` / `Knob` / `OrganizationChart`（见 [组件设计 §6](../design/components.md)）。
 - **Sticky / SafeArea**：`Sticky` 工具形态仍登记在 §1.5；`SafeArea` 已于 2026-11-20 登记 Phase 38 M1-1 / M1-2，不在本表重复。`Sticky` 若最终按组件实现，再从 §1.5 迁入。
-- **2026-11-26 用量复核**：`gh search code` 显示 csv-token-analytics 存在 shadcn `carousel` / `menubar` / `navigation-menu` / `hover-card` 同名文件（carousel 依赖 `embla-carousel-react@^8.6.0`），但均**无页面引用**；momei 检索到的 `watermark` 均为 AI 提示词文本。故本组「重要 4 / 紧急 2」的依据是**快速开发期方向与库间对齐**，不是下游实测用量；正式登记阶段时按本口径写入登记记录。
+- **2026-11-26 用量复核**：`gh search code` 显示 csv-token-analytics 存在 shadcn `carousel` / `menubar` / `navigation-menu` / `hover-card` 同名文件（carousel 依赖 `embla-carousel-react@^8.6.0`），但均**无页面引用**；momei 检索到的 `watermark` 均为 AI 提示词文本。故本组「重要 4 / 紧急 2」的依据是**快速开发期方向与库间对齐**，不是下游实测用量；该口径已随 2026-11-26 登记写入 [Phase 45 登记批次](../design/governance/2026-11-26-phase45-registration.md) §1.2。
 - **文档同步项**：已同批修正 [组件设计 §5](../design/components.md) 的 primitive 清单（补 `FormRoot` / `Field*`、`MonthPicker` / `YearPicker`、`Splitter`、`TreeVirtualizer`、`TagGroup`、`Listbox`），并把候选决策回链本表。
 
 ## 2. 维护约定

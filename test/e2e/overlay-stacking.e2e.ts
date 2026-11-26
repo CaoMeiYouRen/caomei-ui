@@ -29,8 +29,8 @@ interface PanelCase {
     trigger: string
     /** 面板本体选择器（挂在 body 上的 Reka 内容元素） */
     panel: string
-    /** 打开方式：默认单击；右键菜单需 `contextmenu` */
-    open?: 'click' | 'contextmenu'
+    /** 打开方式：默认单击；右键菜单需 `contextmenu`；悬停卡片需 `hover`（`trigger.hover()`） */
+    open?: 'click' | 'contextmenu' | 'hover'
 }
 
 /**
@@ -45,7 +45,7 @@ const PANEL_CASES = panelCases.cases as PanelCase[]
 // color-picker 面板挂 body、无法用祖先限定；`inline` 形态复用同一基类，清单以 `:not(...)` 显式排除
 
 /** 受检面下界（冗余守卫：精确对账由 `check:overlay-z-index` 的 T10 承担） */
-const MIN_PANEL_CASES = 13
+const MIN_PANEL_CASES = 14
 
 const DIALOG_CONTENT = '.caomei-dialog__content'
 const DIALOG_OVERLAY = '.caomei-dialog__overlay'
@@ -260,10 +260,13 @@ test.describe('模态内浮层层级', () => {
             const trigger = page.locator(panelCase.trigger).first()
             if (panelCase.open === 'contextmenu') {
                 await trigger.click({ button: 'right' })
+            } else if (panelCase.open === 'hover') {
+                await trigger.hover()
             } else {
                 await trigger.click()
             }
             const panel = page.locator(panelCase.panel)
+            await expect(panel, `${panelCase.name} 面板应唯一且已挂载`).toHaveCount(1)
             await expect(panel, `${panelCase.name} 面板应打开`).toBeVisible()
 
             const panelRect = await rectOf(panel)

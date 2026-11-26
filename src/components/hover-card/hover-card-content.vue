@@ -33,6 +33,7 @@ withDefaults(defineProps<HoverCardContentProps>(), {
 /* 内容经 portal 挂到 body，scoped 作用域不命中，使用命名空间化非 scoped 块 */
 .caomei-hover-card__content {
     box-sizing: border-box;
+    z-index: var(--caomei-hover-card-z-index, var(--caomei-z-dropdown));
     max-width: min(var(--caomei-hover-card-max-width, 20rem), var(--reka-hover-card-content-available-width, 100vw));
     padding: var(--caomei-hover-card-padding, var(--caomei-space-3));
     border: 1px solid var(--caomei-hover-card-border, var(--caomei-color-border));

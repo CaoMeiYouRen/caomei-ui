@@ -59,6 +59,9 @@ import {
     CaomeiFileUpload,
     CaomeiForm,
     CaomeiFormItem,
+    CaomeiHoverCard,
+    CaomeiHoverCardContent,
+    CaomeiHoverCardTrigger,
     CaomeiImage,
     CaomeiInput,
     CaomeiInputGroup,
@@ -1253,6 +1256,14 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                                 扫描范围为所选仓库的全部开放依赖告警。
                             </CaomeiPopoverContent>
                         </CaomeiPopover>
+                    </div>
+                    <div id="overlay-hover-card">
+                        <CaomeiHoverCard :open-delay="0" :close-delay="0">
+                            <CaomeiHoverCardTrigger>悬停卡片</CaomeiHoverCardTrigger>
+                            <CaomeiHoverCardContent>
+                                卡片说明内容
+                            </CaomeiHoverCardContent>
+                        </CaomeiHoverCard>
                     </div>
                     <div id="overlay-navigation-menu">
                         <CaomeiNavigationMenu aria-label="浮层导航">

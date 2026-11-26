@@ -53,6 +53,7 @@
 
 | 候选 | 说明 | 重要 | 紧急 | 建议 |
 |------|------|:-:|:-:|:-:|
+| 直接依赖许可证策略门禁 | [评估记录](../design/governance/2026-11-26-dependency-license-policy-evaluation.md)：既有 `check:licenses` 只校验声明与安装一致，无协议策略。候选 = 在同一脚本内加 SPDX 判定（阻断 GPL / AGPL / SSPL / BUSL / Elastic-* / CC-BY-NC / `UNLICENSED` / `SEE LICENSE IN` / `LicenseRef-*` / 无 license / 未知标识，MPL·LGPL 告警），范围限定 `dependencies` + `peerDependencies`，不覆盖传递依赖；可选叠加仅存 `name → license` 的基线以覆盖允许档内的协议变化（待裁定）。零新依赖，`governance:check` 与 `prepublishOnly` 接入点已存在。**评分依据**：重要 3 = 供应链合规收益明确，但当前树全为宽松协议且有人工审查替代；紧急 2 = 无硬时点，按节奏推进。**触发条件 = 新增或升级的直接依赖出现阻断档协议，或出现现有检查未覆盖的协议变化**（启动仍须用户裁定） | 3 | 2 | 延后 |
 | 可选 peer 的「未安装且未使用」仍阻断消费方构建 | Phase 44 M2-1 消费方 fixture 实测（`pnpm check:optional-peer`）：`chart` / `editor` / `qrcode` 的加载器把动态 `import()` 写成字面量说明符，Rolldown 在模块图中即解析，未安装 peer 的消费方即使**不使用**对应组件也构建失败（错误点名模块）；「可选」当前只保证 `npm install` 不强制与类型面干净。修法三选一：拆独立子路径入口 / 运行期说明符 + 强制安装文档 / 提升为 `dependencies`，三族各留消费方 fixture。**触发条件 = 用户裁定，或下游出现「未装 chart / editor peer 也构建失败」的反馈** | 4 | 2 | 排期 |
 | `1.5.0` 发布收口（窗口 2026-11-29 后） | 门槛复核与升级注意（须补 Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄三项）、经 `release.yml` 发布与发布后校验、下游三仓兼容复验与适配回收清单。**已决策待窗口**：用户 2026-11-25 裁定自 Phase 43 移除，**2026-11-29 之前不列入规划**；触发条件 = 到达发布窗口（2026-11-29 前后）且用户明确授权发布；**评分依据**：重要 5 = 阻断发布 / 版本一致性；紧急 4 = 明确发布窗口（用户裁定窗口前不列入规划）。 | 5 | 4 | 首排 |
 | 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 3 | 1 | 延后 |

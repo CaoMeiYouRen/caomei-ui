@@ -98,6 +98,7 @@
 | ButtonGroup | 自建（布局 + 成员边框 / 圆角拼接） | 无 | — | 相邻按钮边框 / 圆角合并（**已实现**） |
 | Row / Col | 自建（CSS Grid 24 栅格） | 无 | — | 栅格行 / 列：gutter、偏移、排序与断点覆盖（`sm` / `md` / `lg`）（**已实现**） |
 | Splitter | 封装 | SplitterGroup / SplitterPanel / SplitterResizeHandle | 稳定 | 水平 / 垂直分栏：尺寸约束、折叠 / 展开、键盘调整与嵌套；受控布局对无事件折叠按渲染态回读兜底（**已实现**） |
+| Watermark | 自建（canvas 平铺） | 无 | — | 文本 / 图片水印：旋转、透明度、间距、偏移与层级；DOM / 尺寸变化后下一帧重建，卸载即停止；遮罩 `aria-hidden`，像素级篡改不覆盖（**已实现**） |
 | Carousel | 封装（`embla-carousel-vue`） | 无（`embla-carousel-vue` 为运行时依赖） | 稳定 | 水平 / 垂直轮播：循环、每页张数（含 `auto`）、间距、受控页索引、上一页 / 下一页与指示点；容器与页带轮播语义，键盘与拖拽翻页（**已实现**） |
 | Anchor | 自建（scroll-spy） | 无 | — | 锚点导航：窗口 / 容器判定线激活、嵌套缩进、点击对齐判定线、pushState 与 hashchange 同步（**已实现**） |
 | ContextMenu | 封装 | ContextMenu | 稳定 | 右键 / 触屏长按：数据条目（图标 / 快捷键 / 危险 / 禁用 / command）+ Group / Label / Item / Separator 子组件；复用浮层隔离与受控开合（**已实现**） |

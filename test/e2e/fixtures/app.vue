@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineComponent, h, onMounted, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
 import { Compass, Home, Settings, User } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
@@ -95,6 +95,7 @@ import {
     CaomeiTimePicker,
     CaomeiTree,
     CaomeiTreeSelect,
+    CaomeiWatermark,
     CaomeiToastProvider,
     CaomeiToggleButton,
     CaomeiToolbar,
@@ -287,6 +288,16 @@ const contextMenuLog = ref('')
 const splitterLog = ref('')
 const splitterHorizontalLog = ref('')
 const carouselIndex = ref(0)
+const watermarkVisible = ref(true)
+const watermarkDark = ref(false)
+
+watch(watermarkDark, (value) => {
+    if (value) {
+        document.documentElement.dataset.theme = 'dark'
+    } else {
+        document.documentElement.removeAttribute('data-theme')
+    }
+})
 const contextMenuItems = [
     { label: '查看详情' },
     { label: '复制链接', shortcut: '⌘C' },
@@ -3727,6 +3738,40 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </div>
         </section>
         <!--
+          Watermark（供水印 E2E 使用）：文本水印、卸载开关与暗色切换。
+        -->
+        <section id="watermark" class="fixture__case">
+            <div id="watermark-host">
+                <CaomeiWatermark
+                    v-if="watermarkVisible"
+                    content="caomei-ui 内部资料"
+                    :gap="60"
+                    :opacity="0.2"
+                >
+                    <div class="watermark-fixture__content">
+                        可读正文内容
+                    </div>
+                </CaomeiWatermark>
+            </div>
+            <button
+                id="watermark-unmount"
+                type="button"
+                @click="watermarkVisible = !watermarkVisible"
+            >
+                切换水印挂载
+            </button>
+            <button
+                id="watermark-theme"
+                type="button"
+                @click="watermarkDark = !watermarkDark"
+            >
+                切换暗色
+            </button>
+            <div id="watermark-state">
+                {{ watermarkDark ? 'dark' : 'light' }}
+            </div>
+        </section>
+        <!--
           Carousel（供轮播 E2E 使用）：水平受控索引、每页 2 张（循环）与纵向高度链。
         -->
         <section id="carousel" class="fixture__case">
@@ -3814,6 +3859,17 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 </template>
 
 <style scoped>
+.watermark-fixture__content {
+    display: flex;
+    align-items: center;
+    min-height: 140px;
+    padding: 16px;
+    border: 1px solid var(--caomei-color-border);
+    border-radius: var(--caomei-radius-md);
+    background: var(--caomei-color-bg);
+    color: var(--caomei-color-text);
+}
+
 .carousel-fixture__slide {
     display: flex;
     align-items: center;

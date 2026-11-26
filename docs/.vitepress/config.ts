@@ -391,6 +391,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                                 { text: 'Statistic', link: '/en-US/components/statistic' },
                                 { text: 'Timeline', link: '/en-US/components/timeline' },
                                 { text: 'Tree', link: '/en-US/components/tree' },
+                                { text: 'Watermark', link: '/en-US/components/watermark' },
                             ],
                         },
                         {
@@ -623,6 +624,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                         { text: 'Statistic 统计数值', link: '/components/statistic' },
                         { text: 'Timeline 时间轴', link: '/components/timeline' },
                         { text: 'Tree 树形控件', link: '/components/tree' },
+                        { text: 'Watermark 水印', link: '/components/watermark' },
                     ],
                 },
                 {

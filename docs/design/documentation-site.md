@@ -147,7 +147,7 @@ docs/
 | 表单输入 | Form Inputs | Checkbox、CheckboxGroup、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、InputOtp、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea、Transfer |
 | 选择器 | Selectors | AutoComplete、Calendar、Cascader、ColorPicker、DatePicker、TimePicker、MultiSelect、Select、SelectButton、ToggleButton、TreeSelect |
 | 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、ContextMenu、Dialog、Drawer、Message、Popconfirm、Popover、Toast、Tooltip、Tour |
-| 数据展示 | Data Display | Countdown、DataTable、DataView、Descriptions、Empty、Paginator、ProgressBar、ProgressSpinner、QRCode、Result、Skeleton、Statistic、Timeline、Tree |
+| 数据展示 | Data Display | Countdown、DataTable、DataView、Descriptions、Empty、Paginator、ProgressBar、ProgressSpinner、QRCode、Result、Skeleton、Statistic、Timeline、Tree、Watermark |
 | 导航与操作 | Navigation & Actions | Accordion、ActionSheet、Anchor、Breadcrumb、DropdownMenu、Menu、NavBar、Stepper、Tabbar、Tabs、Toolbar |
 | 高级组件 | Advanced | Chart、RichTextEditor |
 

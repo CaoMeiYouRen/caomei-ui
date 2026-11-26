@@ -77,6 +77,7 @@ Component pages are translated incrementally and listed in the same order as the
 - [Statistic](/en-US/components/statistic)
 - [Timeline](/en-US/components/timeline)
 - [Tree](/en-US/components/tree)
+- [Watermark](/en-US/components/watermark)
 - [Accordion](/en-US/components/accordion)
 - [ActionSheet](/en-US/components/action-sheet)
 - [Anchor](/en-US/components/anchor)

@@ -61,6 +61,7 @@ afterEach(() => {
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
     document.body.innerHTML = ''
+    delete document.documentElement.dataset.theme
 })
 
 function mountWatermark(initial: Record<string, unknown> = {}) {
@@ -164,6 +165,19 @@ describe('CaomeiWatermark', () => {
         })
     })
 
+    it('遮罩节点被删除后重新挂回', async () => {
+        const { wrapper } = mountWatermark({ content: '内部资料' })
+        await nextTick()
+        const root = wrapper.get('.caomei-watermark').element
+        root.querySelector('.caomei-watermark__overlay')?.remove()
+
+        await vi.waitFor(() => {
+            const overlay = root.querySelector('.caomei-watermark__overlay')
+            expect(overlay).not.toBeNull()
+            expect((overlay as HTMLElement).style.backgroundImage).toContain('data:image/png')
+        })
+    })
+
     it('同一帧内的多次变更只重建一次', async () => {
         const { wrapper } = mountWatermark({ content: '内部资料' })
         await nextTick()
@@ -182,6 +196,20 @@ describe('CaomeiWatermark', () => {
             expect(dataUrlCalls).toBeGreaterThan(before)
         })
         expect(dataUrlCalls - before).toBe(1)
+    })
+
+    it('主题切换后重绘（默认色随主题采样）', async () => {
+        const { wrapper } = mountWatermark({ content: '内部资料' })
+        await nextTick()
+        const before = dataUrlCalls
+        const overlay = wrapper.get('.caomei-watermark__overlay').element as HTMLElement
+        overlay.style.backgroundImage = 'url(previous)'
+
+        document.documentElement.dataset.theme = 'dark'
+        await vi.waitFor(() => {
+            expect(dataUrlCalls).toBeGreaterThan(before)
+        })
+        expect(overlay.style.backgroundImage).toContain('data:image/png')
     })
 
     it('容器尺寸变化后重建', async () => {

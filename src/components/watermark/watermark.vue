@@ -34,6 +34,8 @@ const overlayRef = ref<HTMLElement | null>(null)
 
 let observer: MutationObserver | null = null
 let resizeObserver: ResizeObserver | null = null
+let themeObserver: MutationObserver | null = null
+let colorSchemeQuery: MediaQueryList | null = null
 let imageEl: HTMLImageElement | null = null
 let frame: ReturnType<typeof setTimeout> | null = null
 /** 绘制代次：快速切换 `image` / 内容时丢弃过期回调 */
@@ -193,9 +195,19 @@ function render(): void {
     clearTile()
 }
 
-/** 重建：暂停观察 → 重绘 → 恢复观察 */
+/** 遮罩被外部删除时重新挂回容器（节点本身仍由模板持有） */
+function ensureOverlay(): void {
+    const root = rootRef.value
+    const overlay = overlayRef.value
+    if (root && overlay && !root.contains(overlay)) {
+        root.appendChild(overlay)
+    }
+}
+
+/** 重建：暂停观察 → 补挂遮罩 → 重绘 → 恢复观察 */
 function rebuild(): void {
     pauseObserving()
+    ensureOverlay()
     render()
     resumeObserving()
 }
@@ -226,6 +238,19 @@ onMounted(() => {
         resizeObserver = new ResizeObserver(scheduleRebuild)
         resizeObserver.observe(root)
     }
+    // 默认色在绘制时采样，主题（暗色 / 预设）变化后须重绘，否则水印停留在旧底色上
+    if (typeof MutationObserver !== 'undefined' && typeof document !== 'undefined') {
+        themeObserver = new MutationObserver(scheduleRebuild)
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class', 'data-theme', 'data-scheme', 'data-preset'],
+        })
+    }
+    // `data-scheme="auto"` 走媒体查询；系统级明暗切换不改变属性，须单独监听
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+        colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        colorSchemeQuery.addEventListener('change', scheduleRebuild)
+    }
 })
 
 onBeforeUnmount(() => {
@@ -233,6 +258,10 @@ onBeforeUnmount(() => {
     observer = null
     resizeObserver?.disconnect()
     resizeObserver = null
+    themeObserver?.disconnect()
+    themeObserver = null
+    colorSchemeQuery?.removeEventListener('change', scheduleRebuild)
+    colorSchemeQuery = null
     if (frame !== null) {
         clearTimeout(frame)
         frame = null

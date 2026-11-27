@@ -1,6 +1,7 @@
 # 待办归档（深度归档）：Phase 39
 
 > 从主窗口迁出：2026-11-26（Phase 44 归档时）。正文逐字保留，仅链接深度机械调整。
+> 例外（2026-11-27，Phase 46 M4-4）：本文件新增「### 未覆盖边界」一节并补写迁移注记，其余正文仍逐字保留。
 
 ## Phase 39：P0 组件缺口、文档站设备预览与质量收口（**2026-11-21 完成并归档；本阶段不发布**）
 
@@ -57,6 +58,14 @@
 - **机检面**：`check:governance-records` / `check:planning-numbers` / `check:stage-counts`（无进行中阶段分支）/ `check:stage-progress`（跳过）/ `check:archive-rg-counts` / `check:governance-counts` / `check:design` / `docs:check` / `governance:check` 全绿。
 - **人工面**：`todo.md`（清空阶段状态句 / 条目表 / 进度表）/ `roadmap.md`（§1 当前态、Phase 39 行与 §5）/ `todo-archive.md`（本块入窗、Phase 33 迁出、主窗口口径句与行数）/ `archive/index.md`（phase-33 行、文件表与迁出时点）/ `recurring.md`（第 43 轮与触发义务句）/ `governance/index.md`（交付记录与归档记录两行）逐处核过；`.session` 两份文件同批切到「无进行中阶段」。
 - **未处理面**：历史治理记录中指向 `docs/plan/todo.md` 的时点陈述按既有边界不回改；本批无新增失效指针。
+
+### 未覆盖边界
+
+- **质量门与逐条 Review Gate 的所在位置**：本阶段的质量门读数写在「阶段总结」，逐条 RG 结论写在各自的条目前（每条以 `RG <模式> \`Pass\`` 结尾），两处均**不**在本节复写；本节只登记未被任何验收覆盖的面，两种口径互不替代（Phase 40 起沿用同一分工）。
+- **真实设备**：OTP 短信自动填充与输入法候选行为、设备预览的 iOS 地址栏 `dvh` 收缩与触摸滚动惯性，均无自动化条目覆盖，随真机验收执行。
+- **Popconfirm 可访问名**：dialog 名称仍来自触发器（Reka 内部绑定），标题名未接管；如需改为标题名须调整 `PopoverContent` 的 ARIA 接线。
+- **并行 worker 动效采样**：`navigation-motion` / `selector-motion` 在并行 worker 下存在采样竞争，CI 固定 `workers=1`，并行结果不作门禁结论。
+- **E2E 修复的覆盖边界**：M7-1 只修复并负向对照了 5 例已知失败；全量 E2E 首跑的 12 例 skip 未逐条说明原因，后续阶段若需追因须单独取证。
 
 ### 遗留与后续候选
 

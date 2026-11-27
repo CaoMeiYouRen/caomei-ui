@@ -17,8 +17,6 @@
 | 候选 | 来源 | 说明 | 重要 | 紧急 | 建议 |
 |------|------|------|:-:|:-:|:-:|
 | Rating 半星以外的评分形态 | Phase 35 M3-1 记录 §2 非目标 | `CaomeiRating` 当前只做整星 / 半星、无自定义图标集。**触发条件** = 出现半星以外的评分形态（如十分制、心形图标集）。**表单集成已登记 Phase 37 M4** | 2 | 1 | 延后 |
-| 浮层展开态 `inert` 首击吞点击 | [1.4.0 下游反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) | Select / MultiSelect / AutoComplete 展开态给面板外节点补 `inert` + `aria-hidden`，面板外第一下点击只关闭面板、被点元素收不到该次点击。评估是否改为不吞首击的实现（如仅拦截焦点 / 重派发点击）。**触发条件** = 下游真实用户反馈或下一版本 a11y 批次 | 3 | 2 | 延后 |
-| `CaomeiCascader` 面板样式在 portal 下失效 | Phase 43 归档遗留（`cascader.vue` scoped 块 + portal，`data-v` 落在 popper 包裹层） | 面板 `padding` / `max-width` 等声明在真实浏览器不生效，与 TreeSelect 同因；修法 = 样式移出 scoped 或改用非 scoped `:where()` 块，并补几何守卫。属**视觉观感**问题、有 scoped → 非 scoped `:where()` 的替代路径，故不按「已确认功能缺陷」取 5。**触发条件 = 用户裁定或该面板出现真实观感问题** | 3 | 2 | 延后 |
 
 ### 1.2 长尾组件候选（Tier 3）
 
@@ -43,8 +41,6 @@
 |------|------|------|:-:|:-:|:-:|
 | 滚动容器键盘聚焦「无条件完整可见」 | 实测发现 | Chromium 焦点滚动机制限制；触发条件：下游无障碍审计提出 | 2 | 1 | 延后 |
 | Toolbar 在 769–1023px 的容器收敛档 | 实测发现 | 与 ButtonGroup 同源的 md 档空档（换行 + `max-width: 100%` 均在 `@media (width <= 768px)` 内）；该区间内容超宽时同会溢出容器，本批夹具内容可容未致溢出；触发条件：出现真实溢出用例或用户裁定同档位补齐（口径与登记方式见[响应式设计 §2](../design/responsive.md)） | 2 | 1 | 延后 |
-| Picker（滚轮选择器）评估 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5；caomei-todo 架构 §11.5（外部仓库） | 移动端**形态差异件**：滚轮交互 + 触屏可用性，桌面 `Select` / `DatePicker` 无等价形态。**caomei-todo 一期先用 `DatePicker` / `TimePicker`，真机体验差再评估**。触发条件 = iOS 真机反馈或用户裁定启动评估。**2026-11-21 进展**：`TimePicker` 已内置滚轮模式（`mode="wheel"` / `"both"`），本候选收窄为**非时间场景的通用 Picker**；时间选择不再依赖本候选 | 3 | 2 | 延后 |
-| Sticky 吸顶工具 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5 | `position: sticky` 仅 DataTable 表头；列表分组头可用原生实现。**caomei-todo 分组列表不构成阻塞（其文档未提出吸顶诉求）**。触发条件 = 出现原生无法覆盖的吸顶用例（与 SafeArea 分列，避免两套口径） | 2 | 2 | 延后 |
 | 软键盘遮挡 | [调研记录](../design/governance/2026-11-18-i18n-component-and-mobile-research.md) §5.4 第 4 条 | 库内 `visualViewport` 0 处；当前口径是靠布局与滚动降级，不做视口监听。**caomei-todo 文档未提出该诉求**，真机是否被遮挡未取证。触发条件 = 真机反馈或用户裁定启动评估 | 3 | 2 | 延后 |
 | Stepper 横向形态极窄容器下的排版退化 | 用户缺陷报告（2026-11-24，文档站窄视口） | 横向 3 步步骤条（文档站 `basic` 示例：描述 6 / 6 / 5 字，缺省 `md` 尺寸）在内容宽 270 / 310 / 340 / 430px（视口 320 / 360 / 390 / 480）下标题均塌成单字一行（实测 14 ~ 24px 宽），示例自绘的上一步 / 下一步按钮同时折两行；640 与 768 档（内容宽 590 / 686）恢复单行，中间区间未取样。320 / 360 档列表另有 18 / 7px 内部溢出，在文档站示例的列表滚动容器内可横向滚动（≤640 档 `overflow-x: auto`），页面级仍满足 `scrollWidth === innerWidth`。机制为 item 均分压缩（`flex: 1 1 0` + `min-width: 0`），具体分配未逐层取证。**用户裁定（2026-11-24）：暂不修复**，改为在 [Stepper 组件文档](../components/stepper.md) 写明「窄屏不推荐横向步骤条」。**触发条件 = 用户改判，或出现必须在视口 ≤ 480px（内容宽约 ≤ 430px）内展示横向步骤条的用例**。**复算** = `pnpm docs:build` + `pnpm docs:preview`，页面 `components/stepper`，Chromium 按上述六档量 `.caomei-stepper__title` 高度 / 行高 | 2 | 1 | 延后 |
 | 真机验收（iOS `dvh` 真实收缩 / 触摸滚动惯性 / OTP 自动填充） | Phase 42 M2 仅完成浏览器设备视口模拟（非真机），三项行为无真机执行 | **等待外部条件**：需设备或真机反馈后执行；本仓不设自研自动化 | 3 | 2 | 延后 |
@@ -53,8 +49,6 @@
 
 | 候选 | 说明 | 重要 | 紧急 | 建议 |
 |------|------|:-:|:-:|:-:|
-| 直接依赖许可证策略门禁 | [评估记录](../design/governance/2026-11-26-dependency-license-policy-evaluation.md)：既有 `check:licenses` 只校验声明与安装一致，无协议策略。候选 = 在同一脚本内加 SPDX 判定（阻断 GPL / AGPL / SSPL / BUSL / Elastic-* / CC-BY-NC / `UNLICENSED` / `SEE LICENSE IN` / `LicenseRef-*` / 无 license / 未知标识，MPL·LGPL 告警），范围限定 `dependencies` + `peerDependencies`，不覆盖传递依赖；可选叠加仅存 `name → license` 的基线以覆盖允许档内的协议变化（待裁定）。零新依赖，`governance:check` 与 `prepublishOnly` 接入点已存在。**评分依据**：重要 3 = 供应链合规收益明确，但当前树全为宽松协议且有人工审查替代；紧急 2 = 无硬时点，按节奏推进。**触发条件 = 新增或升级的直接依赖出现阻断档协议，或出现现有检查未覆盖的协议变化**（启动仍须用户裁定） | 3 | 2 | 延后 |
-| 可选 peer 的「未安装且未使用」仍阻断消费方构建 | Phase 44 M2-1 消费方 fixture 实测（`pnpm check:optional-peer`）：`chart` / `editor` / `qrcode` 的加载器把动态 `import()` 写成字面量说明符，Rolldown 在模块图中即解析，未安装 peer 的消费方即使**不使用**对应组件也构建失败（错误点名模块）；「可选」当前只保证 `npm install` 不强制与类型面干净。修法三选一：拆独立子路径入口 / 运行期说明符 + 强制安装文档 / 提升为 `dependencies`，三族各留消费方 fixture。**触发条件 = 用户裁定，或下游出现「未装 chart / editor peer 也构建失败」的反馈** | 4 | 2 | 排期 |
 | `1.5.0` 发布收口（窗口 2026-11-29 后） | 门槛复核与升级注意（须补 Button 根形态、`CaomeiTooltipText` 根形态、Popover / Popconfirm 打开态 `inert` 面收窄三项）、经 `release.yml` 发布与发布后校验、下游三仓兼容复验与适配回收清单。**已决策待窗口**：用户 2026-11-25 裁定自 Phase 43 移除，**2026-11-29 之前不列入规划**；触发条件 = 到达发布窗口（2026-11-29 前后）且用户明确授权发布；**评分依据**：重要 5 = 阻断发布 / 版本一致性；紧急 4 = 明确发布窗口（用户裁定窗口前不列入规划）。 | 5 | 4 | 首排 |
 | 单 Demo 抽屉预览（P2） | [设备预览评估](../design/governance/2026-11-20-docs-device-preview-evaluation.md)：P1 整页预览已纳入 Phase 39（M6-1 / M6-2）；P2 单 Demo 抽屉未纳入本阶段，需 Demo 注册表与预览路由，约 3–4 天。**触发条件 = P1 落地后评估，或用户裁定** | 3 | 1 | 延后 |
 | 文档站多版本托管 | 历史版本站点 / 版本切换器。**触发条件：同时维护 ≥2 个对外版本，或下游按版本 pin 并要求旧版文档**。**2026-09-22 用户裁定 D1-B**：因「文档站与工作区源码强绑定」的架构约束暂不启动，形态与多源核对见[形态再评估](../design/governance/2026-09-22-docs-versioning-reevaluation.md) | 2 | 1 | 延后 |
@@ -69,9 +63,6 @@
 | dev 形态 hydration 守护 | 来源：Phase 32 M2-2（[M2-2 记录](../design/governance/2026-11-13-phase32-m2-2-home-hydration.md) §5 第 3 条）——生产构建的 Vue 静默修补使告警恒为 0，dev 真机对照为一次性流程。候选 = 把 dev 形态对照固化为命令（或常驻用例）。**触发条件 = 首页结构 / 主题层新增客户端状态，或再次出现 hydration 可疑反馈** | 3 | 2 | 延后 |
 | `xl` 断点与宽屏布局规则 | [视口扩面评估](../design/governance/2026-11-20-viewport-matrix-expansion-evaluation.md) §4：`Col` 新增 `xl`（建议 ≥1536）并给容器宽度 / 分栏 / 表格密度等规则；属公共 API 增量，约 10–15 文件 / 3–5 天；**未定规则前不加空断点**。**触发条件 = 用户裁定或出现 1536+ 宽屏布局需求** | 3 | 1 | 延后 |
 | `conventional-changelog` `!` 补丁撤回 | 来源：issue #73 研判。**触发条件 = 升级 preset 后其 parser `headerPattern` 原生识别 `type(scope)!:`，且 `pnpm exec vitest run scripts/release/generate-changelog.test.mjs` 与 `pnpm changelog` 通过**；动作 = 删除 `generate-changelog.mjs` 的 `headerPattern` 覆盖，复跑定向测试并核对 `CHANGELOG.md` diff | 2 | 1 | 延后 |
-| 版本升级影响面评估自动化 | 同上；[发布指南 §10.1](../guide/release.md) 已先落人工规则 | 当前 `Downstream Compat` 只跑 `typecheck` + `build`，无法捕捉 DOM 结构 / 默认样式 / 交互时序变化。候选 = 在发布链生成「消费方可见变化」清单，并对已接入下游跑视觉或关键流回归。**触发条件 = 用户裁定启动，不绑定本发布窗口**。**证据**：1.4.0 升级时 caomei-auth 有 11 个文件、momei 有 35 个选择器 / 25 个文件需改 `:deep()` 锚定祖先 scope（**正确规避**）；另有 `!important` / `white-space: normal` / `vertical-align: top` 等应急写法（见 [1.4.0 反馈研判](../design/governance/2026-11-23-caomei-ui-1.4.0-downstream-feedback.md) §3 / §6）。 | 4 | 3 | 排期 |
-| 英文总览「Chinese documentation」镜像列表 12 项不一致 | Phase 43 归档遗留 | 英文总览页镜像列表与中文总览成员不一致；改动面小、可机检化（复用 `check-components-overview` 解析）。**触发条件 = 用户裁定** | 2 | 1 | 延后 |
-| Phase 39 归档块缺「未覆盖边界」小节 | Phase 43 归档遗留 | 6 项必填生效期内的存量缺项；补齐后可加守卫防同类再发生。**触发条件 = 用户裁定** | 2 | 1 | 延后 |
 
 ### 1.7 服务层候选（composables）
 
@@ -105,7 +96,7 @@
 > **本组暂无在册候选**：Carousel / Watermark / Menubar / NavigationMenu / HoverCard 已于 2026-11-26 登记 Phase 45（见[登记批次](../design/governance/2026-11-26-phase45-registration.md) §2）；后续候选解禁后再行登记。
 
 - **不建议纳入**：App Shell（`container` / `aside` / `header`）与 `Overlay` / `Fab` / `List`（结论见 §3）；业务件（`address-*` / `coupon-*` / `contact-*`）与 `TreeTable` / `Knob` / `OrganizationChart`（见 [组件设计 §6](../design/components.md)）。
-- **Sticky / SafeArea**：`Sticky` 工具形态仍登记在 §1.5；`SafeArea` 已于 2026-11-20 登记 Phase 38 M1-1 / M1-2，不在本表重复。`Sticky` 若最终按组件实现，再从 §1.5 迁入。
+- **Sticky / SafeArea**：`Sticky` 已于 2026-11-27 登记 Phase 46 M7（按组件实现）；`SafeArea` 已于 2026-11-20 登记 Phase 38 M1-1 / M1-2，均不在本表重复。
 - **2026-11-26 用量复核**：`gh search code` 显示 csv-token-analytics 存在 shadcn `carousel` / `menubar` / `navigation-menu` / `hover-card` 同名文件（carousel 依赖 `embla-carousel-react@^8.6.0`），但均**无页面引用**；momei 检索到的 `watermark` 均为 AI 提示词文本。故本组「重要 4 / 紧急 2」的依据是**快速开发期方向与库间对齐**，不是下游实测用量；该口径已随 2026-11-26 登记写入 [Phase 45 登记批次](../design/governance/2026-11-26-phase45-registration.md) §1.2。
 - **文档同步项**：已同批修正 [组件设计 §5](../design/components.md) 的 primitive 清单（补 `FormRoot` / `Field*`、`MonthPicker` / `YearPicker`、`Splitter`、`TreeVirtualizer`、`TagGroup`、`Listbox`），并把候选决策回链本表。
 

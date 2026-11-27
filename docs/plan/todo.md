@@ -4,9 +4,44 @@
 
 ## 当前状态
 
-**当前无进行中阶段**。
+**当前进行中阶段：Phase 46（依赖治理与新组件第三批）**（**7 条主线 / 20 条原子条目**；构成对账 2 + 2 + 2 + 4 + 4 + 4 + 2 = 20；本阶段不发布，`1.5.0` 发布收口留在 [Backlog](./backlog.md) 待窗口；范围与验收口径见 [Phase 46 登记批次](../design/governance/2026-11-27-phase46-registration.md)）。
 
-尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。上一阶段已归档，交付摘要与后续候选只在归档载体与治理记录中维护，本段不复写。
+| 大条目 | 小条目 | 状态 | 提交 | 审计 | 容量 |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| M1 可选 peer 结构改进 | 0 / 2 | 未开始 | — | — | 2 → 0 |
+| M2 许可证策略门禁 | 0 / 2 | 未开始 | — | — | 2 → 0 |
+| M3 版本升级影响面评估 | 0 / 2 | 未开始 | — | — | 2 → 0 |
+| M4 浮层与文档收口 | 0 / 4 | 未开始 | — | — | 4 → 0 |
+| M5 Editable 与 TagGroup | 0 / 4 | 未开始 | — | — | 4 → 0 |
+| M6 TreeVirtualizer 与 Picker | 0 / 4 | 未开始 | — | — | 4 → 0 |
+| M7 Sticky | 0 / 2 | 未开始 | — | — | 2 → 0 |
+
+尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。本阶段取向为治理先行、组件随后；`1.5.0` 发布收口按用户裁定留待 2026-11-29 之后。
+
+## Phase 46 原子条目
+
+| 编号 | 主线 | 条目 | 验收状态 |
+| :--- | :--- | :--- | :--- |
+| M1-1 | 可选 peer 结构改进 | 三路径取证与加载器改造 | 待执行 |
+| M1-2 | 可选 peer 结构改进 | 回归与口径同步 | 待执行 |
+| M2-1 | 许可证策略门禁 | SPDX 判定与测试 | 待执行 |
+| M2-2 | 许可证策略门禁 | 规范与发布口径 | 待执行 |
+| M3-1 | 版本升级影响面评估 | 消费方可见变化清单 | 待执行 |
+| M3-2 | 版本升级影响面评估 | 下游回归接入与文档 | 待执行 |
+| M4-1 | 浮层与文档收口 | Cascader 面板改 TreeSelect 口径 | 待执行 |
+| M4-2 | 浮层与文档收口 | 浮层 `inert` 首击语义 | 待执行 |
+| M4-3 | 浮层与文档收口 | 英文总览镜像列表对齐 | 待执行 |
+| M4-4 | 浮层与文档收口 | Phase 39 归档块补节与守卫 | 待执行 |
+| M5-1 | Editable 与 TagGroup | Editable 实现与测试 | 待执行 |
+| M5-2 | Editable 与 TagGroup | Editable 文档与 E2E | 待执行 |
+| M5-3 | Editable 与 TagGroup | TagGroup 实现与测试 | 待执行 |
+| M5-4 | Editable 与 TagGroup | TagGroup 文档与 E2E | 待执行 |
+| M6-1 | TreeVirtualizer 与 Picker | TreeVirtualizer 实现与测试 | 待执行 |
+| M6-2 | TreeVirtualizer 与 Picker | TreeVirtualizer 文档与 E2E | 待执行 |
+| M6-3 | TreeVirtualizer 与 Picker | Picker 实现与测试 | 待执行 |
+| M6-4 | TreeVirtualizer 与 Picker | Picker 文档与 E2E | 待执行 |
+| M7-1 | Sticky | 实现与测试 | 待执行 |
+| M7-2 | Sticky | 文档与 E2E | 待执行 |
 
 ## 未完成项汇总
 

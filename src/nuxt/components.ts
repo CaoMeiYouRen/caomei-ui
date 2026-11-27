@@ -101,6 +101,8 @@ export const caomeiComponents = [
     'CaomeiNavBar',
     'CaomeiPaginator',
     'CaomeiPassword',
+    'CaomeiPicker',
+    'CaomeiPickerColumn',
     'CaomeiPopconfirm',
     'CaomeiPopover',
     'CaomeiPopoverArrow',

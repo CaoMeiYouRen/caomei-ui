@@ -91,6 +91,8 @@ import {
     CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
+    CaomeiPicker,
+    CaomeiPickerColumn,
     CaomeiPopconfirm,
     CaomeiPopover,
     CaomeiPopoverArrow,
@@ -359,6 +361,21 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-popover__content'],
     },
+    {
+        name: 'CaomeiPicker',
+        root: CaomeiPicker,
+        definition: {
+            components: { CaomeiPicker },
+            template: '<CaomeiPicker label="地区选择" :columns="pickerColumns" :model-value="[\'zj\', \'hz\']" />',
+            setup: () => ({
+                pickerColumns: [
+                    { label: '省份', options: [{ label: '浙江', value: 'zj' }, { label: '江苏', value: 'js' }] },
+                    { label: '城市', options: [{ label: '杭州', value: 'hz' }, { label: '南京', value: 'nj' }] },
+                ],
+            }),
+        },
+        requiredSelectors: ['.caomei-picker', '.caomei-picker__column', '.caomei-picker__option'],
+    },
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRating', root: CaomeiRating, definition: { components: { CaomeiRating }, template: '<CaomeiRating label="评分" :model-value="3" />' } },
@@ -589,6 +606,7 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiCarouselSlide', component: CaomeiCarouselSlide, fixture: 'CaomeiCarousel' },
     { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
+    { name: 'CaomeiPickerColumn', component: CaomeiPickerColumn, fixture: 'CaomeiPicker' },
     { name: 'CaomeiTagGroupItem', component: CaomeiTagGroupItem, fixture: 'CaomeiTagGroup' },
     { name: 'CaomeiTagGroupItemText', component: CaomeiTagGroupItemText, fixture: 'CaomeiTagGroup' },
     { name: 'CaomeiTagGroupItemDelete', component: CaomeiTagGroupItemDelete, fixture: 'CaomeiTagGroup' },
@@ -617,4 +635,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 95
+export const A11Y_FIXTURE_BUDGET = 96

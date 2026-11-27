@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { computed } from 'vue'
 import { labelAttrs } from '../_shared/use-label-attrs'
-import { WHEEL_SCROLL_IGNORE_MS } from './utils'
+import { useWheelColumn } from '../_shared/use-wheel-column'
 import type { TimeWheelOption } from './types'
 
 defineOptions({ name: 'CaomeiTimeWheelColumn' })
@@ -21,139 +21,28 @@ const emit = defineEmits<{
     'update:modelValue': [value: string | number]
 }>()
 
-const id = useId()
-const columnEl = ref<HTMLElement>()
+/**
+ * 交互逻辑与 `Picker` 共用 `use-wheel-column`（吸附 / 动量收敛 / 键盘 / 程序化对齐同口径）；
+ * 本组件只保留模板与 `--caomei-time-picker-wheel-*` 样式。`loop` 在时间轮上恒关闭。
+ */
+const {
+    columnEl,
+    selectedIndex,
+    optionId,
+    onScroll,
+    onOptionClick,
+    onKeydown,
+} = useWheelColumn({
+    options: () => props.options,
+    modelValue: () => props.modelValue,
+    disabled: () => props.disabled,
+    readonly: () => props.readonly,
+    onChange: (value) => {
+        emit('update:modelValue', value)
+    },
+})
+
 const interactive = computed(() => !props.disabled && !props.readonly)
-
-/** 当前选中项下标；模型值不在候选中时回退首项，避免滚动位置与模型脱节。 */
-const selectedIndex = computed(() => {
-    const index = props.options.findIndex((option) => option.value === props.modelValue)
-    return index < 0 ? 0 : index
-})
-
-function optionId(index: number): string {
-    return `${id}-option-${index}`
-}
-
-function itemHeight(el: HTMLElement): number {
-    const option = el.querySelector<HTMLElement>('[role="option"]')
-    const height = option?.offsetHeight ?? 0
-    return height > 0 ? height : 36
-}
-
-/** 程序化对齐：把目标项滚到中央；置忽略窗口，避免滚动事件把对齐结果当成用户选择。 */
-let ignoreScrollUntil = 0
-
-function scrollToIndex(index: number): void {
-    const el = columnEl.value
-    if (!el) {
-        return
-    }
-    ignoreScrollUntil = performance.now() + WHEEL_SCROLL_IGNORE_MS
-    el.scrollTop = index * itemHeight(el)
-}
-
-let settleTimer: ReturnType<typeof setTimeout> | undefined
-
-function clearSettleTimer(): void {
-    if (settleTimer !== undefined) {
-        clearTimeout(settleTimer)
-        settleTimer = undefined
-    }
-}
-
-/** 滚动停下后取最近一项；触屏惯性滚动同样走这条路径。 */
-function onScroll(): void {
-    if (!interactive.value) {
-        return
-    }
-    if (performance.now() < ignoreScrollUntil) {
-        return
-    }
-    clearSettleTimer()
-    settleTimer = setTimeout(() => {
-        const el = columnEl.value
-        if (!el || !props.options.length) {
-            return
-        }
-        const index = Math.min(
-            props.options.length - 1,
-            Math.max(0, Math.round(el.scrollTop / itemHeight(el))),
-        )
-        const option = props.options[index]
-        if (option.value !== props.modelValue) {
-            emit('update:modelValue', option.value)
-        }
-    }, 140)
-}
-
-function selectIndex(index: number): void {
-    if (!interactive.value) {
-        return
-    }
-    const option = props.options[index]
-    if (option.value === props.modelValue) {
-        return
-    }
-    emit('update:modelValue', option.value)
-    scrollToIndex(index)
-}
-
-function onOptionClick(index: number): void {
-    columnEl.value?.focus()
-    selectIndex(index)
-}
-
-function onKeydown(event: KeyboardEvent): void {
-    if (!interactive.value || !props.options.length) {
-        return
-    }
-    // 列表方向（APG listbox）：↓ 下一条、↑ 上一条，与滚轮滚动方向一致。
-    let next = selectedIndex.value
-    if (event.key === 'ArrowUp') {
-        next = (next - 1 + props.options.length) % props.options.length
-    } else if (event.key === 'ArrowDown') {
-        next = (next + 1) % props.options.length
-    } else if (event.key === 'PageUp') {
-        next = Math.max(0, next - 5)
-    } else if (event.key === 'PageDown') {
-        next = Math.min(props.options.length - 1, next + 5)
-    } else if (event.key === 'Home') {
-        next = 0
-    } else if (event.key === 'End') {
-        next = props.options.length - 1
-    } else {
-        return
-    }
-    event.preventDefault()
-    selectIndex(next)
-}
-
-watch(
-    () => props.modelValue,
-    () => {
-        void nextTick(() => {
-            scrollToIndex(selectedIndex.value)
-        })
-    },
-)
-
-watch(
-    () => props.options.length,
-    () => {
-        void nextTick(() => {
-            scrollToIndex(selectedIndex.value)
-        })
-    },
-)
-
-onMounted(() => {
-    void nextTick(() => {
-        scrollToIndex(selectedIndex.value)
-    })
-})
-
-onBeforeUnmount(clearSettleTimer)
 </script>
 
 <template>

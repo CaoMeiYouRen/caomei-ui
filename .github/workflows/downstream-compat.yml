@@ -9,10 +9,20 @@ name: Downstream Compat
 #
 # 受检清单（**接入即登记**）：见 `strategy.matrix.include`——新增下游即在此登记
 # （`repository` / `target-package` / `setup-command` / `typecheck-command` / `build-command` /
-# `timeout-minutes`）。各下游的 setup 差异（workspace 子包预构建、Nuxt prepare）在该条目内声明。
+# `critical-command` / `visual-command` / `timeout-minutes`）。各下游的 setup 差异（workspace 子包
+# 预构建、Nuxt prepare）在该条目内声明；两项回归命令留空表示该下游不具备该能力（须在「未覆盖 + 风险」登记）。
 #
 # 边界与口径（权威见 docs/guide/release.md §10）：
-# - 检查范围**最低 `typecheck` + `build`**，不含 e2e / 视觉回归 / 全量单测 / 覆盖率。
+# - 检查范围**最低 `typecheck` + `build`**（所有矩阵成员）；**具备关键流 / 视觉回归能力的下游另增补
+#   两项**（`critical-command` / `visual-command`，为空则跳过该步），用于覆盖「构建通过但渲染 /
+#   交互回归」的盲区——`typecheck` + `build` 只证明构建兼容（发布指南 §10.1）。
+# - **未覆盖 + 风险（接入即登记，不得读成已覆盖）**：
+#   - `dependfix`：仓库内未检出 e2e / 视觉回归脚本（根与 `apps/platform` 均只有 vitest），两项均未覆盖；
+#     该仓的 `inert` 手势用例在本地手工复核，不属本工作流受检面。
+#   - `caomei-auth`：无 e2e 脚本，**关键流未覆盖**；视觉回归经 `test:visual` 覆盖。
+#   - `momei`：关键流 `test:e2e:critical` 与视觉回归 `test:visual` 均覆盖。
+#   上述判定取自各仓 `package.json` 的 `scripts`（2026-11-28 复核）；下游移除对应脚本时本工作流会红，
+#   届时按下游实际能力重登。
 # - 触发：caomei-ui **发布 tag（`v*`）** 自动触发；另可 `workflow_dispatch` 手动（可传被测版本）。
 # - **下游默认分支是移动目标**：本工作流记录下游 revision（SHA）到 job summary，便于归因；
 #   红可能是下游自身改动所致（非 caomei-ui 回归）。
@@ -47,6 +57,9 @@ jobs:
             repository: dependfix/dependfix
             target-package: '@dependfix/platform'
             timeout-minutes: 30
+            # 未检出 e2e / 视觉回归脚本（见文件头「未覆盖 + 风险」），两项留空即跳过
+            critical-command: ''
+            visual-command: ''
             setup-command: |
               pnpm --filter @dependfix/core build
               pnpm --filter @dependfix/engine build
@@ -57,7 +70,11 @@ jobs:
           - name: caomei-auth
             repository: CaoMeiYouRen/caomei-auth
             target-package: caomei-auth
-            timeout-minutes: 45
+            # 增加视觉回归后放宽（原 45）
+            timeout-minutes: 60
+            # 无 e2e 脚本：关键流未覆盖（见文件头「未覆盖 + 风险」）
+            critical-command: ''
+            visual-command: pnpm test:visual
             setup-command: |
               pnpm exec nuxt prepare
             typecheck-command: pnpm typecheck
@@ -65,7 +82,10 @@ jobs:
           - name: momei
             repository: CaoMeiYouRen/momei
             target-package: momei
-            timeout-minutes: 60
+            # 增加关键流 + 视觉回归后放宽（原 60）
+            timeout-minutes: 90
+            critical-command: pnpm test:e2e:critical
+            visual-command: pnpm test:visual
             setup-command: |
               pnpm --filter @momei-blog/api-client build
               pnpm --filter momei-mcp-server build
@@ -170,3 +190,12 @@ jobs:
       - name: Build downstream
         working-directory: downstream
         run: ${{ matrix.build-command }}
+      # 渲染 / 交互面回归：仅在具备对应脚本的下游执行（矩阵为空即跳过，口径见文件头）
+      - name: Critical flow regression (downstream)
+        if: matrix.critical-command != ''
+        working-directory: downstream
+        run: ${{ matrix.critical-command }}
+      - name: Visual regression (downstream)
+        if: matrix.visual-command != ''
+        working-directory: downstream
+        run: ${{ matrix.visual-command }}

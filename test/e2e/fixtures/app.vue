@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
-import { Compass, Home, Settings, User } from '@lucide/vue'
+import { Compass, Home, Settings, User, X } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import { use } from 'echarts/core'
@@ -16,6 +16,10 @@ import {
     CaomeiEditableInput,
     CaomeiEditablePreview,
     CaomeiEmpty,
+    CaomeiTagGroup,
+    CaomeiTagGroupItem,
+    CaomeiTagGroupItemDelete,
+    CaomeiTagGroupItemText,
     CaomeiTabbar,
     CaomeiTabbarItem,
     CaomeiAlert,
@@ -67,6 +71,7 @@ import {
     CaomeiHoverCardContent,
     CaomeiHoverCardTrigger,
     CaomeiImage,
+    CaomeiIcon,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -186,6 +191,17 @@ const editableTitle = ref('季度经营分析')
 const editableSubmitted = ref('')
 /** 只读 / 禁用夹具值：用于验证「可看不可改」「不可进入写回」 */
 const editableReadonly = ref('只读标题')
+
+/** 标签组用例：标签列表、选中集合与最近被移除的值 */
+const tagGroupTags = ref(['Vue', 'TypeScript', 'CSS'])
+const tagGroupSelected = ref<string[]>(['Vue'])
+const tagGroupRemoved = ref('')
+
+/** 移除即从列表移除，验证「列表由调用方维护」的语义 */
+function onTagGroupRemove(value: string): void {
+    tagGroupRemoved.value = value
+    tagGroupTags.value = tagGroupTags.value.filter((tag) => tag !== value)
+}
 const editableDisabled = ref('禁用标题')
 const multiSelectValue = ref<string[]>([])
 const autoCompleteValue = ref<string>()
@@ -971,6 +987,28 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 </CaomeiEditableArea>
             </CaomeiEditable>
             <output id="editable-disabled-value">{{ editableDisabled }}</output>
+        </section>
+
+        <section id="panel-tag-group" class="fixture__case">
+            <CaomeiTagGroup
+                v-model="tagGroupSelected"
+                selection-mode="multiple"
+                aria-label="技能标签"
+                @remove="onTagGroupRemove"
+            >
+                <CaomeiTagGroupItem
+                    v-for="skill in tagGroupTags"
+                    :key="skill"
+                    :value="skill"
+                >
+                    <CaomeiTagGroupItemText>{{ skill }}</CaomeiTagGroupItemText>
+                    <CaomeiTagGroupItemDelete :label="`移除 ${skill}`">
+                        <CaomeiIcon :icon="X" />
+                    </CaomeiTagGroupItemDelete>
+                </CaomeiTagGroupItem>
+            </CaomeiTagGroup>
+            <output id="tag-group-selected">{{ tagGroupSelected.join(',') }}</output>
+            <output id="tag-group-removed">{{ tagGroupRemoved }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">

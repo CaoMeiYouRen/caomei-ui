@@ -55,6 +55,7 @@
 - [MultiSelect 多选选择器](./multi-select)：多选选择器基于 Reka UI `Combobox` 封装，支持多选、`v-model` 数组、已选项标签与输入过滤。展开后可直接输入关键字筛选本地选项。
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
 - [SelectButton 分段选择](./select-button)：分段选择在一组互斥或可多选的选项间切换，视觉上呈现为分段按钮组，等价于 SegmentedControl，基于 Reka UI ToggleGroup 封装。
+- [TagGroup 标签组](./tag-group)：标签组把多个标签放在同一容器里，支持单选 / 多选、方向键移动焦点、`Delete` 移除、禁用项与整组禁用，基于 Reka UI TagGroup 封装。
 - [ToggleButton 开关按钮](./toggle-button)：开关按钮用于在单个按钮上切换按下 / 未按下状态（如工具条中的加粗、斜体），基于 Reka UI Toggle 封装。
 - [TreeSelect 树形选择](./tree-select)：以「字段 + 浮层树」形态在层级数据中选择值，支持单选 / 多选、清空与窄屏碰撞避让，基于 Popover 与 Tree 组合。
 

@@ -118,6 +118,7 @@
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 | TagsInput | 封装 | TagsInput | 稳定 | 标签录入：多值 `v-model`、自由文本、回车 / 分隔符提交、标签删除、数量 / 去重约束（**已实现**） |
 | InputOtp | 封装 | PinInput | 稳定 | 验证码输入：定长输入格、数字 / 字母数字模式、粘贴分发、完成事件与逐字可访问名（**已实现**） |
+| TagGroup | 封装 | TagGroupRoot / TagGroupItem / TagGroupItemText / TagGroupItemDelete | 稳定 | 标签组：单选 / 多选、方向键移动、Delete 移除、禁用项与整组禁用、`v-model`（**已实现**） |
 | Popconfirm | 自建（Popover + Button 组合） | 无（Popover 承载开合与隔离，按钮为库内 Button） | 稳定 | 气泡确认：就近二次确认、危险语气、加载 / 禁用、受控开合与焦点归还（**已实现**） |
 | Result | 自建（展示层） | 无 | — | 结果页：语义状态与 403 / 404 / 500、图标 / 标题 / 描述 / 操作区、尺寸档与 live region（**已实现**） |
 | Descriptions | 自建（`dl` / `dt` / `dd` 语义） | 无 | — | 描述列表：列数与跨列、带边框、标签宽度、水平 / 垂直布局、响应式降列与长内容折行（**已实现**） |
@@ -131,7 +132,7 @@
 | Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Editable、Field（字段 ARIA）、MonthPicker / YearPicker、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
+Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Field（字段 ARIA）、MonthPicker / YearPicker、TreeVirtualizer、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
 
 ## 6. 不自研
 

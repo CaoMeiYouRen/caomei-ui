@@ -12,7 +12,7 @@
 | M2 许可证策略门禁 | 2 / 2 | 已闭环 | `4daad4aa` | `2026-11-27-phase46-m2-m4-governance-gates.md` | 2 → 0 |
 | M3 版本升级影响面评估 | 2 / 2 | 已闭环 | `29535173`、`9467a2fe` | `2026-11-28-phase46-m3-consumer-impact.md` | 2 → 0 |
 | M4 浮层与文档收口 | 4 / 4 | 已闭环 | `53782fed`、`252fde87`、`1d8921ec`、`d7ce032b` | `2026-11-27-phase46-m2-m4-governance-gates.md` | 4 → 0 |
-| M5 Editable 与 TagGroup | 0 / 4 | 未开始 | — | — | 4 → 0 |
+| M5 Editable 与 TagGroup | 2 / 4 | 进行中 | `016ce826`、`d34e5107` | `2026-11-28-phase46-m5-editable.md` | 4 → 2 |
 | M6 TreeVirtualizer 与 Picker | 0 / 4 | 未开始 | — | — | 4 → 0 |
 | M7 Sticky | 0 / 2 | 未开始 | — | — | 2 → 0 |
 
@@ -32,8 +32,8 @@
 | M4-2 | 浮层与文档收口 | 浮层 `inert` 首击语义 | 已交付 |
 | M4-3 | 浮层与文档收口 | 英文总览镜像列表对齐 | 已交付 |
 | M4-4 | 浮层与文档收口 | Phase 39 归档块补节与守卫 | 已交付 |
-| M5-1 | Editable 与 TagGroup | Editable 实现与测试 | 待执行 |
-| M5-2 | Editable 与 TagGroup | Editable 文档与 E2E | 待执行 |
+| M5-1 | Editable 与 TagGroup | Editable 实现与测试 | 已交付 |
+| M5-2 | Editable 与 TagGroup | Editable 文档与 E2E | 已交付 |
 | M5-3 | Editable 与 TagGroup | TagGroup 实现与测试 | 待执行 |
 | M5-4 | Editable 与 TagGroup | TagGroup 文档与 E2E | 待执行 |
 | M6-1 | TreeVirtualizer 与 Picker | TreeVirtualizer 实现与测试 | 待执行 |

@@ -155,6 +155,7 @@
     "check:security-alerts": "node scripts/release/check-security-alerts.mjs",
     "check:weekly-regression": "node scripts/release/check-weekly-regression.mjs",
     "check:api-surface": "node scripts/release/diff-api.mjs",
+    "check:consumer-impact": "node scripts/release/diff-consumer-impact.mjs",
     "check:resolver": "node scripts/release/check-resolver.run.mjs"
   },
   "dependencies": {

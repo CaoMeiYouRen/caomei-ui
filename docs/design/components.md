@@ -46,6 +46,7 @@
 |------|----------|--------------|
 | Message / Alert | 自建（业务语义包装）；`Alert` 是 `Message` 的**语义预设包装**，与本体共用同一外观层与 token，仅收敛语义（静态档）与变体（无 `simple`） | 无 |
 | Password | Input 派生（Tier 0 已含基础能力，此处为增强） | 无 |
+| Picker | 自建（与 TimePicker wheel 共用交互） | 无（复用 `use-wheel-column`） | 稳定 | 通用滚轮选择器：单列 / 多列、吸附与动量收敛、循环（键盘与点击）、键盘导航；与 `TimePicker` 共用同一份滚轮逻辑（**已实现**） |
 | ProgressSpinner | 封装 Progress 派生 | Progress |
 | MultiSelect | 封装 Combobox | Combobox |
 | ConfirmDialog | 封装 AlertDialog + 服务 | AlertDialog |

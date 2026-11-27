@@ -145,7 +145,7 @@ docs/
 | --- | --- | --- |
 | 基础与布局 | Basics & Layout | Avatar、BackTop、Badge、Button、ButtonGroup、Card、Carousel、Cell、CellGroup、Col、Divider、Image、Row、SplitButton、Splitter、Tag |
 | 表单输入 | Form Inputs | Checkbox、CheckboxGroup、Editable、FileUpload、FloatLabel、Form、Input、InputGroup、InputNumber、InputOtp、Password、RadioGroup、Rating、Slider、Switch、TagsInput、Textarea、Transfer |
-| 选择器 | Selectors | AutoComplete、Calendar、Cascader、ColorPicker、DatePicker、TimePicker、MultiSelect、Select、SelectButton、TagGroup、ToggleButton、TreeSelect |
+| 选择器 | Selectors | AutoComplete、Calendar、Cascader、ColorPicker、DatePicker、TimePicker、MultiSelect、Picker、Select、SelectButton、TagGroup、ToggleButton、TreeSelect |
 | 反馈与浮层 | Feedback & Overlays | Alert、ConfirmDialog、ContextMenu、Dialog、Drawer、HoverCard、Message、Popconfirm、Popover、Toast、Tooltip、Tour |
 | 数据展示 | Data Display | Countdown、DataTable、DataView、Descriptions、Empty、Paginator、ProgressBar、ProgressSpinner、QRCode、Result、Skeleton、Statistic、Timeline、Tree、TreeVirtualizer、Watermark |
 | 导航与操作 | Navigation & Actions | Accordion、ActionSheet、Anchor、Breadcrumb、DropdownMenu、Menu、Menubar、NavBar、NavigationMenu、Stepper、Tabbar、Tabs、Toolbar |

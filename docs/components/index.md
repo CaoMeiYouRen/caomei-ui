@@ -53,6 +53,7 @@
 - [DatePicker 日期选择器](./date-picker)：由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`。
 - [TimePicker 时间选择器](./time-picker)：用于录入一天内的时间，支持内联输入 / 滚轮弹层（`mode`）、默认含秒并补 0（`showSeconds` / `pad`）、12 / 24 小时制、步进与时间区间。
 - [MultiSelect 多选选择器](./multi-select)：多选选择器基于 Reka UI `Combobox` 封装，支持多选、`v-model` 数组、已选项标签与输入过滤。展开后可直接输入关键字筛选本地选项。
+- [Picker 滚轮选择器](./picker)：通用滚轮选择器，支持单列 / 多列、吸附与动量收敛、循环与键盘导航，与 TimePicker 的 wheel 模式共用同一份滚轮交互。
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
 - [SelectButton 分段选择](./select-button)：分段选择在一组互斥或可多选的选项间切换，视觉上呈现为分段按钮组，等价于 SegmentedControl，基于 Reka UI ToggleGroup 封装。
 - [TagGroup 标签组](./tag-group)：标签组把多个标签放在同一容器里，支持单选 / 多选、方向键移动焦点、`Delete` 移除、禁用项与整组禁用，基于 Reka UI TagGroup 封装。

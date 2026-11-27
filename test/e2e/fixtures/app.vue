@@ -82,6 +82,7 @@ import {
     CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
+    CaomeiPicker,
     CaomeiPopover,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
@@ -209,6 +210,26 @@ const virtualTreeItems = Array.from({ length: 200 }, (_, index) => ({
 }))
 const virtualTreeExpanded = ref<string[]>(['vg-0', 'vg-1'])
 const virtualTreeSelected = ref<string[]>([])
+
+/** 滚轮选择器用例：两列 + 循环，键盘与点击都写回同一个模型 */
+const pickerColumns = [
+    {
+        label: '省份',
+        options: [
+            { label: '浙江', value: 'zj' },
+            { label: '江苏', value: 'js' },
+            { label: '广东', value: 'gd' },
+        ],
+    },
+    {
+        label: '城市',
+        options: [
+            { label: '杭州', value: 'hz' },
+            { label: '南京', value: 'nj' },
+        ],
+    },
+]
+const pickerValue = ref<(string | number)[]>(['zj', 'hz'])
 
 /** 移除即从列表移除，验证「列表由调用方维护」的语义 */
 function onTagGroupRemove(value: string): void {
@@ -1034,6 +1055,16 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 :overscan="4"
             />
             <output id="virtual-tree-selected">{{ virtualTreeSelected.join(',') }}</output>
+        </section>
+
+        <section id="panel-picker" class="fixture__case">
+            <CaomeiPicker
+                v-model="pickerValue"
+                :columns="pickerColumns"
+                loop
+                label="选择地区"
+            />
+            <output id="picker-value">{{ pickerValue.join(',') }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">

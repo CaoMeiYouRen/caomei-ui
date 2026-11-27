@@ -71,5 +71,11 @@ gh api --paginate "repos/<owner>/<repo>/code-scanning/alerts?state=dismissed&per
 ## 6. 依赖许可
 
 - 项目自身 license：MIT。
-- 引入的第三方库必须为宽松许可（MIT / Apache-2.0 / ISC / BSD 等）；引入 copyleft 或商业许可依赖前必须确认并记录。
+- 直接依赖与 peer 依赖的许可证由 `pnpm check:licenses` 机检（`pnpm governance:check` 与 `prepublishOnly` 均执行），判定分三档（规则见 `scripts/governance/license-policy.mjs`）：
+  - **阻断（error）**：`GPL-*` / `AGPL-*` / `SSPL*` / `BUSL*` / `Elastic-*` / `CC-BY-NC-*`、`UNLICENSED` / `SEE LICENSE IN …` / `LicenseRef-*`、缺 `license` 字段、未识别标识（fail-closed）；
+  - **告警（warning）**：`MPL-*` / `LGPL-*` / `EPL-*` / `CC-BY-*` / `Artistic-*` / `Python-*`；
+  - **通过**：MIT / ISC / Apache-2.0 / BSD-* / 0BSD / CC0-1.0 / MIT-0 / BlueOak-1.0.0 / Unlicense。
+- SPDX 表达式按 `OR` 取最宽松分支、`AND` 取最严格分支求值：`MIT OR GPL-2.0` 通过，`MIT AND GPL-2.0` 阻断。
+- 确需引入阻断档依赖时，须先取得项目所有者确认，再把标识与放行理由写入 `scripts/governance/license-policy.mjs` 的 `EXTRA_ALLOWED_LICENSES`（放行清单先于档位匹配），该改动随 Review Gate 审查；不得改档位规则以放行单一依赖。
+- 传递依赖不在机检面内，新增依赖时仍须人工确认其子树许可。
 - 不得引入与 PrimeVue 5 类似、未来会转商业许可的依赖而未评估风险。

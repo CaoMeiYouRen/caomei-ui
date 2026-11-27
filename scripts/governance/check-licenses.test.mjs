@@ -277,6 +277,62 @@ describe('check-licenses 全文相等校验', () => {
     })
 })
 
+describe('check-licenses 许可证策略门禁', () => {
+    const files = ['dist', DECLARATION_FILE]
+
+    it('阻断档依赖即使声明与全文一致也失败', () => {
+        const dir = createFixture({
+            files,
+            declaration: '## foo@1.0.0\n\nLicense: GPL-3.0-only\n\nGPL text\n',
+            dependencies: { foo: '1.0.0' },
+            nodeModules: { foo: { packageJson: { name: 'foo', version: '1.0.0', license: 'GPL-3.0-only' }, license: 'GPL text' } },
+        })
+        const result = checkLicenses(dir)
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('许可证策略阻断')
+        expect(result.errors.join('\n')).toContain('GPL-3.0-only')
+    })
+
+    it('告警档依赖通过但给出告警', () => {
+        const dir = createFixture({
+            files,
+            declaration: '## foo@1.0.0\n\nLicense: MPL-2.0\n\nMPL text\n',
+            dependencies: { foo: '1.0.0' },
+            nodeModules: { foo: { packageJson: { name: 'foo', version: '1.0.0', license: 'MPL-2.0' }, license: 'MPL text' } },
+        })
+        const result = checkLicenses(dir)
+        expect(result.ok).toBe(true)
+        expect(result.warnings.join('\n')).toContain('许可证策略告警')
+    })
+
+    it('缺 license 字段升为 error 而非 warning', () => {
+        const dir = createFixture({
+            files,
+            declaration: '## foo@1.0.0\n\nLicense: MIT\n\nMIT text\n',
+            dependencies: { foo: '1.0.0' },
+            nodeModules: { foo: { packageJson: { name: 'foo', version: '1.0.0' }, license: 'MIT text' } },
+        })
+        const result = checkLicenses(dir)
+        expect(result.ok).toBe(false)
+        expect(result.errors.join('\n')).toContain('未声明 license 字段')
+    })
+
+    it('SPDX 表达式按 OR 放行允许分支', () => {
+        const dir = createFixture({
+            files,
+            declaration: '## foo@1.0.0\n\nLicense: MIT OR GPL-3.0-only\n\nMIT text\n',
+            dependencies: { foo: '1.0.0' },
+            nodeModules: {
+                foo: {
+                    packageJson: { name: 'foo', version: '1.0.0', license: 'MIT OR GPL-3.0-only' },
+                    license: 'MIT text',
+                },
+            },
+        })
+        expect(checkLicenses(dir).ok).toBe(true)
+    })
+})
+
 describe('findDeclarationSection 名称匹配', () => {
     const declaration = '## vue@3.5.44\n\nLicense: MIT\n\n## vue-echarts@8.3.2\n\nLicense: Apache-2.0\n\n## @lucide/vue@1.70.0\n\nLicense: ISC\n'
 

@@ -8,7 +8,8 @@
  * 2. `package.json` 的 `files` 包含该声明，确保随发布产物分发；
  * 3. `dependencies` + `peerDependencies` 中的每个包都有 `## <name>@<version>` 条目（按包名匹配）；
  * 4. 条目声明的 `License:` 与安装版本的 license 字段一致；
- * 5. 条目包含该包 LICENSE 全文（归一化后逐字匹配 node_modules 中的文件）。
+ * 5. 条目包含该包 LICENSE 全文（归一化后逐字匹配 node_modules 中的文件）；
+ * 6. 许可证标识通过策略分档（阻断 / 告警 / 通过，见 `license-policy.mjs`）。
  *
  * 标题版本与安装版本不一致时**不直接失败**：只要 `License:` 与许可证全文仍然一致，记 warning
  * 通过，使 dependabot / 常规升级 PR 可在许可证未变化时自动合并。标题版本由发布链的
@@ -26,6 +27,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isDirectExecution } from '../shared/cli.mjs'
+import { evaluateLicense } from './license-policy.mjs'
 
 export const REPO_ROOT = join(fileURLToPath(import.meta.url), '..', '..', '..')
 
@@ -204,11 +206,20 @@ export function checkLicenses(root = REPO_ROOT) {
         }
 
         if (!item.license) {
-            warnings.push(`${item.name} 的 package.json 未声明 license 字段`)
+            // 策略层有意收紧：有 LICENSE 正文但缺 `license` 字段从 warning 升为 error
+            // （见 docs/design/governance/2026-11-26-dependency-license-policy-evaluation.md §4）。
+            errors.push(`${item.name} 的 package.json 未声明 license 字段，无法通过许可证策略门禁`)
         } else {
             const licensePattern = new RegExp(`(^|\\n)License:\\s*${escapeRegExp(item.license)}\\s*(\\n|$)`)
             if (!licensePattern.test(section)) {
                 errors.push(`${item.name} 条目声明的 License 与安装版本（${item.license}）不一致`)
+            }
+
+            const verdict = evaluateLicense(item.license)
+            if (verdict.level === 'blocked') {
+                errors.push(`许可证策略阻断：${item.name} 的 ${item.license} —— ${verdict.reason}`)
+            } else if (verdict.level === 'warn') {
+                warnings.push(`许可证策略告警：${item.name} 的 ${item.license} —— ${verdict.reason}`)
             }
         }
 

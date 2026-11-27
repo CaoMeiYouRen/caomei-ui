@@ -4,38 +4,9 @@
 
 ## 当前状态
 
-**当前进行中阶段：Phase 45（新组件第二批：轮播、水印与菜单交互）**（**6 条主线 / 15 条原子条目**；构成对账 3 + 2 + 3 + 3 + 3 + 1 = 15；本阶段不发布，`1.5.0` 发布收口留在 [Backlog](./backlog.md) 待窗口；范围与验收口径见 [Phase 45 登记批次](../design/governance/2026-11-26-phase45-registration.md)）。
+**当前无进行中阶段**。
 
-| 大条目 | 小条目 | 状态 | 提交 | 审计 | 容量 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| M1 Carousel 轮播 | 3 / 3 | 已闭环 | `9bd3ff99` | R2 Pass | 3 → 0 |
-| M2 Watermark 水印 | 2 / 2 | 已闭环 | `cb5e16b9` | R2 Pass | 2 → 0 |
-| M3 Menubar 菜单栏 | 3 / 3 | 已闭环 | `5d15fee1` | R2 Pass | 3 → 0 |
-| M4 NavigationMenu 导航菜单 | 3 / 3 | 已闭环 | `4f96af64` | R1 Pass | 3 → 0 |
-| M5 HoverCard 悬停卡片 | 3 / 3 | 已闭环 | `ed20357a` | R1 Pass | 3 → 0 |
-| M6 导出与 a11y 登记 | 1 / 1 | 已闭环 | `8028c513` | R1 Pass | 1 → 0 |
-
-尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。本阶段取向为新功能优先、不发布；`1.5.0` 发布收口按用户裁定留待 2026-11-29 之后。
-
-## Phase 45 原子条目
-
-| 编号 | 主线 | 条目 | 验收状态 |
-| :--- | :--- | :--- | :--- |
-| M1-1 | Carousel 轮播 | 依赖与 locale 基础 | 已交付 |
-| M1-2 | Carousel 轮播 | Carousel 实现与测试 | 已交付 |
-| M1-3 | Carousel 轮播 | Carousel 文档、示例与回归 | 已交付 |
-| M2-1 | Watermark 水印 | Watermark 实现与测试 | 已交付 |
-| M2-2 | Watermark 水印 | Watermark 文档与回归（无新增 locale 键） | 已交付 |
-| M3-1 | Menubar 菜单栏 | 组件实现与测试 | 已交付 |
-| M3-2 | Menubar 菜单栏 | 浮层档位与 E2E 清单 | 已交付 |
-| M3-3 | Menubar 菜单栏 | 文档、示例与回归 | 已交付 |
-| M4-1 | NavigationMenu 导航菜单 | 组件实现与测试 | 已交付 |
-| M4-2 | NavigationMenu 导航菜单 | 浮层档位与 E2E 清单 | 已交付 |
-| M4-3 | NavigationMenu 导航菜单 | 文档、示例与回归 | 已交付 |
-| M5-1 | HoverCard 悬停卡片 | 组件实现与测试 | 已交付 |
-| M5-2 | HoverCard 悬停卡片 | 浮层档位与 E2E 清单 | 已交付 |
-| M5-3 | HoverCard 悬停卡片 | 文档、示例与回归 | 已交付 |
-| M6-1 | 导出与 a11y 登记 | 包根导出与 a11y 受检面 | 已交付 |
+尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。上一阶段已归档，交付摘要与后续候选只在归档载体与治理记录中维护，本段不复写。
 
 ## 未完成项汇总
 

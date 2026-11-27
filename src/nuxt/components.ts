@@ -129,6 +129,7 @@ export const caomeiComponents = [
     'CaomeiSplitterResizeHandle',
     'CaomeiStatistic',
     'CaomeiStepper',
+    'CaomeiSticky',
     'CaomeiStepperDescription',
     'CaomeiStepperIndicator',
     'CaomeiStepperItem',

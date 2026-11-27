@@ -365,7 +365,7 @@
 - **6 条主线 / 15 条原子条目全部交付**；本阶段不发布，`latest` 维持 `1.4.0`。
 - **提交对账**：执行窗口 `git log --oneline --no-merges 4eaa10bc..44acd006` → **21**（16 条条目交付 + 1 条示例资源修复 + 3 条 `docs(plan)` 状态同步 + 1 条前序遗留文档提交）；归档提交另计。推送：M1-1 / M1-2 经 PR #76（`84c83105`，3 提交）、M1-3 与状态同步直推 master（`9bd3ff99` / `0a6851a2`，2 个提交）、M2 ~ M6 经 PR #77（`44acd006`，15 提交含 1 条状态同步），CI 全绿。
 - **质量门**：`pnpm test` **214 文件 / 3976 例**；`typecheck` / `typecheck:docs` / `lint:check` / `lint:css` / `lint:md` / `docs:check` / `docs:build` / `governance:check` / `build` / `check:build` / `check:resolver` / `check:nuxt` 全绿；定向 E2E：carousel 5、watermark 4、menubar 4、navigation-menu 5、hover-card 5。
-- **长期任务**：本阶段不发布，周级门槛复核留给发布窗口。
+- **长期任务**：第 49 轮（Phase 45 收口门槛复核）已于 2026-11-27 执行（见 [`recurring.md`](./recurring.md) §3），并修复 1 处 Carousel 绕过共享 label 契约的回归；本阶段不发布，发布前复核仍留给发布窗口。
 - **wisdom 蒸馏**：`.session/wisdom.md` 活跃 14 条（< 阈值 20，不蒸馏）。
 
 ### 回扫口径（三段式）

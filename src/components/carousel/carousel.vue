@@ -2,6 +2,7 @@
 import emblaCarouselVue from 'embla-carousel-vue'
 import { computed, provide, ref, watch } from 'vue'
 import { useLocale } from '../../composables/use-locale'
+import { useLabelAttrs } from '../_shared/use-label-attrs'
 import { CaomeiIcon, useInternalIcons } from '../../icons'
 import { CaomeiButton } from '../button'
 import { carouselContextKey, resolveCarouselIndex } from './context'
@@ -32,6 +33,11 @@ defineSlots<{
 
 const messages = useLocale()
 const icons = useInternalIcons()
+
+/** 根即可访问控件：显式 `label` 优先于透传 `aria-label`，缺省时不输出该属性 */
+const forwardedAttrs = useLabelAttrs(() => props.label)
+/** 有可访问名才作为地标暴露；无名称时降级为普通分组 */
+const rootRole = computed(() => (forwardedAttrs.value['aria-label'] ? 'region' : 'group'))
 
 const isVertical = computed(() => props.orientation === 'vertical')
 const slidesPerView = computed(() => {
@@ -231,16 +237,15 @@ provide(carouselContextKey, context)
 
 <template>
     <div
-        v-bind="$attrs"
+        v-bind="forwardedAttrs"
         class="caomei-carousel"
         :class="[
             `caomei-carousel--${orientation}`,
             {'caomei-carousel--auto': isAutoWidth}
         ]"
         :style="rootStyle"
-        :role="label ? 'region' : 'group'"
+        :role="rootRole"
         aria-roledescription="carousel"
-        :aria-label="label"
         tabindex="0"
         @keydown="onKeydown"
     >

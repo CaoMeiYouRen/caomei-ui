@@ -39,7 +39,7 @@
 ## 4. 质量门与长期任务
 
 - **阶段质量门**：`pnpm test` **214 文件 / 3976 例**通过；`pnpm typecheck`、`pnpm typecheck:docs`、`pnpm lint:check`、`pnpm lint:css:check`、`pnpm lint:md:check`、`pnpm docs:check`、`pnpm docs:build`、`pnpm governance:check`、`pnpm build`、`check:build`、`check:resolver`、`check:nuxt` 全绿；定向 E2E：carousel 5、watermark 4、menubar 4、navigation-menu 5、hover-card 5（真实 Chromium；overlay-stacking 主用例含 14 个浮层 case 全过）。
-- **长期任务**：本阶段不发布，周级门槛复核留给发布窗口。
+- **长期任务**：第 49 轮（Phase 45 收口门槛复核）已于 2026-11-27 执行（见 [`recurring.md`](../../plan/recurring.md) §3），并修复 1 处 Carousel 绕过共享 label 契约的回归；本阶段不发布，发布前复核仍留给发布窗口。
 - **wisdom**：`.session/wisdom.md` 活跃 14 条（< 阈值 20，不蒸馏）。
 
 ## 5. Review Gate

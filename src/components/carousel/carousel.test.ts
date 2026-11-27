@@ -348,6 +348,24 @@ describe('CaomeiCarousel', () => {
         expect(root.attributes('style') ?? '').not.toContain('--caomei-carousel-slides-per-view')
     })
 
+    it('透传 aria-label 时按地标暴露且不被覆盖', async () => {
+        const Host = defineComponent({
+            components: { CaomeiCarousel, CaomeiCarouselSlide },
+            template: `
+                <CaomeiCarousel aria-label="外部名称">
+                    <CaomeiCarouselSlide>第一页</CaomeiCarouselSlide>
+                </CaomeiCarousel>
+            `,
+        })
+        const wrapper = mount(Host, { attachTo: document.body })
+        wrappers.push(wrapper as unknown as ReturnType<typeof mount>)
+        await flush()
+
+        const root = wrapper.get('[aria-roledescription="carousel"]')
+        expect(root.attributes('role')).toBe('region')
+        expect(root.attributes('aria-label')).toBe('外部名称')
+    })
+
     it('未提供 label 时降级为 group，避免无名地标', async () => {
         const wrapper = mountCarousel({ named: false })
         await flush()

@@ -325,6 +325,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                             items: [
                                 { text: 'Checkbox', link: '/en-US/components/checkbox' },
                                 { text: 'CheckboxGroup', link: '/en-US/components/checkbox-group' },
+                                { text: 'Editable', link: '/en-US/components/editable' },
                                 { text: 'FileUpload', link: '/en-US/components/file-upload' },
                                 { text: 'FloatLabel', link: '/en-US/components/float-label' },
                                 { text: 'Form', link: '/en-US/components/form' },
@@ -561,6 +562,7 @@ export default defineConfigWithTheme<CaomeiThemeConfig>({
                     items: [
                         { text: 'Checkbox 复选框', link: '/components/checkbox' },
                         { text: 'CheckboxGroup 复选框组', link: '/components/checkbox-group' },
+                        { text: 'Editable 行内编辑', link: '/components/editable' },
                         { text: 'FileUpload 文件上传', link: '/components/file-upload' },
                         { text: 'FloatLabel 浮动标签', link: '/components/float-label' },
                         { text: 'Form 表单', link: '/components/form' },

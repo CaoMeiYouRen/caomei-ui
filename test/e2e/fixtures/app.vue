@@ -11,6 +11,10 @@ import {
     CaomeiActionSheet,
     CaomeiCell,
     CaomeiCellGroup,
+    CaomeiEditable,
+    CaomeiEditableArea,
+    CaomeiEditableInput,
+    CaomeiEditablePreview,
     CaomeiEmpty,
     CaomeiTabbar,
     CaomeiTabbarItem,
@@ -176,6 +180,13 @@ const selectValue = ref<string | null>(null)
 
 /** 首击穿透用例：背景按钮的点击计数（浮层展开态点一次就应加一） */
 const firstClickCount = ref(0)
+
+/** 行内编辑用例：受控值与被提交的值 */
+const editableTitle = ref('季度经营分析')
+const editableSubmitted = ref('')
+/** 只读 / 禁用夹具值：用于验证「可看不可改」「不可进入写回」 */
+const editableReadonly = ref('只读标题')
+const editableDisabled = ref('禁用标题')
 const multiSelectValue = ref<string[]>([])
 const autoCompleteValue = ref<string>()
 
@@ -919,6 +930,47 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 背景操作
             </CaomeiButton>
             <output id="first-click-count">{{ firstClickCount }}</output>
+        </section>
+
+        <section id="panel-editable" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableTitle"
+                submit-mode="enter"
+                @submit="editableSubmitted = $event ?? ''"
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="文档标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-value">{{ editableTitle }}</output>
+            <output id="editable-submitted">{{ editableSubmitted }}</output>
+        </section>
+
+        <section id="panel-editable-readonly" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableReadonly"
+                readonly
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="只读标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-readonly-value">{{ editableReadonly }}</output>
+        </section>
+
+        <section id="panel-editable-disabled" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableDisabled"
+                disabled
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="禁用标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-disabled-value">{{ editableDisabled }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">

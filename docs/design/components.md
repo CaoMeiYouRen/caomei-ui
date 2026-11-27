@@ -36,6 +36,7 @@
 | Card | 自建（布局 + variants） | 无 |
 | Checkbox | 封装 Checkbox | Checkbox |
 | CheckboxGroup | 封装 CheckboxGroup（分组值数组 + 全选 / 半选） | CheckboxGroup |
+| Editable | 封装 | EditableRoot / EditableArea / EditablePreview / EditableInput / EditableEditTrigger / EditableSubmitTrigger / EditableCancelTrigger | 稳定 | 行内编辑：聚焦 / 双击进入、回车与失焦提交、Esc 回退、只读与禁用、激活态焦点管理（**已实现**） |
 
 ## 3. Tier 1：强烈推荐（8 个）
 

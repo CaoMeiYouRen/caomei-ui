@@ -27,6 +27,7 @@
 
 - [Checkbox 复选框](./checkbox)：复选框用于在多个选项中选择若干项，或表示单个布尔开关，基于 Reka UI Checkbox 封装。
 - [CheckboxGroup 复选框组](./checkbox-group)：复选框组用于管理一组复选框，支持 `options` 渲染、`selectAll` 全选与半选状态、`label` 分组可访问名与 `rovingFocus` 键盘导航，基于 Reka UI Checkbox 封装。
+- [Editable 行内编辑](./editable)：行内编辑在原位修改一段文本，支持聚焦 / 双击进入、回车与失焦提交、`Esc` 回退、只读与禁用，基于 Reka UI Editable 封装。
 - [FileUpload 文件上传](./file-upload)：文件上传组件基于原生 `input[type=file]` 自建，负责文件选择（点击 / 拖拽）与列表管理；`customUpload` 下抛出 `uploader` 交由业务层上传。
 - [FloatLabel 浮动标签](./float-label)：浮动标签把 `<label>` 叠加在表单字段上：`over`（默认）在空值时居中充当占位提示，聚焦或有值时上浮到字段上方；`in` 让标签常驻字段顶部、字段内容下移。
 - [Form 表单](./form)：表单组合层，负责布局与提交编排；`CaomeiFormItem` 提供标签、提示、错误与 5 键插槽作用域，不自带 rules 引擎。

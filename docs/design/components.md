@@ -115,6 +115,7 @@
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |
 | Panel | 不新建 | — | — | 由 `Card` 的 `title` / `header` / `footer` 承载；可折叠场景用 `Accordion` |
 | SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用（**已实现**） |
+| Sticky | 自建（原生 `position: sticky`） | 无 | 稳定 | 吸顶工具：偏移 / 层级 / 禁用降级、容器边界内释放、自动协作最近滚动容器，状态经 `data-stuck` / `data-constrained` 与 `change` 暴露（**已实现**） |
 | DataView | 自建（`layout` grid / list + 插槽） | 无 | — | 列表 / 网格两态 + 加载 / 空态（**已实现**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 | TagsInput | 封装 | TagsInput | 稳定 | 标签录入：多值 `v-model`、自由文本、回车 / 分隔符提交、标签删除、数量 / 去重约束（**已实现**） |

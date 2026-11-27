@@ -101,6 +101,7 @@ import {
     CaomeiSplitterPanel,
     CaomeiSplitterResizeHandle,
     CaomeiStepper,
+    CaomeiSticky,
     CaomeiStepperIndicator,
     CaomeiStepperItem,
     CaomeiStepperList,
@@ -230,6 +231,18 @@ const pickerColumns = [
     },
 ]
 const pickerValue = ref<(string | number)[]>(['zj', 'hz'])
+
+/** 吸顶用例：内层滚动容器 + 吸顶条，记录 change 事件状态 */
+const stickyOffset = ref(8)
+const stickyState = ref('idle')
+
+function onStickyChange(next: { stuck: boolean, constrained: boolean }): void {
+    if (next.constrained) {
+        stickyState.value = 'constrained'
+        return
+    }
+    stickyState.value = next.stuck ? 'stuck' : 'idle'
+}
 
 /** 移除即从列表移除，验证「列表由调用方维护」的语义 */
 function onTagGroupRemove(value: string): void {
@@ -1065,6 +1078,42 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 label="选择地区"
             />
             <output id="picker-value">{{ pickerValue.join(',') }}</output>
+        </section>
+
+        <section id="panel-sticky" class="fixture__case">
+            <div
+                id="sticky-scroller"
+                class="fixture__sticky-scroller"
+            >
+                <p class="fixture__sticky-line">
+                    容器标题（滚动前位于吸顶条上方）
+                </p>
+                <div class="fixture__sticky-card">
+                    <CaomeiSticky
+                        id="sticky-bar"
+                        class="fixture__sticky-bar"
+                        :offset="stickyOffset"
+                        @change="onStickyChange"
+                    >
+                        <span>吸顶工具栏</span>
+                    </CaomeiSticky>
+                    <p
+                        v-for="index in 4"
+                        :key="index"
+                        class="fixture__sticky-line"
+                    >
+                        卡片内第 {{ index }} 段
+                    </p>
+                </div>
+                <p
+                    v-for="index in 10"
+                    :key="`tail-${index}`"
+                    class="fixture__sticky-line"
+                >
+                    卡片之后第 {{ index }} 段（用于把卡片滚出容器）
+                </p>
+            </div>
+            <output id="sticky-state">{{ stickyState }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">
@@ -4499,6 +4548,27 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
+}
+
+.fixture__sticky-scroller {
+    height: 12rem;
+    overflow-y: auto;
+    padding: var(--caomei-space-2);
+    border: 1px solid var(--caomei-color-border);
+}
+
+.fixture__sticky-card {
+    /* sticky 的包含块：卡片底边到达时吸顶条被推走 */
+    border: 1px dashed var(--caomei-color-border);
+}
+
+.fixture__sticky-bar {
+    padding: var(--caomei-space-2);
+    border-bottom: 1px solid var(--caomei-color-border);
+}
+
+.fixture__sticky-line {
+    margin: var(--caomei-space-2) 0;
 }
 </style>
 

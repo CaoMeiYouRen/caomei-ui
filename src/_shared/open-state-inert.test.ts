@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { __resetIsolationForTest, suppressOutside } from './open-state-inert'
+import { __resetIsolationForTest, __setHitTestForTest, suppressOutside } from './open-state-inert'
 
 afterEach(() => {
     document.body.innerHTML = ''
     __resetIsolationForTest()
+    __setHitTestForTest()
 })
 
 /** 还原 `body` 下的固定结构：外层兄弟 + 带 context 的浮层宿主 */
@@ -294,5 +295,115 @@ describe('suppressOutside', () => {
         releaseB()
         releaseA()
         expect(outside.hasAttribute('inert')).toBe(false)
+    })
+})
+
+describe('首击穿透（展开态点击背景）', () => {
+    function buildClickable(): { button: HTMLButtonElement, outside: HTMLElement, floating: HTMLElement, clicks: () => number } {
+        document.body.innerHTML = ''
+        const outside = document.createElement('div')
+        outside.id = 'outside'
+        const button = document.createElement('button')
+        button.textContent = '背景按钮'
+        outside.append(button)
+
+        const context = document.createElement('div')
+        const floating = document.createElement('div')
+        floating.id = 'floating'
+        context.append(floating)
+        document.body.append(outside, context)
+
+        let count = 0
+        button.addEventListener('click', () => {
+            count += 1
+        })
+        return { button, outside, floating, clicks: () => count }
+    }
+
+    function pointerDown(button: number = 0, target: EventTarget = document.body): void {
+        target.dispatchEvent(new MouseEvent('pointerdown', {
+            bubbles: true,
+            cancelable: true,
+            button,
+            clientX: 10,
+            clientY: 10,
+            view: window,
+        }))
+    }
+
+    it('背景首击补派一次 click，使「关面板」与「激活控件」同一次点击完成', () => {
+        const { button, outside, floating, clicks } = buildClickable()
+        __setHitTestForTest(() => [button].filter((element) => !element.closest('[inert]')))
+        const restore = suppressOutside(floating)
+
+        expect(outside.hasAttribute('inert')).toBe(true)
+        pointerDown()
+        expect(clicks()).toBe(1)
+
+        restore()
+    })
+
+    it('补派前已恢复 inert（原生点击不会二次落到底层控件）', () => {
+        const { button, outside, floating, clicks } = buildClickable()
+        let inertDuringHit = false
+        __setHitTestForTest(() => {
+            inertDuringHit = outside.hasAttribute('inert')
+            return [button]
+        })
+        const restore = suppressOutside(floating)
+
+        pointerDown()
+        expect(inertDuringHit, '命中测试时临时解除隔离').toBe(false)
+        expect(outside.hasAttribute('inert'), '补派前恢复隔离').toBe(true)
+        expect(clicks()).toBe(1)
+
+        restore()
+    })
+
+    it('指针落在浮层内时不补派', () => {
+        const { button, floating, clicks } = buildClickable()
+        __setHitTestForTest(() => [button])
+        const restore = suppressOutside(floating)
+
+        pointerDown(0, floating)
+        expect(clicks()).toBe(0)
+        restore()
+    })
+
+    it('浮层先于守卫关闭（目标已不在 inert 子树）时不补派，避免双触发', () => {
+        const { button, floating, clicks } = buildClickable()
+        __setHitTestForTest(() => [button])
+
+        // 守卫挂在 window 捕获阶段的最晚注册位；模拟更早注册的外部监听先关闭浮层并解除隔离
+        let restore = (): void => undefined
+        const closeListener = (): void => {
+            restore()
+        }
+        window.addEventListener('pointerdown', closeListener, { capture: true })
+        restore = suppressOutside(floating)
+
+        pointerDown()
+        expect(clicks()).toBe(0)
+        expect(button.closest('[inert]')).toBeNull()
+
+        window.removeEventListener('pointerdown', closeListener, { capture: true })
+        restore()
+    })
+
+    it('非主键（右键）不补派', () => {
+        const { button, floating, clicks } = buildClickable()
+        __setHitTestForTest(() => [button])
+        const restore = suppressOutside(floating)
+
+        pointerDown(2)
+        expect(clicks()).toBe(0)
+        restore()
+    })
+
+    it('无活动层时不装守卫：pointerdown 不产生任何补派', () => {
+        const { button, clicks } = buildClickable()
+        __setHitTestForTest(() => [button])
+        pointerDown()
+        expect(clicks()).toBe(0)
     })
 })

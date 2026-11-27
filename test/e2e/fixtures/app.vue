@@ -173,6 +173,9 @@ const overlayCascadeOptions = [
 ]
 
 const selectValue = ref<string | null>(null)
+
+/** 首击穿透用例：背景按钮的点击计数（浮层展开态点一次就应加一） */
+const firstClickCount = ref(0)
 const multiSelectValue = ref<string[]>([])
 const autoCompleteValue = ref<string>()
 
@@ -903,6 +906,19 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 placeholder="按创建时间倒序排列"
                 label="排序方式"
             />
+        </section>
+
+        <section id="first-click" class="fixture__case">
+            <p class="fixture__hint">
+                浮层展开时点击下面的按钮：第一次点击就应计数（不得只关面板）。
+            </p>
+            <CaomeiButton
+                id="first-click-target"
+                @click="firstClickCount += 1"
+            >
+                背景操作
+            </CaomeiButton>
+            <output id="first-click-count">{{ firstClickCount }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">

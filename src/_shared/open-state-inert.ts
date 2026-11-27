@@ -28,6 +28,14 @@
  * 下一次重算会补写（记录与属性对齐，隔离不会静默失效）；外部已有的 `aria-hidden` 不接管、
  * 不撤销。
  *
+ * 首击语义：`inert` 不参与命中测试，且浮层族普遍启用指针捕获，**展开态下点击背景的
+ * 第一次点击会被丢弃**——面板关闭了，背景控件却没被激活。这里补「首击穿透」：`pointerdown` 的
+ * `window` 捕获阶段（早于组件层与 Reka 的 `document` 捕获监听）临时撤掉本模块写入的 `inert`、
+ * 取指针下的真实目标，恢复属性后对该目标补派一次 `click`，使「关闭浮层」与「激活背景控件」
+ * 由同一次点击完成。
+ * - 补派前已恢复 `inert`：原生点击仍落在捕获元素 / `body`，不会双触发；
+ * - 指针落在浮层内、非主键、或目标已不在 `inert` 子树（浮层已同步关闭）时不补派。
+ *
  * 落在 `src/_shared/`：本工具不绑定具体组件，供组件层复用；无 SSR 依赖（只在客户端调用）。
  */
 
@@ -137,6 +145,7 @@ function applyLayers(body: HTMLElement): void {
 
 /** 撤销本模块在某个 `body` 上的全部写入 */
 function releaseBody(body: HTMLElement): void {
+    releasePointerGuard(body.ownerDocument.defaultView)
     const record = appliedByBody.get(body)
     if (!record) {
         return
@@ -148,6 +157,130 @@ function releaseBody(body: HTMLElement): void {
         element.removeAttribute('aria-hidden')
     }
     appliedByBody.delete(body)
+}
+
+/** 命中测试：默认取 `elementsFromPoint`（可注入，便于 happy-dom 下单测）。 */
+type HitTest = (document: Document, x: number, y: number) => Element[]
+
+const defaultHitTest: HitTest = (document, x, y) => {
+    // happy-dom 不实现该 API，故按可选能力探测（`lib.dom` 把它标成必有）
+    const withHitTest = document as unknown as { elementsFromPoint?: (nx: number, ny: number) => Element[] }
+    return typeof withHitTest.elementsFromPoint === 'function' ? withHitTest.elementsFromPoint(x, y) : []
+}
+
+let hitTest: HitTest = defaultHitTest
+
+/**
+ * 替换命中测试（仅测试用）：happy-dom 不实现 `elementsFromPoint`。传 `undefined` 恢复默认。
+ * @internal
+ */
+export function __setHitTestForTest(next?: HitTest): void {
+    hitTest = next ?? defaultHitTest
+}
+
+/** 已安装的 `pointerdown` 守卫（按 `window` 登记，最后一个活动层关闭时移除）。 */
+const pointerGuards = new WeakMap<Window, (event: PointerEvent) => void>()
+
+/** 判定元素是否属于某个活动层的整棵子树。 */
+function insideActiveLayer(element: Element): boolean {
+    return activeLayers.some((layer) => layer.root.contains(element))
+}
+
+/**
+ * 取指针下的**外层真实目标**：临时撤掉本模块写入的 `inert`（命中测试跳过 `inert` 子树），
+ * 取 `elementsFromPoint` 中最先出现的、位于所有活动层之外的元素，随后原样恢复。
+ */
+function resolvePointerTarget(event: PointerEvent, body: HTMLElement): Element | undefined {
+    const record = appliedByBody.get(body)
+    const restored: Element[] = []
+    if (record) {
+        for (const element of record.inert) {
+            if (element.hasAttribute('inert')) {
+                element.removeAttribute('inert')
+                restored.push(element)
+            }
+        }
+    }
+    try {
+        const document = body.ownerDocument
+        return hitTest(document, event.clientX, event.clientY).find(
+            (element) => element !== document.documentElement && element !== document.body && !insideActiveLayer(element),
+        )
+    } finally {
+        for (const element of restored) {
+            element.setAttribute('inert', '')
+        }
+    }
+}
+
+/**
+ * 首击穿透：背景上的一次点击既关闭浮层、也激活该控件。
+ *
+ * 为什么必须补派：浮层族普遍使用**指针捕获**（Reka 在触发器 / 内容上做 `setPointerCapture`），
+ * 一旦捕获生效，后续 `mousedown` / `mouseup` / `click` 全部派发给捕获元素，背景控件永远收不到；
+ * 且 `inert` 本身也不参与命中测试。两条叠加使「只摘 `inert`」无效（浏览器仍把点击交给捕获元素）。
+ * 因此这里取指针下的真实目标后**补派一次 `click`**：
+ * - 属性在补派前恢复，原生点击仍落在捕获元素 / `body`，不会与补派叠加成双触发；
+ * - 监听挂在 `window` 捕获阶段，早于组件层与 Reka 的 `document` 捕获监听，此时隔离记录仍完整；
+ * - 只在指针落在所有活动层之外、且目标此刻仍处于 `inert` 子树（浮层尚未同步关闭）时补派。
+ */
+function handleOutsidePointerDown(event: PointerEvent): void {
+    if (event.button !== 0 || activeLayers.length === 0) {
+        return
+    }
+    const target = event.target
+    if (target instanceof Element && insideActiveLayer(target)) {
+        return
+    }
+    const view = event.view
+    if (!view) {
+        return
+    }
+    const body = activeLayers.find((layer) => layer.body.ownerDocument === view.document)?.body
+    if (!body) {
+        return
+    }
+    // 模态浮层（Reka 把 `body` / 应用根置为 `pointer-events: none`）不穿透：背景本就不可交互，
+    // 「点击只关闭」是模态语义；首击穿透只针对非模态浮层（Combobox 一族）。
+    if (view.getComputedStyle(body).pointerEvents === 'none') {
+        return
+    }
+    const element = resolvePointerTarget(event, body)
+    if (!element?.closest('[inert]')) {
+        return
+    }
+    element.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view,
+        clientX: event.clientX,
+        clientY: event.clientY,
+    }))
+}
+
+/** 确保该文档装有首击守卫（幂等）。 */
+function ensurePointerGuard(view: Window): void {
+    if (pointerGuards.has(view)) {
+        return
+    }
+    const listener = (event: PointerEvent): void => {
+        handleOutsidePointerDown(event)
+    }
+    pointerGuards.set(view, listener)
+    view.addEventListener('pointerdown', listener, true)
+}
+
+/** 撤掉该文档的首击守卫。 */
+function releasePointerGuard(view: Window | null): void {
+    if (!view) {
+        return
+    }
+    const listener = pointerGuards.get(view)
+    if (!listener) {
+        return
+    }
+    view.removeEventListener('pointerdown', listener, true)
+    pointerGuards.delete(view)
 }
 
 /**
@@ -169,6 +302,10 @@ export function suppressOutside(root: Element): () => void {
     const layer: ActiveLayer = { root, body }
     activeLayers.push(layer)
     applyLayers(body)
+    const view = body.ownerDocument.defaultView
+    if (view) {
+        ensurePointerGuard(view)
+    }
 
     let released = false
     return () => {

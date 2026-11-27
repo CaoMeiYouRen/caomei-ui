@@ -153,6 +153,7 @@ import {
     CaomeiToolbarToggleItem,
     CaomeiTour,
     CaomeiTree,
+    CaomeiTreeVirtualizer,
     CaomeiTreeSelect,
     CaomeiWatermark,
     CaomeiTooltip,
@@ -389,6 +390,18 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiStepper', root: CaomeiStepper, definition: { components: { CaomeiStepper, CaomeiStepperList, CaomeiStepperItem, CaomeiStepperTrigger, CaomeiStepperIndicator, CaomeiStepperTitle, CaomeiStepperDescription, CaomeiStepperSeparator }, template: '<CaomeiStepper :model-value="1"><CaomeiStepperList><CaomeiStepperItem :step="1"><CaomeiStepperTrigger><CaomeiStepperIndicator>1</CaomeiStepperIndicator><CaomeiStepperTitle>账户</CaomeiStepperTitle><CaomeiStepperDescription>填写登录信息</CaomeiStepperDescription></CaomeiStepperTrigger><CaomeiStepperSeparator /></CaomeiStepperItem><CaomeiStepperItem :step="2"><CaomeiStepperTrigger><CaomeiStepperIndicator>2</CaomeiStepperIndicator><CaomeiStepperTitle>资料</CaomeiStepperTitle><CaomeiStepperDescription>补充个人资料</CaomeiStepperDescription></CaomeiStepperTrigger></CaomeiStepperItem></CaomeiStepperList></CaomeiStepper>' } },
     { name: 'CaomeiSwitch', root: CaomeiSwitch, definition: { components: { CaomeiSwitch }, template: '<CaomeiSwitch label="开关" />' } },
     { name: 'CaomeiTabs', root: CaomeiTabs, definition: { components: { CaomeiTabs, CaomeiTabList, CaomeiTabTrigger, CaomeiTabContent }, template: '<CaomeiTabs model-value="a"><CaomeiTabList><CaomeiTabTrigger value="a">甲</CaomeiTabTrigger></CaomeiTabList><CaomeiTabContent value="a">内容</CaomeiTabContent></CaomeiTabs>' } },
+    {
+        name: 'CaomeiTreeVirtualizer',
+        root: CaomeiTreeVirtualizer,
+        definition: {
+            components: { CaomeiTreeVirtualizer },
+            template: '<CaomeiTreeVirtualizer label="虚拟树" height="12rem" :items="virtualItems" />',
+            setup: () => ({
+                virtualItems: Array.from({ length: 30 }, (_, index) => ({ id: `n-${index}`, label: `节点 ${index}` })),
+            }),
+        },
+        requiredSelectors: ['.caomei-tree-virtualizer', '[data-reka-virtualizer]'],
+    },
     { name: 'CaomeiTag', root: CaomeiTag, definition: { components: { CaomeiTag }, template: '<CaomeiTag>标签</CaomeiTag>' } },
     {
         name: 'CaomeiTagGroup',
@@ -604,4 +617,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 94
+export const A11Y_FIXTURE_BUDGET = 95

@@ -164,6 +164,7 @@ export const caomeiComponents = [
     'CaomeiTour',
     'CaomeiWatermark',
     'CaomeiTree',
+    'CaomeiTreeVirtualizer',
     'CaomeiTreeSelect',
     'CaomeiTooltip',
     'CaomeiTooltipArrow',

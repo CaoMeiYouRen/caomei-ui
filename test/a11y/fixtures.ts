@@ -53,6 +53,13 @@ import {
     CaomeiDropdownMenuRadioItem,
     CaomeiDropdownMenuSeparator,
     CaomeiDropdownMenuTrigger,
+    CaomeiEditable,
+    CaomeiEditableArea,
+    CaomeiEditableCancelTrigger,
+    CaomeiEditableEditTrigger,
+    CaomeiEditableInput,
+    CaomeiEditablePreview,
+    CaomeiEditableSubmitTrigger,
     CaomeiEmpty,
     CaomeiFileUpload,
     CaomeiFloatLabel,
@@ -397,6 +404,23 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-action-sheet', '.caomei-action-sheet__cancel'],
     },
     { name: 'CaomeiEmpty', root: CaomeiEmpty, definition: { components: { CaomeiEmpty }, template: '<CaomeiEmpty title="还没有任何项目" description="创建第一个项目后，它会出现在这里。" />' } },
+    {
+        name: 'CaomeiEditable',
+        root: CaomeiEditable,
+        definition: {
+            components: {
+                CaomeiEditable,
+                CaomeiEditableArea,
+                CaomeiEditablePreview,
+                CaomeiEditableInput,
+                CaomeiEditableEditTrigger,
+                CaomeiEditableSubmitTrigger,
+                CaomeiEditableCancelTrigger,
+            },
+            template: '<CaomeiEditable :model-value="\'可编辑标题\'"><CaomeiEditableArea><CaomeiEditablePreview /><CaomeiEditableInput label="可编辑标题" /><CaomeiEditableEditTrigger>编辑</CaomeiEditableEditTrigger><CaomeiEditableSubmitTrigger>提交</CaomeiEditableSubmitTrigger><CaomeiEditableCancelTrigger>取消</CaomeiEditableCancelTrigger></CaomeiEditableArea></CaomeiEditable>',
+        },
+        requiredSelectors: ['.caomei-editable', '.caomei-editable__preview', '.caomei-editable__input'],
+    },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
     /* 工具提示：夹具自带 Provider，覆盖「Provider 存在时沿用上层配置」的主路径（缺失时由根组件内建兜底）。 */
     { name: 'CaomeiTooltip', root: CaomeiTooltip, definition: { components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent }, template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent>扫描范围为所选仓库的全部开放依赖告警。</CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>' } },
@@ -539,6 +563,12 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiCarouselSlide', component: CaomeiCarouselSlide, fixture: 'CaomeiCarousel' },
     { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
+    { name: 'CaomeiEditableArea', component: CaomeiEditableArea, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditablePreview', component: CaomeiEditablePreview, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableInput', component: CaomeiEditableInput, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableEditTrigger', component: CaomeiEditableEditTrigger, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableSubmitTrigger', component: CaomeiEditableSubmitTrigger, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableCancelTrigger', component: CaomeiEditableCancelTrigger, fixture: 'CaomeiEditable' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
@@ -558,4 +588,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 92
+export const A11Y_FIXTURE_BUDGET = 93

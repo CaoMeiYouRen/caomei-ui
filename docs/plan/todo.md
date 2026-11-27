@@ -13,7 +13,7 @@
 | M3 版本升级影响面评估 | 2 / 2 | 已闭环 | `29535173`、`9467a2fe` | `2026-11-28-phase46-m3-consumer-impact.md` | 2 → 0 |
 | M4 浮层与文档收口 | 4 / 4 | 已闭环 | `53782fed`、`252fde87`、`1d8921ec`、`d7ce032b` | `2026-11-27-phase46-m2-m4-governance-gates.md` | 4 → 0 |
 | M5 Editable 与 TagGroup | 4 / 4 | 已闭环 | `016ce826`、`d34e5107`、`e4c367ae`、`d0b7b6d0` | `2026-11-28-phase46-m5-editable.md`、`2026-11-28-phase46-m5-tag-group.md` | 4 → 0 |
-| M6 TreeVirtualizer 与 Picker | 2 / 4 | 进行中 | `433178b7`、`55103619` | `2026-11-28-phase46-m6-tree-virtualizer.md` | 4 → 2 |
+| M6 TreeVirtualizer 与 Picker | 4 / 4 | 已闭环 | `433178b7`、`55103619`、`24f2b71f`、`1de4270a` | `2026-11-28-phase46-m6-tree-virtualizer.md`、`2026-11-28-phase46-m6-picker.md` | 4 → 0 |
 | M7 Sticky | 0 / 2 | 未开始 | — | — | 2 → 0 |
 
 尚未进入阶段的候选见 [Backlog](./backlog.md)，周期性治理见 [长期任务](./recurring.md)。本阶段取向为治理先行、组件随后；`1.5.0` 发布收口按用户裁定留待 2026-11-29 之后。
@@ -38,8 +38,8 @@
 | M5-4 | Editable 与 TagGroup | TagGroup 文档与 E2E | 已交付 |
 | M6-1 | TreeVirtualizer 与 Picker | TreeVirtualizer 实现与测试 | 已交付 |
 | M6-2 | TreeVirtualizer 与 Picker | TreeVirtualizer 文档与 E2E | 已交付 |
-| M6-3 | TreeVirtualizer 与 Picker | Picker 实现与测试 | 待执行 |
-| M6-4 | TreeVirtualizer 与 Picker | Picker 文档与 E2E | 待执行 |
+| M6-3 | TreeVirtualizer 与 Picker | Picker 实现与测试 | 已交付 |
+| M6-4 | TreeVirtualizer 与 Picker | Picker 文档与 E2E | 已交付 |
 | M7-1 | Sticky | 实现与测试 | 待执行 |
 | M7-2 | Sticky | 文档与 E2E | 待执行 |
 

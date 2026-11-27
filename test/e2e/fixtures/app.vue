@@ -16,6 +16,7 @@ import {
     CaomeiEditableInput,
     CaomeiEditablePreview,
     CaomeiEmpty,
+    CaomeiTreeVirtualizer,
     CaomeiTagGroup,
     CaomeiTagGroupItem,
     CaomeiTagGroupItemDelete,
@@ -196,6 +197,18 @@ const editableReadonly = ref('只读标题')
 const tagGroupTags = ref(['Vue', 'TypeScript', 'CSS'])
 const tagGroupSelected = ref<string[]>(['Vue'])
 const tagGroupRemoved = ref('')
+
+/** 虚拟树用例：200 个分组 × 5 个子节点（共 1200 个节点），只应渲染可视区附近的行 */
+const virtualTreeItems = Array.from({ length: 200 }, (_, index) => ({
+    id: `vg-${index}`,
+    label: `分组 ${index + 1}`,
+    children: Array.from({ length: 5 }, (_, childIndex) => ({
+        id: `vg-${index}-${childIndex}`,
+        label: `条目 ${index + 1}-${childIndex + 1}`,
+    })),
+}))
+const virtualTreeExpanded = ref<string[]>(['vg-0', 'vg-1'])
+const virtualTreeSelected = ref<string[]>([])
 
 /** 移除即从列表移除，验证「列表由调用方维护」的语义 */
 function onTagGroupRemove(value: string): void {
@@ -1009,6 +1022,18 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
             </CaomeiTagGroup>
             <output id="tag-group-selected">{{ tagGroupSelected.join(',') }}</output>
             <output id="tag-group-removed">{{ tagGroupRemoved }}</output>
+        </section>
+
+        <section id="panel-tree-virtualizer" class="fixture__case">
+            <CaomeiTreeVirtualizer
+                v-model="virtualTreeSelected"
+                v-model:expanded="virtualTreeExpanded"
+                :items="virtualTreeItems"
+                label="虚拟树"
+                height="12rem"
+                :overscan="4"
+            />
+            <output id="virtual-tree-selected">{{ virtualTreeSelected.join(',') }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">

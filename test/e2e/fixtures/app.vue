@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
-import { Compass, Home, Settings, User } from '@lucide/vue'
+import { Compass, Home, Settings, User, X } from '@lucide/vue'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent } from 'echarts/components'
 import { use } from 'echarts/core'
@@ -11,7 +11,16 @@ import {
     CaomeiActionSheet,
     CaomeiCell,
     CaomeiCellGroup,
+    CaomeiEditable,
+    CaomeiEditableArea,
+    CaomeiEditableInput,
+    CaomeiEditablePreview,
     CaomeiEmpty,
+    CaomeiTreeVirtualizer,
+    CaomeiTagGroup,
+    CaomeiTagGroupItem,
+    CaomeiTagGroupItemDelete,
+    CaomeiTagGroupItemText,
     CaomeiTabbar,
     CaomeiTabbarItem,
     CaomeiAlert,
@@ -63,6 +72,7 @@ import {
     CaomeiHoverCardContent,
     CaomeiHoverCardTrigger,
     CaomeiImage,
+    CaomeiIcon,
     CaomeiInput,
     CaomeiInputGroup,
     CaomeiInputNumber,
@@ -72,6 +82,7 @@ import {
     CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
+    CaomeiPicker,
     CaomeiPopover,
     CaomeiPopoverContent,
     CaomeiPopoverTrigger,
@@ -90,6 +101,7 @@ import {
     CaomeiSplitterPanel,
     CaomeiSplitterResizeHandle,
     CaomeiStepper,
+    CaomeiSticky,
     CaomeiStepperIndicator,
     CaomeiStepperItem,
     CaomeiStepperList,
@@ -173,6 +185,71 @@ const overlayCascadeOptions = [
 ]
 
 const selectValue = ref<string | null>(null)
+
+/** 首击穿透用例：背景按钮的点击计数（浮层展开态点一次就应加一） */
+const firstClickCount = ref(0)
+
+/** 行内编辑用例：受控值与被提交的值 */
+const editableTitle = ref('季度经营分析')
+const editableSubmitted = ref('')
+/** 只读 / 禁用夹具值：用于验证「可看不可改」「不可进入写回」 */
+const editableReadonly = ref('只读标题')
+
+/** 标签组用例：标签列表、选中集合与最近被移除的值 */
+const tagGroupTags = ref(['Vue', 'TypeScript', 'CSS'])
+const tagGroupSelected = ref<string[]>(['Vue'])
+const tagGroupRemoved = ref('')
+
+/** 虚拟树用例：200 个分组 × 5 个子节点（共 1200 个节点），只应渲染可视区附近的行 */
+const virtualTreeItems = Array.from({ length: 200 }, (_, index) => ({
+    id: `vg-${index}`,
+    label: `分组 ${index + 1}`,
+    children: Array.from({ length: 5 }, (_, childIndex) => ({
+        id: `vg-${index}-${childIndex}`,
+        label: `条目 ${index + 1}-${childIndex + 1}`,
+    })),
+}))
+const virtualTreeExpanded = ref<string[]>(['vg-0', 'vg-1'])
+const virtualTreeSelected = ref<string[]>([])
+
+/** 滚轮选择器用例：两列 + 循环，键盘与点击都写回同一个模型 */
+const pickerColumns = [
+    {
+        label: '省份',
+        options: [
+            { label: '浙江', value: 'zj' },
+            { label: '江苏', value: 'js' },
+            { label: '广东', value: 'gd' },
+        ],
+    },
+    {
+        label: '城市',
+        options: [
+            { label: '杭州', value: 'hz' },
+            { label: '南京', value: 'nj' },
+        ],
+    },
+]
+const pickerValue = ref<(string | number)[]>(['zj', 'hz'])
+
+/** 吸顶用例：内层滚动容器 + 吸顶条，记录 change 事件状态 */
+const stickyOffset = ref(8)
+const stickyState = ref('idle')
+
+function onStickyChange(next: { stuck: boolean, constrained: boolean }): void {
+    if (next.constrained) {
+        stickyState.value = 'constrained'
+        return
+    }
+    stickyState.value = next.stuck ? 'stuck' : 'idle'
+}
+
+/** 移除即从列表移除，验证「列表由调用方维护」的语义 */
+function onTagGroupRemove(value: string): void {
+    tagGroupRemoved.value = value
+    tagGroupTags.value = tagGroupTags.value.filter((tag) => tag !== value)
+}
+const editableDisabled = ref('禁用标题')
 const multiSelectValue = ref<string[]>([])
 const autoCompleteValue = ref<string>()
 
@@ -903,6 +980,140 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
                 placeholder="按创建时间倒序排列"
                 label="排序方式"
             />
+        </section>
+
+        <section id="first-click" class="fixture__case">
+            <p class="fixture__hint">
+                浮层展开时点击下面的按钮：第一次点击就应计数（不得只关面板）。
+            </p>
+            <CaomeiButton
+                id="first-click-target"
+                @click="firstClickCount += 1"
+            >
+                背景操作
+            </CaomeiButton>
+            <output id="first-click-count">{{ firstClickCount }}</output>
+        </section>
+
+        <section id="panel-editable" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableTitle"
+                submit-mode="enter"
+                @submit="editableSubmitted = $event ?? ''"
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="文档标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-value">{{ editableTitle }}</output>
+            <output id="editable-submitted">{{ editableSubmitted }}</output>
+        </section>
+
+        <section id="panel-editable-readonly" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableReadonly"
+                readonly
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="只读标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-readonly-value">{{ editableReadonly }}</output>
+        </section>
+
+        <section id="panel-editable-disabled" class="fixture__case">
+            <CaomeiEditable
+                v-model="editableDisabled"
+                disabled
+            >
+                <CaomeiEditableArea>
+                    <CaomeiEditablePreview />
+                    <CaomeiEditableInput label="禁用标题" />
+                </CaomeiEditableArea>
+            </CaomeiEditable>
+            <output id="editable-disabled-value">{{ editableDisabled }}</output>
+        </section>
+
+        <section id="panel-tag-group" class="fixture__case">
+            <CaomeiTagGroup
+                v-model="tagGroupSelected"
+                selection-mode="multiple"
+                aria-label="技能标签"
+                @remove="onTagGroupRemove"
+            >
+                <CaomeiTagGroupItem
+                    v-for="skill in tagGroupTags"
+                    :key="skill"
+                    :value="skill"
+                >
+                    <CaomeiTagGroupItemText>{{ skill }}</CaomeiTagGroupItemText>
+                    <CaomeiTagGroupItemDelete :label="`移除 ${skill}`">
+                        <CaomeiIcon :icon="X" />
+                    </CaomeiTagGroupItemDelete>
+                </CaomeiTagGroupItem>
+            </CaomeiTagGroup>
+            <output id="tag-group-selected">{{ tagGroupSelected.join(',') }}</output>
+            <output id="tag-group-removed">{{ tagGroupRemoved }}</output>
+        </section>
+
+        <section id="panel-tree-virtualizer" class="fixture__case">
+            <CaomeiTreeVirtualizer
+                v-model="virtualTreeSelected"
+                v-model:expanded="virtualTreeExpanded"
+                :items="virtualTreeItems"
+                label="虚拟树"
+                height="12rem"
+                :overscan="4"
+            />
+            <output id="virtual-tree-selected">{{ virtualTreeSelected.join(',') }}</output>
+        </section>
+
+        <section id="panel-picker" class="fixture__case">
+            <CaomeiPicker
+                v-model="pickerValue"
+                :columns="pickerColumns"
+                loop
+                label="选择地区"
+            />
+            <output id="picker-value">{{ pickerValue.join(',') }}</output>
+        </section>
+
+        <section id="panel-sticky" class="fixture__case">
+            <div
+                id="sticky-scroller"
+                class="fixture__sticky-scroller"
+            >
+                <p class="fixture__sticky-line">
+                    容器标题（滚动前位于吸顶条上方）
+                </p>
+                <div class="fixture__sticky-card">
+                    <CaomeiSticky
+                        id="sticky-bar"
+                        class="fixture__sticky-bar"
+                        :offset="stickyOffset"
+                        @change="onStickyChange"
+                    >
+                        <span>吸顶工具栏</span>
+                    </CaomeiSticky>
+                    <p
+                        v-for="index in 4"
+                        :key="index"
+                        class="fixture__sticky-line"
+                    >
+                        卡片内第 {{ index }} 段
+                    </p>
+                </div>
+                <p
+                    v-for="index in 10"
+                    :key="`tail-${index}`"
+                    class="fixture__sticky-line"
+                >
+                    卡片之后第 {{ index }} 段（用于把卡片滚出容器）
+                </p>
+            </div>
+            <output id="sticky-state">{{ stickyState }}</output>
         </section>
 
         <section id="panel-multi-select" class="fixture__case">
@@ -4337,6 +4548,27 @@ const EMPTY_IMAGE = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
     display: flex;
     flex-direction: column;
     gap: var(--caomei-space-3);
+}
+
+.fixture__sticky-scroller {
+    height: 12rem;
+    overflow-y: auto;
+    padding: var(--caomei-space-2);
+    border: 1px solid var(--caomei-color-border);
+}
+
+.fixture__sticky-card {
+    /* sticky 的包含块：卡片底边到达时吸顶条被推走 */
+    border: 1px dashed var(--caomei-color-border);
+}
+
+.fixture__sticky-bar {
+    padding: var(--caomei-space-2);
+    border-bottom: 1px solid var(--caomei-color-border);
+}
+
+.fixture__sticky-line {
+    margin: var(--caomei-space-2) 0;
 }
 </style>
 

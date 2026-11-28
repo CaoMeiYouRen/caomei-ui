@@ -36,6 +36,7 @@
 | Card | 自建（布局 + variants） | 无 |
 | Checkbox | 封装 Checkbox | Checkbox |
 | CheckboxGroup | 封装 CheckboxGroup（分组值数组 + 全选 / 半选） | CheckboxGroup |
+| Editable | 封装 | EditableRoot / EditableArea / EditablePreview / EditableInput / EditableEditTrigger / EditableSubmitTrigger / EditableCancelTrigger | 稳定 | 行内编辑：聚焦 / 双击进入、回车与失焦提交、Esc 回退、只读与禁用、激活态焦点管理（**已实现**） |
 
 ## 3. Tier 1：强烈推荐（8 个）
 
@@ -45,6 +46,7 @@
 |------|----------|--------------|
 | Message / Alert | 自建（业务语义包装）；`Alert` 是 `Message` 的**语义预设包装**，与本体共用同一外观层与 token，仅收敛语义（静态档）与变体（无 `simple`） | 无 |
 | Password | Input 派生（Tier 0 已含基础能力，此处为增强） | 无 |
+| Picker | 自建（与 TimePicker wheel 共用交互） | 无（复用 `use-wheel-column`） | 稳定 | 通用滚轮选择器：单列 / 多列、吸附与动量收敛、循环（键盘与点击）、键盘导航；与 `TimePicker` 共用同一份滚轮逻辑（**已实现**） |
 | ProgressSpinner | 封装 Progress 派生 | Progress |
 | MultiSelect | 封装 Combobox | Combobox |
 | ConfirmDialog | 封装 AlertDialog + 服务 | AlertDialog |
@@ -113,24 +115,26 @@
 | AutoComplete | 封装 | Combobox | 稳定 | 异步建议 + 自由输入（**已实现**） |
 | Panel | 不新建 | — | — | 由 `Card` 的 `title` / `header` / `footer` 承载；可折叠场景用 `Accordion` |
 | SplitButton | 自建（Button + DropdownMenu 组合） | 无 | — | Reka `Splitter` 为分栏布局，不适用（**已实现**） |
+| Sticky | 自建（原生 `position: sticky`） | 无 | 稳定 | 吸顶工具：偏移 / 层级 / 禁用降级、容器边界内释放、自动协作最近滚动容器，状态经 `data-stuck` / `data-constrained` 与 `change` 暴露（**已实现**） |
 | DataView | 自建（`layout` grid / list + 插槽） | 无 | — | 列表 / 网格两态 + 加载 / 空态（**已实现**） |
 | Sidebar | 自建（布局） | 无 | — | 移动端抽屉可复用 Dialog / Drawer |
 | TagsInput | 封装 | TagsInput | 稳定 | 标签录入：多值 `v-model`、自由文本、回车 / 分隔符提交、标签删除、数量 / 去重约束（**已实现**） |
 | InputOtp | 封装 | PinInput | 稳定 | 验证码输入：定长输入格、数字 / 字母数字模式、粘贴分发、完成事件与逐字可访问名（**已实现**） |
+| TagGroup | 封装 | TagGroupRoot / TagGroupItem / TagGroupItemText / TagGroupItemDelete | 稳定 | 标签组：单选 / 多选、方向键移动、Delete 移除、禁用项与整组禁用、`v-model`（**已实现**） |
 | Popconfirm | 自建（Popover + Button 组合） | 无（Popover 承载开合与隔离，按钮为库内 Button） | 稳定 | 气泡确认：就近二次确认、危险语气、加载 / 禁用、受控开合与焦点归还（**已实现**） |
 | Result | 自建（展示层） | 无 | — | 结果页：语义状态与 403 / 404 / 500、图标 / 标题 / 描述 / 操作区、尺寸档与 live region（**已实现**） |
 | Descriptions | 自建（`dl` / `dt` / `dd` 语义） | 无 | — | 描述列表：列数与跨列、带边框、标签宽度、水平 / 垂直布局、响应式降列与长内容折行（**已实现**） |
 | Transfer | 自建（双列表 + 原生复选框） | 无 | — | 穿梭框：候选 / 已选两栏、搜索、禁用、受控值集合（**已实现**） |
 | Cascader | 自建（Popover + 多级列 + 原生按钮） | 无 | — | 级联选择：多级路径、`changeOnSelect`、清除、禁用与分隔符（**已实现**） |
 | Timeline | 自建（`ol` / `li` 语义） | 无 | — | 时间轴：单侧 / 交替布局、反转顺序、语气色节点、自定义图标（**已实现**） |
-| Tree | 封装 | Tree | Alpha | 树形控件：`items` 递归数据、展开 / 折叠、单选 / 多选、节点禁用、受控与非受控、方向键与 `Home` / `End` 导航；`TreeVirtualizer` 未启用（**已实现**） |
+| Tree | 封装 | Tree | Alpha | 树形控件：`items` 递归数据、展开 / 折叠、单选 / 多选、节点禁用、受控与非受控、方向键与 `Home` / `End` 导航（**已实现**）；大列表用 `TreeVirtualizer` |
 | TreeSelect | 自建（Popover + Tree 组合） | 无（Popover 承载浮层与隔离） | — | 树形选择：键值单选 / 多选、已选回显、清空、禁用、打开态隔离与 320 / 390 窄屏碰撞收敛（**已实现**） |
 | Countdown | 自建（展示层 + 定时器） | 无 | — | 倒计时：目标时间归一、`DD` / `HH` / `mm` / `ss` / `SSS` 模板、到点停表冻结与 `finish` 去重、回拨不恢复（**已实现**） |
 | Statistic | 自建（展示层） | 无 | — | 统计数值：精度 / 千分位 / 前后缀 / 加载态，空值与非法输入降级为占位；不做数字滚动动画（**已实现**） |
 | Chart | 封装（第三方库轻量包装） | 无（内核 `vue-echarts` + `echarts`，均**可选 peer**） | 稳定 | 图表：`option` 原样透传、容器自适应（`autoresize` 默认开启）、内核按需加载并在缺失时降级占位；**不代注册**图表类型与组件；**主题由宿主 token 派生**（暗色 / 预设联动）、语言与数字 / 日期格式跟随 `useLocaleCode()`（**已实现**） |
 | RichTextEditor | 封装（第三方库轻量包装） | 无（内核 `md-editor-v3`） | 稳定 | Markdown 富文本编辑器：`v-model` 绑定源码、暗色 / 语言跟随宿主自动联动、图片上传能力；内核为**可选 peer 依赖**、按需加载（**已实现**） |
 
-Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Editable、Field（字段 ARIA）、MonthPicker / YearPicker、TreeVirtualizer、TagGroup、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
+Reka UI 还提供以下未纳入本清单的 primitive，可按需封装（清单以本地 `reka-ui` 导出为准）：ScrollArea（滚动面板已评估不自研，见 [Backlog §3](../plan/backlog.md)）、Separator（Divider 已自建，未采用）、PinInput、Field（字段 ARIA）、MonthPicker / YearPicker、Listbox。**候选取舍与优先级见 [Backlog §1.11](../plan/backlog.md)**：本清单只描述可用 primitive，不承载候选决策。
 
 ## 6. 不自研
 

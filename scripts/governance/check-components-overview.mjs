@@ -5,6 +5,7 @@
  * 对账两类总览页：
  * 1. 中文总览页（/components/index.md）：分组顺序 + 成员 ↔ 侧栏 / 设计规范 §11 登记表
  * 2. 英文总览页（/en-US/components/index.md）：已翻译组件条目 ↔ docs/i18n/en-US/components/*.md 集合 + 顺序
+ * 3. 英文总览页「Chinese documentation」镜像列表 ↔ 中文总览页组件成员（集合 + 顺序，两侧同一事实源）
  *    注：英文页按翻译覆盖组织，不校分组结构（属 check-i18n-parity 的 STRUCTURE_EXEMPTIONS 已登记有意差异）
  *
  * 存量修复：同批修复中英总览页缺 CheckboxGroup
@@ -30,6 +31,8 @@ const DESIGN_DOC = join(REPO_ROOT, 'docs', 'design', 'documentation-site.md')
 const EN_COMPONENTS_DIR = join(REPO_ROOT, 'docs', 'i18n', 'en-US', 'components')
 
 const MD_LINK_RE = /\[([^\]]*)\]\(([^)]+)\)/g
+/** 单条链接（非全局，配合 `exec` 取捕获组）。 */
+const SINGLE_LINK_RE = /\[([^\]]*)\]\(([^)]+)\)/u
 const GROUP_HEADER_RE = /^##\s+(.+)$/
 
 /**
@@ -72,8 +75,7 @@ function parseOverviewZh(filepath) {
 
 /**
  * 解析英文总览页：返回已翻译组件英文名数组（按顺序）
- */
-function parseOverviewEn(filepath) {
+ */function parseOverviewEn(filepath) {
     const content = readFileSync(filepath, 'utf-8')
     const result = []
 
@@ -99,6 +101,71 @@ function parseOverviewEn(filepath) {
         }
     }
     return result
+}
+
+/** 把总览页链接归一化为 `basename`（`./avatar` / `/components/avatar` 同为 `avatar`）。 */
+function toBasename(link) {
+    return link
+        .trim()
+        .replace(/^\.\//u, '')
+        .replace(/^\/components\//u, '')
+        .replace(/[#?].*$/u, '')
+        .replace(/\/$/u, '')
+}
+
+/**
+ * 解析中文总览页的组件链接（按页面顺序，排除「能力说明」分组）。
+ *
+ * 「能力说明」承载 composables / icons / locale 这类非组件页，英文侧有独立译文页，
+ * 不进入「Chinese documentation」镜像面。
+ */
+function parseOverviewZhLinks(content) {
+    const links = []
+    let currentGroup = null
+    for (const line of content.split(/\r?\n/u)) {
+        const groupMatch = line.match(GROUP_HEADER_RE)
+        if (groupMatch) {
+            currentGroup = groupMatch[1].trim()
+            continue
+        }
+        if (currentGroup === null || currentGroup === '能力说明') {
+            continue
+        }
+        const linkMatch = SINGLE_LINK_RE.exec(line)
+        if (line.trim().startsWith('- [') && linkMatch) {
+            links.push(toBasename(linkMatch[2]))
+        }
+    }
+    return links
+}
+
+/**
+ * 解析英文总览页「Chinese documentation」段的镜像列表（按页面顺序）。
+ *
+ * @param {string} content 英文总览页全文
+ * @returns {string[]} 归一化后的 basename 序列
+ */
+function parseOverviewEnChineseDocs(content) {
+    const lines = content.split(/\r?\n/u)
+    const links = []
+    let inSection = false
+    for (const line of lines) {
+        if (/^##\s+Chinese documentation\s*$/u.test(line)) {
+            inSection = true
+            continue
+        }
+        if (inSection && line.startsWith('## ')) {
+            break
+        }
+        if (!inSection) {
+            continue
+        }
+        const linkMatch = SINGLE_LINK_RE.exec(line)
+        if (line.trim().startsWith('- [') && linkMatch) {
+            links.push(toBasename(linkMatch[2]))
+        }
+    }
+    return links
 }
 
 // 文件名 → 英文组件名例外：默认推导无法还原首字母缩写（`qrcode` → `Qrcode`，§11 用 `QRCode`）
@@ -199,7 +266,22 @@ function checkOverview() {
         }
     }
 
-    // 7. 受检面下界校验（防静默收窄）
+    // 7. 英文「Chinese documentation」列表 ↔ 中文总览页组件成员（镜像对账）
+    const zhLinks = parseOverviewZhLinks(readFileSync(OVERVIEW_ZH, 'utf-8'))
+    const enMirrorLinks = parseOverviewEnChineseDocs(readFileSync(OVERVIEW_EN, 'utf-8'))
+    if (zhLinks.length === 0 || enMirrorLinks.length === 0) {
+        errors.push('英文总览页「Chinese documentation」镜像列表或中文总览页组件链接为空：受检面缺失')
+    } else if (enMirrorLinks.join('、') !== zhLinks.join('、')) {
+        const missing = zhLinks.filter((name) => !enMirrorLinks.includes(name))
+        const extra = enMirrorLinks.filter((name) => !zhLinks.includes(name))
+        errors.push(
+            '英文总览页「Chinese documentation」列表与中文总览页组件不一致：'
+            + `缺 ${missing.join('、') || '无'}；多 ${extra.join('、') || '无'}；`
+            + `顺序${enMirrorLinks.join('、') === zhLinks.join('、') ? '一致' : '不一致'}`,
+        )
+    }
+
+    // 8. 受检面下界校验（防静默收窄）
     const totalZhComponents = Object.values(overviewZh).flat().length
     if (totalZhComponents < MIN_OVERVIEW_COMPONENTS) {
         errors.push(`中文总览页组件条目 ${totalZhComponents} 低于下界 ${MIN_OVERVIEW_COMPONENTS}：怀疑受检面被静默收窄`)

@@ -25,6 +25,13 @@ export interface A11yException {
 
 export const A11Y_EXCEPTIONS: A11yException[] = [
     {
+        component: 'CaomeiTreeVirtualizer',
+        rule: 'aria-required-children',
+        kind: 'incomplete',
+        count: 1,
+        judgment: 'happy-dom 无布局引擎（`clientHeight` 恒为 0），虚拟化器算不出可视区间、静止态一行都不渲染，静态审计因此看不到 `role="tree"` 下的 treeitem 子节点。真实浏览器里可视行由 E2E 覆盖（`test/e2e/tree-virtualizer.e2e.ts` 断言渲染行数上界与滚动后更新）；该条为环境限制导致的待复核，不作为「已修复」证据',
+    },
+    {
         component: 'CaomeiCalendar',
         rule: 'label-content-name-mismatch',
         kind: 'incomplete',

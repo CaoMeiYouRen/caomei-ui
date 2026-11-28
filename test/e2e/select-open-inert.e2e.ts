@@ -11,8 +11,9 @@ import { expect, test } from '@playwright/test'
  * - `Select` 是模态浮层：Reka 自己隐藏 `#app`，触发器随背景一起不可聚焦，焦点由面板承接；
  * - `MultiSelect` / `AutoComplete` 是非模态 Combobox：**字段自身必须保持可聚焦**（输入框就是
  *   交互面），隔离面只覆盖字段之外的背景；点击背景时先解除隔离，面板由外部点击关闭。
- *   `inert` 不参与命中测试，因此**首次点击背景只关闭面板、不激活背景控件**（第二次点击才落到
- *   控件上）；展开态按 Tab 由组件收起面板并把焦点交给字段之后的下一个控件（APG Combobox）。
+ *   首击穿透由 `src/_shared/open-state-inert.ts` 的 `window` 捕获守卫负责（一次点击同时关闭
+ *   面板并激活背景控件，见 `overlay-first-click.e2e.ts`）；模态浮层（`Select`）保持「点击只关闭」。
+ *   展开态按 Tab 由组件收起面板并把焦点交给字段之后的下一个控件（APG Combobox）。
  *
  * 判定：① 打开态背景同时具备 `aria-hidden` 与 `inert`、面板与字段不被隔离、背景不可聚焦、
  * 字段仍可输入；② 点击背景关闭面板且不残留隔离；③ 关闭后焦点交还字段；④ 展开态 Tab 收起

@@ -21,12 +21,14 @@
 - [Row 栅格行](./row)：栅格行基于 CSS Grid 提供 24 栏布局基础，负责网格容器、列间距与交叉轴对齐。
 - [SplitButton 分裂按钮](./split-button)：分裂按钮由一个主按钮与一个下拉按钮组成：主按钮触发默认操作，下拉按钮展开一组次要操作。自建实现，内部组合 `CaomeiButton` 与 `CaomeiDropdownMenu`。
 - [Splitter 分栏](./splitter)：把区域拆成可拖拽调整的分栏，支持水平 / 垂直、尺寸约束、折叠 / 展开与嵌套；受控布局在拖拽、键盘与折叠后回写。
+- [Sticky 吸顶](./sticky)：让内容滚动到指定偏移后固定在顶部，并在父容器边界内自动释放；基于原生 position: sticky，自动协作最近滚动容器。
 - [Tag 标签](./tag)：标签用于对内容进行分类或标记，支持语义色调、多种变体与可关闭交互。
 
 ## 表单输入
 
 - [Checkbox 复选框](./checkbox)：复选框用于在多个选项中选择若干项，或表示单个布尔开关，基于 Reka UI Checkbox 封装。
 - [CheckboxGroup 复选框组](./checkbox-group)：复选框组用于管理一组复选框，支持 `options` 渲染、`selectAll` 全选与半选状态、`label` 分组可访问名与 `rovingFocus` 键盘导航，基于 Reka UI Checkbox 封装。
+- [Editable 行内编辑](./editable)：行内编辑在原位修改一段文本，支持聚焦 / 双击进入、回车与失焦提交、`Esc` 回退、只读与禁用，基于 Reka UI Editable 封装。
 - [FileUpload 文件上传](./file-upload)：文件上传组件基于原生 `input[type=file]` 自建，负责文件选择（点击 / 拖拽）与列表管理；`customUpload` 下抛出 `uploader` 交由业务层上传。
 - [FloatLabel 浮动标签](./float-label)：浮动标签把 `<label>` 叠加在表单字段上：`over`（默认）在空值时居中充当占位提示，聚焦或有值时上浮到字段上方；`in` 让标签常驻字段顶部、字段内容下移。
 - [Form 表单](./form)：表单组合层，负责布局与提交编排；`CaomeiFormItem` 提供标签、提示、错误与 5 键插槽作用域，不自带 rules 引擎。
@@ -52,8 +54,10 @@
 - [DatePicker 日期选择器](./date-picker)：由触发按钮与日历面板组合的日期选择器：点击触发器展开日历，选中后按 `dateFormat` 展示。对外统一使用原生 `Date`。
 - [TimePicker 时间选择器](./time-picker)：用于录入一天内的时间，支持内联输入 / 滚轮弹层（`mode`）、默认含秒并补 0（`showSeconds` / `pad`）、12 / 24 小时制、步进与时间区间。
 - [MultiSelect 多选选择器](./multi-select)：多选选择器基于 Reka UI `Combobox` 封装，支持多选、`v-model` 数组、已选项标签与输入过滤。展开后可直接输入关键字筛选本地选项。
+- [Picker 滚轮选择器](./picker)：通用滚轮选择器，支持单列 / 多列、吸附与动量收敛、循环与键盘导航，与 TimePicker 的 wheel 模式共用同一份滚轮交互。
 - [Select 选择器](./select)：选择器用于从一组选项中选择单个值，基于 Reka UI Select 封装。
 - [SelectButton 分段选择](./select-button)：分段选择在一组互斥或可多选的选项间切换，视觉上呈现为分段按钮组，等价于 SegmentedControl，基于 Reka UI ToggleGroup 封装。
+- [TagGroup 标签组](./tag-group)：标签组把多个标签放在同一容器里，支持单选 / 多选、方向键移动焦点、`Delete` 移除、禁用项与整组禁用，基于 Reka UI TagGroup 封装。
 - [ToggleButton 开关按钮](./toggle-button)：开关按钮用于在单个按钮上切换按下 / 未按下状态（如工具条中的加粗、斜体），基于 Reka UI Toggle 封装。
 - [TreeSelect 树形选择](./tree-select)：以「字段 + 浮层树」形态在层级数据中选择值，支持单选 / 多选、清空与窄屏碰撞避让，基于 Popover 与 Tree 组合。
 
@@ -88,6 +92,7 @@
 - [Statistic 统计数值](./statistic)：大号数值展示，支持精度、千分位、前后缀与加载态；空值与非法输入降级为占位，不做数字滚动动画。
 - [Timeline 时间轴](./timeline)：按时间顺序展示事件，支持单侧 / 交替布局、反转顺序与语气色节点。
 - [Tree 树形控件](./tree)：按层级展示可展开的数据，支持单选 / 多选、节点禁用与键盘导航，基于 Reka UI 的 Tree 原语（Alpha）封装。
+- [TreeVirtualizer 虚拟树](./tree-virtualizer)：面向大列表的树，只渲染可视区附近的行，支持展开 / 折叠、选择与键盘导航，基于 Reka UI TreeVirtualizer 封装。
 - [Watermark 水印](./watermark)：在内容上覆盖平铺水印（文本或图片），支持旋转、透明度、间距、偏移与层级；遮罩对辅助技术隐藏，插槽内容保持可读。
 
 ## 导航与操作

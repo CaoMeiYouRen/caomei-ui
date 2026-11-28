@@ -236,6 +236,19 @@ function clear(): void {
     color: var(--caomei-color-text);
 }
 
+.caomei-cascader--disabled {
+    opacity: var(--caomei-disabled-opacity);
+}
+</style>
+
+<!--
+  Portal 面板样式说明：面板经 `PopoverPortal` 挂到 body，scoped 的 `data-v` 落在 popper 包裹层而非
+  面板本体，故改为命名空间化的非 scoped 规则（与 Popover / Select / TreeSelect 同口径）。
+  注：`.caomei-cascader__content` 与 `.caomei-popover__content` 同为单类选择器，本组件的差异化
+  声明依赖注入顺序（组件样式晚于 popover 产物）；E2E 的 `padding` / `border-radius` / 列容器
+  `max-width` 断言守住结果，防止退回被 popover 基线覆盖的形态。
+-->
+<style>
 .caomei-cascader__content {
     z-index: var(--caomei-cascader-z-index, var(--caomei-z-dropdown));
     padding: var(--caomei-space-1);
@@ -294,9 +307,5 @@ function clear(): void {
     padding: var(--caomei-space-3);
     color: var(--caomei-color-text-muted);
     text-align: center;
-}
-
-.caomei-cascader--disabled {
-    opacity: var(--caomei-disabled-opacity);
 }
 </style>

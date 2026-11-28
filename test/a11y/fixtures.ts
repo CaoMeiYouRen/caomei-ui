@@ -53,6 +53,13 @@ import {
     CaomeiDropdownMenuRadioItem,
     CaomeiDropdownMenuSeparator,
     CaomeiDropdownMenuTrigger,
+    CaomeiEditable,
+    CaomeiEditableArea,
+    CaomeiEditableCancelTrigger,
+    CaomeiEditableEditTrigger,
+    CaomeiEditableInput,
+    CaomeiEditablePreview,
+    CaomeiEditableSubmitTrigger,
     CaomeiEmpty,
     CaomeiFileUpload,
     CaomeiFloatLabel,
@@ -84,6 +91,8 @@ import {
     CaomeiNavBar,
     CaomeiPaginator,
     CaomeiPassword,
+    CaomeiPicker,
+    CaomeiPickerColumn,
     CaomeiPopconfirm,
     CaomeiPopover,
     CaomeiPopoverArrow,
@@ -110,6 +119,7 @@ import {
     CaomeiSplitterPanel,
     CaomeiSplitterResizeHandle,
     CaomeiStepper,
+    CaomeiSticky,
     CaomeiStepperDescription,
     CaomeiStepperIndicator,
     CaomeiStepperItem,
@@ -126,6 +136,10 @@ import {
     CaomeiTabTrigger,
     CaomeiTabs,
     CaomeiTag,
+    CaomeiTagGroup,
+    CaomeiTagGroupItem,
+    CaomeiTagGroupItemDelete,
+    CaomeiTagGroupItemText,
     CaomeiTagsInput,
     CaomeiTextarea,
     CaomeiTimePicker,
@@ -142,6 +156,7 @@ import {
     CaomeiToolbarToggleItem,
     CaomeiTour,
     CaomeiTree,
+    CaomeiTreeVirtualizer,
     CaomeiTreeSelect,
     CaomeiWatermark,
     CaomeiTooltip,
@@ -347,6 +362,21 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         },
         requiredSelectors: ['.caomei-popover__content'],
     },
+    {
+        name: 'CaomeiPicker',
+        root: CaomeiPicker,
+        definition: {
+            components: { CaomeiPicker },
+            template: '<CaomeiPicker label="地区选择" :columns="pickerColumns" :model-value="[\'zj\', \'hz\']" />',
+            setup: () => ({
+                pickerColumns: [
+                    { label: '省份', options: [{ label: '浙江', value: 'zj' }, { label: '江苏', value: 'js' }] },
+                    { label: '城市', options: [{ label: '杭州', value: 'hz' }, { label: '南京', value: 'nj' }] },
+                ],
+            }),
+        },
+        requiredSelectors: ['.caomei-picker', '.caomei-picker__column', '.caomei-picker__option'],
+    },
     { name: 'CaomeiProgressBar', root: CaomeiProgressBar, definition: { components: { CaomeiProgressBar }, template: '<CaomeiProgressBar :value="40" />' } },
     { name: 'CaomeiProgressSpinner', root: CaomeiProgressSpinner, definition: { components: { CaomeiProgressSpinner }, template: '<CaomeiProgressSpinner />' } },
     { name: 'CaomeiRating', root: CaomeiRating, definition: { components: { CaomeiRating }, template: '<CaomeiRating label="评分" :model-value="3" />' } },
@@ -376,9 +406,31 @@ export const A11Y_FIXTURES: A11yFixture[] = [
     { name: 'CaomeiSlider', root: CaomeiSlider, definition: { components: { CaomeiSlider }, template: '<CaomeiSlider label="滑块" :model-value="3" />' } },
     { name: 'CaomeiSplitButton', root: CaomeiSplitButton, definition: { components: { CaomeiSplitButton }, template: '<CaomeiSplitButton label="操作" :items="[{ label: \'一\' }]" />' } },
     { name: 'CaomeiStepper', root: CaomeiStepper, definition: { components: { CaomeiStepper, CaomeiStepperList, CaomeiStepperItem, CaomeiStepperTrigger, CaomeiStepperIndicator, CaomeiStepperTitle, CaomeiStepperDescription, CaomeiStepperSeparator }, template: '<CaomeiStepper :model-value="1"><CaomeiStepperList><CaomeiStepperItem :step="1"><CaomeiStepperTrigger><CaomeiStepperIndicator>1</CaomeiStepperIndicator><CaomeiStepperTitle>账户</CaomeiStepperTitle><CaomeiStepperDescription>填写登录信息</CaomeiStepperDescription></CaomeiStepperTrigger><CaomeiStepperSeparator /></CaomeiStepperItem><CaomeiStepperItem :step="2"><CaomeiStepperTrigger><CaomeiStepperIndicator>2</CaomeiStepperIndicator><CaomeiStepperTitle>资料</CaomeiStepperTitle><CaomeiStepperDescription>补充个人资料</CaomeiStepperDescription></CaomeiStepperTrigger></CaomeiStepperItem></CaomeiStepperList></CaomeiStepper>' } },
+    { name: 'CaomeiSticky', root: CaomeiSticky, definition: { components: { CaomeiSticky }, template: '<CaomeiSticky :offset="8"><span>吸顶工具栏</span></CaomeiSticky>' }, requiredSelectors: ['.caomei-sticky'] },
     { name: 'CaomeiSwitch', root: CaomeiSwitch, definition: { components: { CaomeiSwitch }, template: '<CaomeiSwitch label="开关" />' } },
     { name: 'CaomeiTabs', root: CaomeiTabs, definition: { components: { CaomeiTabs, CaomeiTabList, CaomeiTabTrigger, CaomeiTabContent }, template: '<CaomeiTabs model-value="a"><CaomeiTabList><CaomeiTabTrigger value="a">甲</CaomeiTabTrigger></CaomeiTabList><CaomeiTabContent value="a">内容</CaomeiTabContent></CaomeiTabs>' } },
+    {
+        name: 'CaomeiTreeVirtualizer',
+        root: CaomeiTreeVirtualizer,
+        definition: {
+            components: { CaomeiTreeVirtualizer },
+            template: '<CaomeiTreeVirtualizer label="虚拟树" height="12rem" :items="virtualItems" />',
+            setup: () => ({
+                virtualItems: Array.from({ length: 30 }, (_, index) => ({ id: `n-${index}`, label: `节点 ${index}` })),
+            }),
+        },
+        requiredSelectors: ['.caomei-tree-virtualizer', '[data-reka-virtualizer]'],
+    },
     { name: 'CaomeiTag', root: CaomeiTag, definition: { components: { CaomeiTag }, template: '<CaomeiTag>标签</CaomeiTag>' } },
+    {
+        name: 'CaomeiTagGroup',
+        root: CaomeiTagGroup,
+        definition: {
+            components: { CaomeiTagGroup, CaomeiTagGroupItem, CaomeiTagGroupItemText, CaomeiTagGroupItemDelete },
+            template: '<CaomeiTagGroup :model-value="[\'前端\']" selection-mode="multiple"><CaomeiTagGroupItem value="前端"><CaomeiTagGroupItemText>前端</CaomeiTagGroupItemText><CaomeiTagGroupItemDelete label="移除 前端"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" fill="none" /></svg></CaomeiTagGroupItemDelete></CaomeiTagGroupItem><CaomeiTagGroupItem value="后端"><CaomeiTagGroupItemText>后端</CaomeiTagGroupItemText><CaomeiTagGroupItemDelete label="移除 后端"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" fill="none" /></svg></CaomeiTagGroupItemDelete></CaomeiTagGroupItem><CaomeiTagGroupItem value="设计" disabled><CaomeiTagGroupItemText>设计</CaomeiTagGroupItemText></CaomeiTagGroupItem></CaomeiTagGroup>',
+        },
+        requiredSelectors: ['.caomei-tag-group', '.caomei-tag-group__item', '.caomei-tag-group__text', '.caomei-tag-group__delete'],
+    },
     { name: 'CaomeiTagsInput', root: CaomeiTagsInput, definition: { components: { CaomeiTagsInput }, template: '<CaomeiTagsInput label="标签" :model-value="tags" />', setup: () => ({ tags: ['React'] }) } },
     { name: 'CaomeiTextarea', root: CaomeiTextarea, definition: { components: { CaomeiTextarea }, template: '<CaomeiTextarea label="备注" placeholder="备注" />' } },
     { name: 'CaomeiTimePicker', root: CaomeiTimePicker, definition: { components: { CaomeiTimePicker }, template: '<CaomeiTimePicker label="时间" mode="both" :model-value="time" />', setup: () => ({ time: new Date(2026, 0, 1, 9, 30, 0) }) } },
@@ -397,6 +449,23 @@ export const A11Y_FIXTURES: A11yFixture[] = [
         requiredSelectors: ['.caomei-action-sheet', '.caomei-action-sheet__cancel'],
     },
     { name: 'CaomeiEmpty', root: CaomeiEmpty, definition: { components: { CaomeiEmpty }, template: '<CaomeiEmpty title="还没有任何项目" description="创建第一个项目后，它会出现在这里。" />' } },
+    {
+        name: 'CaomeiEditable',
+        root: CaomeiEditable,
+        definition: {
+            components: {
+                CaomeiEditable,
+                CaomeiEditableArea,
+                CaomeiEditablePreview,
+                CaomeiEditableInput,
+                CaomeiEditableEditTrigger,
+                CaomeiEditableSubmitTrigger,
+                CaomeiEditableCancelTrigger,
+            },
+            template: '<CaomeiEditable :model-value="\'可编辑标题\'"><CaomeiEditableArea><CaomeiEditablePreview /><CaomeiEditableInput label="可编辑标题" /><CaomeiEditableEditTrigger>编辑</CaomeiEditableEditTrigger><CaomeiEditableSubmitTrigger>提交</CaomeiEditableSubmitTrigger><CaomeiEditableCancelTrigger>取消</CaomeiEditableCancelTrigger></CaomeiEditableArea></CaomeiEditable>',
+        },
+        requiredSelectors: ['.caomei-editable', '.caomei-editable__preview', '.caomei-editable__input'],
+    },
     { name: 'CaomeiToolbar', root: CaomeiToolbar, definition: { components: { CaomeiToolbar, CaomeiToolbarButton, CaomeiToolbarLink, CaomeiToolbarSeparator, CaomeiToolbarToggleGroup, CaomeiToolbarToggleItem, CaomeiIcon }, template: '<CaomeiToolbar label="格式"><CaomeiToolbarButton label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarButton><CaomeiToolbarSeparator /><CaomeiToolbarLink href="/guide/getting-started" label="帮助">帮助</CaomeiToolbarLink><CaomeiToolbarToggleGroup v-model="format" type="multiple" label="文本格式"><CaomeiToolbarToggleItem value="bold" label="加粗"><CaomeiIcon :icon="Bold" /></CaomeiToolbarToggleItem></CaomeiToolbarToggleGroup></CaomeiToolbar>', setup: () => ({ Bold, format: ref(['bold']) }) } },
     /* 工具提示：夹具自带 Provider，覆盖「Provider 存在时沿用上层配置」的主路径（缺失时由根组件内建兜底）。 */
     { name: 'CaomeiTooltip', root: CaomeiTooltip, definition: { components: { CaomeiTooltipProvider, CaomeiTooltip, CaomeiTooltipTrigger, CaomeiTooltipContent }, template: '<CaomeiTooltipProvider><CaomeiTooltip><CaomeiTooltipTrigger aria-label="扫描范围">扫描范围</CaomeiTooltipTrigger><CaomeiTooltipContent>扫描范围为所选仓库的全部开放依赖告警。</CaomeiTooltipContent></CaomeiTooltip></CaomeiTooltipProvider>' } },
@@ -539,6 +608,16 @@ export const COVERED_BY_FIXTURE: { name: string, component: unknown, fixture: st
     { name: 'CaomeiCarouselSlide', component: CaomeiCarouselSlide, fixture: 'CaomeiCarousel' },
     { name: 'CaomeiSplitterPanel', component: CaomeiSplitterPanel, fixture: 'CaomeiSplitter' },
     { name: 'CaomeiSplitterResizeHandle', component: CaomeiSplitterResizeHandle, fixture: 'CaomeiSplitter' },
+    { name: 'CaomeiPickerColumn', component: CaomeiPickerColumn, fixture: 'CaomeiPicker' },
+    { name: 'CaomeiTagGroupItem', component: CaomeiTagGroupItem, fixture: 'CaomeiTagGroup' },
+    { name: 'CaomeiTagGroupItemText', component: CaomeiTagGroupItemText, fixture: 'CaomeiTagGroup' },
+    { name: 'CaomeiTagGroupItemDelete', component: CaomeiTagGroupItemDelete, fixture: 'CaomeiTagGroup' },
+    { name: 'CaomeiEditableArea', component: CaomeiEditableArea, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditablePreview', component: CaomeiEditablePreview, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableInput', component: CaomeiEditableInput, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableEditTrigger', component: CaomeiEditableEditTrigger, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableSubmitTrigger', component: CaomeiEditableSubmitTrigger, fixture: 'CaomeiEditable' },
+    { name: 'CaomeiEditableCancelTrigger', component: CaomeiEditableCancelTrigger, fixture: 'CaomeiEditable' },
     { name: 'CaomeiTooltipArrow', component: CaomeiTooltipArrow, fixture: 'CaomeiTooltipContent' },
 ]
 
@@ -558,4 +637,4 @@ export const EXCLUDED_COMPONENTS: { name: string, reason: string }[] = [
 ]
 
 /** 受检审计单元规模（新增 / 删除夹具必须同步此预算，使受检面变化在 diff 中显式可见）。 */
-export const A11Y_FIXTURE_BUDGET = 92
+export const A11Y_FIXTURE_BUDGET = 97
